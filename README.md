@@ -28,6 +28,10 @@ To start the REST API run:
 
 `python app.py`
 
+To test the API run:
+
+`python client.py`
+
 ## Recent changes
 
 See the [change log](https://github.com/ICTU/quality-time/blob/master/CHANGELOG.md).
