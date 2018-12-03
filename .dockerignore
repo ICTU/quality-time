@@ -1,0 +1,11 @@
+.DS_Store
+.git/
+.gitignore
+.hypothesis/
+.mypy_cache/
+.sonarlint/
+.venv/
+.vscode/
+build/
+dist/
+
