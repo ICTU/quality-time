@@ -3,9 +3,9 @@ FROM python:3.7-alpine
 LABEL maintainer="Frank Niessink <frank@niessink.com>"
 LABEL description="Metric API"
 
-WORKDIR /app
-ADD . /app
-RUN pip install -r requirements.txt
+WORKDIR /quality_time
+ADD . /quality_time
+RUN pip install -r requirements.txt; python setup.py install
 EXPOSE 8080
 
-CMD ["python", "app.py"]
+CMD ["quality-time"]

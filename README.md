@@ -13,6 +13,8 @@ for collecting measurements from data sources is under construction.
 
 ## Installation
 
+### From source
+
 *Quality-time* requires Python 3.7 or newer.
 
 There's no release yet, so you have to run from sources for the time being.
@@ -33,11 +35,27 @@ Start development mode:
 
 `python setup.py develop`
 
+### Using Docker
+
+Alternatively, create a Docker image:
+
+`docker build -t ictu/quality-time .`
+
 ## Usage
+
+### From source
 
 To start the REST API server run:
 
 `quality-time`
+
+### Using Docker
+
+To start the Docker container:
+
+`docker run -p 8080:8080 -ti ictu/quality-time`
+
+### Test
 
 To test the API run:
 
