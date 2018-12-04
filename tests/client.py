@@ -2,9 +2,10 @@ import aiohttp
 import asyncio
 import json
 import requests
+import sys
 
 
-urls = [
+URLS = [
     "http://localhost:8080/sonarqube/http://sonarcloud.io/m/ncloc/non-existing-id:non-existing-id",
     "http://localhost:8080/sonarqube/http://non-existing-hostname.io/m/critical_violations/nl.ictu:hq",
     "http://localhost:8080/junit/http://non-existing-hostname.io/m/failures",
@@ -33,5 +34,5 @@ async def fetch_all(urls):
 
 
 if __name__ == "__main__":
+    urls = [url for url in URLS if sys.argv[1] in url] if len(sys.argv) > 1 else URLS
     asyncio.run(fetch_all(urls))
-

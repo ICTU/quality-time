@@ -9,5 +9,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Added a REST API based on Bottle and CherryPy that retrieves  data from several data sources.
-
+- Added a simple API based on Bottle and CherryPy that retrieves data from several data sources.

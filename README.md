@@ -2,7 +2,7 @@
 
 [![Updates](https://pyup.io/repos/github/ICTU/quality-time/shield.svg)](https://pyup.io/repos/github/ICTU/quality-time/)
 
-Quality report software for software development and maintenance. Alpha-stage currently. At the moment, a REST API
+Quality report software for software development and maintenance. Alpha-stage currently. At the moment, a simple API
 for collecting measurements from data sources is under construction.
 
 ## Table of contents
@@ -45,7 +45,7 @@ Alternatively, create a Docker image:
 
 ### From source
 
-To start the REST API server run:
+To start the API server run:
 
 `quality-time`
 

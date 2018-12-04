@@ -4,6 +4,7 @@ from .sonarqube import SonarQube
 from .jenkins import Jenkins
 from .junit import JUnit
 
+
 __title__ = "Quality time"
 __version__ = "0.1.0"
 
