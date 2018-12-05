@@ -26,14 +26,16 @@ APIS_OLD = [
     f"sonarqube/{SONARQUBE}/m/version"]
     
 APIS = [
-    f"tests/junit?url={JUNIT_TEST}/junit-complex_suites.xml",
-    f"failed_tests/junit?url={JUNIT_TEST}/junit-complex_suites.xml",
-    f"tests/junit?url={JUNIT_TEST}/junit-simple_suite.xml",
-    f"failed_tests/junit?url={JUNIT_TEST}/junit-simple_suite.xml",
+    f"tests/junit?url={JUNIT_TEST}/junit-complex_suites.xml&url={JUNIT_TEST}/junit-simple_suite.xml",
+    f"failed_tests/junit?url={JUNIT_TEST}/junit-complex_suites.xml&url={JUNIT_TEST}/junit-simple_suite.xml",
     f"tests/junit?url={JUNIT_TEST2}",
     f"failed_tests/junit?url={JUNIT_TEST2}",
     f"tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
-    f"failed_tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq"]
+    f"failed_tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"ncloc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
+    f"failed_tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
+    f"ncloc/sonarqube?url={SONARQUBE}&component=fniessink:next-action"]
     
 
 async def fetch(api):

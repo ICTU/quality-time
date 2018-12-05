@@ -14,8 +14,8 @@ def get(metric, source):
     urls = request.query.getall("url")
     components = request.query.getall("component")
     source = dict(sonarqube=SonarQube, junit=JUnit)[source]
-    return source.get(metric, urls[0], components[0] if components else None)
+    return source.get(metric, urls, components) 
 
 
 def quality_time():
-    run(server="cherrypy", host='0.0.0.0', port=8080)
+    run(server="cherrypy", host='0.0.0.0', port=8080, reloader=True)
