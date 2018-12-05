@@ -11,12 +11,14 @@ class Source:
     TIMEOUT = 10  # Default timeout of 10 seconds
 
     @classmethod
-    def metric(cls, url: URL, metric: str, component: str = None) -> MeasurementResponse:
+    def get(cls, metric: str, url: URL, component: str = None) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
-        landing_url = cls.landing_url(url, metric, component or "")
-        api_url = cls.api_url(url, metric, component or "")
+        source_metric = cls.convert_metric_name(metric)
+        landing_url = cls.landing_url(source_metric, url, component or "")
+        api_url = cls.api_url(source_metric, url, component or "")
         response, connection_error = cls.safely_get_source_response(api_url)
-        measurement, parse_error = cls.safely_parse_source_response(metric, response) if response else (None, None)
+        measurement, parse_error = cls.safely_parse_source_response(source_metric, response) \
+            if response else (None, None)
         return dict(source=cls.name(), metric=metric, component=component, url=url, api_url=api_url, 
                     landing_url=landing_url, connection_error=connection_error, parse_error=parse_error, 
                     measurement=measurement)
@@ -26,12 +28,17 @@ class Source:
         return cls.__name__
 
     @classmethod
-    def landing_url(cls, url: URL, metric: str, component: str) -> Optional[URL]: 
+    def convert_metric_name(cls, metric: str) -> str:
+        """Convert the generic metric name in the source specific version of the metric name."""
+        return metric
+
+    @classmethod
+    def landing_url(cls, metric: str, url: URL, component: str) -> Optional[URL]: 
         """Translate the url into the landing url.""" 
         return None
 
     @classmethod
-    def api_url(cls, url: URL, metric: str, component: str) -> URL: 
+    def api_url(cls, metric: str, url: URL, component: str) -> URL: 
         """Translate the url into the API url.""" 
         return url
 

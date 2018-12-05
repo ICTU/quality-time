@@ -14,7 +14,7 @@ class SonarQube_(Source):
 
 class SonarQubeVersion(SonarQube_):
     @classmethod
-    def api_url(cls, url: URL, metric: str, component: str) -> URL:
+    def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/server/version")
 
     @classmethod 
@@ -24,11 +24,11 @@ class SonarQubeVersion(SonarQube_):
 
 class SonarQubeIssues(SonarQube_):
     @classmethod
-    def landing_url(cls, url: URL, metric: str, component: str) -> Optional[URL]:
+    def landing_url(cls, metric: str, url: URL, component: str) -> Optional[URL]:
         return URL(f"{url}/project/issues?id={component}&resolved=false")
 
     @classmethod
-    def api_url(cls, url: URL, metric: str, component: str) -> URL:
+    def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false")
 
     @classmethod 
@@ -38,11 +38,15 @@ class SonarQubeIssues(SonarQube_):
 
 class SonarQubeMetric(SonarQube_):
     @classmethod
-    def landing_url(cls, url: URL, metric: str, component: str) -> Optional[URL]:
+    def convert_metric_name(cls, metric: str) -> str:
+        return "test_failures" if metric == "failed_tests" else metric
+
+    @classmethod
+    def landing_url(cls, metric: str, url: URL, component: str) -> Optional[URL]:
         return URL(f"{url}/component_measures?id={component}&metric={metric}")
 
     @classmethod
-    def api_url(cls, url: URL, metric: str, component: str) -> URL:
+    def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric}")
 
     @classmethod 
@@ -52,6 +56,6 @@ class SonarQubeMetric(SonarQube_):
 
 class SonarQube(Source):
     @classmethod
-    def metric(cls, url: URL, metric: str, component: str = None) -> MeasurementResponse:
+    def get(cls, metric: str, url: URL, component: str = None) -> MeasurementResponse:
         delegate = dict(version=SonarQubeVersion, issues=SonarQubeIssues).get(metric, SonarQubeMetric)
-        return delegate.metric(url, metric, component)
+        return delegate.get(metric, url, component)

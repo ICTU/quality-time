@@ -6,7 +6,7 @@ from .types import Measurement, URL
 
 class Jenkins(Source):
     @classmethod
-    def api_url(cls, url: URL, metric: str, component: str) -> URL:
+    def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")
 
     @classmethod
