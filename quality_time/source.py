@@ -20,7 +20,8 @@ class Source:
         source_metric = cls.convert_metric_name(metric)
         source_responses = [cls.get_one(source_metric, url, component) \
                             for url, component in itertools.zip_longest(urls, components)]
-        measurement, calculation_error = cls.safely_calculate_measurement(source_responses)
+        measurements = [source_response["measurement"] for source_response in source_responses]
+        measurement, calculation_error = metric.safely_sum(measurements)
         return dict(source=cls.name(), metric=metric.name(), source_metric=source_metric, 
                     source_responses=source_responses, calculation_error=calculation_error, measurement=measurement)
                 
@@ -86,22 +87,3 @@ class Source:
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
-
-    @classmethod
-    def safely_calculate_measurement(cls, source_responses: Sequence[MeasurementResponse]) -> \
-            Tuple[Optional[Measurement], Optional[ErrorMessage]]:
-        """Calculate the total measurement from the individual measurements from each URL, without failing."""
-        measurement, error = None, None
-        measurements = [source_response["measurement"] for source_response in source_responses]
-        if None in measurements:
-            return None, None
-        try:
-            measurement = cls.calculate_measurement(source_responses)
-        except Exception:
-            error = ErrorMessage(traceback.format_exc())
-        return measurement, error
-
-    @classmethod
-    def calculate_measurement(cls, source_responses: Sequence[MeasurementResponse]) -> Measurement:
-        """Calculate the total measurement from the individual measurements from each URL."""
-        return Measurement(sum([int(source_response["measurement"]) for source_response in source_responses]))
