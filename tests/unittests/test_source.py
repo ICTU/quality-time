@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 import requests
 
+from quality_time.metric import Metric
 from quality_time.source import Source
 
 
@@ -14,7 +15,7 @@ class SourceTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2"
         mock_get.return_value = mock_response
-        self.response = Source.get("metric", ["http://url"], [])
+        self.response = Source.get(Metric, ["http://url"], [])
 
     def test_source_name(self):
         """Test that the source name is returned."""
@@ -22,7 +23,7 @@ class SourceTest(unittest.TestCase):
         
     def test_metric_name(self):
         """Test that the metric name is returned."""
-        self.assertEqual("metric", self.response["metric"])
+        self.assertEqual("Metric", self.response["metric"])
 
     def test_source_metric_name(self):
         """Test that the metric name as used in the source is returned."""
@@ -58,7 +59,7 @@ class SourceWithComponentTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
-        self.response = Source.get("metric", ["http://url"], ["component id"])
+        self.response = Source.get(Metric, ["http://url"], ["component id"])
 
     def test_source_response_component(self):
         """Test that the component used for contacting the source is returned."""
@@ -74,7 +75,7 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2"
         mock_get.return_value = mock_response
-        self.response = Source.get("metric", ["http://url1", "http://url2"], [])
+        self.response = Source.get(Metric, ["http://url1", "http://url2"], [])
 
     def test_source_response_component(self):
         """Test that the component used for contacting the source is returned."""
@@ -94,7 +95,7 @@ class SourceWithMultipleURLsAndComponentsTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2"
         mock_get.return_value = mock_response
-        self.response = Source.get("metric", ["http://url1", "http://url2"], ["component id 1", "component id 2"])
+        self.response = Source.get(Metric, ["http://url1", "http://url2"], ["component id 1", "component id 2"])
 
     def test_source_response_component(self):
         """Test that the components used for contacting the source is returned."""
