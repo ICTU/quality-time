@@ -36,9 +36,7 @@ APIS = [
     f"tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"failed_tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"ncloc/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
-    f"version/sonarqube?url={SONARQUBE}",
-    f"jobs/jenkins?url=https://ci.jenkins.io",
-    f"failed_jobs/jenkins?url=https://ci.jenkins.io"]
+    f"version/sonarqube?url={SONARQUBE}"]
     
 
 async def fetch(api):
@@ -53,5 +51,10 @@ async def fetch_all(apis):
 
 
 if __name__ == "__main__":
+    apis = APIS 
+    try:
+        apis.extend([url.strip() for url in open(".urls.txt").readlines()])
+    except FileNotFoundError:
+        pass
     apis = [api for api in APIS if sys.argv[1] in api] if len(sys.argv) > 1 else APIS
     asyncio.run(fetch_all(apis))

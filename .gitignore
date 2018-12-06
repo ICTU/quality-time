@@ -51,3 +51,6 @@ venv.bak/
 
 # IDE
 .vscode
+
+# Test data
+.urls.txt

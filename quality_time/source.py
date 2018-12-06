@@ -1,4 +1,6 @@
 import itertools
+import sys
+import traceback
 from typing import Optional, Sequence, Tuple
 
 import requests
@@ -57,8 +59,8 @@ class Source:
         response, error = None, None
         try:
             response = cls.get_source_response(url)
-        except Exception as reason:
-            error = ErrorMessage(reason)
+        except Exception:
+            error = ErrorMessage(traceback.format_exc())
         return response, error
 
     @classmethod 
@@ -75,8 +77,8 @@ class Source:
         measurement, error = None, None
         try:
             measurement = cls.parse_source_response(metric, response) 
-        except Exception as reason:
-            error = ErrorMessage(reason)
+        except Exception:
+            error = ErrorMessage(traceback.format_exc())
         return measurement, error
 
     @classmethod 
@@ -85,14 +87,17 @@ class Source:
         return Measurement(response.text)
 
     @classmethod
-    def safely_calculate_measurement(cls, measurement_responses: Sequence[MeasurementResponse]) -> \
+    def safely_calculate_measurement(cls, source_responses: Sequence[MeasurementResponse]) -> \
             Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Calculate the total measurement from the individual measurements from each URL, without failing."""
         measurement, error = None, None
+        measurements = [source_response["measurement"] for source_response in source_responses]
+        if None in measurements:
+            return None, None
         try:
-            measurement = cls.calculate_measurement(measurement_responses)
-        except Exception as reason:
-            error = ErrorMessage(reason)
+            measurement = cls.calculate_measurement(source_responses)
+        except Exception:
+            error = ErrorMessage(traceback.format_exc())
         return measurement, error
 
     @classmethod
