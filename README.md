@@ -57,6 +57,10 @@ To start the Docker container:
 
 ### Test
 
+To run the unit tests and measure unit test coverage:
+
+`ci/unittest.sh`
+
 To test the API run:
 
 `python tests/client.py`
