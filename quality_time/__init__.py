@@ -1,8 +1,6 @@
 from bottle import request, route, run
 
-from .sonarqube import SonarQube
-from .jenkins import Jenkins
-from .junit import JUnit
+from .sources import Jenkins, JUnit, SonarQube
 
 
 __title__ = "Quality time"
@@ -11,9 +9,9 @@ __version__ = "0.1.0"
 
 @route("/<metric>/<source>")
 def get(metric, source):
+    source = dict(sonarqube=SonarQube, jenkins=Jenkins, junit=JUnit)[source]
     urls = request.query.getall("url")
     components = request.query.getall("component")
-    source = dict(sonarqube=SonarQube, junit=JUnit)[source]
     return source.get(metric, urls, components) 
 
 

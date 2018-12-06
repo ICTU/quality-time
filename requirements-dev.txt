@@ -1,3 +1,4 @@
 aiohttp==3.4.4
+coverage==4.5.2
 mypy==0.641
 pylint==2.2.2

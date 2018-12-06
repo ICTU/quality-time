@@ -2,8 +2,8 @@ import xml.etree.cElementTree
 
 import requests
 
-from .source import Source
-from .types import Measurement   
+from quality_time.source import Source
+from quality_time.type import Measurement   
 
 
 class JUnit(Source):

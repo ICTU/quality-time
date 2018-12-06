@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 import requests
 
-from .source import Source
-from .types import Measurement, MeasurementResponse, URL   
+from quality_time.source import Source
+from quality_time.type import Measurement, MeasurementResponse, URL   
 
 
 class SonarQube_(Source):
@@ -17,14 +17,14 @@ class SonarQubeVersion(SonarQube_):
     def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/server/version")
 
-    @classmethod 
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
-        return Measurement(response.text)
+    @classmethod
+    def calculate_measurement(cls, source_responses: Sequence[MeasurementResponse]) -> Measurement:
+        return Measurement(", ".join([str(source_response["measurement"]) for source_response in source_responses]))
 
 
 class SonarQubeIssues(SonarQube_):
     @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> Optional[URL]:
+    def landing_url(cls, metric: str, url: URL, component: str) -> URL: 
         return URL(f"{url}/project/issues?id={component}&resolved=false")
 
     @classmethod
@@ -42,7 +42,7 @@ class SonarQubeMetric(SonarQube_):
         return "test_failures" if metric == "failed_tests" else metric
 
     @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> Optional[URL]:
+    def landing_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/component_measures?id={component}&metric={metric}")
 
     @classmethod
@@ -56,6 +56,6 @@ class SonarQubeMetric(SonarQube_):
 
 class SonarQube(Source):
     @classmethod
-    def get(cls, metric: str, url: URL, component: str = None) -> MeasurementResponse:
+    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
         delegate = dict(version=SonarQubeVersion, issues=SonarQubeIssues).get(metric, SonarQubeMetric)
-        return delegate.get(metric, url, component)
+        return delegate.get(metric, urls, components)

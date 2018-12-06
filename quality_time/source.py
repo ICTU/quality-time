@@ -3,7 +3,7 @@ from typing import Optional, Sequence, Tuple
 
 import requests
 
-from .types import ErrorMessage, Measurement, MeasurementResponse, URL
+from .type import ErrorMessage, Measurement, MeasurementResponse, URL
 
 
 class Source:
@@ -12,25 +12,28 @@ class Source:
     TIMEOUT = 10  # Default timeout of 10 seconds
 
     @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str] = None) -> MeasurementResponse:
+    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
         source_metric = cls.convert_metric_name(metric)
-        source_responses = []
-        for url, component in itertools.zip_longest(urls, components):
-            api_url = cls.api_url(source_metric, url, component)
-            landing_url = cls.landing_url(source_metric, url, component) 
-            response, connection_error = cls.safely_get_source_response(api_url)
-            measurement, parse_error = cls.safely_parse_source_response(source_metric, response) \
-                if response else (None, None)
-            source_responses.append(
-                dict(url=url, component=component, api_url=api_url, landing_url=landing_url, 
-                     connection_error=connection_error, parse_error=parse_error, measurement=measurement))
+        source_responses = [cls.get_one(source_metric, url, component) \
+                            for url, component in itertools.zip_longest(urls, components)]
         measurement, calculation_error = cls.safely_calculate_measurement(source_responses)
         return dict(source=cls.name(), metric=metric, source_metric=source_metric, 
                     source_responses=source_responses, calculation_error=calculation_error, measurement=measurement)
+                
+    @classmethod
+    def get_one(cls, source_metric: str, url: URL, component: str) -> MeasurementResponse:
+        """Return the measurement response for one source url."""
+        api_url = cls.api_url(source_metric, url, component)
+        landing_url = cls.landing_url(source_metric, url, component) 
+        response, connection_error = cls.safely_get_source_response(api_url)
+        measurement, parse_error = cls.safely_parse_source_response(source_metric, response) \
+            if response else (None, None)
+        return dict(url=url, component=component, api_url=api_url, landing_url=landing_url, 
+                    connection_error=connection_error, parse_error=parse_error, measurement=measurement)
 
     @classmethod
-    def name(cls):
+    def name(cls) -> str:
         return cls.__name__
 
     @classmethod
@@ -79,7 +82,7 @@ class Source:
     @classmethod 
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
         """Parse the response to get the measurement for the metric."""
-        raise NotImplementedError
+        return Measurement(response.text)
 
     @classmethod
     def safely_calculate_measurement(cls, measurement_responses: Sequence[MeasurementResponse]) -> \
