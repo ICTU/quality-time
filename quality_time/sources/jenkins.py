@@ -1,10 +1,16 @@
 import requests
 
+from quality_time.metric import Metric
+from quality_time.metrics import FailedJobs, Jobs
 from quality_time.source import Source
 from quality_time.type import Measurement, URL
 
 
 class Jenkins(Source):
+    @classmethod
+    def convert_metric_name(cls, metric: Metric) -> str:
+        return {FailedJobs: "failed_jobs", Jobs: "jobs"}[metric]
+
     @classmethod
     def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")

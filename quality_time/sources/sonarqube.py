@@ -2,6 +2,8 @@ from typing import Optional, Sequence
 
 import requests
 
+from quality_time.metric import Metric
+from quality_time.metrics import FailedTests, NCLOC, Tests, Version
 from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL   
 
@@ -38,8 +40,8 @@ class SonarQubeIssues(SonarQube_):
 
 class SonarQubeMetric(SonarQube_):
     @classmethod
-    def convert_metric_name(cls, metric: str) -> str:
-        return "test_failures" if metric == "failed_tests" else metric
+    def convert_metric_name(cls, metric: Metric) -> str:
+        return {FailedTests: "test_failures", Tests: "tests", NCLOC: "ncloc"}[metric]
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL:
@@ -56,6 +58,6 @@ class SonarQubeMetric(SonarQube_):
 
 class SonarQube(Source):
     @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
-        delegate = dict(version=SonarQubeVersion, issues=SonarQubeIssues).get(metric, SonarQubeMetric)
+    def get(cls, metric: Metric, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+        delegate = {Version: SonarQubeVersion}.get(metric, SonarQubeMetric)
         return delegate.get(metric, urls, components)

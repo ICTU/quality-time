@@ -5,6 +5,7 @@ from typing import Optional, Sequence, Tuple
 
 import requests
 
+from quality_time.metric import Metric
 from .type import ErrorMessage, Measurement, MeasurementResponse, URL
 
 
@@ -14,13 +15,13 @@ class Source:
     TIMEOUT = 10  # Default timeout of 10 seconds
 
     @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(cls, metric: Metric, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
         source_metric = cls.convert_metric_name(metric)
         source_responses = [cls.get_one(source_metric, url, component) \
                             for url, component in itertools.zip_longest(urls, components)]
         measurement, calculation_error = cls.safely_calculate_measurement(source_responses)
-        return dict(source=cls.name(), metric=metric, source_metric=source_metric, 
+        return dict(source=cls.name(), metric=metric.name(), source_metric=source_metric, 
                     source_responses=source_responses, calculation_error=calculation_error, measurement=measurement)
                 
     @classmethod
@@ -39,9 +40,9 @@ class Source:
         return cls.__name__
 
     @classmethod
-    def convert_metric_name(cls, metric: str) -> str:
+    def convert_metric_name(cls, metric: Metric) -> str:
         """Convert the generic metric name in the source specific version of the metric name."""
-        return metric
+        return metric.name().lower()
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL: 
