@@ -15,10 +15,11 @@ class Metric:
     @classmethod
     def safely_sum(cls, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]: 
         measurement, error = None, None
-        try:
-            measurement = cls.sum(measurements)
-        except Exception:
-            error = ErrorMessage(traceback.format_exc())
+        if None not in measurements:
+            try:
+                measurement = cls.sum(measurements)
+            except Exception:
+                error = ErrorMessage(traceback.format_exc())
         return measurement, error
 
     @classmethod

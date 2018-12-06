@@ -22,3 +22,10 @@ class MetricTest(unittest.TestCase):
         measurement, error_message = Metric.safely_sum([Measurement("4"), Measurement("abc")])
         self.assertEqual(None, measurement)
         self.assertTrue(error_message.startswith("Traceback"))
+
+    def test_safely_sum_with_none(self):
+        """Test that None is returned if one of the input measurements is None."""
+        measurement, error_message = Metric.safely_sum([Measurement("4"), None])
+        self.assertEqual(None, measurement)
+        self.assertEqual(None, error_message)
+        
