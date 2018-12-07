@@ -37,9 +37,11 @@ APIS = [
     f"failed_tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"ncloc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"loc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"violations/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"failed_tests/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"ncloc/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
+    f"violations/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"version/sonarqube?url={SONARQUBE}"]
 
 
