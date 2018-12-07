@@ -5,7 +5,7 @@ from typing import Sequence, Type
 import requests
 
 from quality_time.metric import Metric
-from quality_time.metrics import FailedTests, LinesOfCode, NonCommentedLinesOfCode, Tests, Version
+from quality_time.metrics import FailedTests, LinesOfCode, NonCommentedLinesOfCode, Tests, Version, Violations
 from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
 
@@ -70,5 +70,5 @@ class SonarQube(Source):
 
     @classmethod
     def get(cls, metric: Type[Metric], urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
-        delegate = SonarQubeVersion if metric == Version else SonarQubeMetric
+        delegate = {Version: SonarQubeVersion, Violations: SonarQubeIssues}.get(metric, SonarQubeMetric)
         return delegate.get(metric, urls, components)
