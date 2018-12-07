@@ -1,3 +1,5 @@
+"""Unit tests for the metric class."""
+
 import unittest
 
 from quality_time.metric import Metric
@@ -7,6 +9,7 @@ from quality_time.type import Measurement
 class MetricTest(unittest.TestCase):
     """Unit tests for the metric class."""
     def test_name(self):
+        """Test that the name of the metric is correct."""
         self.assertEqual("Metric", Metric.name())
 
     def test_sum(self):

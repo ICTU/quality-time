@@ -1,6 +1,7 @@
+"""Unit tests for the source class."""
+
 import unittest
 from unittest.mock import patch, Mock
-import requests
 
 from quality_time.metric import Metric
 from quality_time.source import Source
@@ -9,18 +10,17 @@ from quality_time.source import Source
 class SourceTest(unittest.TestCase):
     """Unit tests for the source class."""
 
-    @patch("requests.get")
-    def setUp(self, mock_get):
+    def setUp(self):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.text = "2"
-        mock_get.return_value = mock_response
-        self.response = Source.get(Metric, ["http://url"], [])
+        with patch("requests.get", return_value=mock_response):
+            self.response = Source.get(Metric, ["http://url"], [])
 
     def test_source_name(self):
         """Test that the source name is returned."""
         self.assertEqual("Source", self.response["source"])
-        
+
     def test_metric_name(self):
         """Test that the metric name is returned."""
         self.assertEqual("Metric", self.response["metric"])
@@ -35,7 +35,7 @@ class SourceTest(unittest.TestCase):
 
     def test_source_response_component(self):
         """Test that the component used for contacting the source is returned."""
-        self.assertEqual(None, self.response["source_responses"][0]["component"])
+        self.assertEqual("", self.response["source_responses"][0]["component"])
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -69,17 +69,16 @@ class SourceWithComponentTest(unittest.TestCase):
 class SourceWithMultipleURLsTest(unittest.TestCase):
     """Unit tests for the source class with multiple URLs."""
 
-    @patch("requests.get")
-    def setUp(self, mock_get):
+    def setUp(self):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.text = "2"
-        mock_get.return_value = mock_response
-        self.response = Source.get(Metric, ["http://url1", "http://url2"], [])
+        with patch("requests.get", return_value=mock_response):
+            self.response = Source.get(Metric, ["http://url1", "http://url2"], [])
 
     def test_source_response_component(self):
         """Test that the component used for contacting the source is returned."""
-        self.assertEqual(None, self.response["source_responses"][1]["component"])
+        self.assertEqual("", self.response["source_responses"][1]["component"])
 
     def test_calculated_measurement(self):
         """Test that the calculated measurement is returned."""
@@ -89,13 +88,12 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
 class SourceWithMultipleURLsAndComponentsTest(unittest.TestCase):
     """Unit tests for the source class with multiple URLs and components."""
 
-    @patch("requests.get")
-    def setUp(self, mock_get):
+    def setUp(self):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.text = "2"
-        mock_get.return_value = mock_response
-        self.response = Source.get(Metric, ["http://url1", "http://url2"], ["component id 1", "component id 2"])
+        with patch("requests.get", return_value=mock_response):
+            self.response = Source.get(Metric, ["http://url1", "http://url2"], ["component id 1", "component id 2"])
 
     def test_source_response_component(self):
         """Test that the components used for contacting the source is returned."""
