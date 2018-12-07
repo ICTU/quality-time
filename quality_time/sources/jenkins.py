@@ -1,11 +1,7 @@
 """Jenkins metric source."""
 
-from typing import Type
-
 import requests
 
-from quality_time.metric import Metric
-from quality_time.metrics import FailedJobs, Jobs
 from quality_time.source import Source
 from quality_time.type import Measurement, URL
 
@@ -14,10 +10,6 @@ class Jenkins(Source):
     """Source class to get measurements from Jenkins."""
 
     API = "jenkins"
-
-    @classmethod
-    def convert_metric_name(cls, metric: Type[Metric]) -> str:
-        return {FailedJobs: "failed_jobs", Jobs: "jobs"}[metric]
 
     @classmethod
     def api_url(cls, metric: str, url: URL, component: str) -> URL:

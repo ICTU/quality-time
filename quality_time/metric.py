@@ -3,13 +3,19 @@
 import traceback
 from typing import Optional, Tuple, Type
 
-from quality_time.type import ErrorMessage, Measurement, Measurements
+from quality_time.type import ErrorMessage, Measurement, Measurements, MeasurementResponse
 
 
 class Metric:
     """Base class for metrics."""
 
     API = "Subclass responsibility: name of the metric in the API"
+
+    @classmethod
+    def get(cls, measurements: Measurements) -> MeasurementResponse:
+        """Return the metric's measurement."""
+        measurement, calculation_error = cls.safely_sum(measurements)
+        return dict(metric=cls.name(), calculation_error=calculation_error, measurement=measurement)
 
     @classmethod
     def name(cls) -> str:
