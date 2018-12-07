@@ -5,7 +5,7 @@ from typing import Sequence, Type
 import requests
 
 from quality_time.metric import Metric
-from quality_time.metrics import FailedTests, NCLOC, Tests, Version
+from quality_time.metrics import FailedTests, LinesOfCode, NonCommentedLinesOfCode, Tests, Version
 from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
 
@@ -47,7 +47,8 @@ class SonarQubeMetric(_SonarQube):
 
     @classmethod
     def convert_metric_name(cls, metric: Type[Metric]) -> str:
-        return {FailedTests: "test_failures", Tests: "tests", NCLOC: "ncloc"}[metric]
+        return {FailedTests: "test_failures", Tests: "tests", NonCommentedLinesOfCode: "ncloc",
+                LinesOfCode: "lines"}[metric]
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL:
