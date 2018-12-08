@@ -2,51 +2,35 @@
 
 import itertools
 import traceback
-from typing import Optional, Sequence, Tuple, Type
+from typing import Optional, Sequence, Tuple
 
 import requests
 
-from quality_time.metric import Metric
+from .api import API
 from .type import ErrorMessage, Measurement, MeasurementResponse, URL
 
 
-class Source:
+class Source(API):
     """Base class for metric sources."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
-    API = "Subclass responsibility: name of the source in the API"
 
     @classmethod
-    def get(cls, metric: Type[Metric], urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
-        source_metric = cls.convert_metric_name(metric)
-        source_responses = [cls.get_one(source_metric, url, component) \
+        source_responses = [cls.get_one(metric, url, component) \
                             for url, component in itertools.zip_longest(urls, components, fillvalue="")]
-        measurements = [source_response["measurement"] for source_response in source_responses]
-        measurement, calculation_error = metric.safely_sum(measurements)
-        return dict(source=cls.name(), metric=metric.name(), source_metric=source_metric,
-                    source_responses=source_responses, calculation_error=calculation_error, measurement=measurement)
+        return dict(source=cls.name(), source_metric=metric, source_responses=source_responses)
 
     @classmethod
-    def get_one(cls, source_metric: str, url: URL, component: str) -> MeasurementResponse:
+    def get_one(cls, metric: str, url: URL, component: str) -> MeasurementResponse:
         """Return the measurement response for one source url."""
-        api_url = cls.api_url(source_metric, url, component)
-        landing_url = cls.landing_url(source_metric, url, component)
+        api_url = cls.api_url(metric, url, component)
+        landing_url = cls.landing_url(metric, url, component)
         response, connection_error = cls.safely_get_source_response(api_url)
-        measurement, parse_error = cls.safely_parse_source_response(source_metric, response) \
-            if response else (None, None)
+        measurement, parse_error = cls.safely_parse_source_response(metric, response) if response else (None, None)
         return dict(url=url, component=component, api_url=api_url, landing_url=landing_url,
                     connection_error=connection_error, parse_error=parse_error, measurement=measurement)
-
-    @classmethod
-    def name(cls) -> str:
-        """Return the name of the source."""
-        return cls.__name__
-
-    @classmethod
-    def convert_metric_name(cls, metric: Type[Metric]) -> str:
-        """Convert the generic metric name in the source specific version of the metric name."""
-        return metric.name().lower()
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument
@@ -91,8 +75,3 @@ class Source:
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
-
-
-def source_registered_for(api_name: str) -> Type[Source]:
-    """Return the Source subclass registered for the API name,"""
-    return [cls for cls in Source.__subclasses__() if cls.API == api_name][0]

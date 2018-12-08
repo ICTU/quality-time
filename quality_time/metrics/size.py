@@ -3,13 +3,9 @@
 from quality_time.metric import Metric
 
 
-class NonCommentedLinesOfCode(Metric):
+class NCLOC(Metric):
     """Size of source code in Non-Commented Lines of Code."""
 
-    API = "ncloc"
 
-
-class LinesOfCode(Metric):
-    """Size of source code in Non-Commented Lines of Code."""
-
-    API = "loc"
+class LOC(Metric):
+    """Size of source code in Lines of Code."""
