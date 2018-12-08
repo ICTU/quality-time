@@ -17,14 +17,17 @@ __version__ = "0.1.0"
 
 
 METRIC_SOURCE_ID = {
+    (FailedJobs, Gitlab): "failed_jobs",
     (FailedJobs, Jenkins): "failed_jobs",
     (FailedTests, JUnit): "failures",
     (FailedTests, SonarQube): "test_failures",
+    (Jobs, Gitlab): "jobs",
     (Jobs, Jenkins): "jobs",
     (NCLOC, SonarQube): "ncloc",
     (LOC, SonarQube): "lines",
     (Tests, JUnit): "tests",
     (Tests, SonarQube): "tests",
+    (Version, Gitlab): "version",
     (Version, Jenkins): "version",
     (Version, SonarQube): "version",
     (Violations, SonarQube): "violations"
