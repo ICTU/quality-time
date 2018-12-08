@@ -9,8 +9,6 @@ from quality_time.type import Measurement, URL
 class Jenkins(Source):
     """Source class to get measurements from Jenkins."""
 
-    API = "jenkins"
-
     @classmethod
     def api_url(cls, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")

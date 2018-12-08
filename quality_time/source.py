@@ -2,18 +2,18 @@
 
 import itertools
 import traceback
-from typing import Optional, Sequence, Tuple, Type
+from typing import Optional, Sequence, Tuple
 
 import requests
 
+from .api import API
 from .type import ErrorMessage, Measurement, MeasurementResponse, URL
 
 
-class Source:
+class Source(API):
     """Base class for metric sources."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
-    API = "Subclass responsibility: name of the source in the API"
 
     @classmethod
     def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
@@ -31,11 +31,6 @@ class Source:
         measurement, parse_error = cls.safely_parse_source_response(metric, response) if response else (None, None)
         return dict(url=url, component=component, api_url=api_url, landing_url=landing_url,
                     connection_error=connection_error, parse_error=parse_error, measurement=measurement)
-
-    @classmethod
-    def name(cls) -> str:
-        """Return the name of the source."""
-        return cls.__name__
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument
@@ -80,8 +75,3 @@ class Source:
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
-
-
-def source_registered_for(api_name: str) -> Type[Source]:
-    """Return the Source subclass registered for the API name,"""
-    return [cls for cls in Source.__subclasses__() if cls.API == api_name][0]

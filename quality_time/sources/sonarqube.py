@@ -59,7 +59,7 @@ class SonarQubeMetric(_SonarQube):
 class SonarQube(Source):
     """Source class to get measurements from SonarQube."""
 
-    API = "sonarqube"
+    API_name = "sonarqube"
 
     @classmethod
     def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
