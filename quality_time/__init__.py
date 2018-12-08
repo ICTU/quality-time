@@ -1,6 +1,7 @@
 """Entry point and routes for Quality-time."""
 
 import logging
+from typing import cast, Type
 
 from bottle import request, route, run
 
@@ -24,29 +25,25 @@ METRIC_SOURCE_ID = {
     (LOC, SonarQube): "lines",
     (Tests, JUnit): "tests",
     (Tests, SonarQube): "tests",
+    (Version, Jenkins): "version",
     (Version, SonarQube): "version",
     (Violations, SonarQube): "violations"
 }
-
-
-def process(metric, source, urls, components):
-    """Process."""
-    metric_id = METRIC_SOURCE_ID[(metric, source)]
-    response = source.get(metric_id, urls, components)
-    measurements = [source_response["measurement"] for source_response in response["source_responses"]]
-    response.update(metric.get(measurements))
-    return response
 
 
 @route("/<metric_name>/<source_name>")
 def get(metric_name: str, source_name: str) -> MeasurementResponse:
     """Handler for the get-metric-from-source API."""
     logging.info(request)
-    metric = Metric.subclass_for_api(metric_name)
-    source = Source.subclass_for_api(source_name)
     urls = request.query.getall("url")  # pylint: disable=no-member
     components = request.query.getall("component")  # pylint: disable=no-member
-    return process(metric, source, urls, components)
+    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))
+    source = cast(Type[Source], Source.subclass_for_api(source_name))
+    metric_id = METRIC_SOURCE_ID[(metric, source)]
+    response = source.get(metric_id, urls, components)
+    measurements = [source_response["measurement"] for source_response in response["source_responses"]]
+    response.update(metric.get(measurements))
+    return response
 
 
 def quality_time():
