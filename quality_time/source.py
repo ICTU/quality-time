@@ -5,6 +5,7 @@ import traceback
 from typing import Optional, Sequence, Tuple
 
 import requests
+from bottle import request
 
 from .api import API
 from .type import ErrorMessage, Measurement, MeasurementResponse, URL
@@ -20,7 +21,7 @@ class Source(API):
         """Connect to the source to get and parse the measurement for the metric."""
         source_responses = [cls.get_one(metric, url, component) \
                             for url, component in itertools.zip_longest(urls, components, fillvalue="")]
-        return dict(source=cls.name(), source_metric=metric, source_responses=source_responses)
+        return dict(request_url=request.url, source_responses=source_responses)
 
     @classmethod
     def get_one(cls, metric: str, url: URL, component: str) -> MeasurementResponse:

@@ -8,15 +8,7 @@ from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
 
 
-class _SonarQube(Source):
-    """Base class for metric-specific SonarQube sources."""
-
-    @classmethod
-    def name(cls):
-        return "SonarQube"
-
-
-class SonarQubeVersion(_SonarQube):
+class SonarQubeVersion(Source):
     """SonarQube version source."""
 
     @classmethod
@@ -24,7 +16,7 @@ class SonarQubeVersion(_SonarQube):
         return URL(f"{url}/api/server/version")
 
 
-class SonarQubeIssues(_SonarQube):
+class SonarQubeIssues(Source):
     """SonarQube issue source."""
 
     @classmethod
@@ -40,7 +32,7 @@ class SonarQubeIssues(_SonarQube):
         return Measurement(response.json()["total"])
 
 
-class SonarQubeMetric(_SonarQube):
+class SonarQubeMetric(Source):
     """SonarQube component metric source."""
 
     @classmethod
@@ -58,8 +50,6 @@ class SonarQubeMetric(_SonarQube):
 
 class SonarQube(Source):
     """Source class to get measurements from SonarQube."""
-
-    API_name = "sonarqube"
 
     @classmethod
     def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:

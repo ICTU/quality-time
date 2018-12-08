@@ -16,14 +16,6 @@ class SourceTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             self.response = Source.get("metric", ["http://url"], [])
 
-    def test_source_name(self):
-        """Test that the source name is returned."""
-        self.assertEqual("Source", self.response["source"])
-
-    def test_source_metric_name(self):
-        """Test that the metric name as used in the source is returned."""
-        self.assertEqual("metric", self.response["source_metric"])
-
     def test_source_response_url(self):
         """Test that the url used for contacting the source is returned."""
         self.assertEqual("http://url", self.response["source_responses"][0]["url"])
