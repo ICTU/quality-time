@@ -30,8 +30,8 @@ class Source(API):
         landing_url = cls.landing_url(metric, url, component)
         response, connection_error = cls.safely_get_source_response(api_url)
         measurement, parse_error = cls.safely_parse_source_response(metric, response) if response else (None, None)
-        return dict(url=url, component=component, api_url=api_url, landing_url=landing_url,
-                    connection_error=connection_error, parse_error=parse_error, measurement=measurement)
+        return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
+                    connection_error=connection_error, parse_error=parse_error)
 
     @classmethod
     def landing_url(cls, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument
