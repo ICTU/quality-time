@@ -2,6 +2,7 @@
 
 import unittest
 
+from quality_time.metric import MetricStatus
 from quality_time.metrics import Version
 
 
@@ -10,4 +11,12 @@ class VersionTest(unittest.TestCase):
 
     def test_version_aggregation(self):
         """Test that multiple versions are comma separated."""
-        self.assertEqual("1.2, 1.1", Version.sum(["1.2", "1.1"]))
+        self.assertRaises(ValueError, Version.sum, ["1.2", "1.1"])
+
+    def test_status_target_met(self):
+        """Test that the status is target met if the version is larger than the target version."""
+        self.assertEqual(MetricStatus.target_met, Version("1.0").status("2.0"))
+
+    def test_status_target_not_met(self):
+        """Test that the status is target not met if the version is msaller than the target version."""
+        self.assertEqual(MetricStatus.target_not_met, Version("2.0").status("1.0"))

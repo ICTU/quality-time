@@ -40,9 +40,10 @@ def get(metric_name: str, source_name: str) -> MeasurementResponse:
     logging.info(request)
     urls = request.query.getall("url")  # pylint: disable=no-member
     components = request.query.getall("component")  # pylint: disable=no-member
-    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))
+    target = request.query.get("target")  # pylint: disable=no-member
+    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(target)
     source = cast(Type[Source], Source.subclass_for_api(source_name))
-    metric_id = METRIC_SOURCE_ID[(metric, source)]
+    metric_id = METRIC_SOURCE_ID[(metric.__class__, source)]
     response = source.get(metric_id, urls, components)
     measurements = [source_response["measurement"] for source_response in response["source_responses"]]
     response.update(metric.get(measurements))
