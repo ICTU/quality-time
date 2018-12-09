@@ -14,7 +14,7 @@ class Metric(API):
     def get(cls, measurements: Measurements) -> MeasurementResponse:
         """Return the metric's measurement."""
         measurement, calculation_error = cls.safely_sum(measurements)
-        return dict(metric=cls.name(), calculation_error=calculation_error, measurement=measurement)
+        return dict(calculation_error=calculation_error, measurement=measurement)
 
     @classmethod
     def safely_sum(cls, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:

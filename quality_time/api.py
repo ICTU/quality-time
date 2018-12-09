@@ -11,8 +11,3 @@ class API:
         """Return the subclass registered for the API name."""
         match = lambda class_name, api_name: class_name.lower() == api_name.replace("_", "")
         return [subclass for subclass in cls.__subclasses__() if match(subclass.__name__, api_name)][0]
-
-    @classmethod
-    def name(cls) -> str:
-        """Return the name of the API."""
-        return cls.__name__

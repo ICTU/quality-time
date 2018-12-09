@@ -9,15 +9,7 @@ from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
 
 
-class _Gitlab(Source):
-    """Base class for metric-specific Gitlab sources."""
-
-    @classmethod
-    def name(cls):
-        return "Gitlab"
-
-
-class GitlabVersion(_Gitlab):
+class GitlabVersion(Source):
     """Return the Gitlab version."""
 
     @classmethod
@@ -29,7 +21,7 @@ class GitlabVersion(_Gitlab):
         return Measurement(response.json()["version"])
 
 
-class GitlabJobs(_Gitlab):
+class GitlabJobs(Source):
     """Source class to get job counts from Gitlab."""
 
     @classmethod

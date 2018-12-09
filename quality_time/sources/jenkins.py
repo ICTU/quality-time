@@ -8,15 +8,7 @@ from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
 
 
-class _Jenkins(Source):
-    """Base class for metric-specific Jenkins sources."""
-
-    @classmethod
-    def name(cls):
-        return "Jenkins"
-
-
-class JenkinsVersion(_Jenkins):
+class JenkinsVersion(Source):
     """Return the Jenkins version."""
 
     @classmethod
@@ -24,7 +16,7 @@ class JenkinsVersion(_Jenkins):
         return Measurement(response.headers["X-Jenkins"])
 
 
-class JenkinsJobs(_Jenkins):
+class JenkinsJobs(Source):
     """Source class to get job counts from Jenkins."""
 
     @classmethod
