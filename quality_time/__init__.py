@@ -38,13 +38,10 @@ METRIC_SOURCE_ID = {
 def get(metric_name: str, source_name: str) -> MeasurementResponse:
     """Handler for the get-metric-from-source API."""
     logging.info(request)
-    urls = request.query.getall("url")  # pylint: disable=no-member
-    components = request.query.getall("component")  # pylint: disable=no-member
-    target = request.query.get("target")  # pylint: disable=no-member
-    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(target)
-    source = cast(Type[Source], Source.subclass_for_api(source_name))
-    metric_id = METRIC_SOURCE_ID[(metric.__class__, source)]
-    response = source.get(metric_id, urls, components)
+    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(request)
+    source = cast(Type[Source], Source.subclass_for_api(source_name))(request)
+    metric_id = METRIC_SOURCE_ID[(metric.__class__, source.__class__)]
+    response = source.get(metric_id)
     measurements = [source_response["measurement"] for source_response in response["source_responses"]]
     response.update(metric.get(measurements))
     return response

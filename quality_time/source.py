@@ -2,10 +2,9 @@
 
 import itertools
 import traceback
-from typing import Optional, Sequence, Tuple
+from typing import Optional, Tuple
 
 import requests
-from bottle import request
 
 from .api import API
 from .type import ErrorMessage, Measurement, MeasurementResponse, URL
@@ -16,30 +15,27 @@ class Source(API):
 
     TIMEOUT = 10  # Default timeout of 10 seconds
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(self, metric: str) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
-        source_responses = [cls.get_one(metric, url, component) \
-                            for url, component in itertools.zip_longest(urls, components, fillvalue="")]
-        return dict(request_url=request.url, source_responses=source_responses)
+        source_responses = [self.get_one(metric, url, component) for url, component in \
+                            itertools.zip_longest(self.request.query.getall("url"),
+                                                  self.request.query.getall("component"), fillvalue="")]
+        return dict(request_url=self.request.url, source_responses=source_responses)
 
-    @classmethod
-    def get_one(cls, metric: str, url: URL, component: str) -> MeasurementResponse:
+    def get_one(self, metric: str, url: URL, component: str) -> MeasurementResponse:
         """Return the measurement response for one source url."""
-        api_url = cls.api_url(metric, url, component)
-        landing_url = cls.landing_url(metric, url, component)
-        response, connection_error = cls.safely_get_source_response(api_url)
-        measurement, parse_error = cls.safely_parse_source_response(metric, response) if response else (None, None)
+        api_url = self.api_url(metric, url, component)
+        landing_url = self.landing_url(metric, url, component)
+        response, connection_error = self.safely_get_source_response(api_url)
+        measurement, parse_error = self.safely_parse_source_response(metric, response) if response else (None, None)
         return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
                     connection_error=connection_error, parse_error=parse_error)
 
-    @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument
+    def landing_url(self, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument,no-self-use
         """Translate the urls into the landing urls."""
         return url
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument
+    def api_url(self, metric: str, url: URL, component: str) -> URL:  # pylint: disable=unused-argument,no-self-use
         """Translate the url into the API url."""
         return url
 

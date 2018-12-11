@@ -1,7 +1,5 @@
 """Sources for SonarQube."""
 
-from typing import Sequence
-
 import requests
 
 from quality_time.source import Source
@@ -11,20 +9,17 @@ from quality_time.type import Measurement, MeasurementResponse, URL
 class SonarQubeVersion(Source):
     """SonarQube version source."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/server/version")
 
 
 class SonarQubeIssues(Source):
     """SonarQube issue source."""
 
-    @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> URL:
+    def landing_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/project/issues?id={component}&resolved=false")
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false")
 
     @classmethod
@@ -35,12 +30,10 @@ class SonarQubeIssues(Source):
 class SonarQubeMetric(Source):
     """SonarQube component metric source."""
 
-    @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> URL:
+    def landing_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/component_measures?id={component}&metric={metric}")
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric}")
 
     @classmethod
@@ -51,7 +44,6 @@ class SonarQubeMetric(Source):
 class SonarQube(Source):
     """Source class to get measurements from SonarQube."""
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(self, metric: str) -> MeasurementResponse:
         delegate = dict(version=SonarQubeVersion, violations=SonarQubeIssues).get(metric, SonarQubeMetric)
-        return delegate.get(metric, urls, components)
+        return delegate(self.request).get(metric)

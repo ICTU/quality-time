@@ -1,9 +1,6 @@
 """Gitlab metric source."""
 
-from typing import Sequence
-
 import requests
-from bottle import request
 
 from quality_time.source import Source
 from quality_time.type import Measurement, MeasurementResponse, URL
@@ -12,9 +9,8 @@ from quality_time.type import Measurement, MeasurementResponse, URL
 class GitlabVersion(Source):
     """Return the Gitlab version."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/v4/version?private_token={request.query.private_token}")  # pylint: disable=no-member
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/v4/version?private_token={self.request.query.private_token}")
 
     @classmethod
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
@@ -24,10 +20,9 @@ class GitlabVersion(Source):
 class GitlabJobs(Source):
     """Source class to get job counts from Gitlab."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
-        # pylint: disable=no-member
-        return URL(f"{url}/api/v4/projects/{request.query.project_id}/jobs?private_token={request.query.private_token}")
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/v4/projects/{self.request.query.project_id}/"
+                   f"jobs?private_token={self.request.query.private_token}")
 
     @classmethod
     def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
@@ -40,7 +35,6 @@ class GitlabJobs(Source):
 class Gitlab(Source):
     """Gitlab source."""
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(self, metric: str) -> MeasurementResponse:
         delegate = dict(version=GitlabVersion).get(metric, GitlabJobs)
-        return delegate.get(metric, urls, components)
+        return delegate(self.request).get(metric)

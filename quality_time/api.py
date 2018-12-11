@@ -2,9 +2,14 @@
 
 from typing import Type
 
+import bottle
+
 
 class API:
     """Base class for API-handlers."""
+
+    def __init__(self, request: bottle.Request) -> None:
+        self.request = request
 
     @classmethod
     def subclass_for_api(cls, api_name: str) -> Type["API"]:

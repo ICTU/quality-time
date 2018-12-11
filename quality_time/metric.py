@@ -19,10 +19,6 @@ class Metric(API):
 
     default_target = Measurement("0")
 
-    def __init__(self, requested_target: Measurement = None) -> None:
-        super().__init__()
-        self.requested_target = requested_target
-
     def get(self, measurements: Measurements) -> MeasurementResponse:
         """Return the metric's measurement."""
         measurement, calculation_error = self.safely_sum(measurements)
@@ -49,7 +45,7 @@ class Metric(API):
 
     def target(self) -> Measurement:
         """Return the target value for the metric."""
-        return self.default_target if self.requested_target is None else self.requested_target
+        return self.default_target if self.request.query.target in (None, "") else self.request.query.target
 
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""

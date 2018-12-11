@@ -1,7 +1,5 @@
 """Jenkins metric source."""
 
-from typing import Sequence
-
 import requests
 
 from quality_time.source import Source
@@ -19,8 +17,7 @@ class JenkinsVersion(Source):
 class JenkinsJobs(Source):
     """Source class to get job counts from Jenkins."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")
 
     @classmethod
@@ -34,7 +31,6 @@ class JenkinsJobs(Source):
 class Jenkins(Source):
     """Jenkins source."""
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
+    def get(self, metric: str) -> MeasurementResponse:
         delegate = dict(version=JenkinsVersion).get(metric, JenkinsJobs)
-        return delegate.get(metric, urls, components)
+        return delegate(self.request).get(metric)
