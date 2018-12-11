@@ -1,6 +1,6 @@
 """Base class for classes that handle (part of the) API-calls."""
 
-from typing import Type
+from typing import Set, Type
 
 import bottle
 
@@ -8,7 +8,7 @@ import bottle
 class API:
     """Base class for API-handlers."""
 
-    subclasses = set()
+    subclasses: Set[Type["API"]] = set()
 
     def __init__(self, request: bottle.Request) -> None:
         self.request = request
