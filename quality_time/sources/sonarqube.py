@@ -1,57 +1,65 @@
 """Sources for SonarQube."""
 
-from typing import Sequence
-
 import requests
 
 from quality_time.source import Source
-from quality_time.type import Measurement, MeasurementResponse, URL
+from quality_time.type import Measurement, URL
 
 
 class SonarQubeVersion(Source):
     """SonarQube version source."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/api/server/version")
 
 
-class SonarQubeIssues(Source):
-    """SonarQube issue source."""
+class SonarQubeViolations(Source):
+    """SonarQube violations source."""
 
-    @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> URL:
+    def landing_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/project/issues?id={component}&resolved=false")
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
+    def api_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
 
 
-class SonarQubeMetric(Source):
-    """SonarQube component metric source."""
+class SonarQubeMetricsBaseClass(Source):
+    """Base class for metrics that use the SonarQube measures/component API."""
 
-    @classmethod
-    def landing_url(cls, metric: str, url: URL, component: str) -> URL:
-        return URL(f"{url}/component_measures?id={component}&metric={metric}")
+    metric = "Subclass responsibility"
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric}")
+    def landing_url(self, url: URL, component: str) -> URL:
+        return URL(f"{url}/component_measures?id={component}&metric={self.metric}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def api_url(self, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metric}")
+
+    def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["component"]["measures"][0]["value"])
 
 
-class SonarQube(Source):
-    """Source class to get measurements from SonarQube."""
+class SonarQubeTests(SonarQubeMetricsBaseClass):
+    """SonarQube tests source."""
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
-        delegate = dict(version=SonarQubeVersion, violations=SonarQubeIssues).get(metric, SonarQubeMetric)
-        return delegate.get(metric, urls, components)
+    metric = "tests"
+
+
+class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
+    """SonarQube failed tests source."""
+
+    metric = "test_failures"
+
+
+class SonarQubeNCLOC(SonarQubeMetricsBaseClass):
+    """SonarQube non-commented lines of code."""
+
+    metric = "ncloc"
+
+
+class SonarQubeLOC(SonarQubeMetricsBaseClass):
+    """SonarQube lines of code."""
+
+    metric = "lines"

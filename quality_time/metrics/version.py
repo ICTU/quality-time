@@ -14,8 +14,7 @@ class Version(Metric):
         return MetricStatus.target_met if LooseVersion(measurement) >= LooseVersion(self.target()) \
             else MetricStatus.target_not_met
 
-    @classmethod
-    def sum(cls, measurements: Measurements) -> Measurement:
+    def sum(self, measurements: Measurements) -> Measurement:
         """Return the summation of several measurements."""
         if len(measurements) > 1:
             raise ValueError("Can't add version numbers")

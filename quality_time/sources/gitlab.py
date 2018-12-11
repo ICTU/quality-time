@@ -1,46 +1,38 @@
 """Gitlab metric source."""
 
-from typing import Sequence
-
 import requests
-from bottle import request
 
 from quality_time.source import Source
-from quality_time.type import Measurement, MeasurementResponse, URL
+from quality_time.type import Measurement, URL
 
 
 class GitlabVersion(Source):
     """Return the Gitlab version."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/v4/version?private_token={request.query.private_token}")  # pylint: disable=no-member
+    def api_url(self, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/v4/version?private_token={self.request.query.private_token}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["version"])
 
 
 class GitlabJobs(Source):
     """Source class to get job counts from Gitlab."""
 
-    @classmethod
-    def api_url(cls, metric: str, url: URL, component: str) -> URL:
-        # pylint: disable=no-member
-        return URL(f"{url}/api/v4/projects/{request.query.project_id}/jobs?private_token={request.query.private_token}")
+    def api_url(self, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/v4/projects/{self.request.query.project_id}/"
+                   f"jobs?private_token={self.request.query.private_token}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
-        jobs = response.json()
-        if metric == "failed_jobs":
-            jobs = [job for job in jobs if job["status"] == "failed"]
-        return Measurement(len(jobs))
+    def parse_source_response(self, response: requests.Response) -> Measurement:
+        return Measurement(len(response.json()))
 
 
-class Gitlab(Source):
-    """Gitlab source."""
+class GitlabFailedJobs(Source):
+    """Source class to get failed job counts from Gitlab."""
 
-    @classmethod
-    def get(cls, metric: str, urls: Sequence[URL], components: Sequence[str]) -> MeasurementResponse:
-        delegate = dict(version=GitlabVersion).get(metric, GitlabJobs)
-        return delegate.get(metric, urls, components)
+    def api_url(self, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/v4/projects/{self.request.query.project_id}/"
+                   f"jobs?private_token={self.request.query.private_token}")
+
+    def parse_source_response(self, response: requests.Response) -> Measurement:
+        return Measurement(len([job for job in response.json() if job["status"] == "failed"]))
