@@ -12,8 +12,7 @@ class GitlabVersion(Source):
     def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/v4/version?private_token={self.request.query.private_token}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         return Measurement(response.json()["version"])
 
 
@@ -24,8 +23,7 @@ class GitlabJobs(Source):
         return URL(f"{url}/api/v4/projects/{self.request.query.project_id}/"
                    f"jobs?private_token={self.request.query.private_token}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         jobs = response.json()
         if metric == "failed_jobs":
             jobs = [job for job in jobs if job["status"] == "failed"]

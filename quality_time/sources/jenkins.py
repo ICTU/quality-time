@@ -9,8 +9,7 @@ from quality_time.type import Measurement, MeasurementResponse, URL
 class JenkinsVersion(Source):
     """Return the Jenkins version."""
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         return Measurement(response.headers["X-Jenkins"])
 
 
@@ -20,8 +19,7 @@ class JenkinsJobs(Source):
     def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]
         if metric == "failed_jobs":
             jobs = [job for job in jobs if not job.get("color", "").startswith("blue")]

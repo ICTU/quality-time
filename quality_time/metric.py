@@ -27,19 +27,17 @@ class Metric(API):
         return dict(calculation_error=calculation_error, measurement=measurement, default_target=self.default_target,
                     target=target, status=status)
 
-    @classmethod
-    def safely_sum(cls, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
+    def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
         measurement, error = None, None
         if None not in measurements:
             try:
-                measurement = cls.sum(measurements)
+                measurement = self.sum(measurements)
             except Exception:  # pylint: disable=broad-except
                 error = ErrorMessage(traceback.format_exc())
         return measurement, error
 
-    @classmethod
-    def sum(cls, measurements: Measurements) -> Measurement:
+    def sum(self, measurements: Measurements) -> Measurement:  # pylint: disable=no-self-use
         """Return the summation of several measurements."""
         return Measurement(sum([int(measurement) for measurement in measurements]))
 

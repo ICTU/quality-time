@@ -22,8 +22,7 @@ class SonarQubeIssues(Source):
     def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
 
 
@@ -36,8 +35,7 @@ class SonarQubeMetric(Source):
     def api_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric}")
 
-    @classmethod
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         return Measurement(response.json()["component"]["measures"][0]["value"])
 
 

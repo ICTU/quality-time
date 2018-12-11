@@ -39,36 +39,32 @@ class Source(API):
         """Translate the url into the API url."""
         return url
 
-    @classmethod
-    def safely_get_source_response(cls, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:
+    def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:
         """Connect to the source and get the data, without failing."""
         response, error = None, None
         try:
-            response = cls.get_source_response(url)
+            response = self.get_source_response(url)
         except Exception:  # pylint: disable=broad-except
             error = ErrorMessage(traceback.format_exc())
         return response, error
 
-    @classmethod
-    def get_source_response(cls, url: URL) -> requests.Response:
+    def get_source_response(self, url: URL) -> requests.Response:
         """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs."""
-        response = requests.get(url, timeout=cls.TIMEOUT)
+        response = requests.get(url, timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
-    @classmethod
-    def safely_parse_source_response(cls, metric: str, response: requests.Response) -> \
+    def safely_parse_source_response(self, metric: str, response: requests.Response) -> \
             Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Parse to the measurement from the response, without failing."""
         measurement, error = None, None
         try:
-            measurement = cls.parse_source_response(metric, response)
+            measurement = self.parse_source_response(metric, response)
         except Exception:  # pylint: disable=broad-except
             error = ErrorMessage(traceback.format_exc())
         return measurement, error
 
-    @classmethod
-    # pylint: disable=unused-argument
-    def parse_source_response(cls, metric: str, response: requests.Response) -> Measurement:
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
+        # pylint: disable=unused-argument,no-self-use
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
