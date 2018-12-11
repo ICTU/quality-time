@@ -21,8 +21,18 @@ class JenkinsJobs(Source):
 
     def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
         jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]
-        if metric == "failed_jobs":
-            jobs = [job for job in jobs if not job.get("color", "").startswith("blue")]
+        return Measurement(len(jobs))
+
+
+class JenkinsFailedJobs(Source):
+    """Source class to get failed job counts from Jenkins."""
+
+    def api_url(self, metric: str, url: URL, component: str) -> URL:
+        return URL(f"{url}/api/json?tree=jobs[buildable,color]")
+
+    def parse_source_response(self, metric: str, response: requests.Response) -> Measurement:
+        jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]
+        jobs = [job for job in jobs if not job.get("color", "").startswith("blue")]
         return Measurement(len(jobs))
 
 
@@ -30,5 +40,5 @@ class Jenkins(Source):
     """Jenkins source."""
 
     def get(self, metric: str) -> MeasurementResponse:
-        delegate = dict(version=JenkinsVersion).get(metric, JenkinsJobs)
+        delegate = dict(version=JenkinsVersion, jobs=JenkinsJobs, failed_jobs=JenkinsFailedJobs)[metric]
         return delegate(self.request).get(metric)

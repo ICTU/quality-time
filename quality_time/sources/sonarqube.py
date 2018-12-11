@@ -13,8 +13,8 @@ class SonarQubeVersion(Source):
         return URL(f"{url}/api/server/version")
 
 
-class SonarQubeIssues(Source):
-    """SonarQube issue source."""
+class SonarQubeViolations(Source):
+    """SonarQube violations source."""
 
     def landing_url(self, metric: str, url: URL, component: str) -> URL:
         return URL(f"{url}/project/issues?id={component}&resolved=false")
@@ -43,5 +43,5 @@ class SonarQube(Source):
     """Source class to get measurements from SonarQube."""
 
     def get(self, metric: str) -> MeasurementResponse:
-        delegate = dict(version=SonarQubeVersion, violations=SonarQubeIssues).get(metric, SonarQubeMetric)
+        delegate = dict(version=SonarQubeVersion, violations=SonarQubeViolations).get(metric, SonarQubeMetric)
         return delegate(self.request).get(metric)
