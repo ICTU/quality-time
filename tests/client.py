@@ -30,6 +30,10 @@ APIS = [
     f"covered_lines/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"uncovered_lines/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"uncovered_lines/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"covered_branches/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
+    f"covered_branches/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"uncovered_branches/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
+    f"uncovered_branches/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"loc/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
     f"loc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"ncloc/sonarqube?url={SONARQUBE}&component=fniessink:next-action",
@@ -60,7 +64,7 @@ def main():
     except FileNotFoundError:
         pass
     for filter_term in sys.argv[1:]:
-        apis = [api for api in apis if filter_term in api] 
+        apis = [api for api in apis if filter_term in api]
     asyncio.run(fetch_all(apis))
 
 
