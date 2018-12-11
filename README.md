@@ -61,6 +61,10 @@ To run the unit tests and measure unit test coverage:
 
 `ci/unittest.sh`
 
+To run mypy and pylint:
+
+`ci/quality.sh`
+
 To test the API run:
 
 `python tests/client.py`

@@ -1,5 +1,7 @@
 """Sources for SonarQube."""
 
+from typing import Dict
+
 import requests
 
 from quality_time.source import Source
@@ -29,37 +31,75 @@ class SonarQubeViolations(Source):
 class SonarQubeMetricsBaseClass(Source):
     """Base class for metrics that use the SonarQube measures/component API."""
 
-    metric = "Subclass responsibility"
+    metricKeys = "Subclass responsibility"
 
     def landing_url(self, url: URL, component: str) -> URL:
-        return URL(f"{url}/component_measures?id={component}&metric={self.metric}")
+        return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
     def api_url(self, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metric}")
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
-        return Measurement(response.json()["component"]["measures"][0]["value"])
+        return Measurement(self._get_metrics(response)[self.metricKeys])
+
+    @staticmethod
+    def _get_metrics(response: requests.Response) -> Dict[str, int]:
+        """Get the metric(s) from the response."""
+        measures = response.json()["component"]["measures"]
+        return dict((measure["metric"], int(measure["value"])) for measure in measures)
 
 
 class SonarQubeTests(SonarQubeMetricsBaseClass):
     """SonarQube tests source."""
 
-    metric = "tests"
+    metricKeys = "tests"
 
 
 class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
     """SonarQube failed tests source."""
 
-    metric = "test_failures"
+    metricKeys = "test_failures"
 
 
 class SonarQubeNCLOC(SonarQubeMetricsBaseClass):
     """SonarQube non-commented lines of code."""
 
-    metric = "ncloc"
+    metricKeys = "ncloc"
 
 
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
-    metric = "lines"
+    metricKeys = "lines"
+
+
+class SonarQubeCoveredLines(SonarQubeMetricsBaseClass):
+    """SonarQube covered lines of code."""
+
+    metricKeys = "uncovered_lines,lines_to_cover"
+
+    def parse_source_response(self, response: requests.Response) -> Measurement:
+        metrics = self._get_metrics(response)
+        return Measurement(metrics["lines_to_cover"] - metrics["uncovered_lines"])
+
+
+class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
+    """SonarQube uncovered lines of code."""
+
+    metricKeys = "uncovered_lines"
+
+
+class SonarQubeCoveredBranches(SonarQubeMetricsBaseClass):
+    """SonarQube covered branches."""
+
+    metricKeys = "uncovered_conditions,conditions_to_cover"
+
+    def parse_source_response(self, response: requests.Response) -> Measurement:
+        metrics = self._get_metrics(response)
+        return Measurement(metrics["conditions_to_cover"] - metrics["uncovered_conditions"])
+
+
+class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
+    """SonarQube uncovered branches."""
+
+    metricKeys = "uncovered_conditions"
