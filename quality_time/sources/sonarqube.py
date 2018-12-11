@@ -63,3 +63,21 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
     metric = "lines"
+
+
+class SonarQubeCoveredLines(SonarQubeMetricsBaseClass):
+    """SonarQube covered lines of code."""
+
+    metric = "uncovered_lines,lines_to_cover"
+
+    def parse_source_response(self, response: requests.Response) -> Measurement:
+        measures = response.json()["component"]["measures"]
+        uncovered_lines = next(m for m in measures if m["metric"] == "uncovered_lines")["value"]
+        lines_to_cover = next(m for m in measures if m["metric"] == "lines_to_cover")["value"]
+        return Measurement(int(lines_to_cover) - int(uncovered_lines))
+
+
+class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
+    """SonarQube uncovered lines of code."""
+
+    metric = "uncovered_lines"
