@@ -1,7 +1,7 @@
 """Metric base class."""
 
 import traceback
-from enum import Enum
+from enum import auto, Enum
 from typing import Optional, Tuple
 
 from .api import API
@@ -10,8 +10,8 @@ from .type import ErrorMessage, Measurement, Measurements, MeasurementResponse
 
 class MetricStatus(Enum):
     """Metric status."""
-    target_met = 0
-    target_not_met = 1
+    target_met = auto()
+    target_not_met = auto()
 
 
 class Metric(API):
