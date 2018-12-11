@@ -9,24 +9,9 @@ import aiohttp
 
 NON_EXISTING = "http://non-existing-hostname.io"
 SONARQUBE = "http://sonarcloud.io"
+JACOCO = "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
 JUNIT_TEST = "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
 JUNIT_TEST2 = "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
-
-APIS_OLD = [
-    f"sonarqube/{SONARQUBE}/m/ncloc/non-existing-id:non-existing-id",
-    f"sonarqube/{NON_EXISTING}/m/critical_violations/nl.ictu:hq",
-    f"junit/{NON_EXISTING}/m/failures",
-    f"junit/{JUNIT_TEST}/junit-complex_suites.xml/m/failures",
-    f"junit/{JUNIT_TEST}/junit-complex_suites.xml/m/tests",
-    f"junit/{JUNIT_TEST}/junit-simple_suite.xml/m/failures",
-    f"junit/{JUNIT_TEST}/junit-simple_suite.xml/m/tests",
-    f"junit/{JUNIT_TEST}/junit-simple_suite.xml/m/skipped",
-    f"sonarqube/{SONARQUBE}/m/ncloc/nl.ictu:hq",
-    f"sonarqube/{SONARQUBE}/m/lines/nl.ictu:hq",
-    f"sonarqube/{SONARQUBE}/m/major_violations/nl.ictu:hq",
-    f"sonarqube/{SONARQUBE}/m/critical_violations/nl.ictu:hq",
-    f"sonarqube/{SONARQUBE}/m/issues/nl.ictu:hq",
-    f"sonarqube/{SONARQUBE}/m/version"]
 
 APIS = [
     f"tests/junit?url={JUNIT_TEST}/junit-complex_suites.xml&url={JUNIT_TEST}/junit-simple_suite.xml",
@@ -35,6 +20,10 @@ APIS = [
     f"failed_tests/junit?url={JUNIT_TEST2}",
     f"tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"failed_tests/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
+    f"covered_lines/jacoco?url={JACOCO}",
+    f"uncovered_lines/jacoco?url={JACOCO}",
+    f"covered_branches/jacoco?url={JACOCO}",
+    f"uncovered_branches/jacoco?url={JACOCO}",
     f"ncloc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"loc/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
     f"violations/sonarqube?url={SONARQUBE}&component=nl.ictu:hq",
