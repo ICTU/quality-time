@@ -47,5 +47,20 @@ class Metric(API):
 
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""
+        return MetricStatus.target_met if int(measurement) == int(self.target()) else MetricStatus.target_not_met
+
+
+class MoreIsBetterMetric(Metric):
+    """Class for metrics where higher values are better."""
+
+    def status(self, measurement: Measurement) -> MetricStatus:
+        """Return the status of the metric."""
+        return MetricStatus.target_met if int(measurement) >= int(self.target()) else MetricStatus.target_not_met
+
+
+class FewerIsBetterMetric(Metric):
+    """Class for metrics where lower values are better."""
+
+    def status(self, measurement: Measurement) -> MetricStatus:
+        """Return the status of the metric."""
         return MetricStatus.target_met if int(measurement) <= int(self.target()) else MetricStatus.target_not_met
-        

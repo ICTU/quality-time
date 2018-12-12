@@ -1,7 +1,7 @@
 """Violation metrics."""
 
-from quality_time.metric import Metric
+from quality_time.metric import FewerIsBetterMetric
 
 
-class Violations(Metric):
+class Violations(FewerIsBetterMetric):
     """Metric for the number of violations."""
