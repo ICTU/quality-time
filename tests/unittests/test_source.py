@@ -15,6 +15,7 @@ class SourceTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
+        Source.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "2"
         request = bottle.Request(dict(QUERY_STRING="url=http://url"))
@@ -39,6 +40,7 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
+        Source.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "2"
         request = bottle.Request(dict(QUERY_STRING="url=http://url1&url=http://url2"))
@@ -61,6 +63,10 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
 class SourceErrorTest(unittest.TestCase):
     """Unit tests for error handling."""
 
+    def setUp(self):
+        """Clear cache."""
+        Source.RESPONSE_CACHE.clear()
+
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         request = bottle.Request(dict(QUERY_STRING="url=http://url"))
@@ -74,7 +80,7 @@ class SourceErrorTest(unittest.TestCase):
         class SourceUnderTest(Source):
             """Raise an exception when parsing the response."""
 
-            def parse_source_response(self, response: requests.Response) -> Measurement: 
+            def parse_source_response(self, response: requests.Response) -> Measurement:
                 """Fail."""
                 raise Exception
 

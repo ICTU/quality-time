@@ -1,9 +1,11 @@
 """Source base class."""
 
 import itertools
+import logging
 import traceback
 from typing import Optional, Tuple
 
+import cachetools
 import requests
 
 from .api import API
@@ -14,6 +16,7 @@ class Source(API):
     """Base class for metric sources."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
+    RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
 
     def get(self) -> MeasurementResponse:
         """Connect to the source to get and parse the measurement for the metric."""
@@ -39,6 +42,7 @@ class Source(API):
         """Translate the url into the API url."""
         return url
 
+    @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
     def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:
         """Connect to the source and get the data, without failing."""
         response, error = None, None
@@ -50,6 +54,7 @@ class Source(API):
 
     def get_source_response(self, url: URL) -> requests.Response:
         """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs."""
+        logging.info("Retrieving %s", url)
         response = requests.get(url, timeout=self.TIMEOUT)
         response.raise_for_status()
         return response

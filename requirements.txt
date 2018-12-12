@@ -1,3 +1,4 @@
 bottle==0.12.14
+cachetools==3.0.0
 CherryPy<9.0.0
 requests==2.20.1

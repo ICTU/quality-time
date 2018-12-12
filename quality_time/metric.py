@@ -39,7 +39,7 @@ class Metric(API):
 
     def sum(self, measurements: Measurements) -> Measurement:  # pylint: disable=no-self-use
         """Return the summation of several measurements."""
-        return Measurement(sum([int(measurement) for measurement in measurements]))
+        return Measurement(sum(int(measurement) for measurement in measurements))
 
     def target(self) -> Measurement:
         """Return the target value for the metric."""
