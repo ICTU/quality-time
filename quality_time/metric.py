@@ -30,7 +30,7 @@ class Metric(API):
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
         measurement, error = None, None
-        if None not in measurements:
+        if measurements and None not in measurements:
             try:
                 measurement = self.sum(measurements)
             except Exception:  # pylint: disable=broad-except
