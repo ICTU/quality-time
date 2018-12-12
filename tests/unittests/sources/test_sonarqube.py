@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import bottle
 
-from quality_time.sources import (SonarQubeCoveredBranches, SonarQubeCoveredLines, SonarQubeTests, SonarQubeVersion, 
+from quality_time.sources import (SonarQubeCoveredBranches, SonarQubeCoveredLines, SonarQubeTests, SonarQubeVersion,
                                   SonarQubeViolations)
 
 
@@ -52,7 +52,7 @@ class SonarQubeTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             response = SonarQubeCoveredLines(request).get()
         self.assertEqual("90", response["source_responses"][0]["measurement"])
- 
+
     def test_covered_branches(self):
         """Test that the number of covered branches is returned."""
         mock_response = Mock()

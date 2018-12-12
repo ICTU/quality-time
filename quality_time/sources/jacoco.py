@@ -11,8 +11,8 @@ from quality_time.type import Measurement
 class JacocoCoverageBaseClass(Source):
     """Base class for Jacoco coverage metrics."""
 
-    coverage_status = "Subclass responsibility (covered or missed)"
-    coverage_type = "Subclass responsibility (Jacoco supports: line, branch, instruction, complexity, method, class)"
+    coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
+    coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         tree = xml.etree.cElementTree.fromstring(response.text)
