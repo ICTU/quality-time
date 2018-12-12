@@ -20,9 +20,16 @@ class API:
     @classmethod
     def subclass_for_api(cls, api_name: str) -> Type["API"]:
         """Return the subclass registered for the API name."""
-        match = lambda class_name, api_name: class_name.lower() == api_name.replace("_", "")
-        try:
-            return [subclass for subclass in API.subclasses if match(subclass.__name__, api_name)][0]
-        except:
-            print(api_name)
-            raise
+        simplified_api_name = api_name.replace("_", "")
+        matching_subclasses = [sc for sc in API.subclasses if sc.__name__.lower() == simplified_api_name]
+        return matching_subclasses[0] if matching_subclasses else UnknownAPI
+
+
+class UnknownAPI(API):
+    """Handle unknown APIs."""
+
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
+        """Return an error message."""
+        return dict(
+            request_url=self.request.url, source_responses=[],
+            request_error=f"Unknown <metric>/<source>: {self.request.path}")

@@ -1,28 +1,19 @@
 """Test coverage metrics."""
 
-from quality_time.metric import Metric, MetricStatus
-from quality_time.type import Measurement
+from quality_time.metric import FewerIsBetterMetric, MoreIsBetterMetric
 
 
-class CoveredLines(Metric):
+class CoveredLines(MoreIsBetterMetric):
     """Number of covered lines."""
 
-    def status(self, measurement: Measurement) -> MetricStatus:
-        """Return the status of the metric."""
-        return MetricStatus.target_met if int(measurement) > int(self.target()) else MetricStatus.target_not_met
 
-
-class UncoveredLines(Metric):
+class UncoveredLines(FewerIsBetterMetric):
     """Number of uncovered lines."""
 
 
-class CoveredBranches(Metric):
+class CoveredBranches(MoreIsBetterMetric):
     """Number of covered lines."""
 
-    def status(self, measurement: Measurement) -> MetricStatus:
-        """Return the status of the metric."""
-        return MetricStatus.target_met if int(measurement) > int(self.target()) else MetricStatus.target_not_met
 
-
-class UncoveredBranches(Metric):
+class UncoveredBranches(FewerIsBetterMetric):
     """Number of uncovered lines."""

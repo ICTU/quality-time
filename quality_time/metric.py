@@ -30,7 +30,7 @@ class Metric(API):
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
         measurement, error = None, None
-        if None not in measurements:
+        if measurements and None not in measurements:
             try:
                 measurement = self.sum(measurements)
             except Exception:  # pylint: disable=broad-except
@@ -47,5 +47,20 @@ class Metric(API):
 
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""
+        return MetricStatus.target_met if int(measurement) == int(self.target()) else MetricStatus.target_not_met
+
+
+class MoreIsBetterMetric(Metric):
+    """Class for metrics where higher values are better."""
+
+    def status(self, measurement: Measurement) -> MetricStatus:
+        """Return the status of the metric."""
+        return MetricStatus.target_met if int(measurement) >= int(self.target()) else MetricStatus.target_not_met
+
+
+class FewerIsBetterMetric(Metric):
+    """Class for metrics where lower values are better."""
+
+    def status(self, measurement: Measurement) -> MetricStatus:
+        """Return the status of the metric."""
         return MetricStatus.target_met if int(measurement) <= int(self.target()) else MetricStatus.target_not_met
-        

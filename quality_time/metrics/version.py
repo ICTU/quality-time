@@ -2,11 +2,11 @@
 
 from distutils.version import LooseVersion
 
-from quality_time.metric import Metric, MetricStatus
+from quality_time.metric import MoreIsBetterMetric, MetricStatus
 from quality_time.type import Measurement, Measurements
 
 
-class Version(Metric):
+class Version(MoreIsBetterMetric):
     """Version of a metric source."""
 
     def status(self, measurement: Measurement) -> MetricStatus:
