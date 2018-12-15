@@ -24,6 +24,6 @@ class API:
         matching_subclasses = [sc for sc in API.subclasses if sc.__name__.lower() == simplified_api_name]
         return matching_subclasses[0] if matching_subclasses else API
 
-    def get(self, response: Response = None) -> Response:  # pylint: disable=unused-argument
+    def get(self, response: Response) -> Response:  # pylint: disable=unused-argument,no-self-use
         """Return an error message because if this method is called no suitable subclass to handle the API was found."""
         return dict(request_error="Unknown <metric>/<source>")

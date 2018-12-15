@@ -18,7 +18,7 @@ class Source(API):
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
 
-    def get(self, response: Response = None) -> Response:  # pylint: disable=unused-argument
+    def get(self, response: Response) -> Response:  # pylint: disable=unused-argument
         """Connect to the source to get and parse the measurement for the metric."""
         source_response = response.copy() if response else dict()
         urls = response.get("urls", [])

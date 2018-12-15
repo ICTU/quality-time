@@ -23,8 +23,8 @@ def get(metric_name: str, source_name: str) -> Response:
     query = request.query
     metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
     source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
-    urls = query.getall("url")
-    components = query.getall("component")
+    urls = query.getall("url")  # pylint: disable=no-member
+    components = query.getall("component")  # pylint: disable=no-member
     return metric.get(source.get(dict(request_url=request.url, urls=urls, components=components)))
 
 
