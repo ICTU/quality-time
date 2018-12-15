@@ -9,7 +9,7 @@ import cachetools
 import requests
 
 from .api import API
-from .type import ErrorMessage, Measurement, MeasurementResponse, URL
+from .type import ErrorMessage, Measurement, Response, URL
 
 
 class Source(API):
@@ -23,13 +23,14 @@ class Source(API):
         self.components = kwargs.pop("components", [])
         super().__init__(*args, **kwargs)
 
-    def get(self) -> MeasurementResponse:
+    def get(self, response: Response = None) -> Response:  # pylint: disable=unused-argument
         """Connect to the source to get and parse the measurement for the metric."""
-        source_responses = [self.get_one(url, component) for url, component in
-                            itertools.zip_longest(self.urls, self.components, fillvalue="")]
-        return dict(source_responses=source_responses)
+        source_response = response.copy() if response else dict()
+        source_response["source_responses"] = [self.get_one(url, component) for url, component in
+                                               itertools.zip_longest(self.urls, self.components, fillvalue="")]
+        return source_response
 
-    def get_one(self, url: URL, component: str) -> MeasurementResponse:
+    def get_one(self, url: URL, component: str) -> Response:
         """Return the measurement response for one source url."""
         api_url = self.api_url(url, component)
         landing_url = self.landing_url(url, component)

@@ -9,7 +9,7 @@ from .metrics import *
 from .sources import *
 from .metric import Metric
 from .source import Source
-from .type import MeasurementResponse
+from .type import Response
 
 
 __title__ = "Quality time"
@@ -17,7 +17,7 @@ __version__ = "0.1.0"
 
 
 @route("/<metric_name>/<source_name>")
-def get(metric_name: str, source_name: str) -> MeasurementResponse:
+def get(metric_name: str, source_name: str) -> Response:
     """Handler for the get-metric-from-source API."""
     logging.info(request)
     query = request.query
@@ -26,11 +26,7 @@ def get(metric_name: str, source_name: str) -> MeasurementResponse:
     metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
     source = cast(
         Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query, urls=urls, components=components)
-    response = source.get()
-    response["request_url"] = request.url
-    measurements = [source_response["measurement"] for source_response in response["source_responses"]]
-    response.update(metric.get(measurements))
-    return response
+    return metric.get(source.get(dict(request_url=request.url)))
 
 
 def quality_time():

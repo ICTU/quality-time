@@ -2,7 +2,7 @@
 
 from typing import Mapping, Set, Type
 
-from .type import MeasurementResponse
+from .type import Response
 
 
 class API:
@@ -22,12 +22,8 @@ class API:
         """Return the subclass registered for the API name."""
         simplified_api_name = api_name.replace("_", "")
         matching_subclasses = [sc for sc in API.subclasses if sc.__name__.lower() == simplified_api_name]
-        return matching_subclasses[0] if matching_subclasses else UnknownAPI
+        return matching_subclasses[0] if matching_subclasses else API
 
-
-class UnknownAPI(API):
-    """Handle unknown APIs."""
-
-    def get(self, *args, **kwargs) -> MeasurementResponse:  # pylint: disable=unused-argument
-        """Return an error message."""
-        return dict(request_error=f"Unknown <metric>/<source>")
+    def get(self, response: Response = None) -> Response:  # pylint: disable=unused-argument
+        """Return an error message because if this method is called no suitable subclass to handle the API was found."""
+        return dict(request_error="Unknown <metric>/<source>")

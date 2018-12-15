@@ -5,7 +5,7 @@ from enum import auto, Enum
 from typing import Optional, Tuple
 
 from .api import API
-from .type import ErrorMessage, Measurement, Measurements, MeasurementResponse
+from .type import ErrorMessage, Measurement, Measurements, Response
 
 
 class MetricStatus(Enum):
@@ -19,13 +19,15 @@ class Metric(API):
 
     default_target = Measurement("0")
 
-    def get(self, measurements: Measurements) -> MeasurementResponse:
+    def get(self, response: Response = None) -> Response:
         """Return the metric's measurement."""
+        metric_response = dict(default_target=self.default_target, target=self.target())
+        metric_response.update(response)
+        measurements = [source_response["measurement"] for source_response in response["source_responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
-        target = self.target()
         status = self.status(measurement).name if measurement is not None else None
-        return dict(calculation_error=calculation_error, measurement=measurement, default_target=self.default_target,
-                    target=target, status=status)
+        metric_response.update(dict(calculation_error=calculation_error, measurement=measurement, status=status))
+        return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
