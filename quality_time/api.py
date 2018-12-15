@@ -1,8 +1,8 @@
 """Base class for classes that handle (part of the) API-calls."""
 
-from typing import Set, Type
+from typing import Mapping, Set, Type
 
-import bottle
+from .type import MeasurementResponse
 
 
 class API:
@@ -10,8 +10,8 @@ class API:
 
     subclasses: Set[Type["API"]] = set()
 
-    def __init__(self, request: bottle.Request) -> None:
-        self.request = request
+    def __init__(self, query: Mapping[str, str]) -> None:
+        self.query = query
 
     def __init_subclass__(cls, **kwargs):
         API.subclasses.add(cls)
@@ -28,8 +28,6 @@ class API:
 class UnknownAPI(API):
     """Handle unknown APIs."""
 
-    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def get(self, *args, **kwargs) -> MeasurementResponse:  # pylint: disable=unused-argument
         """Return an error message."""
-        return dict(
-            request_url=self.request.url, source_responses=[],
-            request_error=f"Unknown <metric>/<source>: {self.request.path}")
+        return dict(request_error=f"Unknown <metric>/<source>")

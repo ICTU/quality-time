@@ -20,9 +20,14 @@ __version__ = "0.1.0"
 def get(metric_name: str, source_name: str) -> MeasurementResponse:
     """Handler for the get-metric-from-source API."""
     logging.info(request)
-    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(request)
-    source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(request)
+    query = request.query
+    urls = query.getall("url")
+    components = query.getall("component")
+    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
+    source = cast(
+        Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query, urls=urls, components=components)
     response = source.get()
+    response["request_url"] = request.url
     measurements = [source_response["measurement"] for source_response in response["source_responses"]]
     response.update(metric.get(measurements))
     return response

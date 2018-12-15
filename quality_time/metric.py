@@ -43,7 +43,7 @@ class Metric(API):
 
     def target(self) -> Measurement:
         """Return the target value for the metric."""
-        return self.default_target if self.request.query.target in (None, "") else self.request.query.target
+        return self.query.get("target", self.default_target)
 
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""
