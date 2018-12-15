@@ -21,12 +21,11 @@ def get(metric_name: str, source_name: str) -> Response:
     """Handler for the get-metric-from-source API."""
     logging.info(request)
     query = request.query
+    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
+    source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
     urls = query.getall("url")
     components = query.getall("component")
-    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
-    source = cast(
-        Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query, urls=urls, components=components)
-    return metric.get(source.get(dict(request_url=request.url)))
+    return metric.get(source.get(dict(request_url=request.url, urls=urls, components=components)))
 
 
 def quality_time():

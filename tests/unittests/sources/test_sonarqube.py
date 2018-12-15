@@ -15,7 +15,7 @@ class SonarQubeTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2.2.1"
         with patch("requests.get", return_value=mock_response):
-            response = SonarQubeVersion(dict(), urls=["http://sonar"]).get()
+            response = SonarQubeVersion(dict()).get(dict(urls=["http://sonar"]))
         self.assertEqual("2.2.1", response["source_responses"][0]["measurement"])
 
     def test_violations(self):
@@ -23,7 +23,7 @@ class SonarQubeTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(total="10")
         with patch("requests.get", return_value=mock_response):
-            response = SonarQubeViolations(dict(), urls=["=http://sonar"], components=["id"]).get()
+            response = SonarQubeViolations(dict()).get(dict(urls=["=http://sonar"], components=["id"]))
         self.assertEqual("10", response["source_responses"][0]["measurement"])
 
     def test_tests(self):
@@ -31,7 +31,7 @@ class SonarQubeTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(component=dict(measures=[dict(metric="tests", value="88")]))
         with patch("requests.get", return_value=mock_response):
-            response = SonarQubeTests(dict(), urls=["http://sonar"], components=["id"]).get()
+            response = SonarQubeTests(dict()).get(dict(urls=["http://sonar"], components=["id"]))
         self.assertEqual("88", response["source_responses"][0]["measurement"])
 
     def test_covered_lines(self):
@@ -41,7 +41,7 @@ class SonarQubeTest(unittest.TestCase):
             component=dict(
                 measures=[dict(metric="lines_to_cover", value="100"), dict(metric="uncovered_lines", value="10")]))
         with patch("requests.get", return_value=mock_response):
-            response = SonarQubeCoveredLines(dict(), urls=["http://sonar"], components=["id"]).get()
+            response = SonarQubeCoveredLines(dict()).get(dict(urls=["http://sonar"], components=["id"]))
         self.assertEqual("90", response["source_responses"][0]["measurement"])
 
     def test_covered_branches(self):
@@ -52,5 +52,5 @@ class SonarQubeTest(unittest.TestCase):
                 measures=[
                     dict(metric="conditions_to_cover", value="100"), dict(metric="uncovered_conditions", value="10")]))
         with patch("requests.get", return_value=mock_response):
-            response = SonarQubeCoveredBranches(dict(), urls=["http://sonar"], components=["id"]).get()
+            response = SonarQubeCoveredBranches(dict()).get(dict(urls=["http://sonar"], components=["id"]))
         self.assertEqual("90", response["source_responses"][0]["measurement"])

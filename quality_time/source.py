@@ -18,16 +18,13 @@ class Source(API):
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
 
-    def __init__(self, *args, **kwargs) -> None:
-        self.urls = kwargs.pop("urls")
-        self.components = kwargs.pop("components", [])
-        super().__init__(*args, **kwargs)
-
     def get(self, response: Response = None) -> Response:  # pylint: disable=unused-argument
         """Connect to the source to get and parse the measurement for the metric."""
         source_response = response.copy() if response else dict()
+        urls = response.get("urls", [])
+        components = response.get("components", [])
         source_response["source_responses"] = [self.get_one(url, component) for url, component in
-                                               itertools.zip_longest(self.urls, self.components, fillvalue="")]
+                                               itertools.zip_longest(urls, components, fillvalue="")]
         return source_response
 
     def get_one(self, url: URL, component: str) -> Response:
