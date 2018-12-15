@@ -1,0 +1,5 @@
+{
+  "metrics": [
+    "uncovered_lines/jacoco?url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+  ]
+}

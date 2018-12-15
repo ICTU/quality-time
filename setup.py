@@ -20,7 +20,8 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "quality-time=quality_time:quality_time",
+            "quality-time-facade=quality_time:metric_source_facade",
+            "quality-time-report-updater=quality_time:update_reports"
         ],
     },
     zip_safe=True,
