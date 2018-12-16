@@ -3,7 +3,6 @@
 import unittest
 from unittest.mock import patch, Mock
 
-import bottle
 import requests
 
 from quality_time.source import Source
@@ -18,9 +17,8 @@ class SourceTest(unittest.TestCase):
         Source.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "2"
-        request = bottle.Request(dict(QUERY_STRING="url=http://url"))
         with patch("requests.get", return_value=mock_response):
-            self.response = Source(request).get()
+            self.response = Source(dict()).get(dict(urls=["http://url"]))
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -43,9 +41,8 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
         Source.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "2"
-        request = bottle.Request(dict(QUERY_STRING="url=http://url1&url=http://url2"))
         with patch("requests.get", return_value=mock_response):
-            self.response = Source(request).get()
+            self.response = Source(dict()).get(dict(urls=["http://url", "http://url2"]))
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -69,9 +66,8 @@ class SourceErrorTest(unittest.TestCase):
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
-        request = bottle.Request(dict(QUERY_STRING="url=http://url"))
         with patch("requests.get", side_effect=Exception):
-            response = Source(request).get()
+            response = Source(dict()).get(dict(urls=["http://url"]))
         self.assertTrue(response["source_responses"][0]["connection_error"].startswith("Traceback"))
 
     def test_parse_error(self):
@@ -86,7 +82,6 @@ class SourceErrorTest(unittest.TestCase):
 
         mock_response = Mock()
         mock_response.text = "1"
-        request = bottle.Request(dict(QUERY_STRING="url=http://url"))
         with patch("requests.get", return_value=mock_response):
-            response = SourceUnderTest(request).get()
+            response = SourceUnderTest(dict()).get(dict(urls=["http://url"]))
         self.assertTrue(response["source_responses"][0]["parse_error"].startswith("Traceback"))

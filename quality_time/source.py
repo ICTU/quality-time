@@ -9,7 +9,7 @@ import cachetools
 import requests
 
 from .api import API
-from .type import ErrorMessage, Measurement, MeasurementResponse, URL
+from .type import ErrorMessage, Measurement, Response, URL
 
 
 class Source(API):
@@ -18,14 +18,16 @@ class Source(API):
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
 
-    def get(self) -> MeasurementResponse:
+    def get(self, response: Response) -> Response:  # pylint: disable=unused-argument
         """Connect to the source to get and parse the measurement for the metric."""
-        source_responses = [self.get_one(url, component) for url, component in \
-                            itertools.zip_longest(self.request.query.getall("url"),
-                                                  self.request.query.getall("component"), fillvalue="")]
-        return dict(request_url=self.request.url, source_responses=source_responses)
+        source_response = response.copy() if response else dict()
+        urls = response.get("urls", [])
+        components = response.get("components", [])
+        source_response["source_responses"] = [self.get_one(url, component) for url, component in
+                                               itertools.zip_longest(urls, components, fillvalue="")]
+        return source_response
 
-    def get_one(self, url: URL, component: str) -> MeasurementResponse:
+    def get_one(self, url: URL, component: str) -> Response:
         """Return the measurement response for one source url."""
         api_url = self.api_url(url, component)
         landing_url = self.landing_url(url, component)

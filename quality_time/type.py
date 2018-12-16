@@ -7,4 +7,4 @@ URL = NewType("URL", str)
 Measurement = str
 Measurements = Sequence[Measurement]
 ErrorMessage = str
-MeasurementResponse = Dict[str, Any]
+Response = Dict[str, Any]
