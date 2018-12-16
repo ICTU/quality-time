@@ -17,7 +17,7 @@ __title__ = "Quality time"
 __version__ = "0.1.0"
 
 
-@route("/<metric_name>/<source_name>")
+@bottle.route("/<metric_name>/<source_name>")
 def get(metric_name: str, source_name: str) -> Response:
     """Handler for the get-metric-from-source API."""
     logging.info(bottle.request)
@@ -26,7 +26,7 @@ def get(metric_name: str, source_name: str) -> Response:
     source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
     urls = query.getall("url")  # pylint: disable=no-member
     components = query.getall("component")  # pylint: disable=no-member
-    return metric.get(source.get(dict(request_url=request.url, urls=urls, components=components)))
+    return metric.get(source.get(dict(request_url=bottle.request.url, urls=urls, components=components)))
 
 
 def metric_source_facade():

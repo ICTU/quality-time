@@ -27,7 +27,7 @@ class Metric(API):
         measurement, calculation_error = self.safely_sum(measurements)
         status = self.status(measurement).name if measurement is not None else None
         metric_response.update(dict(calculation_error=calculation_error, measurement=measurement, status=status))
-        return Response(metric_response)
+        return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
