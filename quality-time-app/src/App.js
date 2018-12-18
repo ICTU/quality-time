@@ -1,55 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Subject } from './Subject.js';
+import { Container } from 'semantic-ui-react';
 
-function Subject(props) {
-  return (
-    <div>
-      <h1>{props.title}</h1>
-      <div>
-        {props.metrics.map((metric) => <Metric key={metric} metric={metric} />)}
-      </div>
-    </div>
-  )
-}
-
-class Metric extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {measurement: null}
-  }
-  componentDidMount() {
-    let self = this;
-    fetch('http://localhost:8080/' + this.props.metric)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(json) {
-        self.setState({measurement: json});
-      });
-  }
-  render() {
-    return (
-      <Measurement measurement={this.state.measurement} />
-    )
-  }
-}
-
-function Measurement(props) {
-  const m = props.measurement;
-  if (m) {
-    return (
-      <div>
-        Measurement: {m.measurement} {m.unit},
-        Target: {m.target} {m.unit},
-        Status: {m.status === "target_met" ? "💚" : "💔"}
-      </div>
-    )
-  } else {
-    return (
-      <div>Measurement: unknown</div>
-    )
-  }
-}
 
 class App extends Component {
   constructor(props) {
@@ -71,15 +24,13 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          Quality time
-        </header>
+      <Container>
+        <h1>Quality-time</h1>
         <div>
           {this.state.subjects.map((subject) =>
             <Subject key={subject.title} title={subject.title} metrics={subject.metrics}/>)}
         </div>
-      </div>
+      </Container>
     );
   }
 }
