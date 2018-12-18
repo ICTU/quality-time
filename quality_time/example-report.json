@@ -1,0 +1,54 @@
+{
+    "subjects": [
+        {
+            "title": "Sample JUnit",
+            "metrics": [
+                "tests/junit?url=https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests&url=https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml",
+                "failed_tests/junit?url=https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests&url=https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+            ]
+        },
+        {
+            "title": "Sample JaCoCo",
+            "metrics": [
+                "covered_lines/jacoco?url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
+                "uncovered_lines/jacoco?url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
+                "covered_branches/jacoco?url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
+                "uncovered_branches/jacoco?url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+            ]
+        },
+        {
+            "title": "Next-action",
+            "metrics": [
+                "tests/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "failed_tests/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "covered_lines/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "uncovered_lines/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "covered_branches/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "uncovered_branches/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "lines/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "loc/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "violations/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action"
+            ]
+        },
+        {
+            "title": "HQ",
+            "metrics": [
+                "tests/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "failed_tests/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "covered_lines/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "uncovered_lines/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "covered_branches/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "uncovered_branches/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "lines/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "loc/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "violations/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq"
+            ]
+        },
+        {
+            "title": "Environment",
+            "metrics": [
+                "version/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq"
+            ]
+        }
+    ]
+}

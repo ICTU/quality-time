@@ -18,10 +18,12 @@ class Metric(API):
     """Base class for metrics."""
 
     default_target = Measurement("0")
+    unit = ""
 
     def get(self, response: Response) -> Response:
         """Return the metric's measurement."""
-        metric_response: Dict[str, Optional[str]] = dict(default_target=self.default_target, target=self.target())
+        metric_response: Dict[str, Optional[str]] = dict(
+            default_target=self.default_target, target=self.target(), unit=self.unit)
         metric_response.update(response)
         measurements = [source_response["measurement"] for source_response in response["source_responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
