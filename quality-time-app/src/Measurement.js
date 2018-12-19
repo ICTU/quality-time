@@ -1,8 +1,16 @@
 import React from 'react';
-import { Label, Table } from 'semantic-ui-react';
+import { Icon, Label, Table } from 'semantic-ui-react';
 
 function Measurement(props) {
   const m = props.measurement;
+  let measurement_text = '';
+  let icon = '';
+  if (m.measurement === null) {
+    measurement_text = '? ' + m.unit;
+    icon = <Icon color='red' name='exclamation triangle'/>;
+  } else {
+    measurement_text = m.measurement + ' ' + m.unit;
+  }
   return (
     <Table.Row positive={m.status === "target_met"} negative={m.status === "target_not_met"}
                 warning={m.status === null}>
@@ -10,7 +18,7 @@ function Measurement(props) {
         {m.metric}
       </Table.Cell>
       <Table.Cell>
-          {m.measurement === null ? "?" : m.measurement} {m.unit}
+        {measurement_text}
       </Table.Cell>
       <Table.Cell>
           {m.direction} {m.target} {m.unit}
@@ -18,7 +26,8 @@ function Measurement(props) {
       <Table.Cell>
         {m.source_responses.map((source_response) =>
           <Label as='a' tag>
-            <a href={source_response.landing_url}>{m.source}</a>
+            <a href={source_response.landing_url}>{m.source} </a>
+            {icon}
         </Label>)}
       </Table.Cell>
     </Table.Row>
