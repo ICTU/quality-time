@@ -25,8 +25,8 @@
                 "uncovered_lines/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
                 "covered_branches/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
                 "uncovered_branches/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
-                "lines/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
                 "loc/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
+                "ncloc/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action",
                 "violations/sonarqube?url=http://sonarcloud.io&component=fniessink:next-action"
             ]
         },
@@ -39,8 +39,8 @@
                 "uncovered_lines/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
                 "covered_branches/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
                 "uncovered_branches/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
-                "lines/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
                 "loc/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
+                "ncloc/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
                 "violations/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq"
             ]
         },

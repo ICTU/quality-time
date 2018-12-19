@@ -9,6 +9,8 @@ from quality_time.type import Measurement, Measurements
 class Version(MoreIsBetterMetric):
     """Version of a metric source."""
 
+    name = "Version"
+
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""
         return MetricStatus.target_met if LooseVersion(measurement) >= LooseVersion(self.target()) \

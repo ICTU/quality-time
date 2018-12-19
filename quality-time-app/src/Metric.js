@@ -14,6 +14,7 @@ class Metric extends Component {
         return response.json();
       })
       .then(function(json) {
+        console.log(json);
         self.setState({measurement: json});
       });
   }
