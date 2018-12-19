@@ -8,12 +8,13 @@ function Subject(props) {
   return (
     <Segment basic>
       <Header as='h2'>{props.title}</Header>
-      <Table columns={3}>
+      <Table columns={4}>
           <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Metric</Table.HeaderCell>
                 <Table.HeaderCell>Measurement</Table.HeaderCell>
                 <Table.HeaderCell>Target</Table.HeaderCell>
+                <Table.HeaderCell>Source</Table.HeaderCell>
               </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>

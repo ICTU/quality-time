@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Label, Table } from 'semantic-ui-react';
 
 function Measurement(props) {
   const m = props.measurement;
@@ -14,6 +14,12 @@ function Measurement(props) {
       </Table.Cell>
       <Table.Cell>
           {m.direction} {m.target} {m.unit}
+      </Table.Cell>
+      <Table.Cell>
+        {m.source_responses.map((source_response) =>
+          <Label as='a' tag>
+            <a href={source_response.landing_url}>{m.source}</a>
+        </Label>)}
       </Table.Cell>
     </Table.Row>
   )

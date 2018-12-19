@@ -11,6 +11,7 @@ from quality_time.type import Measurement
 class JacocoCoverageBaseClass(Source):
     """Base class for Jacoco coverage metrics."""
 
+    name = "JaCoCo"
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 

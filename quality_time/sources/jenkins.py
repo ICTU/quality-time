@@ -6,14 +6,20 @@ from quality_time.source import Source
 from quality_time.type import Measurement, URL
 
 
-class JenkinsVersion(Source):
+class Jenkins(Source):
+    """Base class for Jenkins metrics."""
+
+    name = "Jenkins"
+
+
+class JenkinsVersion(Jenkins):
     """Return the Jenkins version."""
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.headers["X-Jenkins"])
 
 
-class JenkinsJobs(Source):
+class JenkinsJobs(Jenkins):
     """Source class to get job counts from Jenkins."""
 
     def api_url(self, url: URL, component: str) -> URL:
@@ -24,11 +30,8 @@ class JenkinsJobs(Source):
         return Measurement(len(jobs))
 
 
-class JenkinsFailedJobs(Source):
+class JenkinsFailedJobs(JenkinsJobs):
     """Source class to get failed job counts from Jenkins."""
-
-    def api_url(self, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/json?tree=jobs[buildable,color]")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]

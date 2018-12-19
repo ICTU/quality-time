@@ -6,7 +6,12 @@ from quality_time.source import Source
 from quality_time.type import Measurement, URL
 
 
-class GitlabVersion(Source):
+class Gitlab(Source):
+    """Base class for Gitlab metrics."""
+    name = "GitLab"
+
+
+class GitlabVersion(Gitlab):
     """Return the Gitlab version."""
 
     def api_url(self, url: URL, component: str) -> URL:
@@ -16,7 +21,7 @@ class GitlabVersion(Source):
         return Measurement(response.json()["version"])
 
 
-class GitlabJobs(Source):
+class GitlabJobs(Gitlab):
     """Source class to get job counts from Gitlab."""
 
     def api_url(self, url: URL, component: str) -> URL:
