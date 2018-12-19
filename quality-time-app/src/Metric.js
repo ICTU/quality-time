@@ -14,11 +14,14 @@ class Metric extends Component {
         return response.json();
       })
       .then(function(json) {
-        console.log(json);
         self.setState({measurement: json});
       });
   }
   render() {
+    const m = this.state.measurement;
+    if (m === null) {return null};
+    const search = this.props.search_string;
+    if (search && !m.metric.toLowerCase().includes(search.toLowerCase())) {return null};
     return (
       <Measurement measurement={this.state.measurement} />
     )

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Subject } from './Subject.js';
-import { Container } from 'semantic-ui-react';
+import { Container, Header, Input } from 'semantic-ui-react';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {subjects: []};
+    this.state = {subjects: [], search_string: ''};
+    this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
   componentDidMount() {
@@ -21,14 +22,20 @@ class App extends Component {
       });
   }
 
+  handleSearchChange(event) {
+    this.setState({search_string: event.target.value});
+  }
+
   render() {
     return (
       <Container>
-        <h1>Quality-time</h1>
-        <div>
+        <Header as='h1' textAlign='center'>Quality-time</Header>
+        <Input placeholder='Filter metrics...' onChange={this.handleSearchChange} />
+        <Container>
           {this.state.subjects.map((subject) =>
-            <Subject key={subject.title} title={subject.title} metrics={subject.metrics}/>)}
-        </div>
+            <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
+                     search_string={this.state.search_string} />)}
+        </Container>
       </Container>
     );
   }

@@ -3,6 +3,8 @@ import { Header, Table, Segment } from 'semantic-ui-react';
 import Metric from './Metric.js';
 
 function Subject(props) {
+  const metrics = props.metrics.map((metric) =>
+    <Metric key={metric} metric={metric} search_string={props.search_string} />);
   return (
     <Segment basic>
       <Header as='h2'>{props.title}</Header>
@@ -14,9 +16,7 @@ function Subject(props) {
                 <Table.HeaderCell>Target</Table.HeaderCell>
               </Table.Row>
           </Table.Header>
-          <Table.Body>
-            {props.metrics.map((metric) => <Metric key={metric} metric={metric} />)}
-          </Table.Body>
+          <Table.Body>{metrics}</Table.Body>
       </Table>
     </Segment>
   )

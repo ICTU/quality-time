@@ -3,7 +3,6 @@ import { Table } from 'semantic-ui-react';
 
 function Measurement(props) {
   const m = props.measurement;
-  if (m === null) {return null};
   return (
     <Table.Row positive={m.status === "target_met"} negative={m.status === "target_not_met"}
                 warning={m.status === null}>
