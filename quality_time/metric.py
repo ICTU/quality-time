@@ -17,17 +17,22 @@ class MetricStatus(Enum):
 class Metric(API):
     """Base class for metrics."""
 
+    name = "Subclass responsibility"
+    unit = ""
+    direction = "="  # {direction} {target} {unit} should describe the metric norm, e.g. <= 10 violations
     default_target = Measurement("0")
 
     def get(self, response: Response) -> Response:
         """Return the metric's measurement."""
-        metric_response: Dict[str, Optional[str]] = dict(default_target=self.default_target, target=self.target())
+        metric_response: Dict[str, Optional[str]] = dict(
+            default_target=self.default_target, target=self.target(), metric=self.name, direction=self.direction,
+            unit=self.unit)
         metric_response.update(response)
         measurements = [source_response["measurement"] for source_response in response["source_responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
         status = self.status(measurement).name if measurement is not None else None
         metric_response.update(dict(calculation_error=calculation_error, measurement=measurement, status=status))
-        return Response(metric_response)
+        return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""
@@ -55,6 +60,8 @@ class Metric(API):
 class MoreIsBetterMetric(Metric):
     """Class for metrics where higher values are better."""
 
+    direction = ">="
+
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""
         return MetricStatus.target_met if int(measurement) >= int(self.target()) else MetricStatus.target_not_met
@@ -62,6 +69,8 @@ class MoreIsBetterMetric(Metric):
 
 class FewerIsBetterMetric(Metric):
     """Class for metrics where lower values are better."""
+
+    direction = "<="
 
     def status(self, measurement: Measurement) -> MetricStatus:
         """Return the status of the metric."""

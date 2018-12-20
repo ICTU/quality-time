@@ -54,3 +54,6 @@ venv.bak/
 
 # Test data
 .urls.txt
+
+# Node
+node_modules/
