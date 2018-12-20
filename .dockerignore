@@ -8,4 +8,5 @@
 .vscode/
 build/
 dist/
+quality-time-app/node_modules/
 

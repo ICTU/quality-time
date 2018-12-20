@@ -8,4 +8,4 @@ ADD . /quality_time
 RUN pip install -r requirements.txt; python setup.py install
 EXPOSE 8080
 
-CMD ["quality-time"]
+CMD ["quality-time-facade"]
