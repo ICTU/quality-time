@@ -2,7 +2,7 @@
 
 [![Updates](https://pyup.io/repos/github/ICTU/quality-time/shield.svg)](https://pyup.io/repos/github/ICTU/quality-time/)
 
-Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time consists of a simple backend API and a simple React frontend. Its main purpose is to experiment with features that may or may not land in [HQ](https://github.com/ICTU/quality-report).
+Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time* consists of a simple backend API and a simple React frontend. Its main purpose is to experiment with features that may or may not land in [HQ](https://github.com/ICTU/quality-report).
 
 The backend API is called by the frontend to collect measurements from different data sources. Its purpose is to hide the complexity of the different metric sources behind a facade. The frontend asks the backend for a report configuration and then uses the backend API to collect the metrics.
 
