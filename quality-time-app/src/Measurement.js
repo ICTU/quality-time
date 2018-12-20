@@ -1,13 +1,28 @@
 import React from 'react';
-import { Icon, Label, Table } from 'semantic-ui-react';
+import { Label, Table, Popup } from 'semantic-ui-react';
+
+function Source(props) {
+  if (props.source_response.connection_error || props.source_response.parse_error) {
+    return (
+      <Popup
+        wide='very'
+        content={props.source_response.connection_error ? props.source_response.connection_error : props.source_response.parse_error}
+        header={props.source_response.connection_error ? 'Connection error' : 'Parse error'}
+        trigger={<Label color='red'><a href={props.source_response.landing_url}>{props.source}</a></Label>} />)
+  } else {
+    return (
+      <Label>
+        <a href={props.source_response.landing_url}>{props.source}</a>
+      </Label>
+    )
+  }
+}
 
 function Measurement(props) {
   const m = props.measurement;
   let measurement_text = '';
-  let icon = '';
   if (m.measurement === null) {
     measurement_text = '? ' + m.unit;
-    icon = <Icon color='red' name='exclamation triangle'/>;
   } else {
     measurement_text = m.measurement + ' ' + m.unit;
   }
@@ -24,11 +39,7 @@ function Measurement(props) {
           {m.direction} {m.target} {m.unit}
       </Table.Cell>
       <Table.Cell>
-        {m.source_responses.map((source_response) =>
-          <Label as='a' tag>
-            <a href={source_response.landing_url}>{m.source} </a>
-            {icon}
-        </Label>)}
+        {m.source_responses.map((source_response) => <Source source={m.source} source_response={source_response} />)}
       </Table.Cell>
     </Table.Row>
   )
