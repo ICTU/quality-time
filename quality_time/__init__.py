@@ -40,7 +40,8 @@ def get(metric_name: str, source_name: str) -> Response:
     urls = query.getall("url")  # pylint: disable=no-member
     components = query.getall("component")  # pylint: disable=no-member
     bottle.response.add_header("Access-Control-Allow-Origin", "*")
-    return metric.get(source.get(dict(request_url=bottle.request.url, urls=urls, components=components)))
+    request = dict(request=dict(request_url=bottle.request.url, urls=urls, components=components))
+    return metric.get(source.get(request))
 
 
 def metric_source_facade():

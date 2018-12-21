@@ -2,7 +2,7 @@
 
 import traceback
 from enum import auto, Enum
-from typing import Dict, Optional, Tuple
+from typing import Optional, Tuple
 
 from .api import API
 from .type import ErrorMessage, Measurement, Measurements, Response
@@ -24,14 +24,16 @@ class Metric(API):
 
     def get(self, response: Response) -> Response:
         """Return the metric's measurement."""
-        metric_response: Dict[str, Optional[str]] = dict(
-            default_target=self.default_target, target=self.target(), metric=self.name, direction=self.direction,
-            unit=self.unit)
+        metric_response: Response = dict(
+            metric=dict(
+                default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit),
+            measurement=dict(target=self.target()))
         metric_response.update(response)
-        measurements = [source_response["measurement"] for source_response in response["source_responses"]]
+        measurements = [source_response["measurement"] for source_response in response["source"]["responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
         status = self.status(measurement).name if measurement is not None else None
-        metric_response.update(dict(calculation_error=calculation_error, measurement=measurement, status=status))
+        metric_response["measurement"].update(
+            dict(calculation_error=calculation_error, measurement=measurement, status=status))
         return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:

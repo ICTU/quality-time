@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import os
 import sys
 import time
 
@@ -25,13 +26,19 @@ async def fetch_all(apis):
 def run():
     """Update the reports."""
     logging.getLogger().setLevel(logging.INFO)
+    if not os.path.exists(sys.argv[1]):
+        with open(sys.argv[1], 'w') as report_json_file:
+            json.dump(dict(measurements=[]), report_json_file, indent="  ")
+
     while True:
-        with open(sys.argv[1]) as report_config_json_file:
-            report_config_json = json.load(report_config_json_file)
-        with open(sys.argv[2]) as report_json_file:
+        report_config_json = asyncio.run(fetch("report"))
+        with open(sys.argv[1]) as report_json_file:
             report_json = json.load(report_json_file)
-        measurements = list(asyncio.run(fetch_all(report_config_json["metrics"])))
+        metrics = []
+        for subject in report_config_json["subjects"]:
+            metrics.extend(subject["metrics"])
+        measurements = list(asyncio.run(fetch_all(metrics)))
         report_json["measurements"].extend(measurements)
-        with open(sys.argv[2], "w") as report_json_file:
+        with open(sys.argv[1], "w") as report_json_file:
             json.dump(report_json, report_json_file, indent="  ")
         time.sleep(10)

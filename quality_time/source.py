@@ -22,11 +22,12 @@ class Source(API):
     def get(self, response: Response) -> Response:  # pylint: disable=unused-argument
         """Connect to the source to get and parse the measurement for the metric."""
         source_response = response.copy() if response else dict()
-        urls = response.get("urls", [])
-        components = response.get("components", [])
-        source_response["source"] = self.name
-        source_response["source_responses"] = [self.get_one(url, component) for url, component in
-                                               itertools.zip_longest(urls, components, fillvalue="")]
+        request = response["request"]
+        urls = request.get("urls", [])
+        components = request.get("components", [])
+        source_response["source"] = dict(name=self.name)
+        source_response["source"]["responses"] = [self.get_one(url, component) for url, component in
+                                                  itertools.zip_longest(urls, components, fillvalue="")]
         return source_response
 
     def get_one(self, url: URL, component: str) -> Response:

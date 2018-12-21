@@ -5,7 +5,7 @@ import Measurement from './Measurement.js';
 class Metric extends Component {
   constructor(props) {
     super(props);
-    this.state = {measurement: null}
+    this.state = {measurement: null, metric: null, source: null}
   }
   componentDidMount() {
     let self = this;
@@ -14,16 +14,16 @@ class Metric extends Component {
         return response.json();
       })
       .then(function(json) {
-        self.setState({measurement: json});
+        self.setState({measurement: json.measurement, metric: json.metric, source: json.source});
       });
   }
   render() {
-    const m = this.state.measurement;
+    const m = this.state.metric;
     if (m === null) {return null};
     const search = this.props.search_string;
-    if (search && !m.metric.toLowerCase().includes(search.toLowerCase())) {return null};
+    if (search && !m.name.toLowerCase().includes(search.toLowerCase())) {return null};
     return (
-      <Measurement measurement={this.state.measurement} />
+      <Measurement measurement={this.state.measurement} metric={this.state.metric} source={this.state.source} />
     )
   }
 }

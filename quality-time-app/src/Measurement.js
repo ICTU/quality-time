@@ -19,27 +19,23 @@ function Source(props) {
 }
 
 function Measurement(props) {
-  const m = props.measurement;
-  let measurement_text = '';
-  if (m.measurement === null) {
-    measurement_text = '? ' + m.unit;
-  } else {
-    measurement_text = m.measurement + ' ' + m.unit;
-  }
+  const metric = props.metric;
+  const measurement = props.measurement;
   return (
-    <Table.Row positive={m.status === "target_met"} negative={m.status === "target_not_met"}
-                warning={m.status === null}>
+    <Table.Row positive={measurement.status === "target_met"}
+               negative={measurement.status === "target_not_met"}
+               warning={measurement.status === null}>
       <Table.Cell>
-        {m.metric}
+        {metric.name}
       </Table.Cell>
       <Table.Cell>
-        {measurement_text}
+        {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}
       </Table.Cell>
       <Table.Cell>
-          {m.direction} {m.target} {m.unit}
+          {metric.direction} {measurement.target} {metric.unit}
       </Table.Cell>
       <Table.Cell>
-        {m.source_responses.map((source_response) => <Source source={m.source} source_response={source_response} />)}
+        {props.source.responses.map((response) => <Source key={response.api_url} source={props.source.name} source_response={response} />)}
       </Table.Cell>
     </Table.Row>
   )

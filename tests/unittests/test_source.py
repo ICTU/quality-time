@@ -18,19 +18,19 @@ class SourceTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2"
         with patch("requests.get", return_value=mock_response):
-            self.response = Source(dict()).get(dict(urls=["http://url"]))
+            self.response = Source(dict()).get(dict(request=dict(urls=["http://url"])))
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
-        self.assertEqual("http://url", self.response["source_responses"][0]["api_url"])
+        self.assertEqual("http://url", self.response["source"]["responses"][0]["api_url"])
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url", self.response["source_responses"][0]["landing_url"])
+        self.assertEqual("http://url", self.response["source"]["responses"][0]["landing_url"])
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["source_responses"][0]["measurement"])
+        self.assertEqual("2", self.response["source"]["responses"][0]["measurement"])
 
 
 class SourceWithMultipleURLsTest(unittest.TestCase):
@@ -42,19 +42,19 @@ class SourceWithMultipleURLsTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "2"
         with patch("requests.get", return_value=mock_response):
-            self.response = Source(dict()).get(dict(urls=["http://url", "http://url2"]))
+            self.response = Source(dict()).get(dict(request=dict(urls=["http://url", "http://url2"])))
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
-        self.assertEqual("http://url2", self.response["source_responses"][1]["api_url"])
+        self.assertEqual("http://url2", self.response["source"]["responses"][1]["api_url"])
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url2", self.response["source_responses"][1]["landing_url"])
+        self.assertEqual("http://url2", self.response["source"]["responses"][1]["landing_url"])
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["source_responses"][1]["measurement"])
+        self.assertEqual("2", self.response["source"]["responses"][1]["measurement"])
 
 
 class SourceErrorTest(unittest.TestCase):
@@ -67,8 +67,8 @@ class SourceErrorTest(unittest.TestCase):
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
-            response = Source(dict()).get(dict(urls=["http://url"]))
-        self.assertTrue(response["source_responses"][0]["connection_error"].startswith("Traceback"))
+            response = Source(dict()).get(dict(request=dict(urls=["http://url"])))
+        self.assertTrue(response["source"]["responses"][0]["connection_error"].startswith("Traceback"))
 
     def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
@@ -83,5 +83,5 @@ class SourceErrorTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):
-            response = SourceUnderTest(dict()).get(dict(urls=["http://url"]))
-        self.assertTrue(response["source_responses"][0]["parse_error"].startswith("Traceback"))
+            response = SourceUnderTest(dict()).get(dict(request=dict(urls=["http://url"])))
+        self.assertTrue(response["source"]["responses"][0]["parse_error"].startswith("Traceback"))
