@@ -1,6 +1,8 @@
 """Unit tests for the metric class."""
 
+import datetime
 import unittest
+from unittest.mock import patch
 
 from quality_time.metric import Metric
 from quality_time.type import Measurement
@@ -54,3 +56,12 @@ class MetricTest(unittest.TestCase):
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
         measuurement_response = Metric(dict()).get(source_response)
         self.assertEqual("target_not_met", measuurement_response["measurement"]["status"])
+
+    def test_timestamp(self):
+        """Test that the measurement has a timestamp."""
+        source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
+        now = datetime.datetime(2018, 12, 21, 21, 35, 56, 456033)
+        with patch("datetime.datetime") as mock_datetime:
+            mock_datetime.utcnow.return_value = now
+            measuurement_response = Metric(dict()).get(source_response)
+        self.assertEqual("2018-12-21T21:35:56", measuurement_response["measurement"]["timestamp"])

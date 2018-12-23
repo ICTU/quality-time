@@ -1,5 +1,7 @@
 import React from 'react';
 import { Label, Table, Popup } from 'semantic-ui-react';
+import TimeAgo from 'react-timeago';
+
 
 function Source(props) {
   if (props.source_response.connection_error || props.source_response.parse_error) {
@@ -28,9 +30,9 @@ function Measurement(props) {
       <Table.Cell>
         {metric.name}
       </Table.Cell>
-      <Table.Cell>
-        {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}
-      </Table.Cell>
+      <Popup trigger={<Table.Cell>{(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}</Table.Cell>} flowing hoverable>
+        Measured <TimeAgo date={measurement.timestamp} />
+      </Popup>
       <Table.Cell>
           {metric.direction} {measurement.target} {metric.unit}
       </Table.Cell>
