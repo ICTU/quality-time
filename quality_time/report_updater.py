@@ -1,44 +1,48 @@
 """Report updater."""
 
 import asyncio
+import datetime
 import json
 import logging
-import os
-import sys
 import time
 
 import aiohttp
+import dataset
+
+from .util import hash_request_url
 
 
-async def fetch(api):
+async def fetch(session, api):
     """Fetch one API asynchronously."""
+    async with session.get(f"http://localhost:8080/{api}") as response:
+        logging.info("Retrieving %s", api)
+        return await response.json()
+
+
+async def fetch_and_store_measurement(session, api):
+    """Fetch and store one measurement."""
+    measurement = await fetch(session, api)
+    column = hash_request_url(measurement["request"]["request_url"])
+    timestamp = datetime.datetime.fromisoformat(measurement["measurement"]["timestamp"])
+    with dataset.connect("sqlite:///measurements.db") as database:
+        database[column].insert(dict(timestamp=timestamp, measurement=json.dumps(measurement)))
+
+
+async def fetch_report_and_measurements():
+    """Fetch the report and its measurements."""
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"http://localhost:8080/{api}") as response:
-            logging.info("Retrieving %s", api)
-            return await response.json()
-
-
-async def fetch_all(apis):
-    """Fetch all APIs asynchronously."""
-    return await asyncio.gather(*(fetch(api) for api in apis))
+        report_config_json = await fetch(session, "report")
+        metrics = []
+        for subject in report_config_json["subjects"]:
+            metrics.extend(subject["metrics"])
+        await asyncio.gather(*(fetch_and_store_measurement(session, api) for api in metrics))
 
 
 def run():
     """Update the reports."""
     logging.getLogger().setLevel(logging.INFO)
-    if not os.path.exists(sys.argv[1]):
-        with open(sys.argv[1], 'w') as report_json_file:
-            json.dump(dict(measurements=[]), report_json_file, indent="  ")
 
     while True:
-        report_config_json = asyncio.run(fetch("report"))
-        with open(sys.argv[1]) as report_json_file:
-            report_json = json.load(report_json_file)
-        metrics = []
-        for subject in report_config_json["subjects"]:
-            metrics.extend(subject["metrics"])
-        measurements = list(asyncio.run(fetch_all(metrics)))
-        report_json["measurements"].extend(measurements)
-        with open(sys.argv[1], "w") as report_json_file:
-            json.dump(report_json, report_json_file, indent="  ")
+        asyncio.run(fetch_report_and_measurements())
+        logging.info("Starting sleep...")
         time.sleep(10)

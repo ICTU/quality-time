@@ -4,6 +4,7 @@ import json
 import logging
 from typing import cast, Type
 
+import dataset
 import bottle
 
 from .metrics import *
