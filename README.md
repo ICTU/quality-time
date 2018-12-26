@@ -1,15 +1,13 @@
 # Quality-time
 
-[![Updates](https://pyup.io/repos/github/ICTU/quality-time/shield.svg)](https://pyup.io/repos/github/ICTU/quality-time/)
+Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time* consists of a Progres database server, a backend API, a metric data collector, and a simple React frontend. Its main purpose is to experiment with features that may or may not land in [HQ](https://github.com/ICTU/quality-report).
 
-Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time* consists of a simple backend API and a simple React frontend. Its main purpose is to experiment with features that may or may not land in [HQ](https://github.com/ICTU/quality-report).
-
-The backend API is called by the frontend to collect measurements from different data sources. Its purpose is to hide the complexity of the different metric sources behind a facade. The frontend asks the backend for a report configuration and then uses the backend API to collect the metrics.
+The collector collects metrics data from metric sources such as SonarQube and Jira. It posts the measurements to the backend API which in turn stores them in the database. The frontend calls the backend API to get the report and the measurements.
 
 Planned features/experiments include:
 
 - [X] Simpler and robust data collection
-- [ ] Scheduled data collection
+- [X] Scheduled data collection
 - [ ] History integrated in the API and report
 - [ ] Time travel
 - [ ] Simpler report configuration (YAML?)
@@ -24,7 +22,7 @@ Planned features/experiments include:
 
 ## Installation
 
-The *Quality-time* backend requires Python 3.7 or newer.
+*Quality-time* requires Docker and Docker-compose.
 
 There's no release yet, so you have to run from sources for the time being.
 
@@ -32,41 +30,21 @@ Clone this repository:
 
 `git clone git@github.com:ICTU/quality-time.git`
 
-Create a virtual environment:
+Build the containers:
 
-`python3 -m venv .venv`
-
-Install the dependencies:
-
-`pip install -r requirements.txt -r requirements-dev.txt`
-
-Start development mode:
-
-`python setup.py develop`
-
-Optionally, to create a Docker image for the backend:
-
-`docker build -t ictu/quality-time .`
-
-The frontend needs Node and npm.
+`docker-compose build`
 
 ## Usage
 
-To start the back end run:
+Start the containers:
 
-`quality-time-facade`
+`docker-compose up`
 
-Or, start the back end Docker container:
-
-`docker run -p 8080:8080 -ti ictu/quality-time`
-
-To start the application server, run:
-
-`cd quality-time-app || npm start`
+The frontend is served at [http://localhost:5000](http://localhost:5000).
 
 ## Test
 
-To run the unit tests and measure unit test coverage:
+To run the unit tests and measure unit test coverage cd into the components, e.g. `cd compontents/server` and:
 
 `ci/unittest.sh`
 
