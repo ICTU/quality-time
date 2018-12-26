@@ -1,0 +1,9 @@
+digraph {
+  server -> database [label=measurement]
+  database -> server [label=measurement]
+  collector -> server [label=measurement]
+  server -> collector [label=report_config]
+  source -> collector [label=measurement]
+  server -> frontend [label=report_config]
+  server -> frontend [label=measurement]
+}
