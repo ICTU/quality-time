@@ -4,7 +4,7 @@ import Metric from './Metric.js';
 
 function Subject(props) {
   const metrics = props.metrics.map((metric) =>
-    <Metric key={metric} metric={metric} search_string={props.search_string} />);
+    <Metric key={metric} metric={metric} search_string={props.search_string} report_date={props.report_date} />);
   return (
     <Segment basic>
       <Header as='h2'>{props.title}</Header>

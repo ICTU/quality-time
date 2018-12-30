@@ -10,8 +10,15 @@ import dataset
 import bottle
 
 
-CONNECTION_STRING = "postgresql://postgres:mysecretpassword@postgres:5432/postgres"
+CONNECTION_STRING = "postgresql://postgres:mysecretpassword@database:5432/postgres"
 DATABASE = None
+
+
+def key(measurement) -> str:
+    """Create a database key from the measurement."""
+    request = measurement["request"]
+    return json.dumps(dict(metric=request["metric"], source=request["source"],
+                           urls=request["urls"], components=request["components"]))
 
 
 @bottle.get("/report")
@@ -29,9 +36,8 @@ def post():
     logging.info(bottle.request)
     measurement = bottle.request.json
     timestamp = datetime.datetime.fromisoformat(measurement["measurement"]["timestamp"])
-    request_url = measurement["request"]["request_url"]
     table = DATABASE["measurements"]
-    table.insert(dict(timestamp=timestamp, request_url=request_url, measurement=json.dumps(measurement)))
+    table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
 
 
 @bottle.get("/<metric_name>/<source_name>")
@@ -40,13 +46,19 @@ def get(metric_name: str, source_name: str):
     logging.info(bottle.request)
     bottle.response.add_header("Access-Control-Allow-Origin", "*")
     table = DATABASE["measurements"]
-    _, _, path, query, fragment = urllib.parse.urlsplit(bottle.request.url)
-    request_url = urllib.parse.urlunsplit(("", "", path, query, fragment)).strip("/")
-    try:
-        return json.loads(table.find_one(request_url=request_url, order_by="-timestamp")["measurement"])
-    except:
-        logging.error("Can't find measurement for %s. Table has %d entries", request_url, len(table))
-        raise
+    if len(table) == 0:
+        logging.warning("There are no measurements in the database yet.")
+        return
+    urls = bottle.request.query.getall("url")
+    components = bottle.request.query.getall("component")
+    key = json.dumps(dict(metric=metric_name, source=source_name, urls=urls, components=components))
+    report_date_string = bottle.request.query.get("report_date")
+    report_date = datetime.datetime.fromisoformat(report_date_string) if report_date_string else datetime.datetime.now()
+    measurement = table.find_one(table.table.columns.timestamp <= report_date, key=key, order_by="-timestamp")
+    if measurement:
+        logging.info("Found measurement for %s: %s", bottle.request.url, measurement)
+        return json.loads(measurement["measurement"])
+    logging.warning("Couldn't find measurement for %s, key=%s, report_date=%s", bottle.request.url, key, report_date)
 
 
 def serve():

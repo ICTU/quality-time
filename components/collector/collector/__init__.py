@@ -23,7 +23,8 @@ def get_metric_from_source(request_url: str) -> Response:
     source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
     urls = query.get("url", [])
     components = query.get("component", [])
-    request = dict(request=dict(request_url=request_url, urls=urls, components=components))
+    request = dict(request=dict(
+            request_url=request_url, metric=metric_name, source=source_name, urls=urls, components=components))
     return metric.get(source.get(request))
 
 
@@ -54,7 +55,7 @@ def collect():
 
     while True:
         logging.info("Sleeping...")
-        time.sleep(10)
+        time.sleep(30)
         logging.info("Working...")
         fetch_report_and_measurements()
 
