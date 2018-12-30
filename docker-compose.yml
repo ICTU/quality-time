@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    build: components/frontend
+    depends_on:
+    - server
+    ports:
+    - 5000:5000
+  collector:
+    build: components/collector
+    depends_on:
+    - server
+  server:
+    build: components/server
+    ports:
+    - 8080:8080
+    depends_on:
+    - database
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+    - 5432:5432
