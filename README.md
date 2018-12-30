@@ -9,7 +9,7 @@ Planned features/experiments include:
 - [X] Simpler and robust data collection
 - [X] Scheduled data collection
 - [ ] History integrated in the API and report
-- [ ] Time travel
+- [X] Time travel
 - [ ] Simpler report configuration (YAML?)
 - [ ] A different representation of metrics than a boring table. Maybe big cards for metrics that demand attention and small for metrics that are ok.
 
