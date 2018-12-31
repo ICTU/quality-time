@@ -1,5 +1,7 @@
 """Quality-time server."""
 
+from gevent import monkey; monkey.patch_all()
+
 import datetime
 import json
 import logging
@@ -75,7 +77,7 @@ def serve():
         except Exception as reason:
             logging.warning("Waiting for database to become available: %s", reason)
         time.sleep(2)
-    bottle.run(server="cherrypy", host='0.0.0.0', port=8080, reloader=True)
+    bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)
 
 
 if __name__ == "__main__":
