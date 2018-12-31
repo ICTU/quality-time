@@ -9,12 +9,19 @@ class Metric extends Component {
     this.state = {measurement: null, metric: null, source: null}
   }
   fetch_measurement() {
-    const parts = this.props.report_date.split(" ");
-    let iso_report_date = parts[0].split("-").reverse().join("-");
-    if (parts.length > 1) {
-      const time_parts = parts[1].split(":")
-      iso_report_date += ` ${Number(time_parts[0]) - 1}:${time_parts[1]}`;  // UTC
+    let report_date = new Date();
+    if (this.props.report_date !== '') {
+      const parts = this.props.report_date.split(" ");
+      const date_parts = parts[0].split("-");
+      report_date.setFullYear(date_parts[2]);
+      report_date.setMonth(Number(date_parts[1]) - 1);
+      report_date.setDate(date_parts[0]);
+      if (parts.length > 1) {
+        const time_parts = parts[1].split(":");
+        report_date.setHours(time_parts[0], time_parts[1]);
+      }
     }
+    const iso_report_date = report_date.toISOString().split(".")[0];
     let self = this;
     fetch(`http://localhost:8080/${this.props.metric}&report_date=${iso_report_date}`)
       .then(function(response) {
