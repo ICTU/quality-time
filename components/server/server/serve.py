@@ -23,11 +23,20 @@ def key(measurement) -> str:
                            urls=request["urls"], components=request["components"]))
 
 
+def sse_pack(data):
+    """Pack data in Server-Sent Events (SSE) format"""
+    buffer = ""
+    for key in ["retry", "id", "event", "data"]:
+        if key in data.keys():
+            buffer += f"{key}: {data[key]}\n"
+    return buffer + "\n"
+
+
 @bottle.get("/report")
 def report():
     """Return the quality report."""
     logging.info(bottle.request)
-    bottle.response.add_header("Access-Control-Allow-Origin", "*")
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
     with open("example-report.json") as json_report:
         return json.load(json_report)
 
@@ -42,11 +51,50 @@ def post():
     table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
 
 
+@bottle.route("/nr_measurements", method="OPTIONS")
+def options():
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
+    bottle.response.set_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+    bottle.response.set_header("Access-Control-Allow-Headers", "X-REQUESTED-WITH, CACHE-CONTROL, LAST-EVENT-ID")
+    bottle.response.set_header("Content-Type", "text/plain")
+    return ""
+
+
+@bottle.get("/nr_measurements")
+def stream_generator():
+    # Keep event IDs consistent
+    event_id = 0
+    if "Last-Event-Id" in bottle.request.headers:
+        event_id = int(bottle.request.headers["Last-Event-Id"]) + 1
+
+    # Set up our message payload with a retry value in case of connection failure
+    # (that's also the polling interval to be used as fallback by our polyfill)
+    msg = dict(retry="2000")
+
+    # Provide an initial data dump to each new client
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
+    bottle.response.set_header("Content-Type", "text/event-stream")
+    data = len(DATABASE["measurements"])
+    msg.update(dict(event="init", data=data, id=event_id))
+    yield sse_pack(msg)
+
+    # Now give them deltas as they arrive (say, from a message broker)
+    msg["event"] = "delta"
+    while True:
+        # block until you get new data (from a queue, pub/sub, zmq, etc.)
+        time.sleep(10)
+        if len(DATABASE["measurements"]) > data:
+            data = len(DATABASE["measurements"])
+            event_id += 1
+            msg.update(dict(data=data, id=event_id))
+            yield sse_pack(msg)
+
+
 @bottle.get("/<metric_name>/<source_name>")
 def get(metric_name: str, source_name: str):
     """Handler for the get-metric-from-source API."""
     logging.info(bottle.request)
-    bottle.response.add_header("Access-Control-Allow-Origin", "*")
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
     table = DATABASE["measurements"]
     if len(table) == 0:
         logging.warning("There are no measurements in the database yet.")
