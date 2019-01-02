@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Subject } from './Subject.js';
-import { Container, Form, Header, Input } from 'semantic-ui-react';
-import { DateTimeInput } from 'semantic-ui-calendar-react';
+import { Container, Form, Label, Header, Input } from 'semantic-ui-react';
+import { DateInput } from 'semantic-ui-calendar-react';
+
+
+function NewMeasurementsLabel(props) {
+  if (props.nr_new_measurements === 0) {return null}
+  return (
+    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurements available</Label>
+  )
+}
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {subjects: [], search_string: '', report_date: ''};
+    this.state = {subjects: [], search_string: '', report_date: new Date(), nr_measurements: 0, nr_new_measurements: 0};
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
@@ -21,6 +29,35 @@ class App extends Component {
       .then(function(json) {
         self.setState({subjects: json.subjects});
       });
+    var source = new EventSource("http://localhost:8080/nr_measurements");
+    source.addEventListener('init', function(e) {
+      const nr_measurements = Number(e.data);
+      self.setState({nr_measurements: nr_measurements, nr_new_measurements: 0});
+    }, false);
+    source.addEventListener('delta', function(e) {
+      self.setState({nr_new_measurements: Number(e.data) - self.state.nr_measurements});
+    }, false);
+    source.addEventListener('error', function(e) {
+      if (e.readyState === EventSource.CLOSED) {
+        self.setState({nr_measurements: 0, nr_new_measurements: 0});
+      }
+      else if (e.readyState === EventSource.OPEN) {
+        self.setState({nr_measurements: 0, nr_new_measurements: 0});
+      }
+    }, false);
+  }
+
+  reload(event) {
+    event.preventDefault();
+    let self = this;
+    fetch('http://localhost:8080/report')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
+        self.setState({subjects: json.subjects, report_date: new Date(), nr_measurements: nr_measurements, nr_new_measurements: 0});
+      });
   }
 
   handleSearchChange(event) {
@@ -29,7 +66,7 @@ class App extends Component {
 
   handleDateChange = (event, {name, value}) => {
     if (this.state.hasOwnProperty(name)) {
-      this.setState({ [name]: value });
+      this.setState({report_date: Date.parse(value)})
     }
   }
 
@@ -38,7 +75,9 @@ class App extends Component {
     const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
     return (
       <Container>
-        <Header as='h1' textAlign='center'>Quality-time</Header>
+        <Header as='h1' textAlign='center'>
+          Quality-time <NewMeasurementsLabel onClick={(e)=>this.reload(e)} nr_new_measurements={this.state.nr_new_measurements} />
+        </Header>
         <Form>
           <Form.Group>
             <Form.Field>
@@ -47,7 +86,7 @@ class App extends Component {
             </Form.Field>
             <Form.Field>
               <label>Report date</label>
-              <DateTimeInput name="report_date" placeholder={today_string} value={this.state.report_date} closable={true}
+              <DateInput name="report_date" placeholder={today_string} closable={true}
                         initialDate={today} maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
             </Form.Field>
           </Form.Group>
