@@ -7,8 +7,9 @@ import { DateInput } from 'semantic-ui-calendar-react';
 
 function NewMeasurementsLabel(props) {
   if (props.nr_new_measurements === 0) {return null}
+  const plural_s = props.nr_new_measurements > 1 ? 's' : '';
   return (
-    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurements available</Label>
+    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurement{plural_s} available</Label>
   )
 }
 
