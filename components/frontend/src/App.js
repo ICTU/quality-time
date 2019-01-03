@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Container } from 'semantic-ui-react';
 import { Subject } from './Subject.js';
-import { Container, Form, Label, Header, Input } from 'semantic-ui-react';
-import { DateInput } from 'semantic-ui-calendar-react';
-
-
-function NewMeasurementsLabel(props) {
-  if (props.nr_new_measurements === 0) {return null}
-  const plural_s = props.nr_new_measurements > 1 ? 's' : '';
-  return (
-    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurement{plural_s} available</Label>
-  )
-}
+import { Menubar } from './Menubar.js';
 
 
 class App extends Component {
@@ -82,38 +73,22 @@ class App extends Component {
   }
 
   render() {
-    const today = new Date();
-    const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
     let report_date = new Date();
     if (this.state.report_date_string) {
       report_date = new Date(this.state.report_date_string.split("-").reverse().join("-"));
       report_date.setHours(23, 59, 59);
     }
     return (
-      <Container>
-        <Header as='h1' textAlign='center'>
-          Quality-time <NewMeasurementsLabel onClick={(e)=>this.reload(e)} nr_new_measurements={this.state.nr_new_measurements} />
-        </Header>
-        <Form>
-          <Form.Group>
-            <Form.Field>
-              <label>Filter metrics</label>
-              <Input icon='search' iconPosition='left' placeholder='Search...' onChange={this.handleSearchChange} />
-            </Form.Field>
-            <Form.Field>
-              <label>Report date</label>
-              <DateInput name="report_date_string" value={this.state.report_date_string}
-                         placeholder={today_string} closable={true} initialDate={today}
-                         maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-        <Container>
+      <div>
+        <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange} onReload={(e)=>this.reload(e)}
+                 nr_new_measurements={this.state.nr_new_measurements}
+                 report_date_string={this.state.report_date_string} />
+        <Container style={{ marginTop: '7em' }}>
           {this.state.subjects.map((subject) =>
             <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
                      search_string={this.state.search_string} report_date={report_date}/>)}
         </Container>
-      </Container>
+      </div>
     );
   }
 }
