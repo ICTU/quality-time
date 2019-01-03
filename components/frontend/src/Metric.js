@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Placeholder } from 'semantic-ui-react';
+import { Placeholder, Table } from 'semantic-ui-react';
 import Measurement from './Measurement.js';
 
 
@@ -9,6 +9,7 @@ class Metric extends Component {
     this.state = {measurement: null, metric: null, source: null}
   }
   fetch_measurement() {
+    console.log(this.props.report_date, typeof(this.props.report_date));
     const iso_report_date = this.props.report_date.toISOString().split(".")[0];
     let self = this;
     fetch(`http://localhost:8080/${this.props.metric}&report_date=${iso_report_date}`)
@@ -32,10 +33,32 @@ class Metric extends Component {
     const m = this.state.metric;
     if (m === null) {
       return (
-        <Placeholder>
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder>
+        <Table.Row>
+          <Table.Cell>
+            <Placeholder>
+              <Placeholder.Line />
+              <Placeholder.Line />
+            </Placeholder>
+          </Table.Cell>
+          <Table.Cell>
+            <Placeholder>
+              <Placeholder.Line />
+              <Placeholder.Line />
+            </Placeholder>
+          </Table.Cell>
+          <Table.Cell>
+            <Placeholder>
+              <Placeholder.Line />
+              <Placeholder.Line />
+            </Placeholder>
+          </Table.Cell>
+          <Table.Cell>
+            <Placeholder>
+              <Placeholder.Line />
+              <Placeholder.Line />
+            </Placeholder>
+          </Table.Cell>
+        </Table.Row>
       )
     }
     const search = this.props.search_string;

@@ -17,7 +17,9 @@ function NewMeasurementsLabel(props) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {subjects: [], search_string: '', report_date: new Date(), nr_measurements: 0, nr_new_measurements: 0};
+    this.state = {
+      subjects: [], search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0
+    };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
@@ -60,7 +62,7 @@ class App extends Component {
         self.setState(
           {
             subjects: json.subjects,
-            report_date: new Date(),
+            report_date_string: '',
             nr_measurements: nr_measurements,
             nr_new_measurements: 0
           }
@@ -75,13 +77,18 @@ class App extends Component {
 
   handleDateChange = (event, {name, value}) => {
     if (this.state.hasOwnProperty(name)) {
-      this.setState({report_date: Date.parse(value)})
+      this.setState({[name]: value})
     }
   }
 
   render() {
     const today = new Date();
     const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    let report_date = new Date();
+    if (this.state.report_date_string) {
+      report_date = new Date(this.state.report_date_string.split("-").reverse().join("-"));
+      report_date.setHours(23, 59, 59);
+    }
     return (
       <Container>
         <Header as='h1' textAlign='center'>
@@ -95,7 +102,8 @@ class App extends Component {
             </Form.Field>
             <Form.Field>
               <label>Report date</label>
-              <DateInput name="report_date" placeholder={today_string} closable={true} initialDate={today}
+              <DateInput name="report_date_string" value={this.state.report_date_string}
+                         placeholder={today_string} closable={true} initialDate={today}
                          maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
             </Form.Field>
           </Form.Group>
@@ -103,7 +111,7 @@ class App extends Component {
         <Container>
           {this.state.subjects.map((subject) =>
             <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
-                     search_string={this.state.search_string} report_date={this.state.report_date}/>)}
+                     search_string={this.state.search_string} report_date={report_date}/>)}
         </Container>
       </Container>
     );
