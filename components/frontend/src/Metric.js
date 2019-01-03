@@ -9,7 +9,6 @@ class Metric extends Component {
     this.state = {measurement: null, metric: null, source: null}
   }
   fetch_measurement() {
-    console.log(this.props.report_date, typeof(this.props.report_date));
     const iso_report_date = this.props.report_date.toISOString().split(".")[0];
     let self = this;
     fetch(`http://localhost:8080/${this.props.metric}&report_date=${iso_report_date}`)
@@ -25,7 +24,6 @@ class Metric extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.report_date !== this.props.report_date) {
-      console.log(`Fetching measurement for ${this.props.report_date}`);
       this.fetch_measurement();
     }
   }
