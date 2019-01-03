@@ -7,8 +7,9 @@ import { DateInput } from 'semantic-ui-calendar-react';
 
 function NewMeasurementsLabel(props) {
   if (props.nr_new_measurements === 0) {return null}
+  const plural_s = props.nr_new_measurements > 1 ? 's' : '';
   return (
-    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurements available</Label>
+    <Label as='a' tag color='blue' onClick={props.onClick}>{props.nr_new_measurements} new measurement{plural_s} available</Label>
   )
 }
 
@@ -56,8 +57,16 @@ class App extends Component {
       })
       .then(function(json) {
         const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
-        self.setState({subjects: json.subjects, report_date: new Date(), nr_measurements: nr_measurements, nr_new_measurements: 0});
-      });
+        self.setState(
+          {
+            subjects: json.subjects,
+            report_date: new Date(),
+            nr_measurements: nr_measurements,
+            nr_new_measurements: 0
+          }
+        );
+      }
+    );
   }
 
   handleSearchChange(event) {
@@ -86,8 +95,8 @@ class App extends Component {
             </Form.Field>
             <Form.Field>
               <label>Report date</label>
-              <DateInput name="report_date" placeholder={today_string} closable={true}
-                        initialDate={today} maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
+              <DateInput name="report_date" placeholder={today_string} closable={true} initialDate={today}
+                         maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
             </Form.Field>
           </Form.Group>
         </Form>

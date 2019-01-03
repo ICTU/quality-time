@@ -31,7 +31,7 @@ function Measurement(props) {
         {metric.name}
       </Table.Cell>
       <Popup trigger={<Table.Cell>{(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}</Table.Cell>} flowing hoverable>
-        Measured <TimeAgo date={measurement.timestamp} />
+        Measured <TimeAgo date={measurement.end} /> ({measurement.start} - {measurement.end})
       </Popup>
       <Table.Cell>
           {metric.direction} {measurement.target} {metric.unit}

@@ -44,11 +44,26 @@ def report():
 @bottle.post("/measurement")
 def post():
     """Put the measurement in the database."""
+    def equal_measurements(m1, m2):
+        """Return whether the measurements have equal values and targets."""
+        return m1["measurement"] == m2["measurement"] and m1["target"] == m2["target"] and \
+            m1["status"] == m2["status"] and m1["calculation_error"] == m2["calculation_error"]
+
     logging.info(bottle.request)
     measurement = bottle.request.json
-    timestamp = datetime.datetime.fromisoformat(measurement["measurement"]["timestamp"])
+    timestamp_string = measurement["measurement"]["timestamp"]
+    measurement["measurement"]["start"] = timestamp_string
+    measurement["measurement"]["end"] = timestamp_string
+    timestamp = datetime.datetime.fromisoformat(timestamp_string)
     table = DATABASE["measurements"]
-    table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
+    latest_measurement_row = table.find_one(key=key(measurement), order_by="-timestamp")
+    latest_measurement = json.loads(latest_measurement_row["measurement"])
+    if latest_measurement and equal_measurements(latest_measurement["measurement"], measurement["measurement"]):
+        latest_measurement["measurement"]["end"] = timestamp_string
+        table.update(dict(id=latest_measurement_row["id"], timestamp=timestamp,
+                          measurement=json.dumps(latest_measurement)), ["id"])
+    else:
+        table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
 
 
 @bottle.route("/nr_measurements", method="OPTIONS")
