@@ -57,13 +57,14 @@ def post():
     timestamp = datetime.datetime.fromisoformat(timestamp_string)
     table = DATABASE["measurements"]
     latest_measurement_row = table.find_one(key=key(measurement), order_by="-timestamp")
-    latest_measurement = json.loads(latest_measurement_row["measurement"])
-    if latest_measurement and equal_measurements(latest_measurement["measurement"], measurement["measurement"]):
-        latest_measurement["measurement"]["end"] = timestamp_string
-        table.update(dict(id=latest_measurement_row["id"], timestamp=timestamp,
-                          measurement=json.dumps(latest_measurement)), ["id"])
-    else:
-        table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
+    if latest_measurement_row:
+        latest_measurement = json.loads(latest_measurement_row["measurement"])
+        if equal_measurements(latest_measurement["measurement"], measurement["measurement"]):
+            latest_measurement["measurement"]["end"] = timestamp_string
+            table.update(dict(id=latest_measurement_row["id"], timestamp=timestamp,
+                              measurement=json.dumps(latest_measurement)), ["id"])
+            return
+    table.insert(dict(timestamp=timestamp, key=key(measurement), measurement=json.dumps(measurement)))
 
 
 @bottle.route("/nr_measurements", method="OPTIONS")
