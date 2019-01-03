@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Subject } from './Subject.js';
 import { Container, Form, Label, Header, Input } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
+import { Subject } from './Subject.js';
+import { Menubar } from './Menubar.js';
 
 
 function NewMeasurementsLabel(props) {
@@ -90,30 +91,33 @@ class App extends Component {
       report_date.setHours(23, 59, 59);
     }
     return (
-      <Container>
-        <Header as='h1' textAlign='center'>
-          Quality-time <NewMeasurementsLabel onClick={(e)=>this.reload(e)} nr_new_measurements={this.state.nr_new_measurements} />
-        </Header>
-        <Form>
-          <Form.Group>
-            <Form.Field>
-              <label>Filter metrics</label>
-              <Input icon='search' iconPosition='left' placeholder='Search...' onChange={this.handleSearchChange} />
-            </Form.Field>
-            <Form.Field>
-              <label>Report date</label>
-              <DateInput name="report_date_string" value={this.state.report_date_string}
-                         placeholder={today_string} closable={true} initialDate={today}
-                         maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
-            </Form.Field>
-          </Form.Group>
-        </Form>
-        <Container>
-          {this.state.subjects.map((subject) =>
-            <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
-                     search_string={this.state.search_string} report_date={report_date}/>)}
+      <div>
+        <Menubar />
+        <Container style={{ marginTop: '7em' }}>
+          <Header as='h1' textAlign='center'>
+            Quality-time <NewMeasurementsLabel onClick={(e)=>this.reload(e)} nr_new_measurements={this.state.nr_new_measurements} />
+          </Header>
+          <Form>
+            <Form.Group>
+              <Form.Field>
+                <label>Filter metrics</label>
+                <Input icon='search' iconPosition='left' placeholder='Search...' onChange={this.handleSearchChange} />
+              </Form.Field>
+              <Form.Field>
+                <label>Report date</label>
+                <DateInput name="report_date_string" value={this.state.report_date_string}
+                           placeholder={today_string} closable={true} initialDate={today}
+                           maxDate={today} iconPosition="left" onChange={this.handleDateChange} />
+              </Form.Field>
+            </Form.Group>
+          </Form>
+          <Container>
+            {this.state.subjects.map((subject) =>
+              <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
+                       search_string={this.state.search_string} report_date={report_date}/>)}
+          </Container>
         </Container>
-      </Container>
+      </div>
     );
   }
 }
