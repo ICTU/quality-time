@@ -23,6 +23,8 @@ function Source(props) {
 function Measurement(props) {
   const metric = props.metric;
   const measurement = props.measurement;
+  const start = new Date(measurement.start);
+  const end = new Date(measurement.end);
   return (
     <Table.Row positive={measurement.status === "target_met"}
                negative={measurement.status === "target_not_met"}
@@ -31,7 +33,7 @@ function Measurement(props) {
         {metric.name}
       </Table.Cell>
       <Popup trigger={<Table.Cell>{(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}</Table.Cell>} flowing hoverable>
-        Measured <TimeAgo date={measurement.end} /> ({measurement.start} - {measurement.end})
+        Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
       </Popup>
       <Table.Cell>
           {metric.direction} {measurement.target} {metric.unit}
