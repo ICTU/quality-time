@@ -1,11 +1,9 @@
 """Clock metric source."""
 
-import time
-
 import requests
 
 from collector.source import Source
-from collector.type import Measurement, URL
+from collector.type import Measurement
 
 
 class ClockTime(Source):
