@@ -13,9 +13,9 @@ class API:
     def __init__(self, query: Mapping[str, List[str]]) -> None:
         self.query = query
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls) -> None:
         API.subclasses.add(cls)
-        super().__init_subclass__(**kwargs)
+        super().__init_subclass__()
 
     @classmethod
     def subclass_for_api(cls, api_name: str) -> Type["API"]:

@@ -19,7 +19,7 @@ class Source(API):
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
     name = "Subclass responsibility"
 
-    def get(self, response: Response) -> Response:  # pylint: disable=unused-argument
+    def get(self, response: Response) -> Response:
         """Connect to the source to get and parse the measurement for the metric."""
         source_response = response.copy() if response else dict()
         request = response["request"]
