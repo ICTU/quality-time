@@ -5,7 +5,7 @@ services:
     depends_on:
     - server
     ports:
-    - 5000:5000
+    - "5000:5000"
   collector:
     build: components/collector
     depends_on:
@@ -13,7 +13,7 @@ services:
   server:
     build: components/server
     ports:
-    - 8080:8080
+    - "8080:8080"
     depends_on:
     - database
   database:
@@ -22,4 +22,8 @@ services:
     environment:
       POSTGRES_PASSWORD: mysecretpassword
     ports:
-    - 5432:5432
+    - "5432:5432"
+    volumes:
+    - "dbdata:/var/lib/postgresql/data"
+volumes:
+  dbdata:
