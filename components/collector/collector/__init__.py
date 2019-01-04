@@ -1,8 +1,8 @@
 """Measurement collector."""
 
 import logging
-import time
 import urllib.parse
+from time import sleep
 from typing import cast, Dict, Type
 
 import requests
@@ -62,7 +62,7 @@ def collect() -> None:
 
     while True:
         logging.info("Sleeping...")
-        time.sleep(30)
+        sleep(30)
         logging.info("Working...")
         fetch_report_and_measurements()
 
