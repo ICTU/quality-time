@@ -9,7 +9,8 @@
     "react-timeago": "^4.1.9",
     "semantic-ui-calendar-react": "^0.12.1",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.84.0"
+    "semantic-ui-react": "^0.84.0",
+    "victory": "^31.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -102,24 +102,19 @@ def nr_measurements_stream():
 
 
 @bottle.get("/<metric_name>/<source_name>")
-def get(metric_name: str, source_name: str):
-    """Handler for the get-metric-from-source API."""
+def measurements(metric_name: str, source_name: str):
+    """Return the measurements for the metric/source."""
     logging.info(bottle.request)
     bottle.response.set_header("Access-Control-Allow-Origin", "*")
-    table = DATABASE["measurements"]
-    if not table:
-        logging.warning("There are no measurements in the database yet.")
-        return
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     key = json.dumps(dict(metric=metric_name, source=source_name, urls=urls, components=components))
     report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
     report_date = datetime.datetime.fromisoformat(report_date_string) if report_date_string else datetime.datetime.now()
-    measurement = table.find_one(table.table.columns.timestamp <= report_date, key=key, order_by="-timestamp")
-    if measurement:
-        logging.info("Found measurement for %s: %s", bottle.request.url, measurement)
-        return json.loads(measurement["measurement"])
-    logging.warning("Couldn't find measurement for %s, key=%s, report_date=%s", bottle.request.url, key, report_date)
+    table = DATABASE["measurements"]
+    rows = list(table.find(table.table.columns.timestamp <= report_date, key=key, order_by="timestamp"))
+    logging.info("Found %d measurements for %s", len(rows), bottle.request.url)
+    return dict(measurements=[json.loads(row["measurement"]) for row in rows])
 
 
 def serve():

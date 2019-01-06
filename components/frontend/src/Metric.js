@@ -6,7 +6,7 @@ import Measurement from './Measurement.js';
 class Metric extends Component {
   constructor(props) {
     super(props);
-    this.state = {measurement: null, metric: null, source: null}
+    this.state = {measurements: []}
   }
   fetch_measurement() {
     const iso_report_date = this.props.report_date.toISOString().split(".")[0];
@@ -16,7 +16,7 @@ class Metric extends Component {
         return response.json();
       })
       .then(function(json) {
-        self.setState({measurement: json.measurement, metric: json.metric, source: json.source});
+        self.setState({measurements: json.measurements});
       });
   }
   componentDidMount() {
@@ -28,41 +28,25 @@ class Metric extends Component {
     }
   }
   render() {
-    const m = this.state.metric;
-    if (m === null) {
+    const m = this.state.measurements;
+    if (m.length === 0) {
       return (
         <Table.Row>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
+          {[1, 2, 3, 4, 5].map((index) =>
+            <Table.Cell key={index}>
+              <Placeholder>
+                <Placeholder.Line />
+                <Placeholder.Line />
+              </Placeholder>
+            </Table.Cell>)}
         </Table.Row>
       )
     }
     const search = this.props.search_string;
-    if (search && !m.name.toLowerCase().includes(search.toLowerCase())) {return null};
+    let last_measurement = m[m.length - 1];
+    if (search && !last_measurement["metric"].name.toLowerCase().includes(search.toLowerCase())) {return null};
     return (
-      <Measurement measurement={this.state.measurement} metric={this.state.metric} source={this.state.source} />
+      <Measurement measurements={m} />
     )
   }
 }

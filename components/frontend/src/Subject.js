@@ -12,6 +12,7 @@ function Subject(props) {
           <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Metric</Table.HeaderCell>
+                <Table.HeaderCell>Trend</Table.HeaderCell>
                 <Table.HeaderCell>Measurement</Table.HeaderCell>
                 <Table.HeaderCell>Target</Table.HeaderCell>
                 <Table.HeaderCell>Source</Table.HeaderCell>

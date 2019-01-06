@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Container } from 'semantic-ui-react';
-import { Subject } from './Subject.js';
+import { Subjects } from './Subjects.js';
 import { Menubar } from './Menubar.js';
 
 
@@ -83,11 +82,8 @@ class App extends Component {
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange} onReload={(e)=>this.reload(e)}
                  nr_new_measurements={this.state.nr_new_measurements}
                  report_date_string={this.state.report_date_string} />
-        <Container style={{ marginTop: '7em' }}>
-          {this.state.subjects.map((subject) =>
-            <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
-                     search_string={this.state.search_string} report_date={report_date}/>)}
-        </Container>
+        <Subjects subjects={this.state.subjects}
+                  search_string={this.state.search_string} report_date={report_date}/>
       </div>
     );
   }

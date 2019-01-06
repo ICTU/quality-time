@@ -1,28 +1,15 @@
 import React from 'react';
-import { Label, Table, Popup } from 'semantic-ui-react';
+import { Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
+import { Source } from './Source';
+import { TrendSparkline } from './TrendSparkline';
 
-
-function Source(props) {
-  if (props.source_response.connection_error || props.source_response.parse_error) {
-    return (
-      <Popup
-        wide='very'
-        content={props.source_response.connection_error ? props.source_response.connection_error : props.source_response.parse_error}
-        header={props.source_response.connection_error ? 'Connection error' : 'Parse error'}
-        trigger={<Label color='red'><a href={props.source_response.landing_url}>{props.source}</a></Label>} />)
-  } else {
-    return (
-      <Label>
-        <a href={props.source_response.landing_url}>{props.source}</a>
-      </Label>
-    )
-  }
-}
 
 function Measurement(props) {
-  const metric = props.metric;
-  const measurement = props.measurement;
+  const last_measurement = props.measurements[props.measurements.length - 1];
+  const metric = last_measurement.metric;
+  const measurement = last_measurement.measurement;
+  const source = last_measurement.source;
   const start = new Date(measurement.start);
   const end = new Date(measurement.end);
   return (
@@ -32,6 +19,9 @@ function Measurement(props) {
       <Table.Cell>
         {metric.name}
       </Table.Cell>
+      <Table.Cell>
+        <TrendSparkline measurements={props.measurements} />
+      </Table.Cell>
       <Popup trigger={<Table.Cell>{(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}</Table.Cell>} flowing hoverable>
         Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
       </Popup>
@@ -39,7 +29,7 @@ function Measurement(props) {
           {metric.direction} {measurement.target} {metric.unit}
       </Table.Cell>
       <Table.Cell>
-        {props.source.responses.map((response) => <Source key={response.api_url} source={props.source.name} source_response={response} />)}
+        {source.responses.map((response) => <Source key={response.api_url} source={source.name} source_response={response} />)}
       </Table.Cell>
     </Table.Row>
   )
