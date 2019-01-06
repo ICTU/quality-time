@@ -8,7 +8,7 @@ function Subject(props) {
   return (
     <Segment basic>
       <Header as='h2'>{props.title}</Header>
-      <Table columns={4}>
+      <Table columns={5}>
           <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Metric</Table.HeaderCell>
