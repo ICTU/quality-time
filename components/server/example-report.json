@@ -48,7 +48,8 @@
             "title": "Environment",
             "metrics": [
                 "version/sonarqube?url=http://sonarcloud.io&component=nl.ictu:hq",
-                "time/clock?url=http://worldtimeapi.org/api/timezone/Europe/Amsterdam.json"
+                "time/clock?url=http://worldtimeapi.org/api/timezone/Europe/Amsterdam.json",
+                "violations/random?url=http://dummy"
             ]
         }
     ]
