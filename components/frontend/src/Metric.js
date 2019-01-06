@@ -32,30 +32,13 @@ class Metric extends Component {
     if (m === null) {
       return (
         <Table.Row>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
-          <Table.Cell>
-            <Placeholder>
-              <Placeholder.Line />
-              <Placeholder.Line />
-            </Placeholder>
-          </Table.Cell>
+          {[1, 2, 3, 4, 5].map((index) =>
+            <Table.Cell key={index}>
+              <Placeholder>
+                <Placeholder.Line />
+                <Placeholder.Line />
+              </Placeholder>
+            </Table.Cell>)}
         </Table.Row>
       )
     }

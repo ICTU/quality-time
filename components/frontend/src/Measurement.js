@@ -1,6 +1,7 @@
 import React from 'react';
 import { Label, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
+import { LineChart, Line } from 'recharts';
 
 
 function Source(props) {
@@ -31,6 +32,11 @@ function Measurement(props) {
                warning={measurement.status === null}>
       <Table.Cell>
         {metric.name}
+      </Table.Cell>
+      <Table.Cell>
+        <LineChart width={100} height={40} data={[{m:4},{m:5},{m:6},{m:4},{m:3},{m:6},{m:5}]}>
+          <Line type="monotone" dataKey="m" />
+        </LineChart>
       </Table.Cell>
       <Popup trigger={<Table.Cell>{(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric.unit}</Table.Cell>} flowing hoverable>
         Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
