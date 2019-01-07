@@ -111,7 +111,8 @@ def measurements(metric_name: str, source_name: str):
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     key = json.dumps(dict(metric=metric_name, source=source_name, urls=urls, components=components))
     report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
-    report_date = datetime.datetime.fromisoformat(report_date_string) if report_date_string else datetime.datetime.now()
+    report_date = datetime.datetime.fromisoformat(report_date_string.replace("Z", "+00:00")) \
+        if report_date_string else datetime.datetime.now(datetime.timezone.utc)
     table = DATABASE["measurements"]
     rows = list(table.find(table.table.columns.timestamp <= report_date, key=key, order_by="timestamp"))
     logging.info("Found %d measurements for %s", len(rows), bottle.request.url)
