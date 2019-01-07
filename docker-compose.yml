@@ -14,6 +14,8 @@ services:
     build: components/server
     ports:
     - "8080:8080"
+    environment:
+    - DATABASE_URL=postgresql://postgres:mysecretpassword@database:5432/postgres
     depends_on:
     - database
   database:
