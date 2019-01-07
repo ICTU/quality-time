@@ -36,7 +36,7 @@ def report():
 
 
 @bottle.post("/measurement")
-def post():
+def post() -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
         """Return whether the measurements have equal values and targets."""
@@ -63,7 +63,7 @@ def post():
 
 
 @bottle.route("/nr_measurements", method="OPTIONS")
-def options():
+def options() -> str:
     """Return the options for the number of measurements server sent events stream."""
     bottle.response.set_header("Access-Control-Allow-Origin", "*")
     bottle.response.set_header("Access-Control-Allow-Methods", "GET, OPTIONS")
@@ -72,7 +72,7 @@ def options():
     return ""
 
 
-def sse_pack(event_id, event, data, retry="2000"):
+def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:
     """Pack data in Server-Sent Events (SSE) format"""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
