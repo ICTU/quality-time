@@ -13,6 +13,7 @@ import time
 
 import dataset
 import bottle
+from sqlalchemy.pool import NullPool
 
 
 DATABASE = None
@@ -123,7 +124,7 @@ def serve() -> None:
     logging.getLogger().setLevel(logging.INFO)
     os.environ.setdefault("DATABASE_URL", "postgresql://postgres:mysecretpassword@localhost:5432/postgres")
     global DATABASE
-    DATABASE = dataset.connect()
+    DATABASE = dataset.connect(engine_kwargs=dict(poolclass=NullPool))
     logging.info("Connected to database: %s", DATABASE)
 
     while True:
