@@ -30,7 +30,7 @@ function Menubar(props) {
             <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
           </Menu.Item>
           <Menu.Item>
-            <DateInput name="report_date_string" value={props.report_date}
+            <DateInput name="report_date_string" value={props.report_date_string}
                        placeholder={today_string} closable={true} initialDate={today}
                        maxDate={today} iconPosition="left" onChange={props.onDate} />
           </Menu.Item>

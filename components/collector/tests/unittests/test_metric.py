@@ -35,33 +35,33 @@ class MetricTest(unittest.TestCase):
     def test_default_target(self):
         """Test that the metric target and default target are included in the response, and are equal by default."""
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
-        measuurement_response = Metric(dict()).get(source_response)
-        self.assertEqual(Measurement("0"), measuurement_response["metric"]["default_target"])
-        self.assertEqual(Measurement("0"), measuurement_response["measurement"]["target"])
+        measurement_response = Metric(dict()).get(source_response)
+        self.assertEqual(Measurement("0"), measurement_response["metric"]["default_target"])
+        self.assertEqual(Measurement("0"), measurement_response["measurement"]["target"])
 
     def test_requested_target(self):
         """Test that the metric target is included in the response, and is equal to the default target by default."""
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
-        measuurement_response = Metric(dict(target="2")).get(source_response)
-        self.assertEqual(Measurement("2"), measuurement_response["measurement"]["target"])
+        measurement_response = Metric(dict(target="2")).get(source_response)
+        self.assertEqual(Measurement("2"), measurement_response["measurement"]["target"])
 
     def test_status_target_met(self):
         """Test the status of a metric that meets the target."""
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("0"))]))
-        measuurement_response = Metric(dict()).get(source_response)
-        self.assertEqual("target_met", measuurement_response["measurement"]["status"])
+        measurement_response = Metric(dict()).get(source_response)
+        self.assertEqual("target_met", measurement_response["measurement"]["status"])
 
     def test_status_target_not_met(self):
         """Test the status of a metric that doesn't meet the target."""
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
-        measuurement_response = Metric(dict()).get(source_response)
-        self.assertEqual("target_not_met", measuurement_response["measurement"]["status"])
+        measurement_response = Metric(dict()).get(source_response)
+        self.assertEqual("target_not_met", measurement_response["measurement"]["status"])
 
     def test_timestamp(self):
         """Test that the measurement has a timestamp."""
         source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
         now = datetime.datetime(2018, 12, 21, 21, 35, 56, 456033)
         with patch("datetime.datetime") as mock_datetime:
-            mock_datetime.utcnow.return_value = now
-            measuurement_response = Metric(dict()).get(source_response)
-        self.assertEqual("2018-12-21T21:35:56", measuurement_response["measurement"]["timestamp"])
+            mock_datetime.now.return_value = now
+            measurement_response = Metric(dict()).get(source_response)
+        self.assertEqual("2018-12-21T21:35:56", measurement_response["measurement"]["timestamp"])

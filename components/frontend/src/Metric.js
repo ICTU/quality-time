@@ -9,9 +9,8 @@ class Metric extends Component {
     this.state = {measurements: []}
   }
   fetch_measurement() {
-    const iso_report_date = this.props.report_date.toISOString().split(".")[0];
     let self = this;
-    fetch(`http://localhost:8080/${this.props.metric}&report_date=${iso_report_date}`)
+    fetch(`http://localhost:8080/${this.props.metric}&report_date=${this.props.report_date.toISOString()}`)
       .then(function(response) {
         return response.json();
       })
