@@ -8,13 +8,13 @@ monkey.patch_all()
 import datetime
 import json
 import logging
+import os
 import time
 
 import dataset
 import bottle
 
 
-CONNECTION_STRING = "postgresql://postgres:mysecretpassword@database:5432/postgres"
 DATABASE = None
 
 
@@ -117,12 +117,13 @@ def measurements(metric_name: str, source_name: str):
     return dict(measurements=[json.loads(row["measurement"]) for row in rows])
 
 
-def serve():
+def serve() -> None:
     """Start the metric-source API which functions as a facade to get metric data from different sources in a
     consistent manner."""
     logging.getLogger().setLevel(logging.INFO)
+    os.environ.setdefault("DATABASE_URL", "postgresql://postgres:mysecretpassword@localhost:5432/postgres")
     global DATABASE
-    DATABASE = dataset.connect(CONNECTION_STRING)
+    DATABASE = dataset.connect()
     logging.info("Connected to database: %s", DATABASE)
 
     while True:

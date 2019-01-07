@@ -1,6 +1,7 @@
 """Measurement collector."""
 
 import logging
+import os
 import urllib.parse
 from time import sleep
 from typing import cast, Dict, Type
@@ -29,31 +30,31 @@ def get_metric_from_source(request_url: URL) -> Response:
     return metric.get(source.get(request))
 
 
-def fetch_report() -> Report:
+def fetch_report(server: URL) -> Report:
     """Fetch the report configuration."""
     logging.info("Retrieving report")
     try:
-        return requests.get(f"http://server:8080/report").json()
+        return requests.get(f"{server}/report").json()
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Couldn't retrieve report: %s", reason)
         return dict(subjects=[])
 
 
-def fetch_and_post_measurement(api: URL) -> None:
+def fetch_and_post_measurement(server: URL, api: URL) -> None:
     """Fetch and store one measurement."""
     measurement = get_metric_from_source(api)
     try:
-        logging.info(requests.post("http://server:8080/measurement", json=measurement))
+        logging.info(requests.post(f"{server}/measurement", json=measurement))
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Posting measurement for %s failed: %s", api, reason)
 
 
-def fetch_report_and_measurements() -> None:
+def fetch_report_and_measurements(server: URL) -> None:
     """Fetch the report and its measurements."""
-    report_config_json = fetch_report()
+    report_config_json = fetch_report(server)
     for subject in report_config_json["subjects"]:
         for metric in subject["metrics"]:
-            fetch_and_post_measurement(URL(metric))
+            fetch_and_post_measurement(server, URL(metric))
 
 
 def collect() -> None:
@@ -61,10 +62,10 @@ def collect() -> None:
     logging.getLogger().setLevel(logging.INFO)
 
     while True:
+        logging.info("Collecting...")
+        fetch_report_and_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
         logging.info("Sleeping...")
         sleep(30)
-        logging.info("Working...")
-        fetch_report_and_measurements()
 
 
 if __name__ == "__main__":
