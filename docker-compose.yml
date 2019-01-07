@@ -8,6 +8,8 @@ services:
     - "5000:5000"
   collector:
     build: components/collector
+    environment:
+    - SERVER_URL=http://server:8080
     depends_on:
     - server
   server:
