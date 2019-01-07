@@ -46,9 +46,6 @@ def post() -> None:
     logging.info(bottle.request)
     measurement = bottle.request.json
     timestamp_string = measurement["measurement"]["timestamp"]
-    measurement["measurement"]["start"] = timestamp_string
-    measurement["measurement"]["end"] = timestamp_string
-    timestamp = datetime.datetime.fromisoformat(timestamp_string)
     key = measurement_key(measurement)
     table = DATABASE["measurements"]
     latest_measurement_row = table.find_one(key=key, order_by="-timestamp")
@@ -56,9 +53,11 @@ def post() -> None:
         latest_measurement = json.loads(latest_measurement_row["measurement"])
         if equal_measurements(latest_measurement["measurement"], measurement["measurement"]):
             latest_measurement["measurement"]["end"] = timestamp_string
-            table.update(dict(id=latest_measurement_row["id"], timestamp=timestamp,
-                              measurement=json.dumps(latest_measurement)), ["id"])
+            table.update(dict(id=latest_measurement_row["id"], measurement=json.dumps(latest_measurement)), ["id"])
             return
+    measurement["measurement"]["start"] = timestamp_string
+    measurement["measurement"]["end"] = timestamp_string
+    timestamp = datetime.datetime.fromisoformat(timestamp_string)
     table.insert(dict(timestamp=timestamp, key=key, measurement=json.dumps(measurement)))
 
 
@@ -114,7 +113,7 @@ def measurements(metric_name: str, source_name: str):
     report_date = datetime.datetime.fromisoformat(report_date_string.replace("Z", "+00:00")) \
         if report_date_string else datetime.datetime.now(datetime.timezone.utc)
     table = DATABASE["measurements"]
-    rows = list(table.find(table.table.columns.timestamp <= report_date, key=key, order_by="timestamp"))
+    rows = list(table.find(table.table.columns.timestamp < report_date, key=key, order_by="timestamp")) if table else []
     logging.info("Found %d measurements for %s", len(rows), bottle.request.url)
     return dict(measurements=[json.loads(row["measurement"]) for row in rows])
 
