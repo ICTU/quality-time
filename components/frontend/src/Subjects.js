@@ -9,7 +9,8 @@ function Subjects(props) {
       <Container style={{ marginTop: '7em' }}>
         {props.subjects.map((subject) =>
           <Subject key={subject.title} title={subject.title} metrics={subject.metrics}
-                   search_string={props.search_string} report_date={props.report_date}/>)}
+                   search_string={props.search_string} report_date={props.report_date}
+                   nr_new_measurements={props.nr_new_measurements} />)}
       </Container>
     )
   }
