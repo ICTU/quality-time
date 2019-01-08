@@ -36,7 +36,7 @@ def report():
 
 
 @bottle.post("/measurement")
-def post():
+def post() -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
         """Return whether the measurements have equal values and targets."""
@@ -46,9 +46,6 @@ def post():
     logging.info(bottle.request)
     measurement = bottle.request.json
     timestamp_string = measurement["measurement"]["timestamp"]
-    measurement["measurement"]["start"] = timestamp_string
-    measurement["measurement"]["end"] = timestamp_string
-    timestamp = datetime.datetime.fromisoformat(timestamp_string)
     key = measurement_key(measurement)
     table = DATABASE["measurements"]
     latest_measurement_row = table.find_one(key=key, order_by="-timestamp")
@@ -56,14 +53,16 @@ def post():
         latest_measurement = json.loads(latest_measurement_row["measurement"])
         if equal_measurements(latest_measurement["measurement"], measurement["measurement"]):
             latest_measurement["measurement"]["end"] = timestamp_string
-            table.update(dict(id=latest_measurement_row["id"], timestamp=timestamp,
-                              measurement=json.dumps(latest_measurement)), ["id"])
+            table.update(dict(id=latest_measurement_row["id"], measurement=json.dumps(latest_measurement)), ["id"])
             return
+    measurement["measurement"]["start"] = timestamp_string
+    measurement["measurement"]["end"] = timestamp_string
+    timestamp = datetime.datetime.fromisoformat(timestamp_string)
     table.insert(dict(timestamp=timestamp, key=key, measurement=json.dumps(measurement)))
 
 
 @bottle.route("/nr_measurements", method="OPTIONS")
-def options():
+def options() -> str:
     """Return the options for the number of measurements server sent events stream."""
     bottle.response.set_header("Access-Control-Allow-Origin", "*")
     bottle.response.set_header("Access-Control-Allow-Methods", "GET, OPTIONS")
@@ -72,7 +71,7 @@ def options():
     return ""
 
 
-def sse_pack(event_id, event, data, retry="2000"):
+def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:
     """Pack data in Server-Sent Events (SSE) format"""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
@@ -114,7 +113,7 @@ def measurements(metric_name: str, source_name: str):
     report_date = datetime.datetime.fromisoformat(report_date_string.replace("Z", "+00:00")) \
         if report_date_string else datetime.datetime.now(datetime.timezone.utc)
     table = DATABASE["measurements"]
-    rows = list(table.find(table.table.columns.timestamp <= report_date, key=key, order_by="timestamp"))
+    rows = list(table.find(table.table.columns.timestamp < report_date, key=key, order_by="timestamp")) if table else []
     logging.info("Found %d measurements for %s", len(rows), bottle.request.url)
     return dict(measurements=[json.loads(row["measurement"]) for row in rows])
 

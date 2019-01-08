@@ -24,8 +24,7 @@ class App extends Component {
       });
     var source = new EventSource("http://localhost:8080/nr_measurements");
     source.addEventListener('init', function(e) {
-      const nr_measurements = Number(e.data);
-      self.setState({nr_measurements: nr_measurements, nr_new_measurements: 0});
+      self.setState({nr_measurements: Number(e.data), nr_new_measurements: 0});
     }, false);
     source.addEventListener('delta', function(e) {
       self.setState({nr_new_measurements: Number(e.data) - self.state.nr_measurements});
@@ -72,7 +71,7 @@ class App extends Component {
   }
 
   render() {
-    let report_date = new Date();
+    let report_date = null;
     if (this.state.report_date_string) {
       report_date = new Date(this.state.report_date_string.split("-").reverse().join("-"));
       report_date.setHours(23, 59, 59);
@@ -82,7 +81,7 @@ class App extends Component {
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange} onReload={(e)=>this.reload(e)}
                  nr_new_measurements={this.state.nr_new_measurements}
                  report_date_string={this.state.report_date_string} />
-        <Subjects subjects={this.state.subjects}
+        <Subjects subjects={this.state.subjects} nr_new_measurements={this.state.nr_new_measurements}
                   search_string={this.state.search_string} report_date={report_date}/>
       </div>
     );
