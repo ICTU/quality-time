@@ -27,16 +27,21 @@ def measurement_key(measurement) -> str:
 
 
 @bottle.get("/report")
-def report():
+def get_report():
     """Return the quality report."""
     logging.info(bottle.request)
     bottle.response.set_header("Access-Control-Allow-Origin", "*")
-    with open("example-report.json") as json_report:
-        return json.load(json_report)
+    report = dict(subjects=[])
+    for subject_row in DATABASE["subjects"].all():
+        subject = dict(title=subject_row["title"], metrics=[])
+        for metric_row in DATABASE["metrics"].find(subject=subject_row["id"]):
+            subject["metrics"].append(metric_row["url"])
+        report["subjects"].append(subject)
+    return report
 
 
 @bottle.post("/measurement")
-def post() -> None:
+def post_measurement() -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
         """Return whether the measurements have equal values and targets."""
@@ -61,6 +66,42 @@ def post() -> None:
     table.insert(dict(timestamp=timestamp, key=key, measurement=json.dumps(measurement)))
 
 
+@bottle.get("/comment/<metric_name>/<source_name>")
+def get_comment(metric_name: str, source_name: str):
+    """Return the comment for the metric."""
+    logging.info(bottle.request)
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
+    urls = bottle.request.query.getall("url")  # pylint: disable=no-member
+    components = bottle.request.query.getall("component")  # pylint: disable=no-member
+    key = json.dumps(dict(metric=metric_name, source=source_name, urls=urls, components=components))
+    comment_row = DATABASE["comments"].find_one(metric=key)
+    comment = comment_row.get("comment", "") if comment_row else ""
+    return dict(comment=comment)
+
+
+@bottle.route("/comment/<metric_name>/<source_name>", method="OPTIONS")
+def comment_options(metric_name: str, source_name: str) -> str:
+    """Return the options for the comment POST."""
+    logging.info(bottle.request)
+    bottle.response.set_header("Access-Control-Allow-Origin", "*")
+    bottle.response.set_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    bottle.response.headers["Access-Control-Allow-Headers"] = \
+        "Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
+    return ""
+
+
+@bottle.post("/comment/<metric_name>/<source_name>")
+def post_comment(metric_name: str, source_name: str):
+    """Save the comment for the metric."""
+    logging.info(bottle.request)
+    comment = bottle.request.json
+    urls = bottle.request.query.getall("url")  # pylint: disable=no-member
+    components = bottle.request.query.getall("component")  # pylint: disable=no-member
+    key = json.dumps(dict(metric=metric_name, source=source_name, urls=urls, components=components))
+    comment_row = dict(metric=key, comment=comment.get("comment", ""))
+    DATABASE["comments"].upsert(comment_row, ["metric"])
+
+
 @bottle.route("/nr_measurements", method="OPTIONS")
 def options() -> str:
     """Return the options for the number of measurements server sent events stream."""
@@ -77,7 +118,7 @@ def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:
 
 
 @bottle.get("/nr_measurements")
-def nr_measurements_stream():
+def stream_nr_measurements():
     """Return the number of measurements as server sent events."""
     # Keep event IDs consistent
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
@@ -102,7 +143,7 @@ def nr_measurements_stream():
 
 
 @bottle.get("/<metric_name>/<source_name>")
-def measurements(metric_name: str, source_name: str):
+def get_measurements(metric_name: str, source_name: str):
     """Return the measurements for the metric/source."""
     logging.info(bottle.request)
     bottle.response.set_header("Access-Control-Allow-Origin", "*")
@@ -118,12 +159,31 @@ def measurements(metric_name: str, source_name: str):
     return dict(measurements=[json.loads(row["measurement"]) for row in rows])
 
 
+def import_report():
+    """Read the example report and store it in de database."""
+    with open("example-report.json") as json_report:
+        report = json.load(json_report)
+    subjects_table = DATABASE["subjects"]
+    metrics_table = DATABASE["metrics"]
+    for subject in report["subjects"]:
+        subject_row = subjects_table.find_one(title=subject["title"])
+        if subject_row:
+            subject_id = subject_row["id"]
+        else:
+            subject_id = subjects_table.insert(dict(title=subject["title"]))
+        for metric in subject["metrics"]:
+            metric_row = metrics_table.find_one(subject=subject_id, url=metric)
+            if not metric_row:
+                metrics_table.insert(dict(subject=subject_id, url=metric))
+    logging.info("Report consists of %d subjects and %d metrics", len(subjects_table), len(metrics_table))
+
+
 def serve() -> None:
     """Start the metric-source API which functions as a facade to get metric data from different sources in a
     consistent manner."""
     logging.getLogger().setLevel(logging.INFO)
-    os.environ.setdefault("DATABASE_URL", "postgresql://postgres:mysecretpassword@localhost:5432/postgres")
     global DATABASE
+    os.environ.setdefault("DATABASE_URL", "postgresql://postgres:mysecretpassword@localhost:5432/postgres")
     DATABASE = dataset.connect(engine_kwargs=dict(poolclass=NullPool))
     logging.info("Connected to database: %s", DATABASE)
 
@@ -134,6 +194,7 @@ def serve() -> None:
         except Exception as reason:  # pylint: disable=broad-except
             logging.warning("Waiting for database to become available: %s", reason)
         time.sleep(2)
+    import_report()
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)
 
 
