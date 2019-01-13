@@ -1,62 +1,10 @@
-import React, { Component } from 'react';
-import { Form, Icon, Table, Popup } from 'semantic-ui-react';
+import React from 'react';
+import { Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
+import { Comment } from './Comment';
 import { Source } from './Source';
 import { TrendSparkline } from './TrendSparkline';
 
-
-class Comment extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {comment: "", edit: false}
-  }
-  componentDidMount() {
-    let self = this;
-    fetch(`http://localhost:8080/comment/${this.props.metric_id}`)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(json) {
-        self.setState({comment: json.comment});
-      });
-  }
-  onClick() {
-    this.setState({edit: true});
-  }
-  onChange(event) {
-    this.setState({comment: event.target.value});
-  }
-  onSubmit(event) {
-    event.preventDefault();
-    this.setState({edit: false});
-    fetch(`http://localhost:8080/comment/${this.props.metric_id}`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({comment: this.state.comment})
-    }).then(result=>result.json())
-  }
-  render() {
-    if (this.state.edit) {
-      return (
-        <Form onSubmit={(e) => this.onSubmit(e)}>
-          <Form.Input autoFocus focus fluid value={this.state.comment} onChange={(e) => this.onChange(e)} />
-        </Form>
-      )
-    }
-    const style = this.state.comment ? {marginRight: "10px"} : {marginRight: "0px"};
-    return (
-      <div onClick={(e) => this.onClick(e)}>
-        <span style={style}>
-          {this.state.comment}
-        </span>
-        <Icon color='grey' name='edit' />
-      </div>
-    )
-  }
-}
 
 function Measurement(props) {
   const last_measurement = props.measurements[props.measurements.length - 1];
@@ -86,7 +34,7 @@ function Measurement(props) {
         {source.responses.map((response) => <Source key={response.api_url} source={source.name} source_response={response} />)}
       </Table.Cell>
       <Table.Cell>
-        <Comment metric_id={metric_id} />
+        <Comment metric_id={metric_id} comment={last_measurement.comment} key={end} />
       </Table.Cell>
     </Table.Row>
   )

@@ -21,13 +21,24 @@ services:
     depends_on:
     - database
   database:
-    image: postgres
+    image: mongo
     restart: always
     environment:
-      POSTGRES_PASSWORD: mysecretpassword
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
     ports:
-    - "5432:5432"
+      - "27017:27017"
     volumes:
-    - "dbdata:/var/lib/postgresql/data"
+    - "dbdata:/data/db"
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: database
+    depends_on:
+    - database
 volumes:
   dbdata:

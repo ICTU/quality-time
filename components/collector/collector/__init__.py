@@ -22,11 +22,14 @@ def get_metric_from_source(request_url: URL) -> Response:
     query = urllib.parse.parse_qs(url_parts.query)
     metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
     source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
-    urls = query.get("url", [])
-    components = query.get("component", [])
-    request = dict(request=dict(
-        request_url=request_url, metric=metric_name, source=source_name,
-        urls=urls, components=components))
+    request = dict(
+        request=dict(
+            request_url=request_url,
+            metric=metric_name,
+            source=source_name,
+            urls=query.get("url", []),
+            components=query.get("component", [])),
+        comment="")
     return metric.get(source.get(request))
 
 
