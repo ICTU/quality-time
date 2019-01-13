@@ -13,6 +13,11 @@ class Comment extends Component {
   onChange(event) {
     this.setState({edited_comment: event.target.value});
   }
+  onKeyDown(event) {
+    if (event.key === "Escape") {
+      this.setState({edit: false, edited_comment: this.props.comment})
+    }
+  }
   onSubmit(event) {
     event.preventDefault();
     this.setState({edit: false});
@@ -30,7 +35,7 @@ class Comment extends Component {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
           <Form.Input autoFocus focus fluid defaultValue={this.state.edited_comment}
-            onChange={(e) => this.onChange(e)} />
+            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
         </Form>
       )
     }
