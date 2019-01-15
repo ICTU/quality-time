@@ -13,8 +13,9 @@ import pymongo
 
 from . import cors  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
-from . import comments  # pylint: disable=unused-import
-from . import measurements  # pylint: disable=unused-import
+from . import comment  # pylint: disable=unused-import
+from . import target  # pylint: disable=unused-import
+from . import measurement  # pylint: disable=unused-import
 
 
 @bottle.get("/report")

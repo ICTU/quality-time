@@ -1,4 +1,4 @@
-"""Measurements API."""
+"""Measurement API."""
 
 import datetime
 import logging
@@ -31,10 +31,13 @@ def post_measurement(database) -> None:
                 update={"$set": {"measurement.end": timestamp_string}})
             return
         comment = latest_measurement_doc["comment"]  # Reuse comment of previous measurement
+        target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
         comment = measurement["comment"]
+        target = measurement["measurement"]["target"]
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
+    measurement["measurement"]["target"] = target
     measurement["comment"] = comment
     del measurement["measurement"]["timestamp"]
     database.measurements.insert_one(measurement)

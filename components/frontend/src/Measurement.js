@@ -3,6 +3,7 @@ import { Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { Source } from './Source';
+import { Target } from './Target';
 import { TrendSparkline } from './TrendSparkline';
 
 
@@ -28,7 +29,7 @@ function Measurement(props) {
         Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
       </Popup>
       <Table.Cell>
-          {metric.direction} {measurement.target} {metric.unit}
+          <Target metric_id={metric_id} direction={metric.direction} target={measurement.target} unit={metric.unit} key={end}/>
       </Table.Cell>
       <Table.Cell>
         {source.responses.map((response) => <Source key={response.api_url} source={source.name} source_response={response} />)}
