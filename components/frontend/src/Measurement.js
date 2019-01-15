@@ -43,7 +43,7 @@ class Measurement extends Component {
         </Popup>
         <Table.Cell>
           <Target metric_id={metric_id} editable={this.state.hover} direction={metric.direction}
-                  target={measurement.target} unit={metric.unit} key={end}/>
+                  target={measurement.target} unit={metric.unit} key={end} onEdit={this.props.onEdit} />
         </Table.Cell>
         <Table.Cell>
           {source.responses.map((response) =>

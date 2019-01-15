@@ -28,7 +28,11 @@ class Target extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({target: this.state.edited_target})
-    })
+    }).then(
+      response => response.json()
+    ).then(
+      json => { this.props.onEdit(event) }
+    );
   }
   render() {
     if (this.state.edit) {

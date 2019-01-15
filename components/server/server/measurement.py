@@ -3,19 +3,40 @@
 import datetime
 import logging
 import time
+from distutils.version import LooseVersion
+from typing import Optional
 
 import bottle
 import pymongo
+
+
+def determine_status(value: Optional[str], target: str, direction: str) -> Optional[str]:
+    """Determine the status of the measurement from the value and target."""
+    if value is None:
+        status = None
+    else:
+        try:
+            target = int(target)
+            value = int(value)
+        except ValueError:
+            # Assume we deal with version numbers
+            target = LooseVersion(str(target))
+            value = LooseVersion(value)
+        if direction == "<=":
+            status = "target_met" if value <= target else "target_not_met"
+        elif direction == ">=":
+            status = "target_met" if value >= target else "target_not_met"
+        else:
+            status = "target_met" if value == target else "target_not_met"
+    return status
 
 
 @bottle.post("/measurement")
 def post_measurement(database) -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
-        """Return whether the measurements have equal values and targets."""
+        """Return whether the measurements are equal."""
         return measure1["measurement"] == measure2["measurement"] and \
-               measure1["target"] == measure2["target"] and \
-               measure1["status"] == measure2["status"] and \
                measure1["calculation_error"] == measure2["calculation_error"]
 
     logging.info(bottle.request)
@@ -34,11 +55,14 @@ def post_measurement(database) -> None:
         target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
         comment = measurement["comment"]
-        target = measurement["measurement"]["target"]
+        target = measurement["metric"]["default_target"]
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
     measurement["measurement"]["target"] = target
     measurement["comment"] = comment
+    value = measurement["measurement"]["measurement"]
+    direction = measurement["metric"]["direction"]
+    measurement["measurement"]["status"] = determine_status(value, target, direction)
     del measurement["measurement"]["timestamp"]
     database.measurements.insert_one(measurement)
 

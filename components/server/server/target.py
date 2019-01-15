@@ -6,6 +6,8 @@ import logging
 import bottle
 import pymongo
 
+from .measurement import determine_status
+
 
 @bottle.post("/target/<metric_name>/<source_name>")
 def post_target(metric_name: str, source_name: str, database):
@@ -27,5 +29,8 @@ def post_target(metric_name: str, source_name: str, database):
     timestamp_string = datetime.datetime.now(datetime.timezone.utc).isoformat()
     latest_measurement_doc["measurement"]["start"] = timestamp_string
     latest_measurement_doc["measurement"]["end"] = timestamp_string
+    value = latest_measurement_doc["measurement"]["measurement"]
+    direction = latest_measurement_doc["metric"]["direction"]
+    latest_measurement_doc["measurement"]["status"] = determine_status(value, target, direction)
     database.measurements.insert_one(latest_measurement_doc)
     return dict()
