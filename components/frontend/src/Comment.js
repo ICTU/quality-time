@@ -45,7 +45,7 @@ class Comment extends Component {
         <span style={style}>
           {this.state.edited_comment}
         </span>
-        <Icon color='grey' name='edit' />
+        {this.props.editable && <Icon color='grey' name='edit' />}
       </div>
     )
   }
