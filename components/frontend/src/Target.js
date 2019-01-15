@@ -35,7 +35,7 @@ class Target extends Component {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
           {this.props.direction}
-          <Form.Input autoFocus focus fluid defaultValue={this.state.edited_target}
+          <Form.Input autoFocus focus fluid type="number" min="0" defaultValue={this.state.edited_target}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
           {this.props.unit}
         </Form>
