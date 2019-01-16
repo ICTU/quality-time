@@ -1,12 +1,12 @@
 """Target API."""
 
-import datetime
 import logging
 
 import bottle
 import pymongo
 
 from .measurement import determine_status
+from .util import iso_timestamp
 
 
 @bottle.post("/target/<metric_name>/<source_name>")
@@ -26,7 +26,7 @@ def post_target(metric_name: str, source_name: str, database):
         return dict()
     del latest_measurement_doc['_id']
     latest_measurement_doc["measurement"]["target"] = target
-    timestamp_string = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    timestamp_string = iso_timestamp()
     latest_measurement_doc["measurement"]["start"] = timestamp_string
     latest_measurement_doc["measurement"]["end"] = timestamp_string
     value = latest_measurement_doc["measurement"]["measurement"]

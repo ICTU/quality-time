@@ -1,6 +1,5 @@
 """Measurement API."""
 
-import datetime
 import logging
 import time
 from distutils.version import LooseVersion
@@ -8,6 +7,8 @@ from typing import Optional
 
 import bottle
 import pymongo
+
+from .util import iso_timestamp
 
 
 def determine_status(value: Optional[str], target: str, direction: str) -> Optional[str]:
@@ -41,7 +42,7 @@ def post_measurement(database) -> None:
 
     logging.info(bottle.request)
     measurement = bottle.request.json
-    timestamp_string = measurement["measurement"]["timestamp"]
+    timestamp_string = iso_timestamp()
     latest_measurement_doc = database.measurements.find_one(
         filter={"request.request_url": measurement["request"]["request_url"]},
         sort=[("measurement.start", pymongo.DESCENDING)])
@@ -63,7 +64,6 @@ def post_measurement(database) -> None:
     value = measurement["measurement"]["measurement"]
     direction = measurement["metric"]["direction"]
     measurement["measurement"]["status"] = determine_status(value, target, direction)
-    del measurement["measurement"]["timestamp"]
     database.measurements.insert_one(measurement)
 
 
@@ -103,8 +103,7 @@ def get_measurements(metric_name: str, source_name: str, database):
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
-    report_date_string = report_date_string.replace("Z", "+00:00") \
-        if report_date_string else datetime.datetime.now(datetime.timezone.utc).isoformat()
+    report_date_string = report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
     docs = database.measurements.find(
         filter={"request.metric": metric_name, "request.source": source_name,
                 "request.urls": urls, "request.components": components,

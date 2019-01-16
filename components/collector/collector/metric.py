@@ -5,7 +5,6 @@ from typing import Optional, Tuple
 
 from .api import API
 from .type import ErrorMessage, Measurement, Measurements, Response
-from .util import timestamp
 
 
 class Metric(API):
@@ -21,7 +20,7 @@ class Metric(API):
         metric_response: Response = dict(
             metric=dict(
                 default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit),
-            measurement=dict(timestamp=timestamp()))
+            measurement=dict())
         metric_response.update(response)
         measurements = [source_response["measurement"] for source_response in response["source"]["responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
