@@ -19,13 +19,11 @@ class Metric(API):
         """Return the metric's measurement."""
         metric_response: Response = dict(
             metric=dict(
-                default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit),
-            measurement=dict())
+                default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit))
         metric_response.update(response)
         measurements = [source_response["measurement"] for source_response in response["source"]["responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
-        metric_response["measurement"].update(
-            dict(calculation_error=calculation_error, measurement=measurement))
+        metric_response["measurement"] = dict(calculation_error=calculation_error, measurement=measurement)
         return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
