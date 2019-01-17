@@ -8,11 +8,9 @@ from typing import cast, Dict, Type
 
 import requests
 
-from .metrics import *  # Make sure subclasses are registered
-from .sources import *  # Make sure subclasses are registered
-from .metric import Metric
-from .source import Source
-from .type import Report, Response
+from .collectors import *  # Make sure subclasses are registered
+from .collector import Collector
+from .type import Report, Response, URL
 
 
 def get_metric_from_source(request_url: URL) -> Response:
@@ -20,8 +18,7 @@ def get_metric_from_source(request_url: URL) -> Response:
     url_parts = urllib.parse.urlsplit(request_url)
     metric_name, source_name = url_parts.path.strip("/").split("/", 1)
     query = urllib.parse.parse_qs(url_parts.query)
-    metric = cast(Type[Metric], Metric.subclass_for_api(metric_name))(query)
-    source = cast(Type[Source], Source.subclass_for_api(f"{source_name}_{metric_name}"))(query)
+    collector = cast(Type[Collector], Collector.get_subclass(f"{source_name}_{metric_name}"))(query)
     request = dict(
         request=dict(
             request_url=request_url,
@@ -30,7 +27,7 @@ def get_metric_from_source(request_url: URL) -> Response:
             urls=query.get("url", []),
             components=query.get("component", [])),
         comment="")
-    return metric.get(source.get(request))
+    return collector.get(request)
 
 
 def fetch_report(server: URL) -> Report:

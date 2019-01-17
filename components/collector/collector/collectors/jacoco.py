@@ -1,15 +1,15 @@
-"""Jacoco coverage report metric source."""
+"""Jacoco coverage report collector."""
 
 import xml.etree.cElementTree
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement
 
 
-class JacocoCoverageBaseClass(Source):
-    """Base class for Jacoco coverage metrics."""
+class JacocoCoverageBaseClass(Collector):
+    """Base class for Jacoco coverage collectors."""
 
     name = "JaCoCo"
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"

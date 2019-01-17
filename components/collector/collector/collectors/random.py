@@ -1,16 +1,16 @@
-"""Metric source that returns random values."""
+"""Metric collector that returns random values."""
 
 import io
 import random
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import URL
 
 
-class RandomViolations(Source):
-    """Random number of violations metric source."""
+class RandomViolations(Collector):
+    """Random number of violations metric collector."""
     name = "Random"
 
     def get_source_response(self, url: URL) -> requests.Response:

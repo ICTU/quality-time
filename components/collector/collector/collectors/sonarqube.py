@@ -1,28 +1,28 @@
-"""Sources for SonarQube."""
+"""Collectors for SonarQube."""
 
 from typing import Dict
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class SonarQube(Source):
-    """Base class for SonarQube meteics."""
+class SonarQube(Collector):
+    """Base class for SonarQube collectors."""
 
     name = "SonarQube"
 
 
 class SonarQubeVersion(SonarQube):
-    """SonarQube version source."""
+    """SonarQube version collectior."""
 
     def api_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/api/server/version")
 
 
 class SonarQubeViolations(SonarQube):
-    """SonarQube violations source."""
+    """SonarQube violations collector."""
 
     def landing_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/project/issues?id={component}&resolved=false")
@@ -35,7 +35,7 @@ class SonarQubeViolations(SonarQube):
 
 
 class SonarQubeMetricsBaseClass(SonarQube):
-    """Base class for metrics that use the SonarQube measures/component API."""
+    """Base class for collectors that use the SonarQube measures/component API."""
 
     metricKeys = "Subclass responsibility"
 
@@ -56,13 +56,13 @@ class SonarQubeMetricsBaseClass(SonarQube):
 
 
 class SonarQubeTests(SonarQubeMetricsBaseClass):
-    """SonarQube tests source."""
+    """SonarQube tests collector."""
 
     metricKeys = "tests"
 
 
 class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
-    """SonarQube failed tests source."""
+    """SonarQube failed tests collector."""
 
     metricKeys = "test_failures"
 
