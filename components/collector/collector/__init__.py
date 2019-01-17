@@ -25,8 +25,7 @@ def get_metric_from_source(request_url: URL) -> Response:
             metric=metric_name,
             source=source_name,
             urls=query.get("url", []),
-            components=query.get("component", [])),
-        comment="")
+            components=query.get("component", [])))
     return collector.get(request)
 
 

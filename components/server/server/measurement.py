@@ -59,7 +59,7 @@ def post_measurement(database) -> None:
         comment = latest_measurement_doc["comment"]  # Reuse comment of previous measurement
         target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
-        comment = measurement["comment"]
+        comment = ""
         target = metric["default_target"]
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
