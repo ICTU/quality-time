@@ -19,14 +19,7 @@ def get_metric_from_source(request_url: URL) -> Response:
     metric_name, source_name = url_parts.path.strip("/").split("/", 1)
     query = urllib.parse.parse_qs(url_parts.query)
     collector = cast(Type[Collector], Collector.get_subclass(f"{source_name}_{metric_name}"))(query)
-    request = dict(
-        request=dict(
-            request_url=request_url,
-            metric=metric_name,
-            source=source_name,
-            urls=query.get("url", []),
-            components=query.get("component", [])))
-    return collector.get(request)
+    return collector.get(request_url, metric_name, source_name)
 
 
 def fetch_report(server: URL) -> Report:
