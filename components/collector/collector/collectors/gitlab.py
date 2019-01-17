@@ -2,11 +2,11 @@
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class Gitlab(Source):
+class Gitlab(Collector):
     """Base class for Gitlab metrics."""
     name = "GitLab"
 
@@ -22,7 +22,7 @@ class GitlabVersion(Gitlab):
 
 
 class GitlabJobs(Gitlab):
-    """Source class to get job counts from Gitlab."""
+    """Collector class to get job counts from Gitlab."""
 
     def api_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/api/v4/projects/{self.query['project_id'][0]}/"
@@ -33,7 +33,7 @@ class GitlabJobs(Gitlab):
 
 
 class GitlabFailedJobs(GitlabJobs):
-    """Source class to get failed job counts from Gitlab."""
+    """Collector class to get failed job counts from Gitlab."""
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(len([job for job in response.json() if job["status"] == "failed"]))

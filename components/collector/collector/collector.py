@@ -1,23 +1,37 @@
-"""Source base class."""
+"""Collector base class."""
 
 import itertools
 import logging
 import traceback
-from typing import Optional, Tuple
+from typing import List, Mapping, Optional, Set, Tuple, Type
 
 import cachetools
 import requests
 
-from .api import API
-from .type import ErrorMessage, Measurement, Response, URL
+from .type import ErrorMessage, Measurement, Measurements, Response, URL
 
 
-class Source(API):
-    """Base class for metric sources."""
+class Collector:
+    """Base class for metric collectors."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
+    subclasses: Set[Type["Collector"]] = set()
     name = "Subclass responsibility"
+
+    def __init__(self, query: Mapping[str, List[str]]) -> None:
+        self.query = query
+
+    def __init_subclass__(cls) -> None:
+        Collector.subclasses.add(cls)
+        super().__init_subclass__()
+
+    @classmethod
+    def get_subclass(cls, source_and_metric: str) -> Type["Collector"]:
+        """Return the subclass registered for the source/metric name."""
+        simplified_class_name = source_and_metric.replace("_", "")
+        matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
+        return matching_subclasses[0] if matching_subclasses else cls
 
     def get(self, response: Response) -> Response:
         """Connect to the source to get and parse the measurement for the metric."""
@@ -28,6 +42,9 @@ class Source(API):
         source_response["source"] = dict(name=self.name)
         source_response["source"]["responses"] = [self.get_one(url, component) for url, component in
                                                   itertools.zip_longest(urls, components, fillvalue="")]
+        measurements = [source_response["measurement"] for source_response in source_response["source"]["responses"]]
+        measurement, calculation_error = self.safely_sum(measurements)
+        source_response["measurement"] = dict(calculation_error=calculation_error, measurement=measurement)
         return source_response
 
     def get_one(self, url: URL, component: str) -> Response:
@@ -78,3 +95,20 @@ class Source(API):
         # pylint: disable=no-self-use
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
+
+    def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
+        """Return the summation of several measurements, without failing."""
+        measurement, error = None, None
+        if measurements and None not in measurements:
+            if len(measurements) > 1:
+                try:
+                    measurement = self.sum(measurements)
+                except Exception:  # pylint: disable=broad-except
+                    error = ErrorMessage(traceback.format_exc())
+            else:
+                measurement = measurements[0]
+        return measurement, error
+
+    def sum(self, measurements: Measurements) -> Measurement:  # pylint: disable=no-self-use
+        """Return the summation of several measurements."""
+        return Measurement(sum(int(measurement) for measurement in measurements))

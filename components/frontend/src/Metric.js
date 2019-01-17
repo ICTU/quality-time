@@ -11,7 +11,7 @@ class Metric extends Component {
   fetch_measurement() {
     let self = this;
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/${this.props.metric}&report_date=${report_date.toISOString()}`)
+    fetch(`http://localhost:8080/measurements/${this.props.metric}&report_date=${report_date.toISOString()}`)
       .then(function(response) {
         return response.json();
       })

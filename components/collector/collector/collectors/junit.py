@@ -1,15 +1,15 @@
-"""JUnit metric source."""
+"""JUnit metric collector."""
 
 import xml.etree.cElementTree
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement
 
 
-class JUnit(Source):
-    """Base class for JUnit test metrics."""
+class JUnit(Collector):
+    """Base class for JUnit test collectors."""
 
     name = "JUnit"
     test_status = "Subclass responsibility"
@@ -21,12 +21,12 @@ class JUnit(Source):
 
 
 class JUnitTests(JUnit):
-    """Source class to get the number of tests from JUnit XML reports."""
+    """Collector to get the number of tests from JUnit XML reports."""
 
     test_status = "tests"
 
 
 class JUnitFailedTests(JUnit):
-    """Source class to get the number of failed tests from JUnit XML reports."""
+    """Collector to get the number of failed tests from JUnit XML reports."""
 
     test_status = "failures"

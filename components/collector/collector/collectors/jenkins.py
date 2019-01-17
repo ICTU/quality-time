@@ -1,13 +1,13 @@
-"""Jenkins metric source."""
+"""Jenkins metric collector."""
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class Jenkins(Source):
-    """Base class for Jenkins metrics."""
+class Jenkins(Collector):
+    """Base class for Jenkins collectors."""
 
     name = "Jenkins"
 
@@ -20,7 +20,7 @@ class JenkinsVersion(Jenkins):
 
 
 class JenkinsJobs(Jenkins):
-    """Source class to get job counts from Jenkins."""
+    """Collector to get job counts from Jenkins."""
 
     def api_url(self, url: URL, component: str) -> URL:
         return URL(f"{url}/api/json?tree=jobs[buildable,color]")
@@ -31,7 +31,7 @@ class JenkinsJobs(Jenkins):
 
 
 class JenkinsFailedJobs(JenkinsJobs):
-    """Source class to get failed job counts from Jenkins."""
+    """Collector to get failed job counts from Jenkins."""
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]

@@ -30,7 +30,7 @@ def post_target(metric_name: str, source_name: str, database):
     latest_measurement_doc["measurement"]["start"] = timestamp_string
     latest_measurement_doc["measurement"]["end"] = timestamp_string
     value = latest_measurement_doc["measurement"]["measurement"]
-    direction = latest_measurement_doc["metric"]["direction"]
-    latest_measurement_doc["measurement"]["status"] = determine_status(value, target, direction)
+    metric = database.metrics.find_one(filter={"metric": latest_measurement_doc["request"]["metric"]})
+    latest_measurement_doc["measurement"]["status"] = determine_status(value, target, metric["direction"])
     database.measurements.insert_one(latest_measurement_doc)
     return dict()

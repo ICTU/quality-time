@@ -16,6 +16,7 @@ from .route_injection_plugin import InjectionPlugin
 from . import comment  # pylint: disable=unused-import
 from . import target  # pylint: disable=unused-import
 from . import measurement  # pylint: disable=unused-import
+from . import metric  # pylint: disable=unused-import
 
 
 @bottle.get("/report")
@@ -25,6 +26,16 @@ def get_report(database):
     report = database.reports.find_one({})
     report["_id"] = str(report["_id"])
     return report
+
+
+def import_metrics(database):
+    """Read the metric types and store them in the database."""
+    with open("metrics.json") as json_metrics:
+        metrics = json.load(json_metrics)
+    database.metrics.remove({})
+    database.metrics.insert(metrics["metrics"])
+    nr_stored_metrics = database.metrics.count_documents({})
+    logging.info("Metrics collection has %d metrics", nr_stored_metrics)
 
 
 def import_report(database):
@@ -48,6 +59,7 @@ def serve() -> None:
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
     injection_plugin = InjectionPlugin(value=database, keyword="database")
     bottle.install(injection_plugin)
+    import_metrics(database)
     import_report(database)
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)
 

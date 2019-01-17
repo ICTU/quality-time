@@ -2,12 +2,12 @@
 
 import requests
 
-from collector.source import Source
+from collector.collector import Collector
 from collector.type import Measurement
 
 
-class ClockTime(Source):
-    """Clock metric source."""
+class ClockTime(Collector):
+    """Clock metric collector."""
     name = "Clock"
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
