@@ -19,6 +19,10 @@ class Metric extends Component {
         self.setState({measurements: json.measurements});
       });
   }
+  onEdit(event) {
+    event.preventDefault();
+    this.fetch_measurement();
+  }
   componentDidMount() {
     this.fetch_measurement();
   }
@@ -47,7 +51,7 @@ class Metric extends Component {
     let last_measurement = m[m.length - 1];
     if (search && !last_measurement["metric"].name.toLowerCase().includes(search.toLowerCase())) {return null};
     return (
-      <Measurement measurements={m} />
+      <Measurement measurements={m} onEdit={(e) => this.onEdit(e)} />
     )
   }
 }

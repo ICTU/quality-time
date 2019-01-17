@@ -1,26 +1,48 @@
-"""Measurements API."""
+"""Measurement API."""
 
-import datetime
 import logging
 import time
+from distutils.version import LooseVersion
+from typing import Optional
 
 import bottle
 import pymongo
+
+from .util import iso_timestamp
+
+
+def determine_status(value: Optional[str], target: str, direction: str) -> Optional[str]:
+    """Determine the status of the measurement from the value and target."""
+    if value is None:
+        status = None
+    else:
+        try:
+            target = int(target)
+            value = int(value)
+        except ValueError:
+            # Assume we deal with version numbers
+            target = LooseVersion(str(target))
+            value = LooseVersion(value)
+        if direction == "<=":
+            status = "target_met" if value <= target else "target_not_met"
+        elif direction == ">=":
+            status = "target_met" if value >= target else "target_not_met"
+        else:
+            status = "target_met" if value == target else "target_not_met"
+    return status
 
 
 @bottle.post("/measurement")
 def post_measurement(database) -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
-        """Return whether the measurements have equal values and targets."""
+        """Return whether the measurements are equal."""
         return measure1["measurement"] == measure2["measurement"] and \
-               measure1["target"] == measure2["target"] and \
-               measure1["status"] == measure2["status"] and \
                measure1["calculation_error"] == measure2["calculation_error"]
 
     logging.info(bottle.request)
     measurement = bottle.request.json
-    timestamp_string = measurement["measurement"]["timestamp"]
+    timestamp_string = iso_timestamp()
     latest_measurement_doc = database.measurements.find_one(
         filter={"request.request_url": measurement["request"]["request_url"]},
         sort=[("measurement.start", pymongo.DESCENDING)])
@@ -31,12 +53,17 @@ def post_measurement(database) -> None:
                 update={"$set": {"measurement.end": timestamp_string}})
             return
         comment = latest_measurement_doc["comment"]  # Reuse comment of previous measurement
+        target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
         comment = measurement["comment"]
+        target = measurement["metric"]["default_target"]
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
+    measurement["measurement"]["target"] = target
     measurement["comment"] = comment
-    del measurement["measurement"]["timestamp"]
+    value = measurement["measurement"]["measurement"]
+    direction = measurement["metric"]["direction"]
+    measurement["measurement"]["status"] = determine_status(value, target, direction)
     database.measurements.insert_one(measurement)
 
 
@@ -76,8 +103,7 @@ def get_measurements(metric_name: str, source_name: str, database):
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
-    report_date_string = report_date_string.replace("Z", "+00:00") \
-        if report_date_string else datetime.datetime.now(datetime.timezone.utc).isoformat()
+    report_date_string = report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
     docs = database.measurements.find(
         filter={"request.metric": metric_name, "request.source": source_name,
                 "request.urls": urls, "request.components": components,

@@ -1,18 +1,10 @@
 """Metric base class."""
 
 import traceback
-from enum import auto, Enum
 from typing import Optional, Tuple
 
 from .api import API
 from .type import ErrorMessage, Measurement, Measurements, Response
-from .util import timestamp
-
-
-class MetricStatus(Enum):
-    """Metric status."""
-    target_met = auto()
-    target_not_met = auto()
 
 
 class Metric(API):
@@ -27,14 +19,11 @@ class Metric(API):
         """Return the metric's measurement."""
         metric_response: Response = dict(
             metric=dict(
-                default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit),
-            measurement=dict(target=self.target(), timestamp=timestamp()))
+                default_target=self.default_target, name=self.name, direction=self.direction, unit=self.unit))
         metric_response.update(response)
         measurements = [source_response["measurement"] for source_response in response["source"]["responses"]]
         measurement, calculation_error = self.safely_sum(measurements)
-        status = self.status(measurement).name if measurement is not None else None
-        metric_response["measurement"].update(
-            dict(calculation_error=calculation_error, measurement=measurement, status=status))
+        metric_response["measurement"] = dict(calculation_error=calculation_error, measurement=measurement)
         return metric_response
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
@@ -51,30 +40,14 @@ class Metric(API):
         """Return the summation of several measurements."""
         return Measurement(sum(int(measurement) for measurement in measurements))
 
-    def target(self) -> Measurement:
-        """Return the target value for the metric."""
-        return self.query.get("target", [self.default_target])[0]
-
-    def status(self, measurement: Measurement) -> MetricStatus:
-        """Return the status of the metric."""
-        return MetricStatus.target_met if int(measurement) == int(self.target()) else MetricStatus.target_not_met
-
 
 class MoreIsBetterMetric(Metric):
     """Class for metrics where higher values are better."""
 
     direction = ">="
 
-    def status(self, measurement: Measurement) -> MetricStatus:
-        """Return the status of the metric."""
-        return MetricStatus.target_met if int(measurement) >= int(self.target()) else MetricStatus.target_not_met
-
 
 class FewerIsBetterMetric(Metric):
     """Class for metrics where lower values are better."""
 
     direction = "<="
-
-    def status(self, measurement: Measurement) -> MetricStatus:
-        """Return the status of the metric."""
-        return MetricStatus.target_met if int(measurement) <= int(self.target()) else MetricStatus.target_not_met

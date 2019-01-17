@@ -78,11 +78,11 @@ class App extends Component {
     }
     return (
       <div>
-        <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange} onReload={(e)=>this.reload(e)}
-                 nr_new_measurements={this.state.nr_new_measurements}
+        <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
+                 onReload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
                  report_date_string={this.state.report_date_string} />
         <Subjects subjects={this.state.subjects} nr_new_measurements={this.state.nr_new_measurements}
-                  search_string={this.state.search_string} report_date={report_date}/>
+                  search_string={this.state.search_string} report_date={report_date} />
       </div>
     );
   }

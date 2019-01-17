@@ -2,48 +2,54 @@ import React, { Component } from 'react';
 import { Form, Icon } from 'semantic-ui-react';
 
 
-class Comment extends Component {
+class Target extends Component {
   constructor(props) {
     super(props);
-    this.state = {edited_comment: this.props.comment, edit: false}
+    this.state = {edited_target: this.props.target, edit: false}
   }
   onClick() {
     this.setState({edit: true});
   }
   onChange(event) {
-    this.setState({edited_comment: event.target.value});
+    this.setState({edited_target: event.target.value});
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({edit: false, edited_comment: this.props.comment})
+      this.setState({edit: false, edited_target: this.props.target})
     }
   }
   onSubmit(event) {
     event.preventDefault();
     this.setState({edit: false});
-    fetch(`http://localhost:8080/comment/${this.props.metric_id}`, {
+    fetch(`http://localhost:8080/target/${this.props.metric_id}`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({comment: this.state.edited_comment})
-    })
+      body: JSON.stringify({target: this.state.edited_target})
+    }).then(
+      response => response.json()
+    ).then(
+      json => { this.props.onEdit(event) }
+    );
   }
   render() {
     if (this.state.edit) {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
-          <Form.Input autoFocus focus fluid defaultValue={this.state.edited_comment}
+          {this.props.direction}
+          <Form.Input autoFocus focus fluid type="number" defaultValue={this.state.edited_target}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
+          {this.props.unit}
         </Form>
       )
     }
-    const style = this.state.edited_comment ? {marginRight: "10px"} : {marginRight: "0px"};
+    const style = this.state.edited_target ? {marginRight: "10px"} : {marginRight: "0px"};
     return (
       <div onClick={(e) => this.onClick(e)}>
         <span style={style}>
-          {this.state.edited_comment}
+          {this.props.direction} {this.state.edited_target} {this.props.unit}
         </span>
         {this.props.editable && <Icon color='grey' name='edit' />}
       </div>
@@ -51,4 +57,4 @@ class Comment extends Component {
   }
 }
 
-export { Comment };
+export { Target };
