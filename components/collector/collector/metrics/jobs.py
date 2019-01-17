@@ -1,15 +1,11 @@
 """CI-Jobs metrics."""
 
-from collector.metric import FewerIsBetterMetric, MoreIsBetterMetric
+from collector.metric import Metric
 
 
-class Jobs(MoreIsBetterMetric):
+class Jobs(Metric):
     """Number of CI-Jobs."""
-    name = "Number of CI-jobs"
-    unit = "CI-jobs"
 
 
-class FailedJobs(FewerIsBetterMetric):
+class FailedJobs(Metric):
     """Number of failed CI-Jobs."""
-    name = "Number of failed CI-jobs"
-    unit = "failed CI-jobs"

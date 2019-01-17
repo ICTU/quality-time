@@ -43,6 +43,10 @@ def post_measurement(database) -> None:
     logging.info(bottle.request)
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
+    metric = database.metrics.find_one(filter={"metric": measurement["request"]["metric"]})
+    if not metric:
+        logging.error("Can't find %s metric in Metrics collection.", measurement["request"]["metric"])
+        return
     latest_measurement_doc = database.measurements.find_one(
         filter={"request.request_url": measurement["request"]["request_url"]},
         sort=[("measurement.start", pymongo.DESCENDING)])
@@ -56,14 +60,13 @@ def post_measurement(database) -> None:
         target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
         comment = measurement["comment"]
-        target = measurement["metric"]["default_target"]
+        target = metric["default_target"]
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
     measurement["measurement"]["target"] = target
     measurement["comment"] = comment
     value = measurement["measurement"]["measurement"]
-    direction = measurement["metric"]["direction"]
-    measurement["measurement"]["status"] = determine_status(value, target, direction)
+    measurement["measurement"]["status"] = determine_status(value, target, metric["direction"])
     database.measurements.insert_one(measurement)
 
 
@@ -96,7 +99,7 @@ def stream_nr_measurements(database):
             yield sse_pack(event_id, "delta", data)
 
 
-@bottle.get("/<metric_name>/<source_name>")
+@bottle.get("/measurements/<metric_name>/<source_name>")
 def get_measurements(metric_name: str, source_name: str, database):
     """Return the measurements for the metric/source."""
     logging.info(bottle.request)

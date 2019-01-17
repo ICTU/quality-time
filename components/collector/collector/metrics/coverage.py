@@ -1,27 +1,19 @@
 """Test coverage metrics."""
 
-from collector.metric import FewerIsBetterMetric, MoreIsBetterMetric
+from collector.metric import Metric
 
 
-class CoveredLines(MoreIsBetterMetric):
+class CoveredLines(Metric):
     """Number of covered lines."""
-    name = "Test line coverage"
-    unit = "covered lines"
 
 
-class UncoveredLines(FewerIsBetterMetric):
+class UncoveredLines(Metric):
     """Number of uncovered lines."""
-    name = "Test line coverage"
-    unit = "uncovered lines"
 
 
-class CoveredBranches(MoreIsBetterMetric):
+class CoveredBranches(Metric):
     """Number of covered branches."""
-    name = "Test branch coverage"
-    unit = "covered branches"
 
 
-class UncoveredBranches(FewerIsBetterMetric):
+class UncoveredBranches(Metric):
     """Number of uncovered branches."""
-    name = "Test branch coverage"
-    unit = "uncovered branches"

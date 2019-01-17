@@ -13,7 +13,7 @@
             "unit": "covered branch", "direction": ">=", "default_target": "0"
         },
         {
-            "metric": "uncovered_branch", "name": "Test branch coverage",
+            "metric": "uncovered_branches", "name": "Test branch coverage",
             "unit": "uncovered branch", "direction": "<=", "default_target": "0"
         },
         {

@@ -29,9 +29,3 @@ class MetricTest(unittest.TestCase):
         measurement, error_message = Metric(dict()).safely_sum([Measurement("4"), None])
         self.assertEqual(None, measurement)
         self.assertEqual(None, error_message)
-
-    def test_default_target(self):
-        """Test that the default target is included in the response."""
-        source_response = dict(source=dict(responses=[dict(measurement=Measurement("1"))]))
-        measurement_response = Metric(dict()).get(source_response)
-        self.assertEqual(Measurement("0"), measurement_response["metric"]["default_target"])

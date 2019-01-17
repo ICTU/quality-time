@@ -16,6 +16,7 @@ from .route_injection_plugin import InjectionPlugin
 from . import comment  # pylint: disable=unused-import
 from . import target  # pylint: disable=unused-import
 from . import measurement  # pylint: disable=unused-import
+from . import metric  # pylint: disable=unused-import
 
 
 @bottle.get("/report")

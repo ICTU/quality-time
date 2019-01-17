@@ -1,15 +1,11 @@
 """Test metrics."""
 
-from collector.metric import FewerIsBetterMetric, MoreIsBetterMetric
+from collector.metric import Metric
 
 
-class Tests(MoreIsBetterMetric):
+class Tests(Metric):
     """Metric for the number of tests."""
-    name = "Number of tests"
-    unit = "tests"
 
 
-class FailedTests(FewerIsBetterMetric):
+class FailedTests(Metric):
     """Metric for the number of failed tests."""
-    name = "Number of failed tests"
-    unit = "failed tests"

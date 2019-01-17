@@ -1,9 +1,7 @@
 """Time metric, for testing purposes."""
 
-from collector.metric import MoreIsBetterMetric
+from collector.metric import Metric
 
 
-class Time(MoreIsBetterMetric):
+class Time(Metric):
     """Metric for the number of seconds since epoch."""
-    name = "Number of seconds since epoch"
-    unit = "seconds"

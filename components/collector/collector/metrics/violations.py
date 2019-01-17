@@ -1,10 +1,7 @@
 """Violation metrics."""
 
-from collector.metric import FewerIsBetterMetric
+from collector.metric import Metric
 
 
-class Violations(FewerIsBetterMetric):
+class Violations(Metric):
     """Metric for the number of violations."""
-
-    name = "Number of violations"
-    unit = "violations"
