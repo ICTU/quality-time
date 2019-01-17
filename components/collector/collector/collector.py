@@ -33,19 +33,21 @@ class Collector:
         matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
         return matching_subclasses[0] if matching_subclasses else cls
 
-    def get(self, response: Response) -> Response:
+    def get(self, request_url: URL, metric_name: str, source_name: str) -> Response:
         """Connect to the source to get and parse the measurement for the metric."""
-        source_response = response.copy() if response else dict()
-        request = response["request"]
-        urls = request.get("urls", [])
-        components = request.get("components", [])
-        source_response["source"] = dict(name=self.name)
-        source_response["source"]["responses"] = [self.get_one(url, component) for url, component in
-                                                  itertools.zip_longest(urls, components, fillvalue="")]
-        measurements = [source_response["measurement"] for source_response in source_response["source"]["responses"]]
+        urls = self.query.get("url", [])
+        components = self.query.get("component", [])
+        source_responses = [self.get_one(url, component) for url, component in
+                            itertools.zip_longest(urls, components, fillvalue="")]
+        measurements = [source_response["measurement"] for source_response in source_responses]
         measurement, calculation_error = self.safely_sum(measurements)
-        source_response["measurement"] = dict(calculation_error=calculation_error, measurement=measurement)
-        return source_response
+        return dict(
+            measurement=dict(
+                calculation_error=calculation_error, measurement=measurement),
+            source=dict(
+                name=self.name, responses=source_responses),
+            request=dict(
+                request_url=request_url, metric=metric_name, source=source_name, urls=urls, components=components))
 
     def get_one(self, url: URL, component: str) -> Response:
         """Return the measurement response for one source url."""
