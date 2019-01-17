@@ -27,6 +27,16 @@ def get_report(database):
     return report
 
 
+def import_metrics(database):
+    """Read the metric types and store them in the database."""
+    with open("metrics.json") as json_metrics:
+        metrics = json.load(json_metrics)
+    database.metrics.remove({})
+    database.metrics.insert(metrics["metrics"])
+    nr_stored_metrics = database.metrics.count_documents({})
+    logging.info("Metrics collection has %d metrics", nr_stored_metrics)
+
+
 def import_report(database):
     """Read the example report and store it in the database."""
     # Until reports can be configured via the front-end, we load an example report on start up
@@ -48,6 +58,7 @@ def serve() -> None:
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
     injection_plugin = InjectionPlugin(value=database, keyword="database")
     bottle.install(injection_plugin)
+    import_metrics(database)
     import_report(database)
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)
 
