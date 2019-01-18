@@ -34,7 +34,7 @@ class Measurement extends Component {
     const last_measurement = this.props.measurements[this.props.measurements.length - 1];
     const metric_id = last_measurement.request.request_url;
     const measurement = last_measurement.measurement;
-    const source = last_measurement.source;
+    const sources = last_measurement.sources;
     const start = new Date(measurement.start);
     const end = new Date(measurement.end);
     return (
@@ -63,8 +63,7 @@ class Measurement extends Component {
                   target={measurement.target} unit={this.state.metric.unit} key={end} onEdit={this.props.onEdit} />
         </Table.Cell>
         <Table.Cell>
-          {source.responses.map((response) =>
-            <Source key={response.api_url} source={source.name} source_response={response} />)}
+          {sources.map((source) => <Source key={source.api_url} source={source} />)}
         </Table.Cell>
         <Table.Cell>
           <Comment metric_id={metric_id} editable={this.state.hover}

@@ -99,16 +99,17 @@ def stream_nr_measurements(database):
             yield sse_pack(event_id, "delta", data)
 
 
-@bottle.get("/measurements/<metric_name>/<source_name>")
-def get_measurements(metric_name: str, source_name: str, database):
+@bottle.get("/measurements/<metric_name>")
+def get_measurements(metric_name: str, database):
     """Return the measurements for the metric/source."""
     logging.info(bottle.request)
+    sources = bottle.request.query.getall("source")  # pylint: disable=no-member
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
     report_date_string = report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
     docs = database.measurements.find(
-        filter={"request.metric": metric_name, "request.source": source_name,
+        filter={"request.metric": metric_name, "request.sources": sources,
                 "request.urls": urls, "request.components": components,
                 "measurement.start": {"$lt": report_date_string}})
     logging.info("Found %d measurements for %s", docs.count(), bottle.request.url)

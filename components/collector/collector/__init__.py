@@ -13,15 +13,6 @@ from .collector import Collector
 from .type import Report, Response, URL
 
 
-def get_metric_from_source(request_url: URL) -> Response:
-    """Get the metric from the source."""
-    url_parts = urllib.parse.urlsplit(request_url)
-    metric_name, source_name = url_parts.path.strip("/").split("/", 1)
-    query = urllib.parse.parse_qs(url_parts.query)
-    collector = cast(Type[Collector], Collector.get_subclass(f"{source_name}_{metric_name}"))(query)
-    return collector.get(request_url, metric_name, source_name)
-
-
 def fetch_report(server: URL) -> Report:
     """Fetch the report configuration."""
     logging.info("Retrieving report")
@@ -34,7 +25,7 @@ def fetch_report(server: URL) -> Report:
 
 def fetch_and_post_measurement(server: URL, api: URL) -> None:
     """Fetch and store one measurement."""
-    measurement = get_metric_from_source(api)
+    measurement = Collector(api).get()
     try:
         logging.info(requests.post(f"{server}/measurement", json=measurement))
     except Exception as reason:  # pylint: disable=broad-except
