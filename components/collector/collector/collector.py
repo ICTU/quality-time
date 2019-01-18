@@ -3,7 +3,8 @@
 import itertools
 import logging
 import traceback
-from typing import List, Mapping, Optional, Set, Tuple, Type
+import urllib.parse
+from typing import cast, Optional, Set, Tuple, Type
 
 import cachetools
 import requests
@@ -19,8 +20,10 @@ class Collector:
     subclasses: Set[Type["Collector"]] = set()
     name = "Subclass responsibility"
 
-    def __init__(self, query: Mapping[str, List[str]]) -> None:
-        self.query = query
+    def __init__(self, request_url: URL) -> None:
+        self.request_url = request_url
+        url_parts = urllib.parse.urlsplit(request_url)
+        self.query = urllib.parse.parse_qs(url_parts.query)
 
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
@@ -33,21 +36,25 @@ class Collector:
         matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
         return matching_subclasses[0] if matching_subclasses else cls
 
-    def get(self, request_url: URL, metric_name: str, source_name: str) -> Response:
-        """Connect to the source to get and parse the measurement for the metric."""
+    def get(self) -> Response:
+        """Connect to the sources to get and parse the measurement for the metric."""
+        metric_name = urllib.parse.urlsplit(self.request_url).path.strip("/")
+        sources = self.query.get("source", [])
         urls = self.query.get("url", [])
         components = self.query.get("component", [])
-        source_responses = [self.get_one(url, component) for url, component in
-                            itertools.zip_longest(urls, components, fillvalue="")]
+        source_responses = []
+        for source, url, component in itertools.zip_longest(sources, urls, components, fillvalue=""):
+            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source}_{metric_name}"))
+            source_collector = collector_class(self.request_url)
+            source_responses.append(source_collector.get_one(url, component))
+
         measurements = [source_response["measurement"] for source_response in source_responses]
         measurement, calculation_error = self.safely_sum(measurements)
         return dict(
-            measurement=dict(
-                calculation_error=calculation_error, measurement=measurement),
-            source=dict(
-                name=self.name, responses=source_responses),
+            measurement=dict(calculation_error=calculation_error, measurement=measurement),
+            sources=source_responses,
             request=dict(
-                request_url=request_url, metric=metric_name, source=source_name, urls=urls, components=components))
+                request_url=self.request_url, metric=metric_name, sources=sources, urls=urls, components=components))
 
     def get_one(self, url: URL, component: str) -> Response:
         """Return the measurement response for one source url."""
@@ -55,7 +62,7 @@ class Collector:
         landing_url = self.landing_url(url, component)
         response, connection_error = self.safely_get_source_response(api_url)
         measurement, parse_error = self.safely_parse_source_response(response) if response else (None, None)
-        return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
+        return dict(name=self.name, api_url=api_url, landing_url=landing_url, measurement=measurement,
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, url: URL, component: str) -> URL:  # pylint: disable=unused-argument,no-self-use

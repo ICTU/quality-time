@@ -3,17 +3,17 @@ import { Label, Popup } from 'semantic-ui-react';
 
 
 function Source(props) {
-  if (props.source_response.connection_error || props.source_response.parse_error) {
+  if (props.source.connection_error || props.source.parse_error) {
     return (
       <Popup
         wide='very'
-        content={props.source_response.connection_error ? props.source_response.connection_error : props.source_response.parse_error}
-        header={props.source_response.connection_error ? 'Connection error' : 'Parse error'}
-        trigger={<Label color='red'><a href={props.source_response.landing_url}>{props.source}</a></Label>} />)
+        content={props.source.connection_error ? props.source.connection_error : props.source.parse_error}
+        header={props.source.connection_error ? 'Connection error' : 'Parse error'}
+        trigger={<Label color='red'><a href={props.source.landing_url}>{props.source.name}</a></Label>} />)
   } else {
     return (
       <Label>
-        <a href={props.source_response.landing_url}>{props.source}</a>
+        <a href={props.source.landing_url}>{props.source.name}</a>
       </Label>
     )
   }

@@ -8,20 +8,21 @@ import pymongo
 from .util import iso_timestamp
 
 
-@bottle.post("/comment/<metric_name>/<source_name>")
-def post_comment(metric_name: str, source_name: str, database):
+@bottle.post("/comment/<metric_name>")
+def post_comment(metric_name: str, database):
     """Save the comment for the metric."""
     logging.info(bottle.request)
     comment = bottle.request.json.get("comment", "")
+    sources = bottle.request.query.getall("source")  # pylint: disable=no-member
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
     latest_measurement_doc = database.measurements.find_one(
-        filter={"request.metric": metric_name, "request.source": source_name,
+        filter={"request.metric": metric_name, "request.sources": sources,
                 "request.urls": urls, "request.components": components},
         sort=[("measurement.start", pymongo.DESCENDING)])
     if not latest_measurement_doc:
         logging.error("Can't find measurement for comment %s with parameters %s, %s, %s, %s",
-                      comment, metric_name, source_name, urls, components)
+                      comment, metric_name, sources, urls, components)
         return dict()
     del latest_measurement_doc['_id']
     latest_measurement_doc["comment"] = comment
