@@ -44,6 +44,7 @@ def import_report(database):
     # and replace the existing report in the database, if any.
     with open("example-report.json") as json_report:
         report = json.load(json_report)
+    report["title"] = "Quality-time"
     database.reports.replace_one({}, report, upsert=True)
     stored_report = database.reports.find_one({})
     nr_subjects = len(stored_report["subjects"])

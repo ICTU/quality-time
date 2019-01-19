@@ -22,7 +22,7 @@ function Menubar(props) {
       <Container>
         <Menu.Item header>
           <Image size='mini' src='/favicon.ico' style={{ marginRight: '1.5em' }} />
-          <font size="+3">Quality-time</font>
+          <font size="+3">{props.report_title}</font>
           <NewMeasurementsLabel onClick={props.onReload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>
         <Menu.Menu position='right'>
