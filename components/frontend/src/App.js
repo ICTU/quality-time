@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      subjects: [], search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0
+      subjects: [], search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0,
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
@@ -77,13 +77,13 @@ class App extends Component {
       report_date.setHours(23, 59, 59);
     }
     return (
-      <div>
+      <>
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
                  onReload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
                  report_date_string={this.state.report_date_string} />
         <Subjects subjects={this.state.subjects} nr_new_measurements={this.state.nr_new_measurements}
                   search_string={this.state.search_string} report_date={report_date} />
-      </div>
+      </>
     );
   }
 }
