@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Image, Input, Label, Menu, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { ReportTitle } from './ReportTitle.js'
+import { ReportTitleContainer } from './ReportTitle.js'
 
 
 function NewMeasurementsLabel(props) {
@@ -23,7 +23,7 @@ function Menubar(props) {
       <Container>
         <Menu.Item header>
           <Image size='mini' src='/favicon.ico' style={{ marginRight: '1.5em' }} />
-          <ReportTitle />
+          <ReportTitleContainer />
           <NewMeasurementsLabel onClick={props.onReload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>
         <Menu.Menu position='right'>
