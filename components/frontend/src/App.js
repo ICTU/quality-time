@@ -9,7 +9,6 @@ class App extends Component {
     super(props);
     this.state = {
       subjects: [], search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0,
-      report_title: "Quality-time"
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
@@ -21,7 +20,7 @@ class App extends Component {
         return response.json();
       })
       .then(function(json) {
-        self.setState({subjects: json.subjects, report_title: json.title});
+        self.setState({subjects: json.subjects});
       });
     var source = new EventSource("http://localhost:8080/nr_measurements");
     source.addEventListener('init', function(e) {
@@ -78,13 +77,13 @@ class App extends Component {
       report_date.setHours(23, 59, 59);
     }
     return (
-      <div>
+      <>
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
                  onReload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
-                 report_date_string={this.state.report_date_string} report_title={this.state.report_title} />
+                 report_date_string={this.state.report_date_string} />
         <Subjects subjects={this.state.subjects} nr_new_measurements={this.state.nr_new_measurements}
                   search_string={this.state.search_string} report_date={report_date} />
-      </div>
+      </>
     );
   }
 }

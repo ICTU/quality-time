@@ -28,6 +28,21 @@ def get_report(database):
     return report
 
 
+@bottle.get("/report/title")
+def get_report_title(database):
+    """Return the report title."""
+    logging.info(bottle.request)
+    return dict(title=database.reports.find_one(filter={})["title"])
+
+
+@bottle.post("/report/title")
+def post_report_title(database):
+    """Set the report title."""
+    logging.info(bottle.request)
+    title = bottle.request.json.get("title", "Quality-time")
+    database.reports.update_one(filter={}, update={"$set": {"title": title}})
+
+
 def import_metrics(database):
     """Read the metric types and store them in the database."""
     with open("metrics.json") as json_metrics:
