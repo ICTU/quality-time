@@ -11,7 +11,6 @@ from .util import iso_timestamp
 @bottle.post("/comment/<metric_name>")
 def post_comment(metric_name: str, database):
     """Save the comment for the metric."""
-    logging.info(bottle.request)
     comment = bottle.request.json.get("comment", "")
     sources = bottle.request.query.getall("source")  # pylint: disable=no-member
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member

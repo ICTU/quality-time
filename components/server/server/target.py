@@ -12,7 +12,6 @@ from .util import iso_timestamp
 @bottle.post("/target/<metric_name>")
 def post_target(metric_name: str, database):
     """Save the target for the metric."""
-    logging.info(bottle.request)
     target = bottle.request.json.get("target", "")
     sources = bottle.request.query.getall("source")  # pylint: disable=no-member
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
