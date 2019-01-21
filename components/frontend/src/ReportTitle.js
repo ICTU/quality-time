@@ -8,8 +8,17 @@ class ReportTitleContainer extends Component {
         this.state = { title: "Quality-time", edit: false }
     }
     componentDidMount() {
+        this.fetch_title();
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.report_date !== this.props.report_date) {
+          this.fetch_title();
+        }
+      }
+    fetch_title() {
+        const report_date = this.props.report_date ? this.props.report_date : new Date();
         let self = this;
-        fetch('http://localhost:8080/report/title')
+        fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
             .then(function (response) {
                 return response.json();
             })
@@ -51,46 +60,47 @@ class ReportTitleContainer extends Component {
 function ReportTitle(props) {
     if (props.edit) {
         return (<ReportTitleInput title={props.title} onSubmit={props.onSubmit} onChange={props.onChange}
-            onKeyDown={props.onKeyDown} />)}
+            onKeyDown={props.onKeyDown} />)
+    }
+    return (
+        <ReportTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
+            onMouseLeave={props.onMouseLeave} />
+    )
+}
+
+const ReportTitleInput = props =>
+    <Form onSubmit={(e) => props.onSubmit(e)}>
+        <Form.Input autoFocus focus defaultValue={props.title}
+            onChange={props.onChange} onKeyDown={props.onKeyDown} />
+    </Form>
+
+
+class ReportTitleDisplay extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { editable: false }
+    }
+    onMouseEnter() {
+        this.setState({ editable: true })
+    }
+    onMouseLeave() {
+        this.setState({ editable: false })
+    }
+    render() {
+        const style = this.props.title ? { marginRight: "10px" } : { marginRight: "10px" };
         return (
-            <ReportTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
-                onMouseLeave={props.onMouseLeave} />
+            <div onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
+                onMouseLeave={(e) => this.onMouseLeave(e)}>
+                <span style={style}>
+                    <font size="+3">
+                        {this.props.title}
+                    </font>
+                </span>
+                {this.state.editable && <Icon color='grey' name='edit' />}
+            </div>
         )
     }
-
-    const ReportTitleInput = props =>
-        <Form onSubmit={(e) => props.onSubmit(e)}>
-            <Form.Input autoFocus focus defaultValue={props.title}
-                onChange={props.onChange} onKeyDown={props.onKeyDown} />
-        </Form>
+}
 
 
-    class ReportTitleDisplay extends Component {
-        constructor(props) {
-            super(props);
-            this.state = { editable: false }
-        }
-        onMouseEnter() {
-            this.setState({ editable: true })
-        }
-        onMouseLeave() {
-            this.setState({ editable: false })
-        }
-        render() {
-            const style = this.props.title ? { marginRight: "10px" } : { marginRight: "10px" };
-            return (
-                <div onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
-                    onMouseLeave={(e) => this.onMouseLeave(e)}>
-                    <span style={style}>
-                        <font size="+3">
-                            {this.props.title}
-                        </font>
-                    </span>
-                    {this.state.editable && <Icon color='grey' name='edit' />}
-                </div>
-            )
-        }
-    }
-
-
-    export { ReportTitleContainer };
+export { ReportTitleContainer };
