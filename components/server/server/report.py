@@ -17,6 +17,17 @@ def post_report_title(database):
     database.reports.insert(latest_report_doc)
 
 
+@bottle.post("/report/subject/<subject_index>/title")
+def post_subject_title(subject_index, database):
+    """Set the subject title."""
+    title = bottle.request.json.get("title", "<Unknown subject>")
+    latest_report_doc = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del latest_report_doc["_id"]
+    latest_report_doc["subjects"][int(subject_index)]["title"] = title
+    latest_report_doc["timestamp"] = iso_timestamp()
+    database.reports.insert(latest_report_doc)
+
+
 @bottle.get("/report")
 def get_report(database):
     """Return the quality report."""
