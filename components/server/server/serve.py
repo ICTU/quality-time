@@ -12,35 +12,13 @@ import bottle
 import pymongo
 
 from . import cors  # pylint: disable=unused-import
-from .route_injection_plugin import InjectionPlugin
 from . import comment  # pylint: disable=unused-import
+from . import report  # pylint: disable=unused-import
 from . import target  # pylint: disable=unused-import
 from . import measurement  # pylint: disable=unused-import
 from . import metric  # pylint: disable=unused-import
-
-
-@bottle.get("/report")
-def get_report(database):
-    """Return the quality report."""
-    logging.info(bottle.request)
-    report = database.reports.find_one({})
-    report["_id"] = str(report["_id"])
-    return report
-
-
-@bottle.get("/report/title")
-def get_report_title(database):
-    """Return the report title."""
-    logging.info(bottle.request)
-    return dict(title=database.reports.find_one(filter={})["title"])
-
-
-@bottle.post("/report/title")
-def post_report_title(database):
-    """Set the report title."""
-    logging.info(bottle.request)
-    title = bottle.request.json.get("title", "Quality-time")
-    database.reports.update_one(filter={}, update={"$set": {"title": title}})
+from .route_injection_plugin import InjectionPlugin
+from .util import iso_timestamp
 
 
 def import_metrics(database):
@@ -57,10 +35,14 @@ def import_report(database):
     """Read the example report and store it in the database."""
     # Until reports can be configured via the front-end, we load an example report on start up
     # and replace the existing report in the database, if any.
+    if database.reports.count_documents({}):
+        return
     with open("example-report.json") as json_report:
         report = json.load(json_report)
     report["title"] = "Quality-time"
-    database.reports.replace_one({}, report, upsert=True)
+    report["timestamp"] = "2019-01-01T00:00:00+00:00" or iso_timestamp()
+    database.reports.remove({})
+    database.reports.insert(report)
     stored_report = database.reports.find_one({})
     nr_subjects = len(stored_report["subjects"])
     nr_metrics = sum([len(subject["metrics"]) for subject in stored_report["subjects"]])

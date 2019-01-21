@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form, Header, Icon } from 'semantic-ui-react';
 
 
-class ReportTitleContainer extends Component {
+class SubjectTitleContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = { title: "Quality-time", edit: false }
+        this.state = { title: "Loading...", edit: false }
     }
     componentDidMount() {
         this.fetch_title();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.report_date !== this.props.report_date) {
-          this.fetch_title();
+            this.fetch_title();
         }
-      }
+    }
     fetch_title() {
         const report_date = this.props.report_date ? this.props.report_date : new Date();
         let self = this;
@@ -23,7 +23,7 @@ class ReportTitleContainer extends Component {
                 return response.json();
             })
             .then(function (json) {
-                self.setState({ title: json.title });
+                self.setState({ title: json["subjects"][self.props.subject_index].title });
             });
     }
     onClick(event) {
@@ -40,7 +40,7 @@ class ReportTitleContainer extends Component {
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch('http://localhost:8080/report/title', {
+        fetch(`http://localhost:8080/report/subject/${this.props.subject_index}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -51,31 +51,31 @@ class ReportTitleContainer extends Component {
     }
     render() {
         return (
-            <ReportTitle title={this.state.title} edit={this.state.edit}
+            <SubjectTitle title={this.state.title} edit={this.state.edit}
                 onSubmit={(e) => this.onSubmit(e)} onClick={(e) => this.onClick(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
 }
 
-function ReportTitle(props) {
+function SubjectTitle(props) {
     if (props.edit) {
-        return (<ReportTitleInput title={props.title} onSubmit={props.onSubmit} onChange={props.onChange}
+        return (<SubjectTitleInput title={props.title} onSubmit={props.onSubmit} onChange={props.onChange}
             onKeyDown={props.onKeyDown} />)
     }
     return (
-        <ReportTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
+        <SubjectTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave} />
     )
 }
 
-const ReportTitleInput = props =>
+const SubjectTitleInput = props =>
     <Form onSubmit={(e) => props.onSubmit(e)}>
         <Form.Input autoFocus focus defaultValue={props.title}
             onChange={props.onChange} onKeyDown={props.onKeyDown} />
     </Form>
 
 
-class ReportTitleDisplay extends Component {
+class SubjectTitleDisplay extends Component {
     constructor(props) {
         super(props);
         this.state = { editable: false }
@@ -88,16 +88,13 @@ class ReportTitleDisplay extends Component {
     }
     render() {
         return (
-            <div onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
-                onMouseLeave={(e) => this.onMouseLeave(e)}>
-                <font size="+3">
-                    {this.props.title}
-                </font>
-                {this.state.editable && <Icon size='large' color='grey' name='edit' style={{marginLeft: "10px"}}/>}
-            </div>
+            <Header as='h2' onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
+                onMouseLeave={(e) => this.onMouseLeave(e)} >
+                {this.props.title}
+                {this.state.editable && <font size='0'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
+            </Header>
         )
     }
 }
 
-
-export { ReportTitleContainer };
+export { SubjectTitleContainer };

@@ -14,8 +14,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
-    fetch('http://localhost:8080/report')
+    fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
       .then(function(response) {
         return response.json();
       })
@@ -41,8 +42,9 @@ class App extends Component {
 
   reload(event) {
     event.preventDefault();
+    const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
-    fetch('http://localhost:8080/report')
+    fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
       .then(function(response) {
         return response.json();
       })
@@ -80,7 +82,7 @@ class App extends Component {
       <>
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
                  onReload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
-                 report_date_string={this.state.report_date_string} />
+                 report_date={report_date} report_date_string={this.state.report_date_string} />
         <Subjects subjects={this.state.subjects} nr_new_measurements={this.state.nr_new_measurements}
                   search_string={this.state.search_string} report_date={report_date} />
       </>

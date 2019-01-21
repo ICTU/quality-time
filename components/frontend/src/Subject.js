@@ -1,5 +1,6 @@
 import React from 'react';
-import { Header, Table, Segment } from 'semantic-ui-react';
+import { Table, Segment } from 'semantic-ui-react';
+import { SubjectTitleContainer } from './SubjectTitle.js';
 import Metric from './Metric.js';
 
 function Subject(props) {
@@ -8,7 +9,7 @@ function Subject(props) {
             report_date={props.report_date} nr_new_measurements={props.nr_new_measurements} />);
   return (
     <Segment basic>
-      <Header as='h2'>{props.title}</Header>
+      <SubjectTitleContainer subject_index={props.subject_index} />
       <Table columns={6}>
           <Table.Header>
               <Table.Row>

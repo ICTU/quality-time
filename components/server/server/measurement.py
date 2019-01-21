@@ -8,7 +8,7 @@ from typing import Optional
 import bottle
 import pymongo
 
-from .util import iso_timestamp
+from .util import iso_timestamp, report_date_time
 
 
 def determine_status(value: Optional[str], target: str, direction: str) -> Optional[str]:
@@ -40,7 +40,6 @@ def post_measurement(database) -> None:
         return measure1["measurement"] == measure2["measurement"] and \
                measure1["calculation_error"] == measure2["calculation_error"]
 
-    logging.info(bottle.request)
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
     metric = database.metrics.find_one(filter={"metric": measurement["request"]["metric"]})
@@ -102,17 +101,13 @@ def stream_nr_measurements(database):
 @bottle.get("/measurements/<metric_name>")
 def get_measurements(metric_name: str, database):
     """Return the measurements for the metric/source."""
-    logging.info(bottle.request)
     sources = bottle.request.query.getall("source")  # pylint: disable=no-member
     urls = bottle.request.query.getall("url")  # pylint: disable=no-member
     components = bottle.request.query.getall("component")  # pylint: disable=no-member
-    report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
-    report_date_string = report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
     docs = database.measurements.find(
         filter={"request.metric": metric_name, "request.sources": sources,
                 "request.urls": urls, "request.components": components,
-                "measurement.start": {"$lt": report_date_string}})
-    logging.info("Found %d measurements for %s", docs.count(), bottle.request.url)
+                "measurement.start": {"$lt": report_date_time()}})
     measurements = []
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])
