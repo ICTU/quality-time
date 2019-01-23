@@ -91,7 +91,7 @@ class SubjectTitleDisplay extends Component {
             <Header as='h2' onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
                 onMouseLeave={(e) => this.onMouseLeave(e)} >
                 {this.props.title}
-                {this.state.editable && <font size='0'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
+                {this.state.editable && <font size='5'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
             </Header>
         )
     }
