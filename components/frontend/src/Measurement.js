@@ -1,11 +1,32 @@
 import React, { Component } from 'react';
-import { Icon, Table, Popup } from 'semantic-ui-react';
+import { Icon, Table, Popup, Segment } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { Source } from './Source';
 import { Target } from './Target';
+import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 
+
+function DetailPanel(props) {
+  return (
+    <Table.Row>
+      <Table.Cell colSpan="6">
+        <Segment.Group horizontal>
+          <Segment>
+            <TrendGraph measurements={props.measurements} unit={props.unit} />
+          </Segment>
+          <Segment>
+            Another segment.
+          </Segment>
+          <Segment>
+            Another segment.
+          </Segment>
+        </Segment.Group>
+      </Table.Cell>
+    </Table.Row>
+  )
+}
 
 class Measurement extends Component {
   constructor(props) {
@@ -76,7 +97,7 @@ class Measurement extends Component {
               comment={last_measurement.comment} key={end} />
           </Table.Cell>
         </Table.Row>
-        {this.state.show_details && <Table.Row positive={positive} negative={negative} warning={warning}><Table.Cell colSpan="6">Details</Table.Cell></Table.Row>}
+        {this.state.show_details && <DetailPanel measurements={this.props.measurements} unit={this.state.metric.unit} />}
       </>
     )
   }

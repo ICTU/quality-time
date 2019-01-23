@@ -48,7 +48,6 @@
         {
             "title": "Test",
             "metrics": [
-                "time?source=clock&url=http://worldtimeapi.org/api/timezone/Europe/Amsterdam.json",
                 "violations?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq&source=random&url=http://dummy"
             ]
         }
