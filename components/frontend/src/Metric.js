@@ -6,12 +6,19 @@ import Measurement from './Measurement.js';
 class Metric extends Component {
   constructor(props) {
     super(props);
-    this.state = {measurements: []}
+    this.state = {measurements: [], metric: {}}
   }
   fetch_measurement() {
     let self = this;
+    fetch(`http://localhost:8080/metric/${this.props.metric.metric}`)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        self.setState({metric: json});
+      });
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/measurements/${this.props.metric}&report_date=${report_date.toISOString()}`)
+    fetch(`http://localhost:8080/measurements/${JSON.stringify(this.props.metric)}&report_date=${report_date.toISOString()}`)
       .then(function(response) {
         return response.json();
       })
@@ -48,10 +55,9 @@ class Metric extends Component {
       )
     }
     const search = this.props.search_string;
-    let last_measurement = m[m.length - 1];
-    if (search && !last_measurement["metric"].name.toLowerCase().includes(search.toLowerCase())) {return null};
+    if (search && !this.state.metric.name.toLowerCase().includes(search.toLowerCase())) {return null};
     return (
-      <Measurement measurements={m} onEdit={(e) => this.onEdit(e)} />
+      <Measurement metric={this.state.metric} measurements={m} onEdit={(e) => this.onEdit(e)} />
     )
   }
 }

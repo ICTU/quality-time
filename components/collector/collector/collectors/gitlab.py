@@ -14,8 +14,8 @@ class Gitlab(Collector):
 class GitlabVersion(Gitlab):
     """Return the Gitlab version."""
 
-    def api_url(self, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/v4/version?private_token={self.query['private_token'][0]}")
+    def api_url(self, source) -> URL:
+        return URL(f"{source['url']}/api/v4/version?private_token={source['private_token']}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["version"])
@@ -24,9 +24,9 @@ class GitlabVersion(Gitlab):
 class GitlabJobs(Gitlab):
     """Collector class to get job counts from Gitlab."""
 
-    def api_url(self, url: URL, component: str) -> URL:
-        return URL(f"{url}/api/v4/projects/{self.query['project_id'][0]}/"
-                   f"jobs?private_token={self.query['private_token'][0]}")
+    def api_url(self, source) -> URL:
+        return URL(f"{source['url']}/api/v4/projects/{source['component']}/"
+                   f"jobs?private_token={source['private_token']}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(len(response.json()))

@@ -7,7 +7,7 @@ class Target extends Component {
     super(props);
     this.state = {edited_target: this.props.target, edit: false}
   }
-  onClick() {
+  onEdit() {
     this.setState({edit: true});
   }
   onChange(event) {
@@ -38,18 +38,18 @@ class Target extends Component {
     if (this.state.edit) {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
-          {this.props.direction}
+          {this.props.metric.direction}
           <Form.Input autoFocus focus fluid type="number" defaultValue={this.state.edited_target}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-          {this.props.unit}
+          {this.props.metric.unit}
         </Form>
       )
     }
     const style = this.state.edited_target ? {marginRight: "10px"} : {marginRight: "0px"};
     return (
-      <div onClick={(e) => this.onClick(e)}>
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} tabIndex="0">
         <span style={style}>
-          {this.props.direction} {this.state.edited_target} {this.props.unit}
+          {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
         </span>
         {this.props.editable && <Icon color='grey' name='edit' />}
       </div>

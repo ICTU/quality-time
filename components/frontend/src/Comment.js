@@ -7,7 +7,7 @@ class Comment extends Component {
     super(props);
     this.state = {edited_comment: this.props.comment, edit: false}
   }
-  onClick() {
+  onEdit() {
     this.setState({edit: true});
   }
   onChange(event) {
@@ -41,7 +41,7 @@ class Comment extends Component {
     }
     const style = this.state.edited_comment ? {marginRight: "10px"} : {marginRight: "0px"};
     return (
-      <div onClick={(e) => this.onClick(e)}>
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} tabIndex="0">
         <span style={style}>
           {this.state.edited_comment}
         </span>

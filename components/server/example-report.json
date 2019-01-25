@@ -1,54 +1,289 @@
 {
     "subjects": [
         {
-            "title": "Sample JUnit",
+            "title": "JUnit and JaCoCo metrics",
             "metrics": [
-                "tests?source=junit&source=junit&url=https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests&url=https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml",
-                "failed_tests?source=junit&source=junit&url=https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests&url=https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
-            ]
-        },
-        {
-            "title": "Sample JaCoCo",
-            "metrics": [
-                "covered_lines?source=jacoco&url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
-                "uncovered_lines?source=jacoco&url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
-                "covered_branches?source=jacoco&url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml",
-                "uncovered_branches?source=jacoco&url=https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                {
+                    "metric": "tests",
+                    "sources": [
+                        {
+                            "source": "junit",
+                            "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                        },
+                        {
+                            "source": "junit",
+                            "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                        }
+                    ]
+                },
+                {
+                    "metric": "failed_tests",
+                    "sources": [
+                        {
+                            "source": "junit",
+                            "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                        },
+                        {
+                            "source": "junit",
+                            "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_lines",
+                    "sources": [
+                        {
+                            "source": "jacoco",
+                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_lines",
+                    "sources": [
+                        {
+                            "source": "jacoco",
+                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_branches",
+                    "sources": [
+                        {
+                            "source": "jacoco",
+                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_branches",
+                    "sources": [
+                        {
+                            "source": "jacoco",
+                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                        }
+                    ]
+                }
             ]
         },
         {
             "title": "Next-action",
             "metrics": [
-                "tests?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "failed_tests?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "covered_lines?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "uncovered_lines?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "covered_branches?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "uncovered_branches?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "loc?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "ncloc?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action",
-                "violations?source=sonarqube&url=http://sonarcloud.io&component=fniessink:next-action"
+                {
+                    "metric": "tests",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "failed_tests",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_lines",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_lines",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_branches",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_branches",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "loc",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "ncloc",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                },
+                {
+                    "metric": "violations",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "fniessink:next-action"
+                        }
+                    ]
+                }
             ]
         },
         {
             "title": "HQ",
             "metrics": [
-                "tests?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "failed_tests?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "covered_lines?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "uncovered_lines?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "covered_branches?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "uncovered_branches?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "loc?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "ncloc?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "violations?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq",
-                "version?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq"
+                {
+                    "metric": "tests",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "failed_tests",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_lines",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_lines",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "covered_branches",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "uncovered_branches",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "loc",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "ncloc",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "violations",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                },
+                {
+                    "metric": "version",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        }
+                    ]
+                }
             ]
         },
         {
             "title": "Test",
             "metrics": [
-                "violations?source=sonarqube&url=http://sonarcloud.io&component=nl.ictu:hq&source=random&url=http://dummy"
+                {
+                    "metric": "violations",
+                    "sources": [
+                        {
+                            "source": "sonarqube",
+                            "url": "http://sonarcloud.io",
+                            "component": "nl.ictu:hq"
+                        },
+                        {
+                            "source": "random",
+                            "url": "http://dummy"
+                        }
+                    ]
+                }
             ]
         }
     ]

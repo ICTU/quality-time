@@ -26,7 +26,7 @@ class SubjectTitleContainer extends Component {
                 self.setState({ title: json["subjects"][self.props.subject_index].title });
             });
     }
-    onClick(event) {
+    onEdit(event) {
         this.setState((state) => ({ edit: true, previous_title: state.title }));
     }
     onChange(event) {
@@ -52,7 +52,7 @@ class SubjectTitleContainer extends Component {
     render() {
         return (
             <SubjectTitle title={this.state.title} edit={this.state.edit}
-                onSubmit={(e) => this.onSubmit(e)} onClick={(e) => this.onClick(e)}
+                onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
 }
@@ -63,7 +63,7 @@ function SubjectTitle(props) {
             onKeyDown={props.onKeyDown} />)
     }
     return (
-        <SubjectTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
+        <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave} />
     )
 }
@@ -88,8 +88,8 @@ class SubjectTitleDisplay extends Component {
     }
     render() {
         return (
-            <Header as='h2' onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
-                onMouseLeave={(e) => this.onMouseLeave(e)} >
+            <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit}
+                onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
                 {this.props.title}
                 {this.state.editable && <font size='5'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
             </Header>
