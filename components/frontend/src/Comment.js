@@ -39,7 +39,7 @@ class Comment extends Component {
         </Form>
       )
     }
-    const style = this.props.editable ? {outline: 1, outlineStyle: "dotted", minHeight: "1em"} : {};
+    const style = this.props.editable ? {borderBottom: "1px dotted #000000", minHeight: "1em" } : {};
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} style={style} tabIndex="0">
         {this.state.edited_comment}

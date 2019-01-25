@@ -87,7 +87,7 @@ class ReportTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
-        const style = this.state.editable ? {outline:1, outlineStyle: "dotted"} : {}
+        const style = this.state.editable ? {borderBottom: "1px dotted #FFFFFF" } : {};
         return (
             <div onClick={this.props.onEdit} onKeyPress={this.props.onEdit} onMouseEnter={(e) => this.onMouseEnter(e)}
                 onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">

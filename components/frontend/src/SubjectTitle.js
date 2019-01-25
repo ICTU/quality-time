@@ -87,7 +87,7 @@ class SubjectTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
-        const style = this.state.editable ? {outline: 1, outlineStyle: 'dotted'} : {};
+        const style = this.state.editable ? {borderBottom: "1px dotted #000000" } : {};
         return (
             <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
                 onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >

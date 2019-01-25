@@ -45,7 +45,7 @@ class Target extends Component {
         </Form>
       )
     }
-    const style = this.props.editable ? {outline: 1, outlineStyle: "dotted"} : {};
+    const style = this.props.editable ? {borderBottom: "1px dotted #000000" } : {};
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} style={style} tabIndex="0">
         {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
