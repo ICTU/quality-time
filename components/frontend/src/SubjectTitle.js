@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Header, Icon } from 'semantic-ui-react';
+import { Form, Header } from 'semantic-ui-react';
 
 
 class SubjectTitleContainer extends Component {
@@ -87,11 +87,11 @@ class SubjectTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
+        const style = this.state.editable ? {outline: 1, outlineStyle: 'dotted'} : {};
         return (
-            <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit}
+            <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
                 onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
                 {this.props.title}
-                {this.state.editable && <font size='5'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
             </Header>
         )
     }

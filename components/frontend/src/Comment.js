@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 
 class Comment extends Component {
@@ -39,13 +39,10 @@ class Comment extends Component {
         </Form>
       )
     }
-    const style = this.state.edited_comment ? {marginRight: "10px"} : {marginRight: "0px"};
+    const style = this.props.editable ? {outline: 1, outlineStyle: "dotted", minHeight: "1em"} : {};
     return (
-      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} tabIndex="0">
-        <span style={style}>
-          {this.state.edited_comment}
-        </span>
-        {this.props.editable && <Icon color='grey' name='edit' />}
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} style={style} tabIndex="0">
+        {this.state.edited_comment}
       </div>
     )
   }

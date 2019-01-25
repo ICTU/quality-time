@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 
 class Target extends Component {
@@ -45,13 +45,10 @@ class Target extends Component {
         </Form>
       )
     }
-    const style = this.state.edited_target ? {marginRight: "10px"} : {marginRight: "0px"};
+    const style = this.props.editable ? {outline: 1, outlineStyle: "dotted"} : {};
     return (
-      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} tabIndex="0">
-        <span style={style}>
-          {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
-        </span>
-        {this.props.editable && <Icon color='grey' name='edit' />}
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} style={style} tabIndex="0">
+        {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
       </div>
     )
   }
