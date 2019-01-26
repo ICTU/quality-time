@@ -28,13 +28,7 @@ function MeasurementDetails(props) {
 class Measurement extends Component {
   constructor(props) {
     super(props);
-    this.state = { hover: false, show_details: false }
-  }
-  onMouseEnter(event) {
-    this.setState({ hover: true })
-  }
-  onMouseLeave(event) {
-    this.setState({ hover: false })
+    this.state = { show_details: false }
   }
   onExpand(event) {
     this.setState((state) => ({ show_details: !state.show_details }));
@@ -50,9 +44,7 @@ class Measurement extends Component {
     const warning = measurement.status === null;
     return (
       <>
-        <Table.Row positive={positive} negative={negative} warning={warning}
-          onMouseEnter={(e) => this.onMouseEnter(e)}
-          onMouseLeave={(e) => this.onMouseLeave(e)}>
+        <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell>
             <Icon name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0"/>
@@ -78,8 +70,7 @@ class Measurement extends Component {
             {sources.map((source) => <Source key={source.api_url} source={source} />)}
           </Table.Cell>
           <Table.Cell>
-            <Comment metric={this.props.metric} editable={this.state.hover}
-              comment={last_measurement.comment} key={end} />
+            <Comment metric={this.props.metric} comment={last_measurement.comment} key={end} />
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}

@@ -5,7 +5,13 @@ import { Form } from 'semantic-ui-react';
 class Target extends Component {
   constructor(props) {
     super(props);
-    this.state = {edited_target: this.props.target, edit: false}
+    this.state = {edited_target: this.props.target, edit: false, hover: false}
+  }
+  onMouseEnter(event) {
+    this.setState({ hover: true })
+  }
+  onMouseLeave(event) {
+    this.setState({ hover: false })
   }
   onEdit() {
     this.setState({edit: true});
@@ -45,9 +51,10 @@ class Target extends Component {
         </Form>
       )
     }
-    const style = this.props.editable ? {borderBottom: "1px dotted #000000" } : {};
+    const style = this.state.hover ? {borderBottom: "1px dotted #000000" } : {height: "1em"};
     return (
-      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} style={style} tabIndex="0">
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} onMouseEnter={(e) => this.onMouseEnter(e)}
+      onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
         {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
       </div>
     )
