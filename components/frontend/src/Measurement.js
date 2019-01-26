@@ -63,14 +63,14 @@ class Measurement extends Component {
             Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
-            <Target metric={this.props.metric} editable={this.state.hover}
+            <Target measurement_id={last_measurement["_id"]} metric={this.props.metric} editable={this.state.hover}
               target={measurement.target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
             {sources.map((source) => <Source key={source.api_url} source={source} />)}
           </Table.Cell>
           <Table.Cell>
-            <Comment metric={this.props.metric} comment={last_measurement.comment} key={end} />
+            <Comment measurement_id={last_measurement["_id"]} comment={last_measurement.comment} key={end} />
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}

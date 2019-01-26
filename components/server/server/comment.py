@@ -3,30 +3,23 @@
 import logging
 
 import bottle
-import pymongo
+from bson.objectid import ObjectId
 
 from .util import iso_timestamp
 
 
-@bottle.post("/comment/<metric_name>")
-def post_comment(metric_name: str, database):
-    """Save the comment for the metric."""
+@bottle.post("/comment/<measurement_id>")
+def post_comment(measurement_id: str, database):
+    """Save the comment for the measurement."""
     comment = bottle.request.json.get("comment", "")
-    sources = bottle.request.query.getall("source")  # pylint: disable=no-member
-    urls = bottle.request.query.getall("url")  # pylint: disable=no-member
-    components = bottle.request.query.getall("component")  # pylint: disable=no-member
-    latest_measurement_doc = database.measurements.find_one(
-        filter={"request.metric": metric_name, "request.sources": sources,
-                "request.urls": urls, "request.components": components},
-        sort=[("measurement.start", pymongo.DESCENDING)])
-    if not latest_measurement_doc:
-        logging.error("Can't find measurement for comment %s with parameters %s, %s, %s, %s",
-                      comment, metric_name, sources, urls, components)
+    measurement_doc = database.measurements.find_one(filter={"_id": ObjectId(measurement_id)})
+    if not measurement_doc:
+        logging.error("Can't find measurement with id %s to post comment %s", measurement_id, comment)
         return dict()
-    del latest_measurement_doc['_id']
-    latest_measurement_doc["comment"] = comment
+    del measurement_doc['_id']
+    measurement_doc["comment"] = comment
     timestamp_string = iso_timestamp()
-    latest_measurement_doc["measurement"]["start"] = timestamp_string
-    latest_measurement_doc["measurement"]["end"] = timestamp_string
-    database.measurements.insert_one(latest_measurement_doc)
+    measurement_doc["measurement"]["start"] = timestamp_string
+    measurement_doc["measurement"]["end"] = timestamp_string
+    database.measurements.insert_one(measurement_doc)
     return dict()

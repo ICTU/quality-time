@@ -27,7 +27,7 @@ class Target extends Component {
   onSubmit(event) {
     event.preventDefault();
     this.setState({edit: false});
-    fetch(`http://localhost:8080/target/${this.props.metric_id}`, {
+    fetch(`http://localhost:8080/target/${this.props.measurement_id}`, {
       method: 'post',
       mode: 'cors',
       headers: {

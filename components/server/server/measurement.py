@@ -102,18 +102,6 @@ def stream_nr_measurements(database):
 def get_measurements(metric: str, database):
     """Return the measurements for the metric/source."""
     metric = json.loads(metric.split("&")[0])
-    """
-    sources = bottle.request.query.getall("source")  # pylint: disable=no-member
-    urls = bottle.request.query.getall("url")  # pylint: disable=no-member
-    components = bottle.request.query.getall("component")  # pylint: disable=no-member
-    sources_list = []
-    for source, url, component in itertools.zip_longest(sources, urls, components):
-        source_dict(source=source, url=url)
-        if component:
-            source_dict["component"] = component
-        sources_list.append(source_dict)
-    metric = dict(metric=metric_name, sources=sources_list)
-    """
     docs = database.measurements.find(
         filter={"metric": metric, "measurement.start": {"$lt": report_date_time()}})
     measurements = []
