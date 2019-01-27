@@ -1,9 +1,7 @@
 """Collector base class."""
 
-import itertools
 import logging
 import traceback
-import urllib.parse
 from typing import cast, Optional, Set, Tuple, Type
 
 import cachetools
@@ -20,10 +18,8 @@ class Collector:
     subclasses: Set[Type["Collector"]] = set()
     name = "Subclass responsibility"
 
-    def __init__(self, request_url: URL) -> None:
-        self.request_url = request_url
-        url_parts = urllib.parse.urlsplit(request_url)
-        self.query = urllib.parse.parse_qs(url_parts.query)
+    def __init__(self, metric) -> None:
+        self.metric = metric
 
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
@@ -38,40 +34,36 @@ class Collector:
 
     def get(self) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
-        metric_name = urllib.parse.urlsplit(self.request_url).path.strip("/")
-        sources = self.query.get("source", [])
-        urls = self.query.get("url", [])
-        components = self.query.get("component", [])
+        metric_name = self.metric["metric"]
         source_responses = []
-        for source, url, component in itertools.zip_longest(sources, urls, components, fillvalue=""):
-            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source}_{metric_name}"))
-            source_collector = collector_class(self.request_url)
-            source_responses.append(source_collector.get_one(url, component))
+        for source in self.metric.get("sources", []):
+            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['source']}_{metric_name}"))
+            source_collector = collector_class(self.metric)
+            source_responses.append(source_collector.get_one(source))
 
         measurements = [source_response["measurement"] for source_response in source_responses]
         measurement, calculation_error = self.safely_sum(measurements)
         return dict(
             measurement=dict(calculation_error=calculation_error, measurement=measurement),
             sources=source_responses,
-            request=dict(
-                request_url=self.request_url, metric=metric_name, sources=sources, urls=urls, components=components))
+            metric=self.metric)
 
-    def get_one(self, url: URL, component: str) -> Response:
-        """Return the measurement response for one source url."""
-        api_url = self.api_url(url, component)
-        landing_url = self.landing_url(url, component)
+    def get_one(self, source) -> Response:
+        """Return the measurement response for one source."""
+        api_url = self.api_url(source)
+        landing_url = self.landing_url(source)
         response, connection_error = self.safely_get_source_response(api_url)
         measurement, parse_error = self.safely_parse_source_response(response) if response else (None, None)
         return dict(name=self.name, api_url=api_url, landing_url=landing_url, measurement=measurement,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, url: URL, component: str) -> URL:  # pylint: disable=unused-argument,no-self-use
+    def landing_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the urls into the landing urls."""
-        return url
+        return source["url"]
 
-    def api_url(self, url: URL, component: str) -> URL:  # pylint: disable=unused-argument,no-self-use
+    def api_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
-        return url
+        return source["url"]
 
     @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
     def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:

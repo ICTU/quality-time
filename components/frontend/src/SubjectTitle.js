@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Header, Icon } from 'semantic-ui-react';
+import { Form, Header } from 'semantic-ui-react';
 
 
 class SubjectTitleContainer extends Component {
@@ -26,7 +26,7 @@ class SubjectTitleContainer extends Component {
                 self.setState({ title: json["subjects"][self.props.subject_index].title });
             });
     }
-    onClick(event) {
+    onEdit(event) {
         this.setState((state) => ({ edit: true, previous_title: state.title }));
     }
     onChange(event) {
@@ -52,7 +52,7 @@ class SubjectTitleContainer extends Component {
     render() {
         return (
             <SubjectTitle title={this.state.title} edit={this.state.edit}
-                onSubmit={(e) => this.onSubmit(e)} onClick={(e) => this.onClick(e)}
+                onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
 }
@@ -63,7 +63,7 @@ function SubjectTitle(props) {
             onKeyDown={props.onKeyDown} />)
     }
     return (
-        <SubjectTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
+        <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave} />
     )
 }
@@ -87,11 +87,11 @@ class SubjectTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
+        const style = this.state.editable ? {borderBottom: "1px dotted #000000" } : {};
         return (
-            <Header as='h2' onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
-                onMouseLeave={(e) => this.onMouseLeave(e)} >
+            <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
+                onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
                 {this.props.title}
-                {this.state.editable && <font size='0'><Icon size='small' color='grey' name='edit' style={{marginLeft: "10px"}}/></font>}
             </Header>
         )
     }

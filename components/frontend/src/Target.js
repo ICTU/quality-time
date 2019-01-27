@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 
 class Target extends Component {
   constructor(props) {
     super(props);
-    this.state = {edited_target: this.props.target, edit: false}
+    this.state = {edited_target: this.props.target, edit: false, hover: false}
   }
-  onClick() {
+  onMouseEnter(event) {
+    this.setState({ hover: true })
+  }
+  onMouseLeave(event) {
+    this.setState({ hover: false })
+  }
+  onEdit() {
     this.setState({edit: true});
   }
   onChange(event) {
@@ -21,7 +27,7 @@ class Target extends Component {
   onSubmit(event) {
     event.preventDefault();
     this.setState({edit: false});
-    fetch(`http://localhost:8080/target/${this.props.metric_id}`, {
+    fetch(`http://localhost:8080/target/${this.props.measurement_id}`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -38,20 +44,18 @@ class Target extends Component {
     if (this.state.edit) {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
-          {this.props.direction}
+          {this.props.metric.direction}
           <Form.Input autoFocus focus fluid type="number" defaultValue={this.state.edited_target}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-          {this.props.unit}
+          {this.props.metric.unit}
         </Form>
       )
     }
-    const style = this.state.edited_target ? {marginRight: "10px"} : {marginRight: "0px"};
+    const style = this.state.hover ? {borderBottom: "1px dotted #000000" } : {height: "1em"};
     return (
-      <div onClick={(e) => this.onClick(e)}>
-        <span style={style}>
-          {this.props.direction} {this.state.edited_target} {this.props.unit}
-        </span>
-        {this.props.editable && <Icon color='grey' name='edit' />}
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} onMouseEnter={(e) => this.onMouseEnter(e)}
+      onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
+        {this.props.metric.direction} {this.state.edited_target} {this.props.metric.unit}
       </div>
     )
   }

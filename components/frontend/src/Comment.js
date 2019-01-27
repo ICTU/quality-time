@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 
 class Comment extends Component {
   constructor(props) {
     super(props);
-    this.state = {edited_comment: this.props.comment, edit: false}
+    this.state = {edited_comment: this.props.comment, edit: false, hover: false}
   }
-  onClick() {
+  onMouseEnter(event) {
+    this.setState({ hover: true })
+  }
+  onMouseLeave(event) {
+    this.setState({ hover: false })
+  }
+  onEdit() {
     this.setState({edit: true});
   }
   onChange(event) {
@@ -21,7 +27,7 @@ class Comment extends Component {
   onSubmit(event) {
     event.preventDefault();
     this.setState({edit: false});
-    fetch(`http://localhost:8080/comment/${this.props.metric_id}`, {
+    fetch(`http://localhost:8080/comment/${this.props.measurement_id}`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -39,13 +45,11 @@ class Comment extends Component {
         </Form>
       )
     }
-    const style = this.state.edited_comment ? {marginRight: "10px"} : {marginRight: "0px"};
+    const style = this.state.hover ? {borderBottom: "1px dotted #000000" } : {height: "1em"};
     return (
-      <div onClick={(e) => this.onClick(e)}>
-        <span style={style}>
-          {this.state.edited_comment}
-        </span>
-        {this.props.editable && <Icon color='grey' name='edit' />}
+      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
+      onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
+        {this.state.edited_comment}
       </div>
     )
   }

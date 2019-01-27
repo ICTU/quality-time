@@ -1,5 +1,6 @@
 """Measurement API."""
 
+import json
 import logging
 import time
 from distutils.version import LooseVersion
@@ -42,13 +43,12 @@ def post_measurement(database) -> None:
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
-    metric = database.metrics.find_one(filter={"metric": measurement["request"]["metric"]})
+    metric = database.metrics.find_one(filter={"metric": measurement["metric"]["metric"]})
     if not metric:
-        logging.error("Can't find %s metric in Metrics collection.", measurement["request"]["metric"])
+        logging.error("Can't find %s metric in Metrics collection.", measurement["metric"]["metric"])
         return
     latest_measurement_doc = database.measurements.find_one(
-        filter={"request.request_url": measurement["request"]["request_url"]},
-        sort=[("measurement.start", pymongo.DESCENDING)])
+        filter={"metric": measurement["metric"]}, sort=[("measurement.start", pymongo.DESCENDING)])
     if latest_measurement_doc:
         if equal_measurements(latest_measurement_doc["measurement"], measurement["measurement"]):
             database.measurements.update_one(
@@ -98,16 +98,12 @@ def stream_nr_measurements(database):
             yield sse_pack(event_id, "delta", data)
 
 
-@bottle.get("/measurements/<metric_name>")
-def get_measurements(metric_name: str, database):
+@bottle.get("/measurements/<metric:path>")
+def get_measurements(metric: str, database):
     """Return the measurements for the metric/source."""
-    sources = bottle.request.query.getall("source")  # pylint: disable=no-member
-    urls = bottle.request.query.getall("url")  # pylint: disable=no-member
-    components = bottle.request.query.getall("component")  # pylint: disable=no-member
+    metric = json.loads(metric.split("&")[0])
     docs = database.measurements.find(
-        filter={"request.metric": metric_name, "request.sources": sources,
-                "request.urls": urls, "request.components": components,
-                "measurement.start": {"$lt": report_date_time()}})
+        filter={"metric": metric, "measurement.start": {"$lt": report_date_time()}})
     measurements = []
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 
 class ReportTitleContainer extends Component {
@@ -26,7 +26,7 @@ class ReportTitleContainer extends Component {
                 self.setState({ title: json.title });
             });
     }
-    onClick(event) {
+    onEdit(event) {
         this.setState((state) => ({ edit: true, previous_title: state.title }));
     }
     onChange(event) {
@@ -52,7 +52,7 @@ class ReportTitleContainer extends Component {
     render() {
         return (
             <ReportTitle title={this.state.title} edit={this.state.edit}
-                onSubmit={(e) => this.onSubmit(e)} onClick={(e) => this.onClick(e)}
+                onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
 }
@@ -63,7 +63,7 @@ function ReportTitle(props) {
             onKeyDown={props.onKeyDown} />)
     }
     return (
-        <ReportTitleDisplay title={props.title} onClick={props.onClick} onMouseEnter={props.onMouseEnter}
+        <ReportTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave} />
     )
 }
@@ -87,13 +87,13 @@ class ReportTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
+        const style = this.state.editable ? {borderBottom: "1px dotted #FFFFFF" } : {};
         return (
-            <div onClick={this.props.onClick} onMouseEnter={(e) => this.onMouseEnter(e)}
-                onMouseLeave={(e) => this.onMouseLeave(e)}>
+            <div onClick={this.props.onEdit} onKeyPress={this.props.onEdit} onMouseEnter={(e) => this.onMouseEnter(e)}
+                onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
                 <font size="+3">
                     {this.props.title}
                 </font>
-                {this.state.editable && <Icon size='large' color='grey' name='edit' style={{marginLeft: "10px"}}/>}
             </div>
         )
     }
