@@ -28,6 +28,17 @@ def post_subject_title(subject_index, database):
     database.reports.insert(latest_report_doc)
 
 
+@bottle.post("/report/subject/<subject_index>/metric/<metric_index>/source/<source_index>/url")
+def post_source_url(subject_index, metric_index, source_index, database):
+    """Set the source url."""
+    url = bottle.request.json.get("url", "http://unknown")
+    latest_report_doc = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del latest_report_doc["_id"]
+    latest_report_doc["subjects"][int(subject_index)]["metrics"][int(metric_index)]["sources"][int(source_index)]["url"] = url
+    latest_report_doc["timestamp"] = iso_timestamp()
+    database.reports.insert(latest_report_doc)
+
+
 @bottle.get("/report")
 def get_report(database):
     """Return the quality report."""
