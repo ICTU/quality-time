@@ -17,13 +17,27 @@ def post_report_title(database):
     database.reports.insert(latest_report_doc)
 
 
-@bottle.post("/report/subject/<subject_index>/title")
-def post_subject_title(subject_index, database):
+@bottle.post("/report/subject/<subject_uuid>/title")
+def post_subject_title(subject_uuid: str, database):
     """Set the subject title."""
     title = bottle.request.json.get("title", "<Unknown subject>")
     latest_report_doc = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del latest_report_doc["_id"]
-    latest_report_doc["subjects"][int(subject_index)]["title"] = title
+    for subject in latest_report_doc["subject"]:
+        if subject["uuid"] == subject_uuid:
+            subject["title"] = title
+            break
+    latest_report_doc["timestamp"] = iso_timestamp()
+    database.reports.insert(latest_report_doc)
+
+
+@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>/url")
+def post_source_url(subject_uuid: str, metric_uuid: str, source_uuid: str, database):
+    """Set the source url."""
+    url = bottle.request.json.get("url", "http://unknown")
+    latest_report_doc = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del latest_report_doc["_id"]
+    latest_report_doc["subjects"][subject_uuid]["metrics"][metric_uuid]["sources"][source_uuid]["url"] = url
     latest_report_doc["timestamp"] = iso_timestamp()
     database.reports.insert(latest_report_doc)
 

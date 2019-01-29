@@ -23,21 +23,21 @@ def fetch_report(server: URL) -> Report:
         return dict(subjects=[])
 
 
-def fetch_and_post_measurement(server: URL, metric) -> None:
+def fetch_and_post_measurement(server: URL, metric_uuid: str, metric) -> None:
     """Fetch and store one measurement."""
     measurement = Collector(metric).get()
     try:
-        logging.info(requests.post(f"{server}/measurement", json=measurement))
+        logging.info(requests.post(f"{server}/measurement/{metric_uuid}", json=measurement))
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Posting measurement for %s failed: %s", metric, reason)
+        logging.error("Posting measurement for %s (%s) failed: %s", metric, metric_uuid, reason)
 
 
 def fetch_report_and_measurements(server: URL) -> None:
     """Fetch the report and its measurements."""
     report_config_json = fetch_report(server)
-    for subject in report_config_json["subjects"]:
-        for metric in subject["metrics"]:
-            fetch_and_post_measurement(server, metric)
+    for subject in report_config_json["subjects"].values():
+        for metric_uuid, metric in subject["metrics"].items():
+            fetch_and_post_measurement(server, metric_uuid, metric)
 
 
 def collect() -> None:

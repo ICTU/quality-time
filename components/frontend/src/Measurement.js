@@ -17,7 +17,7 @@ function MeasurementDetails(props) {
             <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
-            <SourceTable sources={props.sources} />
+            <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -47,8 +47,8 @@ class Measurement extends Component {
         <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell>
             <Icon name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
-              onKeyPress={(e) => this.onExpand(e)} tabIndex="0"/>
-            {this.props.metric.name}
+              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+            {this.props.metric_type.name}
           </Table.Cell>
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
@@ -56,15 +56,15 @@ class Measurement extends Component {
           <Popup
             trigger={
               <Table.Cell>
-                {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + this.props.metric.unit}
+                {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + this.props.metric_type.unit}
               </Table.Cell>
             }
             flowing hoverable>
             Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
-            <Target measurement_id={last_measurement["_id"]} metric={this.props.metric} editable={this.state.hover}
-              target={measurement.target} key={end} onEdit={this.props.onEdit} />
+            <Target measurement_id={last_measurement["_id"]} metric_type={this.props.metric_type}
+              editable={this.state.hover} target={measurement.target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
             {sources.map((source) => <Source key={source.api_url} source={source} />)}
@@ -74,7 +74,8 @@ class Measurement extends Component {
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
-          unit={this.props.metric.unit} sources={sources} />}
+          subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+          unit={this.props.metric_type.unit} sources={this.props.metric.sources} />}
       </>
     )
   }

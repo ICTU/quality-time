@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      subjects: [], search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0,
+      subjects: {}, search_string: '', report_date_string: '', nr_measurements: 0, nr_new_measurements: 0,
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }

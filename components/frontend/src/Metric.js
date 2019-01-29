@@ -6,24 +6,24 @@ import Measurement from './Measurement.js';
 class Metric extends Component {
   constructor(props) {
     super(props);
-    this.state = {measurements: [], metric: {}}
+    this.state = { measurements: [], metric_type: {} }
   }
   fetch_measurement() {
     let self = this;
     fetch(`http://localhost:8080/metric/${this.props.metric.metric}`)
-      .then(function(response) {
+      .then(function (response) {
         return response.json();
       })
-      .then(function(json) {
-        self.setState({metric: json});
+      .then(function (json) {
+        self.setState({ metric_type: json });
       });
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/measurements/${JSON.stringify(this.props.metric)}&report_date=${report_date.toISOString()}`)
-      .then(function(response) {
+    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}&report_date=${report_date.toISOString()}`)
+      .then(function (response) {
         return response.json();
       })
-      .then(function(json) {
-        self.setState({measurements: json.measurements});
+      .then(function (json) {
+        self.setState({ measurements: json.measurements });
       });
   }
   onEdit(event) {
@@ -35,7 +35,7 @@ class Metric extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.report_date !== this.props.report_date ||
-        (prevProps.nr_new_measurements !== 0 && this.props.nr_new_measurements === 0)) {
+      (prevProps.nr_new_measurements !== 0 && this.props.nr_new_measurements === 0)) {
       this.fetch_measurement();
     }
   }
@@ -55,9 +55,10 @@ class Metric extends Component {
       )
     }
     const search = this.props.search_string;
-    if (search && !this.state.metric.name.toLowerCase().includes(search.toLowerCase())) {return null};
+    if (search && !this.state.metric.name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement metric={this.state.metric} measurements={m} onEdit={(e) => this.onEdit(e)} />
+      <Measurement subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+        metric={this.props.metric} metric_type={this.state.metric_type} measurements={m} onEdit={(e) => this.onEdit(e)} />
     )
   }
 }

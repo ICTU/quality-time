@@ -5,53 +5,34 @@ import { Form, Header } from 'semantic-ui-react';
 class SubjectTitleContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = { title: "Loading...", edit: false }
-    }
-    componentDidMount() {
-        this.fetch_title();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.report_date !== this.props.report_date) {
-            this.fetch_title();
-        }
-    }
-    fetch_title() {
-        const report_date = this.props.report_date ? this.props.report_date : new Date();
-        let self = this;
-        fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
-                self.setState({ title: json["subjects"][self.props.subject_index].title });
-            });
+        this.state = { edited_title: this.props.subject.title, edit: false }
     }
     onEdit(event) {
-        this.setState((state) => ({ edit: true, previous_title: state.title }));
+        this.setState({ edit: true });
     }
     onChange(event) {
-        this.setState({ title: event.target.value });
+        this.setState({ edited_title: event.target.value });
     }
     onKeyDown(event) {
         if (event.key === "Escape") {
-            this.setState((state) => ({ edit: false, title: state.previous_title }))
+            this.setState({ edit: false, edited_title: this.props.subject.title })
         }
     }
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_index}/title`, {
+        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: this.state.title })
+            body: JSON.stringify({ title: this.state.edited_title })
         })
     }
     render() {
         return (
-            <SubjectTitle title={this.state.title} edit={this.state.edit}
+            <SubjectTitle title={this.state.edited_title} edit={this.state.edit}
                 onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
@@ -87,7 +68,7 @@ class SubjectTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
-        const style = this.state.editable ? {borderBottom: "1px dotted #000000" } : {};
+        const style = this.state.editable ? { borderBottom: "1px dotted #000000" } : {};
         return (
             <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
                 onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >

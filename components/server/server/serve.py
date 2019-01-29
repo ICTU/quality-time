@@ -18,7 +18,7 @@ from . import target  # pylint: disable=unused-import
 from . import measurement  # pylint: disable=unused-import
 from . import metric  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
-from .util import iso_timestamp
+from .util import iso_timestamp, uuid
 
 
 def import_metrics(database):
@@ -38,14 +38,20 @@ def import_report(database):
     if database.reports.count_documents({}):
         return
     with open("example-report.json") as json_report:
-        report = json.load(json_report)
-    report["title"] = "Quality-time"
-    report["timestamp"] = "2019-01-01T00:00:00+00:00" or iso_timestamp()
+        imported_report = json.load(json_report)
+    report_to_store = dict(title="Quality-time", timestamp=iso_timestamp(), subjects={})
+    for imported_subject in imported_report["subjects"]:
+        subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
+        for imported_metric in imported_subject["metrics"]:
+            metric_to_store = subject_to_store["metrics"][uuid()] = dict(metric=imported_metric["metric"], sources={})
+            for imported_source in imported_metric["sources"]:
+                metric_to_store["sources"][uuid()] = imported_source
+
     database.reports.remove({})
-    database.reports.insert(report)
+    database.reports.insert(report_to_store)
     stored_report = database.reports.find_one({})
     nr_subjects = len(stored_report["subjects"])
-    nr_metrics = sum([len(subject["metrics"]) for subject in stored_report["subjects"]])
+    nr_metrics = sum([len(subject["metrics"]) for subject in stored_report["subjects"].values()])
     logging.info("Report consists of %d subjects and %d metrics", nr_subjects, nr_metrics)
 
 
