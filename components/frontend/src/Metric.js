@@ -18,7 +18,7 @@ class Metric extends Component {
         self.setState({ metric_type: json });
       });
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/measurements/${JSON.stringify(this.props.metric)}&report_date=${report_date.toISOString()}`)
+    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}&report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
@@ -57,7 +57,7 @@ class Metric extends Component {
     const search = this.props.search_string;
     if (search && !this.state.metric.name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement subject_index={this.props.subject_index} metric_index={this.props.metric_index}
+      <Measurement subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
         metric={this.props.metric} metric_type={this.state.metric_type} measurements={m} onEdit={(e) => this.onEdit(e)} />
     )
   }

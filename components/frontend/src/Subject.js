@@ -4,12 +4,14 @@ import Metric from './Metric.js';
 import { SubjectTitleContainer } from './SubjectTitle.js';
 
 function Subject(props) {
-  const metrics = props.metrics.map((metric, metric_index) =>
-    <Metric key={JSON.stringify(metric)} subject_index={props.subject_index} metric_index={metric_index}
-      metric={metric} search_string={props.search_string} report_date={props.report_date} nr_new_measurements={props.nr_new_measurements} />);
+  const metrics = Object.keys(props.subject.metrics).map((metric_uuid) =>
+    <Metric key={metric_uuid} subject_uuid={props.subject_uuid} metric_uuid={metric_uuid}
+       metric={props.subject.metrics[metric_uuid]}
+      search_string={props.search_string} report_date={props.report_date}
+      nr_new_measurements={props.nr_new_measurements} />);
   return (
     <Segment basic>
-      <SubjectTitleContainer subject_index={props.subject_index} />
+      <SubjectTitleContainer subject_uuid={props.subject_uuid} subject={props.subject} />
       <Table columns={6}>
         <Table.Header>
           <Table.Row>

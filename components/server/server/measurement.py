@@ -33,8 +33,8 @@ def determine_status(value: Optional[str], target: str, direction: str) -> Optio
     return status
 
 
-@bottle.post("/measurement")
-def post_measurement(database) -> None:
+@bottle.post("/measurement/<metric_uuid>")
+def post_measurement(metric_uuid: str, database) -> None:
     """Put the measurement in the database."""
     def equal_measurements(measure1, measure2):
         """Return whether the measurements are equal."""
@@ -48,7 +48,7 @@ def post_measurement(database) -> None:
         logging.error("Can't find %s metric in Metrics collection.", measurement["metric"]["metric"])
         return
     latest_measurement_doc = database.measurements.find_one(
-        filter={"metric": measurement["metric"]}, sort=[("measurement.start", pymongo.DESCENDING)])
+        filter={"metric.uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])
     if latest_measurement_doc:
         if equal_measurements(latest_measurement_doc["measurement"], measurement["measurement"]):
             database.measurements.update_one(
@@ -60,6 +60,7 @@ def post_measurement(database) -> None:
     else:
         comment = ""
         target = metric["default_target"]
+    measurement["metric"]["uuid"] = metric_uuid
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
     measurement["measurement"]["target"] = target
@@ -98,14 +99,15 @@ def stream_nr_measurements(database):
             yield sse_pack(event_id, "delta", data)
 
 
-@bottle.get("/measurements/<metric:path>")
-def get_measurements(metric: str, database):
-    """Return the measurements for the metric/source."""
-    metric = json.loads(metric.split("&")[0])
+@bottle.get("/measurements/<metric_uuid>")
+def get_measurements(metric_uuid: str, database):
+    """Return the measurements for the metric."""
+    metric_uuid = metric_uuid.split("&")[0]
     docs = database.measurements.find(
-        filter={"metric": metric, "measurement.start": {"$lt": report_date_time()}})
+        filter={"metric.uuid": metric_uuid, "measurement.start": {"$lt": report_date_time()}})
     measurements = []
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])
         measurements.append(measurement)
+    logging.info(measurements)
     return dict(measurements=measurements)

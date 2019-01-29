@@ -17,7 +17,7 @@ function MeasurementDetails(props) {
             <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
-            <SourceTable subject_index={props.subject_index} metric_index={props.metric_index} sources={props.sources} />
+            <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -73,8 +73,8 @@ class Measurement extends Component {
             <Comment measurement_id={last_measurement["_id"]} comment={last_measurement.comment} key={end} />
           </Table.Cell>
         </Table.Row>
-        {this.state.show_details && <MeasurementDetails subject_index={this.props.subject_index}
-          metric_index={this.props.metric_index} measurements={this.props.measurements}
+        {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
+          subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
           unit={this.props.metric_type.unit} sources={this.props.metric.sources} />}
       </>
     )

@@ -4,13 +4,13 @@ import { SourceURL } from './SourceURL';
 
 
 function SourceTable(props) {
-    const sources = props.sources.map((source, source_index) =>
+    const sources = Object.keys(props.sources).map((source_uuid) =>
         (
-            <Table.Row key={source.url}>
-                <Table.Cell>{source.source}</Table.Cell>
+            <Table.Row key={props.sources[source_uuid].url}>
+                <Table.Cell>{props.sources[source_uuid].source}</Table.Cell>
                 <Table.Cell>
-                    <SourceURL subject_index={props.subject_index} metric_index={props.metric_index}
-                        source_index={source_index} url={source.url} />
+                    <SourceURL subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}
+                        source_uuid={source_uuid} url={props.sources[source_uuid].url} />
                 </Table.Cell>
             </Table.Row>
         )

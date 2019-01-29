@@ -26,7 +26,7 @@ class SourceURL extends Component {
     onSubmit(event) {
       event.preventDefault();
       this.setState({edit: false});
-      fetch(`http://localhost:8080/report/subject/${this.props.subject_index}/metric/${this.props.metric_index}/source/${this.props.source_index}/url`, {
+      fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}/url`, {
         method: 'post',
         mode: 'cors',
         headers: {
