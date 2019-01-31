@@ -7,10 +7,11 @@ import { SourceURL } from './SourceURL';
 function SourceTable(props) {
     const sources = Object.keys(props.sources).map((source_uuid) =>
         (
-            <Table.Row key={props.sources[source_uuid].url}>
+            <Table.Row key={source_uuid}>
                 <Table.Cell>
                     <SourceType subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}
-                        source_uuid={source_uuid} source_type={props.sources[source_uuid].type} metric_type={props.metric_type} />
+                        source_uuid={source_uuid} source_type={props.sources[source_uuid].type}
+                        metric_type={props.metric_type} datamodel={props.datamodel} />
                 </Table.Cell>
                 <Table.Cell>
                     <SourceURL subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}

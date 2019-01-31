@@ -1,6 +1,5 @@
 """Measurement API."""
 
-import json
 import logging
 import time
 from distutils.version import LooseVersion
@@ -44,7 +43,7 @@ def post_measurement(metric_uuid: str, database) -> None:
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
-    metric = database.metrics.find_one(filter={"metric": measurement["metric"]["metric"]})
+    metric = database.datamodel.find_one({})["metrics"].get(measurement["metric"]["metric"])
     if not metric:
         logging.error("Can't find %s metric in Metrics collection.", measurement["metric"]["metric"])
         return

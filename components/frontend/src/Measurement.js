@@ -14,11 +14,11 @@ function MeasurementDetails(props) {
       <Table.Cell colSpan="6">
         <Grid stackable columns={2}>
           <Grid.Column>
-            <TrendGraph measurements={props.measurements} unit={props.metric_type.unit} />
+            <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
             <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
-            metric_type={props.metric_type} />
+            metric_type={props.metric_type} datamodel={props.datamodel} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -43,13 +43,16 @@ class Measurement extends Component {
     const positive = measurement.status === "target_met";
     const negative = measurement.status === "target_not_met";
     const warning = measurement.status === null;
+    const metric_name = this.props.datamodel["metrics"][this.props.metric.metric]["name"];
+    const metric_unit = this.props.datamodel["metrics"][this.props.metric.metric]["unit"];
+    const metric_direction = this.props.datamodel["metrics"][this.props.metric.metric]["direction"];
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell>
             <Icon name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
-            {this.props.metric_type.name}
+            {metric_name}
           </Table.Cell>
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
@@ -57,14 +60,14 @@ class Measurement extends Component {
           <Popup
             trigger={
               <Table.Cell>
-                {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + this.props.metric_type.unit}
+                {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric_unit}
               </Table.Cell>
             }
             flowing hoverable>
             Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
-            <Target measurement_id={last_measurement["_id"]} metric_type={this.props.metric_type}
+            <Target measurement_id={last_measurement["_id"]} unit={metric_unit} direction={metric_direction}
               editable={this.state.hover} target={measurement.target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
@@ -75,6 +78,7 @@ class Measurement extends Component {
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
+          unit={metric_unit} datamodel={this.props.datamodel}
           subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
           metric_type={this.props.metric_type} sources={this.props.metric.sources} />}
       </>

@@ -37,8 +37,9 @@ class SourceType extends Component {
   }
   render() {
     let options = [];
-    Object.keys(this.props.metric_type.sources).forEach(
-      (key) => { options.push({ text: this.props.metric_type.sources[key], value: key }) });
+    let self = this;
+    this.props.datamodel["metrics"][this.props.metric_type]["sources"].forEach(
+      (key) => { options.push({ text: self.props.datamodel["sources"][key]["name"], value: key }) });
     if (this.state.edit) {
       return (
         <Dropdown fluid selectOnNavigation={false} defaultOpen value={this.state.edited_source_type}
@@ -49,7 +50,7 @@ class SourceType extends Component {
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
         onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
-        {this.props.metric_type.sources[this.state.edited_source_type]}
+        {this.props.datamodel["sources"][this.state.edited_source_type]["name"]}
       </div>
     )
   }

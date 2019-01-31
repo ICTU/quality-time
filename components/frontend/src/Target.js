@@ -44,10 +44,10 @@ class Target extends Component {
     if (this.state.edit) {
       return (
         <Form onSubmit={(e) => this.onSubmit(e)}>
-          {this.props.metric_type.direction}
+          {this.props.direction}
           <Form.Input autoFocus focus fluid type="number" defaultValue={this.state.edited_target}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-          {this.props.metric_type.unit}
+          {this.props.unit}
         </Form>
       )
     }
@@ -55,7 +55,7 @@ class Target extends Component {
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)} onMouseEnter={(e) => this.onMouseEnter(e)}
         onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
-        {this.props.metric_type.direction} {this.state.edited_target} {this.props.metric_type.unit}
+        {this.props.direction} {this.state.edited_target} {this.props.unit}
       </div>
     )
   }
