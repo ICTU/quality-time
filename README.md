@@ -6,12 +6,12 @@ The collector collects metrics data from metric sources such as SonarQube and Ji
 
 Planned features/experiments include:
 
-- [X] Simpler and robust data collection
-- [X] Scheduled data collection
-- [ ] History integrated in the API and report
-- [X] Time travel
-- [ ] Simpler report configuration (YAML?)
+- [X] Simpler and robust data collection.
+- [X] Scheduled data collection.
+- [X] History in a database, allowing for time travel.
+- [/] Report configuration via the UI (work-in-progress).
 - [ ] A different representation of metrics than a boring table. Maybe big cards for metrics that demand attention and small for metrics that are ok.
+- [ ] User authentication and role-based access.
 
 ## Table of contents
 
