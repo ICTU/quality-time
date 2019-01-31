@@ -35,8 +35,8 @@ def fetch_and_post_measurement(server: URL, metric_uuid: str, metric) -> None:
 def fetch_report_and_measurements(server: URL) -> None:
     """Fetch the report and its measurements."""
     report_config_json = fetch_report(server)
-    for subject in report_config_json["subjects"].values():
-        for metric_uuid, metric in subject["metrics"].items():
+    for subject in report_config_json.get("subjects", {}).values():
+        for metric_uuid, metric in subject.get("metrics", {}).items():
             fetch_and_post_measurement(server, metric_uuid, metric)
 
 

@@ -36,10 +36,11 @@ def determine_status(value: Optional[str], target: str, direction: str) -> Optio
 @bottle.post("/measurement/<metric_uuid>")
 def post_measurement(metric_uuid: str, database) -> None:
     """Put the measurement in the database."""
-    def equal_measurements(measure1, measure2):
+    def equal_measurements(m1, m2):
         """Return whether the measurements are equal."""
-        return measure1["measurement"] == measure2["measurement"] and \
-               measure1["calculation_error"] == measure2["calculation_error"]
+        return m1["measurement"]["measurement"] == m2["measurement"]["measurement"] and \
+               m1["measurement"]["calculation_error"] == m2["measurement"]["calculation_error"] and \
+               m1["metric"] == m2["metric"]
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
@@ -50,7 +51,7 @@ def post_measurement(metric_uuid: str, database) -> None:
     latest_measurement_doc = database.measurements.find_one(
         filter={"metric.uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])
     if latest_measurement_doc:
-        if equal_measurements(latest_measurement_doc["measurement"], measurement["measurement"]):
+        if equal_measurements(latest_measurement_doc, measurement):
             database.measurements.update_one(
                 filter={"_id": latest_measurement_doc["_id"]},
                 update={"$set": {"measurement.end": timestamp_string}})
@@ -109,5 +110,4 @@ def get_measurements(metric_uuid: str, database):
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])
         measurements.append(measurement)
-    logging.info(measurements)
     return dict(measurements=measurements)

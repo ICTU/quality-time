@@ -2,55 +2,63 @@
     "metrics": [
         {
             "metric": "covered_lines", "name": "Test line coverage",
-            "unit": "covered lines", "direction": ">=", "default_target": "0"
+            "unit": "covered lines", "direction": ">=", "default_target": "0",
+            "sources": {"jacoco": "JaCoCo", "sonarqube": "SonarQube"}
         },
         {
             "metric": "uncovered_lines", "name": "Test line coverage",
-            "unit": "uncovered lines", "direction": "<=", "default_target": "0"
+            "unit": "uncovered lines", "direction": "<=", "default_target": "0",
+            "sources": {"jacoco": "JaCoCo", "sonarqube": "SonarQube"}
         },
         {
             "metric": "covered_branches", "name": "Test branch coverage",
-            "unit": "covered branch", "direction": ">=", "default_target": "0"
+            "unit": "covered branch", "direction": ">=", "default_target": "0",
+            "sources": {"jacoco": "JaCoCo", "sonarqube": "SonarQube"}
         },
         {
             "metric": "uncovered_branches", "name": "Test branch coverage",
-            "unit": "uncovered branch", "direction": "<=", "default_target": "0"
+            "unit": "uncovered branch", "direction": "<=", "default_target": "0",
+            "sources": {"jacoco": "JaCoCo", "sonarqube": "SonarQube"}
         },
         {
             "metric": "jobs", "name": "Number of CI-jobs",
-            "unit": "CI-jobs", "direction": ">=", "default_target": "0"
+            "unit": "CI-jobs", "direction": ">=", "default_target": "0",
+            "sources": {"jenkins": "Jenkins", "gitlab": "GitLab"}
         },
         {
             "metric": "failed_jobs", "name": "Number of failed CI-jobs",
-            "unit": "CI-jobs", "direction": "<=", "default_target": "0"
+            "unit": "CI-jobs", "direction": "<=", "default_target": "0",
+            "sources": {"jenkins": "Jenkins", "gitlab": "GitLab"}
         },
         {
             "metric": "ncloc", "name": "Size",
-            "unit": "non-commented lines of code", "direction": "<=", "default_target": "50000"
+            "unit": "non-commented lines of code", "direction": "<=", "default_target": "50000",
+            "sources": {"sonarqube": "SonarQube"}
         },
         {
             "metric": "loc", "name": "Size",
-            "unit": "lines of code", "direction": "<=", "default_target": "75000"
+            "unit": "lines of code", "direction": "<=", "default_target": "75000",
+            "sources": {"sonarqube": "SonarQube"}
         },
         {
             "metric": "tests", "name": "Number of tests",
-            "unit": "tests", "direction": ">=", "default_target": "0"
+            "unit": "tests", "direction": ">=", "default_target": "0",
+            "sources": {"sonarqube": "SonarQube", "junit": "JUnit"}
         },
         {
             "metric": "failed_tests", "name": "Number of failed tests",
-            "unit": "failed tests", "direction": "<=", "default_target": "0"
-        },
-        {
-            "metric": "time", "name": "Number of seconds since epoch",
-            "unit": "seconds", "direction": ">=", "default_target": "0"
+            "unit": "failed tests", "direction": "<=", "default_target": "0",
+            "sources": {"sonarqube": "SonarQube", "junit": "JUnit"}
         },
         {
             "metric": "version", "name": "Version",
-            "unit": "", "direction": ">=", "default_target": "0.0"
+            "unit": "", "direction": ">=", "default_target": "0.0",
+            "sources": {"sonarqube": "SonarQube", "jenkins": "Jenkins", "gitlab": "GitLab"}
         },
         {
             "metric": "violations", "name": "Number of violations",
-            "unit": "violations", "direction": "<=", "default_target": "0"
+            "unit": "violations", "direction": "<=", "default_target": "0",
+            "sources": {"sonarqube": "SonarQube"}
         }
     ]
 }
