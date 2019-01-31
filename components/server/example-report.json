@@ -7,11 +7,11 @@
                     "metric": "tests",
                     "sources": [
                         {
-                            "source": "junit",
+                            "type": "junit",
                             "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
                         },
                         {
-                            "source": "junit",
+                            "type": "junit",
                             "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
                         }
                     ]
@@ -20,11 +20,11 @@
                     "metric": "failed_tests",
                     "sources": [
                         {
-                            "source": "junit",
+                            "type": "junit",
                             "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
                         },
                         {
-                            "source": "junit",
+                            "type": "junit",
                             "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
                         }
                     ]
@@ -33,7 +33,7 @@
                     "metric": "covered_lines",
                     "sources": [
                         {
-                            "source": "jacoco",
+                            "type": "jacoco",
                             "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
                         }
                     ]
@@ -42,7 +42,7 @@
                     "metric": "uncovered_lines",
                     "sources": [
                         {
-                            "source": "jacoco",
+                            "type": "jacoco",
                             "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
                         }
                     ]
@@ -51,7 +51,7 @@
                     "metric": "covered_branches",
                     "sources": [
                         {
-                            "source": "jacoco",
+                            "type": "jacoco",
                             "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
                         }
                     ]
@@ -60,7 +60,7 @@
                     "metric": "uncovered_branches",
                     "sources": [
                         {
-                            "source": "jacoco",
+                            "type": "jacoco",
                             "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
                         }
                     ]
@@ -74,7 +74,7 @@
                     "metric": "tests",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -84,7 +84,7 @@
                     "metric": "failed_tests",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -94,7 +94,7 @@
                     "metric": "covered_lines",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -104,7 +104,7 @@
                     "metric": "uncovered_lines",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -114,7 +114,7 @@
                     "metric": "covered_branches",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -124,7 +124,7 @@
                     "metric": "uncovered_branches",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -134,7 +134,7 @@
                     "metric": "loc",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -144,7 +144,7 @@
                     "metric": "ncloc",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -154,7 +154,7 @@
                     "metric": "violations",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "fniessink:next-action"
                         }
@@ -169,7 +169,7 @@
                     "metric": "tests",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -179,7 +179,7 @@
                     "metric": "failed_tests",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -189,7 +189,7 @@
                     "metric": "covered_lines",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -199,7 +199,7 @@
                     "metric": "uncovered_lines",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -209,7 +209,7 @@
                     "metric": "covered_branches",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -219,7 +219,7 @@
                     "metric": "uncovered_branches",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -229,7 +229,7 @@
                     "metric": "loc",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -239,7 +239,7 @@
                     "metric": "ncloc",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -249,7 +249,7 @@
                     "metric": "violations",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -259,7 +259,7 @@
                     "metric": "version",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         }
@@ -274,12 +274,12 @@
                     "metric": "violations",
                     "sources": [
                         {
-                            "source": "sonarqube",
+                            "type": "sonarqube",
                             "url": "http://sonarcloud.io",
                             "component": "nl.ictu:hq"
                         },
                         {
-                            "source": "random",
+                            "type": "random",
                             "url": "http://dummy"
                         }
                     ]

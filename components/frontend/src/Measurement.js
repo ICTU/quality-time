@@ -14,10 +14,11 @@ function MeasurementDetails(props) {
       <Table.Cell colSpan="6">
         <Grid stackable columns={2}>
           <Grid.Column>
-            <TrendGraph measurements={props.measurements} unit={props.unit} />
+            <TrendGraph measurements={props.measurements} unit={props.metric_type.unit} />
           </Grid.Column>
           <Grid.Column>
-            <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources} />
+            <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
+            metric_type={props.metric_type} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -75,7 +76,7 @@ class Measurement extends Component {
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
-          unit={this.props.metric_type.unit} sources={this.props.metric.sources} />}
+          metric_type={this.props.metric_type} sources={this.props.metric.sources} />}
       </>
     )
   }
