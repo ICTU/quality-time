@@ -28,7 +28,7 @@ def post_subject_title(subject_uuid: str, database):
     database.reports.insert(latest_report_doc)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>/<source_attr:re:(url|type)>")
+@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>/<source_attr>")
 def post_source_attr(subject_uuid: str, metric_uuid: str, source_uuid: str, source_attr: str, database):
     """Set the source attribute."""
     value = bottle.request.json.get(source_attr, "<Unknown attribute>")

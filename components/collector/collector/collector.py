@@ -34,10 +34,10 @@ class Collector:
 
     def get(self) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
-        metric_name = self.metric["metric"]
+        metric_type = self.metric["type"]
         source_responses = []
         for source in self.metric.get("sources", {}).values():
-            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_name}"))
+            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
             source_collector = collector_class(self.metric)
             source_responses.append(source_collector.get_one(source))
 
@@ -59,11 +59,11 @@ class Collector:
 
     def landing_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the urls into the landing urls."""
-        return source["url"]
+        return source.get("url", "")
 
     def api_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
-        return source["url"]
+        return source.get("url", "")
 
     @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
     def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:

@@ -25,7 +25,7 @@ class GitlabJobs(Gitlab):
     """Collector class to get job counts from Gitlab."""
 
     def api_url(self, source) -> URL:
-        return URL(f"{source['url']}/api/v4/projects/{source['component']}/"
+        return URL(f"{source['url']}/api/v4/projects/{source['project']}/"
                    f"jobs?private_token={source['private_token']}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:

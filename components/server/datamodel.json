@@ -1,0 +1,240 @@
+{
+    "metrics": {
+        "covered_lines": {
+            "name": "Test line coverage",
+            "unit": "covered lines",
+            "direction": ">=",
+            "default_target": "0",
+            "sources": [
+                "jacoco",
+                "sonarqube",
+                "random"
+            ]
+        },
+        "uncovered_lines": {
+            "name": "Test line coverage",
+            "unit": "uncovered lines",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "jacoco",
+                "sonarqube",
+                "random"
+            ]
+        },
+        "covered_branches": {
+            "name": "Test branch coverage",
+            "unit": "covered branch",
+            "direction": ">=",
+            "default_target": "0",
+            "sources": [
+                "jacoco",
+                "sonarqube",
+                "random"
+            ]
+        },
+        "uncovered_branches": {
+            "name": "Test branch coverage",
+            "unit": "uncovered branch",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "jacoco",
+                "sonarqube",
+                "random"
+            ]
+        },
+        "jobs": {
+            "name": "Number of CI-jobs",
+            "unit": "CI-jobs",
+            "direction": ">=",
+            "default_target": "0",
+            "sources": [
+                "jenkins",
+                "gitlab",
+                "random"
+            ]
+        },
+        "failed_jobs": {
+            "name": "Number of failed CI-jobs",
+            "unit": "CI-jobs",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "jenkins",
+                "gitlab",
+                "random"
+            ]
+        },
+        "ncloc": {
+            "name": "Size",
+            "unit": "non-commented lines of code",
+            "direction": "<=",
+            "default_target": "50000",
+            "sources": [
+                "sonarqube",
+                "random"
+            ]
+        },
+        "loc": {
+            "name": "Size",
+            "unit": "lines of code",
+            "direction": "<=",
+            "default_target": "75000",
+            "sources": [
+                "sonarqube",
+                "random"
+            ]
+        },
+        "tests": {
+            "name": "Number of tests",
+            "unit": "tests",
+            "direction": ">=",
+            "default_target": "0",
+            "sources": [
+                "sonarqube",
+                "junit",
+                "random"
+            ]
+        },
+        "failed_tests": {
+            "name": "Number of failed tests",
+            "unit": "failed tests",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "sonarqube",
+                "junit",
+                "random"
+            ]
+        },
+        "version": {
+            "name": "Version",
+            "unit": "",
+            "direction": ">=",
+            "default_target": "0.0",
+            "sources": [
+                "sonarqube",
+                "jenkins",
+                "gitlab"
+            ]
+        },
+        "violations": {
+            "name": "Number of violations",
+            "unit": "violations",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "sonarqube",
+                "random"
+            ]
+        }
+    },
+    "sources": {
+        "gitlab": {
+            "name": "GitLab",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "metrics": [
+                        "jobs",
+                        "failed_jobs",
+                        "version"
+                    ]
+                },
+                "project": {
+                    "name": "Project",
+                    "metrics": [
+                        "jobs",
+                        "failed_jobs"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private Token",
+                    "metrics": [
+                        "jobs",
+                        "failed_jobs",
+                        "version"
+                    ]
+                }
+            }
+        },
+        "jacoco": {
+            "name": "JaCoCo",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "metrics": [
+                        "covered_lines",
+                        "uncovered_lines",
+                        "covered_branches",
+                        "uncovered_branches"
+                    ]
+                }
+            }
+        },
+        "jenkins": {
+            "name": "Jenkins",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "metrics": [
+                        "jobs",
+                        "failed_jobs",
+                        "version"
+                    ]
+                }
+            }
+        },
+        "junit": {
+            "name": "JUnit",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "metrics": [
+                        "tests",
+                        "failed_tests"
+                    ]
+                }
+            }
+        },
+        "random": {
+            "name": "Random",
+            "parameters": {}
+        },
+        "sonarqube": {
+            "name": "SonarQube",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "metrics": [
+                        "covered_lines",
+                        "uncovered_lines",
+                        "covered_branches",
+                        "uncovered_branches",
+                        "ncloc",
+                        "loc",
+                        "tests",
+                        "failed_tests",
+                        "version",
+                        "violations"
+                    ]
+                },
+                "component": {
+                    "name": "Project Key",
+                    "metrics": [
+                        "covered_lines",
+                        "uncovered_lines",
+                        "covered_branches",
+                        "uncovered_branches",
+                        "ncloc",
+                        "loc",
+                        "tests",
+                        "failed_tests",
+                        "violations"
+                    ]
+                }
+            }
+        }
+    }
+}
