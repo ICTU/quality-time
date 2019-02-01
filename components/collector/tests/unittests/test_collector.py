@@ -94,7 +94,7 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
             type="jobs",
             sources=dict(
                 a=dict(type="jenkins", url="http://jenkins"),
-                b=dict(type="gitlab", url="http://gitlab", component="project", private_token="token")))
+                b=dict(type="gitlab", url="http://gitlab", project="project", private_token="token")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector(self.metric).get()
 
@@ -119,14 +119,6 @@ class CollectorErrorTest(unittest.TestCase):
 
     def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
-
-        class JunitMetric(Collector):
-            """Raise an exception when parsing the response."""
-
-            def parse_source_response(self, response: requests.Response) -> Measurement:
-                """Fail."""
-                raise Exception
-
         mock_response = Mock()
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):

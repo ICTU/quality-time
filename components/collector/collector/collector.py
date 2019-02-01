@@ -59,11 +59,11 @@ class Collector:
 
     def landing_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the urls into the landing urls."""
-        return source["url"]
+        return source.get("url", "")
 
     def api_url(self, source) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
-        return source["url"]
+        return source.get("url", "")
 
     @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
     def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:

@@ -279,8 +279,7 @@
                             "component": "nl.ictu:hq"
                         },
                         {
-                            "type": "random",
-                            "url": "http://dummy"
+                            "type": "random"
                         }
                     ]
                 }

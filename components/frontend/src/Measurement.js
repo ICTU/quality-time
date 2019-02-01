@@ -6,7 +6,7 @@ import { Source } from './Source';
 import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
-import { SourceTable } from './SourceTable';
+import { Sources } from './Sources';
 
 function MeasurementDetails(props) {
   return (
@@ -17,7 +17,7 @@ function MeasurementDetails(props) {
             <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
-            <SourceTable subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
+            <Sources subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
             metric_type={props.metric_type} datamodel={props.datamodel} />
           </Grid.Column>
         </Grid>
