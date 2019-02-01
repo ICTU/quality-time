@@ -4,7 +4,7 @@
             "title": "JUnit and JaCoCo metrics",
             "metrics": [
                 {
-                    "metric": "tests",
+                    "type": "tests",
                     "sources": [
                         {
                             "type": "junit",
@@ -17,7 +17,7 @@
                     ]
                 },
                 {
-                    "metric": "failed_tests",
+                    "type": "failed_tests",
                     "sources": [
                         {
                             "type": "junit",
@@ -30,7 +30,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_lines",
+                    "type": "covered_lines",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -39,7 +39,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_lines",
+                    "type": "uncovered_lines",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -48,7 +48,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_branches",
+                    "type": "covered_branches",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -57,7 +57,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_branches",
+                    "type": "uncovered_branches",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -71,7 +71,7 @@
             "title": "Next-action",
             "metrics": [
                 {
-                    "metric": "tests",
+                    "type": "tests",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -81,7 +81,7 @@
                     ]
                 },
                 {
-                    "metric": "failed_tests",
+                    "type": "failed_tests",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -91,7 +91,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_lines",
+                    "type": "covered_lines",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -101,7 +101,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_lines",
+                    "type": "uncovered_lines",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -111,7 +111,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_branches",
+                    "type": "covered_branches",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -121,7 +121,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_branches",
+                    "type": "uncovered_branches",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -131,7 +131,7 @@
                     ]
                 },
                 {
-                    "metric": "loc",
+                    "type": "loc",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -141,7 +141,7 @@
                     ]
                 },
                 {
-                    "metric": "ncloc",
+                    "type": "ncloc",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -151,7 +151,7 @@
                     ]
                 },
                 {
-                    "metric": "violations",
+                    "type": "violations",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -166,7 +166,7 @@
             "title": "HQ",
             "metrics": [
                 {
-                    "metric": "tests",
+                    "type": "tests",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -176,7 +176,7 @@
                     ]
                 },
                 {
-                    "metric": "failed_tests",
+                    "type": "failed_tests",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -186,7 +186,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_lines",
+                    "type": "covered_lines",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -196,7 +196,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_lines",
+                    "type": "uncovered_lines",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -206,7 +206,7 @@
                     ]
                 },
                 {
-                    "metric": "covered_branches",
+                    "type": "covered_branches",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -216,7 +216,7 @@
                     ]
                 },
                 {
-                    "metric": "uncovered_branches",
+                    "type": "uncovered_branches",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -226,7 +226,7 @@
                     ]
                 },
                 {
-                    "metric": "loc",
+                    "type": "loc",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -236,7 +236,7 @@
                     ]
                 },
                 {
-                    "metric": "ncloc",
+                    "type": "ncloc",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -246,7 +246,7 @@
                     ]
                 },
                 {
-                    "metric": "violations",
+                    "type": "violations",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -256,7 +256,7 @@
                     ]
                 },
                 {
-                    "metric": "version",
+                    "type": "version",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -271,7 +271,7 @@
             "title": "Test",
             "metrics": [
                 {
-                    "metric": "violations",
+                    "type": "violations",
                     "sources": [
                         {
                             "type": "sonarqube",

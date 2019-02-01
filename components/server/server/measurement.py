@@ -43,9 +43,10 @@ def post_measurement(metric_uuid: str, database) -> None:
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
-    metric = database.datamodel.find_one({})["metrics"].get(measurement["metric"]["metric"])
+    metric_type = measurement["metric"]["type"]
+    metric = database.datamodel.find_one({})["metrics"].get(metric_type)
     if not metric:
-        logging.error("Can't find %s metric in Metrics collection.", measurement["metric"]["metric"])
+        logging.error("Can't find %s metric in Metrics collection.", metric_type)
         return
     latest_measurement_doc = database.measurements.find_one(
         filter={"metric.uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])

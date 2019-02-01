@@ -43,9 +43,9 @@ class Measurement extends Component {
     const positive = measurement.status === "target_met";
     const negative = measurement.status === "target_not_met";
     const warning = measurement.status === null;
-    const metric_name = this.props.datamodel["metrics"][this.props.metric.metric]["name"];
-    const metric_unit = this.props.datamodel["metrics"][this.props.metric.metric]["unit"];
-    const metric_direction = this.props.datamodel["metrics"][this.props.metric.metric]["direction"];
+    const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
+    const metric_unit = this.props.datamodel["metrics"][this.props.metric_type]["unit"];
+    const metric_direction = this.props.datamodel["metrics"][this.props.metric_type]["direction"];
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>

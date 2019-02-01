@@ -34,10 +34,10 @@ class Collector:
 
     def get(self) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
-        metric_name = self.metric["metric"]
+        metric_type = self.metric["type"]
         source_responses = []
         for source in self.metric.get("sources", {}).values():
-            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_name}"))
+            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
             source_collector = collector_class(self.metric)
             source_responses.append(source_collector.get_one(source))
 

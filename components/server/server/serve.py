@@ -42,7 +42,7 @@ def import_report(database):
     for imported_subject in imported_report["subjects"]:
         subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
         for imported_metric in imported_subject["metrics"]:
-            metric_to_store = subject_to_store["metrics"][uuid()] = dict(metric=imported_metric["metric"], sources={})
+            metric_to_store = subject_to_store["metrics"][uuid()] = dict(type=imported_metric["type"], sources={})
             for imported_source in imported_metric["sources"]:
                 metric_to_store["sources"][uuid()] = imported_source
 

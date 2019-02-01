@@ -3,52 +3,52 @@
         "covered_lines" : {
             "name": "Test line coverage",
             "unit": "covered lines", "direction": ">=", "default_target": "0",
-            "sources": ["jacoco", "sonarqube"]
+            "sources": ["jacoco", "sonarqube", "random"]
         },
         "uncovered_lines": {
             "name": "Test line coverage",
             "unit": "uncovered lines", "direction": "<=", "default_target": "0",
-            "sources": ["jacoco", "sonarqube"]
+            "sources": ["jacoco", "sonarqube", "random"]
         },
         "covered_branches": {
             "name": "Test branch coverage",
             "unit": "covered branch", "direction": ">=", "default_target": "0",
-            "sources": ["jacoco", "sonarqube"]
+            "sources": ["jacoco", "sonarqube", "random"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
             "unit": "uncovered branch", "direction": "<=", "default_target": "0",
-            "sources": ["jacoco", "sonarqube"]
+            "sources": ["jacoco", "sonarqube", "random"]
         },
         "jobs": {
             "name": "Number of CI-jobs",
             "unit": "CI-jobs", "direction": ">=", "default_target": "0",
-            "sources": ["jenkins", "gitlab"]
+            "sources": ["jenkins", "gitlab", "random"]
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
             "unit": "CI-jobs", "direction": "<=", "default_target": "0",
-            "sources": ["jenkins", "gitlab"]
+            "sources": ["jenkins", "gitlab", "random"]
         },
         "ncloc": {
             "name": "Size",
             "unit": "non-commented lines of code", "direction": "<=", "default_target": "50000",
-            "sources": ["sonarqube"]
+            "sources": ["sonarqube", "random"]
         },
         "loc": {
             "name": "Size",
             "unit": "lines of code", "direction": "<=", "default_target": "75000",
-            "sources": ["sonarqube"]
+            "sources": ["sonarqube", "random"]
         },
         "tests": {
             "name": "Number of tests",
             "unit": "tests", "direction": ">=", "default_target": "0",
-            "sources": ["sonarqube", "junit"]
+            "sources": ["sonarqube", "junit", "random"]
         },
         "failed_tests": {
             "name": "Number of failed tests",
             "unit": "failed tests", "direction": "<=", "default_target": "0",
-            "sources": ["sonarqube", "junit"]
+            "sources": ["sonarqube", "junit", "random"]
         },
         "version": {
             "name": "Version",
@@ -58,7 +58,7 @@
         "violations": {
             "name": "Number of violations",
             "unit": "violations", "direction": "<=", "default_target": "0",
-            "sources": ["sonarqube"]
+            "sources": ["sonarqube", "random"]
         }
     },
     "sources": {
@@ -73,6 +73,9 @@
         },
         "junit": {
             "name": "JUnit"
+        },
+        "random": {
+            "name": "Random"
         },
         "sonarqube": {
             "name": "SonarQube"

@@ -17,7 +17,7 @@ class CollectorTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        self.metric = dict(metric="tests", sources=dict(a=dict(source="junit", url="http://url")))
+        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", url="http://url")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector(self.metric).get()
 
@@ -64,8 +64,8 @@ class CollectorWithMultipleURLsTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
         self.metric = dict(
-            metric="tests",
-            sources=dict(a=dict(source="junit", url="http://url"), b=dict(source="junit", url="http://url2")))
+            type="tests",
+            sources=dict(a=dict(type="junit", url="http://url"), b=dict(type="junit", url="http://url2")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector(self.metric).get()
 
@@ -91,10 +91,10 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(jobs=[dict(buildable=True)])  # Works for both Gitlab and Jenkins
         self.metric = dict(
-            metric="jobs",
+            type="jobs",
             sources=dict(
-                a=dict(source="jenkins", url="http://jenkins"),
-                b=dict(source="gitlab", url="http://gitlab", component="project", private_token="token")))
+                a=dict(type="jenkins", url="http://jenkins"),
+                b=dict(type="gitlab", url="http://gitlab", component="project", private_token="token")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector(self.metric).get()
 
@@ -109,7 +109,7 @@ class CollectorErrorTest(unittest.TestCase):
     def setUp(self):
         """Clear cache."""
         Collector.RESPONSE_CACHE.clear()
-        self.metric = dict(metric="tests", sources=dict(a=dict(source="junit", url="http://url")))
+        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", url="http://url")))
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
