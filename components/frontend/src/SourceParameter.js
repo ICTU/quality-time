@@ -49,7 +49,7 @@ class SourceParameter extends Component {
       return (
         <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
         onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
-            {this.state.edited_value}
+            {this.state.edited_value || "Enter parameter value"}
         </div>
       )
     }

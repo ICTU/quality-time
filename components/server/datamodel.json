@@ -214,7 +214,7 @@
                         "uncovered_branches",
                         "ncloc",
                         "loc",
-                        "test",
+                        "tests",
                         "failed_tests",
                         "version",
                         "violations"
@@ -229,7 +229,7 @@
                         "uncovered_branches",
                         "ncloc",
                         "loc",
-                        "test",
+                        "tests",
                         "failed_tests",
                         "violations"
                     ]
