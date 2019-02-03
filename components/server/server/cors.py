@@ -18,7 +18,7 @@ def enable_cors_generic_route():
 def enable_cors_after_request_hook():
     """This executes after every route. We use it to attach CORS headers when applicable."""
     headers = dict(
-        Origin="*", Methods="GET, POST, PUT, OPTIONS",
+        Origin="*", Methods="GET, POST, PUT, DELETE, OPTIONS",
         Headers="Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, Cache-Control, Last-Event-Id")
     for key, value in headers.items():
         bottle.response.set_header(f"Access-Control-Allow-{key}", value)
