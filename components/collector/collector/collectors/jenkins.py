@@ -23,7 +23,7 @@ class JenkinsJobs(Jenkins):
     """Collector to get job counts from Jenkins."""
 
     def api_url(self, source) -> URL:
-        return URL(f"{source['url']}/api/json?tree=jobs[buildable,color]")
+        return URL(f"{source.get('url')}/api/json?tree=jobs[buildable,color]")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         jobs = [job for job in response.json()["jobs"] if job.get("buildable", False)]

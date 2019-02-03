@@ -46,7 +46,10 @@ class Source extends Component {
 }
 
 function Sources(props) {
-    const sources = Object.keys(props.sources).map((source_uuid) =>
+    const source_uuids = Object.keys(props.sources).filter((source_uuid) =>
+        props.datamodel.metrics[props.metric_type].sources.includes(props.sources[source_uuid].type)
+    );
+    const sources = source_uuids.map((source_uuid) =>
         (
             <Source key={source_uuid} source_uuid={source_uuid} subject_uuid={props.subject_uuid}
                 metric_uuid={props.metric_uuid} source={props.sources[source_uuid]}

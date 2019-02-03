@@ -7,6 +7,7 @@ import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
+import { MetricType} from './MetricType';
 
 function MeasurementDetails(props) {
   return (
@@ -29,7 +30,21 @@ function MeasurementDetails(props) {
 class Measurement extends Component {
   constructor(props) {
     super(props);
-    this.state = { show_details: false }
+    this.state = { show_details: false, edited_metric_type: props.metric_type }
+  }
+  post_metric_type(metric_type) {
+      this.setState({ edited_metric_type: metric_type });
+      fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/type`, {
+          method: 'post',
+          mode: 'cors',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ type: metric_type })
+      });
+  }
+  reset_metric_type() {
+      this.setState({ edited_metric_type: this.props.metric_type });
   }
   onExpand(event) {
     this.setState((state) => ({ show_details: !state.show_details }));
@@ -43,16 +58,17 @@ class Measurement extends Component {
     const positive = measurement.status === "target_met";
     const negative = measurement.status === "target_not_met";
     const warning = measurement.status === null;
-    const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
-    const metric_unit = this.props.datamodel["metrics"][this.props.metric_type]["unit"];
-    const metric_direction = this.props.datamodel["metrics"][this.props.metric_type]["direction"];
+    const metric_unit = this.props.datamodel["metrics"][this.state.edited_metric_type]["unit"];
+    const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell>
             <Icon name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
-            {metric_name}
+            <MetricType post_metric_type={(m) => this.post_metric_type(m)}
+              reset_metric_type={() => this.reset_metric_type()} datamodel={this.props.datamodel}
+              metric_type={this.state.edited_metric_type} />
           </Table.Cell>
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
@@ -80,7 +96,7 @@ class Measurement extends Component {
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel}
           subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
-          metric_type={this.props.metric_type} sources={this.props.metric.sources} />}
+          metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )
   }

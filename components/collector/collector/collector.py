@@ -36,10 +36,12 @@ class Collector:
         """Connect to the sources to get and parse the measurement for the metric."""
         metric_type = self.metric["type"]
         source_responses = []
-        for source in self.metric.get("sources", {}).values():
+        for source_uuid, source in self.metric.get("sources", {}).items():
             collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
             source_collector = collector_class(self.metric)
-            source_responses.append(source_collector.get_one(source))
+            source_response = source_collector.get_one(source)
+            source_response["source_uuid"] = source_uuid
+            source_responses.append(source_response)
 
         measurements = [source_response["measurement"] for source_response in source_responses]
         measurement, calculation_error = self.safely_sum(measurements)
