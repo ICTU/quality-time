@@ -18,17 +18,17 @@ class SonarQubeVersion(SonarQube):
     """SonarQube version collectior."""
 
     def api_url(self, source) -> URL:
-        return URL(f"{source['url']}/api/server/version")
+        return URL(f"{source.get('url')}/api/server/version")
 
 
 class SonarQubeViolations(SonarQube):
     """SonarQube violations collector."""
 
     def landing_url(self, source) -> URL:
-        return URL(f"{source['url']}/project/issues?id={source.get('component')}&resolved=false")
+        return URL(f"{source.get('url')}/project/issues?id={source.get('component')}&resolved=false")
 
     def api_url(self, source) -> URL:
-        return URL(f"{source['url']}/api/issues/search?componentKeys={source.get('component')}&resolved=false")
+        return URL(f"{source.get('url')}/api/issues/search?componentKeys={source.get('component')}&resolved=false")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
@@ -40,11 +40,11 @@ class SonarQubeMetricsBaseClass(SonarQube):
     metricKeys = "Subclass responsibility"
 
     def landing_url(self, source) -> URL:
-        return URL(f"{source['url']}/component_measures?id={source.get('component')}&metric={self.metricKeys}")
+        return URL(f"{source.get('url')}/component_measures?id={source.get('component')}&metric={self.metricKeys}")
 
     def api_url(self, source) -> URL:
         return URL(
-            f"{source['url']}/api/measures/component?component={source.get('component')}&metricKeys={self.metricKeys}")
+            f"{source.get('url')}/api/measures/component?component={source.get('component')}&metricKeys={self.metricKeys}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(self._get_metrics(response)[self.metricKeys])
