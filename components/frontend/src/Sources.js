@@ -26,7 +26,7 @@ class Sources extends Component {
             (
                 <Source key={source_uuid} source_uuid={source_uuid} subject_uuid={this.props.subject_uuid}
                     metric_uuid={this.props.metric_uuid} source={this.props.sources[source_uuid]}
-                    source_type={this.props.sources[source_uuid].type}
+                    source_type={this.props.sources[source_uuid].type} reload={this.props.reload}
                     metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
             )
         );
@@ -36,16 +36,17 @@ class Sources extends Component {
                     <Table.Row>
                         <Table.HeaderCell width={1}>Source</Table.HeaderCell>
                         <Table.HeaderCell width={10}>Parameters</Table.HeaderCell>
+                        <Table.HeaderCell />
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>{sources}</Table.Body>
                 <Table.Footer>
                     <Table.Row>
-                        <Table.HeaderCell colSpan='2'>
+                        <Table.HeaderCell colSpan='3'>
                             <Button floated='right' icon labelPosition='left' primary size='small'
                                 onClick={(e) => this.onAddSource(e)}>
                                 <Icon name='plus' /> Add source
-                        </Button>
+                            </Button>
                         </Table.HeaderCell>
                     </Table.Row>
                 </Table.Footer>
