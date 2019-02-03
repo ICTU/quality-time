@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Icon, Table, Popup } from 'semantic-ui-react';
+import { Button, Grid, Icon, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { SourceStatus } from './SourceStatus';
@@ -7,19 +7,19 @@ import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
-import { MetricType} from './MetricType';
+import { MetricType } from './MetricType';
 
 function MeasurementDetails(props) {
   return (
     <Table.Row>
-      <Table.Cell colSpan="6">
+      <Table.Cell colSpan="7">
         <Grid stackable columns={2}>
           <Grid.Column>
             <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
             <Sources subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
-            metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
+              metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -33,21 +33,35 @@ class Measurement extends Component {
     this.state = { show_details: false, edited_metric_type: props.metric_type }
   }
   post_metric_type(metric_type) {
-      this.setState({ edited_metric_type: metric_type });
-      fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/type`, {
-          method: 'post',
-          mode: 'cors',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ type: metric_type })
-      });
+    this.setState({ edited_metric_type: metric_type });
+    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/type`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ type: metric_type })
+    });
   }
   reset_metric_type() {
-      this.setState({ edited_metric_type: this.props.metric_type });
+    this.setState({ edited_metric_type: this.props.metric_type });
   }
   onExpand(event) {
     this.setState((state) => ({ show_details: !state.show_details }));
+  }
+  delete_metric(event) {
+    event.preventDefault();
+    const self = this;
+    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}`, {
+      method: 'delete',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(
+      () => self.props.reload()
+    );
   }
   render() {
     const last_measurement = this.props.measurements[this.props.measurements.length - 1];
@@ -91,6 +105,12 @@ class Measurement extends Component {
           </Table.Cell>
           <Table.Cell>
             <Comment measurement_id={last_measurement["_id"]} comment={last_measurement.comment} key={end} />
+          </Table.Cell>
+          <Table.Cell collapsing>
+            <Button floated='right' icon primary size='small' negative
+              onClick={(e) => this.delete_metric(e)}>
+              <Icon name='delete' />
+            </Button>
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
