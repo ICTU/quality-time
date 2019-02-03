@@ -8,7 +8,7 @@ function Subject(props) {
     <Metric key={metric_uuid} subject_uuid={props.subject_uuid} metric_uuid={metric_uuid}
       metric={props.subject.metrics[metric_uuid]} metric_type={props.subject.metrics[metric_uuid]["type"]}
       datamodel={props.datamodel} search_string={props.search_string} report_date={props.report_date}
-      nr_new_measurements={props.nr_new_measurements} />);
+      nr_new_measurements={props.nr_new_measurements} reload={props.reload} />);
   return (
     <Segment basic>
       <SubjectTitleContainer subject_uuid={props.subject_uuid} subject={props.subject} />

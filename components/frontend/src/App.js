@@ -49,7 +49,7 @@ class App extends Component {
   }
 
   reload(event) {
-    event.preventDefault();
+    if (event) { event.preventDefault(); }
     const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
     fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
@@ -89,10 +89,10 @@ class App extends Component {
     return (
       <>
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
-          onReload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
+          reload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
           report_date={report_date} report_date_string={this.state.report_date_string} />
         <Subjects datamodel={this.state.datamodel} subjects={this.state.subjects}
-          nr_new_measurements={this.state.nr_new_measurements}
+          nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
           search_string={this.state.search_string} report_date={report_date} />
       </>
     );
