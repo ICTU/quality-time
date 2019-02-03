@@ -3,7 +3,7 @@
 import bottle
 import pymongo
 
-from .util import iso_timestamp, report_date_time
+from .util import iso_timestamp, report_date_time, uuid
 
 
 @bottle.post("/report/title")
@@ -42,6 +42,19 @@ def post_metric_type(subject_uuid: str, metric_uuid: str, database):
     for source_uuid, source in list(sources.items()):
         if source["type"] not in possible_sources:
             del sources[source_uuid]
+    database.reports.insert(report)
+
+
+@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source")
+def post_source_new(subject_uuid: str, metric_uuid: str, database):
+    """Add a new source."""
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
+    metric_type = metric["type"]
+    source_type = database.datamodel.find_one({})["metrics"][metric_type]["sources"][0]
+    metric["sources"][uuid()] = dict(type=source_type)
     database.reports.insert(report)
 
 

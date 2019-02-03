@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Icon, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
-import { Source } from './Source';
+import { SourceStatus } from './SourceStatus';
 import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
@@ -19,7 +19,7 @@ function MeasurementDetails(props) {
           </Grid.Column>
           <Grid.Column>
             <Sources subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
-            metric_type={props.metric_type} datamodel={props.datamodel} />
+            metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -87,14 +87,14 @@ class Measurement extends Component {
               editable={this.state.hover} target={measurement.target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
-            {sources.map((source) => <Source key={source.api_url} source={source} />)}
+            {sources.map((source) => <SourceStatus key={source.source_uuid} source={source} />)}
           </Table.Cell>
           <Table.Cell>
             <Comment measurement_id={last_measurement["_id"]} comment={last_measurement.comment} key={end} />
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
-          unit={metric_unit} datamodel={this.props.datamodel}
+          unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>

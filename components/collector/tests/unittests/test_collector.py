@@ -3,8 +3,6 @@
 import unittest
 from unittest.mock import patch, Mock
 
-import requests
-
 from collector.collector import Collector
 from collector.type import Measurement
 
