@@ -45,6 +45,18 @@ def post_metric_type(subject_uuid: str, metric_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.post("/report/subject/<subject_uuid>/metric")
+def post_metric_new(subject_uuid: str, database):
+    """Add a new metric."""
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    subject = report["subjects"][subject_uuid]
+    metric_type = list(database.datamodel.find_one({})["metrics"].keys())[0]
+    subject["metrics"][uuid()] = dict(type=metric_type, sources={})
+    database.reports.insert(report)
+
+
 @bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source")
 def post_source_new(subject_uuid: str, metric_uuid: str, database):
     """Add a new source."""
