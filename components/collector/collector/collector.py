@@ -47,8 +47,7 @@ class Collector:
         measurement, calculation_error = self.safely_sum(measurements)
         return dict(
             measurement=dict(calculation_error=calculation_error, measurement=measurement),
-            sources=source_responses,
-            metric=self.metric)
+            sources=source_responses)
 
     def get_one(self, source) -> Response:
         """Return the measurement response for one source."""

@@ -9,10 +9,10 @@ function SourceStatus(props) {
         wide='very'
         content={props.source.connection_error ? props.source.connection_error : props.source.parse_error}
         header={props.source.connection_error ? 'Connection error' : 'Parse error'}
-        trigger={<Label color='red'><a href={props.source.landing_url}>{props.source.name}</a></Label>} />)
+        trigger={<Label color='red' tabIndex="0"><a href={props.source.landing_url}>{props.source.name}</a></Label>} />)
   } else {
     return (
-      <Label>
+      <Label tabIndex="0">
         <a href={props.source.landing_url}>{props.source.name}</a>
       </Label>
     )
