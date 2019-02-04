@@ -45,7 +45,7 @@ class Comment extends Component {
         </Form>
       )
     }
-    const style = this.state.hover ? {borderBottom: "1px dotted #000000" } : {height: "1em"};
+    const style = this.state.hover ? {overflow: "hidden", borderBottom: "1px dotted #000000" } : {overflow: "hidden"};
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
       onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
