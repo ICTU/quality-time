@@ -109,7 +109,7 @@ class Measurement extends Component {
           <Table.Cell collapsing>
             <Button floated='right' icon primary size='small' negative
               onClick={(e) => this.delete_metric(e)}>
-              <Icon name='delete' />
+              <Icon name='trash alternate' />
             </Button>
           </Table.Cell>
         </Table.Row>

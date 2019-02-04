@@ -24,7 +24,11 @@ def post_target(measurement_id: str, database):
     measurement_doc["measurement"]["start"] = timestamp_string
     measurement_doc["measurement"]["end"] = timestamp_string
     value = measurement_doc["measurement"]["measurement"]
-    metric_type = measurement_doc["metric"]["type"]
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    metric_uuid = measurement_doc["metric_uuid"]
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"].keys():
+            metric_type = subject["metrics"][metric_uuid]["type"]
     direction = database.datamodel.find_one({})["metrics"][metric_type]["direction"]
     measurement_doc["measurement"]["status"] = determine_status(value, target, direction)
     database.measurements.insert_one(measurement_doc)

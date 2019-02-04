@@ -57,7 +57,7 @@ class Source extends Component {
                 <Table.Cell>
                     <Button floated='right' icon primary size='small' negative
                         onClick={(e) => this.delete_source(e)}>
-                        <Icon name='delete' />
+                        <Icon name='trash alternate' />
                     </Button>
                 </Table.Cell>
             </Table.Row>
