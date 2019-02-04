@@ -104,7 +104,7 @@ class Measurement extends Component {
             {sources.map((source) => <SourceStatus key={source.source_uuid} source={source} />)}
           </Table.Cell>
           <Table.Cell>
-            <Comment measurement_id={last_measurement["_id"]} comment={last_measurement.comment} key={end} />
+            <Comment subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid} comment={this.props.metric.comment} key={end} />
           </Table.Cell>
           <Table.Cell collapsing>
             <Button floated='right' icon primary size='small' negative

@@ -26,15 +26,18 @@ class Comment extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
+    const self = this;
     this.setState({edit: false});
-    fetch(`http://localhost:8080/comment/${this.props.measurement_id}`, {
+    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/comment`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({comment: this.state.edited_comment})
-    })
+    }).then(
+      () => self.props.reload()
+    )
   }
   render() {
     if (this.state.edit) {
