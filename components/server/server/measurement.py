@@ -38,18 +38,20 @@ def post_measurement(metric_uuid: str, database) -> None:
     def equal_measurements(m1, m2):
         """Return whether the measurements are equal."""
         return m1["measurement"]["measurement"] == m2["measurement"]["measurement"] and \
-               m1["measurement"]["calculation_error"] == m2["measurement"]["calculation_error"] and \
-               m1["metric"] == m2["metric"]
+               m1["measurement"]["calculation_error"] == m2["measurement"]["calculation_error"]
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()
-    metric_type = measurement["metric"]["type"]
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"].keys():
+            metric_type = subject["metrics"][metric_uuid]["type"]
     metric = database.datamodel.find_one({})["metrics"].get(metric_type)
     if not metric:
         logging.error("Can't find %s metric in Metrics collection.", metric_type)
         return
     latest_measurement_doc = database.measurements.find_one(
-        filter={"metric.uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])
+        filter={"metric_uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])
     if latest_measurement_doc:
         if equal_measurements(latest_measurement_doc, measurement):
             database.measurements.update_one(
@@ -61,7 +63,7 @@ def post_measurement(metric_uuid: str, database) -> None:
     else:
         comment = ""
         target = metric["default_target"]
-    measurement["metric"]["uuid"] = metric_uuid
+    measurement["metric_uuid"] = metric_uuid
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
     measurement["measurement"]["target"] = target
@@ -105,7 +107,7 @@ def get_measurements(metric_uuid: str, database):
     """Return the measurements for the metric."""
     metric_uuid = metric_uuid.split("&")[0]
     docs = database.measurements.find(
-        filter={"metric.uuid": metric_uuid, "measurement.start": {"$lt": report_date_time()}})
+        filter={"metric_uuid": metric_uuid, "measurement.start": {"$lt": report_date_time()}})
     measurements = []
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])
