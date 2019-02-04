@@ -24,7 +24,7 @@ def post_target(measurement_id: str, database):
     measurement_doc["measurement"]["start"] = timestamp_string
     measurement_doc["measurement"]["end"] = timestamp_string
     value = measurement_doc["measurement"]["measurement"]
-    metric_type = measurement_doc["metric"]["metric"]
+    metric_type = measurement_doc["metric"]["type"]
     direction = database.datamodel.find_one({})["metrics"][metric_type]["direction"]
     measurement_doc["measurement"]["status"] = determine_status(value, target, direction)
     database.measurements.insert_one(measurement_doc)

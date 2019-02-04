@@ -37,7 +37,7 @@ class Metric extends Component {
     if (m.length === 0) {
       return (
         <Table.Row>
-          {[1, 2, 3, 4, 5, 6].map((index) =>
+          {[1, 2, 3, 4, 5, 6, 7].map((index) =>
             <Table.Cell key={index}>
               <Placeholder>
                 <Placeholder.Line />
