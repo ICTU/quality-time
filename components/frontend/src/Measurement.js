@@ -69,11 +69,20 @@ class Measurement extends Component {
     const sources = last_measurement.sources;
     const start = new Date(measurement.start);
     const end = new Date(measurement.end);
-    const positive = measurement.status === "target_met";
-    const negative = measurement.status === "target_not_met";
-    const warning = measurement.status === null;
-    const metric_unit = this.props.datamodel["metrics"][this.state.edited_metric_type]["unit"];
+    const target = this.props.metric.target;
     const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
+    let status = null;
+    if (metric_direction === ">=") {
+      status = measurement >= target ? "target_met" : "target_not_met"
+    } else if (metric_direction === "<=") {
+      status = measurement <= target ? "target_met" : "target_not_met"
+    } else {
+      status = measurement === target ? "target_met" : "target_not_met"
+    }
+    const positive = status === "target_met";
+    const negative = status === "target_not_met";
+    const warning = status === null;
+    const metric_unit = this.props.datamodel["metrics"][this.state.edited_metric_type]["unit"];
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
@@ -97,8 +106,9 @@ class Measurement extends Component {
             Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
-            <Target measurement_id={last_measurement["_id"]} unit={metric_unit} direction={metric_direction}
-              editable={this.state.hover} target={measurement.target} key={end} onEdit={this.props.onEdit} />
+            <Target subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+              unit={metric_unit} direction={metric_direction} reload={this.props.reload}
+              editable={this.state.hover} target={target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
             {sources.map((source) => <SourceStatus key={source.source_uuid} source={source} />)}

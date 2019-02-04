@@ -13,7 +13,6 @@ import pymongo
 
 from . import cors  # pylint: disable=unused-import
 from . import report  # pylint: disable=unused-import
-from . import target  # pylint: disable=unused-import
 from . import measurement  # pylint: disable=unused-import
 from . import datamodel  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
@@ -41,8 +40,10 @@ def import_report(database):
     for imported_subject in imported_report["subjects"]:
         subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
         for imported_metric in imported_subject["metrics"]:
+            metric_type = imported_metric["type"]
+            default_target = database.datamodel.find_one({})["metrics"][metric_type]["default_target"]
             metric_to_store = subject_to_store["metrics"][uuid()] = dict(
-                type=imported_metric["type"], sources={}, comment="")
+                type=metric_type, sources={}, comment="", target=default_target)
             for imported_source in imported_metric["sources"]:
                 metric_to_store["sources"][uuid()] = imported_source
 

@@ -27,7 +27,8 @@ class Target extends Component {
   onSubmit(event) {
     event.preventDefault();
     this.setState({ edit: false });
-    fetch(`http://localhost:8080/target/${this.props.measurement_id}`, {
+    const self = this;
+    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/target`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -35,10 +36,8 @@ class Target extends Component {
       },
       body: JSON.stringify({ target: this.state.edited_target })
     }).then(
-      response => response.json()
-    ).then(
-      json => { this.setState({ edit: false }) }
-    );
+      () => self.props.reload()
+    )
   }
   render() {
     if (this.state.edit) {
