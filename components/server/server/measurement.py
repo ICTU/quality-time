@@ -58,16 +58,13 @@ def post_measurement(metric_uuid: str, database) -> None:
                 filter={"_id": latest_measurement_doc["_id"]},
                 update={"$set": {"measurement.end": timestamp_string}})
             return
-        comment = latest_measurement_doc["comment"]  # Reuse comment of previous measurement
         target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
     else:
-        comment = ""
         target = metric["default_target"]
     measurement["metric_uuid"] = metric_uuid
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
     measurement["measurement"]["target"] = target
-    measurement["comment"] = comment
     value = measurement["measurement"]["measurement"]
     measurement["measurement"]["status"] = determine_status(value, target, metric["direction"])
     database.measurements.insert_one(measurement)
