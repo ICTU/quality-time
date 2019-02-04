@@ -11,7 +11,6 @@ from collector.type import Measurement
 class JacocoCoverageBaseClass(Collector):
     """Base class for Jacoco coverage collectors."""
 
-    name = "JaCoCo"
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 

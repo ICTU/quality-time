@@ -11,7 +11,6 @@ from collector.type import Measurement
 class JUnit(Collector):
     """Base class for JUnit test collectors."""
 
-    name = "JUnit"
     test_status = "Subclass responsibility"
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
