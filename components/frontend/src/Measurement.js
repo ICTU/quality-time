@@ -111,7 +111,8 @@ class Measurement extends Component {
               editable={this.state.hover} target={target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
           <Table.Cell>
-            {sources.map((source) => <SourceStatus key={source.source_uuid} source={source} />)}
+            {sources.map((source) => <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
+              metric={this.props.metric} source={source} datamodel={this.props.datamodel} />)}
           </Table.Cell>
           <Table.Cell>
             <Comment subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid} comment={this.props.metric.comment} key={end} />

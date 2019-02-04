@@ -6,12 +6,7 @@ from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class Gitlab(Collector):
-    """Base class for Gitlab metrics."""
-    name = "GitLab"
-
-
-class GitlabVersion(Gitlab):
+class GitlabVersion(Collector):
     """Return the Gitlab version."""
 
     def api_url(self, source) -> URL:
@@ -21,7 +16,7 @@ class GitlabVersion(Gitlab):
         return Measurement(response.json()["version"])
 
 
-class GitlabJobs(Gitlab):
+class GitlabJobs(Collector):
     """Collector class to get job counts from Gitlab."""
 
     def api_url(self, source) -> URL:

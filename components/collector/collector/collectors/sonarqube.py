@@ -8,20 +8,14 @@ from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class SonarQube(Collector):
-    """Base class for SonarQube collectors."""
-
-    name = "SonarQube"
-
-
-class SonarQubeVersion(SonarQube):
+class SonarQubeVersion(Collector):
     """SonarQube version collectior."""
 
     def api_url(self, source) -> URL:
         return URL(f"{source.get('url')}/api/server/version")
 
 
-class SonarQubeViolations(SonarQube):
+class SonarQubeViolations(Collector):
     """SonarQube violations collector."""
 
     def landing_url(self, source) -> URL:
@@ -34,7 +28,7 @@ class SonarQubeViolations(SonarQube):
         return Measurement(response.json()["total"])
 
 
-class SonarQubeMetricsBaseClass(SonarQube):
+class SonarQubeMetricsBaseClass(Collector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
     metricKeys = "Subclass responsibility"

@@ -16,7 +16,6 @@ class Collector:
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
     subclasses: Set[Type["Collector"]] = set()
-    name = "Subclass responsibility"
 
     def __init__(self, metric) -> None:
         self.metric = metric
@@ -55,7 +54,7 @@ class Collector:
         landing_url = self.landing_url(source)
         response, connection_error = self.safely_get_source_response(api_url)
         measurement, parse_error = self.safely_parse_source_response(response) if response else (None, None)
-        return dict(name=self.name, api_url=api_url, landing_url=landing_url, measurement=measurement,
+        return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, source) -> URL:  # pylint: disable=no-self-use

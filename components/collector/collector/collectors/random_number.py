@@ -11,7 +11,6 @@ from collector.type import URL
 
 class Random(Collector):
     """Random number metric collector."""
-    name = "Random"
 
     def get_source_response(self, url: URL) -> requests.Response:
         """Return a random number as the response."""

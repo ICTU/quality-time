@@ -6,20 +6,14 @@ from collector.collector import Collector
 from collector.type import Measurement, URL
 
 
-class Jenkins(Collector):
-    """Base class for Jenkins collectors."""
-
-    name = "Jenkins"
-
-
-class JenkinsVersion(Jenkins):
+class JenkinsVersion(Collector):
     """Return the Jenkins version."""
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.headers["X-Jenkins"])
 
 
-class JenkinsJobs(Jenkins):
+class JenkinsJobs(Collector):
     """Collector to get job counts from Jenkins."""
 
     def api_url(self, source) -> URL:
