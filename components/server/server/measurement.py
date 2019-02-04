@@ -2,34 +2,11 @@
 
 import logging
 import time
-from distutils.version import LooseVersion
-from typing import Optional
 
 import bottle
 import pymongo
 
 from .util import iso_timestamp, report_date_time
-
-
-def determine_status(value: Optional[str], target: str, direction: str) -> Optional[str]:
-    """Determine the status of the measurement from the value and target."""
-    if value is None:
-        status = None
-    else:
-        try:
-            target = int(target)
-            value = int(value)
-        except ValueError:
-            # Assume we deal with version numbers
-            target = LooseVersion(str(target))
-            value = LooseVersion(value)
-        if direction == "<=":
-            status = "target_met" if value <= target else "target_not_met"
-        elif direction == ">=":
-            status = "target_met" if value >= target else "target_not_met"
-        else:
-            status = "target_met" if value == target else "target_not_met"
-    return status
 
 
 @bottle.post("/measurement/<metric_uuid>")
@@ -52,21 +29,14 @@ def post_measurement(metric_uuid: str, database) -> None:
         return
     latest_measurement_doc = database.measurements.find_one(
         filter={"metric_uuid": metric_uuid}, sort=[("measurement.start", pymongo.DESCENDING)])
-    if latest_measurement_doc:
-        if equal_measurements(latest_measurement_doc, measurement):
-            database.measurements.update_one(
-                filter={"_id": latest_measurement_doc["_id"]},
-                update={"$set": {"measurement.end": timestamp_string}})
-            return
-        target = latest_measurement_doc["measurement"]["target"]  # Reuse target too
-    else:
-        target = metric["default_target"]
+    if latest_measurement_doc and equal_measurements(latest_measurement_doc, measurement):
+        database.measurements.update_one(
+            filter={"_id": latest_measurement_doc["_id"]},
+            update={"$set": {"measurement.end": timestamp_string}})
+        return
     measurement["metric_uuid"] = metric_uuid
     measurement["measurement"]["start"] = timestamp_string
     measurement["measurement"]["end"] = timestamp_string
-    measurement["measurement"]["target"] = target
-    value = measurement["measurement"]["measurement"]
-    measurement["measurement"]["status"] = determine_status(value, target, metric["direction"])
     database.measurements.insert_one(measurement)
 
 

@@ -57,6 +57,18 @@ def post_metric_comment(subject_uuid: str, metric_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/target")
+def post_metric_comment(subject_uuid: str, metric_uuid: str, database):
+    """Set the metric target."""
+    metric_target = bottle.request.json["target"]
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
+    metric["target"] = metric_target
+    database.reports.insert(report)
+
+
 @bottle.post("/report/subject/<subject_uuid>/metric")
 def post_metric_new(subject_uuid: str, database):
     """Add a new metric."""
