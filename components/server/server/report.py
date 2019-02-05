@@ -47,14 +47,17 @@ def post_metric_type(subject_uuid: str, metric_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/<metric_attribute")
-def post_metric_attribute(subject_uuid: str, metric_uuid: str, metric_attribute: str, database):
+@bottle.post("/report/metric/<metric_uuid>/<metric_attribute>")
+def post_metric_attribute(metric_uuid: str, metric_attribute: str, database):
     """Set the metric attribute."""
     value = bottle.request.json[metric_attribute]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
-    report["subjects"][subject_uuid]["metrics"][metric_uuid][metric_attribute] = value
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"]:
+            subject["metrics"][metric_uuid][metric_attribute] = value
+            break
     database.reports.insert(report)
 
 
@@ -70,36 +73,43 @@ def post_metric_new(subject_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.delete("/report/subject/<subject_uuid>/metric/<metric_uuid>")
-def post_metric_delete(subject_uuid: str, metric_uuid: str, database):
+@bottle.delete("/report/metric/<metric_uuid>")
+def post_metric_delete(metric_uuid: str, database):
     """Delete a metric."""
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
-    del report["subjects"][subject_uuid]["metrics"][metric_uuid]
     report["timestamp"] = iso_timestamp()
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"]:
+            del subject["metrics"][metric_uuid]
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source")
-def post_source_new(subject_uuid: str, metric_uuid: str, database):
+@bottle.post("/report/metric/<metric_uuid>/source")
+def post_source_new(metric_uuid: str, database):
     """Add a new source."""
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"]:
+            metric = subject["metrics"][metric_uuid]
     metric_type = metric["type"]
     source_type = database.datamodel.find_one({})["metrics"][metric_type]["sources"][0]
     metric["sources"][uuid()] = dict(type=source_type)
     database.reports.insert(report)
 
 
-@bottle.delete("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>")
-def post_source_delete(subject_uuid: str, metric_uuid: str, source_uuid: str, database):
+@bottle.delete("/report/source/<source_uuid>")
+def post_source_delete(source_uuid: str, database):
     """Delete a source."""
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
-    del report["subjects"][subject_uuid]["metrics"][metric_uuid]["sources"][source_uuid]
     report["timestamp"] = iso_timestamp()
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            if source_uuid in metric["sources"]:
+                del metric["sources"][source_uuid]
     database.reports.insert(report)
 
 

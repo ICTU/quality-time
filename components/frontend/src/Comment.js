@@ -28,7 +28,7 @@ class Comment extends Component {
     event.preventDefault();
     const self = this;
     this.setState({edit: false});
-    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/comment`, {
+    fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}/comment`, {
       method: 'post',
       mode: 'cors',
       headers: {

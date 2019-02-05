@@ -7,7 +7,7 @@ import { SourceParameters } from './SourceParameters';
 class Source extends Component {
     constructor(props) {
         super(props);
-        this.state = { edited_source_type: props.source_type };
+        this.state = { edited_source_type: props.source.type };
     }
     post_source_type(source_type) {
         this.setState({ edited_source_type: source_type });
@@ -26,7 +26,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}`, {
+        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {

@@ -51,7 +51,7 @@ class Metric extends Component {
     const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+      <Measurement metric_uuid={this.props.metric_uuid}
         datamodel={this.props.datamodel} reload={this.props.reload}
         metric={this.props.metric} metric_type={this.props.metric_type} measurements={m} onEdit={(e) => this.onEdit(e)} />
     )
