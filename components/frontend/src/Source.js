@@ -11,7 +11,7 @@ class Source extends Component {
     }
     post_source_type(source_type) {
         this.setState({ edited_source_type: source_type });
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}/type`, {
+        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}/type`, {
             method: 'post',
             mode: 'cors',
             headers: {

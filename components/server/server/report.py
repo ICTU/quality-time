@@ -1,5 +1,7 @@
 """Report routes."""
 
+import logging
+
 import bottle
 import pymongo
 
@@ -101,16 +103,19 @@ def post_source_delete(subject_uuid: str, metric_uuid: str, source_uuid: str, da
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>/type")
-def post_source_type(subject_uuid: str, metric_uuid: str, source_uuid: str, database):
+@bottle.post("/report/source/<source_uuid>/type")
+def post_source_type(source_uuid: str, database):
     """Set the source type."""
     source_type = bottle.request.json["type"]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
-    metric_type = metric["type"]
-    source = metric["sources"][source_uuid]
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            if source_uuid in metric["sources"]:
+                source = metric["sources"][source_uuid]
+                metric_type = metric["type"]
+                break
     source["type"] = source_type
     possible_parameters = database.datamodel.find_one({})["sources"][source_type]["parameters"]
     for parameter in [key for key in source.keys() if key != "type"]:
