@@ -49,7 +49,7 @@ class Source extends Component {
                         reset_source_type={() => this.reset_source_type()} />
                 </Table.Cell>
                 <Table.Cell>
-                    <SourceParameters subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}
+                    <SourceParameters
                         source_uuid={props.source_uuid} metric_type={props.metric_type}
                         source_type={this.state.edited_source_type}
                         source={props.source} datamodel={props.datamodel} />

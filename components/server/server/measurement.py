@@ -15,7 +15,8 @@ def post_measurement(metric_uuid: str, database) -> None:
     def equal_measurements(m1, m2):
         """Return whether the measurements are equal."""
         return m1["measurement"]["measurement"] == m2["measurement"]["measurement"] and \
-               m1["measurement"]["calculation_error"] == m2["measurement"]["calculation_error"]
+               m1["measurement"]["calculation_error"] == m2["measurement"]["calculation_error"] and \
+               m1["sources"] == m2["sources"]
 
     measurement = bottle.request.json
     timestamp_string = iso_timestamp()

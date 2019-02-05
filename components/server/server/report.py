@@ -45,27 +45,14 @@ def post_metric_type(subject_uuid: str, metric_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/comment")
-def post_metric_comment(subject_uuid: str, metric_uuid: str, database):
-    """Set the metric comment."""
-    metric_comment = bottle.request.json["comment"]
+@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/<metric_attribute")
+def post_metric_attribute(subject_uuid: str, metric_uuid: str, metric_attribute: str, database):
+    """Set the metric attribute."""
+    value = bottle.request.json[metric_attribute]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
-    metric["comment"] = metric_comment
-    database.reports.insert(report)
-
-
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/target")
-def post_metric_comment(subject_uuid: str, metric_uuid: str, database):
-    """Set the metric target."""
-    metric_target = bottle.request.json["target"]
-    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
-    del report["_id"]
-    report["timestamp"] = iso_timestamp()
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
-    metric["target"] = metric_target
+    report["subjects"][subject_uuid]["metrics"][metric_uuid][metric_attribute] = value
     database.reports.insert(report)
 
 
@@ -132,14 +119,18 @@ def post_source_type(subject_uuid: str, metric_uuid: str, source_uuid: str, data
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/source/<source_uuid>/<source_attr>")
-def post_source_attr(subject_uuid: str, metric_uuid: str, source_uuid: str, source_attr: str, database):
+@bottle.post("/report/source/<source_uuid>/<source_attr>")
+def post_source_attr(source_uuid: str, source_attr: str, database):
     """Set the source attribute."""
     value = bottle.request.json[source_attr]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
-    report["subjects"][subject_uuid]["metrics"][metric_uuid]["sources"][source_uuid][source_attr] = value
     report["timestamp"] = iso_timestamp()
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            if source_uuid in metric["sources"]:
+                metric["sources"][source_uuid][source_attr] = value
+                break
     database.reports.insert(report)
 
 

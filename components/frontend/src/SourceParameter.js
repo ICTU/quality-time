@@ -27,7 +27,7 @@ class SourceParameter extends Component {
       event.preventDefault();
       let self = this;
       this.setState({edit: false});
-      fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}/${this.props.parameter_key}`, {
+      fetch(`http://localhost:8080/report/source/${this.props.source_uuid}/${this.props.parameter_key}`, {
         method: 'post',
         mode: 'cors',
         headers: {
