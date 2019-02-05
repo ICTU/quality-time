@@ -3,6 +3,8 @@ import { Label, Popup } from 'semantic-ui-react';
 
 
 function SourceStatus(props) {
+  // Source may be deleted from report but still referenced in the latest measurement, be prepared:
+  if (!Object.keys(props.metric.sources).includes(props.source_uuid)) {return null};
   const source_type = props.metric["sources"][props.source_uuid]["type"];
   const source_name = props.datamodel["sources"][source_type]["name"];
   if (props.source.connection_error || props.source.parse_error) {
