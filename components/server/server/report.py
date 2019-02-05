@@ -1,7 +1,5 @@
 """Report routes."""
 
-import logging
-
 import bottle
 import pymongo
 
@@ -30,14 +28,17 @@ def post_subject_title(subject_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric/<metric_uuid>/type")
-def post_metric_type(subject_uuid: str, metric_uuid: str, database):
+@bottle.post("/report/metric/<metric_uuid>/type")
+def post_metric_type(metric_uuid: str, database):
     """Set the metric type."""
     metric_type = bottle.request.json["type"]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
-    metric = report["subjects"][subject_uuid]["metrics"][metric_uuid]
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"]:
+            metric = subject["metrics"][metric_uuid]
+            break
     metric["type"] = metric_type
     sources = metric["sources"]
     possible_sources = database.datamodel.find_one({})["metrics"][metric_type]["sources"]
