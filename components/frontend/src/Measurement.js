@@ -118,7 +118,7 @@ class Measurement extends Component {
             <Comment metric_uuid={this.props.metric_uuid} comment={this.props.metric.comment} key={end} />
           </Table.Cell>
           <Table.Cell collapsing>
-            <Button floated='right' icon primary size='small' negative
+            <Button floated='right' icon primary size='small' negative basic
               onClick={(e) => this.delete_metric(e)}>
               <Icon name='trash alternate' />
             </Button>

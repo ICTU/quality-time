@@ -7,7 +7,7 @@ class Sources extends Component {
     onAddSource(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}/source`, {
+        fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}/source/new`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -44,7 +44,7 @@ class Sources extends Component {
                         <Table.HeaderCell colSpan='3'>
                             <Button floated='right' icon labelPosition='left' primary size='small'
                                 onClick={(e) => this.onAddSource(e)}>
-                                <Icon name='plus' /> Add source
+                                <Icon name='plus'/> Add source
                             </Button>
                         </Table.HeaderCell>
                     </Table.Row>

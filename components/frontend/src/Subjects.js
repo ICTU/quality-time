@@ -1,17 +1,39 @@
-import React from 'react';
-import { Container } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Button, Container, Icon, Segment } from 'semantic-ui-react';
 import { Subject } from './Subject.js';
 
 
-function Subjects(props) {
-  return (
-    <Container style={{ marginTop: '7em' }}>
-      {Object.keys(props.subjects).map((subject_uuid) =>
-        <Subject key={subject_uuid} subject_uuid={subject_uuid} subject={props.subjects[subject_uuid]}
-          search_string={props.search_string} datamodel={props.datamodel} reload={props.reload}
-          report_date={props.report_date} nr_new_measurements={props.nr_new_measurements} />)}
-    </Container>
-  )
+class Subjects extends Component {
+  onAddSubject(event) {
+    event.preventDefault();
+    const self = this;
+    fetch(`http://localhost:8080/report/subject/new`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(
+      () => self.props.reload()
+    );
+  }
+  render() {
+    return (
+      <Container style={{ marginTop: '7em' }}>
+        {Object.keys(this.props.subjects).map((subject_uuid) =>
+          <Subject key={subject_uuid} subject_uuid={subject_uuid} subject={this.props.subjects[subject_uuid]}
+            search_string={this.props.search_string} datamodel={this.props.datamodel} reload={this.props.reload}
+            report_date={this.props.report_date} nr_new_measurements={this.props.nr_new_measurements} />)}
+        <Segment basic>
+          <Button icon labelPosition='left' primary size='small'
+            onClick={(e) => this.onAddSubject(e)}>
+            <Icon name='plus' /> Add subject
+          </Button>
+        </Segment>
+      </Container>
+    )
+  }
 }
 
 export { Subjects };
