@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Container, Dimmer, Loader } from 'semantic-ui-react';
 import './App.css';
 import { Subjects } from './Subjects.js';
 import { Menubar } from './Menubar.js';
@@ -9,7 +10,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, subjects: {}, search_string: '', report_date_string: '',
-      nr_measurements: 0, nr_new_measurements: 0
+      nr_measurements: 0, nr_new_measurements: 0, loading: true
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
@@ -29,7 +30,7 @@ class App extends Component {
         return response.json();
       })
       .then(function (json) {
-        self.setState({ subjects: json.subjects });
+        self.setState({ subjects: json.subjects, loading: false });
       });
     var source = new EventSource("http://localhost:8080/nr_measurements");
     source.addEventListener('init', function (e) {
@@ -91,9 +92,17 @@ class App extends Component {
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
           reload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
           report_date={report_date} report_date_string={this.state.report_date_string} />
-        <Subjects datamodel={this.state.datamodel} subjects={this.state.subjects}
-          nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-          search_string={this.state.search_string} report_date={report_date} />
+        {this.state.loading ?
+          <Container style={{ marginTop: '7em' }}>
+            <Dimmer active inverted>
+              <Loader size='large'>Loading</Loader>
+            </Dimmer>
+          </Container>
+          :
+          <Subjects datamodel={this.state.datamodel} subjects={this.state.subjects}
+            nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
+            search_string={this.state.search_string} report_date={report_date} />
+        }
       </>
     );
   }

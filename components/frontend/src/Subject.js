@@ -26,7 +26,8 @@ class Subject extends Component {
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
     return (
       <Segment basic>
-        <SubjectTitleContainer subject_uuid={this.props.subject_uuid} subject={this.props.subject} />
+        <SubjectTitleContainer subject_uuid={this.props.subject_uuid} subject={this.props.subject}
+          reload={this.props.reload} />
         <Table columns={7}>
           <Table.Header>
             <Table.Row>
@@ -36,7 +37,7 @@ class Subject extends Component {
               <Table.HeaderCell width={3}>Target</Table.HeaderCell>
               <Table.HeaderCell width={3}>Source</Table.HeaderCell>
               <Table.HeaderCell width={3}>Comment</Table.HeaderCell>
-              <Table.HeaderCell width={1}/>
+              <Table.HeaderCell width={1} />
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
@@ -46,7 +47,7 @@ class Subject extends Component {
                 <Button floated='right' icon labelPosition='left' primary size='small'
                   onClick={(e) => this.onAddMetric(e)}>
                   <Icon name='plus' /> Add metric
-              </Button>
+                </Button>
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>

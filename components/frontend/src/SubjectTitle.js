@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Header } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Icon } from 'semantic-ui-react';
 
 
 class SubjectTitleContainer extends Component {
@@ -34,7 +34,8 @@ class SubjectTitleContainer extends Component {
         return (
             <SubjectTitle title={this.state.edited_title} edit={this.state.edit}
                 onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
-                onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
+                onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
+                subject_uuid={this.props.subject_uuid} reload={this.props.reload} />)
     }
 }
 
@@ -45,7 +46,7 @@ function SubjectTitle(props) {
     }
     return (
         <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} />
+            onMouseLeave={props.onMouseLeave} subject_uuid={props.subject_uuid} reload={props.reload} />
     )
 }
 
@@ -67,13 +68,37 @@ class SubjectTitleDisplay extends Component {
     onMouseLeave() {
         this.setState({ editable: false })
     }
+    delete_subject(event) {
+        event.preventDefault();
+        const self = this;
+        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}`, {
+          method: 'delete',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        }).then(
+          () => self.props.reload()
+        );
+      }
     render() {
         const style = this.state.editable ? { borderBottom: "1px dotted #000000" } : {};
         return (
-            <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
-                onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
-                {this.props.title}
-            </Header>
+            <Grid>
+                <Grid.Column key={0} width={15}>
+                    <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
+                        onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
+                        {this.props.title}
+                    </Header>
+                </Grid.Column>
+                <Grid.Column key={1} width={1}>
+                    <Button icon primary negative
+                        onClick={(e) => this.delete_subject(e)}>
+                        <Icon name='trash alternate' />
+                    </Button>
+                </Grid.Column>
+            </Grid>
         )
     }
 }
