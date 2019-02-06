@@ -15,8 +15,7 @@ function SourceParameters(props) {
                     {all_parameters[parameter_key].name}
                 </Table.Cell>
                 <Table.Cell>
-                    <SourceParameter subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}
-                        source_uuid={props.source_uuid} parameter_key={parameter_key}
+                    <SourceParameter source_uuid={props.source_uuid} parameter_key={parameter_key}
                         parameter_value={props.source[parameter_key]} />
                 </Table.Cell>
             </Table.Row>

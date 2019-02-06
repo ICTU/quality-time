@@ -15,9 +15,9 @@ class CollectorTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", url="http://url")))
+        sources = dict(a=dict(type="junit", url="http://url"))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector(self.metric).get()
+            self.response = Collector().get("tests", sources)
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -33,39 +33,37 @@ class CollectorTest(unittest.TestCase):
 
     def test_sum(self):
         """Test that two measurements can be added."""
-        self.assertEqual(Measurement("7"), Collector(self.metric).sum([Measurement("4"), Measurement("3")]))
+        self.assertEqual(Measurement("7"), Collector().sum([Measurement("4"), Measurement("3")]))
 
     def test_safely_sum(self):
         """Test that two measurements can be added safely."""
         self.assertEqual((Measurement("7"), None),
-                         Collector(self.metric).safely_sum([Measurement("4"), Measurement("3")]))
+                         Collector().safely_sum([Measurement("4"), Measurement("3")]))
 
     def test_safely_sum_with_error(self):
         """Test that an error message is returned when adding fails."""
-        measurement, error_message = Collector(self.metric).safely_sum([Measurement("4"), Measurement("abc")])
+        measurement, error_message = Collector().safely_sum([Measurement("4"), Measurement("abc")])
         self.assertEqual(None, measurement)
         self.assertTrue(error_message.startswith("Traceback"))
 
     def test_safely_sum_with_none(self):
         """Test that None is returned if one of the input measurements is None."""
-        measurement, error_message = Collector(self.metric).safely_sum([Measurement("4"), None])
+        measurement, error_message = Collector().safely_sum([Measurement("4"), None])
         self.assertEqual(None, measurement)
         self.assertEqual(None, error_message)
 
 
-class CollectorWithMultipleURLsTest(unittest.TestCase):
-    """Unit tests for the source class with multiple URLs."""
+class CollectorWithMultipleSourcesTest(unittest.TestCase):
+    """Unit tests for the collector with multiple sources."""
 
     def setUp(self):
         """Simple response fixture."""
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        self.metric = dict(
-            type="tests",
-            sources=dict(a=dict(type="junit", url="http://url"), b=dict(type="junit", url="http://url2")))
+        sources = dict(a=dict(type="junit", url="http://url"), b=dict(type="junit", url="http://url2"))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector(self.metric).get()
+            self.response = Collector().get("tests", sources)
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -88,13 +86,11 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.json.return_value = dict(jobs=[dict(buildable=True)])  # Works for both Gitlab and Jenkins
-        self.metric = dict(
-            type="jobs",
-            sources=dict(
-                a=dict(type="jenkins", url="http://jenkins"),
-                b=dict(type="gitlab", url="http://gitlab", project="project", private_token="token")))
+        self.sources = dict(
+            a=dict(type="jenkins", url="http://jenkins"),
+            b=dict(type="gitlab", url="http://gitlab", project="project", private_token="token"))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector(self.metric).get()
+            self.response = Collector().get("jobs", self.sources)
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -107,12 +103,12 @@ class CollectorErrorTest(unittest.TestCase):
     def setUp(self):
         """Clear cache."""
         Collector.RESPONSE_CACHE.clear()
-        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", url="http://url")))
+        self.sources = dict(a=dict(type="junit", url="http://url"))
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
-            response = Collector(self.metric).get()
+            response = Collector().get("tests", self.sources)
         self.assertTrue(response["sources"][0]["connection_error"].startswith("Traceback"))
 
     def test_parse_error(self):
@@ -120,5 +116,5 @@ class CollectorErrorTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):
-            response = Collector(self.metric).get()
+            response = Collector().get("tests", self.sources)
         self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

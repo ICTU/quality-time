@@ -18,7 +18,7 @@ function MeasurementDetails(props) {
             <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
           <Grid.Column>
-            <Sources subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
+            <Sources metric_uuid={props.metric_uuid} sources={props.sources}
               metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
           </Grid.Column>
         </Grid>
@@ -34,7 +34,7 @@ class Measurement extends Component {
   }
   post_metric_type(metric_type) {
     this.setState({ edited_metric_type: metric_type });
-    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/type`, {
+    fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}/type`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -52,7 +52,7 @@ class Measurement extends Component {
   delete_metric(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}`, {
+    fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}`, {
       method: 'delete',
       mode: 'cors',
       headers: {
@@ -106,7 +106,7 @@ class Measurement extends Component {
             Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
-            <Target subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+            <Target metric_uuid={this.props.metric_uuid}
               unit={metric_unit} direction={metric_direction} reload={this.props.reload}
               editable={this.state.hover} target={target} key={end} onEdit={this.props.onEdit} />
           </Table.Cell>
@@ -115,7 +115,7 @@ class Measurement extends Component {
               metric={this.props.metric} source={source} datamodel={this.props.datamodel} />)}
           </Table.Cell>
           <Table.Cell>
-            <Comment subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid} comment={this.props.metric.comment} key={end} />
+            <Comment metric_uuid={this.props.metric_uuid} comment={this.props.metric.comment} key={end} />
           </Table.Cell>
           <Table.Cell collapsing>
             <Button floated='right' icon primary size='small' negative
@@ -126,7 +126,7 @@ class Measurement extends Component {
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
-          subject_uuid={this.props.subject_uuid} metric_uuid={this.props.metric_uuid}
+          metric_uuid={this.props.metric_uuid}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )

@@ -10,43 +10,42 @@ import requests
 
 from .collectors import *  # Make sure subclasses are registered
 from .collector import Collector
-from .type import Report, Response, URL
+from .type import URL
 
 
-def fetch_report(server: URL) -> Report:
-    """Fetch the report configuration."""
-    logging.info("Retrieving report")
+def get(api: URL) -> Dict:
+    """Get data from the API url."""
     try:
-        return requests.get(f"{server}/report").json()
+        return requests.get(api).json()
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Couldn't retrieve report: %s", reason)
-        return dict(subjects=[])
+        logging.error("Getting data from %s failed: %s", api, reason)
+        return {}
 
 
-def fetch_and_post_measurement(server: URL, metric_uuid: str, metric) -> None:
-    """Fetch and store one measurement."""
-    measurement = Collector(metric).get()
+def post(api: URL, data) -> None:
+    """Post the JSON data to the api url."""
     try:
-        logging.info(requests.post(f"{server}/measurement/{metric_uuid}", json=measurement))
+        requests.post(api, json=data)
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Posting measurement for %s (%s) failed: %s", metric, metric_uuid, reason)
+        logging.error("Posting %s to %s failed: %s", data, api, reason)
 
 
-def fetch_report_and_measurements(server: URL) -> None:
-    """Fetch the report and its measurements."""
-    report_config_json = fetch_report(server)
-    for subject in report_config_json.get("subjects", {}).values():
-        for metric_uuid, metric in subject.get("metrics", {}).items():
-            fetch_and_post_measurement(server, metric_uuid, metric)
+def fetch_measurements(server: URL) -> None:
+    """Fetch the metrics and their measurements."""
+    metrics = get(URL(f"{server}/report/metrics"))
+    for metric_uuid, metric in metrics.items():
+        sources = get(URL(f"{server}/report/sources/{metric_uuid}"))
+        measurement = Collector().get(metric["type"], sources)
+        post(URL(f"{server}/measurement/{metric_uuid}"), measurement)
 
 
 def collect() -> None:
-    """Update the reports."""
+    """Collect the measurements indefinitively."""
     logging.getLogger().setLevel(logging.INFO)
 
     while True:
         logging.info("Collecting...")
-        fetch_report_and_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
+        fetch_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
         logging.info("Sleeping...")
         sleep(30)
 

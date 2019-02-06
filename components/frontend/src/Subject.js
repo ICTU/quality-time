@@ -20,7 +20,7 @@ class Subject extends Component {
   }
   render() {
     const metrics = Object.keys(this.props.subject.metrics).map((metric_uuid) =>
-      <Metric key={metric_uuid} subject_uuid={this.props.subject_uuid} metric_uuid={metric_uuid}
+      <Metric key={metric_uuid} metric_uuid={metric_uuid}
         metric={this.props.subject.metrics[metric_uuid]} metric_type={this.props.subject.metrics[metric_uuid]["type"]}
         datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);

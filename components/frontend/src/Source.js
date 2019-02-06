@@ -7,11 +7,11 @@ import { SourceParameters } from './SourceParameters';
 class Source extends Component {
     constructor(props) {
         super(props);
-        this.state = { edited_source_type: props.source_type };
+        this.state = { edited_source_type: props.source.type };
     }
     post_source_type(source_type) {
         this.setState({ edited_source_type: source_type });
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}/type`, {
+        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}/type`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -26,7 +26,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric/${this.props.metric_uuid}/source/${this.props.source_uuid}`, {
+        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {
@@ -49,7 +49,7 @@ class Source extends Component {
                         reset_source_type={() => this.reset_source_type()} />
                 </Table.Cell>
                 <Table.Cell>
-                    <SourceParameters subject_uuid={props.subject_uuid} metric_uuid={props.metric_uuid}
+                    <SourceParameters
                         source_uuid={props.source_uuid} metric_type={props.metric_type}
                         source_type={this.state.edited_source_type}
                         source={props.source} datamodel={props.datamodel} />

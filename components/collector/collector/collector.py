@@ -17,9 +17,6 @@ class Collector:
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
     subclasses: Set[Type["Collector"]] = set()
 
-    def __init__(self, metric) -> None:
-        self.metric = metric
-
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
         super().__init_subclass__()
@@ -31,13 +28,12 @@ class Collector:
         matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
         return matching_subclasses[0] if matching_subclasses else cls
 
-    def get(self) -> Response:
+    def get(self, metric_type, sources) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
-        metric_type = self.metric["type"]
         source_responses = []
-        for source_uuid, source in self.metric.get("sources", {}).items():
+        for source_uuid, source in sources.items():
             collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
-            source_collector = collector_class(self.metric)
+            source_collector = collector_class()
             source_response = source_collector.get_one(source)
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
