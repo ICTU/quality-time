@@ -10,3 +10,4 @@ ErrorMessage = str
 Subject = Dict[str, Union[str, Sequence[URL]]]
 Report = Dict[str, Sequence[Subject]]
 Response = Dict[str, Any]
+Metric = Dict[str, Any]

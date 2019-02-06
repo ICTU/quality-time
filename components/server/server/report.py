@@ -28,6 +28,17 @@ def post_subject_title(subject_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.get("/report/metrics")
+def get_metrics(database):
+    """Get all metrics."""
+    report = database.reports.find_one(
+        filter={"timestamp": {"$lt": report_date_time()}}, sort=[("timestamp", pymongo.DESCENDING)])
+    metrics = {}
+    for subject in report["subjects"].values():
+        metrics.update(subject["metrics"])
+    return metrics
+
+
 @bottle.post("/report/metric/<metric_uuid>/type")
 def post_metric_type(metric_uuid: str, database):
     """Set the metric type."""

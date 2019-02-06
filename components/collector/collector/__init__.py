@@ -10,17 +10,17 @@ import requests
 
 from .collectors import *  # Make sure subclasses are registered
 from .collector import Collector
-from .type import Report, Response, URL
+from .type import Metric, Response, URL
 
 
-def fetch_report(server: URL) -> Report:
-    """Fetch the report configuration."""
-    logging.info("Retrieving report")
+def fetch_metrics(server: URL) -> Dict[str, Metric]:
+    """Fetch the list of metrics to measure."""
+    logging.info("Retrieving metrics")
     try:
-        return requests.get(f"{server}/report").json()
+        return requests.get(f"{server}/report/metrics").json()
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Couldn't retrieve report: %s", reason)
-        return dict(subjects=[])
+        logging.error("Couldn't retrieve metrics: %s", reason)
+        return {}
 
 
 def fetch_and_post_measurement(server: URL, metric_uuid: str, metric) -> None:
@@ -34,10 +34,9 @@ def fetch_and_post_measurement(server: URL, metric_uuid: str, metric) -> None:
 
 def fetch_report_and_measurements(server: URL) -> None:
     """Fetch the report and its measurements."""
-    report_config_json = fetch_report(server)
-    for subject in report_config_json.get("subjects", {}).values():
-        for metric_uuid, metric in subject.get("metrics", {}).items():
-            fetch_and_post_measurement(server, metric_uuid, metric)
+    metrics = fetch_metrics(server)
+    for metric_uuid, metric in metrics.items():
+        fetch_and_post_measurement(server, metric_uuid, metric)
 
 
 def collect() -> None:
