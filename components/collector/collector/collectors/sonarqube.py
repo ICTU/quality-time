@@ -37,8 +37,8 @@ class SonarQubeMetricsBaseClass(Collector):
         return URL(f"{source.get('url')}/component_measures?id={source.get('component')}&metric={self.metricKeys}")
 
     def api_url(self, source) -> URL:
-        return URL(
-            f"{source.get('url')}/api/measures/component?component={source.get('component')}&metricKeys={self.metricKeys}")
+        component = source.get("component")
+        return URL(f"{source.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(self._get_metrics(response)[self.metricKeys])

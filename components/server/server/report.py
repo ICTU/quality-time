@@ -112,6 +112,16 @@ def post_source_new(metric_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.get("/report/sources/<metric_uuid>")
+def get_sources_for_metric(metric_uuid: str, database):
+    """Return the sources for the specified metric."""
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    for subject in report["subjects"].values():
+        if metric_uuid in subject["metrics"]:
+            return subject["metrics"][metric_uuid].get("sources", {})
+    return {}
+
+
 @bottle.delete("/report/source/<source_uuid>")
 def post_source_delete(source_uuid: str, database):
     """Delete a source."""
