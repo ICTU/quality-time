@@ -28,6 +28,16 @@ def post_subject_title(subject_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.post("/report/subject/new")
+def post_new_subject(database):
+    """Create a new subject."""
+    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    report["subjects"][uuid()] = dict(title="New subject", metrics={})
+    database.reports.insert(report)
+
+
 @bottle.delete("/report/subject/<subject_uuid>")
 def delete_subject(subject_uuid: str, database):
     """Delete the subject."""
@@ -107,7 +117,7 @@ def delete_metric(metric_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.post("/report/metric/<metric_uuid>/source")
+@bottle.post("/report/metric/<metric_uuid>/source/new")
 def post_source_new(metric_uuid: str, database):
     """Add a new source."""
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
