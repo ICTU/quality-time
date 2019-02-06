@@ -1,15 +1,15 @@
 # Quality-time
 
-Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time* consists of a Progres database server, a backend API, a metric data collector, and a simple React frontend. Its main purpose is to experiment with features that may or may not land in [HQ](https://github.com/ICTU/quality-report).
+Quality report software for software development and maintenance. Alpha-stage currently. At the moment, *Quality-time* consists of a Mongo database server, a server, a metrics data collector, and a React frontend. Its main purpose is to experiment with features for a successor of [HQ](https://github.com/ICTU/quality-report).
 
-The collector collects metrics data from metric sources such as SonarQube and Jira. It posts the measurements to the backend API which in turn stores them in the database. The frontend calls the backend API to get the report and the measurements.
+The collector collects metrics data from metric sources such as SonarQube and Jira. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the report and the measurements.
 
 Planned features/experiments include:
 
 - [X] Simpler and robust data collection.
 - [X] Scheduled data collection.
 - [X] History in a database, allowing for time travel.
-- [ ] Report configuration via the UI (work-in-progress).
+- [X] Report configuration via the UI.
 - [ ] A different representation of metrics than a boring table. Maybe big cards for metrics that demand attention and small for metrics that are ok.
 - [ ] User authentication and role-based access.
 
