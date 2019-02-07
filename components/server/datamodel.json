@@ -157,7 +157,8 @@
                         "version"
                     ]
                 }
-            }
+            },
+            "units": {}
         },
         "jacoco": {
             "name": "JaCoCo",
@@ -171,7 +172,8 @@
                         "uncovered_branches"
                     ]
                 }
-            }
+            },
+            "units": {}
         },
         "jenkins": {
             "name": "Jenkins",
@@ -184,6 +186,28 @@
                         "version"
                     ]
                 }
+            },
+            "units": {
+                "jobs": [
+                    {
+                        "name": "Job name",
+                        "key": "name"
+                    },
+                    {
+                        "name": "URL",
+                        "key": "url"
+                    }
+                ],
+                "failed_jobs": [
+                    {
+                        "name": "Job name",
+                        "key": "name"
+                    },
+                    {
+                        "name": "URL",
+                        "key": "url"
+                    }
+                ]
             }
         },
         "junit": {
@@ -196,11 +220,13 @@
                         "failed_tests"
                     ]
                 }
-            }
+            },
+            "units": {}
         },
         "random": {
             "name": "Random",
-            "parameters": {}
+            "parameters": {},
+            "units": {}
         },
         "sonarqube": {
             "name": "SonarQube",
@@ -234,6 +260,18 @@
                         "violations"
                     ]
                 }
+            },
+            "units": {
+                "violations": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component"
+                    }
+                ]
             }
         }
     }

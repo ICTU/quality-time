@@ -7,7 +7,7 @@ from typing import cast, Optional, Set, Tuple, Type
 import cachetools
 import requests
 
-from .type import ErrorMessage, Measurement, Measurements, Response, URL
+from .type import ErrorMessage, Measurement, Measurements, Response, Units, URL
 
 
 class Collector:
@@ -50,7 +50,8 @@ class Collector:
         landing_url = self.landing_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url)
         measurement, parse_error = self.safely_parse_source_response(response) if response else (None, None)
-        return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
+        units, parse_error = self.safely_parse_source_response_units(response) if measurement else ([], parse_error)
+        return dict(api_url=api_url, landing_url=landing_url, measurement=measurement, units=units,
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
@@ -92,6 +93,20 @@ class Collector:
         # pylint: disable=no-self-use
         """Parse the response to get the measurement for the metric."""
         return Measurement(response.text)
+
+    def safely_parse_source_response_units(self, response: requests.Response) -> Tuple[Units, Optional[ErrorMessage]]:
+        """Parse the units from the response, without failing."""
+        units, error = None, None
+        try:
+            units = self.parse_source_response_units(response)
+        except Exception:  # pylint: disable=broad-except
+            error = ErrorMessage(traceback.format_exc())
+        return units, error
+
+    def parse_source_response_units(self, response: requests.Response) -> Units:
+        # pylint: disable=no-self-use,unused-argument
+        """Parse the response to get the units for the metric."""
+        return []
 
     def safely_sum(self, measurements: Measurements) -> Tuple[Optional[Measurement], Optional[ErrorMessage]]:
         """Return the summation of several measurements, without failing."""

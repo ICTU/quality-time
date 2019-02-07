@@ -9,17 +9,53 @@ import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
+function SourceUnits(props) {
+  if (!props.source.units || props.source.units.length === 0) {
+    return null;
+  }
+  const source_type = props.metric["sources"][props.source.source_uuid]["type"];
+  const unit_attributes = props.datamodel.sources[source_type].units[props.metric_type];
+  const headers =
+    <Table.Row>
+      {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
+    </Table.Row>
+  const rows = props.source.units.map((unit, row_index) =>
+    <Table.Row key={row_index}>
+      {unit_attributes.map((unit_attribute, col_index) => <Table.Cell key={col_index}>{unit[unit_attribute.key]}</Table.Cell>)}
+    </Table.Row>)
+  return (
+    <Table size='small'>
+      <Table.Header>
+        {headers}
+      </Table.Header>
+      <Table.Body>
+        {rows}
+      </Table.Body>
+    </Table>
+  )
+}
+
+function Units(props) {
+  return (
+    <>
+      {props.measurement.sources.map((source) => <SourceUnits key={source.source_uuid} source={source}
+        datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type} />)}
+    </>
+  )
+}
 function MeasurementDetails(props) {
   return (
     <Table.Row>
       <Table.Cell colSpan="7">
         <Grid stackable columns={2}>
           <Grid.Column>
-            <TrendGraph measurements={props.measurements} unit={props.unit} />
-          </Grid.Column>
-          <Grid.Column>
             <Sources metric_uuid={props.metric_uuid} sources={props.sources}
               metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
+            <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+              metric_type={props.metric_type} />
+          </Grid.Column>
+          <Grid.Column>
+            <TrendGraph measurements={props.measurements} unit={props.unit} />
           </Grid.Column>
         </Grid>
       </Table.Cell>
@@ -72,12 +108,14 @@ class Measurement extends Component {
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
     let status = null;
-    if (metric_direction === ">=") {
-      status = measurement >= target ? "target_met" : "target_not_met"
-    } else if (metric_direction === "<=") {
-      status = measurement <= target ? "target_met" : "target_not_met"
-    } else {
-      status = measurement === target ? "target_met" : "target_not_met"
+    if (measurement.measurement != null) {
+      if (metric_direction === ">=") {
+        status = measurement.measurement >= target ? "target_met" : "target_not_met"
+      } else if (metric_direction === "<=") {
+        status = measurement.measurement <= target ? "target_met" : "target_not_met"
+      } else {
+        status = measurement.measurement === target ? "target_met" : "target_not_met"
+      }
     }
     const positive = status === "target_met";
     const negative = status === "target_not_met";
@@ -126,7 +164,8 @@ class Measurement extends Component {
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
-          metric_uuid={this.props.metric_uuid}
+          metric_uuid={this.props.metric_uuid} measurement={last_measurement}
+          metric={this.props.metric}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )

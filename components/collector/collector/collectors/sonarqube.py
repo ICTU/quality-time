@@ -5,7 +5,7 @@ from typing import Dict
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, URL
+from collector.type import Measurement, Units, URL
 
 
 class SonarQubeVersion(Collector):
@@ -27,6 +27,10 @@ class SonarQubeViolations(Collector):
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
+
+    def parse_source_response_units(self, response: requests.Response) -> Units:  # pylint: disable=no-self-use
+        """Parse the response to get the units for the metric."""
+        return response.json()["issues"]
 
 
 class SonarQubeMetricsBaseClass(Collector):
