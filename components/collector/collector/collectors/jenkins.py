@@ -22,7 +22,7 @@ class JenkinsJobs(Collector):
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(len(self.jobs(response)))
 
-    def parse_source_response_units(self, response: requests.Response) -> Units:  # pylint: disable=no-self-use
+    def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
         return self.jobs(response)
 
     @staticmethod

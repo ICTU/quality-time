@@ -67,7 +67,7 @@
             ]
         },
         "ncloc": {
-            "name": "Size",
+            "name": "Size (non-commented LOC)",
             "unit": "non-commented lines of code",
             "direction": "<=",
             "default_target": "50000",
@@ -77,7 +77,7 @@
             ]
         },
         "loc": {
-            "name": "Size",
+            "name": "Size (LOC)",
             "unit": "lines of code",
             "direction": "<=",
             "default_target": "75000",
@@ -191,21 +191,15 @@
                 "jobs": [
                     {
                         "name": "Job name",
-                        "key": "name"
-                    },
-                    {
-                        "name": "URL",
-                        "key": "url"
+                        "key": "name",
+                        "url": "url"
                     }
                 ],
                 "failed_jobs": [
                     {
                         "name": "Job name",
-                        "key": "name"
-                    },
-                    {
-                        "name": "URL",
-                        "key": "url"
+                        "key": "name",
+                        "url": "url"
                     }
                 ]
             }
@@ -269,7 +263,8 @@
                     },
                     {
                         "name": "Component",
-                        "key": "component"
+                        "key": "component",
+                        "url": "url"
                     }
                 ]
             }

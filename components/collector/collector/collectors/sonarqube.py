@@ -28,9 +28,12 @@ class SonarQubeViolations(Collector):
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
 
-    def parse_source_response_units(self, response: requests.Response) -> Units:  # pylint: disable=no-self-use
+    def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
         """Parse the response to get the units for the metric."""
-        return response.json()["issues"]
+        units = response.json()["issues"]
+        for unit in units:
+            unit["url"] = URL(f"{source.get('url')}/project/issues?id={source.get('component')}&open={unit['key']}")
+        return units
 
 
 class SonarQubeMetricsBaseClass(Collector):

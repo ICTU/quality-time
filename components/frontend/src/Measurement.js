@@ -21,7 +21,11 @@ function SourceUnits(props) {
     </Table.Row>
   const rows = props.source.units.map((unit, row_index) =>
     <Table.Row key={row_index}>
-      {unit_attributes.map((unit_attribute, col_index) => <Table.Cell key={col_index}>{unit[unit_attribute.key]}</Table.Cell>)}
+      {unit_attributes.map((unit_attribute, col_index) =>
+        <Table.Cell key={col_index}>
+          {unit[unit_attribute.url] ? <a href={unit[unit_attribute.url]}>{unit[unit_attribute.key]}</a> : unit[unit_attribute.key]}
+        </Table.Cell>)
+      }
     </Table.Row>)
   return (
     <Table size='small'>
@@ -125,7 +129,7 @@ class Measurement extends Component {
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell>
-            <Icon name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
+            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
             <MetricType post_metric_type={(m) => this.post_metric_type(m)}
               reset_metric_type={() => this.reset_metric_type()} datamodel={this.props.datamodel}
