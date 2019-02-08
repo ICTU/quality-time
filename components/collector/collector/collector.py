@@ -34,7 +34,7 @@ class Collector:
         for source_uuid, source in sources.items():
             collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
             source_collector = collector_class()
-            source_response = source_collector.get_one(**source.get("parameters", {}))
+            source_response = source_collector.get_one(source)
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
 
@@ -44,8 +44,9 @@ class Collector:
             measurement=dict(calculation_error=calculation_error, measurement=measurement),
             sources=source_responses)
 
-    def get_one(self, **parameters) -> Response:
+    def get_one(self, source) -> Response:
         """Return the measurement response for one source."""
+        parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
         landing_url = self.landing_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url)
