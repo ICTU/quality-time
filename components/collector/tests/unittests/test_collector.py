@@ -15,7 +15,7 @@ class CollectorTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        sources = dict(a=dict(type="junit", url="http://url"))
+        sources = dict(a=dict(type="junit", parameters=dict(url="http://url")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector().get("tests", sources)
 
@@ -61,7 +61,9 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        sources = dict(a=dict(type="junit", url="http://url"), b=dict(type="junit", url="http://url2"))
+        sources = dict(
+            a=dict(type="junit", parameters=dict(url="http://url")),
+            b=dict(type="junit", parameters=dict(url="http://url2")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector().get("tests", sources)
 
@@ -87,8 +89,8 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(jobs=[dict(buildable=True)])  # Works for both Gitlab and Jenkins
         self.sources = dict(
-            a=dict(type="jenkins", url="http://jenkins"),
-            b=dict(type="gitlab", url="http://gitlab", project="project", private_token="token"))
+            a=dict(type="jenkins", parameters=dict(url="http://jenkins")),
+            b=dict(type="gitlab", parameters=dict(url="http://gitlab", project="project", private_token="token")))
         with patch("requests.get", return_value=mock_response):
             self.response = Collector().get("jobs", self.sources)
 
@@ -103,7 +105,7 @@ class CollectorErrorTest(unittest.TestCase):
     def setUp(self):
         """Clear cache."""
         Collector.RESPONSE_CACHE.clear()
-        self.sources = dict(a=dict(type="junit", url="http://url"))
+        self.sources = dict(a=dict(type="junit", parameters=dict(url="http://url")))
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""

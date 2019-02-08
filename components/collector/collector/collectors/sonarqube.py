@@ -11,18 +11,19 @@ from collector.type import Measurement, URL
 class SonarQubeVersion(Collector):
     """SonarQube version collectior."""
 
-    def api_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/api/server/version")
+    def api_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/api/server/version")
 
 
 class SonarQubeViolations(Collector):
     """SonarQube violations collector."""
 
-    def landing_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/project/issues?id={source.get('component')}&resolved=false")
+    def landing_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&resolved=false")
 
-    def api_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/api/issues/search?componentKeys={source.get('component')}&resolved=false")
+    def api_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/api/issues/search"
+                   f"?componentKeys={parameters.get('component')}&resolved=false")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
@@ -33,12 +34,13 @@ class SonarQubeMetricsBaseClass(Collector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/component_measures?id={source.get('component')}&metric={self.metricKeys}")
+    def landing_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/component_measures"
+                   f"?id={parameters.get('component')}&metric={self.metricKeys}")
 
-    def api_url(self, source) -> URL:
-        component = source.get("component")
-        return URL(f"{source.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
+    def api_url(self, **parameters) -> URL:
+        component = parameters.get("component")
+        return URL(f"{parameters.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(self._get_metrics(response)[self.metricKeys])

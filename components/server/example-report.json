@@ -8,11 +8,15 @@
                     "sources": [
                         {
                             "type": "junit",
-                            "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                            "parameters": {
+                                "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                            }
                         },
                         {
                             "type": "junit",
-                            "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                            "parameters": {
+                                "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                            }
                         }
                     ]
                 },
@@ -21,11 +25,15 @@
                     "sources": [
                         {
                             "type": "junit",
-                            "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                            "parameters": {
+                                "url": "https://raw.githubusercontent.com/inorton/junit2html/master/junit2htmlreport/tests"
+                            }
                         },
                         {
                             "type": "junit",
-                            "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                            "parameters": {
+                                "url": "https://raw.githubusercontent.com/notnoop/hudson-tools/master/toJunitXML/sample-junit.xml"
+                            }
                         }
                     ]
                 },
@@ -34,7 +42,9 @@
                     "sources": [
                         {
                             "type": "jacoco",
-                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            "parameters": {
+                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            }
                         }
                     ]
                 },
@@ -43,7 +53,9 @@
                     "sources": [
                         {
                             "type": "jacoco",
-                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            "parameters": {
+                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            }
                         }
                     ]
                 },
@@ -52,7 +64,9 @@
                     "sources": [
                         {
                             "type": "jacoco",
-                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            "parameters": {
+                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            }
                         }
                     ]
                 },
@@ -61,7 +75,9 @@
                     "sources": [
                         {
                             "type": "jacoco",
-                            "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            "parameters": {
+                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
+                            }
                         }
                     ]
                 }
@@ -75,8 +91,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -85,8 +103,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -95,8 +115,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -105,8 +127,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -115,8 +139,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -125,8 +151,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -135,8 +163,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -145,8 +175,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 },
@@ -155,8 +187,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "fniessink:next-action"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
                         }
                     ]
                 }
@@ -170,8 +204,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -180,8 +216,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -190,8 +228,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -200,8 +240,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -210,8 +252,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -220,8 +264,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -230,8 +276,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -240,8 +288,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -250,8 +300,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 },
@@ -260,8 +312,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         }
                     ]
                 }
@@ -275,8 +329,10 @@
                     "sources": [
                         {
                             "type": "sonarqube",
-                            "url": "http://sonarcloud.io",
-                            "component": "nl.ictu:hq"
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
                         },
                         {
                             "type": "random"

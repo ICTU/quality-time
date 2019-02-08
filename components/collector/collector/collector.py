@@ -34,7 +34,7 @@ class Collector:
         for source_uuid, source in sources.items():
             collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
             source_collector = collector_class()
-            source_response = source_collector.get_one(source)
+            source_response = source_collector.get_one(**source.get("parameters", {}))
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
 
@@ -44,22 +44,22 @@ class Collector:
             measurement=dict(calculation_error=calculation_error, measurement=measurement),
             sources=source_responses)
 
-    def get_one(self, source) -> Response:
+    def get_one(self, **parameters) -> Response:
         """Return the measurement response for one source."""
-        api_url = self.api_url(source)
-        landing_url = self.landing_url(source)
+        api_url = self.api_url(**parameters)
+        landing_url = self.landing_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url)
         measurement, parse_error = self.safely_parse_source_response(response) if response else (None, None)
         return dict(api_url=api_url, landing_url=landing_url, measurement=measurement,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, source) -> URL:  # pylint: disable=no-self-use
+    def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
         """Translate the urls into the landing urls."""
-        return source.get("url", "")
+        return parameters.get("url", "")
 
-    def api_url(self, source) -> URL:  # pylint: disable=no-self-use
+    def api_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
-        return source.get("url", "")
+        return parameters.get("url", "")
 
     @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
     def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:
