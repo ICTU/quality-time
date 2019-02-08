@@ -9,34 +9,47 @@ import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
-function SourceUnits(props) {
-  if (!props.source.units || props.source.units.length === 0) {
-    return null;
+class SourceUnits extends Component {
+  hide(event) {
+    event.preventDefault();
   }
-  const source_type = props.metric["sources"][props.source.source_uuid]["type"];
-  const unit_attributes = props.datamodel.sources[source_type].units[props.metric_type];
-  const headers =
-    <Table.Row>
-      {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
-    </Table.Row>
-  const rows = props.source.units.map((unit, row_index) =>
-    <Table.Row key={row_index}>
-      {unit_attributes.map((unit_attribute, col_index) =>
-        <Table.Cell key={col_index}>
-          {unit[unit_attribute.url] ? <a href={unit[unit_attribute.url]}>{unit[unit_attribute.key]}</a> : unit[unit_attribute.key]}
-        </Table.Cell>)
-      }
-    </Table.Row>)
-  return (
-    <Table size='small'>
-      <Table.Header>
-        {headers}
-      </Table.Header>
-      <Table.Body>
-        {rows}
-      </Table.Body>
-    </Table>
-  )
+
+  render() {
+    if (!this.props.source.units || this.props.source.units.length === 0) {
+      return null;
+    }
+    const source_type = this.props.metric["sources"][this.props.source.source_uuid]["type"];
+    const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
+    const headers =
+      <Table.Row>
+        {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
+        <Table.HeaderCell collapsing></Table.HeaderCell>
+      </Table.Row>
+    const rows = this.props.source.units.map((unit, row_index) =>
+      <Table.Row key={row_index}>
+        {unit_attributes.map((unit_attribute, col_index) =>
+          <Table.Cell key={col_index}>
+            {unit[unit_attribute.url] ? <a href={unit[unit_attribute.url]}>{unit[unit_attribute.key]}</a> : unit[unit_attribute.key]}
+          </Table.Cell>)
+        }
+        <Table.Cell collapsing>
+          <Button floated='right' icon primary size='small' basic
+            onClick={(e) => this.hide(e)}>
+            <Icon name='hide' />
+          </Button>
+        </Table.Cell>
+      </Table.Row>)
+    return (
+      <Table size='small'>
+        <Table.Header>
+          {headers}
+        </Table.Header>
+        <Table.Body>
+          {rows}
+        </Table.Body>
+      </Table>
+    )
+  }
 }
 
 function Units(props) {
