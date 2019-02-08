@@ -170,23 +170,23 @@ def post_source_type(source_uuid: str, database):
                 break
     source["type"] = source_type
     possible_parameters = database.datamodel.find_one({})["sources"][source_type]["parameters"]
-    for parameter in [key for key in source.keys() if key != "type"]:
+    for parameter in list(source["parameters"].keys()):
         if parameter not in possible_parameters or metric_type not in possible_parameters[parameter]["metrics"]:
-            del source[parameter]
+            del source["parameters"][parameter]
     database.reports.insert(report)
 
 
-@bottle.post("/report/source/<source_uuid>/<source_attr>")
-def post_source_attr(source_uuid: str, source_attr: str, database):
+@bottle.post("/report/source/<source_uuid>/parameter/<parameter_key>")
+def post_source_attr(source_uuid: str, parameter_key: str, database):
     """Set the source attribute."""
-    value = bottle.request.json[source_attr]
+    parameter_value = bottle.request.json[parameter_key]
     report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
     for subject in report["subjects"].values():
         for metric in subject["metrics"].values():
             if source_uuid in metric["sources"]:
-                metric["sources"][source_uuid][source_attr] = value
+                metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
                 break
     database.reports.insert(report)
 

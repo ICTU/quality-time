@@ -9,8 +9,8 @@ from collector.type import Measurement, URL
 class GitlabVersion(Collector):
     """Return the Gitlab version."""
 
-    def api_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/api/v4/version?private_token={source.get('private_token')}")
+    def api_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/api/v4/version?private_token={parameters.get('private_token')}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["version"])
@@ -19,9 +19,9 @@ class GitlabVersion(Collector):
 class GitlabJobs(Collector):
     """Collector class to get job counts from Gitlab."""
 
-    def api_url(self, source) -> URL:
-        return URL(f"{source.get('url')}/api/v4/projects/{source.get('project')}/"
-                   f"jobs?private_token={source.get('private_token')}")
+    def api_url(self, **parameters) -> URL:
+        return URL(f"{parameters.get('url')}/api/v4/projects/{parameters.get('project')}/"
+                   f"jobs?private_token={parameters.get('private_token')}")
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(len(response.json()))
