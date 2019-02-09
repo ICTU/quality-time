@@ -10,22 +10,33 @@ import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
 class SourceUnits extends Component {
-  hide(event) {
+  hide(event, unit_key) {
     event.preventDefault();
+    let self = this;
+    fetch(`http://localhost:8080/report/source/${this.props.source.source_uuid}/unit/${unit_key}/hide`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(() => this.props.reload())
   }
 
   render() {
     if (!this.props.source.units || this.props.source.units.length === 0) {
       return null;
     }
-    const source_type = this.props.metric["sources"][this.props.source.source_uuid]["type"];
+    const report_source = this.props.metric["sources"][this.props.source.source_uuid];
+    const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
+    const units = this.props.source.units.filter((unit) => !(report_source.hidden_units && report_source.hidden_units.includes(unit.key)));
     const headers =
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing></Table.HeaderCell>
       </Table.Row>
-    const rows = this.props.source.units.map((unit, row_index) =>
+    const rows = units.map((unit, row_index) =>
       <Table.Row key={row_index}>
         {unit_attributes.map((unit_attribute, col_index) =>
           <Table.Cell key={col_index}>
@@ -34,7 +45,7 @@ class SourceUnits extends Component {
         }
         <Table.Cell collapsing>
           <Button floated='right' icon primary size='small' basic
-            onClick={(e) => this.hide(e)}>
+            onClick={(e) => this.hide(e, unit.key)}>
             <Icon name='hide' />
           </Button>
         </Table.Cell>
@@ -56,7 +67,8 @@ function Units(props) {
   return (
     <>
       {props.measurement.sources.map((source) => <SourceUnits key={source.source_uuid} source={source}
-        datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type} />)}
+        datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
+        reload={props.reload} />)}
     </>
   )
 }
@@ -69,7 +81,7 @@ function MeasurementDetails(props) {
             <Sources metric_uuid={props.metric_uuid} sources={props.sources}
               metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
             <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-              metric_type={props.metric_type} />
+              metric_type={props.metric_type} reload={props.reload} />
           </Grid.Column>
           <Grid.Column>
             <TrendGraph measurements={props.measurements} unit={props.unit} />
@@ -120,18 +132,29 @@ class Measurement extends Component {
     const last_measurement = this.props.measurements[this.props.measurements.length - 1];
     const measurement = last_measurement.measurement;
     const sources = last_measurement.sources;
+    let measurement_value = null;
+    sources.forEach((source) => {
+      if (source.measurement === null) {
+        measurement_value = null;
+        return;
+      }
+      measurement_value += Number(source.measurement);
+      const hidden_units = this.props.metric["sources"][source.source_uuid].hidden_units;
+      const nr_hidden_units = hidden_units ? hidden_units.length : 0;
+      measurement_value -= nr_hidden_units;
+    });
     const start = new Date(measurement.start);
     const end = new Date(measurement.end);
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
     let status = null;
-    if (measurement.measurement != null) {
+    if (measurement_value!= null) {
       if (metric_direction === ">=") {
-        status = measurement.measurement >= target ? "target_met" : "target_not_met"
+        status = measurement_value >= target ? "target_met" : "target_not_met"
       } else if (metric_direction === "<=") {
-        status = measurement.measurement <= target ? "target_met" : "target_not_met"
+        status = measurement_value <= target ? "target_met" : "target_not_met"
       } else {
-        status = measurement.measurement === target ? "target_met" : "target_not_met"
+        status = measurement_value === target ? "target_met" : "target_not_met"
       }
     }
     const positive = status === "target_met";
@@ -154,7 +177,7 @@ class Measurement extends Component {
           <Popup
             trigger={
               <Table.Cell>
-                {(measurement.measurement === null ? '?' : measurement.measurement) + ' ' + metric_unit}
+                {(measurement_value === null ? '?' : measurement_value) + ' ' + metric_unit}
               </Table.Cell>
             }
             flowing hoverable>

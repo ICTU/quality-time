@@ -23,7 +23,7 @@ class JenkinsJobs(Collector):
         return Measurement(len(self.jobs(response)))
 
     def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
-        return self.jobs(response)
+        return [dict(key=unit["name"], name=unit["name"], url=unit["url"]) for unit in self.jobs(response)]
 
     @staticmethod
     def jobs(response: requests.Response) -> Units:

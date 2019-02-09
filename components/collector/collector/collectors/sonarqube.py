@@ -30,10 +30,12 @@ class SonarQubeViolations(Collector):
 
     def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
         """Parse the response to get the units for the metric."""
-        units = response.json()["issues"]
-        for unit in units:
-            unit["url"] = URL(f"{source.get('url')}/project/issues?id={source.get('component')}&open={unit['key']}")
-        return units
+        def unit_landing_url(unit, **parameters):
+            """Generate a landing url for the unit."""
+            return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&open={unit['key']}")
+
+        return [dict(key=unit["key"], url=unit_landing_url(unit, **source.get("parameters", {})),
+                     message=unit["message"], component=unit["component"]) for unit in response.json()["issues"]]
 
 
 class SonarQubeMetricsBaseClass(Collector):
