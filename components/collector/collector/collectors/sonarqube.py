@@ -5,7 +5,7 @@ from typing import Dict
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, URL
+from collector.type import Measurement, Units, URL
 
 
 class SonarQubeVersion(Collector):
@@ -27,6 +27,15 @@ class SonarQubeViolations(Collector):
 
     def parse_source_response(self, response: requests.Response) -> Measurement:
         return Measurement(response.json()["total"])
+
+    def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
+        """Parse the response to get the units for the metric."""
+        def unit_landing_url(unit, **parameters):
+            """Generate a landing url for the unit."""
+            return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&open={unit['key']}")
+
+        return [dict(key=unit["key"], url=unit_landing_url(unit, **source.get("parameters", {})),
+                     message=unit["message"], component=unit["component"]) for unit in response.json()["issues"]]
 
 
 class SonarQubeMetricsBaseClass(Collector):
