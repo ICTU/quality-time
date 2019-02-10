@@ -13,10 +13,10 @@ class JUnit(Collector):
 
     test_status = "Subclass responsibility"
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         tree = xml.etree.cElementTree.fromstring(response.text)
         test_suites = [tree] if tree.tag == "testsuite" else tree.findall("testsuite")
-        return Measurement(sum(int(test_suite.get(self.test_status, 0)) for test_suite in test_suites))
+        return str(sum(int(test_suite.get(self.test_status, 0)) for test_suite in test_suites))
 
 
 class JUnitTests(JUnit):

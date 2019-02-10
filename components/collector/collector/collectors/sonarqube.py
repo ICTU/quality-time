@@ -5,14 +5,7 @@ from typing import Dict
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Units, URL
-
-
-class SonarQubeVersion(Collector):
-    """SonarQube version collectior."""
-
-    def api_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/api/server/version")
+from collector.type import Measurement, URL
 
 
 class SonarQubeViolations(Collector):
@@ -22,20 +15,21 @@ class SonarQubeViolations(Collector):
         return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&resolved=false")
 
     def api_url(self, **parameters) -> URL:
+        # FIXME: If there's more than 500 violations only the first 500 are returned
         return URL(f"{parameters.get('url')}/api/issues/search"
-                   f"?componentKeys={parameters.get('component')}&resolved=false")
+                   f"?componentKeys={parameters.get('component')}&resolved=false&pageSize=500")
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
-        return Measurement(response.json()["total"])
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+        return [dict(
+            key=unit["key"],
+            url=self.unit_landing_url(unit, **parameters),
+            message=unit["message"],
+            component=unit["component"]) for unit in response.json()["issues"]]
 
-    def parse_source_response_units(self, source, response: requests.Response) -> Units:  # pylint: disable=no-self-use
-        """Parse the response to get the units for the metric."""
-        def unit_landing_url(unit, **parameters):
-            """Generate a landing url for the unit."""
-            return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&open={unit['key']}")
-
-        return [dict(key=unit["key"], url=unit_landing_url(unit, **source.get("parameters", {})),
-                     message=unit["message"], component=unit["component"]) for unit in response.json()["issues"]]
+    @staticmethod
+    def unit_landing_url(unit, **parameters):
+        """Generate a landing url for the unit."""
+        return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&open={unit['key']}")
 
 
 class SonarQubeMetricsBaseClass(Collector):
@@ -51,8 +45,8 @@ class SonarQubeMetricsBaseClass(Collector):
         component = parameters.get("component")
         return URL(f"{parameters.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
-        return Measurement(self._get_metrics(response)[self.metricKeys])
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+        return str(self._get_metrics(response)[self.metricKeys])
 
     @staticmethod
     def _get_metrics(response: requests.Response) -> Dict[str, int]:
@@ -90,9 +84,9 @@ class SonarQubeCoveredLines(SonarQubeMetricsBaseClass):
 
     metricKeys = "uncovered_lines,lines_to_cover"
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         metrics = self._get_metrics(response)
-        return Measurement(metrics["lines_to_cover"] - metrics["uncovered_lines"])
+        return str(metrics["lines_to_cover"] - metrics["uncovered_lines"])
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
@@ -106,9 +100,9 @@ class SonarQubeCoveredBranches(SonarQubeMetricsBaseClass):
 
     metricKeys = "uncovered_conditions,conditions_to_cover"
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         metrics = self._get_metrics(response)
-        return Measurement(metrics["conditions_to_cover"] - metrics["uncovered_conditions"])
+        return str(metrics["conditions_to_cover"] - metrics["uncovered_conditions"])
 
 
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):

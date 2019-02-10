@@ -11,8 +11,8 @@ function TrendGraph(props) {
   let measurements = [];
   let max_y = 100;
   for (var i = 0; i < props.measurements.length; i++) {
-    const measurement = props.measurements[i].measurement;
-    const m = measurement.measurement !== null ? Number(measurement.measurement) : null;
+    const measurement = props.measurements[i];
+    const m = measurement.value !== null ? Number(measurement.value) : null;
     if (m !== null && m > max_y) {max_y = m}
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);

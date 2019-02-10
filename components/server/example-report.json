@@ -306,18 +306,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "type": "version",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
-                            }
-                        }
-                    ]
                 }
             ]
         },

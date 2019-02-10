@@ -14,10 +14,10 @@ class JacocoCoverageBaseClass(Collector):
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def parse_source_response(self, response: requests.Response) -> Measurement:
+    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         tree = xml.etree.cElementTree.fromstring(response.text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
-        return Measurement(counter.get(self.coverage_status))
+        return str(counter.get(self.coverage_status))
 
 
 class JacocoCoveredLines(JacocoCoverageBaseClass):

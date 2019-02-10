@@ -127,8 +127,13 @@ def post_source_new(metric_uuid: str, database):
         if metric_uuid in subject["metrics"]:
             metric = subject["metrics"][metric_uuid]
     metric_type = metric["type"]
-    source_type = database.datamodel.find_one({})["metrics"][metric_type]["sources"][0]
-    metric["sources"][uuid()] = dict(type=source_type)
+    datamodel = database.datamodel.find_one({})
+    source_type = datamodel["metrics"][metric_type]["sources"][0]
+    parameters = dict()
+    for parameter_key, parameter_value in datamodel["sources"][source_type]["parameters"].items():
+        if metric_type in parameter_value["metrics"]:
+            parameters[parameter_key] = ""
+    metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     database.reports.insert(report)
 
 
@@ -187,24 +192,6 @@ def post_source_parameter(source_uuid: str, parameter_key: str, database):
         for metric in subject["metrics"].values():
             if source_uuid in metric["sources"]:
                 metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
-                break
-    database.reports.insert(report)
-
-
-@bottle.post("/report/source/<source_uuid>/unit/<unit_key>/hide")
-def hide_source_unit(source_uuid: str, unit_key: str, database):
-    """Hide the source unit."""
-    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
-    del report["_id"]
-    report["timestamp"] = iso_timestamp()
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                source = metric["sources"][source_uuid]
-                if "hidden_units" not in source:
-                    source["hidden_units"] = []
-                if unit_key not in source["hidden_units"]:
-                    source["hidden_units"].append(unit_key)
                 break
     database.reports.insert(report)
 

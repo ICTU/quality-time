@@ -49,7 +49,7 @@ class App extends Component {
     }, false);
   }
 
-  reload(event) {
+  reload(event, force) {
     if (event) { event.preventDefault(); }
     const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
@@ -67,8 +67,7 @@ class App extends Component {
             nr_new_measurements: 0
           }
         );
-      }
-      );
+      });
   }
 
   handleSearchChange(event) {

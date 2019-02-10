@@ -4,10 +4,8 @@ from typing import Any, Dict, List, NewType, Sequence, Union
 
 
 URL = NewType("URL", str)
-Measurement = str
-Measurements = Sequence[Measurement]
+Measurement = Union[str, List[Dict]]
 ErrorMessage = str
 Subject = Dict[str, Union[str, Sequence[URL]]]
 Report = Dict[str, Sequence[Subject]]
 Response = Dict[str, Any]
-Units = List[Any]

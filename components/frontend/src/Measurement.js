@@ -9,47 +9,61 @@ import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
+function Unit(props) {
+  return (
+    <Table.Row key={props.unit.key}>
+      {props.unit_attributes.map((unit_attribute, col_index) =>
+        <Table.Cell key={col_index}>
+          {props.unit[unit_attribute.url] ?
+            <a href={props.unit[unit_attribute.url]}>{props.unit[unit_attribute.key]}</a> :
+            props.unit[unit_attribute.key]}
+        </Table.Cell>)
+      }
+      <Table.Cell collapsing>
+        <Button floated='right' icon primary size='small' basic
+          onClick={(e) => props.hide(e, props.unit.key)}>
+          <Icon name='hide' />
+        </Button>
+      </Table.Cell>
+    </Table.Row>
+  )
+}
+
 class SourceUnits extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {hidden_units: []};
+  }
   hide(event, unit_key) {
     event.preventDefault();
-    let self = this;
-    fetch(`http://localhost:8080/report/source/${this.props.source.source_uuid}/unit/${unit_key}/hide`, {
+    const hidden_units = this.state.hidden_units.slice(0);
+    hidden_units.push(unit_key);
+    this.setState({hidden_units: hidden_units});
+    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}/source/${this.props.source.source_uuid}/unit/${unit_key}/hide`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({})
-    }).then(() => this.props.reload())
+    });
   }
 
   render() {
-    if (!this.props.source.units || this.props.source.units.length === 0) {
+    if (!Array.isArray(this.props.source.data) || this.props.source.data.length === 0) {
       return null;
     }
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
     const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
-    const units = this.props.source.units.filter((unit) => !(report_source.hidden_units && report_source.hidden_units.includes(unit.key)));
+    const units = this.props.source.data.filter((unit) => !this.state.hidden_units.includes(unit.key));
     const headers =
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing></Table.HeaderCell>
       </Table.Row>
-    const rows = units.map((unit, row_index) =>
-      <Table.Row key={row_index}>
-        {unit_attributes.map((unit_attribute, col_index) =>
-          <Table.Cell key={col_index}>
-            {unit[unit_attribute.url] ? <a href={unit[unit_attribute.url]}>{unit[unit_attribute.key]}</a> : unit[unit_attribute.key]}
-          </Table.Cell>)
-        }
-        <Table.Cell collapsing>
-          <Button floated='right' icon primary size='small' basic
-            onClick={(e) => this.hide(e, unit.key)}>
-            <Icon name='hide' />
-          </Button>
-        </Table.Cell>
-      </Table.Row>)
+    const rows = units.map((unit) =>
+      <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes} hide={(e, key) => this.hide(e, key)} />);
     return (
       <Table size='small'>
         <Table.Header>
@@ -68,7 +82,8 @@ function Units(props) {
     <>
       {props.measurement.sources.map((source) => <SourceUnits key={source.source_uuid} source={source}
         datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
-        reload={props.reload} />)}
+        reload={props.reload}
+        fetch_measurement={props.fetch_measurement} metric_uuid={props.metric_uuid} />)}
     </>
   )
 }
@@ -77,15 +92,18 @@ function MeasurementDetails(props) {
     <Table.Row>
       <Table.Cell colSpan="7">
         <Grid stackable columns={2}>
-          <Grid.Column>
-            <Sources metric_uuid={props.metric_uuid} sources={props.sources}
-              metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
-            <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-              metric_type={props.metric_type} reload={props.reload} />
-          </Grid.Column>
-          <Grid.Column>
-            <TrendGraph measurements={props.measurements} unit={props.unit} />
-          </Grid.Column>
+          <Grid.Row>
+            <Grid.Column>
+              <Sources metric_uuid={props.metric_uuid} sources={props.sources}
+                metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
+              <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+                metric_type={props.metric_type} fetch_measurement={props.fetch_measurement}
+                reload={props.reload} metric_uuid={props.metric_uuid} measurements={props.measurements} />
+            </Grid.Column>
+            <Grid.Column>
+              <TrendGraph measurements={props.measurements} unit={props.unit} />
+            </Grid.Column>
+          </Grid.Row>
         </Grid>
       </Table.Cell>
     </Table.Row>
@@ -129,32 +147,21 @@ class Measurement extends Component {
     );
   }
   render() {
-    const last_measurement = this.props.measurements[this.props.measurements.length - 1];
-    const measurement = last_measurement.measurement;
-    const sources = last_measurement.sources;
-    let measurement_value = null;
-    sources.forEach((source) => {
-      if (source.measurement === null) {
-        measurement_value = null;
-        return;
-      }
-      measurement_value += Number(source.measurement);
-      const hidden_units = this.props.metric["sources"][source.source_uuid].hidden_units;
-      const nr_hidden_units = hidden_units ? hidden_units.length : 0;
-      measurement_value -= nr_hidden_units;
-    });
-    const start = new Date(measurement.start);
-    const end = new Date(measurement.end);
+    const latest_measurement = this.props.measurements[this.props.measurements.length - 1];
+    const value = latest_measurement.value;
+    const sources = latest_measurement.sources;
+    const start = new Date(latest_measurement.start);
+    const end = new Date(latest_measurement.end);
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
     let status = null;
-    if (measurement_value!= null) {
+    if (value != null) {
       if (metric_direction === ">=") {
-        status = measurement_value >= target ? "target_met" : "target_not_met"
+        status = value >= target ? "target_met" : "target_not_met"
       } else if (metric_direction === "<=") {
-        status = measurement_value <= target ? "target_met" : "target_not_met"
+        status = value <= target ? "target_met" : "target_not_met"
       } else {
-        status = measurement_value === target ? "target_met" : "target_not_met"
+        status = value === target ? "target_met" : "target_not_met"
       }
     }
     const positive = status === "target_met";
@@ -177,11 +184,11 @@ class Measurement extends Component {
           <Popup
             trigger={
               <Table.Cell>
-                {(measurement_value === null ? '?' : measurement_value) + ' ' + metric_unit}
+                {(value === null ? '?' : value) + ' ' + metric_unit}
               </Table.Cell>
             }
             flowing hoverable>
-            Measured <TimeAgo date={measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
+            Measured <TimeAgo date={latest_measurement.end} /> ({start.toLocaleString()} - {end.toLocaleString()})
         </Popup>
           <Table.Cell>
             <Target metric_uuid={this.props.metric_uuid}
@@ -204,8 +211,8 @@ class Measurement extends Component {
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
-          metric_uuid={this.props.metric_uuid} measurement={last_measurement}
-          metric={this.props.metric}
+          metric_uuid={this.props.metric_uuid} measurement={latest_measurement}
+          metric={this.props.metric} fetch_measurement={this.props.fetch_measurement}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )
