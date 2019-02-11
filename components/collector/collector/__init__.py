@@ -36,7 +36,8 @@ def fetch_measurements(server: URL) -> None:
     for metric_uuid, metric in metrics.items():
         sources = get(URL(f"{server}/report/sources/{metric_uuid}"))
         measurement = Collector().get(metric["type"], sources)
-        post(URL(f"{server}/measurement/{metric_uuid}"), measurement)
+        measurement["metric_uuid"] = metric_uuid
+        post(URL(f"{server}/measurements"), measurement)
 
 
 def collect() -> None:
@@ -51,4 +52,4 @@ def collect() -> None:
 
 
 if __name__ == "__main__":
-    collect()
+    collect()  # pragma: nocover

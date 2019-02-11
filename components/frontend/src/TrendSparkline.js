@@ -5,8 +5,8 @@ import { VictoryGroup, VictoryLine, VictoryTheme } from 'victory';
 function TrendSparkline(props) {
   let measurements = [];
   for (var i = 0; i < props.measurements.length; i++) {
-    const measurement = props.measurements[i].measurement;
-    const m = measurement.measurement !== null ? Number(measurement.measurement) : null;
+    const measurement = props.measurements[i];
+    const m = measurement.value !== null ? Number(measurement.value) : null;
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
     measurements.push({y: m, x: x1});

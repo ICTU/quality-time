@@ -4,7 +4,6 @@ import unittest
 from unittest.mock import patch, Mock
 
 from collector.collector import Collector
-from collector.type import Measurement
 
 
 class CollectorTest(unittest.TestCase):
@@ -30,27 +29,6 @@ class CollectorTest(unittest.TestCase):
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
         self.assertEqual("2", self.response["sources"][0]["measurement"])
-
-    def test_sum(self):
-        """Test that two measurements can be added."""
-        self.assertEqual(Measurement("7"), Collector().sum([Measurement("4"), Measurement("3")]))
-
-    def test_safely_sum(self):
-        """Test that two measurements can be added safely."""
-        self.assertEqual((Measurement("7"), None),
-                         Collector().safely_sum([Measurement("4"), Measurement("3")]))
-
-    def test_safely_sum_with_error(self):
-        """Test that an error message is returned when adding fails."""
-        measurement, error_message = Collector().safely_sum([Measurement("4"), Measurement("abc")])
-        self.assertEqual(None, measurement)
-        self.assertTrue(error_message.startswith("Traceback"))
-
-    def test_safely_sum_with_none(self):
-        """Test that None is returned if one of the input measurements is None."""
-        measurement, error_message = Collector().safely_sum([Measurement("4"), None])
-        self.assertEqual(None, measurement)
-        self.assertEqual(None, error_message)
 
 
 class CollectorWithMultipleSourcesTest(unittest.TestCase):
@@ -87,7 +65,8 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         """Simple response fixture."""
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
-        mock_response.json.return_value = dict(jobs=[dict(buildable=True)])  # Works for both Gitlab and Jenkins
+        mock_response.json.return_value = dict(
+            jobs=[dict(name="job", url="http://job", buildable=True)])  # Works for both Gitlab and Jenkins
         self.sources = dict(
             a=dict(type="jenkins", parameters=dict(url="http://jenkins")),
             b=dict(type="gitlab", parameters=dict(url="http://gitlab", project="project", private_token="token")))
@@ -96,7 +75,9 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["measurement"]["measurement"])
+        sources = self.response["sources"]
+        self.assertEqual([{'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["measurement"])
+        self.assertEqual("1", sources[1]["measurement"])
 
 
 class CollectorErrorTest(unittest.TestCase):

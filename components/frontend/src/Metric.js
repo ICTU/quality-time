@@ -17,7 +17,7 @@ class Metric extends Component {
       })
       .then(function (json) {
         self.setState({ measurements: json.measurements });
-      });
+      })
   }
   onEdit(event) {
     event.preventDefault();
@@ -51,9 +51,10 @@ class Metric extends Component {
     const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement metric_uuid={this.props.metric_uuid}
-        datamodel={this.props.datamodel} reload={this.props.reload}
-        metric={this.props.metric} metric_type={this.props.metric_type} measurements={m} onEdit={(e) => this.onEdit(e)} />
+      <Measurement metric_uuid={this.props.metric_uuid} nr_new_measurements={this.props.nr_new_measurements}
+        datamodel={this.props.datamodel} reload={this.props.reload} fetch_measurement={() => this.fetch_measurement()}
+        metric={this.props.metric} metric_type={this.props.metric_type} measurements={this.state.measurements}
+        onEdit={(e) => this.onEdit(e)} />
     )
   }
 }

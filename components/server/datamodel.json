@@ -108,17 +108,6 @@
                 "random"
             ]
         },
-        "version": {
-            "name": "Version",
-            "unit": "",
-            "direction": ">=",
-            "default_target": "0.0",
-            "sources": [
-                "sonarqube",
-                "jenkins",
-                "gitlab"
-            ]
-        },
         "violations": {
             "name": "Number of violations",
             "unit": "violations",
@@ -138,8 +127,7 @@
                     "name": "URL",
                     "metrics": [
                         "jobs",
-                        "failed_jobs",
-                        "version"
+                        "failed_jobs"
                     ]
                 },
                 "project": {
@@ -153,8 +141,7 @@
                     "name": "Private Token",
                     "metrics": [
                         "jobs",
-                        "failed_jobs",
-                        "version"
+                        "failed_jobs"
                     ]
                 }
             },
@@ -182,8 +169,7 @@
                     "name": "URL",
                     "metrics": [
                         "jobs",
-                        "failed_jobs",
-                        "version"
+                        "failed_jobs"
                     ]
                 }
             },
@@ -236,7 +222,6 @@
                         "loc",
                         "tests",
                         "failed_tests",
-                        "version",
                         "violations"
                     ]
                 },
