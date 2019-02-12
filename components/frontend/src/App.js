@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Dimmer, Loader } from 'semantic-ui-react';
+import { Button, Card, Container, Dimmer, Loader } from 'semantic-ui-react';
 import './App.css';
 import { Subjects } from './Subjects.js';
 import { Menubar } from './Menubar.js';
@@ -9,14 +9,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datamodel: {}, subjects: {}, search_string: '', report_date_string: '',
+      datamodel: {}, reports: [], report: null, search_string: '', report_date_string: '',
       nr_measurements: 0, nr_new_measurements: 0, loading: true
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
   componentDidMount() {
-    const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
     fetch('http://localhost:8080/datamodel')
       .then(function (response) {
@@ -25,35 +24,14 @@ class App extends Component {
       .then(function (json) {
         self.setState({ datamodel: json });
       });
-    fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (json) {
-        self.setState({ subjects: json.subjects, loading: false });
-      });
-    var source = new EventSource("http://localhost:8080/nr_measurements");
-    source.addEventListener('init', function (e) {
-      self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });
-    }, false);
-    source.addEventListener('delta', function (e) {
-      self.setState({ nr_new_measurements: Number(e.data) - self.state.nr_measurements });
-    }, false);
-    source.addEventListener('error', function (e) {
-      if (e.readyState === EventSource.CLOSED) {
-        self.setState({ nr_measurements: 0, nr_new_measurements: 0 });
-      }
-      else if (e.readyState === EventSource.OPEN) {
-        self.setState({ nr_measurements: 0, nr_new_measurements: 0 });
-      }
-    }, false);
+    this.reload();
   }
 
-  reload(event, force) {
+  reload(event) {
     if (event) { event.preventDefault(); }
     const report_date = this.props.report_date ? this.props.report_date : new Date();
     let self = this;
-    fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
+    fetch(`http://localhost:8080/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
@@ -61,10 +39,11 @@ class App extends Component {
         const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
         self.setState(
           {
-            subjects: json.subjects,
+            reports: json.reports,
             report_date_string: '',
             nr_measurements: nr_measurements,
-            nr_new_measurements: 0
+            nr_new_measurements: 0,
+            loading: false
           }
         );
       });
@@ -80,6 +59,35 @@ class App extends Component {
     }
   }
 
+  go_home(event) {
+    event.preventDefault();
+    this.setState({ report: null });
+    if (this.source){
+      this.source.close()
+    }
+  }
+
+  open_report(event, report) {
+    event.preventDefault();
+    this.setState({ report: report }, () => this.reload());
+    this.source = new EventSource(`http://localhost:8080/nr_measurements/${report.report_uuid}`);
+    let self = this;
+    this.source.addEventListener('init', function (e) {
+      self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });
+    }, false);
+    this.source.addEventListener('delta', function (e) {
+      self.setState({ nr_new_measurements: Number(e.data) - self.state.nr_measurements });
+    }, false);
+    this.source.addEventListener('error', function (e) {
+      if (e.readyState === EventSource.CLOSED) {
+        self.setState({ nr_measurements: 0, nr_new_measurements: 0 });
+      }
+      else if (e.readyState === EventSource.OPEN) {
+        self.setState({ nr_measurements: 0, nr_new_measurements: 0 });
+      }
+    }, false);
+  }
+
   render() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -89,19 +97,28 @@ class App extends Component {
     return (
       <>
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
-          reload={(e) => this.reload(e)} nr_new_measurements={this.state.nr_new_measurements}
+          reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
+          nr_new_measurements={this.state.nr_new_measurements}
           report_date={report_date} report_date_string={this.state.report_date_string} />
-        {this.state.loading ?
-          <Container style={{ marginTop: '7em' }}>
+        <Container style={{ marginTop: '7em' }}>
+          {this.state.loading ?
             <Dimmer active inverted>
               <Loader size='large'>Loading</Loader>
             </Dimmer>
-          </Container>
-          :
-          <Subjects datamodel={this.state.datamodel} subjects={this.state.subjects}
-            nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-            search_string={this.state.search_string} report_date={report_date} />
-        }
+            :
+            this.state.report === null ?
+              <Card.Group>
+                {this.state.reports.map((report) =>
+                  <Card fluid header={report["title"]}
+                    extra={<Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>} />)}
+              </Card.Group>
+              :
+              <Subjects datamodel={this.state.datamodel} subjects={this.state.report.subjects}
+                report_uuid={this.state.report.report_uuid}
+                nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
+                search_string={this.state.search_string} report_date={report_date} />
+          }
+        </Container>
       </>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Image, Input, Label, Menu, Popup } from 'semantic-ui-react';
+import { Button, Container, Image, Input, Label, Menu, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { ReportTitleContainer } from './ReportTitle.js'
 
@@ -24,7 +24,11 @@ function Menubar(props) {
     <Menu fixed='top' inverted>
       <Container>
         <Menu.Item header>
-          <Image size='mini' src='/favicon.ico' style={{ marginRight: '1.5em' }} />
+          <Button compact color='black' onClick={props.go_home}>
+            <Image size='mini' src='/favicon.ico' />
+          </Button>
+        </Menu.Item>
+        <Menu.Item>
           <ReportTitleContainer report_date={props.report_date} />
           <NewMeasurementsLabel onClick={props.reload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>

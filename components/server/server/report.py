@@ -1,5 +1,7 @@
 """Report routes."""
 
+import logging
+
 import bottle
 import pymongo
 
@@ -48,14 +50,14 @@ def delete_subject(subject_uuid: str, database):
     database.reports.insert(report)
 
 
-@bottle.get("/report/metrics")
+@bottle.get("/metrics")
 def get_metrics(database):
     """Get all metrics."""
-    report = database.reports.find_one(
-        filter={"timestamp": {"$lt": report_date_time()}}, sort=[("timestamp", pymongo.DESCENDING)])
     metrics = {}
-    for subject in report["subjects"].values():
-        metrics.update(subject["metrics"])
+    reports = get_reports(database)
+    for report in reports["reports"]:
+        for subject in report["subjects"].values():
+            metrics.update(subject["metrics"])
     return metrics
 
 
@@ -93,15 +95,16 @@ def post_metric_attribute(metric_uuid: str, metric_attribute: str, database):
     database.reports.insert(report)
 
 
-@bottle.post("/report/subject/<subject_uuid>/metric")
-def post_metric_new(subject_uuid: str, database):
+@bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric")
+def post_metric_new(report_uuid: str, subject_uuid: str, database):
     """Add a new metric."""
-    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
+    report = database.reports.find_one(
+        filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
     del report["_id"]
     report["timestamp"] = iso_timestamp()
     subject = report["subjects"][subject_uuid]
     metric_type = list(database.datamodel.find_one({})["metrics"].keys())[0]
-    subject["metrics"][uuid()] = dict(type=metric_type, sources={})
+    subject["metrics"][uuid()] = dict(type=metric_type, sources={}, report_uuid=report_uuid)
     database.reports.insert(report)
 
 
@@ -135,16 +138,6 @@ def post_source_new(metric_uuid: str, database):
             parameters[parameter_key] = ""
     metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     database.reports.insert(report)
-
-
-@bottle.get("/report/sources/<metric_uuid>")
-def get_sources_for_metric(metric_uuid: str, database):
-    """Return the sources for the specified metric."""
-    report = database.reports.find_one(filter={}, sort=[("timestamp", pymongo.DESCENDING)])
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            return subject["metrics"][metric_uuid].get("sources", {})
-    return {}
 
 
 @bottle.delete("/report/source/<source_uuid>")
@@ -196,10 +189,16 @@ def post_source_parameter(source_uuid: str, parameter_key: str, database):
     database.reports.insert(report)
 
 
-@bottle.get("/report")
-def get_report(database):
-    """Return the quality report."""
-    report = database.reports.find_one(
-        filter={"timestamp": {"$lt": report_date_time()}}, sort=[("timestamp", pymongo.DESCENDING)])
-    report["_id"] = str(report["_id"])
-    return report
+@bottle.get("/reports")
+def get_reports(database):
+    """Return the quality reports."""
+    report_uuids = database.reports.distinct("report_uuid")
+    reports = []
+    for report_uuid in report_uuids:
+        report = database.reports.find_one(
+            filter={"report_uuid": report_uuid, "timestamp": {"$lt": report_date_time()}},
+            sort=[("timestamp", pymongo.DESCENDING)])
+        if report:
+            report["_id"] = str(report["_id"])
+            reports.append(report)
+    return dict(reports=reports)

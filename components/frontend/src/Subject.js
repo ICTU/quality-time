@@ -7,7 +7,7 @@ class Subject extends Component {
   onAddMetric(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/metric`, {
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/metric`, {
       method: 'post',
       mode: 'cors',
       headers: {

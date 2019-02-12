@@ -74,9 +74,9 @@ def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
 
-@bottle.get("/nr_measurements")
-def stream_nr_measurements(database):
-    """Return the number of measurements as server sent events."""
+@bottle.get("/nr_measurements/<report_uuid>")
+def stream_nr_measurements(report_uuid: str, database):
+    """Return the number of measurements for the given report as server sent events."""
     # Keep event IDs consistent
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
 
@@ -85,13 +85,13 @@ def stream_nr_measurements(database):
 
     # Provide an initial data dump to each new client and set up our
     # message payload with a retry value in case of connection failure
-    data = database.measurements.count_documents({})
+    data = database.measurements.count_documents(filter={"report_uuid": report_uuid})
     yield sse_pack(event_id, "init", data)
 
     # Now give the client updates as they arrive
     while True:
         time.sleep(10)
-        new_data = database.measurements.count_documents({})
+        new_data = database.measurements.count_documents(filter={"report_uuid": report_uuid})
         if new_data > data:
             data = new_data
             event_id += 1
