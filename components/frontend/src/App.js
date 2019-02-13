@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, Container, Dimmer, Icon, Loader, Segment } from 'semantic-ui-react';
+import { Container, Dimmer, Loader } from 'semantic-ui-react';
 import './App.css';
 import { Subjects } from './Subjects.js';
+import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
 
 
@@ -62,7 +63,7 @@ class App extends Component {
     this.setState({ search_string: event.target.value });
   }
 
-  handleDateChange = (event, { name, value }) => {
+  handleDateChange(event, { name, value }) {
     if (this.state.hasOwnProperty(name)) {
       this.setState({ [name]: value })
     }
@@ -97,36 +98,6 @@ class App extends Component {
     }, false);
   }
 
-  add_report(event) {
-    event.preventDefault();
-    const self = this;
-    fetch(`http://localhost:8080/reports/new`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.reload()
-    );
-  }
-
-  delete_report(event, report) {
-    event.preventDefault();
-    const self = this;
-    fetch(`http://localhost:8080/report/${report.report_uuid}`, {
-      method: 'delete',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.reload()
-    );
-  }
-
   render() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -135,7 +106,8 @@ class App extends Component {
     }
     return (
       <>
-        <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
+        <Menubar onSearch={(e) => this.handleSearchChange(e)}
+          onDate={(e, {name, value}) => this.handleDateChange(e, {name, value})}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
           nr_new_measurements={this.state.nr_new_measurements}
           report={this.state.report} report_date={report_date}
@@ -147,29 +119,8 @@ class App extends Component {
             </Dimmer>
             :
             this.state.report === null ?
-              <>
-                <Card.Group>
-                  {this.state.reports.map((report) =>
-                    <Card fluid header={report["title"]} key={report.report_uuid}
-                      extra={
-                        <>
-                          <Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>
-                          <Button icon primary negative basic floated='right'
-                            onClick={(e) => this.delete_report(e, report)}>
-                            <Icon name='trash alternate' />
-                          </Button>
-                        </>
-                      }
-                    />)
-                  }
-                </Card.Group>
-                <Segment basic>
-                  <Button icon labelPosition='left' primary size='small'
-                    onClick={(e) => this.add_report(e)}>
-                    <Icon name='plus' /> Add report
-                </Button>
-                </Segment>
-              </>
+              <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
+                open_report={(e, r) => this.open_report(e, r)} />
               :
               <Subjects datamodel={this.state.datamodel} subjects={this.state.report.subjects}
                 report_uuid={this.state.report.report_uuid}
