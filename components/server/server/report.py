@@ -193,6 +193,26 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     database.reports.insert(report)
 
 
+@bottle.post("/report/<report_uuid>/source/<source_uuid>/unit/<unit_key>/hide")
+def hide_source_unit(report_uuid: str, source_uuid: str, unit_key: str, database):
+    """Hide or unhide the source unit."""
+    report = latest_report(report_uuid, database)
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            if source_uuid in metric["sources"]:
+                source = metric["sources"][source_uuid]
+                if "hidden_data" not in source:
+                    source["hidden_data"] = []
+                if unit_key in source["hidden_data"]:
+                    source["hidden_data"].remove(unit_key)
+                else:
+                    source["hidden_data"].append(unit_key)
+                break
+    database.reports.insert(report)
+
+
 @bottle.get("/reports")
 def get_reports(database):
     """Return the quality reports."""

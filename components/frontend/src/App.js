@@ -24,8 +24,7 @@ class App extends Component {
       })
       .then(function (json) {
         self.setState({ datamodel: json });
-      });
-    this.reload();
+      }).then(() => this.reload());
   }
 
   reload(event) {
