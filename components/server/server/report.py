@@ -202,7 +202,7 @@ def get_reports(database):
         report = database.reports.find_one(
             filter={"report_uuid": report_uuid, "timestamp": {"$lt": report_date_time()}},
             sort=[("timestamp", pymongo.DESCENDING)])
-        if report:
+        if report and not "deleted" in report:
             report["_id"] = str(report["_id"])
             reports.append(report)
     return dict(reports=reports)
@@ -212,4 +212,14 @@ def get_reports(database):
 def post_report_new(database):
     """Add a new report."""
     report = dict(report_uuid=uuid(), title="New report", timestamp=iso_timestamp(), subjects={})
+    database.reports.insert(report)
+
+
+@bottle.delete("/report/<report_uuid>")
+def delete_report(report_uuid: str, database):
+    """Delete a report."""
+    report = latest_report(report_uuid, database)
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    report["deleted"] = "true"
     database.reports.insert(report)
