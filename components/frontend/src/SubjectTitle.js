@@ -21,7 +21,7 @@ class SubjectTitleContainer extends Component {
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}/title`, {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -35,7 +35,8 @@ class SubjectTitleContainer extends Component {
             <SubjectTitle title={this.state.edited_title} edit={this.state.edit}
                 onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
-                subject_uuid={this.props.subject_uuid} reload={this.props.reload} />)
+                report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
+                reload={this.props.reload} />)
     }
 }
 
@@ -46,7 +47,8 @@ function SubjectTitle(props) {
     }
     return (
         <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} subject_uuid={props.subject_uuid} reload={props.reload} />
+            onMouseLeave={props.onMouseLeave} report_uuid={props.report_uuid} subject_uuid={props.subject_uuid}
+            reload={props.reload} />
     )
 }
 
@@ -71,7 +73,7 @@ class SubjectTitleDisplay extends Component {
     delete_subject(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/subject/${this.props.subject_uuid}`, {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
           method: 'delete',
           mode: 'cors',
           headers: {

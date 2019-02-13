@@ -7,7 +7,7 @@ class Sources extends Component {
     onAddSource(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/metric/${this.props.metric_uuid}/source/new`, {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/source/new`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -24,9 +24,9 @@ class Sources extends Component {
         );
         const sources = source_uuids.map((source_uuid) =>
             (
-                <Source key={source_uuid} source_uuid={source_uuid} source={this.props.sources[source_uuid]}
-                    reload={this.props.reload}
-                    metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
+                <Source key={source_uuid} report_uuid={this.props.report_uuid} source_uuid={source_uuid}
+                   source={this.props.sources[source_uuid]} reload={this.props.reload}
+                   metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
             )
         );
         return (

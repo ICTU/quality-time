@@ -5,26 +5,7 @@ import { Form } from 'semantic-ui-react';
 class ReportTitleContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = { title: "Quality-time", edit: false }
-    }
-    componentDidMount() {
-        this.fetch_title();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.report_date !== this.props.report_date) {
-          this.fetch_title();
-        }
-      }
-    fetch_title() {
-        const report_date = this.props.report_date ? this.props.report_date : new Date();
-        let self = this;
-        fetch(`http://localhost:8080/report?report_date=${report_date.toISOString()}`)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
-                self.setState({ title: json.title });
-            });
+        this.state = { title: props.report ? props.report.title : "Quality-time", edit: false }
     }
     onEdit(event) {
         this.setState((state) => ({ edit: true, previous_title: state.title }));
@@ -40,7 +21,7 @@ class ReportTitleContainer extends Component {
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch('http://localhost:8080/report/title', {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}title`, {
             method: 'post',
             mode: 'cors',
             headers: {

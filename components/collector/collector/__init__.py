@@ -32,11 +32,12 @@ def post(api: URL, data) -> None:
 
 def fetch_measurements(server: URL) -> None:
     """Fetch the metrics and their measurements."""
-    metrics = get(URL(f"{server}/report/metrics"))
+    metrics = get(URL(f"{server}/metrics"))
     for metric_uuid, metric in metrics.items():
-        sources = get(URL(f"{server}/report/sources/{metric_uuid}"))
+        sources = metric["sources"]
         measurement = Collector().get(metric["type"], sources)
         measurement["metric_uuid"] = metric_uuid
+        measurement["report_uuid"] = metric["report_uuid"]
         post(URL(f"{server}/measurements"), measurement)
 
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Placeholder, Table } from 'semantic-ui-react';
 import Measurement from './Measurement.js';
 
 
@@ -33,25 +32,12 @@ class Metric extends Component {
     }
   }
   render() {
-    const m = this.state.measurements;
-    if (m.length === 0) {
-      return (
-        <Table.Row>
-          {[1, 2, 3, 4, 5, 6, 7].map((index) =>
-            <Table.Cell key={index}>
-              <Placeholder>
-                <Placeholder.Line />
-                <Placeholder.Line />
-              </Placeholder>
-            </Table.Cell>)}
-        </Table.Row>
-      )
-    }
     const search = this.props.search_string;
     const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement metric_uuid={this.props.metric_uuid} nr_new_measurements={this.props.nr_new_measurements}
+      <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
+        nr_new_measurements={this.props.nr_new_measurements}
         datamodel={this.props.datamodel} reload={this.props.reload} fetch_measurement={() => this.fetch_measurement()}
         metric={this.props.metric} metric_type={this.props.metric_type} measurements={this.state.measurements}
         onEdit={(e) => this.onEdit(e)} />
