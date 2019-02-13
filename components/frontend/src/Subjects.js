@@ -7,7 +7,7 @@ class Subjects extends Component {
   onAddSubject(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/subject/new`, {
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/new`, {
       method: 'post',
       mode: 'cors',
       headers: {

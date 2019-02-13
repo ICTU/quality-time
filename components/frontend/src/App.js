@@ -30,6 +30,7 @@ class App extends Component {
   reload(event) {
     if (event) { event.preventDefault(); }
     const report_date = this.props.report_date ? this.props.report_date : new Date();
+    const report_uuid = this.state.report ? this.state.report["report_uuid"] : null;
     let self = this;
     fetch(`http://localhost:8080/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
@@ -37,9 +38,17 @@ class App extends Component {
       })
       .then(function (json) {
         const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
+        var report = null;
+        if (report_uuid != null) {
+          const reports = json.reports.filter((report) => report.report_uuid === report_uuid);
+          if (reports.length === 1) {
+            report = reports[0];
+          }
+        }
         self.setState(
           {
             reports: json.reports,
+            report: report,
             report_date_string: '',
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
@@ -99,7 +108,8 @@ class App extends Component {
         <Menubar onSearch={this.handleSearchChange} onDate={this.handleDateChange}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
           nr_new_measurements={this.state.nr_new_measurements}
-          report_date={report_date} report_date_string={this.state.report_date_string} />
+          report={this.state.report} report_date={report_date}
+          report_date_string={this.state.report_date_string} />
         <Container style={{ marginTop: '7em' }}>
           {this.state.loading ?
             <Dimmer active inverted>
@@ -109,7 +119,7 @@ class App extends Component {
             this.state.report === null ?
               <Card.Group>
                 {this.state.reports.map((report) =>
-                  <Card fluid header={report["title"]}
+                  <Card fluid header={report["title"]} key={report.report_uuid}
                     extra={<Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>} />)}
               </Card.Group>
               :

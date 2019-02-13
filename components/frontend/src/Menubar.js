@@ -29,7 +29,11 @@ function Menubar(props) {
           </Button>
         </Menu.Item>
         <Menu.Item>
-          <ReportTitleContainer report_date={props.report_date} />
+          {props.report === null ?
+            <font size="+3">Quality-time</font>
+            :
+            <ReportTitleContainer report={props.report} report_date={props.report_date} />
+          }
           <NewMeasurementsLabel onClick={props.reload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>
         <Menu.Menu position='right'>

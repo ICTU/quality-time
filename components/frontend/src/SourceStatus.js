@@ -17,8 +17,7 @@ function SourceStatus(props) {
           {props.source.connection_error ? 'Connection error' : 'Parse error'}
         </Popup.Header>
         <Popup.Content>
-          {content.split(/[\r\n]/g).map((line) =>
-            <div key={line}>{line.replace(/ {4}/, '>>> ').replace(/ {2}/g, '- ')}</div>)}
+          <pre>{content}</pre>
         </Popup.Content>
       </Popup>
     )

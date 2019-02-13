@@ -27,14 +27,14 @@ class SourceParameter extends Component {
     event.preventDefault();
     let self = this;
     this.setState({ edit: false });
-    fetch(`http://localhost:8080/report/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ [self.props.parameter_key]: self.state.edited_value })
-    })
+    }).then(() => this.props.reload())
   }
   render() {
     if (this.state.edit) {

@@ -11,7 +11,7 @@ class Source extends Component {
     }
     post_source_type(source_type) {
         this.setState({ edited_source_type: source_type });
-        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}/type`, {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/type`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -26,7 +26,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/source/${this.props.source_uuid}`, {
+        fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {
@@ -50,6 +50,7 @@ class Source extends Component {
                 </Table.Cell>
                 <Table.Cell>
                     <SourceParameters
+                        report_uuid={props.report_uuid} reload={props.reload}
                         source_uuid={props.source_uuid} metric_type={props.metric_type}
                         source_type={this.state.edited_source_type}
                         source={props.source} datamodel={props.datamodel} />
