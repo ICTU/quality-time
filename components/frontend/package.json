@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts": "2.1.1",
+    "react-scripts": "2.1.5",
     "react-timeago": "^4.1.9",
     "semantic-ui-calendar-react": "^0.12.1",
     "semantic-ui-css": "^2.4.1",
