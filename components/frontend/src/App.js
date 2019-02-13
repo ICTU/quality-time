@@ -112,6 +112,21 @@ class App extends Component {
     );
   }
 
+  delete_report(event, report) {
+    event.preventDefault();
+    const self = this;
+    fetch(`http://localhost:8080/report/${report.report_uuid}`, {
+      method: 'delete',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(
+      () => self.reload()
+    );
+  }
+
   render() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -136,7 +151,17 @@ class App extends Component {
                 <Card.Group>
                   {this.state.reports.map((report) =>
                     <Card fluid header={report["title"]} key={report.report_uuid}
-                      extra={<Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>} />)}
+                      extra={
+                        <>
+                          <Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>
+                          <Button icon primary negative basic floated='right'
+                            onClick={(e) => this.delete_report(e, report)}>
+                            <Icon name='trash alternate' />
+                          </Button>
+                        </>
+                      }
+                    />)
+                  }
                 </Card.Group>
                 <Segment basic>
                   <Button icon labelPosition='left' primary size='small'
