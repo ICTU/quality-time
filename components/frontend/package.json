@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
     "react-scripts": "2.1.5",
-    "react-timeago": "^4.1.9",
-    "semantic-ui-calendar-react": "^0.12.1",
+    "react-timeago": "^4.3.0",
+    "semantic-ui-calendar-react": "^0.12.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.84.0",
     "victory": "^31.0.2"
