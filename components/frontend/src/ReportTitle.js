@@ -21,14 +21,15 @@ class ReportTitleContainer extends Component {
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch(`http://localhost:8080/report/${this.props.report_uuid}title`, {
+        let self = this;
+        fetch(`http://localhost:8080/report/${this.props.report.report_uuid}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ title: this.state.title })
-        })
+        }).then(() => self.props.reload())
     }
     render() {
         return (

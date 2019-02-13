@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Container, Dimmer, Loader } from 'semantic-ui-react';
+import { Button, Card, Container, Dimmer, Icon, Loader, Segment } from 'semantic-ui-react';
 import './App.css';
 import { Subjects } from './Subjects.js';
 import { Menubar } from './Menubar.js';
@@ -71,7 +71,7 @@ class App extends Component {
   go_home(event) {
     event.preventDefault();
     this.setState({ report: null });
-    if (this.source){
+    if (this.source) {
       this.source.close()
     }
   }
@@ -97,6 +97,21 @@ class App extends Component {
     }, false);
   }
 
+  add_report(event) {
+    event.preventDefault();
+    const self = this;
+    fetch(`http://localhost:8080/reports/new`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(
+      () => self.reload()
+    );
+  }
+
   render() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -117,11 +132,19 @@ class App extends Component {
             </Dimmer>
             :
             this.state.report === null ?
-              <Card.Group>
-                {this.state.reports.map((report) =>
-                  <Card fluid header={report["title"]} key={report.report_uuid}
-                    extra={<Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>} />)}
-              </Card.Group>
+              <>
+                <Card.Group>
+                  {this.state.reports.map((report) =>
+                    <Card fluid header={report["title"]} key={report.report_uuid}
+                      extra={<Button onClick={(e) => this.open_report(e, report)}>{"Open"}</Button>} />)}
+                </Card.Group>
+                <Segment basic>
+                  <Button icon labelPosition='left' primary size='small'
+                    onClick={(e) => this.add_report(e)}>
+                    <Icon name='plus' /> Add report
+                </Button>
+                </Segment>
+              </>
               :
               <Subjects datamodel={this.state.datamodel} subjects={this.state.report.subjects}
                 report_uuid={this.state.report.report_uuid}

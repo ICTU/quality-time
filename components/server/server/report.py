@@ -206,3 +206,10 @@ def get_reports(database):
             report["_id"] = str(report["_id"])
             reports.append(report)
     return dict(reports=reports)
+
+
+@bottle.post("/reports/new")
+def post_report_new(database):
+    """Add a new report."""
+    report = dict(report_uuid=uuid(), title="New report", timestamp=iso_timestamp(), subjects={})
+    database.reports.insert(report)
