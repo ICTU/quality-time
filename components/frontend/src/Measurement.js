@@ -115,12 +115,16 @@ function MeasurementDetails(props) {
             <Grid.Column>
               <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
                 metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
-              <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-                metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
-                measurements={props.measurements} report_uuid={props.report_uuid} />
             </Grid.Column>
             <Grid.Column>
               <TrendGraph measurements={props.measurements} unit={props.unit} />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column colSpan={2}>
+              <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+                metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
+                measurements={props.measurements} report_uuid={props.report_uuid} />
             </Grid.Column>
           </Grid.Row>
         </Grid>

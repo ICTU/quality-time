@@ -81,7 +81,7 @@ class Collector:
         """Parse the data from the response, without failing."""
         data, error = None, None
         try:
-            data = self.parse_source_response(response)
+            data = self.parse_source_response(response, **parameters)
         except Exception:  # pylint: disable=broad-except
             error = ErrorMessage(traceback.format_exc())
         return data, error
