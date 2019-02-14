@@ -10,8 +10,10 @@ import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
 function Unit(props) {
-  const style = props.hidden ? {textDecoration: "line-through"} : {};
-  const icon = props.hidden ? 'unhide' : 'hide';
+  if (props.hide_ignored_units && props.ignored) {return null};
+  const style = props.ignored ? { textDecoration: "line-through" } : {};
+  const icon = props.ignored ? 'toggle off' : 'toggle on';
+  const help = props.ignored ? 'Stop ignoring' : 'Start ignoring';
   return (
     <Table.Row key={props.unit.key} style={style}>
       {props.unit_attributes.map((unit_attribute, col_index) =>
@@ -22,17 +24,23 @@ function Unit(props) {
         </Table.Cell>)
       }
       <Table.Cell collapsing>
-        <Button floated='right' icon primary size='small' basic
-          onClick={(e) => props.hide(e, props.unit.key)}>
-          <Icon name={icon} />
-        </Button>
+        <Popup trigger={
+          <Button floated='right' icon primary size='small' basic
+            onClick={(e) => props.ignore(e, props.unit.key)}>
+            <Icon name={icon} />
+          </Button>} content={help} />
       </Table.Cell>
     </Table.Row>
   )
 }
 
 class SourceUnits extends Component {
-  hide(event, unit_key) {
+  constructor(props) {
+    super(props);
+    this.state = { hide_ignored_units: false };
+  }
+
+  ignore(event, unit_key) {
     event.preventDefault();
     const self = this;
     fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source.source_uuid}/unit/${unit_key}/hide`, {
@@ -43,6 +51,11 @@ class SourceUnits extends Component {
       },
       body: JSON.stringify({})
     }).then(() => self.props.reload());
+  }
+
+  hide_ignored_units(event) {
+    event.preventDefault();
+    this.setState({ hide_ignored_units: !this.state.hide_ignored_units })
   }
 
   render() {
@@ -56,11 +69,18 @@ class SourceUnits extends Component {
     const headers =
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
-        <Table.HeaderCell collapsing></Table.HeaderCell>
+        <Table.HeaderCell collapsing>
+        <Popup trigger={
+          <Button floated='right' icon primary size='small' basic
+            onClick={(e) => this.hide_ignored_units(e)}>
+            <Icon name={this.state.hide_ignored_units ? 'unhide' : 'hide'} />
+          </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
+        </Table.HeaderCell>
       </Table.Row>
     const rows = this.props.source.data.map((unit) =>
       <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes}
-        hidden={hidden_data.includes(unit.key)} hide={(e, key) => this.hide(e, key)} />);
+        hide_ignored_units={this.state.hide_ignored_units} ignored={hidden_data.includes(unit.key)}
+        ignore={(e, key) => this.ignore(e, key)} />);
     return (
       <Table size='small'>
         <Table.Header>
@@ -159,7 +179,7 @@ class Measurement extends Component {
       latest_measurement = this.props.measurements[this.props.measurements.length - 1];
       sources = latest_measurement.sources;
       let nr_hidden = 0;
-      Object.values(this.props.metric.sources).forEach((source) => {nr_hidden += (source.hidden_data && source.hidden_data.length) || 0});
+      Object.values(this.props.metric.sources).forEach((source) => { nr_hidden += (source.hidden_data && source.hidden_data.length) || 0 });
       value = latest_measurement.value - nr_hidden;
       start = new Date(latest_measurement.start);
       end = new Date(latest_measurement.end);
