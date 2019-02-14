@@ -43,7 +43,7 @@ class SourceUnits extends Component {
   ignore(event, unit_key) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source.source_uuid}/unit/${unit_key}/hide`, {
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source.source_uuid}/unit/${unit_key}/ignore`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -65,7 +65,7 @@ class SourceUnits extends Component {
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
     const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
-    const hidden_data = report_source.hidden_data || [];
+    const ignored_units = report_source.ignored_units || [];
     const headers =
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
@@ -79,7 +79,7 @@ class SourceUnits extends Component {
       </Table.Row>
     const rows = this.props.source.data.map((unit) =>
       <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes}
-        hide_ignored_units={this.state.hide_ignored_units} ignored={hidden_data.includes(unit.key)}
+        hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
         ignore={(e, key) => this.ignore(e, key)} />);
     return (
       <Table size='small'>
@@ -101,11 +101,11 @@ function Units(props) {
       <>
         {props.measurement.sources.map((source) => <SourceUnits key={source.source_uuid} source={source}
           datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
-          reload={props.reload} report_uuid={props.report_uuid}
-          fetch_measurement={props.fetch_measurement} metric_uuid={props.metric_uuid} />)}
+          reload={props.reload} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />)}
       </>
   )
 }
+
 function MeasurementDetails(props) {
   return (
     <Table.Row>
@@ -116,9 +116,8 @@ function MeasurementDetails(props) {
               <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
                 metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
               <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-                metric_type={props.metric_type} fetch_measurement={props.fetch_measurement}
-                reload={props.reload} metric_uuid={props.metric_uuid} measurements={props.measurements}
-                report_uuid={props.report_uuid} />
+                metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
+                measurements={props.measurements} report_uuid={props.report_uuid} />
             </Grid.Column>
             <Grid.Column>
               <TrendGraph measurements={props.measurements} unit={props.unit} />
@@ -245,9 +244,8 @@ class Measurement extends Component {
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
-          report_uuid={this.props.report_uuid}
-          metric_uuid={this.props.metric_uuid} measurement={latest_measurement}
-          metric={this.props.metric} fetch_measurement={this.props.fetch_measurement}
+          report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
+          measurement={latest_measurement} metric={this.props.metric}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )

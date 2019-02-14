@@ -37,10 +37,9 @@ class Metric extends Component {
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-        nr_new_measurements={this.props.nr_new_measurements}
-        datamodel={this.props.datamodel} reload={this.props.reload} fetch_measurement={() => this.fetch_measurement()}
-        metric={this.props.metric} metric_type={this.props.metric_type} measurements={this.state.measurements}
-        onEdit={(e) => this.onEdit(e)} />
+        nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
+        reload={this.props.reload} metric={this.props.metric} metric_type={this.props.metric_type}
+        measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)} />
     )
   }
 }
