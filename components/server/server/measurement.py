@@ -15,10 +15,7 @@ def calculate_measurement_value(sources) -> Optional[str]:
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
             return None
-        if isinstance(source["data"], list):
-            value += len([unit for unit in source["data"] if unit["key"] not in source.get("hidden_units", [])])
-        else:
-            value += int(source["data"])
+        value += len(source["data"]) if isinstance(source["data"], list) else int(source["data"])
     return str(value)
 
 
@@ -30,13 +27,6 @@ def post_measurement(database) -> None:
     latest_measurement = database.measurements.find_one(
         filter={"metric_uuid": measurement["metric_uuid"]}, sort=[("start", pymongo.DESCENDING)])
     if latest_measurement:
-        # Copy the list of hidden source data keys to the new measurement and remove the hidden data
-        for source, latest_source in zip(measurement["sources"], latest_measurement["sources"]):
-            if "hidden_data" in latest_source:
-                source["hidden_data"] = latest_source["hidden_data"]
-                for item in source["data"][:]:
-                    if item["key"] in source["hidden_data"]:
-                        source["data"].remove(item)
         # If the new measurement is equal to the previous one, merge them together
         if latest_measurement["sources"] == measurement["sources"]:
             database.measurements.update_one(
@@ -44,28 +34,6 @@ def post_measurement(database) -> None:
             return
     measurement["value"] = calculate_measurement_value(measurement["sources"])
     measurement["start"] = measurement["end"] = timestamp_string
-    database.measurements.insert_one(measurement)
-
-
-@bottle.post("/measurements/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/hide")
-def hide_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database):
-    """Hide the source unit."""
-    timestamp_string = iso_timestamp()
-    measurement = database.measurements.find_one(
-        filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
-    del measurement["_id"]
-    measurement["start"] = measurement["end"] = timestamp_string
-    for source in measurement["sources"]:
-        if source["source_uuid"] == source_uuid:
-            if "hidden_data" not in source:
-                source["hidden_data"] = []
-            if unit_key not in source["hidden_data"]:
-                source["hidden_data"].append(unit_key)
-            for item in source["data"][:]:
-                if item["key"] == unit_key:
-                    source["data"].remove(item)
-            break
-    measurement["value"] = calculate_measurement_value(measurement["sources"])
     database.measurements.insert_one(measurement)
 
 

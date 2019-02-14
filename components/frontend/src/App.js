@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
-import './App.css';
 import { Subjects } from './Subjects.js';
 import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
@@ -24,8 +23,7 @@ class App extends Component {
       })
       .then(function (json) {
         self.setState({ datamodel: json });
-      });
-    this.reload();
+      }).then(() => this.reload());
   }
 
   reload(event) {
