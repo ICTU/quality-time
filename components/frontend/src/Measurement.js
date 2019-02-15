@@ -59,7 +59,7 @@ class SourceUnits extends Component {
   }
 
   render() {
-    if (!Array.isArray(this.props.source.data) || this.props.source.data.length === 0) {
+    if (!Array.isArray(this.props.source.units) || this.props.source.units.length === 0) {
       return null;
     }
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
@@ -77,7 +77,7 @@ class SourceUnits extends Component {
             </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
         </Table.HeaderCell>
       </Table.Row>
-    const rows = this.props.source.data.map((unit) =>
+    const rows = this.props.source.units.map((unit) =>
       <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes}
         hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
         ignore={(e, key) => this.ignore(e, key)} />);

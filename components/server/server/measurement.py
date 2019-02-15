@@ -15,7 +15,7 @@ def calculate_measurement_value(sources) -> Optional[str]:
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
             return None
-        value += len(source["data"]) if isinstance(source["data"], list) else int(source["data"])
+        value += int(source["value"])
     return str(value)
 
 

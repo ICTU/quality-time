@@ -7,7 +7,7 @@ from typing import cast, Optional, Set, Tuple, Type
 import cachetools
 import requests
 
-from .type import ErrorMessage, Measurement, Response, URL
+from .type import ErrorMessage, Measurement, Response, Units, URL, Value
 
 
 class Collector:
@@ -15,6 +15,7 @@ class Collector:
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
+    MAX_UNITS = 100  # The maximum number of units (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
 
     def __init_subclass__(cls) -> None:
@@ -38,7 +39,9 @@ class Collector:
             source_response = source_collector.get_one(source)
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
-        return dict(sources=source_responses)
+        values = [source_response["value"] for source_response in source_responses]
+        value = None if None in values else sum([int(value) for value in values])
+        return dict(sources=source_responses, value=value)
 
     def get_one(self, source) -> Response:
         """Return the measurement response for one source."""
@@ -46,8 +49,8 @@ class Collector:
         api_url = self.api_url(**parameters)
         landing_url = self.landing_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url)
-        data, parse_error = self.safely_parse_source_response(response, **parameters) if response else (None, None)
-        return dict(api_url=api_url, landing_url=landing_url, data=data,
+        value, units, parse_error = self.safely_parse_source_response(response, **parameters)
+        return dict(api_url=api_url, landing_url=landing_url, value=value, units=units,
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
@@ -59,13 +62,13 @@ class Collector:
         return parameters.get("url", "")
 
     @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
-    def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], Optional[ErrorMessage]]:
+    def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing."""
         response, error = None, None
         try:
             response = self.get_source_response(url)
         except Exception:  # pylint: disable=broad-except
-            error = ErrorMessage(traceback.format_exc())
+            error = traceback.format_exc()
         return response, error
 
     def get_source_response(self, url: URL) -> requests.Response:
@@ -75,16 +78,18 @@ class Collector:
         response.raise_for_status()
         return response
 
-    def safely_parse_source_response(self, response: requests.Response, **parameters) -> \
-            Tuple[Optional[Measurement], Optional[ErrorMessage]]:
-        # pylint: disable=unused-argument
+    def safely_parse_source_response(
+            self, response: requests.Response, **parameters) -> Tuple[Value, Units, ErrorMessage]:
         """Parse the data from the response, without failing."""
-        data, error = None, None
-        try:
-            data = self.parse_source_response(response, **parameters)
-        except Exception:  # pylint: disable=broad-except
-            error = ErrorMessage(traceback.format_exc())
-        return data, error
+        units: Units = []
+        value, error = None, None
+        if response:
+            try:
+                result = self.parse_source_response(response, **parameters)
+                value, units = result if isinstance(result, tuple) else (result, [])
+            except Exception:  # pylint: disable=broad-except
+                error = traceback.format_exc()
+        return value, units[:self.MAX_UNITS], error
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         # pylint: disable=no-self-use,unused-argument

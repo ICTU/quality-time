@@ -15,16 +15,18 @@ class SonarQubeViolations(Collector):
         return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&resolved=false")
 
     def api_url(self, **parameters) -> URL:
-        # FIXME: If there's more than 500 violations only the first 500 are returned
+        # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
+        # the number of "units" sent to the server anyway (that limit is 100 currently).
         return URL(f"{parameters.get('url')}/api/issues/search"
-                   f"?componentKeys={parameters.get('component')}&resolved=false&pageSize=500")
+                   f"?componentKeys={parameters.get('component')}&resolved=false&ps=500")
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        return [dict(
+        json = response.json()
+        return str(json["total"]), [dict(
             key=unit["key"],
             url=self.unit_landing_url(unit, **parameters),
             message=unit["message"],
-            component=unit["component"]) for unit in response.json()["issues"]]
+            component=unit["component"]) for unit in json["issues"]]
 
     @staticmethod
     def unit_landing_url(unit, **parameters):
