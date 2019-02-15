@@ -28,7 +28,7 @@ class CollectorTest(unittest.TestCase):
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["sources"][0]["measurement"])
+        self.assertEqual("2", self.response["sources"][0]["value"])
 
 
 class CollectorWithMultipleSourcesTest(unittest.TestCase):
@@ -55,7 +55,7 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["sources"][1]["measurement"])
+        self.assertEqual("2", self.response["sources"][1]["value"])
 
 
 class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
@@ -76,8 +76,10 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
         sources = self.response["sources"]
-        self.assertEqual([{'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["measurement"])
-        self.assertEqual("1", sources[1]["measurement"])
+        self.assertEqual([{'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["units"])
+        self.assertEqual("1", sources[0]["value"])
+        self.assertEqual([], sources[1]["units"])
+        self.assertEqual("1", sources[1]["value"])
 
 
 class CollectorErrorTest(unittest.TestCase):

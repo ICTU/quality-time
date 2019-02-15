@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Table, Popup } from 'semantic-ui-react';
+import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { SourceStatus } from './SourceStatus';
@@ -10,7 +10,7 @@ import { Sources } from './Sources';
 import { MetricType } from './MetricType';
 
 function Unit(props) {
-  if (props.hide_ignored_units && props.ignored) {return null};
+  if (props.hide_ignored_units && props.ignored) { return null };
   const style = props.ignored ? { textDecoration: "line-through" } : {};
   const icon = props.ignored ? 'toggle off' : 'toggle on';
   const help = props.ignored ? 'Stop ignoring' : 'Start ignoring';
@@ -59,7 +59,7 @@ class SourceUnits extends Component {
   }
 
   render() {
-    if (!Array.isArray(this.props.source.data) || this.props.source.data.length === 0) {
+    if (!Array.isArray(this.props.source.units) || this.props.source.units.length === 0) {
       return null;
     }
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
@@ -70,14 +70,14 @@ class SourceUnits extends Component {
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing>
-        <Popup trigger={
-          <Button floated='right' icon primary size='small' basic
-            onClick={(e) => this.hide_ignored_units(e)}>
-            <Icon name={this.state.hide_ignored_units ? 'unhide' : 'hide'} />
-          </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
+          <Popup trigger={
+            <Button floated='right' icon primary size='small' basic
+              onClick={(e) => this.hide_ignored_units(e)}>
+              <Icon name={this.state.hide_ignored_units ? 'unhide' : 'hide'} />
+            </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
         </Table.HeaderCell>
       </Table.Row>
-    const rows = this.props.source.data.map((unit) =>
+    const rows = this.props.source.units.map((unit) =>
       <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes}
         hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
         ignore={(e, key) => this.ignore(e, key)} />);
@@ -95,35 +95,55 @@ class SourceUnits extends Component {
 }
 
 function Units(props) {
-  return (
-    (props.measurement === null) ?
-      null :
-      <>
-        {props.measurement.sources.map((source) => <SourceUnits key={source.source_uuid} source={source}
+  if (props.measurement == null) { return null };
+  let panes = [];
+  props.measurement.sources.forEach((source) => {
+    const report_source = props.metric["sources"][source.source_uuid];
+    const source_type = report_source.type;
+    const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
+    let nr_units = source.value || 0;
+    const nr_units_displayed = (source.units && source.units.length) || 0;
+    if (Number(nr_units) !== Number(nr_units_displayed)) {nr_units = `${nr_units_displayed} of ${nr_units}` };
+    panes.push({
+      menuItem: (<Menu.Item>{source_name}<Label>{nr_units}</Label></Menu.Item>),
+      render: () => <Tab.Pane>
+        <SourceUnits key={source.source_uuid} source={source}
           datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
-          reload={props.reload} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />)}
-      </>
+          reload={props.reload} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
+      </Tab.Pane>
+    })
+  });
+  return (
+    <Tab panes={panes} />
   )
 }
 
 function MeasurementDetails(props) {
+  const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
+  const panes = [
+    {
+      menuItem: 'Sources', render: () => <Tab.Pane>
+        <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
+          metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
+      </Tab.Pane>
+    },
+    {
+      menuItem: 'Trend', render: () => <Tab.Pane>
+        <TrendGraph measurements={props.measurements} unit={unit_name} />
+      </Tab.Pane>
+    },
+    {
+      menuItem: unit_name, render: () => <Tab.Pane>
+        <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+          metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
+          measurements={props.measurements} report_uuid={props.report_uuid} />
+      </Tab.Pane>
+    }
+  ];
   return (
     <Table.Row>
-      <Table.Cell colSpan="7">
-        <Grid stackable columns={2}>
-          <Grid.Row>
-            <Grid.Column>
-              <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
-                metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
-              <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-                metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
-                measurements={props.measurements} report_uuid={props.report_uuid} />
-            </Grid.Column>
-            <Grid.Column>
-              <TrendGraph measurements={props.measurements} unit={props.unit} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+      <Table.Cell colSpan="8">
+        <Tab panes={panes} />
       </Table.Cell>
     </Table.Row>
   )
@@ -203,9 +223,11 @@ class Measurement extends Component {
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
-          <Table.Cell>
+          <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+          </Table.Cell>
+          <Table.Cell>
             <MetricType post_metric_type={(m) => this.post_metric_type(m)}
               reset_metric_type={() => this.reset_metric_type()} datamodel={this.props.datamodel}
               metric_type={this.state.edited_metric_type} />
@@ -213,15 +235,13 @@ class Measurement extends Component {
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
           </Table.Cell>
-          <Popup
-            trigger={
-              <Table.Cell>
-                {(value === null ? '?' : value) + ' ' + metric_unit}
-              </Table.Cell>
-            }
-            flowing hoverable>
-            Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
-        </Popup>
+          <Table.Cell>
+            <Popup
+              trigger={<span>{(value === null ? '?' : value) + ' ' + metric_unit}</span>}
+              flowing hoverable>
+              Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
+          </Popup>
+          </Table.Cell>
           <Table.Cell>
             <Target report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
               unit={metric_unit} direction={metric_direction} reload={this.props.reload}

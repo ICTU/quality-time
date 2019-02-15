@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Icon, Table } from 'semantic-ui-react';
+import { SourceName } from './SourceName';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 
@@ -39,6 +40,7 @@ class Source extends Component {
     }
     render() {
         const props = this.props;
+        const source_type_name = props.datamodel["sources"][this.state.edited_source_type]["name"];
         return (
             <Table.Row>
                 <Table.Cell>
@@ -47,6 +49,10 @@ class Source extends Component {
                         metric_type={props.metric_type} datamodel={props.datamodel}
                         post_source_type={(s) => this.post_source_type(s)}
                         reset_source_type={() => this.reset_source_type()} />
+                </Table.Cell>
+                <Table.Cell>
+                    <SourceName name={props.source.name || source_type_name} report_uuid={props.report_uuid}
+                        source_uuid={props.source_uuid} reload={props.reload} />
                 </Table.Cell>
                 <Table.Cell>
                     <SourceParameters

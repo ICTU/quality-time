@@ -115,6 +115,7 @@
             "default_target": "0",
             "sources": [
                 "sonarqube",
+                "ojaudit",
                 "random"
             ]
         }
@@ -202,6 +203,30 @@
                 }
             },
             "units": {}
+        },
+        "ojaudit": {
+            "name": "OJAudit",
+            "parameters": {
+                "url": {
+                    "name": "URL to XML report",
+                    "metrics": [
+                        "violations"
+                    ]
+                }
+            },
+            "units": {
+                "violations": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ]
+            }
         },
         "random": {
             "name": "Random",

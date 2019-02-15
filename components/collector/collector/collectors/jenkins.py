@@ -13,7 +13,8 @@ class JenkinsJobs(Collector):
         return URL(f"{parameters.get('url')}/api/json?tree=jobs[buildable,color,url,name]")
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        return [dict(key=job["name"], name=job["name"], url=job["url"]) for job in self.jobs(response)]
+        units = [dict(key=job["name"], name=job["name"], url=job["url"]) for job in self.jobs(response)]
+        return str(len(units)), units
 
     @staticmethod
     def jobs(response: requests.Response):
@@ -24,6 +25,7 @@ class JenkinsJobs(Collector):
 class JenkinsFailedJobs(JenkinsJobs):
     """Collector to get failed job counts from Jenkins."""
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        jobs = [job for job in self.jobs(response) if not job.get("color", "").startswith("blue")]
-        return [dict(key=job["name"], name=job["name"], url=job["url"]) for job in jobs]
+    @staticmethod
+    def jobs(response: requests.Response):
+        """Return the jobs from the response that have failed."""
+        return [job for job in super().jobs(response) if not job.get("color", "").startswith("blue")]

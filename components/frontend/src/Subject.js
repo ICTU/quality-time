@@ -28,22 +28,23 @@ class Subject extends Component {
       <Segment basic>
         <SubjectTitleContainer report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
            subject={this.props.subject} reload={this.props.reload} />
-        <Table columns={7}>
+        <Table>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width={2}>Metric</Table.HeaderCell>
-              <Table.HeaderCell width={2}>Trend</Table.HeaderCell>
-              <Table.HeaderCell width={3}>Measurement</Table.HeaderCell>
-              <Table.HeaderCell width={3}>Target</Table.HeaderCell>
-              <Table.HeaderCell width={3}>Source</Table.HeaderCell>
-              <Table.HeaderCell width={3}>Comment</Table.HeaderCell>
-              <Table.HeaderCell width={1} />
+              <Table.HeaderCell />
+              <Table.HeaderCell>Metric</Table.HeaderCell>
+              <Table.HeaderCell width="2">Trend</Table.HeaderCell>
+              <Table.HeaderCell>Measurement</Table.HeaderCell>
+              <Table.HeaderCell>Target</Table.HeaderCell>
+              <Table.HeaderCell>Source</Table.HeaderCell>
+              <Table.HeaderCell>Comment</Table.HeaderCell>
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan='7'>
+              <Table.HeaderCell colSpan='8'>
                 <Button floated='right' icon labelPosition='left' primary size='small'
                   onClick={(e) => this.onAddMetric(e)}>
                   <Icon name='plus' /> Add metric

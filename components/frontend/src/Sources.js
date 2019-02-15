@@ -30,10 +30,11 @@ class Sources extends Component {
             )
         );
         return (
-            <Table columns={2} size='small'>
+            <Table columns={4} size='small'>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={1}>Source</Table.HeaderCell>
+                        <Table.HeaderCell width={1}>Source type</Table.HeaderCell>
+                        <Table.HeaderCell width={1}>Source name</Table.HeaderCell>
                         <Table.HeaderCell width={10}>Parameters</Table.HeaderCell>
                         <Table.HeaderCell />
                     </Table.Row>
@@ -41,7 +42,7 @@ class Sources extends Component {
                 <Table.Body>{sources}</Table.Body>
                 <Table.Footer>
                     <Table.Row>
-                        <Table.HeaderCell colSpan='3'>
+                        <Table.HeaderCell colSpan='4'>
                             <Button floated='right' icon labelPosition='left' primary size='small'
                                 onClick={(e) => this.onAddSource(e)}>
                                 <Icon name='plus'/> Add source

@@ -22,7 +22,7 @@ function Menubar(props) {
   const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
   return (
     <Menu fixed='top' inverted>
-      <Container>
+      <Container fluid>
         <Menu.Item header>
           {props.report === null ?
             <Image size='mini' src='/favicon.ico' />

@@ -20,7 +20,7 @@ function TrendGraph(props) {
     measurements.push({y: m, x: x2});
   }
   return (
-    <VictoryChart theme={VictoryTheme.material} style={{parent: {background: "white"}}} scale={{ x: "time", y: "linear" }}>
+    <VictoryChart theme={VictoryTheme.material} style={{parent: {maxWidth: "50%", background: "white"}}} scale={{ x: "time", y: "linear" }}>
       <VictoryAxis/>
       <VictoryAxis dependentAxis label={props.unit} style={{axisLabel: {padding: 35 }}} domain={[0, max_y]}
         tickFormat={(t) => `${readableNumber(t)}`} />

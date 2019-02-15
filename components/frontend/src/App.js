@@ -110,7 +110,7 @@ class App extends Component {
           nr_new_measurements={this.state.nr_new_measurements}
           report={this.state.report} report_date={report_date}
           report_date_string={this.state.report_date_string} />
-        <Container style={{ marginTop: '7em' }}>
+        <Container fluid style={{ marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
           {this.state.loading ?
             <Dimmer active inverted>
               <Loader size='large'>Loading</Loader>
