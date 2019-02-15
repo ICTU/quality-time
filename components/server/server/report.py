@@ -178,6 +178,22 @@ def post_source_type(report_uuid: str, source_uuid: str, database):
     database.reports.insert(report)
 
 
+@bottle.post("/report/<report_uuid>/source/<source_uuid>/name")
+def post_source_name(report_uuid: str, source_uuid: str, database):
+    """Set the source name."""
+    source_name = dict(bottle.request.json)["name"]
+    report = latest_report(report_uuid, database)
+    del report["_id"]
+    report["timestamp"] = iso_timestamp()
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            if source_uuid in metric["sources"]:
+                source = metric["sources"][source_uuid]
+                break
+    source["name"] = source_name
+    database.reports.insert(report)
+
+
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str, database):
     """Set the source parameter."""

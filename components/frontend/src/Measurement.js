@@ -99,8 +99,8 @@ function Units(props) {
   let panes = [];
   props.measurement.sources.forEach((source) => {
     const report_source = props.metric["sources"][source.source_uuid];
-    const source_type = report_source["type"];
-    const source_name = props.datamodel["sources"][source_type]["name"];
+    const source_type = report_source.type;
+    const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
 
     panes.push({
       menuItem: source_name,
