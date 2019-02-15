@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Header, Icon, Tab, Table, Popup } from 'semantic-ui-react';
+import { Button, Icon, Tab, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { SourceStatus } from './SourceStatus';
@@ -140,7 +140,7 @@ function MeasurementDetails(props) {
   ];
   return (
     <Table.Row>
-      <Table.Cell colSpan="7">
+      <Table.Cell colSpan="8">
         <Tab panes={panes} />
       </Table.Cell>
     </Table.Row>
@@ -221,9 +221,11 @@ class Measurement extends Component {
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
-          <Table.Cell>
+          <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+          </Table.Cell>
+          <Table.Cell>
             <MetricType post_metric_type={(m) => this.post_metric_type(m)}
               reset_metric_type={() => this.reset_metric_type()} datamodel={this.props.datamodel}
               metric_type={this.state.edited_metric_type} />
@@ -231,15 +233,13 @@ class Measurement extends Component {
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
           </Table.Cell>
-          <Popup
-            trigger={
-              <Table.Cell>
-                {(value === null ? '?' : value) + ' ' + metric_unit}
-              </Table.Cell>
-            }
-            flowing hoverable>
-            Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
-        </Popup>
+          <Table.Cell>
+            <Popup
+              trigger={<span>{(value === null ? '?' : value) + ' ' + metric_unit}</span>}
+              flowing hoverable>
+              Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
+          </Popup>
+          </Table.Cell>
           <Table.Cell>
             <Target report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
               unit={metric_unit} direction={metric_direction} reload={this.props.reload}
