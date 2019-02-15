@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Tab, Table, Popup } from 'semantic-ui-react';
+import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { Comment } from './Comment';
 import { SourceStatus } from './SourceStatus';
@@ -101,9 +101,11 @@ function Units(props) {
     const report_source = props.metric["sources"][source.source_uuid];
     const source_type = report_source.type;
     const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
-
+    let nr_units = source.value || 0;
+    const nr_units_displayed = (source.units && source.units.length) || 0;
+    if (Number(nr_units) !== Number(nr_units_displayed)) {nr_units = `${nr_units_displayed} of ${nr_units}` };
     panes.push({
-      menuItem: source_name,
+      menuItem: (<Menu.Item>{source_name}<Label>{nr_units}</Label></Menu.Item>),
       render: () => <Tab.Pane>
         <SourceUnits key={source.source_uuid} source={source}
           datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}

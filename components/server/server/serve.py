@@ -67,6 +67,7 @@ def import_example_reports(database):
 def serve() -> None:
     """Connect to the database and start the application server."""
     logging.getLogger().setLevel(logging.INFO)
+    bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024  # Max size of POST body in bytes
     database = pymongo.MongoClient("mongodb://root:root@localhost:27017/").quality_time_db
     logging.info("Connected to database: %s", database)
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
