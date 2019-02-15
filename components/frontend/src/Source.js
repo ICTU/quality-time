@@ -52,7 +52,7 @@ class Source extends Component {
                 </Table.Cell>
                 <Table.Cell>
                     <SourceName name={props.source.name || source_type_name} report_uuid={props.report_uuid}
-                        source_uuid={props.source_uuid} />
+                        source_uuid={props.source_uuid} reload={props.reload} />
                 </Table.Cell>
                 <Table.Cell>
                     <SourceParameters
