@@ -131,15 +131,18 @@ function MeasurementDetails(props) {
       menuItem: 'Trend', render: () => <Tab.Pane>
         <TrendGraph measurements={props.measurements} unit={unit_name} />
       </Tab.Pane>
-    },
-    {
+    }
+  ];
+  const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
+  if (nr_units > 0) {
+    panes.push({
       menuItem: unit_name, render: () => <Tab.Pane>
         <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
           metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
           measurements={props.measurements} report_uuid={props.report_uuid} />
       </Tab.Pane>
-    }
-  ];
+    })
+  }
   return (
     <Table.Row>
       <Table.Cell colSpan="8">
