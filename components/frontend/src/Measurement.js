@@ -145,7 +145,7 @@ function MeasurementDetails(props) {
   }
   return (
     <Table.Row>
-      <Table.Cell colSpan="8">
+      <Table.Cell colSpan="9">
         <Tab panes={panes} />
       </Table.Cell>
     </Table.Row>
@@ -210,13 +210,17 @@ class Measurement extends Component {
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
     let status = null;
+    let status_icon = 'question';
     if (value != null) {
       if (metric_direction === ">=") {
         status = value >= target ? "target_met" : "target_not_met"
+        status_icon = value >= target ? 'smile' : 'frown';
       } else if (metric_direction === "<=") {
         status = value <= target ? "target_met" : "target_not_met"
+        status_icon = value <= target ? 'smile' : 'frown';
       } else {
         status = value === target ? "target_met" : "target_not_met"
+        status_icon = value == target ? 'smile' : 'frown';
       }
     }
     const positive = status === "target_met";
@@ -237,6 +241,9 @@ class Measurement extends Component {
           </Table.Cell>
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
+          </Table.Cell>
+          <Table.Cell>
+              <Icon size='large' name={status_icon}/>
           </Table.Cell>
           <Table.Cell>
             <Popup
