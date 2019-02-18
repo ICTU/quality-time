@@ -221,9 +221,12 @@
                         "key": "message"
                     },
                     {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
                         "name": "Component",
-                        "key": "component",
-                        "url": "url"
+                        "key": "component"
                     }
                 ]
             }

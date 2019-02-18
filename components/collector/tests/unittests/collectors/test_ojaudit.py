@@ -18,34 +18,83 @@ class OJAuditTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
+  <models>
+    <model id="a">
+      <file>
+        <path>a</path>
+      </file>
+    </model>
+    <model id="b">
+      <file>
+        <path>b</path>
+      </file>
+    </model>
+  </models>
   <construct>
-    <name>a</name>
     <children>
       <construct>
-        <name>b</name>
         <children>
           <violation>
-            <message>b</message>
-            <location>
+            <message>a</message>
+            <location model="a">
               <line-number>20</line-number>
+              <column-offset>4</column-offset>
             </location>
+            <values>
+              <value>medium</value>
+            </values>
           </violation>
         </children>
       </construct>
       <violation>
-        <message>a</message>
-        <location>
+        <message>b</message>
+        <location model="b">
           <line-number>10</line-number>
+              <column-offset>2</column-offset>
         </location>
+        <values>
+          <value>high</value>
+        </values>
       </violation>
     </children>
   </construct>
 </audit>"""
-        sources = dict(
-            a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml")))
+        sources = dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml")))
         with patch("requests.get", return_value=mock_response):
             response = Collector().get("violations", sources)
-        self.assertEqual([dict(component="a:10", key="a:a:10", message="a", url="http://ojaudit.html"),
-                          dict(component="b:20", key="b:b:20", message="b", url="http://ojaudit.html")],
-                         response["sources"][0]["units"])
+        self.assertEqual(
+            [dict(component="a:20:4", key="c448f7237f7527445a340816163b99e3", severity="medium", message="a"),
+             dict(component="b:10:2", key="50b0555f38f8474c5d9cbe333680ff83", severity="high", message="b")],
+            response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
+
+    def test_missing_location(self):
+        """Test that an exception is raised if the violation location is missing."""
+        mock_response = Mock()
+        mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+  <violation-count>2</violation-count>
+  <models>
+    <model id="a">
+      <file>
+        <path>a</path>
+      </file>
+    </model>
+    <model id="b">
+      <file>
+        <path>b</path>
+      </file>
+    </model>
+  </models>
+  <construct>
+    <violation>
+    <message>a</message>
+    <values>
+        <value>medium</value>
+    </values>
+    </violation>
+  </construct>
+</audit>"""
+        sources = dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml")))
+        with patch("requests.get", return_value=mock_response):
+            self.assertTrue(
+                "has no location element" in Collector().get("violations", sources)["sources"][0]["parse_error"])

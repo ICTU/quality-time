@@ -103,7 +103,7 @@ function Units(props) {
     const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
     let nr_units = source.value || 0;
     const nr_units_displayed = (source.units && source.units.length) || 0;
-    if (Number(nr_units) !== Number(nr_units_displayed)) {nr_units = `${nr_units_displayed} of ${nr_units}` };
+    if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
     panes.push({
       menuItem: (<Menu.Item>{source_name}<Label>{nr_units}</Label></Menu.Item>),
       render: () => <Tab.Pane>
@@ -126,22 +126,25 @@ function MeasurementDetails(props) {
         <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
           metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
       </Tab.Pane>
-    },
-    {
-      menuItem: 'Trend', render: () => <Tab.Pane>
-        <TrendGraph measurements={props.measurements} unit={unit_name} />
-      </Tab.Pane>
     }
   ];
-  const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
-  if (nr_units > 0) {
-    panes.push({
-      menuItem: unit_name, render: () => <Tab.Pane>
-        <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-          metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
-          measurements={props.measurements} report_uuid={props.report_uuid} />
-      </Tab.Pane>
-    })
+  if (props.measurement) {
+    panes.push(
+      {
+        menuItem: 'Trend', render: () => <Tab.Pane>
+          <TrendGraph measurements={props.measurements} unit={unit_name} />
+        </Tab.Pane>
+      });
+    const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
+    if (nr_units > 0) {
+      panes.push({
+        menuItem: unit_name, render: () => <Tab.Pane>
+          <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+            metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
+            measurements={props.measurements} report_uuid={props.report_uuid} />
+        </Tab.Pane>
+      })
+    }
   }
   return (
     <Table.Row>
@@ -220,7 +223,7 @@ class Measurement extends Component {
         status_icon = value <= target ? 'smile' : 'frown';
       } else {
         status = value === target ? "target_met" : "target_not_met"
-        status_icon = value == target ? 'smile' : 'frown';
+        status_icon = value === target ? 'smile' : 'frown';
       }
     }
     const positive = status === "target_met";
@@ -243,7 +246,7 @@ class Measurement extends Component {
             <TrendSparkline measurements={this.props.measurements} />
           </Table.Cell>
           <Table.Cell>
-              <Icon size='large' name={status_icon}/>
+            <Icon size='large' name={status_icon} />
           </Table.Cell>
           <Table.Cell>
             <Popup
