@@ -12,6 +12,7 @@ class Source extends Component {
     }
     post_source_type(source_type) {
         this.setState({ edited_source_type: source_type });
+        const self = this;
         fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/type`, {
             method: 'post',
             mode: 'cors',
@@ -19,7 +20,9 @@ class Source extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ type: source_type })
-        });
+        }).then(
+            () => self.props.reload()
+        );
     }
     reset_source_type() {
         this.setState({ edited_source_type: this.props.source_type });
@@ -41,6 +44,7 @@ class Source extends Component {
     render() {
         const props = this.props;
         const source_type_name = props.datamodel["sources"][this.state.edited_source_type]["name"];
+        const source_name = props.source.name || source_type_name;
         return (
             <Table.Row>
                 <Table.Cell>
@@ -51,7 +55,7 @@ class Source extends Component {
                         reset_source_type={() => this.reset_source_type()} />
                 </Table.Cell>
                 <Table.Cell>
-                    <SourceName name={props.source.name || source_type_name} report_uuid={props.report_uuid}
+                    <SourceName name={source_name} report_uuid={props.report_uuid}
                         source_uuid={props.source_uuid} reload={props.reload} />
                 </Table.Cell>
                 <Table.Cell>

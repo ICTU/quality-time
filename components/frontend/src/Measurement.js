@@ -223,7 +223,7 @@ class Measurement extends Component {
         status_icon = value <= target ? 'smile' : 'frown';
       } else {
         status = value === target ? "target_met" : "target_not_met"
-        status_icon = value == target ? 'smile' : 'frown';
+        status_icon = value === target ? 'smile' : 'frown';
       }
     }
     const positive = status === "target_met";
