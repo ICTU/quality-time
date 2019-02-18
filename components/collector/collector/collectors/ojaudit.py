@@ -1,5 +1,6 @@
 """OJAudit metric collector."""
 
+import hashlib
 import xml.etree.cElementTree
 
 import requests
@@ -30,5 +31,7 @@ class OJAuditViolations(Collector):
                 message = violation.findtext(f"{{{namespace}}}message")
                 line_number = violation.findtext(f".//{{{namespace}}}line-number")
                 component = f"{construct_name}:{line_number}"
-                violations.append(dict(key=f"{message}:{component}", message=message, component=component, url=url))
+                violations.append(dict(
+                    key=hashlib.md5(f"{message}:{component}".encode("utf-8")).hexdigest(),
+                    message=message, component=component, url=url))
         return str(violation_count), violations
