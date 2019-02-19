@@ -63,8 +63,8 @@ class OJAuditTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             response = Collector().get("violations", sources)
         self.assertEqual(
-            [dict(component="a:20:4", key="c448f7237f7527445a340816163b99e3", severity="medium", message="a"),
-             dict(component="b:10:2", key="50b0555f38f8474c5d9cbe333680ff83", severity="high", message="b")],
+            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", severity="medium", message="a"),
+             dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", severity="high", message="b")],
             response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
 
