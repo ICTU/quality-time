@@ -51,7 +51,7 @@ class OJAuditViolations(Collector):
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
         severity = violation.findtext("./ns:values/ns:value", namespaces=namespaces)
         component = f"{model}:{line_number}:{column_offset}"
-        key = hashlib.md5(f"{message}:{component}".encode("utf-8")).hexdigest()
+        key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()
         return dict(key=key, severity=severity, message=message, component=component)
 
     @staticmethod
