@@ -15,26 +15,55 @@ def calculate_measurement_value(sources) -> Optional[str]:
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
             return None
-        value += int(source["value"])
+        value += (int(source["value"]) - len(source.get("ignored_units", [])))
     return str(value)
+
+
+def latest_measurement(metric_uuid: str, database):
+    """Return the latest measurement."""
+    return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
+
+
+def insert_new_measurement(measurement, database):
+    """Insert a new measurement."""
+    measurement["value"] = calculate_measurement_value(measurement["sources"])
+    measurement["start"] = measurement["end"] = iso_timestamp()
+    database.measurements.insert_one(measurement)
 
 
 @bottle.post("/measurements")
 def post_measurement(database) -> None:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
-    timestamp_string = iso_timestamp()
-    latest_measurement = database.measurements.find_one(
-        filter={"metric_uuid": measurement["metric_uuid"]}, sort=[("start", pymongo.DESCENDING)])
-    if latest_measurement:
-        # If the new measurement is equal to the previous one, merge them together
-        if latest_measurement["sources"] == measurement["sources"]:
-            database.measurements.update_one(
-                filter={"_id": latest_measurement["_id"]}, update={"$set": {"end": timestamp_string}})
+    latest = latest_measurement(measurement["metric_uuid"], database)
+    if latest:
+        for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
+            if "ignored_units" in latest_source:
+                # Copy the keys of ignored units that still exist in the new measurement
+                new_unit_keys = set(unit["key"] for unit in new_source.get("units", []))
+                new_source["ignored_units"] = [key for key in latest_source["ignored_units"] if key in new_unit_keys]
+        if latest["sources"] == measurement["sources"]:
+            # If the new measurement is equal to the previous one, merge them together
+            database.measurements.update_one(filter={"_id": latest["_id"]}, update={"$set": {"end": iso_timestamp()}})
             return
-    measurement["value"] = calculate_measurement_value(measurement["sources"])
-    measurement["start"] = measurement["end"] = timestamp_string
-    database.measurements.insert_one(measurement)
+    insert_new_measurement(measurement, database)
+
+
+@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/ignore")
+def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database):
+    """Ignore or stop ignoring the source unit."""
+    measurement = latest_measurement(metric_uuid, database)
+    del measurement["_id"]
+    source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
+    if "ignored_units" not in source:
+        source["ignored_units"] = []
+    if unit_key in source["ignored_units"]:
+        source["ignored_units"].remove(unit_key)
+    else:
+        source["ignored_units"].append(unit_key)
+    insert_new_measurement(measurement, database)
+    measurement["_id"] = str(measurement["_id"])
+    return measurement
 
 
 def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:

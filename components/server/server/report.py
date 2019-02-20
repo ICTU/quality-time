@@ -209,26 +209,6 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     database.reports.insert(report)
 
 
-@bottle.post("/report/<report_uuid>/source/<source_uuid>/unit/<unit_key>/ignore")
-def ignore_source_unit(report_uuid: str, source_uuid: str, unit_key: str, database):
-    """Ignore or stop ignoring the source unit."""
-    report = latest_report(report_uuid, database)
-    del report["_id"]
-    report["timestamp"] = iso_timestamp()
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                source = metric["sources"][source_uuid]
-                if "ignored_units" not in source:
-                    source["ignored_units"] = []
-                if unit_key in source["ignored_units"]:
-                    source["ignored_units"].remove(unit_key)
-                else:
-                    source["ignored_units"].append(unit_key)
-                break
-    database.reports.insert(report)
-
-
 @bottle.get("/reports")
 def get_reports(database):
     """Return the quality reports."""
