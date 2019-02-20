@@ -26,7 +26,7 @@ function Unit(props) {
       <Table.Cell collapsing>
         <Popup trigger={
           <Button floated='right' icon primary size='small' basic
-            onClick={(e) => props.ignore(e, props.unit.key)}>
+            onClick={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}>
             <Icon name={icon} />
           </Button>} content={help} />
       </Table.Cell>
@@ -38,19 +38,6 @@ class SourceUnits extends Component {
   constructor(props) {
     super(props);
     this.state = { hide_ignored_units: false };
-  }
-
-  ignore(event, unit_key) {
-    event.preventDefault();
-    const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source.source_uuid}/unit/${unit_key}/ignore`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(() => self.props.reload());
   }
 
   hide_ignored_units(event) {
@@ -65,7 +52,7 @@ class SourceUnits extends Component {
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
     const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
-    const ignored_units = report_source.ignored_units || [];
+    const ignored_units = this.props.source.ignored_units || [];
     const headers =
       <Table.Row>
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
@@ -78,9 +65,9 @@ class SourceUnits extends Component {
         </Table.HeaderCell>
       </Table.Row>
     const rows = this.props.source.units.map((unit) =>
-      <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes}
+      <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes} source_uuid={this.props.source.source_uuid}
         hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
-        ignore={(e, key) => this.ignore(e, key)} />);
+        ignore_unit={this.props.ignore_unit} />);
     return (
       <Table size='small'>
         <Table.Header>
@@ -109,7 +96,7 @@ function Units(props) {
       render: () => <Tab.Pane>
         <SourceUnits key={source.source_uuid} source={source}
           datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
-          reload={props.reload} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
+          ignore_unit={props.ignore_unit} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     })
   });
@@ -140,7 +127,7 @@ function MeasurementDetails(props) {
       panes.push({
         menuItem: unit_name, render: () => <Tab.Pane>
           <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-            metric_type={props.metric_type} reload={props.reload} metric_uuid={props.metric_uuid}
+            metric_type={props.metric_type} ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid}
             measurements={props.measurements} report_uuid={props.report_uuid} />
         </Tab.Pane>
       })
@@ -203,9 +190,7 @@ class Measurement extends Component {
     } else {
       latest_measurement = this.props.measurements[this.props.measurements.length - 1];
       sources = latest_measurement.sources;
-      let nr_hidden = 0;
-      Object.values(this.props.metric.sources).forEach((source) => { nr_hidden += (source.hidden_data && source.hidden_data.length) || 0 });
-      value = latest_measurement.value - nr_hidden;
+      value = latest_measurement.value;
       start = new Date(latest_measurement.start);
       end = new Date(latest_measurement.end);
       measurement_timestring = latest_measurement.end;
@@ -279,6 +264,7 @@ class Measurement extends Component {
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
           measurement={latest_measurement} metric={this.props.metric}
+          ignore_unit={this.props.ignore_unit}
           metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
       </>
     )

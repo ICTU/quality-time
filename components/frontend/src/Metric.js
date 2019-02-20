@@ -7,6 +7,18 @@ class Metric extends Component {
     super(props);
     this.state = { measurements: [] }
   }
+  ignore_unit(event, source_uuid, unit_key) {
+    event.preventDefault();
+    const self = this;
+    fetch(`http://localhost:8080/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/ignore`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(() => self.fetch_measurement());
+  }
   fetch_measurement() {
     let self = this;
     const report_date = this.props.report_date ? this.props.report_date : new Date();
@@ -39,7 +51,8 @@ class Metric extends Component {
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
         reload={this.props.reload} metric={this.props.metric} metric_type={this.props.metric_type}
-        measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)} />
+        measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)}
+        ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />
     )
   }
 }
