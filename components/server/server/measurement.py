@@ -62,6 +62,8 @@ def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, databa
     else:
         source["ignored_units"].append(unit_key)
     insert_new_measurement(measurement, database)
+    measurement["_id"] = str(measurement["_id"])
+    return measurement
 
 
 def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:

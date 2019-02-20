@@ -17,7 +17,13 @@ class Metric extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({})
-    }).then(() => self.fetch_measurement());
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(json) {
+      let measurements = self.state.measurements.slice(0);
+      measurements.push(json)
+      self.setState({ measurements: measurements})
+    })
   }
   fetch_measurement() {
     let self = this;
