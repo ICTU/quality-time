@@ -34,7 +34,8 @@ class OJAuditViolations(Collector):
         violations = self.violations(tree, namespaces, severities)
         return violation_count, violations
 
-    def violation_count(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
+    @staticmethod
+    def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
         """Return the violation count."""
         count = 0
         for severity in severities or ["violation"]:
@@ -57,7 +58,7 @@ class OJAuditViolations(Collector):
             raise ValueError(f"OJAudit violation {violation} has no location element")
         severity = violation.findtext("./ns:values/ns:value", namespaces=namespaces)
         if severities and severity not in severities:
-            return
+            return None
         message = violation.findtext("ns:message", namespaces=namespaces)
         line_number = violation.findtext(".//ns:line-number", namespaces=namespaces)
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
