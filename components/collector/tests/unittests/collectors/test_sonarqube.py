@@ -19,15 +19,20 @@ class SonarQubeTest(unittest.TestCase):
         mock_response.json.return_value = dict(
             total="2",
             issues=[
-                dict(key="a", message="a", component="a"),
-                dict(key="b", message="b", component="b")])
+                dict(key="a", message="a", component="a", severity="INFO", type="BUG"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
         sources = dict(
             a=dict(type="sonarqube", parameters=dict(url="http://sonar", component="id")))
         with patch("requests.get", return_value=mock_response):
             response = Collector().get("violations", sources)
-        self.assertEqual([dict(component="a", key="a", message="a", url="http://sonar/project/issues?id=id&open=a"),
-                          dict(component="b", key="b", message="b", url="http://sonar/project/issues?id=id&open=b")],
-                         response["sources"][0]["units"])
+        self.assertEqual(
+            [
+                dict(component="a", key="a", message="a", severity="info", type="bug",
+                     url="http://sonar/project/issues?id=id&open=a"),
+                dict(component="b", key="b", message="b", severity="major", type="code_smell",
+                     url="http://sonar/project/issues?id=id&open=b")
+            ],
+            response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_tests(self):

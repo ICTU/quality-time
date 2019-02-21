@@ -9,7 +9,8 @@
                 "jacoco",
                 "sonarqube",
                 "random"
-            ]
+            ],
+            "tag": ["test", "coverage"]
         },
         "uncovered_lines": {
             "name": "Test line coverage",
@@ -126,6 +127,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "type": "string",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -133,6 +135,7 @@
                 },
                 "project": {
                     "name": "Project",
+                    "type": "string",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -140,6 +143,7 @@
                 },
                 "private_token": {
                     "name": "Private Token",
+                    "type": "string",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -153,6 +157,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "type": "string",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -168,6 +173,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "type": "string",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -196,6 +202,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "type": "string",
                     "metrics": [
                         "tests",
                         "failed_tests"
@@ -209,6 +216,21 @@
             "parameters": {
                 "url": {
                     "name": "URL to XML report",
+                    "type": "string",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "values": [
+                        "advisory",
+                        "incomplete",
+                        "warning",
+                        "error",
+                        "exception"
+                    ],
                     "metrics": [
                         "violations"
                     ]
@@ -241,6 +263,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "type": "string",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -255,6 +278,7 @@
                 },
                 "component": {
                     "name": "Project Key",
+                    "type": "string",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -266,6 +290,33 @@
                         "failed_tests",
                         "violations"
                     ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "values": [
+                        "info",
+                        "minor",
+                        "major",
+                        "critical",
+                        "blocker"
+                    ],
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "types": {
+                    "name": "Types",
+                    "type": "multiple_choice",
+                    "values": [
+                        "code_smell",
+                        "bug",
+                        "vulnerability",
+                        "security_hotspot"
+                    ],
+                    "metrics": [
+                        "violations"
+                    ]
                 }
             },
             "units": {
@@ -273,6 +324,14 @@
                     {
                         "name": "Message",
                         "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
                     },
                     {
                         "name": "Component",

@@ -15,10 +15,18 @@ class SonarQubeViolations(Collector):
         return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&resolved=false")
 
     def api_url(self, **parameters) -> URL:
+        url = parameters.get("url")
+        component = parameters.get("component")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "units" sent to the server anyway (that limit is 100 currently).
-        return URL(f"{parameters.get('url')}/api/issues/search"
-                   f"?componentKeys={parameters.get('component')}&resolved=false&ps=500")
+        api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
+        severities = ",".join([severity.upper() for severity in parameters.get("severities", [])])
+        if severities:
+            api += f"&severities={severities}"
+        types = ",".join([violation_type.upper() for violation_type in parameters.get("types", [])])
+        if types:
+            api += f"&types={types}"
+        return URL(api)
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         json = response.json()
@@ -26,6 +34,8 @@ class SonarQubeViolations(Collector):
             key=unit["key"],
             url=self.unit_landing_url(unit, **parameters),
             message=unit["message"],
+            severity=unit["severity"].lower(),
+            type=unit["type"].lower(),
             component=unit["component"]) for unit in json["issues"]]
 
     @staticmethod

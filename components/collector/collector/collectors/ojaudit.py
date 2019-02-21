@@ -3,7 +3,7 @@
 import hashlib
 import xml.etree.cElementTree
 from xml.etree.cElementTree import Element
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import requests
 
@@ -29,27 +29,40 @@ class OJAuditViolations(Collector):
         tree = xml.etree.cElementTree.fromstring(response.text)
         # ElementTree has no API to get the namespace so we extract it from the root tag:
         namespaces = dict(ns=tree.tag.split('}')[0][1:])
-        violation_count = tree.findtext(f"./ns:violation-count", namespaces=namespaces)
-        models = self.model_file_paths(tree, namespaces)
-        violations = self.violations(tree, namespaces, models)
+        severities = parameters.get("severities", [])
+        violation_count = self.violation_count(tree, namespaces, severities)
+        violations = self.violations(tree, namespaces, severities)
         return violation_count, violations
 
-    def violations(self, tree: Element, namespaces: Namespaces, models: ModelFilePaths) -> List[Violation]:
+    @staticmethod
+    def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
+        """Return the violation count."""
+        count = 0
+        for severity in severities or ["violation"]:
+            count += int(tree.findtext(f"./ns:{severity}-count", namespaces=namespaces))
+        return str(count)
+
+    def violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> List[Violation]:
         """Return the violations."""
+        models = self.model_file_paths(tree, namespaces)
         violation_elements = tree.findall(f".//ns:violation", namespaces)
-        return [self.violation(violation_element, namespaces, models) for violation_element in violation_elements]
+        violations = [self.violation(element, namespaces, models, severities) for element in violation_elements]
+        return [violation for violation in violations if violation is not None]
 
     @staticmethod
-    def violation(violation: Element, namespaces: Namespaces, models: ModelFilePaths) -> Violation:
+    def violation(violation: Element, namespaces: Namespaces, models: ModelFilePaths,
+                  severities: List[str]) -> Optional[Violation]:
         """Return the violation as unit."""
         location = violation.find("./ns:location", namespaces)
         if not location:
             raise ValueError(f"OJAudit violation {violation} has no location element")
-        model = models[location.get("model")]
+        severity = violation.findtext("./ns:values/ns:value", namespaces=namespaces)
+        if severities and severity not in severities:
+            return None
         message = violation.findtext("ns:message", namespaces=namespaces)
         line_number = violation.findtext(".//ns:line-number", namespaces=namespaces)
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
-        severity = violation.findtext("./ns:values/ns:value", namespaces=namespaces)
+        model = models[location.get("model")]
         component = f"{model}:{line_number}:{column_offset}"
         key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()
         return dict(key=key, severity=severity, message=message, component=component)

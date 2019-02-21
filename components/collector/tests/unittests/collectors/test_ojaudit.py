@@ -41,7 +41,7 @@ class OJAuditTest(unittest.TestCase):
               <column-offset>4</column-offset>
             </location>
             <values>
-              <value>medium</value>
+              <value>warning</value>
             </values>
           </violation>
         </children>
@@ -53,7 +53,7 @@ class OJAuditTest(unittest.TestCase):
               <column-offset>2</column-offset>
         </location>
         <values>
-          <value>high</value>
+          <value>exception</value>
         </values>
       </violation>
     </children>
@@ -63,8 +63,8 @@ class OJAuditTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             response = Collector().get("violations", sources)
         self.assertEqual(
-            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", severity="medium", message="a"),
-             dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", severity="high", message="b")],
+            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
+             dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b", severity="exception")],
             response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Dropdown, Form } from 'semantic-ui-react';
 
-class SourceParameter extends Component {
+class StringParameter extends Component {
   constructor(props) {
     super(props);
     this.state = { edited_value: this.props.parameter_value, edit: false, hover: false }
@@ -54,6 +54,44 @@ class SourceParameter extends Component {
       </div>
     )
   }
+}
+
+class MultipleChoiceParameter extends Component {
+  onSubmit(event, value) {
+    console.log(value);
+    event.preventDefault();
+    let self = this;
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ [self.props.parameter_key]: value })
+    }).then(() => this.props.reload())
+  }
+  render() {
+    const options = this.props.parameter_values.map((value) => ({ key: value, text: value, value: value }));
+    return (
+      <Dropdown
+        defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
+        fluid multiple selection options={options} />
+    )
+  }
+}
+
+function SourceParameter(props) {
+  return (
+    props.parameter_type === "string" ?
+      <StringParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
+        parameter_key={props.parameter_key} reload={props.reload}
+        parameter_value={props.parameter_value} />
+      :
+      <MultipleChoiceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
+        parameter_key={props.parameter_key} reload={props.reload}
+        parameter_values={props.parameter_values}
+        parameter_value={props.parameter_value} />
+  )
 }
 
 export { SourceParameter };
