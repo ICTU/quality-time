@@ -23,6 +23,9 @@ class SonarQubeViolations(Collector):
         severities = ",".join([severity.upper() for severity in parameters.get("severities", [])])
         if severities:
             api += f"&severities={severities}"
+        types = ",".join([violation_type.upper() for violation_type in parameters.get("types", [])])
+        if types:
+            api += f"&types={types}"
         return URL(api)
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
@@ -32,6 +35,7 @@ class SonarQubeViolations(Collector):
             url=self.unit_landing_url(unit, **parameters),
             message=unit["message"],
             severity=unit["severity"].lower(),
+            type=unit["type"].lower(),
             component=unit["component"]) for unit in json["issues"]]
 
     @staticmethod

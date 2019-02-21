@@ -304,6 +304,19 @@
                     "metrics": [
                         "violations"
                     ]
+                },
+                "types": {
+                    "name": "Types",
+                    "type": "multiple_choice",
+                    "values": [
+                        "code_smell",
+                        "bug",
+                        "vulnerability",
+                        "security_hotspot"
+                    ],
+                    "metrics": [
+                        "violations"
+                    ]
                 }
             },
             "units": {
@@ -315,6 +328,10 @@
                     {
                         "name": "Severity",
                         "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
                     },
                     {
                         "name": "Component",
