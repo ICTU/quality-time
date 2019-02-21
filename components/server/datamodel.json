@@ -277,7 +277,7 @@
                         "violations"
                     ]
                 },
-                "severity": {
+                "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
                     "values": [
@@ -299,7 +299,7 @@
                         "key": "message"
                     },
                     {
-                        "severity": "Severity",
+                        "name": "Severity",
                         "key": "severity"
                     },
                     {
