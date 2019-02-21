@@ -220,6 +220,20 @@
                     "metrics": [
                         "violations"
                     ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "values": [
+                        "advisory",
+                        "incomplete",
+                        "warning",
+                        "error",
+                        "exception"
+                    ],
+                    "metrics": [
+                        "violations"
+                    ]
                 }
             },
             "units": {
