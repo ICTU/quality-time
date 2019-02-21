@@ -17,6 +17,8 @@ function SourceParameters(props) {
                 <Table.Cell>
                     <SourceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
                         parameter_key={parameter_key} reload={props.reload}
+                        parameter_type={all_parameters[parameter_key].type}
+                        parameter_values={all_parameters[parameter_key].values || []}
                         parameter_value={props.source.parameters[parameter_key]} />
                 </Table.Cell>
             </Table.Row>
