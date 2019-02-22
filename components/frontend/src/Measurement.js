@@ -7,6 +7,7 @@ import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
+import { MetricName } from './MetricName';
 import { MetricType } from './MetricType';
 
 function Unit(props) {
@@ -135,7 +136,7 @@ function MeasurementDetails(props) {
   }
   return (
     <Table.Row>
-      <Table.Cell colSpan="9">
+      <Table.Cell colSpan="10">
         <Tab panes={panes} />
       </Table.Cell>
     </Table.Row>
@@ -214,13 +215,17 @@ class Measurement extends Component {
     const positive = status === "target_met";
     const negative = status === "target_not_met";
     const warning = status === null;
-    const metric_unit = this.props.datamodel["metrics"][this.state.edited_metric_type]["unit"];
+    const metric_unit = this.props.datamodel.metrics[this.state.edited_metric_type].unit;
+    const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.state.edited_metric_type].name;
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
           <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+          </Table.Cell>
+          <Table.Cell>
+            <MetricName name={metric_name} report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid} />
           </Table.Cell>
           <Table.Cell>
             <MetricType post_metric_type={(m) => this.post_metric_type(m)}

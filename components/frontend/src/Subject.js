@@ -32,7 +32,8 @@ class Subject extends Component {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell />
-              <Table.HeaderCell>Metric</Table.HeaderCell>
+              <Table.HeaderCell>Metric name</Table.HeaderCell>
+              <Table.HeaderCell>Metric type</Table.HeaderCell>
               <Table.HeaderCell width="2">Trend</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Measurement</Table.HeaderCell>
@@ -45,7 +46,7 @@ class Subject extends Component {
           <Table.Body>{metrics}</Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan='9'>
+              <Table.HeaderCell colSpan='10'>
                 <Button floated='right' icon labelPosition='left' primary size='small'
                   onClick={(e) => this.onAddMetric(e)}>
                   <Icon name='plus' /> Add metric
