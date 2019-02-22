@@ -8,6 +8,7 @@ monkey.patch_all()
 import glob
 import json
 import logging
+import os
 
 import bottle
 import pymongo
@@ -68,7 +69,8 @@ def serve() -> None:
     """Connect to the database and start the application server."""
     logging.getLogger().setLevel(logging.INFO)
     bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024  # Max size of POST body in bytes
-    database = pymongo.MongoClient("mongodb://root:root@localhost:27017/").quality_time_db
+    database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
+    database = pymongo.MongoClient(database_url).quality_time_db
     logging.info("Connected to database: %s", database)
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
     injection_plugin = InjectionPlugin(value=database, keyword="database")

@@ -17,7 +17,7 @@ services:
     ports:
     - "8080:8080"
     environment:
-    - DATABASE_URL=postgresql://postgres:mysecretpassword@database:5432/postgres
+    - DATABASE_URL=mongodb://root:root@database:27017
     depends_on:
     - database
   database:
