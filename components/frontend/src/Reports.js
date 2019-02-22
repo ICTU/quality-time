@@ -41,10 +41,12 @@ class Reports extends Component {
             <Card fluid header={report["title"]} key={report.report_uuid}
               extra={
                 <>
-                  <Button onClick={(e) => this.props.open_report(e, report)}>{"Open"}</Button>
-                  <Button icon primary negative basic floated='right'
+                  <Button icon onClick={(e) => this.props.open_report(e, report)}>
+                    <Icon name='folder open' /> Open report
+                  </Button>
+                  <Button icon negative basic floated='right'
                     onClick={(e) => this.delete_report(e, report)}>
-                    <Icon name='trash alternate' />
+                    <Icon name='trash alternate' /> Delete report
                   </Button>
                 </>
               }
@@ -52,8 +54,7 @@ class Reports extends Component {
           }
         </Card.Group>
         <Segment basic>
-          <Button icon labelPosition='left' primary size='small'
-            onClick={(e) => this.add_report(e)}>
+          <Button icon primary basic onClick={(e) => this.add_report(e)}>
             <Icon name='plus' /> Add report
           </Button>
         </Segment>

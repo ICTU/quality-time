@@ -88,16 +88,16 @@ class SubjectTitleDisplay extends Component {
         const style = this.state.editable ? { borderBottom: "1px dotted #000000" } : {};
         return (
             <Grid>
-                <Grid.Column key={0} width={15}>
+                <Grid.Column key={0} width={13}>
                     <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
                         onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
                         {this.props.title}
                     </Header>
                 </Grid.Column>
-                <Grid.Column key={1} width={1}>
+                <Grid.Column key={1} width={3}>
                     <Button floated='right' icon primary negative basic
                         onClick={(e) => this.delete_subject(e)}>
-                        <Icon name='trash alternate' />
+                        <Icon name='trash alternate' /> Delete subject
                     </Button>
                 </Grid.Column>
             </Grid>

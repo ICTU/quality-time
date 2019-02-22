@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
+import { Button, Icon, Menu, Label, Segment, Tab, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendGraph } from './TrendGraph';
@@ -103,58 +103,7 @@ function Units(props) {
   )
 }
 
-function MeasurementDetails(props) {
-  const panes = [
-    {
-      menuItem: 'Metric', render: () => <Tab.Pane>
-        <MetricParameters report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}
-          datamodel={props.datamodel} metric={props.metric} reload={props.reload} />
-      </Tab.Pane>
-    },
-    {
-      menuItem: 'Sources', render: () => <Tab.Pane>
-        <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
-          metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
-      </Tab.Pane>
-    }
-  ];
-  if (props.measurement) {
-    const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
-    panes.push(
-      {
-        menuItem: 'Trend', render: () => <Tab.Pane>
-          <TrendGraph measurements={props.measurements} unit={unit_name} />
-        </Tab.Pane>
-      });
-    const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
-    if (nr_units > 0) {
-      panes.push({
-        menuItem: unit_name, render: () => <Tab.Pane>
-          <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-            ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid}
-            measurements={props.measurements} report_uuid={props.report_uuid} />
-        </Tab.Pane>
-      })
-    }
-  }
-  return (
-    <Table.Row>
-      <Table.Cell colSpan="9">
-        <Tab panes={panes} />
-      </Table.Cell>
-    </Table.Row>
-  )
-}
-
-class Measurement extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { show_details: false }
-  }
-  onExpand(event) {
-    event.preventDefault();
-    this.setState((state) => ({ show_details: !state.show_details }));
-  }
+class MeasurementDetails extends Component {
   delete_metric(event) {
     event.preventDefault();
     const self = this;
@@ -168,6 +117,64 @@ class Measurement extends Component {
     }).then(
       () => self.props.reload()
     );
+  }
+  render() {
+    const props = this.props;
+    const panes = [
+      {
+        menuItem: 'Metric', render: () => <Tab.Pane>
+          <MetricParameters report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}
+            datamodel={props.datamodel} metric={props.metric} reload={props.reload} />
+        </Tab.Pane>
+      },
+      {
+        menuItem: 'Sources', render: () => <Tab.Pane>
+          <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
+            metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
+        </Tab.Pane>
+      }
+    ];
+    if (props.measurement) {
+      const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
+      panes.push(
+        {
+          menuItem: 'Trend', render: () => <Tab.Pane>
+            <TrendGraph measurements={props.measurements} unit={unit_name} />
+          </Tab.Pane>
+        });
+      const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
+      if (nr_units > 0) {
+        panes.push({
+          menuItem: unit_name, render: () => <Tab.Pane>
+            <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+              ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid}
+              measurements={props.measurements} report_uuid={props.report_uuid} />
+          </Tab.Pane>
+        })
+      }
+    }
+    return (
+      <Table.Row>
+        <Table.Cell colSpan="8">
+          <Tab panes={panes} />
+          <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
+            onClick={(e) => this.delete_metric(e)}>
+            <Icon name='trash alternative' /> Delete metric
+        </Button>
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
+}
+
+class Measurement extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { show_details: false }
+  }
+  onExpand(event) {
+    event.preventDefault();
+    this.setState((state) => ({ show_details: !state.show_details }));
   }
   render() {
     var latest_measurement, start, end, value, sources, measurement_timestring;
@@ -239,12 +246,6 @@ class Measurement extends Component {
           </Table.Cell>
           <Table.Cell>
             {this.props.metric.comment}
-          </Table.Cell>
-          <Table.Cell collapsing>
-            <Button floated='right' icon primary size='small' negative basic
-              onClick={(e) => this.delete_metric(e)}>
-              <Icon name='trash alternate' />
-            </Button>
           </Table.Cell>
         </Table.Row>
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}

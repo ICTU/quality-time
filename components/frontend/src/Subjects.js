@@ -27,8 +27,7 @@ class Subjects extends Component {
             search_string={this.props.search_string} datamodel={this.props.datamodel} reload={this.props.reload}
             report_date={this.props.report_date} nr_new_measurements={this.props.nr_new_measurements} />)}
         <Segment basic>
-          <Button icon labelPosition='left' primary size='small'
-            onClick={(e) => this.onAddSubject(e)}>
+          <Button icon primary basic onClick={(e) => this.onAddSubject(e)}>
             <Icon name='plus' /> Add subject
           </Button>
         </Segment>
