@@ -21,7 +21,7 @@ class Subject extends Component {
   render() {
     const metrics = Object.keys(this.props.subject.metrics).map((metric_uuid) =>
       <Metric key={metric_uuid} report_uuid={this.props.report_uuid} metric_uuid={metric_uuid}
-        metric={this.props.subject.metrics[metric_uuid]} metric_type={this.props.subject.metrics[metric_uuid]["type"]}
+        metric={this.props.subject.metrics[metric_uuid]}
         datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
     return (
@@ -32,8 +32,7 @@ class Subject extends Component {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell />
-              <Table.HeaderCell>Metric name</Table.HeaderCell>
-              <Table.HeaderCell>Metric type</Table.HeaderCell>
+              <Table.HeaderCell>Metric</Table.HeaderCell>
               <Table.HeaderCell width="2">Trend</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Measurement</Table.HeaderCell>
@@ -46,7 +45,7 @@ class Subject extends Component {
           <Table.Body>{metrics}</Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan='10'>
+              <Table.HeaderCell colSpan='9'>
                 <Button floated='right' icon labelPosition='left' primary size='small'
                   onClick={(e) => this.onAddMetric(e)}>
                   <Icon name='plus' /> Add metric

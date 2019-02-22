@@ -5,17 +5,19 @@ import { Form } from 'semantic-ui-react';
 class MetricName extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_name: props.name, edit: false, hover: false }
+    this.state = { edited_name: props.metric_name, edit: false, hover: false }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.name !== this.props.name) {
-      this.setState({ edited_name: this.props.name })
+    if (prevProps.metric_name !== this.props.metric_name) {
+      this.setState({ edited_name: this.props.metric_name })
     }
   }
   onMouseEnter(event) {
+    event.preventDefault();
     this.setState({ hover: true })
   }
   onMouseLeave(event) {
+    event.preventDefault();
     this.setState({ hover: false })
   }
   onEdit() {
@@ -26,7 +28,7 @@ class MetricName extends Component {
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({ edit: false, edited_name: this.props.name })
+      this.setState({ edit: false, edited_name: this.props.metric_name })
     }
   }
   onSubmit(event) {
