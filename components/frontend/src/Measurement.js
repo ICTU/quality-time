@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
-import { Comment } from './Comment';
 import { SourceStatus } from './SourceStatus';
-import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
@@ -115,7 +113,7 @@ function MeasurementDetails(props) {
     },
     {
       menuItem: 'Sources', render: () => <Tab.Pane>
-        <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
+        <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
           metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
       </Tab.Pane>
     }
@@ -154,6 +152,7 @@ class Measurement extends Component {
     this.state = { show_details: false }
   }
   onExpand(event) {
+    event.preventDefault();
     this.setState((state) => ({ show_details: !state.show_details }));
   }
   delete_metric(event) {
@@ -232,17 +231,14 @@ class Measurement extends Component {
           </Popup>
           </Table.Cell>
           <Table.Cell>
-            <Target report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-              unit={metric_unit} direction={metric_direction} reload={this.props.reload}
-              editable={this.state.hover} target={target} key={end} onEdit={this.props.onEdit} />
+            {metric_direction} {target} {metric_unit}
           </Table.Cell>
           <Table.Cell>
             {sources.map((source) => <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
               metric={this.props.metric} source={source} datamodel={this.props.datamodel} />)}
           </Table.Cell>
           <Table.Cell>
-            <Comment report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-              comment={this.props.metric.comment} key={end} />
+            {this.props.metric.comment}
           </Table.Cell>
           <Table.Cell collapsing>
             <Button floated='right' icon primary size='small' negative basic
@@ -255,7 +251,7 @@ class Measurement extends Component {
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
           measurement={latest_measurement} metric={this.props.metric}
-          ignore_unit={this.props.ignore_unit} sources={this.props.metric.sources} />}
+          ignore_unit={this.props.ignore_unit} />}
       </>
     )
   }

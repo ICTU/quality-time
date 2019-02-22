@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from 'semantic-ui-react';
 
 
-class Target extends Component {
+class MetricTarget extends Component {
   constructor(props) {
     super(props);
     this.state = { edited_target: this.props.target, edit: false, hover: false }
@@ -60,4 +60,4 @@ class Target extends Component {
   }
 }
 
-export { Target };
+export { MetricTarget };
