@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Form } from 'semantic-ui-react';
 
-
-class Comment extends Component {
+class MetricComment extends Component {
   constructor(props) {
     super(props);
-    this.state = {edited_comment: this.props.comment, edit: false, hover: false}
+    this.state = { edited_comment: props.comment, edit: false, hover: false }
   }
   onMouseEnter(event) {
     this.setState({ hover: true })
@@ -14,27 +13,27 @@ class Comment extends Component {
     this.setState({ hover: false })
   }
   onEdit() {
-    this.setState({edit: true});
+    this.setState({ edit: true });
   }
   onChange(event) {
-    this.setState({edited_comment: event.target.value});
+    this.setState({ edited_comment: event.target.value });
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({edit: false, edited_comment: this.props.comment})
+      this.setState({ edit: false, edited_comment: this.props.comment })
     }
   }
   onSubmit(event) {
     event.preventDefault();
     const self = this;
-    this.setState({edit: false});
+    this.setState({ edit: false });
     fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/comment`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({comment: this.state.edited_comment})
+      body: JSON.stringify({ comment: this.state.edited_comment })
     }).then(
       () => self.props.reload()
     )
@@ -48,14 +47,14 @@ class Comment extends Component {
         </Form>
       )
     }
-    const style = this.state.hover ? {overflow: "hidden", borderBottom: "1px dotted #000000" } : {overflow: "hidden"};
+    const style = this.state.hover ? { overflow: "hidden", borderBottom: "1px dotted #000000" } : { overflow: "hidden" };
     return (
       <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
-      onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
+        onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
         {this.state.edited_comment}
       </div>
     )
   }
 }
 
-export { Comment };
+export { MetricComment };
