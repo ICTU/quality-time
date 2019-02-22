@@ -51,12 +51,12 @@ class Metric extends Component {
   }
   render() {
     const search = this.props.search_string;
-    const metric_name = this.props.datamodel["metrics"][this.props.metric_type]["name"];
+    const metric_name = this.props.datamodel.metrics[this.props.metric.type].name;
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
-        reload={this.props.reload} metric={this.props.metric} metric_type={this.props.metric_type}
+        reload={this.props.reload} metric={this.props.metric}
         measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)}
         ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />
     )

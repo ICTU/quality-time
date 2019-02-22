@@ -7,7 +7,7 @@ import { Target } from './Target';
 import { TrendGraph } from './TrendGraph';
 import { TrendSparkline } from './TrendSparkline';
 import { Sources } from './Sources';
-import { MetricType } from './MetricType';
+import { MetricParameters } from './MetricParameters';
 
 function Unit(props) {
   if (props.hide_ignored_units && props.ignored) { return null };
@@ -51,7 +51,7 @@ class SourceUnits extends Component {
     }
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
     const source_type = report_source["type"];
-    const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric_type];
+    const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric.type];
     const ignored_units = this.props.source.ignored_units || [];
     const headers =
       <Table.Row>
@@ -95,7 +95,7 @@ function Units(props) {
       menuItem: (<Menu.Item>{source_name}<Label>{nr_units}</Label></Menu.Item>),
       render: () => <Tab.Pane>
         <SourceUnits key={source.source_uuid} source={source}
-          datamodel={props.datamodel} metric={props.metric} metric_type={props.metric_type}
+          datamodel={props.datamodel} metric={props.metric}
           ignore_unit={props.ignore_unit} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     })
@@ -106,16 +106,22 @@ function Units(props) {
 }
 
 function MeasurementDetails(props) {
-  const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
   const panes = [
+    {
+      menuItem: 'Metric', render: () => <Tab.Pane>
+        <MetricParameters report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}
+          datamodel={props.datamodel} metric={props.metric} reload={props.reload} />
+      </Tab.Pane>
+    },
     {
       menuItem: 'Sources', render: () => <Tab.Pane>
         <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.sources}
-          metric_type={props.metric_type} datamodel={props.datamodel} reload={props.reload} />
+          metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
       </Tab.Pane>
     }
   ];
   if (props.measurement) {
+    const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
     panes.push(
       {
         menuItem: 'Trend', render: () => <Tab.Pane>
@@ -127,7 +133,7 @@ function MeasurementDetails(props) {
       panes.push({
         menuItem: unit_name, render: () => <Tab.Pane>
           <Units measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-            metric_type={props.metric_type} ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid}
+            ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid}
             measurements={props.measurements} report_uuid={props.report_uuid} />
         </Tab.Pane>
       })
@@ -145,21 +151,7 @@ function MeasurementDetails(props) {
 class Measurement extends Component {
   constructor(props) {
     super(props);
-    this.state = { show_details: false, edited_metric_type: props.metric_type }
-  }
-  post_metric_type(metric_type) {
-    this.setState({ edited_metric_type: metric_type });
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/type`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ type: metric_type })
-    });
-  }
-  reset_metric_type() {
-    this.setState({ edited_metric_type: this.props.metric_type });
+    this.state = { show_details: false }
   }
   onExpand(event) {
     this.setState((state) => ({ show_details: !state.show_details }));
@@ -196,7 +188,7 @@ class Measurement extends Component {
       measurement_timestring = latest_measurement.end;
     }
     const target = this.props.metric.target;
-    const metric_direction = this.props.datamodel["metrics"][this.state.edited_metric_type]["direction"];
+    const metric_direction = this.props.datamodel.metrics[this.props.metric.type].direction;
     let status = null;
     let status_icon = 'question';
     if (value != null) {
@@ -214,7 +206,8 @@ class Measurement extends Component {
     const positive = status === "target_met";
     const negative = status === "target_not_met";
     const warning = status === null;
-    const metric_unit = this.props.datamodel["metrics"][this.state.edited_metric_type]["unit"];
+    const metric_unit = this.props.datamodel.metrics[this.props.metric.type].unit;
+    const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
@@ -223,9 +216,7 @@ class Measurement extends Component {
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
           </Table.Cell>
           <Table.Cell>
-            <MetricType post_metric_type={(m) => this.post_metric_type(m)}
-              reset_metric_type={() => this.reset_metric_type()} datamodel={this.props.datamodel}
-              metric_type={this.state.edited_metric_type} />
+            {metric_name}
           </Table.Cell>
           <Table.Cell>
             <TrendSparkline measurements={this.props.measurements} />
@@ -264,8 +255,7 @@ class Measurement extends Component {
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
           measurement={latest_measurement} metric={this.props.metric}
-          ignore_unit={this.props.ignore_unit}
-          metric_type={this.state.edited_metric_type} sources={this.props.metric.sources} />}
+          ignore_unit={this.props.ignore_unit} sources={this.props.metric.sources} />}
       </>
     )
   }
