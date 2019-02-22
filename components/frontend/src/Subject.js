@@ -39,15 +39,13 @@ class Subject extends Component {
               <Table.HeaderCell>Target</Table.HeaderCell>
               <Table.HeaderCell>Source</Table.HeaderCell>
               <Table.HeaderCell>Comment</Table.HeaderCell>
-              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan='9'>
-                <Button floated='right' icon labelPosition='left' primary size='small'
-                  onClick={(e) => this.onAddMetric(e)}>
+              <Table.HeaderCell colSpan='8'>
+                <Button floated='left' icon primary basic onClick={(e) => this.onAddMetric(e)}>
                   <Icon name='plus' /> Add metric
                 </Button>
               </Table.HeaderCell>
