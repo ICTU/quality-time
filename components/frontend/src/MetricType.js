@@ -27,10 +27,10 @@ class MetricType extends Component {
   render() {
     let options = [];
     let self = this;
-    Object.keys(this.props.datamodel["metrics"]).forEach(
-      (key) => { options.push({ text: self.props.datamodel["metrics"][key]["name"], value: key }) });
+    Object.keys(this.props.datamodel.metrics).forEach(
+      (key) => { options.push({ text: self.props.datamodel.metrics[key].name, value: key }) });
     return (
-      <Dropdown selectOnNavigation={false} value={this.state.edited_metric_type}
+      <Dropdown search fluid selection selectOnNavigation={false} value={this.state.edited_metric_type}
         options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
     )
   }

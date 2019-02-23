@@ -29,10 +29,10 @@ class SourceType extends Component {
   render() {
     let options = [];
     let self = this;
-    this.props.datamodel["metrics"][this.props.metric_type]["sources"].forEach(
-      (key) => { options.push({ text: self.props.datamodel["sources"][key]["name"], value: key }) });
+    this.props.datamodel.metrics[this.props.metric_type].sources.forEach(
+      (key) => { options.push({ text: self.props.datamodel.sources[key].name, value: key }) });
     return (
-      <Dropdown selectOnNavigation={false} value={this.props.source_type}
+      <Dropdown search fluid selection selectOnNavigation={false} value={this.props.source_type}
         options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
     )
   }
