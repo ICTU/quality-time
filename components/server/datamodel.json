@@ -25,7 +25,7 @@
         },
         "covered_branches": {
             "name": "Test branch coverage",
-            "unit": "covered branch",
+            "unit": "covered branches",
             "direction": ">=",
             "default_target": "0",
             "sources": [
@@ -36,7 +36,7 @@
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
-            "unit": "uncovered branch",
+            "unit": "uncovered branches",
             "direction": "<=",
             "default_target": "0",
             "sources": [

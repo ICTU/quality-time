@@ -4,29 +4,19 @@ import { Form } from 'semantic-ui-react';
 class MetricComment extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_comment: props.comment, edit: false, hover: false }
-  }
-  onMouseEnter(event) {
-    this.setState({ hover: true })
-  }
-  onMouseLeave(event) {
-    this.setState({ hover: false })
-  }
-  onEdit() {
-    this.setState({ edit: true });
+    this.state = { edited_comment: props.comment }
   }
   onChange(event) {
     this.setState({ edited_comment: event.target.value });
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({ edit: false, edited_comment: this.props.comment })
+      this.setState({ edited_comment: this.props.comment })
     }
   }
   onSubmit(event) {
     event.preventDefault();
     const self = this;
-    this.setState({ edit: false });
     fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/comment`, {
       method: 'post',
       mode: 'cors',
@@ -39,20 +29,11 @@ class MetricComment extends Component {
     )
   }
   render() {
-    if (this.state.edit) {
-      return (
-        <Form onSubmit={(e) => this.onSubmit(e)}>
-          <Form.Input autoFocus focus fluid defaultValue={this.state.edited_comment}
-            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-        </Form>
-      )
-    }
-    const style = this.state.hover ? { overflow: "hidden", borderBottom: "1px dotted #000000" } : { overflow: "hidden" };
     return (
-      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
-        onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
-        {this.state.edited_comment}
-      </div>
+      <Form onSubmit={(e) => this.onSubmit(e)}>
+        <Form.Input label='Comment' focus fluid defaultValue={this.state.edited_comment}
+          onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
+      </Form>
     )
   }
 }

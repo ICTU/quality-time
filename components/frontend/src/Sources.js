@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Table } from 'semantic-ui-react';
+import { Button, Icon, Segment, Table } from 'semantic-ui-react';
 import { Source } from './Source';
 
 
@@ -24,33 +24,22 @@ class Sources extends Component {
         );
         const sources = source_uuids.map((source_uuid) =>
             (
-                <Source key={source_uuid} report_uuid={this.props.report_uuid} source_uuid={source_uuid}
-                   source={this.props.sources[source_uuid]} reload={this.props.reload}
-                   metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
+                <Segment vertical>
+                    <Source key={source_uuid} report_uuid={this.props.report_uuid} source_uuid={source_uuid}
+                        source={this.props.sources[source_uuid]} reload={this.props.reload}
+                        metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
+                </Segment>
             )
         );
         return (
-            <Table columns={4} size='small'>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell width={1}>Source type</Table.HeaderCell>
-                        <Table.HeaderCell width={1}>Source name</Table.HeaderCell>
-                        <Table.HeaderCell width={10}>Parameters</Table.HeaderCell>
-                        <Table.HeaderCell />
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>{sources}</Table.Body>
-                <Table.Footer>
-                    <Table.Row>
-                        <Table.HeaderCell colSpan='4'>
-                            <Button floated='right' icon labelPosition='left' primary size='small'
-                                onClick={(e) => this.onAddSource(e)}>
-                                <Icon name='plus'/> Add source
-                            </Button>
-                        </Table.HeaderCell>
-                    </Table.Row>
-                </Table.Footer>
-            </Table>
+            <div>
+                {sources}
+                <Segment vertical>
+                    <Button icon primary basic onClick={(e) => this.onAddSource(e)}>
+                        <Icon name='plus' /> Add source
+                    </Button>
+                </Segment>
+            </div>
         )
     }
 }

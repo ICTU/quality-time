@@ -95,9 +95,8 @@ class SubjectTitleDisplay extends Component {
                     </Header>
                 </Grid.Column>
                 <Grid.Column key={1} width={3}>
-                    <Button floated='right' icon primary negative basic
-                        onClick={(e) => this.delete_subject(e)}>
-                        <Icon name='trash alternate' /> Delete subject
+                    <Button floated='right' icon primary negative basic onClick={(e) => this.delete_subject(e)}>
+                        <Icon name='trash' /> Delete subject
                     </Button>
                 </Grid.Column>
             </Grid>
