@@ -36,7 +36,7 @@ class Sources extends Component {
                         <Table.HeaderCell>Source type</Table.HeaderCell>
                         <Table.HeaderCell>Source name</Table.HeaderCell>
                         <Table.HeaderCell>Parameters</Table.HeaderCell>
-                        <Table.HeaderCell />
+                        <Table.HeaderCell/>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>{sources}</Table.Body>

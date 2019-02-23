@@ -4,29 +4,19 @@ import { Dropdown, Form } from 'semantic-ui-react';
 class StringParameter extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_value: this.props.parameter_value, edit: false, hover: false }
-  }
-  onMouseEnter(event) {
-    this.setState({ hover: true })
-  }
-  onMouseLeave(event) {
-    this.setState({ hover: false })
-  }
-  onEdit() {
-    this.setState({ edit: true });
+    this.state = { edited_value: this.props.parameter_value }
   }
   onChange(event) {
     this.setState({ edited_value: event.target.value });
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({ edit: false, edited_value: this.props.parameter_value })
+      this.setState({ edited_value: this.props.parameter_value })
     }
   }
   onSubmit(event) {
     event.preventDefault();
     let self = this;
-    this.setState({ edit: false });
     fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
       method: 'post',
       mode: 'cors',
@@ -37,28 +27,17 @@ class StringParameter extends Component {
     }).then(() => this.props.reload())
   }
   render() {
-    if (this.state.edit) {
-      return (
-        <Form onSubmit={(e) => this.onSubmit(e)}>
-          <Form.Input autoFocus focus fluid defaultValue={this.state.edited_value}
-            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-        </Form>
-      )
-    }
-    const style = this.state.hover ? { overflow: "hidden", borderBottom: "1px dotted #000000" } : { overflow: "hidden" };
     return (
-      <div onClick={(e) => this.onEdit(e)} onKeyPress={(e) => this.onEdit(e)}
-        onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)}
-        style={style} tabIndex="0">
-        {this.state.edited_value || "Enter parameter value"}
-      </div>
+      <Form onSubmit={(e) => this.onSubmit(e)}>
+        <Form.Input focus fluid defaultValue={this.state.edited_value}
+          onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
+      </Form>
     )
   }
 }
 
 class MultipleChoiceParameter extends Component {
   onSubmit(event, value) {
-    console.log(value);
     event.preventDefault();
     let self = this;
     fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
