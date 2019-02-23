@@ -10,7 +10,7 @@ function SourceParameters(props) {
     );
     const parameters = parameter_keys.map((parameter_key) =>
         (
-            <Table.Row key={parameter_key}>
+            <Table.Row key={parameter_key} verticalAlign='top'>
                 <Table.Cell>
                     {all_parameters[parameter_key].name}
                 </Table.Cell>

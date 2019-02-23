@@ -46,7 +46,7 @@ class Source extends Component {
         const source_type_name = props.datamodel["sources"][this.state.edited_source_type]["name"];
         const source_name = props.source.name || source_type_name;
         return (
-            <Table.Row>
+            <Table.Row verticalAlign='top'>
                 <Table.Cell>
                     <SourceType
                         source_type={this.state.edited_source_type}
@@ -58,7 +58,7 @@ class Source extends Component {
                     <SourceName name={source_name} report_uuid={props.report_uuid}
                         source_uuid={props.source_uuid} reload={props.reload} />
                 </Table.Cell>
-                <Table.Cell>
+                <Table.Cell style={{paddingTop: '0px', paddingBottom: '0px'}}>
                     <SourceParameters
                         report_uuid={props.report_uuid} reload={props.reload}
                         source_uuid={props.source_uuid} metric_type={props.metric_type}
