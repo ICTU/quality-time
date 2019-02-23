@@ -37,7 +37,7 @@ class MetricName extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Input focus fluid defaultValue={this.state.edited_name}
+        <Form.Input label="Metric name" focus fluid defaultValue={this.state.edited_name}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
       </Form>
     )

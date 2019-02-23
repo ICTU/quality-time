@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Input, Label } from 'semantic-ui-react';
 
 
 class MetricTarget extends Component {
@@ -32,13 +32,16 @@ class MetricTarget extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Group style={{ alignItems: "center", marginBottom: '0px'}}>
-          {this.props.direction}
-          <Form.Input focus inline type="number" defaultValue={this.state.edited_target}
-            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
-          {this.props.unit}
+        <Form.Group style={{marginBottom: '0px'}}>
+          <Form.Input label='Metric target' focus type="number" defaultValue={this.state.edited_target}
+            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
+            labelPosition='right'>
+            <Label basic>{this.props.direction}</Label>
+            <input />
+            <Label basic>{this.props.unit}</Label>
+          </Form.Input>
         </Form.Group>
-      </Form>
+      </Form >
     )
   }
 }

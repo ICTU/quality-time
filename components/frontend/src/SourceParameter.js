@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown, Form } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 class StringParameter extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class StringParameter extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Input focus fluid defaultValue={this.state.edited_value}
+        <Form.Input label={this.props.parameter_name} focus fluid defaultValue={this.state.edited_value}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
       </Form>
     )
@@ -52,9 +52,11 @@ class MultipleChoiceParameter extends Component {
   render() {
     const options = this.props.parameter_values.map((value) => ({ key: value, text: value, value: value }));
     return (
-      <Dropdown
-        defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
-        fluid multiple selection options={options} />
+      <Form>
+        <Form.Dropdown label={this.props.parameter_name}
+          defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
+          fluid multiple selection options={options} />
+      </Form>
     )
   }
 }
@@ -64,11 +66,11 @@ function SourceParameter(props) {
     props.parameter_type === "string" ?
       <StringParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
         parameter_key={props.parameter_key} reload={props.reload}
-        parameter_value={props.parameter_value} />
+        parameter_value={props.parameter_value} parameter_name={props.parameter_name} />
       :
       <MultipleChoiceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
         parameter_key={props.parameter_key} reload={props.reload}
-        parameter_values={props.parameter_values}
+        parameter_values={props.parameter_values} parameter_name={props.parameter_name}
         parameter_value={props.parameter_value} />
   )
 }

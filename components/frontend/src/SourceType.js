@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 class SourceType extends Component {
   constructor(props) {
@@ -32,8 +32,11 @@ class SourceType extends Component {
     this.props.datamodel.metrics[this.props.metric_type].sources.forEach(
       (key) => { options.push({ text: self.props.datamodel.sources[key].name, value: key }) });
     return (
-      <Dropdown search fluid selection selectOnNavigation={false} value={this.props.source_type}
-        options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+      <Form>
+        <Form.Dropdown label="Source type" search fluid selection selectOnNavigation={false}
+          value={this.props.source_type}
+          options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+      </Form>
     )
   }
 }

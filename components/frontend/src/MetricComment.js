@@ -31,7 +31,7 @@ class MetricComment extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Input focus fluid defaultValue={this.state.edited_comment}
+        <Form.Input label='Comment' focus fluid defaultValue={this.state.edited_comment}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
       </Form>
     )

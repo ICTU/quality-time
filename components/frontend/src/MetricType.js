@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 class MetricType extends Component {
   constructor(props) {
@@ -30,8 +30,11 @@ class MetricType extends Component {
     Object.keys(this.props.datamodel.metrics).forEach(
       (key) => { options.push({ text: self.props.datamodel.metrics[key].name, value: key }) });
     return (
-      <Dropdown search fluid selection selectOnNavigation={false} value={this.state.edited_metric_type}
-        options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+      <Form>
+        <Form.Dropdown label='Metric type' search fluid selection selectOnNavigation={false}
+          value={this.state.edited_metric_type}
+          options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+      </Form>
     )
   }
 }

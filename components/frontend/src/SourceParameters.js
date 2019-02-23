@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { SourceParameter } from './SourceParameter';
 
 
@@ -10,26 +10,22 @@ function SourceParameters(props) {
     );
     const parameters = parameter_keys.map((parameter_key) =>
         (
-            <Table.Row key={parameter_key} verticalAlign='top'>
-                <Table.Cell>
-                    {all_parameters[parameter_key].name}
-                </Table.Cell>
-                <Table.Cell>
+            <Grid.Row>
+                <Grid.Column>
                     <SourceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
+                        parameter_name={all_parameters[parameter_key].name}
                         parameter_key={parameter_key} reload={props.reload}
                         parameter_type={all_parameters[parameter_key].type}
                         parameter_values={all_parameters[parameter_key].values || []}
                         parameter_value={props.source.parameters[parameter_key]} />
-                </Table.Cell>
-            </Table.Row>
+                </Grid.Column>
+            </Grid.Row>
         )
     );
     return (
-        <Table columns={2} basic='very' size='small'>
-            <Table.Body>
-                {parameters}
-            </Table.Body>
-        </Table>
+        <Grid columns={1}>
+            {parameters}
+        </Grid>
     )
 }
 
