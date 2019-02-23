@@ -33,9 +33,9 @@ class Sources extends Component {
             <Table columns={4} size='small'>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={1}>Source type</Table.HeaderCell>
-                        <Table.HeaderCell width={1}>Source name</Table.HeaderCell>
-                        <Table.HeaderCell width={10}>Parameters</Table.HeaderCell>
+                        <Table.HeaderCell>Source type</Table.HeaderCell>
+                        <Table.HeaderCell>Source name</Table.HeaderCell>
+                        <Table.HeaderCell>Parameters</Table.HeaderCell>
                         <Table.HeaderCell />
                     </Table.Row>
                 </Table.Header>
@@ -43,8 +43,7 @@ class Sources extends Component {
                 <Table.Footer>
                     <Table.Row>
                         <Table.HeaderCell colSpan='4'>
-                            <Button floated='right' icon labelPosition='left' primary size='small'
-                                onClick={(e) => this.onAddSource(e)}>
+                            <Button floated='left' icon primary basic onClick={(e) => this.onAddSource(e)}>
                                 <Icon name='plus'/> Add source
                             </Button>
                         </Table.HeaderCell>

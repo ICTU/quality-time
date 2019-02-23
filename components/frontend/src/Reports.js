@@ -44,9 +44,8 @@ class Reports extends Component {
                   <Button icon onClick={(e) => this.props.open_report(e, report)}>
                     <Icon name='folder open' /> Open report
                   </Button>
-                  <Button icon negative basic floated='right'
-                    onClick={(e) => this.delete_report(e, report)}>
-                    <Icon name='trash alternate' /> Delete report
+                  <Button icon negative basic floated='right' onClick={(e) => this.delete_report(e, report)}>
+                    <Icon name='trash' /> Delete report
                   </Button>
                 </>
               }

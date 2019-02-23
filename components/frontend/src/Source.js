@@ -66,9 +66,8 @@ class Source extends Component {
                         source={props.source} datamodel={props.datamodel} />
                 </Table.Cell>
                 <Table.Cell>
-                    <Button floated='right' icon primary size='small' negative basic
-                        onClick={(e) => this.delete_source(e)}>
-                        <Icon name='trash alternate' />
+                    <Button floated='right' icon primary negative basic onClick={(e) => this.delete_source(e)}>
+                        <Icon name='trash' /> Delete source
                     </Button>
                 </Table.Cell>
             </Table.Row>
