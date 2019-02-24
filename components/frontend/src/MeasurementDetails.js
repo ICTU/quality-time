@@ -33,6 +33,7 @@ class MeasurementDetails extends Component {
       {
         menuItem: 'Sources', render: () => <Tab.Pane>
           <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
+            measurement={props.measurement}
             metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
         </Tab.Pane>
       }

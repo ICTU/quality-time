@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon } from 'semantic-ui-react';
+import { Button, Grid, Icon, Message } from 'semantic-ui-react';
 import { SourceName } from './SourceName';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
@@ -45,6 +45,22 @@ class Source extends Component {
                             source={props.source} datamodel={props.datamodel} />
                     </Grid.Column>
                 </Grid.Row>
+                {props.connection_error && <Grid.Row columns={1}>
+                    <Grid.Column>
+                        <Message negative>
+                            <Message.Header>Connection error</Message.Header>
+                            <pre style={{whiteSpace: 'pre-wrap'}}>{props.connection_error}</pre>
+                        </Message>
+                    </Grid.Column>
+                </Grid.Row>}
+                {props.parse_error && <Grid.Row columns={1}>
+                    <Grid.Column>
+                        <Message negative>
+                            <Message.Header>Parse error</Message.Header>
+                            <pre style={{whiteSpace: 'pre-wrap'}}>{props.parse_error}</pre>
+                        </Message>
+                    </Grid.Column>
+                </Grid.Row>}
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <Button floated='right' icon primary negative basic onClick={(e) => this.delete_source(e)}>

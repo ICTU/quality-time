@@ -11,14 +11,9 @@ function SourceStatus(props) {
     let content = props.source.connection_error ? props.source.connection_error : props.source.parse_error;
     return (
       <Popup
-        wide='very' size='tiny' hoverable
+        flowing hoverable
         trigger={<Label color='red' tabIndex="0"><a href={props.source.landing_url}>{source_name}</a></Label>}>
-        <Popup.Header>
           {props.source.connection_error ? 'Connection error' : 'Parse error'}
-        </Popup.Header>
-        <Popup.Content>
-          <pre>{content}</pre>
-        </Popup.Content>
       </Popup>
     )
   } else {
