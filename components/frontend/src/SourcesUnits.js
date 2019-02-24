@@ -84,10 +84,9 @@ function SourcesUnits(props) {
     const nr_units_displayed = (source.units && source.units.length) || 0;
     if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
     panes.push({
-      menuItem: (<Menu.Item>{source_name}<Label>{nr_units}</Label></Menu.Item>),
+      menuItem: (<Menu.Item key={source.source_uuid}>{source_name}<Label>{nr_units}</Label></Menu.Item>),
       render: () => <Tab.Pane>
-        <SourceUnits key={source.source_uuid} source={source}
-          datamodel={props.datamodel} metric={props.metric}
+        <SourceUnits source={source} datamodel={props.datamodel} metric={props.metric}
           ignore_unit={props.ignore_unit} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     })

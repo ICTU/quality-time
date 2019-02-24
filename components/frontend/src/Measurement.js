@@ -15,10 +15,11 @@ class Measurement extends Component {
     this.setState((state) => ({ show_details: !state.show_details }));
   }
   render() {
-    var latest_measurement, start, end, value, sources, measurement_timestring;
+    var latest_measurement, start, end, value, status, sources, measurement_timestring;
     if (this.props.measurements.length === 0) {
       latest_measurement = null;
       value = null;
+      status = null;
       sources = [];
       start = new Date();
       end = new Date();
@@ -27,26 +28,14 @@ class Measurement extends Component {
       latest_measurement = this.props.measurements[this.props.measurements.length - 1];
       sources = latest_measurement.sources;
       value = latest_measurement.value;
+      status = latest_measurement.status;
       start = new Date(latest_measurement.start);
       end = new Date(latest_measurement.end);
       measurement_timestring = latest_measurement.end;
     }
+    const status_icon = {target_met: 'smile', target_not_met: 'frown', null: 'question'}[status];
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel.metrics[this.props.metric.type].direction;
-    let status = null;
-    let status_icon = 'question';
-    if (value != null) {
-      if (metric_direction === ">=") {
-        status = value >= target ? "target_met" : "target_not_met"
-        status_icon = value >= target ? 'smile' : 'frown';
-      } else if (metric_direction === "<=") {
-        status = value <= target ? "target_met" : "target_not_met"
-        status_icon = value <= target ? 'smile' : 'frown';
-      } else {
-        status = value === target ? "target_met" : "target_not_met"
-        status_icon = value === target ? 'smile' : 'frown';
-      }
-    }
     const positive = status === "target_met";
     const negative = status === "target_not_met";
     const warning = status === null;
@@ -90,7 +79,7 @@ class Measurement extends Component {
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
           measurement={latest_measurement} metric={this.props.metric}
-          ignore_unit={this.props.ignore_unit} />}
+          set_target={this.props.set_target} ignore_unit={this.props.ignore_unit} />}
       </>
     )
   }

@@ -13,7 +13,7 @@ def iso_timestamp() -> str:
 
 def report_date_time() -> str:
     """Return the report date requested as query parameter."""
-    report_date_string = bottle.request.query.get("report_date")  # pylint: disable=no-member
+    report_date_string = dict(bottle.request.query).get("report_date")
     return report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
 
 

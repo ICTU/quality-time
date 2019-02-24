@@ -26,7 +26,8 @@ class MeasurementDetails extends Component {
       {
         menuItem: 'Metric', render: () => <Tab.Pane>
           <MetricParameters report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}
-            datamodel={props.datamodel} metric={props.metric} reload={props.reload} />
+            datamodel={props.datamodel} metric={props.metric} reload={props.reload}
+            set_target={props.set_target} />
         </Tab.Pane>
       },
       {
@@ -61,7 +62,7 @@ class MeasurementDetails extends Component {
           <Tab panes={panes} />
           <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
             onClick={(e) => this.delete_metric(e)}>
-            <Icon name='trash alternative' /> Delete metric
+            <Icon name='trash' /> Delete metric
         </Button>
         </Table.Cell>
       </Table.Row>

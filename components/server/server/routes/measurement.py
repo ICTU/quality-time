@@ -1,34 +1,11 @@
-"""Measurement API."""
+"""Measurement routes."""
 
 import time
-from typing import Optional
 
 import bottle
-import pymongo
 
-from .util import iso_timestamp, report_date_time
-
-
-def calculate_measurement_value(sources) -> Optional[str]:
-    """Calculate the measurement value from the source measurements."""
-    value = 0
-    for source in sources:
-        if source["parse_error"] or source["connection_error"]:
-            return None
-        value += (int(source["value"]) - len(source.get("ignored_units", [])))
-    return str(value)
-
-
-def latest_measurement(metric_uuid: str, database):
-    """Return the latest measurement."""
-    return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
-
-
-def insert_new_measurement(measurement, database):
-    """Insert a new measurement."""
-    measurement["value"] = calculate_measurement_value(measurement["sources"])
-    measurement["start"] = measurement["end"] = iso_timestamp()
-    database.measurements.insert_one(measurement)
+from ..database.measurements import count_measurements, latest_measurement, latest_measurements, insert_new_measurement
+from ..util import iso_timestamp, report_date_time
 
 
 @bottle.post("/measurements")
@@ -46,14 +23,13 @@ def post_measurement(database) -> None:
             # If the new measurement is equal to the previous one, merge them together
             database.measurements.update_one(filter={"_id": latest["_id"]}, update={"$set": {"end": iso_timestamp()}})
             return
-    insert_new_measurement(measurement, database)
+    insert_new_measurement(measurement["metric_uuid"], measurement, database)
 
 
 @bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/ignore")
 def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database):
     """Ignore or stop ignoring the source unit."""
     measurement = latest_measurement(metric_uuid, database)
-    del measurement["_id"]
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
     if "ignored_units" not in source:
         source["ignored_units"] = []
@@ -61,12 +37,10 @@ def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, databa
         source["ignored_units"].remove(unit_key)
     else:
         source["ignored_units"].append(unit_key)
-    insert_new_measurement(measurement, database)
-    measurement["_id"] = str(measurement["_id"])
-    return measurement
+    return insert_new_measurement(metric_uuid, measurement, database)
 
 
-def sse_pack(event_id: str, event: str, data: str, retry: str = "2000") -> str:
+def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
     """Pack data in Server-Sent Events (SSE) format"""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
@@ -82,13 +56,13 @@ def stream_nr_measurements(report_uuid: str, database):
 
     # Provide an initial data dump to each new client and set up our
     # message payload with a retry value in case of connection failure
-    data = database.measurements.count_documents(filter={"report_uuid": report_uuid})
+    data = count_measurements(report_uuid, database)
     yield sse_pack(event_id, "init", data)
 
     # Now give the client updates as they arrive
     while True:
         time.sleep(10)
-        new_data = database.measurements.count_documents(filter={"report_uuid": report_uuid})
+        new_data = count_measurements(report_uuid, database)
         if new_data > data:
             data = new_data
             event_id += 1
@@ -99,8 +73,7 @@ def stream_nr_measurements(report_uuid: str, database):
 def get_measurements(metric_uuid: str, database):
     """Return the measurements for the metric."""
     metric_uuid = metric_uuid.split("&")[0]
-    docs = database.measurements.find(
-        filter={"metric_uuid": metric_uuid, "start": {"$lt": report_date_time()}})
+    docs = latest_measurements(metric_uuid, report_date_time(), database)
     measurements = []
     for measurement in docs:
         measurement["_id"] = str(measurement["_id"])
