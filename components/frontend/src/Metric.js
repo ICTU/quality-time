@@ -18,17 +18,36 @@ class Metric extends Component {
       },
       body: JSON.stringify({})
     })
-    .then(function(response) { return response.json(); })
-    .then(function(json) {
-      let measurements = self.state.measurements.slice(0);
-      measurements.push(json)
-      self.setState({ measurements: measurements})
+      .then(function (response) { return response.json(); })
+      .then(function (json) {
+        let measurements = self.state.measurements.slice(0);
+        measurements.push(json)
+        self.setState({ measurements: measurements })
+      })
+  }
+  set_target(new_target) {
+    const self = this;
+    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/target`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ target: new_target})
     })
+      .then(function (response) { return response.json(); })
+      .then(function (json) {
+        let measurements = self.state.measurements.slice(0);
+        measurements.push(json)
+        self.setState({ measurements: measurements })
+    }).then(
+      () => self.props.reload()
+    )
   }
   fetch_measurement() {
     let self = this;
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}&report_date=${report_date.toISOString()}`)
+    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
@@ -37,7 +56,7 @@ class Metric extends Component {
       })
   }
   onEdit(event) {
-    event.preventDefault();
+    if (event) { event.preventDefault() };
     this.fetch_measurement();
   }
   componentDidMount() {
@@ -58,6 +77,7 @@ class Metric extends Component {
         nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
         reload={this.props.reload} metric={this.props.metric}
         measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)}
+        set_target={(e, t) => this.set_target(e, t)}
         ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />
     )
   }

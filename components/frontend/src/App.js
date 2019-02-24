@@ -16,19 +16,19 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let self = this;
-    fetch('http://localhost:8080/datamodel')
+    this.reload();
+  }
+
+  reload(event) {
+    if (event) { event.preventDefault(); }
+    const report_date = this.report_date() || new Date();
+    fetch(`http://localhost:8080/datamodel?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
       .then(function (json) {
         self.setState({ datamodel: json });
-      }).then(() => this.reload());
-  }
-
-  reload(event) {
-    if (event) { event.preventDefault(); }
-    const report_date = this.props.report_date ? this.props.report_date : new Date();
+      });
     const report_uuid = this.state.report ? this.state.report["report_uuid"] : null;
     let self = this;
     fetch(`http://localhost:8080/reports?report_date=${report_date.toISOString()}`)
@@ -48,7 +48,6 @@ class App extends Component {
           {
             reports: json.reports,
             report: report,
-            report_date_string: '',
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
             loading: false
@@ -63,7 +62,7 @@ class App extends Component {
 
   handleDateChange(event, { name, value }) {
     if (this.state.hasOwnProperty(name)) {
-      this.setState({ [name]: value })
+      this.setState({ [name]: value }, () => this.reload())
     }
   }
 
@@ -95,17 +94,21 @@ class App extends Component {
       }
     }, false);
   }
-
-  render() {
+  report_date() {
     let report_date = null;
     if (this.state.report_date_string) {
       report_date = new Date(this.state.report_date_string.split("-").reverse().join("-"));
       report_date.setHours(23, 59, 59);
     }
+    return report_date;
+  }
+
+  render() {
+    const report_date = this.report_date();
     return (
       <>
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
-          onDate={(e, {name, value}) => this.handleDateChange(e, {name, value})}
+          onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
           nr_new_measurements={this.state.nr_new_measurements}
           report={this.state.report} report_date={report_date}

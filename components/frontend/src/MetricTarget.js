@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Label } from 'semantic-ui-react';
+import { Form, Label } from 'semantic-ui-react';
 
 
 class MetricTarget extends Component {
@@ -17,17 +17,7 @@ class MetricTarget extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/target`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ target: this.state.edited_target })
-    }).then(
-      () => self.props.reload()
-    )
+    this.props.set_target(this.state.edited_target);
   }
   render() {
     return (

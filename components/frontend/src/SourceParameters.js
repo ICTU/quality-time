@@ -10,7 +10,7 @@ function SourceParameters(props) {
     );
     const parameters = parameter_keys.map((parameter_key) =>
         (
-            <Grid.Row>
+            <Grid.Row key={parameter_key}>
                 <Grid.Column>
                     <SourceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
                         parameter_name={all_parameters[parameter_key].name}

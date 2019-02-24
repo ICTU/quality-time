@@ -8,7 +8,7 @@ class MetricName extends Component {
     this.state = { edited_name: props.metric_name }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.metric_name !== this.props.metric_name) {
+    if (prevProps.metric_name !== this.props.metric_name ) {
       this.setState({ edited_name: this.props.metric_name })
     }
   }
@@ -38,6 +38,7 @@ class MetricName extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Input label="Metric name" focus fluid defaultValue={this.state.edited_name}
+          placeholder={this.props.metric_type_name}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
       </Form>
     )
