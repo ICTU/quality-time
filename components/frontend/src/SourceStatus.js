@@ -8,7 +8,6 @@ function SourceStatus(props) {
   const source = props.metric.sources[props.source_uuid];
   const source_name = source.name || props.datamodel["sources"][source.type]["name"];
   if (props.source.connection_error || props.source.parse_error) {
-    let content = props.source.connection_error ? props.source.connection_error : props.source.parse_error;
     return (
       <Popup
         flowing hoverable
