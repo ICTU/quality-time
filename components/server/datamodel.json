@@ -277,7 +277,7 @@
                     ]
                 },
                 "component": {
-                    "name": "Project Key",
+                    "name": "Project key",
                     "type": "string",
                     "metrics": [
                         "covered_lines",

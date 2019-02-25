@@ -25,7 +25,7 @@ class Source extends Component {
         const source_type_name = props.datamodel["sources"][props.source.type]["name"];
         return (
             <Grid stackable>
-                <Grid.Row columns={3}>
+                <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
                             report_uuid={props.report_uuid} source_uuid={props.source_uuid}
@@ -37,19 +37,17 @@ class Source extends Component {
                             source_type_name={source_type_name}
                             source_uuid={props.source_uuid} reload={props.reload} />
                     </Grid.Column>
-                    <Grid.Column>
-                        <SourceParameters
-                            report_uuid={props.report_uuid} reload={props.reload}
-                            source_uuid={props.source_uuid} metric_type={props.metric_type}
-                            source_type={props.source.type}
-                            source={props.source} datamodel={props.datamodel} />
-                    </Grid.Column>
+                    <SourceParameters
+                        report_uuid={props.report_uuid} reload={props.reload}
+                        source_uuid={props.source_uuid} metric_type={props.metric_type}
+                        source_type={props.source.type}
+                        source={props.source} datamodel={props.datamodel} />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>
                     <Grid.Column>
                         <Message negative>
                             <Message.Header>Connection error</Message.Header>
-                            <pre style={{whiteSpace: 'pre-wrap'}}>{props.connection_error}</pre>
+                            <pre style={{ whiteSpace: 'pre-wrap' }}>{props.connection_error}</pre>
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}
@@ -57,7 +55,7 @@ class Source extends Component {
                     <Grid.Column>
                         <Message negative>
                             <Message.Header>Parse error</Message.Header>
-                            <pre style={{whiteSpace: 'pre-wrap'}}>{props.parse_error}</pre>
+                            <pre style={{ whiteSpace: 'pre-wrap' }}>{props.parse_error}</pre>
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}

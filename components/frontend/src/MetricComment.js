@@ -14,6 +14,11 @@ class MetricComment extends Component {
       this.setState({ edited_comment: this.props.comment })
     }
   }
+  onKeyPress(event) {
+    if (event.key === "Enter" && event.shiftKey) {
+      this.onSubmit(event);
+    }
+  }
   onSubmit(event) {
     event.preventDefault();
     const self = this;
@@ -31,8 +36,10 @@ class MetricComment extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Input label='Comment' focus fluid defaultValue={this.state.edited_comment}
-          onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
+        <Form.TextArea label='Comment'
+          value={this.state.edited_comment} onBlur={(e) => this.onSubmit(e)}
+          onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
+          onKeyPress={(e) => this.onKeyPress(e)} />
       </Form>
     )
   }
