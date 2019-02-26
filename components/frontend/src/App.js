@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
-import { Subjects } from './Subjects.js';
+import { Report } from './Report.js';
 import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
 
@@ -123,8 +123,7 @@ class App extends Component {
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
                 open_report={(e, r) => this.open_report(e, r)} />
               :
-              <Subjects datamodel={this.state.datamodel} subjects={this.state.report.subjects}
-                report_uuid={this.state.report.report_uuid}
+              <Report datamodel={this.state.datamodel} report={this.state.report}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
                 search_string={this.state.search_string} report_date={report_date} />
           }
