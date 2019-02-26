@@ -22,9 +22,14 @@ class Source extends Component {
     }
     render() {
         const props = this.props;
-        const source_type_name = props.datamodel["sources"][props.source.type]["name"];
+        const source_type = props.datamodel.sources[props.source.type];
         return (
             <Grid stackable>
+                <Grid.Row columns={1}>
+                    <Grid.Column>
+                        <Message fluid header={source_type.name} content={source_type.description} />
+                    </Grid.Column>
+                </Grid.Row>
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
@@ -34,7 +39,7 @@ class Source extends Component {
                     </Grid.Column>
                     <Grid.Column>
                         <SourceName name={props.source.name} report_uuid={props.report_uuid}
-                            source_type_name={source_type_name}
+                            source_type_name={source_type.name}
                             source_uuid={props.source_uuid} reload={props.reload} />
                     </Grid.Column>
                     <SourceParameters

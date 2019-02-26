@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Message } from 'semantic-ui-react';
 import { MetricComment } from './MetricComment';
 import { MetricName } from './MetricName';
 import { MetricTarget } from './MetricTarget';
@@ -9,6 +9,11 @@ function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     return (
         <Grid stackable>
+            <Grid.Row columns={1}>
+                <Grid.Column>
+                    <Message fluid header={metric_type.name} content={metric_type.description} />
+                </Grid.Column>
+            </Grid.Row>
             <Grid.Row columns={3}>
                 <Grid.Column>
                     <MetricType report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}

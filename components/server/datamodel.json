@@ -2,6 +2,7 @@
     "metrics": {
         "covered_lines": {
             "name": "Test line coverage",
+            "description": "Measure the number of lines of code covered by tests. This is an indication of the quality of the test suite.",
             "unit": "covered lines",
             "direction": ">=",
             "default_target": "0",
@@ -14,6 +15,7 @@
         },
         "uncovered_lines": {
             "name": "Test line coverage",
+            "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
             "unit": "uncovered lines",
             "direction": "<=",
             "default_target": "0",
@@ -25,6 +27,7 @@
         },
         "covered_branches": {
             "name": "Test branch coverage",
+            "description": "Measure the number of code branches covered by tests. THis is an indication of the quality of the test suite.",
             "unit": "covered branches",
             "direction": ">=",
             "default_target": "0",
@@ -36,6 +39,7 @@
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
+            "description": "Measure the nuber of code branches not covered by tests. This is an indication of the quality of the test suite.",
             "unit": "uncovered branches",
             "direction": "<=",
             "default_target": "0",
@@ -47,6 +51,7 @@
         },
         "jobs": {
             "name": "Number of CI-jobs",
+            "description": "Measure the number of continuous jobs. This metric is for testing Quality-time itself and will be removed eventually.",
             "unit": "CI-jobs",
             "direction": ">=",
             "default_target": "0",
@@ -58,6 +63,7 @@
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
+            "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
             "unit": "CI-jobs",
             "direction": "<=",
             "default_target": "0",
@@ -69,6 +75,7 @@
         },
         "ncloc": {
             "name": "Size (non-commented LOC)",
+            "description": "Measure the size of the software in lines of code, excluding comments.",
             "unit": "non-commented lines of code",
             "direction": "<=",
             "default_target": "50000",
@@ -79,6 +86,7 @@
         },
         "loc": {
             "name": "Size (LOC)",
+            "description": "Measure the size of the software in lines of code.",
             "unit": "lines of code",
             "direction": "<=",
             "default_target": "75000",
@@ -89,6 +97,7 @@
         },
         "tests": {
             "name": "Number of tests",
+            "description": "Measure the size of the test suite.",
             "unit": "tests",
             "direction": ">=",
             "default_target": "0",
@@ -100,6 +109,7 @@
         },
         "failed_tests": {
             "name": "Number of failed tests",
+            "description": "Measure the number of tests that fail.",
             "unit": "failed tests",
             "direction": "<=",
             "default_target": "0",
@@ -111,6 +121,7 @@
         },
         "violations": {
             "name": "Number of violations",
+            "description": "Measure how many violations of programming rules the software contains. This metric gives an indication of the quality of the source code.",
             "unit": "violations",
             "direction": "<=",
             "default_target": "0",
@@ -124,6 +135,7 @@
     "sources": {
         "gitlab": {
             "name": "GitLab",
+            "description": "GitLab provides Git-repositories, wiki's, issue-tracking and CI/CD pipelines.",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -154,6 +166,7 @@
         },
         "jacoco": {
             "name": "JaCoCo",
+            "description": "JaCoCo is an open-source tool for measuring and reporting Java code coverage.",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -170,6 +183,7 @@
         },
         "jenkins": {
             "name": "Jenkins",
+            "description": "Jenkins is an open source CI/CD server.",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -198,7 +212,8 @@
             }
         },
         "junit": {
-            "name": "JUnit",
+            "name": "JUnit XML report",
+            "description": "Test reports in the JUnit XML format.",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -213,6 +228,7 @@
         },
         "ojaudit": {
             "name": "OJAudit",
+            "description": "An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.",
             "parameters": {
                 "url": {
                     "name": "URL to XML report",
@@ -255,11 +271,13 @@
         },
         "random": {
             "name": "Random",
+            "description": "A source that generates random numbers, for testing purposes.",
             "parameters": {},
             "units": {}
         },
         "sonarqube": {
             "name": "SonarQube",
+            "description": "SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages.",
             "parameters": {
                 "url": {
                     "name": "URL",
