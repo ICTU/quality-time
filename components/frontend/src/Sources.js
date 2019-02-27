@@ -32,12 +32,13 @@ class Sources extends Component {
         const source_uuids = Object.keys(this.props.sources).filter((source_uuid) =>
             this.props.datamodel.metrics[this.props.metric_type].sources.includes(this.props.sources[source_uuid].type)
         );
+        const measurement_sources = this.props.measurement ? this.props.measurement.sources : [];
         const sources = source_uuids.map((source_uuid) =>
             (
                 <Segment vertical key={source_uuid}>
                     <Source report_uuid={this.props.report_uuid} source_uuid={source_uuid}
-                        connection_error={this.source_error(this.props.measurement.sources, source_uuid, "connection_error")}
-                        parse_error={this.source_error(this.props.measurement.sources, source_uuid, "parse_error")}
+                        connection_error={this.source_error(measurement_sources, source_uuid, "connection_error")}
+                        parse_error={this.source_error(measurement_sources, source_uuid, "parse_error")}
                         source={this.props.sources[source_uuid]} reload={this.props.reload}
                         metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
                 </Segment>
