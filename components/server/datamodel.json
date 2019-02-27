@@ -102,9 +102,10 @@
             "direction": ">=",
             "default_target": "0",
             "sources": [
-                "sonarqube",
+                "jenkins_test_report",
                 "junit",
-                "random"
+                "random",
+                "sonarqube"
             ]
         },
         "failed_tests": {
@@ -114,9 +115,10 @@
             "direction": "<=",
             "default_target": "0",
             "sources": [
-                "sonarqube",
+                "jenkins_test_report",
                 "junit",
-                "random"
+                "random",
+                "sonarqube"
             ]
         },
         "violations": {
@@ -211,6 +213,32 @@
                 ]
             }
         },
+        "jenkins_test_report": {
+            "name": "Jenkins test report",
+            "description": "A Jenkins job with test results.",
+            "parameters": {
+                "url": {
+                    "name": "URL to job",
+                    "type": "string",
+                    "metrics": [
+                        "tests",
+                        "failed_tests"
+                    ]
+                }
+            },
+            "units": {
+                "failed_tests": [
+                    {
+                        "name": "Class name",
+                        "key": "class_name"
+                    },
+                    {
+                        "name": "Test case",
+                        "key": "name"
+                    }
+                ]
+            }
+        },
         "junit": {
             "name": "JUnit XML report",
             "description": "Test reports in the JUnit XML format.",
@@ -224,7 +252,18 @@
                     ]
                 }
             },
-            "units": {}
+            "units": {
+                "failed_tests": [
+                    {
+                        "name": "Class name",
+                        "key": "class_name"
+                    },
+                    {
+                        "name": "Test case",
+                        "key": "name"
+                    }
+                ]
+            }
         },
         "ojaudit": {
             "name": "OJAudit",
