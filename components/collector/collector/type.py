@@ -4,7 +4,8 @@ from typing import Any, Dict, NewType, Optional, Sequence, Tuple, Union
 
 
 URL = NewType("URL", str)
-Units = Sequence[Dict]
+Unit = Dict
+Units = Sequence[Unit]
 Value = Optional[str]
 Measurement = Union[Value, Tuple[Value, Units]]
 ErrorMessage = Optional[str]
