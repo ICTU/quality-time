@@ -1,14 +1,16 @@
 """Jenkins test report metric collector."""
 
+from typing import cast
+
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Units, URL
+from collector.type import Measurement, Units, URL, Value
 
 
 class JenkinsTestReport(Collector):
     """Collector to get the amount of tests from a Jenkins test report."""
-    test_statuses_to_count = ("subclassResponsibility",)
+    test_statuses_to_count = ["subclassResponsibility"]
 
     def api_url(self, **parameters) -> URL:
         return URL(f"{parameters.get('url')}/lastSuccessfulBuild/testReport/api/json")
@@ -21,16 +23,16 @@ class JenkinsTestReport(Collector):
 class JenkinsTestReportTests(JenkinsTestReport):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    test_statuses_to_count = ("passCount", "failCount", "skipCount")
+    test_statuses_to_count = ["passCount", "failCount", "skipCount"]
 
 
 class JenkinsTestReportFailedTests(JenkinsTestReport):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    test_statuses_to_count = ("failCount",)
+    test_statuses_to_count = ["failCount"]
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        failed_test_count = super().parse_source_response(response, **parameters)
+        failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
         failed_tests = self.failed_tests(response)
         return failed_test_count, failed_tests
 
