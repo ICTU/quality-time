@@ -246,6 +246,17 @@
                         "tests",
                         "failed_tests"
                     ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "values": [
+                        "failed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "failed_tests"
+                    ]
                 }
             },
             "units": {
@@ -270,6 +281,18 @@
                     "type": "string",
                     "metrics": [
                         "tests",
+                        "failed_tests"
+                    ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "values": [
+                        "errored",
+                        "failed",
+                        "skipped"
+                    ],
+                    "metrics": [
                         "failed_tests"
                     ]
                 }

@@ -77,7 +77,8 @@ function SourcesUnits(props) {
   if (props.measurement == null) { return null };
   let panes = [];
   props.measurement.sources.forEach((source) => {
-    const report_source = props.metric["sources"][source.source_uuid];
+    const report_source = props.metric.sources[source.source_uuid];
+    if (!report_source) { return };  // source was deleted, continue
     const source_type = report_source.type;
     const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
     let nr_units = source.value || 0;
