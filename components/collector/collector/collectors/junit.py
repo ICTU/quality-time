@@ -1,11 +1,12 @@
 """JUnit metric collector."""
 
 import xml.etree.cElementTree
+from typing import cast
 
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Unit, Units
+from collector.type import Measurement, Unit, Units, Value
 
 
 class JUnit(Collector):
@@ -31,7 +32,7 @@ class JUnitFailedTests(JUnit):
     test_status = "failures"
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        failed_test_count = super().parse_source_response(response, **parameters)
+        failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
         failed_tests = self.failed_tests(response)
         return failed_test_count, failed_tests
 

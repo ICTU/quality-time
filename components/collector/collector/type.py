@@ -4,7 +4,7 @@ from typing import Any, Dict, NewType, Optional, Sequence, Tuple, Union
 
 
 URL = NewType("URL", str)
-Unit = Dict
+Unit = Dict  # pylint: disable=invalid-name
 Units = Sequence[Unit]
 Value = Optional[str]
 Measurement = Union[Value, Tuple[Value, Units]]

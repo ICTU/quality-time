@@ -1,6 +1,7 @@
 """Metric collectors per source."""
 
 from .gitlab import *
+from .hq import *
 from .jacoco import *
 from .jenkins import *
 from .jenkins_test_report import *

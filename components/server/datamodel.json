@@ -128,9 +128,10 @@
             "direction": "<=",
             "default_target": "0",
             "sources": [
-                "sonarqube",
+                "hq",
                 "ojaudit",
-                "random"
+                "random",
+                "sonarqube"
             ]
         }
     },
@@ -161,6 +162,27 @@
                     "metrics": [
                         "jobs",
                         "failed_jobs"
+                    ]
+                }
+            },
+            "units": {}
+        },
+        "hq": {
+            "name": "HQ",
+            "description": "Holistic Software Quality Reporting",
+            "parameters": {
+                "url": {
+                    "name": "URL to metrics JSON",
+                    "type": "string",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "metric_id": {
+                    "name": "Stable metric ID",
+                    "type": "string",
+                    "metrics": [
+                        "violations"
                     ]
                 }
             },
