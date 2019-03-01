@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch, Mock
 
-from collector.collector import Collector
+from collector.collector import Collector, collect_measurement
 
 
 class CollectorTest(unittest.TestCase):
@@ -14,9 +14,9 @@ class CollectorTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        sources = dict(a=dict(type="junit", parameters=dict(url="http://url")))
+        metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector().get("tests", sources)
+            self.response = collect_measurement(metric)
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -39,11 +39,13 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
         Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        sources = dict(
-            a=dict(type="junit", parameters=dict(url="http://url")),
-            b=dict(type="junit", parameters=dict(url="http://url2")))
+        metric = dict(
+            type="tests",
+            sources=dict(
+                a=dict(type="junit", parameters=dict(url="http://url")),
+                b=dict(type="junit", parameters=dict(url="http://url2"))))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector().get("tests", sources)
+            self.response = collect_measurement(metric)
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -67,11 +69,13 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True)])  # Works for both Gitlab and Jenkins
-        self.sources = dict(
-            a=dict(type="jenkins", parameters=dict(url="http://jenkins")),
-            b=dict(type="gitlab", parameters=dict(url="http://gitlab", project="project", private_token="token")))
+        metric = dict(
+            type="jobs",
+            sources=dict(
+                a=dict(type="jenkins", parameters=dict(url="http://jenkins")),
+                b=dict(type="gitlab", parameters=dict(url="http://gitlab", project="project", private_token="token"))))
         with patch("requests.get", return_value=mock_response):
-            self.response = Collector().get("jobs", self.sources)
+            self.response = collect_measurement(metric)
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -88,12 +92,12 @@ class CollectorErrorTest(unittest.TestCase):
     def setUp(self):
         """Clear cache."""
         Collector.RESPONSE_CACHE.clear()
-        self.sources = dict(a=dict(type="junit", parameters=dict(url="http://url")))
+        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
-            response = Collector().get("tests", self.sources)
+            response = collect_measurement(self.metric)
         self.assertTrue(response["sources"][0]["connection_error"].startswith("Traceback"))
 
     def test_parse_error(self):
@@ -101,5 +105,5 @@ class CollectorErrorTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):
-            response = Collector().get("tests", self.sources)
+            response = collect_measurement(self.metric)
         self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

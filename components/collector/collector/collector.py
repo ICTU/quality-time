@@ -10,6 +10,20 @@ import requests
 from .type import ErrorMessage, Response, Units, URL, Value
 
 
+def collect_measurement(metric) -> Response:
+    """Connect to the sources to get and parse the measurement for the metric."""
+    source_responses = []
+    for source_uuid, source in metric["sources"].items():
+        collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric['type']}"))
+        source_collector = collector_class()
+        source_response = source_collector.get_one(source)
+        source_response["source_uuid"] = source_uuid
+        source_responses.append(source_response)
+    values = [source_response["value"] for source_response in source_responses]
+    value = None if None in values else sum([int(value) for value in values])
+    return dict(sources=source_responses, value=value)
+
+
 class Collector:
     """Base class for metric collectors."""
 
@@ -28,20 +42,6 @@ class Collector:
         simplified_class_name = source_and_metric.replace("_", "")
         matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
         return matching_subclasses[0] if matching_subclasses else cls
-
-    @staticmethod
-    def get(metric_type, sources) -> Response:
-        """Connect to the sources to get and parse the measurement for the metric."""
-        source_responses = []
-        for source_uuid, source in sources.items():
-            collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric_type}"))
-            source_collector = collector_class()
-            source_response = source_collector.get_one(source)
-            source_response["source_uuid"] = source_uuid
-            source_responses.append(source_response)
-        values = [source_response["value"] for source_response in source_responses]
-        value = None if None in values else sum([int(value) for value in values])
-        return dict(sources=source_responses, value=value)
 
     def get_one(self, source) -> Response:
         """Return the measurement response for one source."""
