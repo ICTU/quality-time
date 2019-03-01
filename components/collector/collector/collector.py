@@ -98,5 +98,5 @@ class Collector:
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the units for the metric."""
+        """Parse the response to get the units (e.g. violations, test cases, user stories) for the metric."""
         return []
