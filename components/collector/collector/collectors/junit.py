@@ -48,14 +48,14 @@ class JUnitFailedTests(JUnit):
     def failed_tests(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
-        def unit(case_node) -> Unit:
+        def unit(case_node, status: str) -> Unit:
             """Transform a test case into a test case unit."""
             name = case_node.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case_node.get("classname", ""))
+            return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=status)
 
         tree = xml.etree.cElementTree.fromstring(response.text)
-        case_nodes = []
+        units = []
         for status in self.test_statuses_to_count(**parameters):
             status_node = self.junit_status_nodes[status]
-            case_nodes.extend(tree.findall(f".//{status_node}/.."))
-        return [unit(case_node) for case_node in case_nodes]
+            units.extend([unit(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
+        return units

@@ -39,4 +39,6 @@ class JUnitTestReportTest(unittest.TestCase):
         sources = dict(a=dict(type="junit", parameters=dict(url="junit.xml")))
         with patch("requests.get", return_value=mock_response):
             response = Collector().get("failed_tests", sources)
-        self.assertEqual([dict(key="tc", name="tc", class_name="cn")], response["sources"][0]["units"])
+        self.assertEqual(
+            [dict(key="tc", name="tc", class_name="cn", failure_type="failed")],
+            response["sources"][0]["units"])
