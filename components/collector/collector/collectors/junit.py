@@ -1,7 +1,7 @@
 """JUnit metric collector."""
 
 import xml.etree.cElementTree
-from typing import cast
+from typing import cast, List
 
 import requests
 
@@ -12,38 +12,50 @@ from collector.type import Measurement, Unit, Units, Value
 class JUnit(Collector):
     """Base class for JUnit test collectors."""
 
-    test_status = "Subclass responsibility"
+    junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         tree = xml.etree.cElementTree.fromstring(response.text)
         test_suites = [tree] if tree.tag == "testsuite" else tree.findall("testsuite")
-        return str(sum(int(test_suite.get(self.test_status, 0)) for test_suite in test_suites))
+        statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
+        return str(sum(int(test_suite.get(status, 0)) for status in statuses for test_suite in test_suites))
+
+    def test_statuses_to_count(self, **parameters) -> List[str]:
+        """Return the test statuses to count."""
+        raise NotImplementedError  # pragma: nocover
 
 
 class JUnitTests(JUnit):
     """Collector to get the number of tests from JUnit XML reports."""
 
-    test_status = "tests"
+    def test_statuses_to_count(self, **parameters) -> List[str]:
+        return ["passed"]
 
 
 class JUnitFailedTests(JUnit):
     """Collector to get the number of failed tests from JUnit XML reports."""
 
-    test_status = "failures"
+    junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
-        failed_tests = self.failed_tests(response)
+        failed_tests = self.failed_tests(response, **parameters)
         return failed_test_count, failed_tests
 
-    @staticmethod
-    def failed_tests(response: requests.Response) -> Units:
+    def test_statuses_to_count(self, **parameters) -> List[str]:
+        return parameters.get("failure_type") or ["errored", "failed", "skipped"]
+
+    def failed_tests(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
-        def unit(case_node) -> Unit:
+        def unit(case_node, status: str) -> Unit:
             """Transform a test case into a test case unit."""
             name = case_node.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case_node.get("classname", ""))
+            return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=status)
 
         tree = xml.etree.cElementTree.fromstring(response.text)
-        return [unit(case_node) for case_node in tree.findall(".//failure/..")]
+        units = []
+        for status in self.test_statuses_to_count(**parameters):
+            status_node = self.junit_status_nodes[status]
+            units.extend([unit(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
+        return units

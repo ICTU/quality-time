@@ -34,5 +34,6 @@ class JenkinsTestReportTest(unittest.TestCase):
             response = Collector().get("failed_tests", sources)
         self.assertEqual("2", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(class_name="c1", key="tc1", name="tc1"), dict(class_name="c2", key="tc2", name="tc2")],
+            [dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
+             dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")],
             response["sources"][0]["units"])

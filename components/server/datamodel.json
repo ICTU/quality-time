@@ -246,6 +246,17 @@
                         "tests",
                         "failed_tests"
                     ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "values": [
+                        "failed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "failed_tests"
+                    ]
                 }
             },
             "units": {
@@ -257,6 +268,10 @@
                     {
                         "name": "Test case",
                         "key": "name"
+                    },
+                    {
+                        "name": "Failure type",
+                        "key": "failure_type"
                     }
                 ]
             }
@@ -272,6 +287,18 @@
                         "tests",
                         "failed_tests"
                     ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "values": [
+                        "errored",
+                        "failed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "failed_tests"
+                    ]
                 }
             },
             "units": {
@@ -283,6 +310,10 @@
                     {
                         "name": "Test case",
                         "key": "name"
+                    },
+                    {
+                        "name": "Failure type",
+                        "key": "failure_type"
                     }
                 ]
             }
