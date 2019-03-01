@@ -204,3 +204,25 @@ def delete_report(report_uuid: str, database):
     report = latest_report(report_uuid, database)
     report["deleted"] = "true"
     insert_new_report(report, database)
+
+
+@bottle.get("/report/<report_uuid>/summary")
+def get_report_summary(report_uuid: str, database):
+    """Return a summary of the current status of the report."""
+    report = latest_report(report_uuid, database)
+    summary = dict()
+    for subject_uuid, subject in report.get("subjects", {}).items():
+        red, green, yellow = 0, 0, 0
+        for metric_uuid in subject.get("metrics", {}).keys():
+            latest = latest_measurement(metric_uuid, database)
+            if latest:
+                if latest["value"] is None:
+                    yellow += 1
+                elif latest["status"] == "target_met":
+                    green += 1
+                else:
+                    red += 1
+            else:
+                yellow += 1
+        summary[subject_uuid] = dict(red=red, green=green, yellow=yellow)
+    return summary

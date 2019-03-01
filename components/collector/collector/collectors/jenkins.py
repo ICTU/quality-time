@@ -30,4 +30,5 @@ class JenkinsFailedJobs(JenkinsJobs):
     @staticmethod
     def jobs(response: requests.Response):
         """Return the jobs from the response that have failed."""
-        return [job for job in super().jobs(response) if not job.get("color", "").startswith("blue")]
+        return [job for job in super(JenkinsFailedJobs, JenkinsFailedJobs).jobs(response)
+                if not job.get("color", "").startswith("blue")]
