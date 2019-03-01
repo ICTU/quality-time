@@ -268,6 +268,10 @@
                     {
                         "name": "Test case",
                         "key": "name"
+                    },
+                    {
+                        "name": "Failure type",
+                        "key": "failure_type"
                     }
                 ]
             }
@@ -306,6 +310,10 @@
                     {
                         "name": "Test case",
                         "key": "name"
+                    },
+                    {
+                        "name": "Failure type",
+                        "key": "failure_type"
                     }
                 ]
             }

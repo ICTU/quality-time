@@ -5,7 +5,7 @@ from typing import cast, List
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Units, URL, Value
+from collector.type import Measurement, Unit, Units, URL, Value
 
 
 class JenkinsTestReport(Collector):
@@ -30,7 +30,7 @@ class JenkinsTestReportTests(JenkinsTestReport):
     """Collector to get the amount of tests from a Jenkins test report."""
 
     def test_statuses_to_count(self, **parameters) -> List[str]:
-        return ["passed", "failed", "skipped"]
+        return ["failed", "passed", "skipped"]
 
 
 class JenkinsTestReportFailedTests(JenkinsTestReport):
@@ -38,20 +38,28 @@ class JenkinsTestReportFailedTests(JenkinsTestReport):
 
     def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
         failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
-        failed_tests = self.failed_tests(response)
+        failed_tests = self.failed_tests(response, **parameters)
         return failed_test_count, failed_tests
 
-    @staticmethod
-    def failed_tests(response: requests.Response) -> Units:
+    def failed_tests(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
-        def unit(case):
+        def unit(case) -> Unit:
             """Transform a test case into a test case unit."""
             name = case.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case.get("className", ""))
+            return dict(key=name, name=name, class_name=case.get("className", ""), failure_type=status(case))
+
+        def status(case) -> str:
+            """Return the status of the test case."""
+            # The Jenkins test report has three counts: passed, skipped, and failed. Individual test cases
+            # can be skipped (indicated by the attribute skipped being "true") and/or have a status that can
+            # take the values: "failed", "passed", "regression", and "fixed".
+            status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
+            return dict(regression="failed", fixed="passed").get(status, status)
 
         suites = response.json().get("suites", [])
-        return [unit(case) for suite in suites for case in suite.get("cases", []) if case.get("status") == "FAILED"]
+        statuses = self.test_statuses_to_count(**parameters)
+        return [unit(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
     def test_statuses_to_count(self, **parameters) -> List[str]:
         return parameters.get("failure_type") or ["failed", "skipped"]
