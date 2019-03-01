@@ -36,6 +36,9 @@ class JenkinsTestReportTests(JenkinsTestReport):
 class JenkinsTestReportFailedTests(JenkinsTestReport):
     """Collector to get the amount of tests from a Jenkins test report."""
 
+    def test_statuses_to_count(self, **parameters) -> List[str]:
+        return parameters.get("failure_type") or ["failed", "skipped"]
+
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
@@ -55,6 +58,3 @@ class JenkinsTestReportFailedTests(JenkinsTestReport):
         suites = response.json().get("suites", [])
         statuses = self.test_statuses_to_count(**parameters)
         return [unit(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
-
-    def test_statuses_to_count(self, **parameters) -> List[str]:
-        return parameters.get("failure_type") or ["failed", "skipped"]

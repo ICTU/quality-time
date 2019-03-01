@@ -1,6 +1,6 @@
 """Quality-time specific types."""
 
-from typing import Any, Dict, NewType, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, NewType, Optional, Sequence, Union
 
 
 URL = NewType("URL", str)

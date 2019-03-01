@@ -16,7 +16,7 @@ def collect_measurement(metric) -> Response:
     for source_uuid, source in metric["sources"].items():
         collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric['type']}"))
         source_collector = collector_class()
-        source_response = source_collector.get_one(source)
+        source_response = source_collector.get(source)
         source_response["source_uuid"] = source_uuid
         source_responses.append(source_response)
     values = [source_response["value"] for source_response in source_responses]
@@ -43,7 +43,7 @@ class Collector:
         matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
         return matching_subclasses[0] if matching_subclasses else cls
 
-    def get_one(self, source) -> Response:
+    def get(self, source) -> Response:
         """Return the measurement response for one source."""
         parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
