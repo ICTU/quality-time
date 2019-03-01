@@ -5,7 +5,7 @@ import xml.etree.cElementTree
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement
+from collector.type import Value
 
 
 class JacocoCoverageBaseClass(Collector):
@@ -14,7 +14,7 @@ class JacocoCoverageBaseClass(Collector):
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree = xml.etree.cElementTree.fromstring(response.text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
         return str(counter.get(self.coverage_status))

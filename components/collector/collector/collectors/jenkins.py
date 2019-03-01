@@ -3,7 +3,7 @@
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, URL
+from collector.type import Units, URL, Value
 
 
 class JenkinsJobs(Collector):
@@ -12,9 +12,11 @@ class JenkinsJobs(Collector):
     def api_url(self, **parameters) -> URL:
         return URL(f"{parameters.get('url')}/api/json?tree=jobs[buildable,color,url,name]")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        units = [dict(key=job["name"], name=job["name"], url=job["url"]) for job in self.jobs(response)]
-        return str(len(units)), units
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str(len(self.jobs(response)))
+
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+        return [dict(key=job["name"], name=job["name"], url=job["url"]) for job in self.jobs(response)]
 
     @staticmethod
     def jobs(response: requests.Response):

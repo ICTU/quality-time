@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import Collector
+from collector.collector import Collector, collect_measurement
 
 
 class JenkinsTestReportTest(unittest.TestCase):
@@ -17,9 +17,11 @@ class JenkinsTestReportTest(unittest.TestCase):
         """Test that the number of tests is returned."""
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(passCount=4, failCount=2))
-        sources = dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job")))
+        metric = dict(
+            type="tests",
+            sources=dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job"))))
         with patch("requests.get", return_value=mock_response):
-            response = Collector().get("tests", sources)
+            response = collect_measurement(metric)
         self.assertEqual("6", response["sources"][0]["value"])
 
     def test_failed_tests(self):
@@ -29,9 +31,11 @@ class JenkinsTestReportTest(unittest.TestCase):
             failCount=2, suites=[dict(
                 cases=[dict(status="FAILED", name="tc1", className="c1"),
                        dict(status="FAILED", name="tc2", className="c2")])]))
-        sources = dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job")))
+        metric = dict(
+            type="failed_tests",
+            sources=dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job"))))
         with patch("requests.get", return_value=mock_response):
-            response = Collector().get("failed_tests", sources)
+            response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
         self.assertEqual(
             [dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),

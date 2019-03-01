@@ -8,8 +8,9 @@ from typing import cast, Dict, Type
 
 import requests
 
-from .collectors import *  # Make sure subclasses are registered
-from .collector import Collector
+# Make sure subclasses are registered
+from .collectors import *  # pylint: disable=unused-wildcard-import,wildcard-import
+from .collector import collect_measurement
 from .type import URL
 
 
@@ -34,8 +35,7 @@ def fetch_measurements(server: URL) -> None:
     """Fetch the metrics and their measurements."""
     metrics = get(URL(f"{server}/metrics"))
     for metric_uuid, metric in metrics.items():
-        sources = metric["sources"]
-        measurement = Collector().get(metric["type"], sources)
+        measurement = collect_measurement(metric)
         measurement["metric_uuid"] = metric_uuid
         measurement["report_uuid"] = metric["report_uuid"]
         post(URL(f"{server}/measurements"), measurement)
@@ -49,7 +49,7 @@ def collect() -> None:
         logging.info("Collecting...")
         fetch_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
         logging.info("Sleeping...")
-        sleep(30)
+        sleep(60)
 
 
 if __name__ == "__main__":

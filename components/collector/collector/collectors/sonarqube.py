@@ -5,7 +5,7 @@ from typing import Dict
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, URL
+from collector.type import URL, Units, Value
 
 
 class SonarQubeViolations(Collector):
@@ -28,15 +28,17 @@ class SonarQubeViolations(Collector):
             api += f"&types={types}"
         return URL(api)
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        json = response.json()
-        return str(json["total"]), [dict(
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str(response.json()["total"])
+
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+        return [dict(
             key=unit["key"],
             url=self.unit_landing_url(unit, **parameters),
             message=unit["message"],
             severity=unit["severity"].lower(),
             type=unit["type"].lower(),
-            component=unit["component"]) for unit in json["issues"]]
+            component=unit["component"]) for unit in response.json()["issues"]]
 
     @staticmethod
     def unit_landing_url(unit, **parameters):
@@ -57,7 +59,7 @@ class SonarQubeMetricsBaseClass(Collector):
         component = parameters.get("component")
         return URL(f"{parameters.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(self._get_metrics(response)[self.metricKeys])
 
     @staticmethod
@@ -96,7 +98,7 @@ class SonarQubeCoveredLines(SonarQubeMetricsBaseClass):
 
     metricKeys = "uncovered_lines,lines_to_cover"
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         metrics = self._get_metrics(response)
         return str(metrics["lines_to_cover"] - metrics["uncovered_lines"])
 
@@ -112,7 +114,7 @@ class SonarQubeCoveredBranches(SonarQubeMetricsBaseClass):
 
     metricKeys = "uncovered_conditions,conditions_to_cover"
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         metrics = self._get_metrics(response)
         return str(metrics["conditions_to_cover"] - metrics["uncovered_conditions"])
 
