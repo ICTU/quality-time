@@ -1,11 +1,11 @@
 """Jenkins test report metric collector."""
 
-from typing import cast, List
+from typing import List
 
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Unit, Units, URL, Value
+from collector.type import Unit, Units, URL, Value
 
 
 class JenkinsTestReport(Collector):
@@ -16,7 +16,7 @@ class JenkinsTestReport(Collector):
     def api_url(self, **parameters) -> URL:
         return URL(f"{parameters.get('url')}/lastSuccessfulBuild/testReport/api/json")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         json = response.json()
         statuses = [self.jenkins_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
         return str(sum(int(json.get(status, 0)) for status in statuses))
@@ -36,12 +36,7 @@ class JenkinsTestReportTests(JenkinsTestReport):
 class JenkinsTestReportFailedTests(JenkinsTestReport):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
-        failed_tests = self.failed_tests(response, **parameters)
-        return failed_test_count, failed_tests
-
-    def failed_tests(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
         def unit(case) -> Unit:

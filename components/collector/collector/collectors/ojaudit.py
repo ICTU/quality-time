@@ -3,12 +3,12 @@
 import hashlib
 import xml.etree.cElementTree
 from xml.etree.cElementTree import Element
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, URL
+from collector.type import URL, Units, Value
 
 
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
@@ -25,14 +25,23 @@ class OJAuditViolations(Collector):
     def landing_url(self, **parameters) -> URL:
         return URL(parameters["url"][:-(len("xml"))] + "html")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        tree, namespaces = self.parse_source_response(response)
+        severities = parameters.get("severities", [])
+        return self.violation_count(tree, namespaces, severities)
+
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+        tree, namespaces = self.parse_source_response(response)
+        severities = parameters.get("severities", [])
+        return self.violations(tree, namespaces, severities)
+
+    @staticmethod
+    def parse_source_response(response: requests.Response) -> Tuple[Element, Namespaces]:
+        """Parse the XML from the source response."""
         tree = xml.etree.cElementTree.fromstring(response.text)
         # ElementTree has no API to get the namespace so we extract it from the root tag:
         namespaces = dict(ns=tree.tag.split('}')[0][1:])
-        severities = parameters.get("severities", [])
-        violation_count = self.violation_count(tree, namespaces, severities)
-        violations = self.violations(tree, namespaces, severities)
-        return violation_count, violations
+        return tree, namespaces
 
     @staticmethod
     def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:

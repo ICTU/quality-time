@@ -64,7 +64,8 @@ class OJAuditTest(unittest.TestCase):
             response = Collector().get("violations", sources)
         self.assertEqual(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
-             dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b", severity="exception")],
+             dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
+                  severity="exception")],
             response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
 
@@ -98,3 +99,36 @@ class OJAuditTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             self.assertTrue(
                 "has no location element" in Collector().get("violations", sources)["sources"][0]["parse_error"])
+
+    def test_filter_violations(self):
+        """Test that violations of types the user doesn't want to see are not included."""
+        mock_response = Mock()
+        mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+  <violation-count>1</violation-count>
+  <high-count>0</high-count>
+  <medium-count>1</medium-count>
+  <models>
+    <model id="a">
+      <file>
+        <path>a</path>
+      </file>
+    </model>
+  </models>
+  <construct>
+    <violation>
+      <message>a</message>
+      <location model="a">
+        <line-number>20</line-number>
+        <column-offset>4</column-offset>
+      </location>
+      <values>
+          <value>medium</value>
+      </values>
+    </violation>
+  </construct>
+</audit>"""
+        sources = dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml", severities=["high"])))
+        with patch("requests.get", return_value=mock_response):
+            response = Collector().get("violations", sources)
+        self.assertEqual("0", response["sources"][0]["value"])
+        self.assertEqual([], response["sources"][0]["units"])

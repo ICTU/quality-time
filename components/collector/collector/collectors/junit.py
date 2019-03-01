@@ -1,12 +1,12 @@
 """JUnit metric collector."""
 
 import xml.etree.cElementTree
-from typing import cast, List
+from typing import List
 
 import requests
 
 from collector.collector import Collector
-from collector.type import Measurement, Unit, Units, Value
+from collector.type import Unit, Units, Value
 
 
 class JUnit(Collector):
@@ -14,7 +14,7 @@ class JUnit(Collector):
 
     junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree = xml.etree.cElementTree.fromstring(response.text)
         test_suites = [tree] if tree.tag == "testsuite" else tree.findall("testsuite")
         statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
@@ -37,15 +37,10 @@ class JUnitFailedTests(JUnit):
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
-        failed_test_count = cast(Value, super().parse_source_response(response, **parameters))
-        failed_tests = self.failed_tests(response, **parameters)
-        return failed_test_count, failed_tests
-
     def test_statuses_to_count(self, **parameters) -> List[str]:
         return parameters.get("failure_type") or ["errored", "failed", "skipped"]
 
-    def failed_tests(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         """Return a list of failed tests."""
 
         def unit(case_node, status: str) -> Unit:

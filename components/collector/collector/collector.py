@@ -7,7 +7,7 @@ from typing import cast, Optional, Set, Tuple, Type
 import cachetools
 import requests
 
-from .type import ErrorMessage, Measurement, Response, Units, URL, Value
+from .type import ErrorMessage, Response, Units, URL, Value
 
 
 class Collector:
@@ -85,13 +85,18 @@ class Collector:
         value, error = None, None
         if response:
             try:
-                result = self.parse_source_response(response, **parameters)
-                value, units = result if isinstance(result, tuple) else (result, [])
+                value = self.parse_source_response_value(response, **parameters)
+                units = self.parse_source_response_units(response, **parameters)
             except Exception:  # pylint: disable=broad-except
                 error = traceback.format_exc()
         return value, units[:self.MAX_UNITS], error
 
-    def parse_source_response(self, response: requests.Response, **parameters) -> Measurement:
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the measurement for the metric."""
         return str(response.text)
+
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+        # pylint: disable=no-self-use,unused-argument
+        """Parse the response to get the units for the metric."""
+        return []
