@@ -1,27 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Button, Card, Icon, Segment } from 'semantic-ui-react';
+import { StatusPieChart } from './StatusPieChart';
 import { Subjects } from './Subjects.js';
-import { Card } from 'semantic-ui-react';
-import { VictoryPie } from 'victory';
 
-function DashboardSubject(props) {
+function SubjectCard(props) {
     const nr_metrics = props.red + props.green + props.yellow;
     return (
         <Card>
-            <VictoryPie
-                colorScale={["rgb(211,59,55)", "rgb(30,148,78)", "rgb(253,197,54)"]}
-                padding={20}
-                style={{
-                    data: { strokeWidth: 0 }
-                }}
-                innerRadius={75}
-                labels={() => null}
-                animate={{ duration: 2000 }}
-                data={[
-                    { y: props.red },
-                    { y: props.green },
-                    { y: props.yellow }
-                ]}
-            />
+            <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} />
             <Card.Content>
                 <Card.Header>{props.title}</Card.Header>
                 <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
@@ -32,7 +18,7 @@ function DashboardSubject(props) {
 
 function Dashboard(props) {
     const cards = Object.entries(props.report.subjects).map(([subject_uuid, subject]) =>
-        <DashboardSubject key={subject_uuid} title={subject.title}
+        <SubjectCard key={subject_uuid} title={subject.title}
             red={subject.summary.red} green={subject.summary.green}
             yellow={subject.summary.yellow} />);
     return (
@@ -42,16 +28,37 @@ function Dashboard(props) {
     )
 }
 
-function Report(props) {
-    return (
-        <>
-            <Dashboard report={props.report} />
-            <Subjects datamodel={props.datamodel} subjects={props.report.subjects}
-                report_uuid={props.report.report_uuid}
-                nr_new_measurements={props.nr_new_measurements} reload={props.reload}
-                search_string={props.search_string} report_date={props.report_date} />
-        </>
-    )
+class Report extends Component {
+    delete_report(event, report) {
+        event.preventDefault();
+        const self = this;
+        fetch(`http://localhost:8080/report/${report.report_uuid}`, {
+            method: 'delete',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        }).then(
+            () => self.props.reload()
+        );
+    }
+    render() {
+        return (
+            <>
+                <Dashboard report={this.props.report} />
+                <Subjects datamodel={this.props.datamodel} subjects={this.props.report.subjects}
+                    report_uuid={this.props.report.report_uuid}
+                    nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload}
+                    search_string={this.props.search_string} report_date={this.props.report_date} />
+                <Segment basic>
+                    <Button icon negative basic floated='right' onClick={(e) => this.delete_report(e, this.props.report)}>
+                        <Icon name='trash' /> Delete report
+                    </Button>
+                </Segment>
+            </>
+        )
+    }
 }
 
 export { Report };

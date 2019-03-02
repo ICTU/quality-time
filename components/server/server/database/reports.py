@@ -24,6 +24,7 @@ def latest_reports(max_iso_timestamp: str, database):
 def summarize_report(report, database) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import latest_measurement  # Prevent circular import
+    total_red, total_green, total_yellow = 0, 0, 0
     for subject in report.get("subjects", {}).values():
         red, green, yellow = 0, 0, 0
         for metric_uuid in subject.get("metrics", {}).keys():
@@ -31,13 +32,18 @@ def summarize_report(report, database) -> None:
             if latest:
                 if latest["value"] is None:
                     yellow += 1
+                    total_yellow += 1
                 elif latest["status"] == "target_met":
                     green += 1
+                    total_green += 1
                 else:
                     red += 1
+                    total_red += 1
             else:
                 yellow += 1
+                total_yellow += 1
         subject["summary"] = dict(red=red, green=green, yellow=yellow)
+    report["summary"] = dict(red=total_red, green=total_green, yellow=total_yellow)
 
 
 def latest_report(report_uuid: str, database):

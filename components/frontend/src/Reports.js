@@ -1,6 +1,21 @@
 import React, { Component } from 'react';
 import { Button, Card, Icon, Segment } from 'semantic-ui-react';
+import { StatusPieChart } from './StatusPieChart';
 
+
+function ReportCard(props) {
+  const summary = props.report.summary;
+  const nr_metrics = summary.red + summary.green + summary.yellow;
+  return (
+    <Card onClick={(e) => props.open_report(e, props.report)}>
+      <StatusPieChart red={summary.red} green={summary.green} yellow={summary.yellow} />
+      <Card.Content>
+        <Card.Header>{props.report.title}</Card.Header>
+        <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
+      </Card.Content>
+    </Card>
+  )
+}
 
 class Reports extends Component {
   add_report(event) {
@@ -18,38 +33,12 @@ class Reports extends Component {
     );
   }
 
-  delete_report(event, report) {
-    event.preventDefault();
-    const self = this;
-    fetch(`http://localhost:8080/report/${report.report_uuid}`, {
-      method: 'delete',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.props.reload()
-    );
-  }
-
   render() {
     return (
       <>
-        <Card.Group>
+        <Card.Group itemsPerRow={6}>
           {this.props.reports.map((report) =>
-            <Card fluid header={report["title"]} key={report.report_uuid}
-              extra={
-                <>
-                  <Button icon onClick={(e) => this.props.open_report(e, report)}>
-                    <Icon name='folder open' /> Open report
-                  </Button>
-                  <Button icon negative basic floated='right' onClick={(e) => this.delete_report(e, report)}>
-                    <Icon name='trash' /> Delete report
-                  </Button>
-                </>
-              }
-            />)
+            <ReportCard key={report.report_uuid} report={report} open_report={this.props.open_report} />)
           }
         </Card.Group>
         <Segment basic>
