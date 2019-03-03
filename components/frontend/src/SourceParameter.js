@@ -31,7 +31,7 @@ class StringParameter extends Component {
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Input label={this.props.parameter_name} focus fluid value={this.state.edited_value}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
-          onBlur={(e) => this.onSubmit(e)} />
+          onBlur={(e) => this.onSubmit(e)} readOnly={(this.props.user === null)} />
       </Form>
     )
   }
@@ -53,10 +53,14 @@ class MultipleChoiceParameter extends Component {
   render() {
     const options = this.props.parameter_values.map((value) => ({ key: value, text: value, value: value }));
     return (
-      <Form>
+      <Form >
+        {this.props.user === null ?
+        <Form.Input label={this.props.parameter_name} value={this.props.parameter_value} readOnly />
+        :
         <Form.Dropdown label={this.props.parameter_name}
           defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
           fluid multiple selection options={options} />
+        }
       </Form>
     )
   }
@@ -66,11 +70,11 @@ function SourceParameter(props) {
   return (
     props.parameter_type === "string" ?
       <StringParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-        parameter_key={props.parameter_key} reload={props.reload}
+        parameter_key={props.parameter_key} reload={props.reload} user={props.user}
         parameter_value={props.parameter_value} parameter_name={props.parameter_name} />
       :
       <MultipleChoiceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-        parameter_key={props.parameter_key} reload={props.reload}
+        parameter_key={props.parameter_key} reload={props.reload} user={props.user}
         parameter_values={props.parameter_values} parameter_name={props.parameter_name}
         parameter_value={props.parameter_value} />
   )

@@ -36,7 +36,7 @@ class MetricComment extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.TextArea label='Comment'
+        <Form.TextArea label='Comment' readOnly={(this.props.user === null)}
           value={this.state.edited_comment} onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
           onKeyPress={(e) => this.onKeyPress(e)} />

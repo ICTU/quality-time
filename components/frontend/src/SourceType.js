@@ -33,9 +33,14 @@ class SourceType extends Component {
       (key) => { options.push({ text: self.props.datamodel.sources[key].name, value: key }) });
     return (
       <Form>
-        <Form.Dropdown label="Source type" search fluid selection selectOnNavigation={false}
-          value={this.props.source_type}
-          options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+        {this.props.user === null ?
+          <Form.Input label="Source type" value={self.props.datamodel.sources[this.props.source_type].name}
+            readOnly />
+          :
+          <Form.Dropdown label="Source type" search fluid selection selectOnNavigation={false}
+            value={this.props.source_type}
+            options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+        }
       </Form>
     )
   }

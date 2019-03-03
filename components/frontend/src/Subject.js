@@ -21,13 +21,13 @@ class Subject extends Component {
   render() {
     const metrics = Object.keys(this.props.subject.metrics).map((metric_uuid) =>
       <Metric key={metric_uuid} report_uuid={this.props.report_uuid} metric_uuid={metric_uuid}
-        metric={this.props.subject.metrics[metric_uuid]}
+        metric={this.props.subject.metrics[metric_uuid]} user={this.props.user}
         datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
     return (
       <Segment basic>
         <SubjectTitleContainer report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
-           subject={this.props.subject} reload={this.props.reload} />
+          subject={this.props.subject} reload={this.props.reload} user={this.props.user} />
         <Table>
           <Table.Header>
             <Table.Row>
@@ -42,15 +42,16 @@ class Subject extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='8'>
-                <Button floated='left' icon primary basic onClick={(e) => this.onAddMetric(e)}>
-                  <Icon name='plus' /> Add metric
+          {(this.props.user !== null) &&
+            <Table.Footer>
+              <Table.Row>
+                <Table.HeaderCell colSpan='8'>
+                  <Button floated='left' icon primary basic onClick={(e) => this.onAddMetric(e)}>
+                    <Icon name='plus' /> Add metric
                 </Button>
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Footer>}
         </Table>
       </Segment>
     )

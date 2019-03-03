@@ -38,6 +38,7 @@ class SourceName extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Input label="Source name" focus fluid value={this.state.edited_name}
+          readOnly={(this.props.user === null)}
           placeholder={this.props.source_type_name} onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />
       </Form>

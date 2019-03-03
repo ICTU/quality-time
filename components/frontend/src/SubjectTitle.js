@@ -36,7 +36,7 @@ class SubjectTitleContainer extends Component {
                 onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
                 report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
-                reload={this.props.reload} />)
+                reload={this.props.reload} user={this.props.user} />)
     }
 }
 
@@ -48,7 +48,7 @@ function SubjectTitle(props) {
     return (
         <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
             onMouseLeave={props.onMouseLeave} report_uuid={props.report_uuid} subject_uuid={props.subject_uuid}
-            reload={props.reload} />
+            reload={props.reload} user={props.user} />
     )
 }
 
@@ -74,17 +74,18 @@ class SubjectTitleDisplay extends Component {
         event.preventDefault();
         const self = this;
         fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
-          method: 'delete',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({})
+            method: 'delete',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
         }).then(
-          () => self.props.reload()
+            () => self.props.reload()
         );
-      }
+    }
     render() {
+        if (this.props.user === null) { return (<Header as='h2'>{this.props.title}</Header>) }
         const style = this.state.editable ? { borderBottom: "1px dotted #000000" } : {};
         return (
             <Grid>
