@@ -15,7 +15,7 @@ class Login extends Component {
   }
   render() {
     return (
-      <Modal trigger={<Button>Login</Button>} size='small'>
+      <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='small'>
         <Header content='Login' />
         <Modal.Content>
           <Form onSubmit={this.handleSubmit}>
@@ -31,7 +31,7 @@ class Login extends Component {
 
 function Logout(props) {
   return (
-    <Button onClick={props.logout}>Logout {props.user}</Button>
+    <Button secondary onClick={props.logout}><Icon name='user' />Logout {props.user}</Button>
   )
 }
 
