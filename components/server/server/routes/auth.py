@@ -6,7 +6,7 @@ import bottle
 
 
 @bottle.post("/login")
-def login(ldap_server):
+def login(ldap_server=None):
     """Login the user."""
     credentials = dict(bottle.request.json)
     safe_characters = re.compile(r"\W+", re.UNICODE)

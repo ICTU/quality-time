@@ -7,12 +7,12 @@ class InjectionPlugin:
     """This plugin passes a value to route callbacks that accept a specific keyword argument.
     If a callback does not expect such a parameter, no value is passed."""
 
-    name = 'injection'
     api = 2
 
     def __init__(self, value, keyword):
         self.value = value
         self.keyword = keyword
+        self.name = f"{keyword}-injection"
 
     def setup(self, app):
         """Make sure that other installed plugins don't use the same keyword argument."""
