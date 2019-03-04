@@ -103,16 +103,30 @@ class App extends Component {
     return report_date;
   }
 
-  login(event) {
-    event.preventDefault();
-    this.setState({ user: 'admin' });
+  login(username, password) {
+    let self = this;
+    fetch(`http://localhost:8080/login`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username: username, password: password})
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (json) {
+        self.setState({ user: username });
+      }).catch(function (error) {
+        console.log(error);
+      });
   }
 
   logout(event) {
     event.preventDefault();
     this.setState({ user: null });
   }
-
 
   render() {
     const report_date = this.report_date();
@@ -122,7 +136,7 @@ class App extends Component {
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
           nr_new_measurements={this.state.nr_new_measurements} user={this.state.user}
-          report={this.state.report} report_date={report_date} login={(e) => this.login(e)}
+          report={this.state.report} report_date={report_date} login={(u, p) => this.login(u, p)}
           logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
         <Container fluid style={{ marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>

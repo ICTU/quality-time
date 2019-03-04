@@ -40,5 +40,10 @@ services:
       ME_CONFIG_MONGODB_SERVER: database
     depends_on:
     - database
+  ldap:
+    image: osixia/openldap:1.2.3
+    ports:
+      - "389:389"
+      - "636:636"
 volumes:
   dbdata:

@@ -11,11 +11,12 @@ import logging
 import os
 
 import bottle
+import ldap
 import pymongo
 from pymongo.database import Database
 
 from . import cors  # pylint: disable=unused-import
-from .routes import report, measurement, datamodel  # pylint: disable=unused-import
+from .routes import report, measurement, datamodel, auth  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
 from .util import iso_timestamp, uuid
 from .database.datamodels import insert_new_datamodel, latest_datamodel
@@ -70,8 +71,12 @@ def serve() -> None:
     database = pymongo.MongoClient(database_url).quality_time_db
     logging.info("Connected to database: %s", database)
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
-    injection_plugin = InjectionPlugin(value=database, keyword="database")
-    bottle.install(injection_plugin)
+    ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
+    ldap_server = ldap.initialize(ldap_url)
+    database_injection_plugin = InjectionPlugin(value=database, keyword="database")
+    bottle.install(database_injection_plugin)
+    ldap_injection_plugin = InjectionPlugin(value=ldap_server, keyword="ldap_server")
+    bottle.install(ldap_injection_plugin)
     import_datamodel(database)
     import_example_reports(database)
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)

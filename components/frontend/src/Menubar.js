@@ -1,12 +1,32 @@
-import React from 'react';
-import { Button, Container, Icon, Image, Input, Label, Menu, Popup } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { ReportTitleContainer } from './ReportTitle.js'
 
-function Login(props) {
-  return (
-    <Button onClick={props.login}>Login</Button>
-  )
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { username: '', password: '' }
+  }
+  handleChange = (e, { name, value }) => this.setState({ [name]: value })
+  handleSubmit = () => {
+    const { username, password } = this.state;
+    this.props.login(username, password);
+  }
+  render() {
+    return (
+      <Modal trigger={<Button>Login</Button>} size='small'>
+        <Header content='Login' />
+        <Modal.Content>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Input label='Username' name='username' onChange={this.handleChange} />
+            <Form.Input type='password' label='Password' name='password' onChange={this.handleChange} />
+            <Form.Button>Submit</Form.Button>
+          </Form>
+        </Modal.Content>
+      </Modal>
+    )
+  }
 }
 
 function Logout(props) {
@@ -14,7 +34,6 @@ function Logout(props) {
     <Button onClick={props.logout}>Logout {props.user}</Button>
   )
 }
-
 
 function NewMeasurementsLabel(props) {
   if (props.nr_new_measurements === 0) { return null }
@@ -62,7 +81,7 @@ function Menubar(props) {
               maxDate={today} iconPosition="left" onChange={props.onDate} />
           </Menu.Item>
           <Menu.Item>
-            {(props.user !== null) ? <Logout user={props.user} logout={props.logout} /> : <Login login={props.login}/>}
+            {(props.user !== null) ? <Logout user={props.user} logout={props.logout} /> : <Login login={props.login} />}
           </Menu.Item>
         </Menu.Menu>
       </Container>
