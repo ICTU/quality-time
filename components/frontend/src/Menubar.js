@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
+import { Button, Container, Dropdown, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { ReportTitleContainer } from './ReportTitle.js'
 
@@ -15,11 +15,11 @@ class Login extends Component {
   }
   render() {
     return (
-      <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='small'>
+      <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny'>
         <Header content='Login' />
         <Modal.Content>
           <Form onSubmit={this.handleSubmit}>
-            <Form.Input label='Username' name='username' onChange={this.handleChange} />
+            <Form.Input autoFocus label='Username' name='username' onChange={this.handleChange} />
             <Form.Input type='password' label='Password' name='password' onChange={this.handleChange} />
             <Form.Button>Submit</Form.Button>
           </Form>
@@ -73,7 +73,7 @@ function Menubar(props) {
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
-            <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
+            <Dropdown clearable icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
           </Menu.Item>
           <Menu.Item>
             <DateInput name="report_date_string" value={props.report_date_string}
