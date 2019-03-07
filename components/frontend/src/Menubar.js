@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Container, Dropdown, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { ReportTitleContainer } from './ReportTitle.js'
 
@@ -73,7 +73,7 @@ function Menubar(props) {
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
-            <Dropdown clearable icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
+            <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
           </Menu.Item>
           <Menu.Item>
             <DateInput name="report_date_string" value={props.report_date_string}
