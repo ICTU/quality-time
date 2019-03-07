@@ -111,12 +111,10 @@ class App extends Component {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({username: username, password: password})
+      credentials: 'include',
+      body: JSON.stringify({ username: username, password: password })
     })
       .then(function (response) {
-        return response.json();
-      })
-      .then(function (json) {
         self.setState({ user: username });
       }).catch(function (error) {
         console.log(error);
@@ -125,7 +123,20 @@ class App extends Component {
 
   logout(event) {
     event.preventDefault();
-    this.setState({ user: null });
+    let self = this;
+    fetch(`http://localhost:8080/logout`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({}),
+      credentials: 'include'
+    }).then(function (response) {
+      self.setState({ user: null });
+    }).catch(function(error) {
+      console.log(error);
+    })
   }
 
   render() {
