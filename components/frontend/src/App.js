@@ -10,7 +10,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report: null, search_string: '', report_date_string: '',
-      nr_measurements: 0, nr_new_measurements: 0, loading: true
+      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
   }
@@ -103,6 +103,42 @@ class App extends Component {
     return report_date;
   }
 
+  login(username, password) {
+    let self = this;
+    fetch(`http://localhost:8080/login`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ username: username, password: password })
+    })
+      .then(function (response) {
+        self.setState({ user: username });
+      }).catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  logout(event) {
+    event.preventDefault();
+    let self = this;
+    fetch(`http://localhost:8080/logout`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({}),
+      credentials: 'include'
+    }).then(function (response) {
+      self.setState({ user: null });
+    }).catch(function(error) {
+      console.log(error);
+    })
+  }
+
   render() {
     const report_date = this.report_date();
     return (
@@ -110,8 +146,9 @@ class App extends Component {
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
-          nr_new_measurements={this.state.nr_new_measurements}
-          report={this.state.report} report_date={report_date}
+          nr_new_measurements={this.state.nr_new_measurements} user={this.state.user}
+          report={this.state.report} report_date={report_date} login={(u, p) => this.login(u, p)}
+          logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
         <Container fluid style={{ marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
           {this.state.loading ?
@@ -121,11 +158,11 @@ class App extends Component {
             :
             this.state.report === null ?
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
-                open_report={(e, r) => this.open_report(e, r)} />
+                open_report={(e, r) => this.open_report(e, r)} user={this.state.user} />
               :
               <Report datamodel={this.state.datamodel} report={this.state.report}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-                search_string={this.state.search_string} report_date={report_date} />
+                search_string={this.state.search_string} report_date={report_date} user={this.state.user} />
           }
         </Container>
       </>

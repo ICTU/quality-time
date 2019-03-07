@@ -16,7 +16,8 @@ function SourceParameters(props) {
                     parameter_key={parameter_key} reload={props.reload}
                     parameter_type={all_parameters[parameter_key].type}
                     parameter_values={all_parameters[parameter_key].values || []}
-                    parameter_value={props.source.parameters[parameter_key]} />
+                    parameter_value={props.source.parameters[parameter_key]}
+                    user={props.user} />
             </Grid.Column>
         )
     );

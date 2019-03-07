@@ -75,7 +75,7 @@ class Metric extends Component {
     return (
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
-        reload={this.props.reload} metric={this.props.metric}
+        reload={this.props.reload} metric={this.props.metric} user={this.props.user}
         measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)}
         set_target={(e, t) => this.set_target(e, t)}
         ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />

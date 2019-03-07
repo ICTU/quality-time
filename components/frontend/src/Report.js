@@ -50,12 +50,15 @@ class Report extends Component {
                 <Subjects datamodel={this.props.datamodel} subjects={this.props.report.subjects}
                     report_uuid={this.props.report.report_uuid}
                     nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload}
-                    search_string={this.props.search_string} report_date={this.props.report_date} />
-                <Segment basic>
-                    <Button icon negative basic floated='right' onClick={(e) => this.delete_report(e, this.props.report)}>
-                        <Icon name='trash' /> Delete report
-                    </Button>
-                </Segment>
+                    search_string={this.props.search_string} report_date={this.props.report_date}
+                    user={this.props.user} />
+                {(this.props.user !== null) &&
+                    <Segment basic>
+                        <Button icon negative basic floated='right'
+                            onClick={(e) => this.delete_report(e, this.props.report)}>
+                            <Icon name='trash' /> Delete report
+                        </Button>
+                    </Segment>}
             </>
         )
     }

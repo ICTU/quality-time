@@ -31,9 +31,14 @@ class MetricType extends Component {
       (key) => { options.push({ text: self.props.datamodel.metrics[key].name, value: key }) });
     return (
       <Form>
+        {this.props.user === null ?
+        <Form.Input label='Metric type' readOnly
+          value={self.props.datamodel.metrics[this.state.edited_metric_type].name} />
+      :
         <Form.Dropdown label='Metric type' search fluid selection selectOnNavigation={false}
           value={this.state.edited_metric_type}
           options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
+      }
       </Form>
     )
   }

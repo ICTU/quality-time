@@ -25,12 +25,14 @@ class Subjects extends Component {
           <Subject key={subject_uuid} report_uuid={this.props.report_uuid} subject_uuid={subject_uuid}
             subject={this.props.subjects[subject_uuid]}
             search_string={this.props.search_string} datamodel={this.props.datamodel} reload={this.props.reload}
-            report_date={this.props.report_date} nr_new_measurements={this.props.nr_new_measurements} />)}
-        <Segment basic>
-          <Button icon primary basic onClick={(e) => this.onAddSubject(e)}>
-            <Icon name='plus' /> Add subject
-          </Button>
-        </Segment>
+            report_date={this.props.report_date} nr_new_measurements={this.props.nr_new_measurements}
+            user={this.props.user} />)}
+        {(this.props.user !== null) &&
+          <Segment basic>
+            <Button icon primary basic onClick={(e) => this.onAddSubject(e)}>
+              <Icon name='plus' /> Add subject
+            </Button>
+          </Segment>}
       </>
     )
   }
