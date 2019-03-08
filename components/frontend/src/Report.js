@@ -32,7 +32,7 @@ class Report extends Component {
     delete_report(event, report) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/${report.report_uuid}`, {
+        fetch(`${window.server_url}/report/${report.report_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {

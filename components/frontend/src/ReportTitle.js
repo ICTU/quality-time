@@ -22,7 +22,7 @@ class ReportTitleContainer extends Component {
         event.preventDefault();
         this.setState({ edit: false });
         let self = this;
-        fetch(`http://localhost:8080/report/${this.props.report.report_uuid}/title`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {

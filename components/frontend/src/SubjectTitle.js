@@ -21,7 +21,7 @@ class SubjectTitleContainer extends Component {
     onSubmit(event) {
         event.preventDefault();
         this.setState({ edit: false });
-        fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/title`, {
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/title`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -73,7 +73,7 @@ class SubjectTitleDisplay extends Component {
     delete_subject(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {

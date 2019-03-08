@@ -22,7 +22,7 @@ class MetricComment extends Component {
   onSubmit(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/comment`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/comment`, {
       method: 'post',
       mode: 'cors',
       headers: {

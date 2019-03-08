@@ -13,6 +13,7 @@ class App extends Component {
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
+    window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
   }
 
   componentDidMount() {
@@ -22,7 +23,7 @@ class App extends Component {
   reload(event) {
     if (event) { event.preventDefault(); }
     const report_date = this.report_date() || new Date();
-    fetch(`http://localhost:8080/datamodel?report_date=${report_date.toISOString()}`)
+    fetch(`${window.server_url}/datamodel?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
@@ -31,7 +32,7 @@ class App extends Component {
       });
     const report_uuid = this.state.report ? this.state.report["report_uuid"] : null;
     let self = this;
-    fetch(`http://localhost:8080/reports?report_date=${report_date.toISOString()}`)
+    fetch(`${window.server_url}/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })
@@ -77,7 +78,7 @@ class App extends Component {
   open_report(event, report) {
     event.preventDefault();
     this.setState({ report: report }, () => this.reload());
-    this.source = new EventSource(`http://localhost:8080/nr_measurements/${report.report_uuid}`);
+    this.source = new EventSource(`${window.server_url}/nr_measurements/${report.report_uuid}`);
     let self = this;
     this.source.addEventListener('init', function (e) {
       self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });
@@ -105,7 +106,7 @@ class App extends Component {
 
   login(username, password) {
     let self = this;
-    fetch(`http://localhost:8080/login`, {
+    fetch(`${window.server_url}/login`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -124,7 +125,7 @@ class App extends Component {
   logout(event) {
     event.preventDefault();
     let self = this;
-    fetch(`http://localhost:8080/logout`, {
+    fetch(`${window.server_url}/logout`, {
       method: 'post',
       mode: 'cors',
       headers: {

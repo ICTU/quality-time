@@ -1,7 +1,9 @@
 """Login/logout."""
 
 from datetime import datetime, timedelta
+import os
 import re
+import urllib.parse
 
 import bottle
 
@@ -12,8 +14,10 @@ from ..util import uuid
 def set_session_cookie(session_id: str, clear: bool = False):
     """Set the session cookie on the response."""
     expires_datetime = datetime.min if clear else datetime.now() + timedelta(hours=24)
+    server_url = os.environ.get("SERVER_URL", "http://localhost:8080")
+    domain = urllib.parse.urlparse(server_url).netloc.split(":")[0]
     bottle.response.set_cookie(
-        "session_id", session_id, expires=expires_datetime, domain="localhost", path="/", httponly=True)
+        "session_id", session_id, expires=expires_datetime, domain=domain, path="/", httponly=True)
 
 
 @bottle.post("/login")

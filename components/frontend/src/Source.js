@@ -9,7 +9,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}`, {
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {
@@ -27,7 +27,7 @@ class Source extends Component {
             <Grid stackable>
                 <Grid.Row columns={1}>
                     <Grid.Column>
-                        <Message fluid header={source_type.name} content={source_type.description} />
+                        <Message header={source_type.name} content={source_type.description} />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2}>

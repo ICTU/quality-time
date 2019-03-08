@@ -11,7 +11,7 @@ function MetricParameters(props) {
         <Grid stackable>
             <Grid.Row columns={1}>
                 <Grid.Column>
-                    <Message fluid header={metric_type.name} content={metric_type.description} />
+                    <Message header={metric_type.name} content={metric_type.description} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={3}>

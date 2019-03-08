@@ -4,12 +4,14 @@ LABEL maintainer="Frank Niessink <frank@niessink.com>"
 LABEL description="Quality-time server"
 
 RUN apk add --no-cache --virtual .build-deps \
+    build-base \
+    openldap-dev \
     gcc \
     g++ \
     python3-dev \
     musl-dev \
     postgresql-dev \
-    && pip install --no-cache-dir psycopg2
+    && pip install --no-cache-dir psycopg2 python-ldap
 
 RUN apk add libpq icu-dev
 

@@ -2,4 +2,5 @@
 .git/
 .gitignore
 .vscode/
-node_moodules/
+build
+node_modules/
