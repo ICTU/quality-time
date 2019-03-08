@@ -1,5 +1,7 @@
 """Enable Cross Origin Resource Sharing (CORS)."""
 
+import os
+
 import bottle
 
 
@@ -17,8 +19,9 @@ def enable_cors_generic_route():
 @bottle.hook('after_request')
 def enable_cors_after_request_hook():
     """This executes after every route. We use it to attach CORS headers when applicable."""
+    frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
     headers = dict(
-        Origin="http://localhost:3000", Methods="GET, POST, PUT, DELETE, OPTIONS", Credentials="true",
+        Origin=frontend_url, Methods="GET, POST, PUT, DELETE, OPTIONS", Credentials="true",
         Headers="Origin, Accept, Content-Type, Cookie, Set-Cookie, X-Requested-With, X-CSRF-Token, Cache-Control, " \
                 "Last-Event-Id")
     for key, value in headers.items():

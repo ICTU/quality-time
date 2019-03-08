@@ -23,7 +23,7 @@ class MetricName extends Component {
   onSubmit(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/name`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/name`, {
       method: 'post',
       mode: 'cors',
       headers: {

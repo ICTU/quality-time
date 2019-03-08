@@ -10,7 +10,7 @@ class Metric extends Component {
   ignore_unit(event, source_uuid, unit_key) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/ignore`, {
+    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/ignore`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -27,7 +27,7 @@ class Metric extends Component {
   }
   set_target(new_target) {
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/target`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/target`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -47,7 +47,7 @@ class Metric extends Component {
   fetch_measurement() {
     let self = this;
     const report_date = this.props.report_date ? this.props.report_date : new Date();
-    fetch(`http://localhost:8080/measurements/${this.props.metric_uuid}?report_date=${report_date.toISOString()}`)
+    fetch(`${window.server_url}/measurements/${this.props.metric_uuid}?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
       })

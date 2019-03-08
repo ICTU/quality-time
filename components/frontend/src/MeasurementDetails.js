@@ -9,7 +9,7 @@ class MeasurementDetails extends Component {
   delete_metric(event) {
     event.preventDefault();
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}`, {
       method: 'delete',
       mode: 'cors',
       headers: {

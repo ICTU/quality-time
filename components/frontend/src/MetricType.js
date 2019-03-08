@@ -15,7 +15,7 @@ class MetricType extends Component {
     event.preventDefault();
     let self = this;
     this.setState({ edited_metric_type: value });
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/type`, {
+    fetch(`${window.serverl_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/type`, {
       method: 'post',
       mode: 'cors',
       headers: {

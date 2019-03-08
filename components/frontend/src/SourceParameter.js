@@ -17,7 +17,7 @@ class StringParameter extends Component {
   onSubmit(event) {
     event.preventDefault();
     let self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -41,7 +41,7 @@ class MultipleChoiceParameter extends Component {
   onSubmit(event, value) {
     event.preventDefault();
     let self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
       method: 'post',
       mode: 'cors',
       headers: {

@@ -15,7 +15,7 @@ class SourceType extends Component {
     event.preventDefault();
     this.setState({ edited_source_type: value });
     const self = this;
-    fetch(`http://localhost:8080/report/${this.props.report_uuid}/source/${this.props.source_uuid}/type`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/type`, {
       method: 'post',
       mode: 'cors',
       headers: {

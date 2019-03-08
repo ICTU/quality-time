@@ -1,0 +1,9 @@
+.coverage
+.venv
+.mypy_cache
+.pylintrc
+__pycache__
+*.egg-info
+build/
+ci/
+tests/
