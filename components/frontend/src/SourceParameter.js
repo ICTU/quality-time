@@ -16,22 +16,16 @@ class StringParameter extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    let self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [self.props.parameter_key]: self.state.edited_value })
-    }).then(() => this.props.reload())
+    if (this.state.edited_value !== this.props.parameter_value) {
+      this.props.set_parameter(this.props.parameter_key, this.state.edited_value);
+    }
   }
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Input label={this.props.parameter_name} focus fluid defaultValue={this.state.edited_value}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
-          onBlur={(e) => this.onSubmit(e)} readOnly={(this.props.user === null)} />
+          onBlur={(e) => this.onSubmit(e)} readOnly={this.props.readOnly} />
       </Form>
     )
   }
@@ -40,44 +34,51 @@ class StringParameter extends Component {
 class MultipleChoiceParameter extends Component {
   onSubmit(event, value) {
     event.preventDefault();
-    let self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${this.props.parameter_key}`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [self.props.parameter_key]: value })
-    }).then(() => this.props.reload())
+    if (value !== this.props.parameter_value) {
+      this.props.set_parameter(this.props.parameter_key, value);
+    }
   }
   render() {
     const options = this.props.parameter_values.map((value) => ({ key: value, text: value, value: value }));
     return (
       <Form >
-        {this.props.user === null ?
-        <Form.Input label={this.props.parameter_name} value={this.props.parameter_value} readOnly />
-        :
-        <Form.Dropdown label={this.props.parameter_name}
-          defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
-          fluid multiple selection options={options} />
+        {this.props.readOnly ?
+          <Form.Input label={this.props.parameter_name} value={this.props.parameter_value} readOnly />
+          :
+          <Form.Dropdown label={this.props.parameter_name}
+            defaultValue={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
+            fluid multiple selection options={options} />
         }
       </Form>
     )
   }
 }
 
-function SourceParameter(props) {
-  return (
-    props.parameter_type === "string" ?
-      <StringParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-        parameter_key={props.parameter_key} reload={props.reload} user={props.user}
-        parameter_value={props.parameter_value} parameter_name={props.parameter_name} />
-      :
-      <MultipleChoiceParameter report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-        parameter_key={props.parameter_key} reload={props.reload} user={props.user}
-        parameter_values={props.parameter_values} parameter_name={props.parameter_name}
-        parameter_value={props.parameter_value} />
-  )
+class SourceParameter extends Component {
+  set_source_parameter(key, value) {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/parameter/${key}`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ [key]: value })
+    }).then(() => this.props.reload())
+  }
+  render() {
+    const readOnly = this.props.user === null;
+    return (
+      this.props.parameter_type === "string" ?
+        <StringParameter set_parameter={(k,v ) => this.set_source_parameter(k, v)}
+          parameter_key={this.props.parameter_key} readOnly={readOnly}
+          parameter_value={this.props.parameter_value} parameter_name={this.props.parameter_name} />
+        :
+        <MultipleChoiceParameter set_parameter={(k, v) => this.set_source_parameter(k, v)}
+          parameter_key={this.props.parameter_key} readOnly={readOnly}
+          parameter_values={this.props.parameter_values} parameter_name={this.props.parameter_name}
+          parameter_value={this.props.parameter_value} />
+    )
+  }
 }
 
 export { SourceParameter };
