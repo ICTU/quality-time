@@ -41,6 +41,7 @@ class Measurement extends Component {
     const warning = status === null;
     const metric_unit = this.props.datamodel.metrics[this.props.metric.type].unit;
     const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
+    console.log("Measurement.render", metric_name);
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>
@@ -79,7 +80,7 @@ class Measurement extends Component {
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
           measurement={latest_measurement} metric={this.props.metric} user={this.props.user}
-          set_target={this.props.set_target} ignore_unit={this.props.ignore_unit} />}
+          set_metric_attribute={this.props.set_metric_attribute} ignore_unit={this.props.ignore_unit} />}
       </>
     )
   }

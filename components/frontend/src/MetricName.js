@@ -22,17 +22,7 @@ class MetricName extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/name`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name: this.state.edited_name })
-    }).then(
-      () => self.props.reload()
-    )
+    this.props.set_metric_attribute("name", this.state.edited_name);
   }
   render() {
     return (

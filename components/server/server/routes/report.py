@@ -69,6 +69,7 @@ def post_metric_type(report_uuid: str, metric_uuid: str, database):
         if source["type"] not in possible_sources:
             del sources[source_uuid]
     insert_new_report(report, database)
+    return dict()
 
 
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")

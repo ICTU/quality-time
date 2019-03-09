@@ -20,29 +20,32 @@ class Metric extends Component {
     })
       .then(function (response) { return response.json(); })
       .then(function (json) {
-        let measurements = self.state.measurements.slice(0);
-        measurements.push(json)
-        self.setState({ measurements: measurements })
+        self.fetch_measurement();
+        self.props.reload();
       })
   }
-  set_target(new_target) {
+  set_metric_attribute(attribute, value) {
     const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/target`, {
+    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ target: new_target})
+      body: JSON.stringify({ [attribute]: value })
     })
-      .then(function (response) { return response.json(); })
+      .then(function (response) {
+        return response.json();
+      })
       .then(function (json) {
-        let measurements = self.state.measurements.slice(0);
-        measurements.push(json)
-        self.setState({ measurements: measurements })
-    }).then(
-      () => self.props.reload()
-    )
+        if (attribute === "target" || attribute === "debt_target") {
+          self.fetch_measurement();
+        }
+        self.props.reload();
+      })
+      .catch(function(error) {
+        console.log(error);
+      })
   }
   fetch_measurement() {
     let self = this;
@@ -54,10 +57,6 @@ class Metric extends Component {
       .then(function (json) {
         self.setState({ measurements: json.measurements });
       })
-  }
-  onEdit(event) {
-    if (event) { event.preventDefault() };
-    this.fetch_measurement();
   }
   componentDidMount() {
     this.fetch_measurement();
@@ -71,13 +70,14 @@ class Metric extends Component {
   render() {
     const search = this.props.search_string;
     const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
+    console.log("Metric.render", metric_name);
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
         reload={this.props.reload} metric={this.props.metric} user={this.props.user}
-        measurements={this.state.measurements} onEdit={(e) => this.onEdit(e)}
-        set_target={(e, t) => this.set_target(e, t)}
+        measurements={this.state.measurements}
+        set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
         ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />
     )
   }

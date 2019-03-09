@@ -13,16 +13,8 @@ class MetricType extends Component {
   }
   onSubmit(event, { name, value }) {
     event.preventDefault();
-    let self = this;
+    this.props.set_metric_attribute("type", value);
     this.setState({ edited_metric_type: value });
-    fetch(`${window.serverl_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/type`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ type: value })
-    }).then(() => self.props.reload());
   }
   render() {
     let options = [];
@@ -36,7 +28,7 @@ class MetricType extends Component {
           value={self.props.datamodel.metrics[this.state.edited_metric_type].name} />
       :
         <Form.Dropdown label='Metric type' search fluid selection selectOnNavigation={false}
-          value={this.state.edited_metric_type}
+          defaultValue={this.state.edited_metric_type}
           options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
       }
       </Form>

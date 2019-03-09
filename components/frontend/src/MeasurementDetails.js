@@ -25,9 +25,8 @@ class MeasurementDetails extends Component {
     const panes = [
       {
         menuItem: 'Metric', render: () => <Tab.Pane>
-          <MetricParameters report_uuid={props.report_uuid} metric_uuid={props.metric_uuid}
-            datamodel={props.datamodel} metric={props.metric} reload={props.reload}
-            user={props.user} set_target={props.set_target} />
+          <MetricParameters datamodel={props.datamodel} metric={props.metric}
+            user={props.user} set_metric_attribute={props.set_metric_attribute} />
         </Tab.Pane>
       },
       {
@@ -38,7 +37,7 @@ class MeasurementDetails extends Component {
         </Tab.Pane>
       }
     ];
-    if (props.measurement) {
+    if (props.measurement !== null) {
       const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
       panes.push(
         {
