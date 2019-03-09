@@ -24,13 +24,18 @@ def count_measurements(report_uuid: str, database) -> int:
     return database.measurements.count_documents(filter={"report_uuid": report_uuid})
 
 
-def insert_new_measurement(metric_uuid: str, measurement, database, target: str = None):
+def insert_new_measurement(metric_uuid: str, measurement, database, target: str = None, debt_target: str = None,
+                           accept_debt: bool = None):
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
     measurement["value"] = calculate_measurement_value(measurement["sources"])
-    target = target or latest_metric(metric_uuid, iso_timestamp(), database)["target"]
-    measurement["status"] = determine_measurement_status(metric_uuid, measurement["value"], target, database)
+    metric = latest_metric(metric_uuid, iso_timestamp(), database)
+    target = target or metric["target"]
+    debt_target = debt_target or metric["debt_target"]
+    accept_debt = accept_debt or metric["accept_debt"]
+    measurement["status"] = determine_measurement_status(
+        metric_uuid, measurement["value"], target, debt_target, accept_debt, database)
     measurement["start"] = measurement["end"] = iso_timestamp()
     database.measurements.insert_one(measurement)
     measurement["_id"] = str(measurement["_id"])
@@ -47,8 +52,9 @@ def calculate_measurement_value(sources) -> Optional[str]:
     return str(value)
 
 
-def determine_measurement_status(metric_uuid: str, measurement_value: Optional[str], metric_target: Optional[str],
-                                 database) -> Optional[str]:
+def determine_measurement_status(
+        metric_uuid: str, measurement_value: Optional[str], metric_target: Optional[str],
+        metric_debt_target: Optional[str], metric_accept_debt: Optional[bool], database) -> Optional[str]:
     """Determine the measurement status."""
     if measurement_value is None:
         return None
@@ -57,10 +63,12 @@ def determine_measurement_status(metric_uuid: str, measurement_value: Optional[s
     direction = datamodel["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric_target or metric["target"])
-    if direction == ">=":
-        status = "target_met" if value >= target else "target_not_met"
-    elif direction == "<=":
-        status = "target_met" if value <= target else "target_not_met"
+    debt_target = int(metric_debt_target or metric["debt_target"] or target)
+    better_or_equal = {">=": int.__ge__, "<=": int.__le__, "==": int.__eq__}[direction]
+    if better_or_equal(value, target):
+        status = "target_met"
+    elif metric_accept_debt and better_or_equal(value, debt_target):
+        status = "debt_target_met"
     else:
-        status = "target_met" if value == target else "target_not_met"
+        status = "target_not_met"
     return status

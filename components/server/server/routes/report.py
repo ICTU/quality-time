@@ -70,10 +70,10 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
             if source["type"] not in possible_sources:
                 del sources[source_uuid]
     insert_new_report(report, database)
-    if metric_attribute == "target":
+    if metric_attribute in ("accept_debt", "debt_target", "target"):
         latest = latest_measurement(metric_uuid, database)
         if latest:
-            return insert_new_measurement(metric_uuid, latest, database, target=value)
+            return insert_new_measurement(metric_uuid, latest, database, **{metric_attribute: value})
     return dict()
 
 

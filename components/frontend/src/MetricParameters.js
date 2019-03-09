@@ -5,6 +5,7 @@ import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringParameter } from './StringParameter';
+import { SingleChoiceParameter } from './SingleChoiceParameter';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -31,7 +32,13 @@ function MetricParameters(props) {
                         user={props.user} set_metric_attribute={props.set_metric_attribute} target={props.metric.target} />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={1}>
+            <Grid.Row columns={3}>
+                <Grid.Column>
+                    <SingleChoiceParameter parameter_key="accept_debt" parameter_name="Accept technical debt"
+                        parameter_value={props.metric.accept_debt || false}
+                        parameter_values={[{text: "Yes", value: true}, {text: "No", value: false}]}
+                        set_parameter={props.set_metric_attribute} readOnly={props.user === null} />
+                </Grid.Column>
                 <Grid.Column>
                     <MetricDebtTarget
                         unit={metric_type.unit} direction={metric_type.direction}

@@ -48,8 +48,8 @@ def import_report(filename: str, database: Database) -> None:
             metric_type = imported_metric["type"]
             default_target = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["default_target"]
             metric_to_store = subject_to_store["metrics"][uuid()] = dict(
-                type=metric_type, sources={}, comment="", target=default_target, debt_target=None,
-                report_uuid=report_uuid)
+                type=metric_type, sources={}, comment="", target=default_target,
+                accept_debt=False, debt_target=None, report_uuid=report_uuid)
             for imported_source in imported_metric["sources"]:
                 metric_to_store["sources"][uuid()] = imported_source
 

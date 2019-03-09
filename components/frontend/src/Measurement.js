@@ -37,13 +37,14 @@ class Measurement extends Component {
     const target = this.props.metric.target;
     const metric_direction = this.props.datamodel.metrics[this.props.metric.type].direction;
     const positive = status === "target_met";
+    const active = status === "debt_target_met";
     const negative = status === "target_not_met";
     const warning = status === null;
     const metric_unit = this.props.datamodel.metrics[this.props.metric.type].unit;
     const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
     return (
       <>
-        <Table.Row positive={positive} negative={negative} warning={warning}>
+        <Table.Row positive={positive} negative={negative} warning={warning} active={active}>
           <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
               onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />

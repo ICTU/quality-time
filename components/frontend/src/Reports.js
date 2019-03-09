@@ -5,10 +5,10 @@ import { StatusPieChart } from './StatusPieChart';
 
 function ReportCard(props) {
   const summary = props.report.summary;
-  const nr_metrics = summary.red + summary.green + summary.yellow;
+  const nr_metrics = summary.red + summary.green + summary.yellow + summary.grey;
   return (
     <Card onClick={(e) => props.open_report(e, props.report)}>
-      <StatusPieChart red={summary.red} green={summary.green} yellow={summary.yellow} />
+      <StatusPieChart red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />
       <Card.Content>
         <Card.Header>{props.report.title}</Card.Header>
         <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
