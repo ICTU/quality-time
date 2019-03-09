@@ -45,10 +45,9 @@ class Source extends Component {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
-                            report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-                            reload={props.reload} source_type={props.source.type}
-                            user={props.user}
-                            metric_type={props.metric_type} datamodel={props.datamodel} />
+                            source_type={props.source.type} readOnly={props.user === null}
+                            metric_type={props.metric_type} datamodel={props.datamodel}
+                            set_source_attribute={(a, v) => this.set_source_attribute(a, v)} />
                     </Grid.Column>
                     <Grid.Column>
                         <StringParameter

@@ -17,8 +17,8 @@ function MetricParameters(props) {
             </Grid.Row>
             <Grid.Row columns={3}>
                 <Grid.Column>
-                    <MetricType user={props.user} datamodel={props.datamodel} metric_type={props.metric.type}
-                        set_metric_attribute={props.set_metric_attribute} />
+                    <MetricType datamodel={props.datamodel} metric_type={props.metric.type}
+                        set_metric_attribute={props.set_metric_attribute} readOnly={props.user === null} />
                 </Grid.Column>
                 <Grid.Column>
                     <StringParameter
