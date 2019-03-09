@@ -53,25 +53,6 @@ def get_metrics(database):
     return metrics
 
 
-@bottle.post("/report/<report_uuid>/metric/<metric_uuid>/type")
-def post_metric_type(report_uuid: str, metric_uuid: str, database):
-    """Set the metric type."""
-    metric_type = dict(bottle.request.json)["type"]
-    report = latest_report(report_uuid, database)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            metric = subject["metrics"][metric_uuid]
-            break
-    metric["type"] = metric_type
-    sources = metric["sources"]
-    possible_sources = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["sources"]
-    for source_uuid, source in list(sources.items()):
-        if source["type"] not in possible_sources:
-            del sources[source_uuid]
-    insert_new_report(report, database)
-    return dict()
-
-
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")
 def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: str, database):
     """Set the metric attribute."""
@@ -79,8 +60,15 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     report = latest_report(report_uuid, database)
     for subject in report["subjects"].values():
         if metric_uuid in subject["metrics"]:
-            subject["metrics"][metric_uuid][metric_attribute] = value
+            metric = subject["metrics"][metric_uuid]
             break
+    metric[metric_attribute] = value
+    if metric_attribute == "type":
+        sources = metric["sources"]
+        possible_sources = latest_datamodel(iso_timestamp(), database)["metrics"][value]["sources"]
+        for source_uuid, source in list(sources.items()):
+            if source["type"] not in possible_sources:
+                del sources[source_uuid]
     insert_new_report(report, database)
     if metric_attribute == "target":
         latest = latest_measurement(metric_uuid, database)
