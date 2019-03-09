@@ -1,10 +1,10 @@
 import React from 'react';
 import { Grid, Message } from 'semantic-ui-react';
 import { MetricComment } from './MetricComment';
-import { MetricName } from './MetricName';
 import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
+import { StringParameter } from './StringParameter';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -21,8 +21,10 @@ function MetricParameters(props) {
                         set_metric_attribute={props.set_metric_attribute} />
                 </Grid.Column>
                 <Grid.Column>
-                    <MetricName user={props.user} datamodel={props.datamodel} metric_name={props.metric.name}
-                        metric_type_name={metric_type.name} set_metric_attribute={props.set_metric_attribute} />
+                    <StringParameter
+                        parameter_key="name" parameter_name={"Metric name"} parameter_value={props.metric.name}
+                        set_parameter={props.set_metric_attribute}
+                        placeholder={metric_type.name} readOnly={props.user === null} />
                 </Grid.Column>
                 <Grid.Column>
                     <MetricTarget unit={metric_type.unit} direction={metric_type.direction}
