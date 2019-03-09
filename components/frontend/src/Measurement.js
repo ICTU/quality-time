@@ -41,7 +41,6 @@ class Measurement extends Component {
     const warning = status === null;
     const metric_unit = this.props.datamodel.metrics[this.props.metric.type].unit;
     const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
-    console.log("Measurement.render", metric_name);
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning}>

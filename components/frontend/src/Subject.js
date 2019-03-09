@@ -24,7 +24,6 @@ class Subject extends Component {
         metric={this.props.subject.metrics[metric_uuid]} user={this.props.user}
         datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
-    console.log("Subject.render", this.props.subject.title);
     return (
       <Segment basic>
         <SubjectTitleContainer report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}

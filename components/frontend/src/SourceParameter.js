@@ -29,7 +29,7 @@ class StringParameter extends Component {
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
-        <Form.Input label={this.props.parameter_name} focus fluid value={this.state.edited_value}
+        <Form.Input label={this.props.parameter_name} focus fluid defaultValue={this.state.edited_value}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
           onBlur={(e) => this.onSubmit(e)} readOnly={(this.props.user === null)} />
       </Form>

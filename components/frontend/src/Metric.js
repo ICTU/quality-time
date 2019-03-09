@@ -70,7 +70,6 @@ class Metric extends Component {
   render() {
     const search = this.props.search_string;
     const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
-    console.log("Metric.render", metric_name);
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
       <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}

@@ -128,10 +128,10 @@ def delete_source(report_uuid: str, source_uuid: str, database):
     insert_new_report(report, database)
 
 
-@bottle.post("/report/<report_uuid>/source/<source_uuid>/type")
-def post_source_type(report_uuid: str, source_uuid: str, database):
-    """Set the source type."""
-    source_type = dict(bottle.request.json)["type"]
+@bottle.post("/report/<report_uuid>/source/<source_uuid>/<source_attribute>")
+def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: str, database):
+    """Set a source attribute."""
+    value = dict(bottle.request.json)[source_attribute]
     report = latest_report(report_uuid, database)
     for subject in report["subjects"].values():
         for metric in subject["metrics"].values():
@@ -139,25 +139,12 @@ def post_source_type(report_uuid: str, source_uuid: str, database):
                 source = metric["sources"][source_uuid]
                 metric_type = metric["type"]
                 break
-    source["type"] = source_type
-    possible_parameters = latest_datamodel(iso_timestamp(), database)["sources"][source_type]["parameters"]
-    for parameter in list(source["parameters"].keys()):
-        if parameter not in possible_parameters or metric_type not in possible_parameters[parameter]["metrics"]:
-            del source["parameters"][parameter]
-    insert_new_report(report, database)
-
-
-@bottle.post("/report/<report_uuid>/source/<source_uuid>/name")
-def post_source_name(report_uuid: str, source_uuid: str, database):
-    """Set the source name."""
-    source_name = dict(bottle.request.json)["name"]
-    report = latest_report(report_uuid, database)
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                source = metric["sources"][source_uuid]
-                break
-    source["name"] = source_name
+    source[source_attribute] = value
+    if source_attribute == "type":
+        possible_parameters = latest_datamodel(iso_timestamp(), database)["sources"][value]["parameters"]
+        for parameter in list(source["parameters"].keys()):
+            if parameter not in possible_parameters or metric_type not in possible_parameters[parameter]["metrics"]:
+                del source["parameters"][parameter]
     insert_new_report(report, database)
 
 
