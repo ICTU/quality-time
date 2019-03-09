@@ -17,7 +17,9 @@ class MetricDebtTarget extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    this.props.set_metric_attribute("debt_target", this.state.edited_target);
+    if (this.state.edited_target !== this.props.target) {
+      this.props.set_metric_attribute("debt_target", this.state.edited_target);
+    }
   }
   render() {
     return (

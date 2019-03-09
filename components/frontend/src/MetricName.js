@@ -22,7 +22,9 @@ class MetricName extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    this.props.set_metric_attribute("name", this.state.edited_name);
+    if (this.state.edited_name !== this.props.metric_name) {
+      this.props.set_metric_attribute("name", this.state.edited_name);
+    }
   }
   render() {
     return (

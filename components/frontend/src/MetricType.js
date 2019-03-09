@@ -13,8 +13,10 @@ class MetricType extends Component {
   }
   onSubmit(event, { name, value }) {
     event.preventDefault();
-    this.props.set_metric_attribute("type", value);
     this.setState({ edited_metric_type: value });
+    if (value !== this.props.metric_type) {
+      this.props.set_metric_attribute("type", value);
+    }
   }
   render() {
     let options = [];

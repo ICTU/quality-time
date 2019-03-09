@@ -21,7 +21,10 @@ class MetricComment extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    this.props.set_metric_attribute("comment", this.state.edited_comment || "");
+    const edited_comment = this.state.edited_comment || "";
+    if (edited_comment !== this.props.comment) {
+      this.props.set_metric_attribute("comment", edited_comment);
+    }
   }
   render() {
     return (
