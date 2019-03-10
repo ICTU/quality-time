@@ -4,10 +4,10 @@ import { StatusPieChart } from './StatusPieChart';
 import { Subjects } from './Subjects.js';
 
 function SubjectCard(props) {
-    const nr_metrics = props.red + props.green + props.yellow;
+    const nr_metrics = props.red + props.green + props.yellow + props.grey;
     return (
         <Card>
-            <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} />
+            <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} grey={props.grey} />
             <Card.Content>
                 <Card.Header>{props.title}</Card.Header>
                 <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
@@ -20,7 +20,7 @@ function Dashboard(props) {
     const cards = Object.entries(props.report.subjects).map(([subject_uuid, subject]) =>
         <SubjectCard key={subject_uuid} title={subject.title}
             red={subject.summary.red} green={subject.summary.green}
-            yellow={subject.summary.yellow} />);
+            yellow={subject.summary.yellow} grey={subject.summary.grey} />);
     return (
         <Card.Group itemsPerRow={6}>
             {cards}

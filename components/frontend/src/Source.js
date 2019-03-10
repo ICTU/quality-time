@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Grid, Icon, Message } from 'semantic-ui-react';
-import { SourceName } from './SourceName';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
-
+import { StringParameter } from './StringParameter';
 
 class Source extends Component {
     delete_source(event) {
@@ -20,6 +19,19 @@ class Source extends Component {
             () => self.props.reload()
         );
     }
+    set_source_attribute(attribute, value) {
+        const self = this;
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
+            method: 'post',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [attribute]: value })
+        }).then(
+            () => self.props.reload()
+        )
+    }
     render() {
         const props = this.props;
         const source_type = props.datamodel.sources[props.source.type];
@@ -33,15 +45,15 @@ class Source extends Component {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
-                            report_uuid={props.report_uuid} source_uuid={props.source_uuid}
-                            reload={props.reload} source_type={props.source.type}
-                            user={props.user}
-                            metric_type={props.metric_type} datamodel={props.datamodel} />
+                            source_type={props.source.type} readOnly={props.user === null}
+                            metric_type={props.metric_type} datamodel={props.datamodel}
+                            set_source_attribute={(a, v) => this.set_source_attribute(a, v)} />
                     </Grid.Column>
                     <Grid.Column>
-                        <SourceName name={props.source.name} report_uuid={props.report_uuid}
-                            source_type_name={source_type.name} user={props.user}
-                            source_uuid={props.source_uuid} reload={props.reload} />
+                        <StringParameter
+                            parameter_key="name" parameter_name={"Source name"} parameter_value={props.source.name}
+                            set_parameter={(a, v) => this.set_source_attribute(a, v)}
+                            placeholder={source_type.name} readOnly={props.user === null} />
                     </Grid.Column>
                     <SourceParameters
                         report_uuid={props.report_uuid} reload={props.reload}

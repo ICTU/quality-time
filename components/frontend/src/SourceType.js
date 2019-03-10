@@ -1,49 +1,14 @@
-import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import React from 'react';
+import { SingleChoiceParameter } from './SingleChoiceParameter.js';
 
-class SourceType extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { edited_source_type: props.source_type };
-  }
-  onKeyDown(event) {
-    if (event.key === "Escape") {
-      this.setState({ edited_source_type: this.props.source_type });
-    }
-  }
-  onSubmit(event, { name, value }) {
-    event.preventDefault();
-    this.setState({ edited_source_type: value });
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/type`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ type: value })
-    }).then(
-      () => self.props.reload()
-    );
-  }
-  render() {
-    let options = [];
-    let self = this;
-    this.props.datamodel.metrics[this.props.metric_type].sources.forEach(
-      (key) => { options.push({ text: self.props.datamodel.sources[key].name, value: key }) });
-    return (
-      <Form>
-        {this.props.user === null ?
-          <Form.Input label="Source type" value={self.props.datamodel.sources[this.props.source_type].name}
-            readOnly />
-          :
-          <Form.Dropdown label="Source type" search fluid selection selectOnNavigation={false}
-            value={this.props.source_type}
-            options={options} onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
-        }
-      </Form>
-    )
-  }
+function SourceType(props) {
+  let options = [];
+  props.datamodel.metrics[props.metric_type].sources.forEach(
+    (key) => { options.push({ text: props.datamodel.sources[key].name, value: key }) });
+  return (
+    <SingleChoiceParameter parameter_key="type" parameter_name="Source type" parameter_value={props.source_type}
+      parameter_values={options} set_parameter={props.set_source_attribute} readOnly={props.readOnly} />
+  )
 }
 
 export { SourceType };

@@ -21,17 +21,10 @@ class MetricComment extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/comment`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ comment: this.state.edited_comment })
-    }).then(
-      () => self.props.reload()
-    )
+    const edited_comment = this.state.edited_comment || "";
+    if (edited_comment !== this.props.comment) {
+      this.props.set_metric_attribute("comment", edited_comment);
+    }
   }
   render() {
     return (
