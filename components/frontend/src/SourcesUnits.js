@@ -51,7 +51,7 @@ class SourceUnits extends Component {
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing>
           <Popup trigger={
-            <Button floated='right' icon primary size='small' basic
+            <Button floated='right' icon primary size='small' basic disabled={ignored_units.length === 0}
               onClick={(e) => this.hide_ignored_units(e)}>
               <Icon name={this.state.hide_ignored_units ? 'unhide' : 'hide'} />
             </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
