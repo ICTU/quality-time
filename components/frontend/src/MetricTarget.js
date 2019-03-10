@@ -18,7 +18,7 @@ class MetricTarget extends Component {
   onSubmit(event) {
     event.preventDefault();
     if (this.state.edited_target !== this.props.target) {
-      this.props.set_metric_attribute("target", this.state.edited_target);
+      this.props.set_metric_attribute("target", this.state.edited_target || 0);
     }
   }
   render() {
