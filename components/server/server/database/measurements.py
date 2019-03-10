@@ -31,9 +31,9 @@ def insert_new_measurement(metric_uuid: str, measurement, database, target: str 
         del measurement["_id"]
     measurement["value"] = calculate_measurement_value(measurement["sources"])
     metric = latest_metric(metric_uuid, iso_timestamp(), database)
-    target = target or metric["target"]
-    debt_target = debt_target or metric["debt_target"]
-    accept_debt = accept_debt or metric["accept_debt"]
+    target = metric["target"] if target is None else target
+    debt_target = metric["debt_target"] if debt_target is None else debt_target
+    accept_debt = metric["accept_debt"] if accept_debt is None else accept_debt
     measurement["status"] = determine_measurement_status(
         metric_uuid, measurement["value"], target, debt_target, accept_debt, database)
     measurement["start"] = measurement["end"] = iso_timestamp()

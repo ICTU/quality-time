@@ -38,7 +38,7 @@ class Metric extends Component {
         return response.json();
       })
       .then(function (json) {
-        if (attribute === "target" || attribute === "debt_target") {
+        if (attribute === "target" || attribute === "debt_target" || attribute === "accept_debt") {
           self.fetch_measurement();
         }
         self.props.reload();
