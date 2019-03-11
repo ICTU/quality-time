@@ -71,3 +71,4 @@ def insert_new_report(report, database):
         del report["_id"]
     report["timestamp"] = iso_timestamp()
     database.reports.insert(report)
+    return dict(ok=True)

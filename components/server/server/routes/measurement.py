@@ -1,6 +1,7 @@
 """Measurement routes."""
 
 import time
+from typing import Dict
 
 import bottle
 
@@ -9,7 +10,7 @@ from ..util import iso_timestamp, report_date_time
 
 
 @bottle.post("/measurements")
-def post_measurement(database) -> None:
+def post_measurement(database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
     latest = latest_measurement(measurement["metric_uuid"], database)
@@ -22,12 +23,12 @@ def post_measurement(database) -> None:
         if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             database.measurements.update_one(filter={"_id": latest["_id"]}, update={"$set": {"end": iso_timestamp()}})
-            return
-    insert_new_measurement(measurement["metric_uuid"], measurement, database)
+            return dict(ok=True)
+    return insert_new_measurement(measurement["metric_uuid"], measurement, database)
 
 
 @bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/ignore")
-def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database):
+def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database) -> Dict:
     """Ignore or stop ignoring the source unit."""
     measurement = latest_measurement(metric_uuid, database)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
@@ -70,7 +71,7 @@ def stream_nr_measurements(report_uuid: str, database):
 
 
 @bottle.get("/measurements/<metric_uuid>")
-def get_measurements(metric_uuid: str, database):
+def get_measurements(metric_uuid: str, database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = metric_uuid.split("&")[0]
     docs = latest_measurements(metric_uuid, report_date_time(), database)
