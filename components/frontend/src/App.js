@@ -159,11 +159,11 @@ class App extends Component {
             :
             this.state.report === null ?
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
-                open_report={(e, r) => this.open_report(e, r)} user={this.state.user} />
+                open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
               <Report datamodel={this.state.datamodel} report={this.state.report}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-                search_string={this.state.search_string} report_date={report_date} user={this.state.user} />
+                search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
         </Container>
       </>

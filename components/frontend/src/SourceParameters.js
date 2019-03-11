@@ -17,7 +17,7 @@ function SourceParameters(props) {
                     parameter_type={all_parameters[parameter_key].type}
                     parameter_values={all_parameters[parameter_key].values || []}
                     parameter_value={props.source.parameters[parameter_key]}
-                    readOnly={props.user === null} />
+                    readOnly={props.readOnly} />
             </Grid.Column>
         )
     );

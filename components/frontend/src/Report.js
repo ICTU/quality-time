@@ -51,8 +51,8 @@ class Report extends Component {
                     report_uuid={this.props.report.report_uuid}
                     nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload}
                     search_string={this.props.search_string} report_date={this.props.report_date}
-                    user={this.props.user} />
-                {(this.props.user !== null) &&
+                    readOnly={this.props.readOnly} />
+                {!this.props.readOnly &&
                     <Segment basic>
                         <Button icon negative basic floated='right'
                             onClick={(e) => this.delete_report(e, this.props.report)}>

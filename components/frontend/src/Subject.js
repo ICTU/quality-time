@@ -21,13 +21,13 @@ class Subject extends Component {
   render() {
     const metrics = Object.keys(this.props.subject.metrics).map((metric_uuid) =>
       <Metric key={metric_uuid} report_uuid={this.props.report_uuid} metric_uuid={metric_uuid}
-        metric={this.props.subject.metrics[metric_uuid]} user={this.props.user}
+        metric={this.props.subject.metrics[metric_uuid]} readOnly={this.props.readOnly}
         datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
         nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
     return (
       <Segment basic>
         <SubjectTitleContainer report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
-          subject={this.props.subject} reload={this.props.reload} user={this.props.user} />
+          subject={this.props.subject} reload={this.props.reload} readOnly={this.props.readOnly} />
         <Table>
           <Table.Header>
             <Table.Row>
@@ -42,7 +42,7 @@ class Subject extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
-          {(this.props.user !== null) &&
+          {!this.props.readOnly &&
             <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell colSpan='8'>

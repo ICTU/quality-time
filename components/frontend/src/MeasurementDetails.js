@@ -26,13 +26,13 @@ class MeasurementDetails extends Component {
       {
         menuItem: 'Metric', render: () => <Tab.Pane>
           <MetricParameters datamodel={props.datamodel} metric={props.metric}
-            user={props.user} set_metric_attribute={props.set_metric_attribute} />
+            readOnly={props.readOnly} set_metric_attribute={props.set_metric_attribute} />
         </Tab.Pane>
       },
       {
         menuItem: 'Sources', render: () => <Tab.Pane>
           <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
-            measurement={props.measurement} user={props.user}
+            measurement={props.measurement} readOnly={props.readOnly}
             metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
         </Tab.Pane>
       }
@@ -50,7 +50,7 @@ class MeasurementDetails extends Component {
         panes.push({
           menuItem: unit_name, render: () => <Tab.Pane>
             <SourcesUnits measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
-              ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid} user={props.user}
+              ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid} readOnly={props.readOnly}
               measurements={props.measurements} report_uuid={props.report_uuid} />
           </Tab.Pane>
         })
@@ -60,7 +60,7 @@ class MeasurementDetails extends Component {
       <Table.Row>
         <Table.Cell colSpan="8">
           <Tab panes={panes} />
-          {(props.user !== null) &&
+          {!props.readOnly &&
             <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
               onClick={(e) => this.delete_metric(e)}>
               <Icon name='trash' /> Delete metric

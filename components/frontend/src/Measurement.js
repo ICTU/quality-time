@@ -79,7 +79,7 @@ class Measurement extends Component {
         {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
           unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
           report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-          measurement={latest_measurement} metric={this.props.metric} user={this.props.user}
+          measurement={latest_measurement} metric={this.props.metric} readOnly={this.props.readOnly}
           set_metric_attribute={this.props.set_metric_attribute} ignore_unit={this.props.ignore_unit} />}
       </>
     )

@@ -40,7 +40,7 @@ class Sources extends Component {
                         connection_error={this.source_error(measurement_sources, source_uuid, "connection_error")}
                         parse_error={this.source_error(measurement_sources, source_uuid, "parse_error")}
                         source={this.props.sources[source_uuid]} reload={this.props.reload}
-                        user={this.props.user}
+                        readOnly={this.props.readOnly}
                         metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
                 </Segment>
             )
@@ -48,7 +48,7 @@ class Sources extends Component {
         return (
             <>
                 {sources}
-                {(this.props.user !== null) && <Segment vertical>
+                {!this.props.readOnly && <Segment vertical>
                     <Button icon primary basic onClick={(e) => this.onAddSource(e)}>
                         <Icon name='plus' /> Add source
                     </Button>

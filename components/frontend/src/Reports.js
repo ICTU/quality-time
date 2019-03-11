@@ -41,7 +41,7 @@ class Reports extends Component {
             <ReportCard key={report.report_uuid} report={report} open_report={this.props.open_report} />)
           }
         </Card.Group>
-        {(this.props.user !== null) &&
+        {!this.props.readOnly &&
         <Segment basic>
           <Button icon primary basic onClick={(e) => this.add_report(e)}>
             <Icon name='plus' /> Add report
