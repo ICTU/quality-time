@@ -26,7 +26,7 @@ class SingleChoiceParameter extends Component {
           <Form.Input label={this.props.parameter_name} value={parameter_value_name} readOnly />
           :
           <Form.Dropdown label={this.props.parameter_name} search fluid selection selectOnNavigation={false}
-            defaultValue={this.state.edited_parameter_value} options={this.props.parameter_values}
+            value={this.state.edited_parameter_value} options={this.props.parameter_values}
             onChange={(e, { name, value }) => this.onSubmit(e, { name, value })} tabIndex="0" />
         }
       </Form>

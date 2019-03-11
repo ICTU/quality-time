@@ -25,7 +25,7 @@ class MetricTarget extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Group style={{marginBottom: '0px'}}>
-          <Form.Input width={16} label='Metric target' focus type="number" min="0" defaultValue={this.state.edited_target}
+          <Form.Input width={16} label='Metric target' focus type="number" min="0" value={this.state.edited_target || 0}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} onBlur={(e) => this.onSubmit(e)}
             labelPosition='right' readOnly={(this.props.user === null)}>
             <Label basic>{this.props.direction}</Label>

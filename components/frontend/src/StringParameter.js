@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 class StringParameter extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_value: this.props.parameter_value }
+    this.state = { edited_value: this.props.parameter_value}
   }
   componentDidUpdate(prevProps) {
     if (prevProps.parameter_value !== this.props.parameter_value ) {
@@ -29,7 +29,7 @@ class StringParameter extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Input focus fluid label={this.props.parameter_name}
-          defaultValue={this.state.edited_value} placeholder={this.props.placeholder}
+          value={this.state.edited_value || ""} placeholder={this.props.placeholder}
           onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
           onBlur={(e) => this.onSubmit(e)} readOnly={this.props.readOnly} />
       </Form>

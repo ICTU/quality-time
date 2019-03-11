@@ -53,7 +53,7 @@ function ReportTitle(props) {
 
 const ReportTitleInput = props =>
     <Form onSubmit={(e) => props.onSubmit(e)}>
-        <Form.Input autoFocus focus defaultValue={props.title} readOnly={(props.user === null)}
+        <Form.Input autoFocus focus value={props.title} readOnly={(props.user === null)}
             onChange={props.onChange} onKeyDown={props.onKeyDown} />
     </Form>
 

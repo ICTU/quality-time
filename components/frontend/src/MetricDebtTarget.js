@@ -25,7 +25,7 @@ class MetricDebtTarget extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Group style={{marginBottom: '0px'}}>
-          <Form.Input width={16} label='Accepted technical debt' focus type="number" defaultValue={this.state.edited_target}
+          <Form.Input width={16} label='Accepted technical debt' focus type="number" value={this.state.edited_target || 0}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} onBlur={(e) => this.onSubmit(e)}
             labelPosition='right' readOnly={(this.props.user === null)}>
             <Label basic>{this.props.direction}</Label>

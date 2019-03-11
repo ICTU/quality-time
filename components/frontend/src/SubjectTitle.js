@@ -54,7 +54,7 @@ function SubjectTitle(props) {
 
 const SubjectTitleInput = props =>
     <Form onSubmit={(e) => props.onSubmit(e)}>
-        <Form.Input autoFocus focus defaultValue={props.title}
+        <Form.Input autoFocus focus value={props.title}
             onChange={props.onChange} onKeyDown={props.onKeyDown} />
     </Form>
 
