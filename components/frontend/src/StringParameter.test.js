@@ -7,3 +7,9 @@ it('renders without crashing', () => {
   ReactDOM.render(<StringParameter />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
+
+it('renders the parameter value', () => {
+  const div = document.createElement('div');
+  const sp = ReactDOM.render(<StringParameter paramter_value="Hello" />, div);
+  ReactDOM.unmountComponentAtNode(div);
+});
