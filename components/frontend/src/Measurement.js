@@ -34,14 +34,15 @@ class Measurement extends Component {
       measurement_timestring = latest_measurement.end;
     }
     const status_icon = {target_met: 'smile', debt_target_met: 'money', target_not_met: 'frown', null: 'question'}[status];
-    const target = this.props.metric.accept_debt ? this.props.metric.debt_target : this.props.metric.target;
-    const metric_direction = this.props.datamodel.metrics[this.props.metric.type].direction;
+    const metric = this.props.report.subjects[this.props.subject_uuid].metrics[this.props.metric_uuid];
+    const target = metric.accept_debt ? metric.debt_target : metric.target;
+    const metric_direction = this.props.datamodel.metrics[metric.type].direction;
     const positive = status === "target_met";
     const active = status === "debt_target_met";
     const negative = status === "target_not_met";
     const warning = status === null;
-    const metric_unit = this.props.datamodel.metrics[this.props.metric.type].unit;
-    const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
+    const metric_unit = this.props.datamodel.metrics[metric.type].unit;
+    const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning} active={active}>
@@ -66,21 +67,30 @@ class Measurement extends Component {
           </Popup>
           </Table.Cell>
           <Table.Cell>
-            {metric_direction} {target} {metric_unit} {this.props.metric.accept_debt ? "(debt)" : ""}
+            {metric_direction} {target} {metric_unit} {metric.accept_debt ? "(debt)" : ""}
           </Table.Cell>
           <Table.Cell>
             {sources.map((source) => <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-              metric={this.props.metric} source={source} datamodel={this.props.datamodel} />)}
+              metric={metric} source={source} datamodel={this.props.datamodel} />)}
           </Table.Cell>
           <Table.Cell>
-            {this.props.metric.comment}
+            {metric.comment}
           </Table.Cell>
         </Table.Row>
-        {this.state.show_details && <MeasurementDetails measurements={this.props.measurements}
-          unit={metric_unit} datamodel={this.props.datamodel} reload={this.props.reload}
-          report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-          measurement={latest_measurement} metric={this.props.metric} user={this.props.user}
-          set_metric_attribute={this.props.set_metric_attribute} ignore_unit={this.props.ignore_unit} />}
+        {this.state.show_details &&
+          <MeasurementDetails
+            datamodel={this.props.datamodel}
+            ignore_unit={this.props.ignore_unit}
+            measurement={latest_measurement}
+            measurements={this.props.measurements}
+            metric_uuid={this.props.metric_uuid}
+            readOnly={this.props.readOnly}
+            reload={this.props.reload}
+            report={this.props.report}
+            set_metric_attribute={this.props.set_metric_attribute}
+            subject_uuid={this.props.subject_uuid}
+            unit={metric_unit}
+          />}
       </>
     )
   }

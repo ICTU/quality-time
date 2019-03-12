@@ -7,7 +7,7 @@ class Subject extends Component {
   onAddMetric(event) {
     event.preventDefault();
     const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/metric`, {
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/metric`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -19,15 +19,25 @@ class Subject extends Component {
     );
   }
   render() {
-    const metrics = Object.keys(this.props.subject.metrics).map((metric_uuid) =>
-      <Metric key={metric_uuid} report_uuid={this.props.report_uuid} metric_uuid={metric_uuid}
-        metric={this.props.subject.metrics[metric_uuid]} user={this.props.user}
-        datamodel={this.props.datamodel} search_string={this.props.search_string} report_date={this.props.report_date}
-        nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload} />);
+    const subject = this.props.report.subjects[this.props.subject_uuid];
+    const metrics = Object.keys(subject.metrics).map((metric_uuid) =>
+      <Metric
+        datamodel={this.props.datamodel}
+        key={metric_uuid}
+        metric_uuid={metric_uuid}
+        nr_new_measurements={this.props.nr_new_measurements}
+        readOnly={this.props.readOnly}
+        reload={this.props.reload}
+        report={this.props.report}
+        report_date={this.props.report_date}
+        search_string={this.props.search_string}
+        subject_uuid={this.props.subject_uuid}
+      />
+    );
     return (
       <Segment basic>
-        <SubjectTitleContainer report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
-          subject={this.props.subject} reload={this.props.reload} user={this.props.user} />
+        <SubjectTitleContainer report_uuid={this.props.report.report_uuid} subject_uuid={this.props.subject_uuid}
+          subject={subject} reload={this.props.reload} readOnly={this.props.readOnly} />
         <Table>
           <Table.Header>
             <Table.Row>
@@ -42,7 +52,7 @@ class Subject extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
-          {(this.props.user !== null) &&
+          {!this.props.readOnly &&
             <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell colSpan='8'>

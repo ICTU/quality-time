@@ -34,7 +34,7 @@ class ReportTitleContainer extends Component {
     render() {
         return (
             <ReportTitle title={this.state.title} edit={this.state.edit}
-                user={this.props.user}
+                readOnly={this.props.readOnly}
                 onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
                 onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
     }
@@ -47,13 +47,13 @@ function ReportTitle(props) {
     }
     return (
         <ReportTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} user={props.user} />
+            onMouseLeave={props.onMouseLeave} readOnly={props.readOnly} />
     )
 }
 
 const ReportTitleInput = props =>
     <Form onSubmit={(e) => props.onSubmit(e)}>
-        <Form.Input autoFocus focus defaultValue={props.title} readOnly={(props.user === null)}
+        <Form.Input autoFocus focus value={props.title} readOnly={props.readOnly}
             onChange={props.onChange} onKeyDown={props.onKeyDown} />
     </Form>
 
@@ -70,7 +70,7 @@ class ReportTitleDisplay extends Component {
         this.setState({ editable: false })
     }
     render() {
-        if (this.props.user === null) { return (<font size="+3">{this.props.title}</font>) }
+        if (this.props.readOnly) { return (<font size="+3">{this.props.title}</font>) }
         const style = this.state.editable ? { borderBottom: "1px dotted #FFFFFF" } : {};
         return (
             <div onClick={this.props.onEdit} onKeyPress={this.props.onEdit} onMouseEnter={(e) => this.onMouseEnter(e)}

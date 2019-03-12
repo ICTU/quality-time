@@ -7,7 +7,7 @@ class Subjects extends Component {
   onAddSubject(event) {
     event.preventDefault();
     const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/new`, {
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/new`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -21,13 +21,20 @@ class Subjects extends Component {
   render() {
     return (
       <>
-        {Object.keys(this.props.subjects).map((subject_uuid) =>
-          <Subject key={subject_uuid} report_uuid={this.props.report_uuid} subject_uuid={subject_uuid}
-            subject={this.props.subjects[subject_uuid]}
-            search_string={this.props.search_string} datamodel={this.props.datamodel} reload={this.props.reload}
-            report_date={this.props.report_date} nr_new_measurements={this.props.nr_new_measurements}
-            user={this.props.user} />)}
-        {(this.props.user !== null) &&
+        {Object.keys(this.props.report.subjects).map((subject_uuid) =>
+          <Subject
+            datamodel={this.props.datamodel}
+            key={subject_uuid}
+            nr_new_measurements={this.props.nr_new_measurements}
+            readOnly={this.props.readOnly}
+            reload={this.props.reload}
+            report={this.props.report}
+            report_date={this.props.report_date}
+            search_string={this.props.search_string}
+            subject_uuid={subject_uuid}
+          />
+        )}
+        {!this.props.readOnly &&
           <Segment basic>
             <Button icon primary basic onClick={(e) => this.onAddSubject(e)}>
               <Icon name='plus' /> Add subject

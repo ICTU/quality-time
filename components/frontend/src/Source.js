@@ -8,7 +8,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {
@@ -21,7 +21,7 @@ class Source extends Component {
     }
     set_source_attribute(attribute, value) {
         const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -45,7 +45,7 @@ class Source extends Component {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
-                            source_type={props.source.type} readOnly={props.user === null}
+                            source_type={props.source.type} readOnly={props.readOnly}
                             metric_type={props.metric_type} datamodel={props.datamodel}
                             set_source_attribute={(a, v) => this.set_source_attribute(a, v)} />
                     </Grid.Column>
@@ -53,13 +53,17 @@ class Source extends Component {
                         <StringParameter
                             parameter_key="name" parameter_name={"Source name"} parameter_value={props.source.name}
                             set_parameter={(a, v) => this.set_source_attribute(a, v)}
-                            placeholder={source_type.name} readOnly={props.user === null} />
+                            placeholder={source_type.name} readOnly={props.readOnly} />
                     </Grid.Column>
                     <SourceParameters
-                        report_uuid={props.report_uuid} reload={props.reload}
-                        source_uuid={props.source_uuid} metric_type={props.metric_type}
-                        source_type={props.source.type} user={props.user}
-                        source={props.source} datamodel={props.datamodel} />
+                        datamodel={props.datamodel}
+                        metric_type={props.metric_type}
+                        readOnly={props.readOnly}
+                        reload={props.reload}
+                        report={props.report}
+                        source={props.source}
+                        source_uuid={props.source_uuid}
+                    />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>
                     <Grid.Column>
@@ -77,7 +81,7 @@ class Source extends Component {
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}
-                {(props.user !== null) &&
+                {!props.readOnly &&
                     <Grid.Row columns={1}>
                         <Grid.Column>
                             <Button floated='right' icon primary negative basic onClick={(e) => this.delete_source(e)}>
