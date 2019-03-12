@@ -16,7 +16,7 @@ class MultipleChoiceParameter extends Component {
           <Form.Input label={this.props.parameter_name} value={this.props.parameter_value} readOnly />
           :
           <Form.Dropdown label={this.props.parameter_name}
-            value={this.props.parameter_value} onChange={(e, { value }) => this.onSubmit(e, value)}
+            value={this.props.parameter_value || []} onChange={(e, { value }) => this.onSubmit(e, value)}
             fluid multiple selection options={options} />
         }
       </Form>

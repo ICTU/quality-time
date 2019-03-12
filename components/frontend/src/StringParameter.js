@@ -9,7 +9,10 @@ class StringParameterWithSuggestions extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.parameter_value !== this.props.parameter_value) {
-      this.setState({ edited_value: this.props.parameter_value })
+      this.setState({ edited_value: this.props.parameter_value });
+    }
+    if (prevProps.options !== this.props.options) {
+      this.setState({ options: this.props.options });
     }
   }
 
