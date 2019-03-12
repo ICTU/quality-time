@@ -14,21 +14,17 @@ class StringParameterWithSuggestions extends Component {
   }
 
   handleAddition = (e, { value }) => {
-    console.log("handleAddition", value);
     this.setState({
       options: [{ text: value, value: value, key: value }, ...this.state.options],
     }, () => this.handleSubmit())
   }
 
   handleChange = (e, { value }) => {
-    console.log("handleChange", e, value)
     this.setState({ edited_value: value }, () => this.handleSubmit())
   }
 
   handleSubmit() {
-    console.log("handleSubmit", this.state.edited_value);
     if (this.state.edited_value !== this.props.parameter_value) {
-      console.log("handleSubmit, calling set_parameter", this.props.parameter_key, this.state.edited_value);
       this.props.set_parameter(this.props.parameter_key, this.state.edited_value);
     }
   }

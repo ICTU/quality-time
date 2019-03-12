@@ -7,7 +7,7 @@ class Sources extends Component {
     onAddSource(event) {
         event.preventDefault();
         const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/source/new`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/source/new`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -36,12 +36,17 @@ class Sources extends Component {
         const sources = source_uuids.map((source_uuid) =>
             (
                 <Segment vertical key={source_uuid}>
-                    <Source report_uuid={this.props.report_uuid} source_uuid={source_uuid}
+                    <Source
                         connection_error={this.source_error(measurement_sources, source_uuid, "connection_error")}
+                        datamodel={this.props.datamodel}
+                        metric_type={this.props.metric_type}
                         parse_error={this.source_error(measurement_sources, source_uuid, "parse_error")}
-                        source={this.props.sources[source_uuid]} reload={this.props.reload}
                         readOnly={this.props.readOnly}
-                        metric_type={this.props.metric_type} datamodel={this.props.datamodel} />
+                        reload={this.props.reload}
+                        report={this.props.report}
+                        source={this.props.sources[source_uuid]}
+                        source_uuid={source_uuid}
+                    />
                 </Segment>
             )
         );

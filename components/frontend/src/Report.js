@@ -47,11 +47,15 @@ class Report extends Component {
         return (
             <>
                 <Dashboard report={this.props.report} />
-                <Subjects datamodel={this.props.datamodel} subjects={this.props.report.subjects}
-                    report_uuid={this.props.report.report_uuid}
-                    nr_new_measurements={this.props.nr_new_measurements} reload={this.props.reload}
-                    search_string={this.props.search_string} report_date={this.props.report_date}
-                    readOnly={this.props.readOnly} />
+                <Subjects
+                    datamodel={this.props.datamodel}
+                    nr_new_measurements={this.props.nr_new_measurements}
+                    readOnly={this.props.readOnly}
+                    reload={this.props.reload}
+                    report={this.props.report}
+                    report_date={this.props.report_date}
+                    search_string={this.props.search_string}
+                />
                 {!this.props.readOnly &&
                     <Segment basic>
                         <Button icon negative basic floated='right'

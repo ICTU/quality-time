@@ -9,7 +9,7 @@ class MeasurementDetails extends Component {
   delete_metric(event) {
     event.preventDefault();
     const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}`, {
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}`, {
       method: 'delete',
       mode: 'cors',
       headers: {
@@ -22,18 +22,26 @@ class MeasurementDetails extends Component {
   }
   render() {
     const props = this.props;
+    const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
     const panes = [
       {
         menuItem: 'Metric', render: () => <Tab.Pane>
-          <MetricParameters datamodel={props.datamodel} metric={props.metric}
+          <MetricParameters datamodel={props.datamodel} metric={metric}
             readOnly={props.readOnly} set_metric_attribute={props.set_metric_attribute} />
         </Tab.Pane>
       },
       {
         menuItem: 'Sources', render: () => <Tab.Pane>
-          <Sources report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} sources={props.metric.sources}
-            measurement={props.measurement} readOnly={props.readOnly}
-            metric_type={props.metric.type} datamodel={props.datamodel} reload={props.reload} />
+          <Sources
+            datamodel={props.datamodel}
+            measurement={props.measurement}
+            metric_type={metric.type}
+            metric_uuid={props.metric_uuid}
+            readOnly={props.readOnly}
+            reload={props.reload}
+            report={props.report}
+            sources={metric.sources}
+          />
         </Tab.Pane>
       }
     ];
@@ -49,7 +57,7 @@ class MeasurementDetails extends Component {
       if (nr_units > 0) {
         panes.push({
           menuItem: unit_name, render: () => <Tab.Pane>
-            <SourcesUnits measurement={props.measurement} datamodel={props.datamodel} metric={props.metric}
+            <SourcesUnits measurement={props.measurement} datamodel={props.datamodel} metric={metric}
               ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid} readOnly={props.readOnly}
               measurements={props.measurements} report_uuid={props.report_uuid} />
           </Tab.Pane>

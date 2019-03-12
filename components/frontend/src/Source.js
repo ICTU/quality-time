@@ -8,7 +8,7 @@ class Source extends Component {
     delete_source(event) {
         event.preventDefault();
         const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
             headers: {
@@ -21,7 +21,7 @@ class Source extends Component {
     }
     set_source_attribute(attribute, value) {
         const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
             method: 'post',
             mode: 'cors',
             headers: {
@@ -56,10 +56,14 @@ class Source extends Component {
                             placeholder={source_type.name} readOnly={props.readOnly} />
                     </Grid.Column>
                     <SourceParameters
-                        report_uuid={props.report_uuid} reload={props.reload}
-                        source_uuid={props.source_uuid} metric_type={props.metric_type}
-                        source_type={props.source.type} readOnly={props.readOnly}
-                        source={props.source} datamodel={props.datamodel} />
+                        datamodel={props.datamodel}
+                        metric_type={props.metric_type}
+                        readOnly={props.readOnly}
+                        reload={props.reload}
+                        report={props.report}
+                        source={props.source}
+                        source_uuid={props.source_uuid}
+                    />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>
                     <Grid.Column>

@@ -26,7 +26,7 @@ class Metric extends Component {
   }
   set_metric_attribute(attribute, value) {
     const self = this;
-    fetch(`${window.server_url}/report/${this.props.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -69,15 +69,22 @@ class Metric extends Component {
   }
   render() {
     const search = this.props.search_string;
-    const metric_name = this.props.metric.name || this.props.datamodel.metrics[this.props.metric.type].name;
+    const metric = this.props.report.subjects[this.props.subject_uuid].metrics[this.props.metric_uuid];
+    const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
     if (search && !metric_name.toLowerCase().includes(search.toLowerCase())) { return null };
     return (
-      <Measurement report_uuid={this.props.report_uuid} metric_uuid={this.props.metric_uuid}
-        nr_new_measurements={this.props.nr_new_measurements} datamodel={this.props.datamodel}
-        reload={this.props.reload} metric={this.props.metric} readOnly={this.props.readOnly}
+      <Measurement
+        datamodel={this.props.datamodel}
+        ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)}
         measurements={this.state.measurements}
+        metric_uuid={this.props.metric_uuid}
+        nr_new_measurements={this.props.nr_new_measurements}
+        reload={this.props.reload}
+        report={this.props.report}
+        readOnly={this.props.readOnly}
         set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
-        ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)} />
+        subject_uuid={this.props.subject_uuid}
+      />
     )
   }
 }
