@@ -94,7 +94,7 @@ class Collector:
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the measurement for the metric."""
-        return str(response.text)
+        return str(response.text)  # pragma: nocover
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         # pylint: disable=no-self-use,unused-argument
