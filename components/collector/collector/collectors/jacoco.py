@@ -20,25 +20,11 @@ class JacocoCoverageBaseClass(Collector):
         return str(counter.get(self.coverage_status))
 
 
-class JacocoCoveredLines(JacocoCoverageBaseClass):
-    """Source class to get the number of covered lines from Jacoco XML reports."""
-
-    coverage_status = "covered"
-    coverage_type = "line"
-
-
 class JacocoUncoveredLines(JacocoCoverageBaseClass):
     """Source class to get the number of uncovered lines from Jacoco XML reports."""
 
     coverage_status = "missed"
     coverage_type = "line"
-
-
-class JacocoCoveredBranches(JacocoCoverageBaseClass):
-    """Source class to get the number of covered lines from Jacoco XML reports."""
-
-    coverage_status = "covered"
-    coverage_type = "branch"
 
 
 class JacocoUncoveredBranches(JacocoCoverageBaseClass):

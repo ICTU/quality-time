@@ -1,18 +1,5 @@
 {
     "metrics": {
-        "covered_lines": {
-            "name": "Test line coverage",
-            "description": "Measure the number of lines of code covered by tests. This is an indication of the quality of the test suite.",
-            "unit": "covered lines",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jacoco",
-                "sonarqube",
-                "random"
-            ],
-            "tag": ["test", "coverage"]
-        },
         "uncovered_lines": {
             "name": "Test line coverage",
             "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
@@ -23,19 +10,8 @@
                 "jacoco",
                 "sonarqube",
                 "random"
-            ]
-        },
-        "covered_branches": {
-            "name": "Test branch coverage",
-            "description": "Measure the number of code branches covered by tests. THis is an indication of the quality of the test suite.",
-            "unit": "covered branches",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jacoco",
-                "sonarqube",
-                "random"
-            ]
+            ],
+            "tags": ["test", "coverage"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -46,18 +22,6 @@
             "sources": [
                 "jacoco",
                 "sonarqube",
-                "random"
-            ]
-        },
-        "jobs": {
-            "name": "Number of CI-jobs",
-            "description": "Measure the number of continuous jobs. This metric is for testing Quality-time itself and will be removed eventually.",
-            "unit": "CI-jobs",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jenkins",
-                "gitlab",
                 "random"
             ]
         },

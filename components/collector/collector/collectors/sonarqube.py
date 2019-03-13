@@ -93,30 +93,10 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
     metricKeys = "lines"
 
 
-class SonarQubeCoveredLines(SonarQubeMetricsBaseClass):
-    """SonarQube covered lines of code."""
-
-    metricKeys = "uncovered_lines,lines_to_cover"
-
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        metrics = self._get_metrics(response)
-        return str(metrics["lines_to_cover"] - metrics["uncovered_lines"])
-
-
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
     """SonarQube uncovered lines of code."""
 
     metricKeys = "uncovered_lines"
-
-
-class SonarQubeCoveredBranches(SonarQubeMetricsBaseClass):
-    """SonarQube covered branches."""
-
-    metricKeys = "uncovered_conditions,conditions_to_cover"
-
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        metrics = self._get_metrics(response)
-        return str(metrics["conditions_to_cover"] - metrics["uncovered_conditions"])
 
 
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):

@@ -22,16 +22,8 @@ class Random(Collector):
         return response
 
 
-class RandomCoveredLines(Random):
-    """Random number of covered lines."""
-
-
 class RandomUncoveredLines(Random):
     """Random number of uncovered lines."""
-
-
-class RandomCoveredBranches(Random):
-    """Random number of covered branches."""
 
 
 class RandomUncoveredBranches(Random):

@@ -15,14 +15,6 @@ class JaCoCoTest(unittest.TestCase):
         self.mock_response = Mock()
         self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="http://jacoco/")))
 
-    def test_covered_lines(self):
-        """Test that the number of covered lines is returned."""
-        self.mock_response.text = "<report><counter type='LINE' covered='1' /></report>"
-        metric = dict(type="covered_lines", sources=self.sources)
-        with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
-        self.assertEqual("1", response["sources"][0]["value"])
-
     def test_uncovered_lines(self):
         """Test that the number of uncovered lines is returned."""
         self.mock_response.text = "<report><counter type='LINE' missed='2' /></report>"
@@ -30,14 +22,6 @@ class JaCoCoTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
-
-    def test_covered_branches(self):
-        """Test that the number of covered branches is returned."""
-        self.mock_response.text = "<report><counter type='BRANCH' covered='3' /></report>"
-        metric = dict(type="covered_branches", sources=self.sources)
-        with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
-        self.assertEqual("3", response["sources"][0]["value"])
 
     def test_uncovered_branches(self):
         """Test that the number of uncovered branches is returned."""
