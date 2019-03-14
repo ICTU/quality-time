@@ -284,7 +284,15 @@
                     ]
                 }
             },
-            "units": {}
+            "units": {
+                "issues": [
+                    {
+                        "name": "Summary",
+                        "key": "summary",
+                        "url": "url"
+                    }
+                ]
+            }
         },
         "junit": {
             "name": "JUnit XML report",
