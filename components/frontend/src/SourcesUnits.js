@@ -4,7 +4,7 @@ import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react'
 function Unit(props) {
   if (props.hide_ignored_units && props.ignored) { return null };
   const style = props.ignored ? { textDecoration: "line-through" } : {};
-  const icon = props.ignored ? 'toggle off' : 'toggle on';
+  const icon = props.ignored ? 'toggle on' : 'toggle off';
   const help = props.ignored ? 'Stop ignoring' : 'Start ignoring';
   return (
     <Table.Row key={props.unit.key} style={style}>
