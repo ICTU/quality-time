@@ -38,6 +38,10 @@ class RandomFailedJobs(Random):
     """Random number of failed jobs."""
 
 
+class RandomIssues(Random):
+    """Random number of issues."""
+
+
 class RandomLOC(Random):
     """Random number of lines of code."""
 

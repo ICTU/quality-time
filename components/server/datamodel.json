@@ -37,6 +37,16 @@
                 "random"
             ]
         },
+        "issues": {
+            "name": "Number of issues",
+            "description": "Measure the number of issues.",
+            "unit": "issues",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "random"
+            ]
+        },
         "ncloc": {
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
