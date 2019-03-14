@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StringParameter } from './StringParameter.js';
 import { MultipleChoiceParameter } from './MultipleChoiceParameter.js';
+import { PasswordParameter } from './PasswordParameter.js';
 
 class SourceParameter extends Component {
   constructor(props) {
@@ -61,6 +62,15 @@ class SourceParameter extends Component {
           readOnly={this.props.readOnly} label={this.props.parameter_name} placeholder={this.props.placeholder} />
       )
     };
+    if (this.props.parameter_type === "password") {
+      return (
+        <PasswordParameter
+          parameter_key={this.props.parameter_key} parameter_name={this.props.parameter_name}
+          options={this.state.options} parameter_value={this.props.parameter_value}
+          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          readOnly={this.props.readOnly} label={this.props.parameter_name} placeholder={this.props.placeholder} />
+      )
+    }
     return (
       <MultipleChoiceParameter
         parameter_key={this.props.parameter_key} parameter_name={this.props.parameter_name}

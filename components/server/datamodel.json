@@ -278,7 +278,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
-                    "type": "string",
+                    "type": "password",
                     "metrics": [
                         "issues"
                     ]
