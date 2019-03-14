@@ -142,7 +142,7 @@ def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: 
     source[source_attribute] = value
     if source_attribute == "type":
         possible_parameters = latest_datamodel(iso_timestamp(), database)["sources"][value]["parameters"]
-        for parameter in list(source["parameters"].keys()):
+        for parameter in list(source.get("parameters", dict()).keys()):
             if parameter not in possible_parameters or metric_type not in possible_parameters[parameter]["metrics"]:
                 del source["parameters"][parameter]
     return insert_new_report(report, database)

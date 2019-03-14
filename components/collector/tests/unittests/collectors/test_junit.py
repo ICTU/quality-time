@@ -3,15 +3,11 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 
 
 class JUnitTestReportTest(unittest.TestCase):
     """Unit tests for the JUnit XML test report metrics."""
-
-    def setUp(self):
-        """Test fixture."""
-        Collector.RESPONSE_CACHE.clear()
 
     def test_tests(self):
         """Test that the number of tests is returned."""

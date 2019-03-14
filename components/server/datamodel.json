@@ -1,18 +1,5 @@
 {
     "metrics": {
-        "covered_lines": {
-            "name": "Test line coverage",
-            "description": "Measure the number of lines of code covered by tests. This is an indication of the quality of the test suite.",
-            "unit": "covered lines",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jacoco",
-                "sonarqube",
-                "random"
-            ],
-            "tag": ["test", "coverage"]
-        },
         "uncovered_lines": {
             "name": "Test line coverage",
             "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
@@ -23,19 +10,8 @@
                 "jacoco",
                 "sonarqube",
                 "random"
-            ]
-        },
-        "covered_branches": {
-            "name": "Test branch coverage",
-            "description": "Measure the number of code branches covered by tests. THis is an indication of the quality of the test suite.",
-            "unit": "covered branches",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jacoco",
-                "sonarqube",
-                "random"
-            ]
+            ],
+            "tags": ["test", "coverage"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -49,18 +25,6 @@
                 "random"
             ]
         },
-        "jobs": {
-            "name": "Number of CI-jobs",
-            "description": "Measure the number of continuous jobs. This metric is for testing Quality-time itself and will be removed eventually.",
-            "unit": "CI-jobs",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jenkins",
-                "gitlab",
-                "random"
-            ]
-        },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
             "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
@@ -70,6 +34,17 @@
             "sources": [
                 "jenkins",
                 "gitlab",
+                "random"
+            ]
+        },
+        "issues": {
+            "name": "Number of issues",
+            "description": "Measure the number of issues.",
+            "unit": "issues",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "jira",
                 "random"
             ]
         },
@@ -275,6 +250,41 @@
                     }
                 ]
             }
+        },
+        "jira" : {
+            "name": "Jira",
+            "description": "Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.",
+            "parameters":  {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "jql": {
+                    "name": "Issue query (JQL)",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {}
         },
         "junit": {
             "name": "JUnit XML report",

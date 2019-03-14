@@ -11,25 +11,19 @@ from collector.type import URL
 
 class Random(Collector):
     """Random number metric collector."""
+    min = 0
+    max = 50
 
-    def get_source_response(self, url: URL) -> requests.Response:
+    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Return a random number as the response."""
         response = requests.Response()
-        response.raw = io.BytesIO(bytes(str(random.randint(0, 50)), "utf-8"))
+        response.raw = io.BytesIO(bytes(str(random.randint(self.min, self.max)), "utf-8"))
         response.status_code = requests.status_codes.codes["OK"]
         return response
 
 
-class RandomCoveredLines(Random):
-    """Random number of covered lines."""
-
-
 class RandomUncoveredLines(Random):
     """Random number of uncovered lines."""
-
-
-class RandomCoveredBranches(Random):
-    """Random number of covered branches."""
 
 
 class RandomUncoveredBranches(Random):
@@ -42,6 +36,10 @@ class RandomJobs(Random):
 
 class RandomFailedJobs(Random):
     """Random number of failed jobs."""
+
+
+class RandomIssues(Random):
+    """Random number of issues."""
 
 
 class RandomLOC(Random):

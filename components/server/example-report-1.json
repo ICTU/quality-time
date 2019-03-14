@@ -39,29 +39,7 @@
                     ]
                 },
                 {
-                    "type": "covered_lines",
-                    "sources": [
-                        {
-                            "type": "jacoco",
-                            "parameters": {
-                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
-                            }
-                        }
-                    ]
-                },
-                {
                     "type": "uncovered_lines",
-                    "sources": [
-                        {
-                            "type": "jacoco",
-                            "parameters": {
-                                "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "covered_branches",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -112,31 +90,7 @@
                     ]
                 },
                 {
-                    "type": "covered_lines",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
                     "type": "uncovered_lines",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "covered_branches",
                     "sources": [
                         {
                             "type": "sonarqube",
@@ -211,7 +165,8 @@
                             }
                         },
                         {
-                            "type": "random"
+                            "type": "random",
+                            "parameters": {}
                         }
                     ]
                 }

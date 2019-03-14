@@ -3,17 +3,13 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 
 
 class JenkinsTestReportTest(unittest.TestCase):
     """Unit tests for the Jenkins test report metrics."""
 
-    def setUp(self):
-        """Test fixture."""
-        Collector.RESPONSE_CACHE.clear()
-
-    def test_tests(self):
+    def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(passCount=4, failCount=2))
@@ -24,7 +20,7 @@ class JenkinsTestReportTest(unittest.TestCase):
             response = collect_measurement(metric)
         self.assertEqual("6", response["sources"][0]["value"])
 
-    def test_failed_tests(self):
+    def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(

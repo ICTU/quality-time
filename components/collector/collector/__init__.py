@@ -3,7 +3,7 @@
 import logging
 import os
 import urllib.parse
-from time import sleep
+import time
 from typing import cast, Dict, Type
 
 import requests
@@ -49,7 +49,7 @@ def collect() -> None:
         logging.info("Collecting...")
         fetch_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
         logging.info("Sleeping...")
-        sleep(60)
+        time.sleep(60)
 
 
 if __name__ == "__main__":

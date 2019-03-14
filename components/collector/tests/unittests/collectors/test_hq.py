@@ -3,15 +3,11 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 
 
 class HQTest(unittest.TestCase):
     """Unit tests for the HQ metrics."""
-
-    def setUp(self):
-        """Test fixture."""
-        Collector.RESPONSE_CACHE.clear()
 
     def test_violations(self):
         """Test the number of violations."""

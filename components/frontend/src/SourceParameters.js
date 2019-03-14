@@ -16,7 +16,7 @@ function SourceParameters(props) {
                     parameter_name={all_parameters[parameter_key].name}
                     parameter_type={all_parameters[parameter_key].type}
                     parameter_values={all_parameters[parameter_key].values || []}
-                    parameter_value={props.source.parameters[parameter_key]}
+                    parameter_value={props.source.parameters ? props.source.parameters[parameter_key] : ""}
                     readOnly={props.readOnly}
                     reload={props.reload}
                     report={props.report}
