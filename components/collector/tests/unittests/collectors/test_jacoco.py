@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 
 
 class JaCoCoTest(unittest.TestCase):
@@ -11,7 +11,6 @@ class JaCoCoTest(unittest.TestCase):
 
     def setUp(self):
         """Test fixture."""
-        Collector.RESPONSE_CACHE.clear()
         self.mock_response = Mock()
         self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="http://jacoco/")))
 

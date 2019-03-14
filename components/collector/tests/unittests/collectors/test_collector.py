@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch, Mock
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 
 
 class CollectorTest(unittest.TestCase):
@@ -11,7 +11,6 @@ class CollectorTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
-        Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
         metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
@@ -36,7 +35,6 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
-        Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
         metric = dict(
@@ -65,7 +63,6 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
 
     def setUp(self):
         """Simple response fixture."""
-        Collector.RESPONSE_CACHE.clear()
         mock_response = Mock()
         mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True)])  # Works for both Gitlab and Jenkins
@@ -91,7 +88,6 @@ class CollectorErrorTest(unittest.TestCase):
 
     def setUp(self):
         """Clear cache."""
-        Collector.RESPONSE_CACHE.clear()
         self.metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
 
     def test_connection_error(self):

@@ -165,7 +165,8 @@
                             }
                         },
                         {
-                            "type": "random"
+                            "type": "random",
+                            "parameters": {}
                         }
                     ]
                 }

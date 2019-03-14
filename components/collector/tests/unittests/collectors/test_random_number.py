@@ -2,16 +2,12 @@
 
 import unittest
 
-from collector.collector import Collector, collect_measurement
+from collector.collector import collect_measurement
 from collector.collectors import Random
 
 
 class RandomNumberTest(unittest.TestCase):
     """Unit tests for the random number metrics."""
-
-    def setUp(self):
-        """Test fixture."""
-        Collector.RESPONSE_CACHE.clear()
 
     def test_violations(self):
         """Test the number of violations."""

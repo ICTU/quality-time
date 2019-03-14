@@ -44,6 +44,7 @@
             "direction": "<=",
             "default_target": "0",
             "sources": [
+                "jira",
                 "random"
             ]
         },
@@ -249,6 +250,41 @@
                     }
                 ]
             }
+        },
+        "jira" : {
+            "name": "Jira",
+            "description": "Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.",
+            "parameters":  {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "jql": {
+                    "name": "Issue query (JQL)",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "string",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {}
         },
         "junit": {
             "name": "JUnit XML report",

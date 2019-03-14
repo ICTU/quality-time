@@ -4,7 +4,6 @@ import logging
 import traceback
 from typing import cast, Optional, Set, Tuple, Type
 
-import cachetools
 import requests
 
 from .type import ErrorMessage, Response, Units, URL, Value
@@ -28,7 +27,6 @@ class Collector:
     """Base class for metric collectors."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
-    RESPONSE_CACHE = cachetools.TTLCache(maxsize=256, ttl=60)  # Briefly cache responses to prevent flooding sources
     MAX_UNITS = 100  # The maximum number of units (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
 
@@ -48,7 +46,7 @@ class Collector:
         parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
         landing_url = self.landing_url(**parameters)
-        response, connection_error = self.safely_get_source_response(api_url)
+        response, connection_error = self.safely_get_source_response(api_url, **parameters)
         value, units, parse_error = self.safely_parse_source_response(response, **parameters)
         return dict(api_url=api_url, landing_url=landing_url, value=value, units=units,
                     connection_error=connection_error, parse_error=parse_error)
@@ -61,26 +59,31 @@ class Collector:
         """Translate the url into the API url."""
         return parameters.get("url", "")
 
-    @cachetools.cached(RESPONSE_CACHE, key=lambda self, url: cachetools.keys.hashkey(url))
-    def safely_get_source_response(self, url: URL) -> Tuple[Optional[requests.Response], ErrorMessage]:
-        """Connect to the source and get the data, without failing."""
+    def safely_get_source_response(
+            self, api_url: URL, **parameters) -> Tuple[Optional[requests.Response], ErrorMessage]:
+        """Connect to the source and get the data, without failing. This method should not be overridden
+        because it makes sure the collection of source data never causes the collector to fail."""
+        logging.info("Retrieving %s", api_url)
         response, error = None, None
         try:
-            response = self.get_source_response(url)
+            response = self.get_source_response(api_url, **parameters)
         except Exception:  # pylint: disable=broad-except
             error = traceback.format_exc()
         return response, error
 
-    def get_source_response(self, url: URL) -> requests.Response:
-        """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs."""
-        logging.info("Retrieving %s", url)
-        response = requests.get(url, timeout=self.TIMEOUT)
+    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+        """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs.
+        This method can be overridden by collectors that need a different way to retrieve the source data."""
+        username, password = parameters.get("username"), parameters.get("password")
+        basic_auth_credentials = (username, password) if username and password else None
+        response = requests.get(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
         response.raise_for_status()
         return response
 
     def safely_parse_source_response(
             self, response: requests.Response, **parameters) -> Tuple[Value, Units, ErrorMessage]:
-        """Parse the data from the response, without failing."""
+        """Parse the data from the response, without failing. This method should not be overridden because it
+        makes sure that the parsing of source data never causes the collector to fail."""
         units: Units = []
         value, error = None, None
         if response:
@@ -93,10 +96,12 @@ class Collector:
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the measurement for the metric."""
+        """Parse the response to get the measurement for the metric. This method can be overridden by collectors
+        to parse the retrieved sources data."""
         return str(response.text)  # pragma: nocover
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the units (e.g. violations, test cases, user stories) for the metric."""
+        """Parse the response to get the units (e.g. violations, test cases, user stories) for the metric.
+        This method can to be overridden by collectors when a source can provide the metric units."""
         return []
