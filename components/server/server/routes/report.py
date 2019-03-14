@@ -86,7 +86,7 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database):
     metric_type = list(metric_types.keys())[0]
     default_target = metric_types[metric_type]["default_target"]
     subject["metrics"][uuid()] = dict(
-        type=metric_type, sources={}, report_uuid=report_uuid,
+        type=metric_type, sources={}, report_uuid=report_uuid, name=None, unit=None,
         target=default_target, accept_debt=False, debt_target=None)
     return insert_new_report(report, database)
 
