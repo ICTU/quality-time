@@ -12,12 +12,12 @@ class JiraIssues(Collector):
     """Collector to get issues from Jira."""
     def api_url(self, **parameters) -> URL:
         url = parameters.get("url")
-        jql = quote(parameters.get("jql"))
+        jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields=summary")
 
     def landing_url(self, **parameters) -> URL:
         url = parameters.get("url")
-        jql = quote(parameters.get("jql"))
+        jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/issues?jql={jql}")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

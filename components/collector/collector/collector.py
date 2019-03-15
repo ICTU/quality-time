@@ -81,7 +81,7 @@ class Collector:
         return response
 
     def safely_parse_source_response(
-            self, response: requests.Response, **parameters) -> Tuple[Value, Units, ErrorMessage]:
+            self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Units, ErrorMessage]:
         """Parse the data from the response, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
         units: Units = []
