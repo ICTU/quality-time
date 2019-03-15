@@ -32,6 +32,7 @@
             "direction": "<=",
             "default_target": "0",
             "sources": [
+                "hq",
                 "jenkins",
                 "gitlab",
                 "random"
@@ -44,6 +45,7 @@
             "direction": "<=",
             "default_target": "0",
             "sources": [
+                "hq",
                 "jira",
                 "random"
             ]
@@ -66,6 +68,7 @@
             "direction": "<=",
             "default_target": "75000",
             "sources": [
+                "hq",
                 "sonarqube",
                 "random"
             ]
@@ -92,6 +95,7 @@
             "sources": [
                 "jenkins_test_report",
                 "junit",
+                "hq",
                 "random",
                 "sonarqube"
             ]
@@ -147,9 +151,13 @@
             "description": "Holistic Software Quality Reporting",
             "parameters": {
                 "url": {
-                    "name": "URL to metrics JSON",
+                    "name": "URL to HQ-report",
                     "type": "string",
                     "metrics": [
+                        "failed_jobs",
+                        "failed_tests",
+                        "issues",
+                        "ncloc",
                         "violations"
                     ]
                 },
@@ -157,6 +165,10 @@
                     "name": "Stable metric ID",
                     "type": "string",
                     "metrics": [
+                        "failed_jobs",
+                        "failed_tests",
+                        "issues",
+                        "ncloc",
                         "violations"
                     ]
                 }
