@@ -46,17 +46,20 @@ class Source extends Component {
             hq: HQ,
             jenkins: Jenkins,
             jira: Jira,
-            sonarqube: Sonarqube }[props.source.type];
+            sonarqube: Sonarqube
+        }[props.source.type];
         return (
             <>
                 <Header>
-                    {logo &&
-                        <Image src={logo} alt={`${source_type.name} logo`} size="mini" spaced="right" />
-                    }
-                    {source_type.name}
-                    <Header.Subheader>
-                        {source_type.description} <a href={source_type.url}><Icon name="external" link/></a>
-                    </Header.Subheader>
+                    <Header.Content>
+                        {logo &&
+                            <Image src={logo} alt={`${source_type.name} logo`} size="mini" spaced="right" />
+                        }
+                        {source_type.name}
+                        <Header.Subheader>
+                            {source_type.description} <a href={source_type.url}><Icon name="external" link /></a>
+                        </Header.Subheader>
+                    </Header.Content>
                 </Header>
                 <Grid stackable>
                     <Grid.Row columns={2}>
