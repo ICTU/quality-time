@@ -1,7 +1,8 @@
 dist: xenial
 jobs:
   include:
-    - stage: collector
+    - stage: test
+      name: "Collector"
       language: python
       python: 3.7
       install:
@@ -10,7 +11,7 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - stage: server
+    - name: "Server"
       language: python
       python: 3.7
       install:
@@ -19,7 +20,7 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - stage : frontend
+    - name: "Frontend"
       language: node_js
       node_js: 10
       install:
