@@ -5,6 +5,5 @@ install:
 - cd components/collector
 - pip install -r requirements.txt -r requirements-dev.txt
 script:
-- cd components/collector
-- ci/unittests.sh
+- ci/unittest.sh
 - ci/quality.sh
