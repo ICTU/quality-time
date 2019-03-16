@@ -38,6 +38,18 @@
                 "random"
             ]
         },
+        "unused_jobs": {
+            "name": "Number of unused CI-jobs",
+            "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
+            "unit": "CI-jobs",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "hq",
+                "jenkins",
+                "random"
+            ]
+        },
         "issues": {
             "name": "Number of issues",
             "description": "Measure the number of issues.",
@@ -160,6 +172,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "unused_jobs",
                         "violations"
                     ]
                 },
@@ -171,6 +184,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "unused_jobs",
                         "violations"
                     ]
                 }
@@ -205,7 +219,8 @@
                     "type": "string",
                     "metrics": [
                         "jobs",
-                        "failed_jobs"
+                        "failed_jobs",
+                        "unused_jobs"
                     ]
                 }
             },
@@ -222,6 +237,17 @@
                         "name": "Job name",
                         "key": "name",
                         "url": "url"
+                    }
+                ],
+                "unused_jobs": [
+                    {
+                        "name": "Job name",
+                        "key": "name",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Most recent build",
+                        "key": "datetime"
                     }
                 ]
             }

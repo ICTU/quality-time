@@ -77,7 +77,7 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
         sources = self.response["sources"]
-        self.assertEqual([{'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["units"])
+        self.assertEqual([{'datetime': None, 'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["units"])
         self.assertEqual("1", sources[0]["value"])
         self.assertEqual([], sources[1]["units"])
         self.assertEqual("1", sources[1]["value"])

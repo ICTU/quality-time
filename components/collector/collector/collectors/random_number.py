@@ -58,5 +58,9 @@ class RandomFailedTests(Random):
     """Random number of failed tests."""
 
 
+class RandomUnusedJobs(Random):
+    """Random number of failed tests."""
+
+
 class RandomViolations(Random):
     """Random number of violations."""
