@@ -41,7 +41,12 @@ class Source extends Component {
     render() {
         const props = this.props;
         const source_type = props.datamodel.sources[props.source.type];
-        const logo = { gitlab: Gitlab, hq: HQ, jenkins: Jenkins, jira: Jira, sonarqube: Sonarqube }[props.source.type];
+        const logo = {
+            gitlab: Gitlab,
+            hq: HQ,
+            jenkins: Jenkins,
+            jira: Jira,
+            sonarqube: Sonarqube }[props.source.type];
         return (
             <>
                 <Header>
