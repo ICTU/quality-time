@@ -81,7 +81,7 @@ By default, there is one user defined. Use username `admin` and password `admin`
 
 ## Develop
 
-Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.7 and a recent version of Node/npm.
+Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.7 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 
@@ -125,6 +125,8 @@ npm run start
 ```
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
+
+By default, there is one user defined. Use username `admin` and password `admin` to log in.
 
 ## Test
 
