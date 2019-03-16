@@ -1,5 +1,4 @@
 #!/bin/sh
 
 mypy server
-pylint server
-
+pylint server --exit-zero

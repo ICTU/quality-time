@@ -1,5 +1,7 @@
 # Quality-time
 
+[![Build Status](https://travis-ci.org/ICTU/quality-time.svg?branch=master)](https://travis-ci.org/ICTU/quality-time)
+
 Quality report software for software development and maintenance. **Alpha-stage** currently. At the moment, *Quality-time* consists of a Mongo database server, a LDAP server, an API-server, a metrics data collector, and a React frontend. Its main purpose is to experiment with features for a successor of [HQ](https://github.com/ICTU/quality-report).
 
 The collector collects metrics data from metric sources such as SonarQube and Jira. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents it to the user.
@@ -81,7 +83,7 @@ By default, there is one user defined. Use username `admin` and password `admin`
 
 ## Develop
 
-Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.7 and a recent version of Node/npm.
+Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.7 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 
@@ -109,7 +111,7 @@ quality-time-server
 In the third one, run the collector:
 
 ```console
-cd components/server
+cd components/collector
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
@@ -125,6 +127,8 @@ npm run start
 ```
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
+
+By default, there is one user defined. Use username `admin` and password `admin` to log in.
 
 ## Test
 

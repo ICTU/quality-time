@@ -7,7 +7,20 @@ it('renders without crashing', () => {
   ReactDOM.render(
     <Measurement
       measurements={[]}
-      metric={{accept_debt: false, type: "violations"}}
+      report={{
+        subjects: {
+          subject_uuid: {
+            metrics: {
+              metric_uuid: {
+                accept_debt: false,
+                type: "violations"
+              }
+            }
+          }
+        }
+      }}
+      metric_uuid="metric_uuid"
+      subject_uuid="subject_uuid"
       datamodel={{metrics: {violations: {direction: "<="}}}} />, container);
   ReactDOM.unmountComponentAtNode(container);
 });
