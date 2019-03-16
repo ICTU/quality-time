@@ -124,6 +124,8 @@ npm run install
 npm run start
 ```
 
+The frontend is served at [http://localhost:3000](http://localhost:3000).
+
 ## Test
 
 To run the unit tests and measure unit test coverage change directory into the component folders, e.g.:
