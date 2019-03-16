@@ -109,7 +109,7 @@ quality-time-server
 In the third one, run the collector:
 
 ```console
-cd components/server
+cd components/collector
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
