@@ -117,7 +117,8 @@
     "sources": {
         "gitlab": {
             "name": "GitLab",
-            "description": "GitLab provides Git-repositories, wiki's, issue-tracking and CI/CD pipelines.",
+            "description": "GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.",
+            "url": "https://gitlab.com/",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -149,6 +150,7 @@
         "hq": {
             "name": "HQ",
             "description": "Holistic Software Quality Reporting",
+            "url": "https://github.com/ICTU/quality-report",
             "parameters": {
                 "url": {
                     "name": "URL to HQ-report",
@@ -178,6 +180,7 @@
         "jacoco": {
             "name": "JaCoCo",
             "description": "JaCoCo is an open-source tool for measuring and reporting Java code coverage.",
+            "url": "https://www.eclemma.org/jacoco/",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -194,7 +197,8 @@
         },
         "jenkins": {
             "name": "Jenkins",
-            "description": "Jenkins is an open source CI/CD server.",
+            "description": "Jenkins is an open source continuous integration/continuous deployment server.",
+            "url": "https://jenkins.io/",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -225,6 +229,7 @@
         "jenkins_test_report": {
             "name": "Jenkins test report",
             "description": "A Jenkins job with test results.",
+            "url": "https://plugins.jenkins.io/junit",
             "parameters": {
                 "url": {
                     "name": "URL to job",
@@ -266,6 +271,7 @@
         "jira" : {
             "name": "Jira",
             "description": "Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.",
+            "url": "https://www.atlassian.com/software/jira",
             "parameters":  {
                 "url": {
                     "name": "URL",
@@ -309,6 +315,7 @@
         "junit": {
             "name": "JUnit XML report",
             "description": "Test reports in the JUnit XML format.",
+            "url": "https://junit.org",
             "parameters": {
                 "url": {
                     "name": "URL",
@@ -351,6 +358,7 @@
         "ojaudit": {
             "name": "OJAudit",
             "description": "An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.",
+            "url": "https://www.oracle.com/technetwork/developer-tools/jdev",
             "parameters": {
                 "url": {
                     "name": "URL to XML report",
@@ -394,12 +402,14 @@
         "random": {
             "name": "Random",
             "description": "A source that generates random numbers, for testing purposes.",
+            "url": "https://en.wikipedia.org/wiki/Special:Random",
             "parameters": {},
             "units": {}
         },
         "sonarqube": {
             "name": "SonarQube",
             "description": "SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages.",
+            "url": "https://www.sonarqube.org",
             "parameters": {
                 "url": {
                     "name": "URL",
