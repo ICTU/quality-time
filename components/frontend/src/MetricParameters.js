@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Header } from 'semantic-ui-react';
+import { Grid, Header, Icon } from 'semantic-ui-react';
 import { MetricComment } from './MetricComment';
 import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
@@ -13,10 +13,12 @@ function MetricParameters(props) {
     return (
         <>
             <Header>
-                {metric_type.name}
-                <Header.Subheader>
-                    {metric_type.description}
-                </Header.Subheader>
+                <Header.Content>
+                    {metric_type.name}
+                    <Header.Subheader>
+                        {metric_type.description}
+                    </Header.Subheader>
+                </Header.Content>
             </Header>
             <Grid stackable>
                 <Grid.Row columns={3}>
