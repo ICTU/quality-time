@@ -1,9 +1,19 @@
 dist: xenial
 language: python
 python: 3.7
-install:
-- cd components/collector
-- pip install -r requirements.txt -r requirements-dev.txt
-script:
-- ci/unittest.sh
-- ci/quality.sh
+jobs:
+  include:
+    - stage: collector
+      install:
+      - cd components/collector
+      - pip install -r requirements.txt -r requirements-dev.txt
+      script:
+      - ci/unittest.sh
+      - ci/quality.sh
+    - stage: server
+      install:
+      - cd components/server
+      - pip install -r requirements.txt -r requirements-dev.txt
+      script:
+      - ci/unittest.sh
+      - ci/quality.sh
