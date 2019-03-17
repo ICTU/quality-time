@@ -53,7 +53,11 @@ class JenkinsJobs(Collector):
     def build_status(job) -> str:
         """Return the build status of the job."""
         builds = job.get("builds")
-        return builds[0].get("result", "").capitalize().replace("_", " ") if builds else "Not built"
+        if builds:
+            status = builds[0].get("result")
+            if status:
+                return status.capitalize().replace("_", " ")
+        return "Not built"
 
 
 class JenkinsFailedJobs(JenkinsJobs):

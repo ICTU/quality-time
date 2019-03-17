@@ -35,7 +35,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         """Test that the failed jobs are returned."""
         self.mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red",
-                  builds=[dict(result="red", timestamp="1552686540953")])])
+                       builds=[dict(result="red", timestamp="1552686540953")])])
         metric = dict(type="failed_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
@@ -43,6 +43,15 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self.assertEqual(
             [dict(build_datetime="2019-03-15", build_age=build_age, build_status="Red",
                   key="job", name="job", url="http://job")], response["sources"][0]["units"])
+
+    def test_no_builds(self):
+        """Test no builds."""
+        self.mock_response.json.return_value = dict(
+            jobs=[dict(name="job", url="http://job", buildable=True, color="notbuilt", builds=[])])
+        metric = dict(type="failed_jobs", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual([], response["sources"][0]["units"])
 
 
 class JenkinsUnusedJobsTest(JenkinsTestCase):
