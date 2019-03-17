@@ -64,7 +64,7 @@ class JenkinsFailedJobs(JenkinsJobs):
     """Collector to get failed jobs from Jenkins."""
 
     def count_job(self, job, **parameters) -> bool:
-        """Count the job if its ball color matches the failure types selected by the user."""
+        """Count the job if its build status matches the failure types selected by the user."""
         return self.build_status(job) in parameters.get("failure_type", [])
 
 
