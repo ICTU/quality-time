@@ -13,7 +13,8 @@ class CollectorTest(unittest.TestCase):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
+        metric = dict(type="tests", sources=dict(
+            a=dict(type="junit", parameters=dict(url="http://url"))))
         with patch("requests.get", return_value=mock_response):
             self.response = collect_measurement(metric)
 
@@ -23,7 +24,8 @@ class CollectorTest(unittest.TestCase):
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url", self.response["sources"][0]["landing_url"])
+        self.assertEqual(
+            "http://url", self.response["sources"][0]["landing_url"])
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -51,7 +53,8 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url2", self.response["sources"][1]["landing_url"])
+        self.assertEqual(
+            "http://url2", self.response["sources"][1]["landing_url"])
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -65,22 +68,20 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.json.return_value = dict(
-            jobs=[dict(name="job", url="http://job", buildable=True)])  # Works for both Gitlab and Jenkins
+            jobs=[dict(name="job", url="http://job", buildable=True)])
         metric = dict(
-            type="jobs",
+            type="failed_jobs",
             sources=dict(
                 a=dict(type="jenkins", parameters=dict(url="http://jenkins")),
-                b=dict(type="gitlab", parameters=dict(url="http://gitlab", project="project", private_token="token"))))
+                b=dict(type="random")))
         with patch("requests.get", return_value=mock_response):
             self.response = collect_measurement(metric)
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
         sources = self.response["sources"]
-        self.assertEqual([{'datetime': None, 'key': 'job', 'name': 'job', 'url': 'http://job'}], sources[0]["units"])
         self.assertEqual("1", sources[0]["value"])
-        self.assertEqual([], sources[1]["units"])
-        self.assertEqual("1", sources[1]["value"])
+        self.assertTrue(sources[1]["value"])
 
 
 class CollectorErrorTest(unittest.TestCase):
@@ -88,13 +89,15 @@ class CollectorErrorTest(unittest.TestCase):
 
     def setUp(self):
         """Clear cache."""
-        self.metric = dict(type="tests", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
+        self.metric = dict(type="tests", sources=dict(
+            a=dict(type="junit", parameters=dict(url="http://url"))))
 
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
             response = collect_measurement(self.metric)
-        self.assertTrue(response["sources"][0]["connection_error"].startswith("Traceback"))
+        self.assertTrue(response["sources"][0]
+                        ["connection_error"].startswith("Traceback"))
 
     def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
@@ -102,4 +105,5 @@ class CollectorErrorTest(unittest.TestCase):
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(self.metric)
-        self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))
+        self.assertTrue(response["sources"][0]
+                        ["parse_error"].startswith("Traceback"))

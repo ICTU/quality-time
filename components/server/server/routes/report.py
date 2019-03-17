@@ -3,7 +3,7 @@
 import bottle
 
 from ..database.reports import latest_reports, latest_report, insert_new_report
-from ..database.datamodels import latest_datamodel
+from ..database.datamodels import latest_datamodel, default_source_parameters
 from ..util import iso_timestamp, report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
@@ -111,10 +111,7 @@ def post_source_new(report_uuid: str, metric_uuid: str, database):
     metric_type = metric["type"]
     datamodel = latest_datamodel(iso_timestamp(), database)
     source_type = datamodel["metrics"][metric_type]["sources"][0]
-    parameters = dict()
-    for parameter_key, parameter_value in datamodel["sources"][source_type]["parameters"].items():
-        if metric_type in parameter_value["metrics"]:
-            parameters[parameter_key] = ""
+    parameters = default_source_parameters(metric_type, source_type, database)
     metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     return insert_new_report(report, database)
 
@@ -143,10 +140,7 @@ def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: 
                 break
     source[source_attribute] = value
     if source_attribute == "type":
-        possible_parameters = latest_datamodel(iso_timestamp(), database)["sources"][value]["parameters"]
-        for parameter in list(source.get("parameters", dict()).keys()):
-            if parameter not in possible_parameters or metric_type not in possible_parameters[parameter]["metrics"]:
-                del source["parameters"][parameter]
+        source["parameters"] = default_source_parameters(metric_type, value, database)
     return insert_new_report(report, database)
 
 
