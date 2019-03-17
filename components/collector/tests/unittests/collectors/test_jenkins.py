@@ -23,11 +23,12 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
     def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         self.mock_response.json.return_value = dict(
-            jobs=[dict(name="job", url="http://job", buildable=True, color="red")])
+            jobs=[dict(name="job", url="http://job", buildable=True, color="red",
+                       jobs=[dict(name="child_job", url="http://child_job", buildable=True, color="red")])])
         metric = dict(type="failed_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
-        self.assertEqual("1", response["sources"][0]["value"])
+        self.assertEqual("2", response["sources"][0]["value"])
 
     def test_failed_jobs(self):
         """Test that the failed jobs are returned."""
