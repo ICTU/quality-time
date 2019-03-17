@@ -12,10 +12,11 @@ class JenkinsJobs(Collector):
     """Collector to get job counts from Jenkins."""
 
     def api_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/api/json?tree=jobs[buildable,color,url,name,builds[result,timestamp]]")
+        job_attrs = "buildable,color,url,name,builds[result,timestamp]"
+        return URL(f"{parameters.get('url')}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.jobs(response, **parameters)))
+        return str(len(list(self.jobs(response.json()["jobs"], **parameters))))
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         return [
@@ -23,12 +24,15 @@ class JenkinsJobs(Collector):
                 key=job["name"], name=job["name"], url=job["url"], build_status=self.build_status(job),
                 build_age=str(self.build_age(job).days) if self.build_age(job) < timedelta.max else "",
                 build_datetime=str(self.build_datetime(job).date()) if self.build_datetime(job) > datetime.min else "")
-            for job in self.jobs(response, **parameters)]
+            for job in self.jobs(response.json()["jobs"], **parameters)]
 
-    def jobs(self, response: requests.Response, **parameters):
-        """Return the jobs from the response that are buildable."""
-        return [job for job in response.json()["jobs"]
-                if job.get("buildable") and self.count_job(job, **parameters)]
+    def jobs(self, jobs, **parameters):
+        """Recursively return the jobs and their child jobs that need to be counted for the metric."""
+        for job in jobs:
+            if job.get("buildable") and self.count_job(job, **parameters):
+                yield job
+            for child_job in self.jobs(job.get("jobs", []), **parameters):
+                yield child_job
 
     def count_job(self, job, **parameters) -> bool:
         """Return whether the job should be counted."""
@@ -56,8 +60,11 @@ class JenkinsFailedJobs(JenkinsJobs):
     """Collector to get failed jobs from Jenkins."""
 
     def count_job(self, job, **parameters) -> bool:
-        """Count the job if it's not successful (blue)."""
-        return not job.get("color", "").startswith("blue")
+        """Count the job if it's failed (red) or unstable (yellow).
+        See https://github.com/jenkinsci/jenkins/blob/master/core/src/main/java/hudson/model/BallColor.java for
+        possible ball colors."""
+        ball_color = job.get("color", "").split("_")[0]
+        return ball_color in ("red", "yellow")
 
 
 class JenkinsUnusedJobs(JenkinsJobs):

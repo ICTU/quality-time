@@ -68,7 +68,7 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.json.return_value = dict(
-            jobs=[dict(name="job", url="http://job", buildable=True)])
+            jobs=[dict(name="job", url="http://job", buildable=True, color="red")])
         metric = dict(
             type="failed_jobs",
             sources=dict(
