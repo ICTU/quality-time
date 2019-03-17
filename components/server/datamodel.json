@@ -222,22 +222,35 @@
                         "failed_jobs",
                         "unused_jobs"
                     ]
+                },
+                "inactive_days": {
+                    "name": "Number of days without builds after which to consider CI-jobs unused.",
+                    "type": "integer",
+                    "metrics": [
+                        "unused_jobs"
+                    ]
                 }
             },
             "units": {
-                "jobs": [
-                    {
-                        "name": "Job name",
-                        "key": "name",
-                        "url": "url"
-                    }
-                ],
                 "failed_jobs": [
                     {
                         "name": "Job name",
                         "key": "name",
                         "url": "url"
+                    },
+                    {
+                        "name": "Status of most recent build",
+                        "key": "build_status"
+                    },
+                    {
+                        "name": "Date of most recent build",
+                        "key": "build_datetime"
+                    },
+                    {
+                        "name": "Age of most recent build (in days)",
+                        "key": "build_age"
                     }
+
                 ],
                 "unused_jobs": [
                     {
@@ -246,8 +259,16 @@
                         "url": "url"
                     },
                     {
-                        "name": "Most recent build",
-                        "key": "datetime"
+                        "name": "Status of most recent build",
+                        "key": "build_status"
+                    },
+                    {
+                        "name": "Date of most recent build",
+                        "key": "build_datetime"
+                    },
+                    {
+                        "name": "Age of most recent build (in days)",
+                        "key": "build_age"
                     }
                 ]
             }
