@@ -60,11 +60,8 @@ class JenkinsFailedJobs(JenkinsJobs):
     """Collector to get failed jobs from Jenkins."""
 
     def count_job(self, job, **parameters) -> bool:
-        """Count the job if it's failed (red) or unstable (yellow).
-        See https://github.com/jenkinsci/jenkins/blob/master/core/src/main/java/hudson/model/BallColor.java for
-        possible ball colors."""
-        ball_color = job.get("color", "").split("_")[0]
-        return ball_color in ("red", "yellow")
+        """Count the job if its ball color matches the failure types selected by the user."""
+        return self.build_status(job) in parameters.get("failure_type", [])
 
 
 class JenkinsUnusedJobs(JenkinsJobs):

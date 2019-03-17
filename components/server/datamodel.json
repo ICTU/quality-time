@@ -237,6 +237,20 @@
                     "metrics": [
                         "unused_jobs"
                     ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "Aborted",
+                        "Failure",
+                        "Not built",
+                        "Unstable"
+                    ],
+                    "metrics": [
+                        "failed_jobs"
+                    ]
                 }
             },
             "units": {
