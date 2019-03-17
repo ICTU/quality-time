@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { IntegerParameter } from './IntegerParameter.js';
 import { StringParameter } from './StringParameter.js';
 import { MultipleChoiceParameter } from './MultipleChoiceParameter.js';
 import { PasswordParameter } from './PasswordParameter.js';
@@ -66,7 +67,16 @@ class SourceParameter extends Component {
       return (
         <PasswordParameter
           parameter_key={this.props.parameter_key} parameter_name={this.props.parameter_name}
-          options={this.state.options} parameter_value={this.props.parameter_value}
+          parameter_value={this.props.parameter_value}
+          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          readOnly={this.props.readOnly} label={this.props.parameter_name} placeholder={this.props.placeholder} />
+      )
+    }
+    if (this.props.parameter_type === "integer") {
+      return (
+        <IntegerParameter
+          parameter_key={this.props.parameter_key} parameter_name={this.props.parameter_name}
+          parameter_value={this.props.parameter_value}
           set_parameter={(key, value) => this.set_source_parameter(key, value)}
           readOnly={this.props.readOnly} label={this.props.parameter_name} placeholder={this.props.placeholder} />
       )

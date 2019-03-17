@@ -38,6 +38,18 @@
                 "random"
             ]
         },
+        "unused_jobs": {
+            "name": "Number of unused CI-jobs",
+            "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
+            "unit": "CI-jobs",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "hq",
+                "jenkins",
+                "random"
+            ]
+        },
         "issues": {
             "name": "Number of issues",
             "description": "Measure the number of issues.",
@@ -123,6 +135,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -131,6 +144,7 @@
                 "project": {
                     "name": "Project",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -139,6 +153,7 @@
                 "private_token": {
                     "name": "Private Token",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "jobs",
                         "failed_jobs"
@@ -155,22 +170,26 @@
                 "url": {
                     "name": "URL to HQ-report",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "failed_jobs",
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "unused_jobs",
                         "violations"
                     ]
                 },
                 "metric_id": {
                     "name": "Stable metric ID",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "failed_jobs",
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "unused_jobs",
                         "violations"
                     ]
                 }
@@ -185,6 +204,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -203,25 +223,60 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "jobs",
-                        "failed_jobs"
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
+                "inactive_days": {
+                    "name": "Number of days without builds after which to consider CI-jobs unused.",
+                    "type": "integer",
+                    "default_value": "90",
+                    "metrics": [
+                        "unused_jobs"
                     ]
                 }
             },
             "units": {
-                "jobs": [
-                    {
-                        "name": "Job name",
-                        "key": "name",
-                        "url": "url"
-                    }
-                ],
                 "failed_jobs": [
                     {
                         "name": "Job name",
                         "key": "name",
                         "url": "url"
+                    },
+                    {
+                        "name": "Status of most recent build",
+                        "key": "build_status"
+                    },
+                    {
+                        "name": "Date of most recent build",
+                        "key": "build_datetime"
+                    },
+                    {
+                        "name": "Age of most recent build (in days)",
+                        "key": "build_age"
+                    }
+
+                ],
+                "unused_jobs": [
+                    {
+                        "name": "Job name",
+                        "key": "name",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Status of most recent build",
+                        "key": "build_status"
+                    },
+                    {
+                        "name": "Date of most recent build",
+                        "key": "build_datetime"
+                    },
+                    {
+                        "name": "Age of most recent build (in days)",
+                        "key": "build_age"
                     }
                 ]
             }
@@ -234,6 +289,7 @@
                 "url": {
                     "name": "URL to job",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "tests",
                         "failed_tests"
@@ -242,6 +298,7 @@
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
+                    "default_value": "",
                     "values": [
                         "failed",
                         "skipped"
@@ -276,6 +333,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "issues"
                     ]
@@ -283,6 +341,7 @@
                 "jql": {
                     "name": "Issue query (JQL)",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "issues"
                     ]
@@ -290,6 +349,7 @@
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "issues"
                     ]
@@ -297,6 +357,7 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "type": "password",
+                    "default_value": "",
                     "metrics": [
                         "issues"
                     ]
@@ -320,6 +381,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "tests",
                         "failed_tests"
@@ -328,6 +390,7 @@
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
+                    "default_value": "",
                     "values": [
                         "errored",
                         "failed",
@@ -363,6 +426,7 @@
                 "url": {
                     "name": "URL to XML report",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "violations"
                     ]
@@ -370,6 +434,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "default_value": "",
                     "values": [
                         "advisory",
                         "incomplete",
@@ -414,6 +479,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -429,6 +495,7 @@
                 "component": {
                     "name": "Project key",
                     "type": "string",
+                    "default_value": "",
                     "metrics": [
                         "covered_lines",
                         "uncovered_lines",
@@ -444,6 +511,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "default_value": "",
                     "values": [
                         "info",
                         "minor",
@@ -458,6 +526,7 @@
                 "types": {
                     "name": "Types",
                     "type": "multiple_choice",
+                    "default_value": "",
                     "values": [
                         "code_smell",
                         "bug",
