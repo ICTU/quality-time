@@ -4,6 +4,7 @@ import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringParameter } from './StringParameter';
 
+import AzureDevops from './logos/azure_devops.png';
 import Gitlab from './logos/gitlab.png';
 import HQ from './logos/hq.png';
 import Jenkins from './logos/jenkins.png';
@@ -42,6 +43,7 @@ class Source extends Component {
         const props = this.props;
         const source_type = props.datamodel.sources[props.source.type];
         const logo = {
+            azure_devops: AzureDevops,
             gitlab: Gitlab,
             hq: HQ,
             jenkins: Jenkins,

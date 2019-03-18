@@ -29,6 +29,7 @@ class Collector:
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_UNITS = 100  # The maximum number of units (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
+    request_method = "GET"  # Can be overridden to use e.g. "POST"
 
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
@@ -74,9 +75,12 @@ class Collector:
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs.
         This method can be overridden by collectors that need a different way to retrieve the source data."""
-        username, password = parameters.get("username"), parameters.get("password")
-        basic_auth_credentials = (username, password) if username and password else None
-        response = requests.get(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
+        username, password = parameters.get("username", ""), parameters.get("password", "")
+        basic_auth_credentials = (username, password) if username or password else None
+        if self.request_method == "GET":
+            response = requests.get(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
+        else:
+            response = requests.post(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
         response.raise_for_status()
         return response
 

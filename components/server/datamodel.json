@@ -59,7 +59,8 @@
             "sources": [
                 "hq",
                 "jira",
-                "random"
+                "random",
+                "azure_devops"
             ]
         },
         "ncloc": {
@@ -152,7 +153,7 @@
                 },
                 "private_token": {
                     "name": "Private Token",
-                    "type": "string",
+                    "type": "password",
                     "default_value": "",
                     "metrics": [
                         "jobs",
@@ -572,6 +573,29 @@
                         "url": "url"
                     }
                 ]
+            }
+        },
+        "azure_devops": {
+            "name": "Azure DevOps Server",
+            "description": "Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.",
+            "url": "https://azure.microsoft.com/en-us/services/devops/server/",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "password": {
+                    "name": "Private Token",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
             }
         }
     }
