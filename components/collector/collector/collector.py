@@ -68,21 +68,31 @@ class Collector:
         response, error = None, None
         try:
             response = self.get_source_response(api_url, **parameters)
+            response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = traceback.format_exc()
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs.
-        This method can be overridden by collectors that need a different way to retrieve the source data."""
-        username, password = parameters.get("username", ""), parameters.get("password", "")
-        basic_auth_credentials = (username, password) if username or password else None
+        """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs."""
+        auth = self.basic_auth_credentials(**parameters)
         if self.request_method == "GET":
-            response = requests.get(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
-        else:
-            response = requests.post(api_url, timeout=self.TIMEOUT, auth=basic_auth_credentials)
-        response.raise_for_status()
-        return response
+            return requests.get(api_url, timeout=self.TIMEOUT, auth=auth)
+        return requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=self.json_payload(**parameters))
+
+    @staticmethod
+    def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
+        """Return the basic authentication credentials, if any."""
+        token = parameters.get("private_token")
+        if token:
+            return (token, "")
+        username, password = parameters.get("username"), parameters.get("password")
+        return (username, password) if username and password else None
+
+    @staticmethod
+    def json_payload(**parameters):  # pylint: disable=unused-argument
+        """Return the optional JSON payload for post requests. Can be overridden by collectors."""
+        return None
 
     def safely_parse_source_response(
             self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Units, ErrorMessage]:

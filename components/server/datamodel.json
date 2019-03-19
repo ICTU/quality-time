@@ -11,7 +11,10 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage"]
+            "tags": [
+                "test",
+                "coverage"
+            ]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -273,7 +276,6 @@
                         "name": "Age of most recent build (in days)",
                         "key": "build_age"
                     }
-
                 ],
                 "unused_jobs": [
                     {
@@ -340,11 +342,11 @@
                 ]
             }
         },
-        "jira" : {
+        "jira": {
             "name": "Jira",
             "description": "Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.",
             "url": "https://www.atlassian.com/software/jira",
-            "parameters":  {
+            "parameters": {
                 "url": {
                     "name": "URL",
                     "type": "string",
@@ -588,14 +590,71 @@
                         "issues"
                     ]
                 },
-                "password": {
+                "private_token": {
                     "name": "Private Token",
                     "type": "password",
                     "default_value": "",
                     "metrics": [
                         "issues"
                     ]
+                },
+                "work_item_types": {
+                    "name": "Work item types",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "Bug",
+                        "User Story",
+                        "Feature",
+                        "Task"
+                    ],
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "states": {
+                    "name": "States",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "Active",
+                        "Closed",
+                        "New",
+                        "Resolved"
+                    ],
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "search_text": {
+                    "name": "Search text",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
                 }
+            },
+            "units": {
+                "issues": [
+                    {
+                        "name": "Project",
+                        "key": "project"
+                    },
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Work item type",
+                        "key": "work_item_type"
+                    },
+                    {
+                        "name": "State",
+                        "key": "state"
+                    }
+                ]
             }
         }
     }
