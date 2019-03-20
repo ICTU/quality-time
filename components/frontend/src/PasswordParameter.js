@@ -31,7 +31,7 @@ class PasswordParameter extends Component {
         <Form.Input
           fluid
           focus
-          label={this.props.parameter_name}
+          label={this.props.label}
           onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)}
           onKeyDown={(e) => this.onKeyDown(e)}

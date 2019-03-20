@@ -31,7 +31,7 @@ class IntegerParameter extends Component {
         <Form.Input
           fluid
           focus
-          label={this.props.parameter_name}
+          label={this.props.label}
           min="0"
           onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)}

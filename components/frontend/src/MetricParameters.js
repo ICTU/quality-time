@@ -32,8 +32,8 @@ function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringParameter
+                            label="Metric name"
                             parameter_key="name"
-                            parameter_name={"Metric name"}
                             parameter_value={props.metric.name}
                             placeholder={metric_type.name}
                             readOnly={props.readOnly}
@@ -42,8 +42,8 @@ function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <StringParameter
+                            label="Metric unit"
                             parameter_key="unit"
-                            parameter_name={"Metric unit"}
                             parameter_value={props.metric.unit}
                             placeholder={metric_type.unit}
                             readOnly={props.readOnly}
@@ -63,8 +63,8 @@ function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <SingleChoiceParameter
+                            label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
                             parameter_key="accept_debt"
-                            parameter_name="Accept technical debt?"
                             parameter_value={props.metric.accept_debt}
                             parameter_values={[{ text: "Yes", value: true }, { text: "No", value: false }]}
                             readOnly={props.readOnly}

@@ -12,6 +12,7 @@ function SourceParameters(props) {
         (
             <Grid.Column key={parameter_key} style={{paddingTop: '10px'}}>
                 <SourceParameter
+                    help_url={all_parameters[parameter_key].help_url}
                     parameter_key={parameter_key}
                     parameter_name={all_parameters[parameter_key].name}
                     parameter_type={all_parameters[parameter_key].type}
