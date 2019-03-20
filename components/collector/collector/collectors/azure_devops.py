@@ -25,9 +25,8 @@ class AzureDevopsIssues(Collector):
                 state=result["fields"]["system.state"], url=result["url"])
             for result in response.json()["results"]]
 
-    @staticmethod
-    def json_payload(**parameters):
-        payload = {"$top": 100, "filters": {}}
+    def json_payload(self, **parameters):
+        payload = {"$top": self.MAX_UNITS, "filters": {}}
         search_text = parameters.get("search_text")
         if search_text:
             payload["searchText"] = search_text

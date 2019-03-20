@@ -89,10 +89,9 @@ class Collector:
         username, password = parameters.get("username"), parameters.get("password")
         return (username, password) if username and password else None
 
-    @staticmethod
-    def json_payload(**parameters):  # pylint: disable=unused-argument
+    def json_payload(self, **parameters):  # pylint: disable=no-self-use,unused-argument
         """Return the optional JSON payload for post requests. Can be overridden by collectors."""
-        return None
+        return None  # pragma: nocover
 
     def safely_parse_source_response(
             self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Units, ErrorMessage]:
