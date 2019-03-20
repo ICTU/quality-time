@@ -29,7 +29,6 @@ class Collector:
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_UNITS = 100  # The maximum number of units (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
-    request_method = "GET"  # Can be overridden to use e.g. "POST"
 
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
@@ -74,11 +73,8 @@ class Collector:
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Open the url. Raise an exception if the response status isn't 200 or if a time out occurs."""
-        auth = self.basic_auth_credentials(**parameters)
-        if self.request_method == "GET":
-            return requests.get(api_url, timeout=self.TIMEOUT, auth=auth)
-        return requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=self.json_payload(**parameters))
+        """Open the url. Can be overridden if a post rwquest is needed or mmultiple requests need to be made."""
+        return requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))
 
     @staticmethod
     def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
@@ -88,10 +84,6 @@ class Collector:
             return (token, "")
         username, password = parameters.get("username"), parameters.get("password")
         return (username, password) if username and password else None
-
-    def json_payload(self, **parameters):  # pylint: disable=no-self-use,unused-argument
-        """Return the optional JSON payload for post requests. Can be overridden by collectors."""
-        return None  # pragma: nocover
 
     def safely_parse_source_response(
             self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Units, ErrorMessage]:

@@ -356,7 +356,7 @@
                     ]
                 },
                 "jql": {
-                    "name": "Issue query (JQL)",
+                    "name": "Issue query in JQL (Jira Query Language)",
                     "type": "string",
                     "default_value": "",
                     "metrics": [
@@ -598,36 +598,8 @@
                         "issues"
                     ]
                 },
-                "work_item_types": {
-                    "name": "Work item types",
-                    "type": "multiple_choice",
-                    "default_value": "",
-                    "values": [
-                        "Bug",
-                        "User Story",
-                        "Feature",
-                        "Task"
-                    ],
-                    "metrics": [
-                        "issues"
-                    ]
-                },
-                "states": {
-                    "name": "States",
-                    "type": "multiple_choice",
-                    "default_value": "",
-                    "values": [
-                        "Active",
-                        "Closed",
-                        "New",
-                        "Resolved"
-                    ],
-                    "metrics": [
-                        "issues"
-                    ]
-                },
-                "search_text": {
-                    "name": "Search text",
+                "wiql": {
+                    "name": "Issue query in WIQL (Work Item Query Language)",
                     "type": "string",
                     "default_value": "",
                     "metrics": [
