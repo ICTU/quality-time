@@ -11,7 +11,10 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage"]
+            "tags": [
+                "test",
+                "coverage"
+            ]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -59,7 +62,8 @@
             "sources": [
                 "hq",
                 "jira",
-                "random"
+                "random",
+                "azure_devops"
             ]
         },
         "ncloc": {
@@ -152,7 +156,7 @@
                 },
                 "private_token": {
                     "name": "Private Token",
-                    "type": "string",
+                    "type": "password",
                     "default_value": "",
                     "metrics": [
                         "jobs",
@@ -272,7 +276,6 @@
                         "name": "Age of most recent build (in days)",
                         "key": "build_age"
                     }
-
                 ],
                 "unused_jobs": [
                     {
@@ -339,11 +342,11 @@
                 ]
             }
         },
-        "jira" : {
+        "jira": {
             "name": "Jira",
             "description": "Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management.",
             "url": "https://www.atlassian.com/software/jira",
-            "parameters":  {
+            "parameters": {
                 "url": {
                     "name": "URL",
                     "type": "string",
@@ -353,7 +356,7 @@
                     ]
                 },
                 "jql": {
-                    "name": "Issue query (JQL)",
+                    "name": "Issue query in JQL (Jira Query Language)",
                     "type": "string",
                     "default_value": "",
                     "metrics": [
@@ -570,6 +573,58 @@
                         "name": "Component",
                         "key": "component",
                         "url": "url"
+                    }
+                ]
+            }
+        },
+        "azure_devops": {
+            "name": "Azure DevOps Server",
+            "description": "Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.",
+            "url": "https://azure.microsoft.com/en-us/services/devops/server/",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private Token",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "wiql": {
+                    "name": "Issue query in WIQL (Work Item Query Language)",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {
+                "issues": [
+                    {
+                        "name": "Project",
+                        "key": "project"
+                    },
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Work item type",
+                        "key": "work_item_type"
+                    },
+                    {
+                        "name": "State",
+                        "key": "state"
                     }
                 ]
             }

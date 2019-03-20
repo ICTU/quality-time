@@ -37,6 +37,7 @@ class StringParameterWithSuggestions extends Component {
       <Form>
         <Form.Dropdown
           allowAdditions
+          clearable
           fluid
           label={this.props.parameter_name}
           onAddItem={this.handleAddition}
