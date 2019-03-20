@@ -73,9 +73,13 @@ class Source extends Component {
                         </Grid.Column>
                         <Grid.Column>
                             <StringParameter
-                                parameter_key="name" parameter_name={"Source name"} parameter_value={props.source.name}
+                                label="Source name"
+                                parameter_key="name"
+                                parameter_value={props.source.name}
+                                placeholder={source_type.name}
+                                readOnly={props.readOnly}
                                 set_parameter={(a, v) => this.set_source_attribute(a, v)}
-                                placeholder={source_type.name} readOnly={props.readOnly} />
+                            />
                         </Grid.Column>
                         <SourceParameters
                             datamodel={props.datamodel}

@@ -157,6 +157,7 @@
                 "private_token": {
                     "name": "Private Token",
                     "type": "password",
+                    "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
                         "jobs",
@@ -358,6 +359,7 @@
                 "jql": {
                     "name": "Issue query in JQL (Jira Query Language)",
                     "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html",
                     "default_value": "",
                     "metrics": [
                         "issues"
@@ -528,6 +530,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/issues/",
                     "default_value": "",
                     "values": [
                         "info",
@@ -543,6 +546,7 @@
                 "types": {
                     "name": "Types",
                     "type": "multiple_choice",
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
                     "default_value": "",
                     "values": [
                         "code_smell",
@@ -593,6 +597,7 @@
                 "private_token": {
                     "name": "Private Token",
                     "type": "password",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
                     "metrics": [
                         "issues"
@@ -601,6 +606,7 @@
                 "wiql": {
                     "name": "Issue query in WIQL (Work Item Query Language)",
                     "type": "string",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
                     "default_value": "",
                     "metrics": [
                         "issues"
