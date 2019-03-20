@@ -76,6 +76,9 @@ class Measurement extends Component {
           <Table.Cell>
             {metric.comment}
           </Table.Cell>
+          <Table.Cell>
+            {metric.comment}
+          </Table.Cell>
         </Table.Row>
         {this.state.show_details &&
           <MeasurementDetails

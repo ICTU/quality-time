@@ -49,6 +49,7 @@ class Subject extends Component {
               <Table.HeaderCell>Target</Table.HeaderCell>
               <Table.HeaderCell>Source</Table.HeaderCell>
               <Table.HeaderCell>Comment</Table.HeaderCell>
+              <Table.HeaderCell>Tags</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>{metrics}</Table.Body>
