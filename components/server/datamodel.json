@@ -11,10 +11,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": [
-                "test",
-                "coverage"
-            ]
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -26,7 +23,8 @@
                 "jacoco",
                 "sonarqube",
                 "random"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
@@ -39,7 +37,8 @@
                 "jenkins",
                 "gitlab",
                 "random"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "unused_jobs": {
             "name": "Number of unused CI-jobs",
@@ -51,7 +50,8 @@
                 "hq",
                 "jenkins",
                 "random"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "issues": {
             "name": "Number of issues",
@@ -62,9 +62,15 @@
             "sources": [
                 "hq",
                 "jira",
+<<<<<<< HEAD
                 "random",
                 "azure_devops"
             ]
+=======
+                "random"
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+>>>>>>> Added security tags in the datamodel.json of the server.
         },
         "ncloc": {
             "name": "Size (non-commented LOC)",
@@ -75,7 +81,8 @@
             "sources": [
                 "sonarqube",
                 "random"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "loc": {
             "name": "Size (LOC)",
@@ -87,7 +94,8 @@
                 "hq",
                 "sonarqube",
                 "random"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "tests": {
             "name": "Number of tests",
@@ -100,7 +108,8 @@
                 "junit",
                 "random",
                 "sonarqube"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "failed_tests": {
             "name": "Number of failed tests",
@@ -114,7 +123,8 @@
                 "hq",
                 "random",
                 "sonarqube"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         },
         "violations": {
             "name": "Number of violations",
@@ -127,7 +137,8 @@
                 "ojaudit",
                 "random",
                 "sonarqube"
-            ]
+            ],
+            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
         }
     },
     "sources": {
