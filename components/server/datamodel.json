@@ -11,7 +11,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -24,7 +24,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
@@ -38,7 +38,7 @@
                 "gitlab",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "unused_jobs": {
             "name": "Number of unused CI-jobs",
@@ -51,7 +51,7 @@
                 "jenkins",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "issues": {
             "name": "Number of issues",
@@ -62,15 +62,11 @@
             "sources": [
                 "hq",
                 "jira",
-<<<<<<< HEAD
                 "random",
-                "azure_devops"
-            ]
-=======
+                "azure_devops",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
->>>>>>> Added security tags in the datamodel.json of the server.
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "ncloc": {
             "name": "Size (non-commented LOC)",
@@ -82,7 +78,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "loc": {
             "name": "Size (LOC)",
@@ -95,7 +91,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "tests": {
             "name": "Number of tests",
@@ -109,7 +105,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "failed_tests": {
             "name": "Number of failed tests",
@@ -124,7 +120,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         },
         "violations": {
             "name": "Number of violations",
@@ -138,7 +134,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
         }
     },
     "sources": {
