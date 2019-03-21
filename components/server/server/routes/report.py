@@ -64,16 +64,11 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
             break
     metric[metric_attribute] = value
     if metric_attribute == "type":
-        tags = metric["tags"]
         sources = metric["sources"]
-        possible_tags = latest_datamodel(iso_timestamp(), database) ["metrics"][value]["tags"]
         possible_sources = latest_datamodel(iso_timestamp(), database)["metrics"][value]["sources"]
         for source_uuid, source in list(sources.items()):
             if source["type"] not in possible_sources:
                 del sources[source_uuid]
-        for tags_uuid, tag in list(tags.items()):
-            if tag["type"] not in possible_tags:
-                del tags[tags_uuid]
     insert_new_report(report, database)
     if metric_attribute in ("accept_debt", "debt_target", "target"):
         latest = latest_measurement(metric_uuid, database)
@@ -87,9 +82,9 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database):
     """Add a new metric."""
     report = latest_report(report_uuid, database)
     subject = report["subjects"][subject_uuid]
-    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"]
-    metric_type = list(metric_types.keys())[0]
-    default_target = metric_types[metric_type]["default_target"]
+    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"] # {"violations": {...}, "size": {...}}
+    metric_type = list(metric_types.keys())[0]  # metric_types.keys()[0] = ["violations", "size", ...][0] == "violations"
+    default_target = metric_types[metric_type]["default_target"]  # {"violations": {"default_target": 0, ...}}
     default_tags = metric_types[metric_type]["tags"]
     subject["metrics"][uuid()] = dict(
         type=metric_type, sources={}, report_uuid=report_uuid, name=None, unit=None,

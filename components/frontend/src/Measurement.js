@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon, Table, Popup } from 'semantic-ui-react';
+import { Icon, Label, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
@@ -77,7 +77,7 @@ class Measurement extends Component {
             {metric.comment}
           </Table.Cell>
           <Table.Cell>
-            {metric.comment}
+            {metric.tags.map((tag) => <Label tag color="blue">{tag}</Label>)}
           </Table.Cell>
         </Table.Row>
         {this.state.show_details &&

@@ -11,7 +11,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["test", "coverage"]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -24,7 +24,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["test", "coverage"]
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
@@ -38,7 +38,7 @@
                 "gitlab",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["ci"]
         },
         "unused_jobs": {
             "name": "Number of unused CI-jobs",
@@ -51,7 +51,7 @@
                 "jenkins",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["ci"]
         },
         "issues": {
             "name": "Number of issues",
@@ -66,7 +66,7 @@
                 "azure_devops",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": []
         },
         "ncloc": {
             "name": "Size (non-commented LOC)",
@@ -78,7 +78,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["size"]
         },
         "loc": {
             "name": "Size (LOC)",
@@ -91,7 +91,7 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["size"]
         },
         "tests": {
             "name": "Number of tests",
@@ -105,7 +105,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["test"]
         },
         "failed_tests": {
             "name": "Number of failed tests",
@@ -120,7 +120,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["test"]
         },
         "violations": {
             "name": "Number of violations",
@@ -134,7 +134,7 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["default", "test", "coverage", "security", "code_smell", "undefined"]
+            "tags": ["violation"]
         }
     },
     "sources": {

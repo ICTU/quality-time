@@ -6,6 +6,7 @@ import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringParameter } from './StringParameter';
 import { SingleChoiceParameter } from './SingleChoiceParameter';
+import { MultipleChoiceParameterAddition} from './MultipleChoiceParameterAddition';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -76,6 +77,21 @@ function MetricParameters(props) {
                             direction={metric_type.direction}
                             readOnly={props.readOnly}
                             set_metric_attribute={props.set_metric_attribute}
+                            target={props.metric.debt_target}
+                            unit={metric_unit}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
+                <   Grid.Column>
+                        <MultipleChoiceParameterAddition
+                            direction={metric_type.direction}
+                            label="Tags"
+                            parameter_values = {metric_type.tags}
+                            parameter_value = {props.metric.tags}
+                            parameter_key = "tags"
+                            readOnly={props.readOnly}
+                            set_parameter={props.set_metric_attribute}
                             target={props.metric.debt_target}
                             unit={metric_unit}
                         />
