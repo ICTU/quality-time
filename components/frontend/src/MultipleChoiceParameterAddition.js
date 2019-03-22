@@ -9,12 +9,16 @@ class MultipleChoiceParameterAddition extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.parameter_values !== this.props.parameter_values) {
       this.setState({ options: this.options() })
+      if (prevProps.parameter_value !== this.props.parameter_value) {
+        this.setState({ value: this.props.parameter_value })
+      }
     }
   }
   options() {
     return this.props.parameter_values.map((value) => ({ key: value, text: value, value: value }));
   }
-  handleAddition = (e, { value }) => {
+  handleAddition = (event, { value }) => {
+    event.preventDefault();
     this.setState({
       options: [{ text: value, value }, ...this.state.options],
     })
@@ -31,17 +35,17 @@ class MultipleChoiceParameterAddition extends Component {
         {this.props.readOnly ?
           <Form.Input label={this.props.label} value={this.state.value} readOnly />
           :
-          <Form.Dropdown 
+          <Form.Dropdown
             allowAdditions
-            fluid  
+            fluid
             label={this.props.label}
             multiple
             onAddItem={this.handleAddition}
             onChange={(e, { value }) => this.onSubmit(e, value)}
-            options={this.state.options} 
+            options={this.state.options}
             selection
-            search 
-            value={this.state.value || []} 
+            search
+            value={this.state.value || []}
           />
         }
       </Form>

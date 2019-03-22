@@ -11,7 +11,10 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage"]
+            "tags": [
+                "coverage",
+                "test"
+            ]
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
@@ -24,7 +27,10 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["test", "coverage"]
+            "tags": [
+                "coverage",
+                "test"
+            ]
         },
         "failed_jobs": {
             "name": "Number of failed CI-jobs",
@@ -38,7 +44,9 @@
                 "gitlab",
                 "random"
             ],
-            "tags": ["ci"]
+            "tags": [
+                "ci"
+            ]
         },
         "unused_jobs": {
             "name": "Number of unused CI-jobs",
@@ -51,7 +59,9 @@
                 "jenkins",
                 "random"
             ],
-            "tags": ["ci"]
+            "tags": [
+                "ci"
+            ]
         },
         "issues": {
             "name": "Number of issues",
@@ -78,7 +88,9 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["size"]
+            "tags": [
+                "size"
+            ]
         },
         "loc": {
             "name": "Size (LOC)",
@@ -91,7 +103,9 @@
                 "sonarqube",
                 "random"
             ],
-            "tags": ["size"]
+            "tags": [
+                "size"
+            ]
         },
         "tests": {
             "name": "Number of tests",
@@ -105,7 +119,9 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["test"]
+            "tags": [
+                "test"
+            ]
         },
         "failed_tests": {
             "name": "Number of failed tests",
@@ -120,7 +136,9 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["test"]
+            "tags": [
+                "test"
+            ]
         },
         "violations": {
             "name": "Number of violations",
@@ -134,7 +152,9 @@
                 "random",
                 "sonarqube"
             ],
-            "tags": ["violation"]
+            "tags": [
+                "violation"
+            ]
         }
     },
     "sources": {
@@ -148,8 +168,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
-                        "failed_jobs"
+                        "failed_jobs",
+                        "jobs"
                     ]
                 },
                 "project": {
@@ -157,8 +177,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
-                        "failed_jobs"
+                        "failed_jobs",
+                        "jobs"
                     ]
                 },
                 "private_token": {
@@ -167,8 +187,8 @@
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
-                        "failed_jobs"
+                        "failed_jobs",
+                        "jobs"
                     ]
                 }
             },
@@ -218,9 +238,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
                         "uncovered_lines",
-                        "covered_branches",
                         "uncovered_branches"
                     ]
                 }
@@ -237,7 +255,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
                         "failed_jobs",
                         "unused_jobs"
                     ]
@@ -316,7 +333,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "tests",
                         "failed_tests"
                     ]
                 },
@@ -409,7 +425,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "tests",
                         "failed_tests"
                     ]
                 },
@@ -507,13 +522,10 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
                         "uncovered_lines",
-                        "covered_branches",
                         "uncovered_branches",
                         "ncloc",
                         "loc",
-                        "tests",
                         "failed_tests",
                         "violations"
                     ]
@@ -523,13 +535,10 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
                         "uncovered_lines",
-                        "covered_branches",
                         "uncovered_branches",
                         "ncloc",
                         "loc",
-                        "tests",
                         "failed_tests",
                         "violations"
                     ]

@@ -77,7 +77,7 @@ class Measurement extends Component {
             {metric.comment}
           </Table.Cell>
           <Table.Cell>
-            {metric.tags.map((tag) => <Label tag color="blue">{tag}</Label>)}
+            {metric.tags.map((tag) => <Label key={tag} tag color="blue">{tag}</Label>)}
           </Table.Cell>
         </Table.Row>
         {this.state.show_details &&

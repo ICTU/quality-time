@@ -25,7 +25,6 @@ class Metric extends Component {
       })
   }
   set_metric_attribute(attribute, value) {
-    console.log(attribute,value)
     const self = this;
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
       method: 'post',

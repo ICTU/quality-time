@@ -11,6 +11,9 @@ import { MultipleChoiceParameterAddition} from './MultipleChoiceParameterAdditio
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_unit = props.metric.unit || metric_type.unit;
+    let tags = new Set();
+    Object.values(props.datamodel.metrics).forEach((metric) => {metric.tags.forEach((tag) => tags.add(tag))});
+    props.metric.tags.forEach((tag) => tags.add(tag));
     return (
         <>
             <Header>
@@ -83,17 +86,14 @@ function MetricParameters(props) {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={3}>
-                <   Grid.Column>
+                    <Grid.Column>
                         <MultipleChoiceParameterAddition
-                            direction={metric_type.direction}
                             label="Tags"
-                            parameter_values = {metric_type.tags}
-                            parameter_value = {props.metric.tags}
-                            parameter_key = "tags"
+                            parameter_values={[...tags]}
+                            parameter_value={props.metric.tags}
+                            parameter_key="tags"
                             readOnly={props.readOnly}
                             set_parameter={props.set_metric_attribute}
-                            target={props.metric.debt_target}
-                            unit={metric_unit}
                         />
                     </Grid.Column>
                 </Grid.Row>
