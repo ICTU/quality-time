@@ -24,12 +24,14 @@ function Dashboard(props) {
     const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
         <MetricSummaryCard key={tag} title={<Tag tag={tag}/>}
             red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
+    const subject_cards_per_row = Math.min(Math.max(subject_cards.length, 5), 7);
+    const tag_cards_per_row = Math.min(Math.max(tag_cards.length, 8), 10);
     return (
         <>
-            <Card.Group itemsPerRow={5}>
+            <Card.Group doubling stackable itemsPerRow={subject_cards_per_row}>
                 {subject_cards}
             </Card.Group>
-            <Card.Group itemsPerRow={10}>
+            <Card.Group itemsPerRow={tag_cards_per_row}>
                 {tag_cards}
             </Card.Group>
         </>
