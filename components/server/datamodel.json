@@ -12,7 +12,6 @@
                 "random"
             ],
             "tags": [
-                "coverage",
                 "test"
             ]
         },
@@ -28,7 +27,6 @@
                 "random"
             ],
             "tags": [
-                "coverage",
                 "test"
             ]
         },
@@ -153,7 +151,7 @@
                 "sonarqube"
             ],
             "tags": [
-                "violation"
+                "maintainability"
             ]
         }
     },
