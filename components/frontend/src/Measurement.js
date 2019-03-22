@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Icon, Label, Table, Popup } from 'semantic-ui-react';
+import { Icon, Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
 import { MeasurementDetails } from './MeasurementDetails';
+import { Tag } from './MetricTag';
 
 class Measurement extends Component {
   constructor(props) {
@@ -77,7 +78,7 @@ class Measurement extends Component {
             {metric.comment}
           </Table.Cell>
           <Table.Cell>
-            {metric.tags.map((tag) => <Label key={tag} tag color="blue">{tag}</Label>)}
+            {metric.tags.map((tag) => <Tag key={tag} tag={tag}/>)}
           </Table.Cell>
         </Table.Row>
         {this.state.show_details &&

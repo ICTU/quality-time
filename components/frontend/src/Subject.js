@@ -56,7 +56,7 @@ class Subject extends Component {
           {!this.props.readOnly &&
             <Table.Footer>
               <Table.Row>
-                <Table.HeaderCell colSpan='8'>
+                <Table.HeaderCell colSpan='9'>
                   <Button floated='left' icon primary basic onClick={(e) => this.onAddMetric(e)}>
                     <Icon name='plus' /> Add metric
                 </Button>

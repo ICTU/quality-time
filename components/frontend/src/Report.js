@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Button, Card, Icon, Segment } from 'semantic-ui-react';
 import { StatusPieChart } from './StatusPieChart';
 import { Subjects } from './Subjects.js';
+import { Tag } from './MetricTag.js';
 
-function SubjectCard(props) {
+function MetricSummaryCard(props) {
     const nr_metrics = props.red + props.green + props.yellow + props.grey;
     return (
         <Card>
@@ -17,14 +18,21 @@ function SubjectCard(props) {
 }
 
 function Dashboard(props) {
-    const cards = Object.entries(props.report.subjects).map(([subject_uuid, subject]) =>
-        <SubjectCard key={subject_uuid} title={subject.title}
-            red={subject.summary.red} green={subject.summary.green}
-            yellow={subject.summary.yellow} grey={subject.summary.grey} />);
+    const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
+        <MetricSummaryCard key={subject_uuid} title={props.report.subjects[subject_uuid].title}
+            red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
+    const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
+        <MetricSummaryCard key={tag} title={<Tag tag={tag}/>}
+            red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
     return (
-        <Card.Group itemsPerRow={6}>
-            {cards}
-        </Card.Group>
+        <>
+            <Card.Group itemsPerRow={5}>
+                {subject_cards}
+            </Card.Group>
+            <Card.Group itemsPerRow={10}>
+                {tag_cards}
+            </Card.Group>
+        </>
     )
 }
 

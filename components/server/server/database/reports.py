@@ -24,29 +24,21 @@ def latest_reports(max_iso_timestamp: str, database):
 def summarize_report(report, database) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import latest_measurement  # Prevent circular import
-    total_red, total_green, total_yellow, total_grey = 0, 0, 0, 0
-    for subject in report.get("subjects", {}).values():
-        red, green, yellow, grey = 0, 0, 0, 0
-        for metric_uuid in subject.get("metrics", {}).keys():
+    status_color_mapping = dict(target_met="green", debt_target_met="grey", target_not_met="red")
+    summary = dict(red=0, green=0, yellow=0, grey=0)
+    summary_by_subject = dict()
+    summary_by_tag = dict()
+    for subject_uuid, subject in report.get("subjects", {}).items():
+        for metric_uuid, metric in subject.get("metrics", {}).items():
             latest = latest_measurement(metric_uuid, database)
-            if latest:
-                if latest["value"] is None:
-                    yellow += 1
-                    total_yellow += 1
-                elif latest["status"] == "target_met":
-                    green += 1
-                    total_green += 1
-                elif latest["status"] == "debt_target_met":
-                    grey += 1
-                    total_grey += 1
-                else:
-                    red += 1
-                    total_red += 1
-            else:
-                yellow += 1
-                total_yellow += 1
-        subject["summary"] = dict(red=red, green=green, yellow=yellow, grey=grey)
-    report["summary"] = dict(red=total_red, green=total_green, yellow=total_yellow, grey=total_grey)
+            color = status_color_mapping.get(latest["status"], "yellow") if latest else "yellow"
+            summary[color] += 1
+            summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0))[color] += 1
+            for tag in metric["tags"]:
+                summary_by_tag.setdefault(tag, dict(red=0, green=0, yellow=0, grey=0))[color] += 1
+    report["summary"] = summary
+    report["summary_by_subject"] = summary_by_subject
+    report["summary_by_tag"] = summary_by_tag
 
 
 def latest_report(report_uuid: str, database):
