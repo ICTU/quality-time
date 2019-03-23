@@ -48,6 +48,7 @@ Implemented features so far include:
 - The possibility to use HQ as a metric source.
 - Simple/naive LDAP-integration.
 - Generic false-positive management.
+- Metric tags can be used to summarize metrics with the same tag across subjects, e.g. to summarize all security metrics.
 
 For more plans, see the issue tracker.
 
@@ -97,6 +98,8 @@ Open four terminals. In the first one, run the standard containers with docker-c
 docker-compose up database ldap mongo-express
 ```
 
+Mongo-express is served at [http://localhost:8081](http://localhost:8081).
+
 In the second one, run the server:
 
 ```console
@@ -122,6 +125,7 @@ quality-time-collector
 In the fourth one, run the frontend:
 
 ```console
+cd components/frontend
 npm run install
 npm run start
 ```
