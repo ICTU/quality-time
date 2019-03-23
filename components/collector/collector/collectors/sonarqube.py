@@ -9,13 +9,19 @@ from collector.type import URL, Units, Value
 
 
 class SonarQubeViolations(Collector):
-    """SonarQube violations collector."""
+    """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
     def landing_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&resolved=false")
+        url = super().landing_url(**parameters)
+        component = parameters.get("component")
+        landing_url = f"{url}/project/issues?id={component}&resolved=false"
+        rules = parameters.get("rules")
+        if rules:
+            landing_url += f"&rules={','.join(rules)}"
+        return URL(landing_url)
 
     def api_url(self, **parameters) -> URL:
-        url = parameters.get("url")
+        url = super().api_url(**parameters)
         component = parameters.get("component")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "units" sent to the server anyway (that limit is 100 currently).
@@ -26,6 +32,9 @@ class SonarQubeViolations(Collector):
         types = ",".join([violation_type.upper() for violation_type in parameters.get("types", [])])
         if types:
             api += f"&types={types}"
+        rules = parameters.get("rules")
+        if rules:
+            api += f"&rules={','.join(rules)}"
         return URL(api)
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
@@ -34,16 +43,21 @@ class SonarQubeViolations(Collector):
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         return [dict(
             key=unit["key"],
-            url=self.unit_landing_url(unit, **parameters),
+            url=self.unit_landing_url(unit["key"], **parameters),
             message=unit["message"],
             severity=unit["severity"].lower(),
             type=unit["type"].lower(),
             component=unit["component"]) for unit in response.json()["issues"]]
 
-    @staticmethod
-    def unit_landing_url(unit, **parameters):
+    def unit_landing_url(self, unit_key, **parameters):
         """Generate a landing url for the unit."""
-        return URL(f"{parameters.get('url')}/project/issues?id={parameters.get('component')}&open={unit['key']}")
+        url = super().landing_url(**parameters)
+        component = parameters.get("component")
+        return URL(f"{url}/project/issues?id={component}&issues={unit_key}&open={unit_key}")
+
+
+class SonarQubeLongUnits(SonarQubeViolations):
+    """SonarQube long methods collector."""
 
 
 class SonarQubeMetricsBaseClass(Collector):

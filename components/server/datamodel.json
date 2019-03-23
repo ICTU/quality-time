@@ -60,7 +60,22 @@
                 "random"
             ],
             "tags": [
-                "size"
+                "maintainability"
+            ]
+        },
+        "long_units": {
+            "name": "Number of long units",
+            "description": "Measure the number of units (functions, methods, files) that are too long.",
+            "unit": "long units",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
             ]
         },
         "ncloc": {
@@ -74,7 +89,7 @@
                 "random"
             ],
             "tags": [
-                "size"
+                "maintainability"
             ]
         },
         "tests": {
@@ -577,6 +592,7 @@
                     "metrics": [
                         "failed_tests",
                         "loc",
+                        "long_units",
                         "ncloc",
                         "tests",
                         "uncovered_branches",
@@ -591,11 +607,58 @@
                     "metrics": [
                         "failed_tests",
                         "loc",
+                        "long_units",
                         "ncloc",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
                         "violations"
+                    ]
+                },
+                "rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "csharpsquid:S104",
+                        "csharpsquid:S138",
+                        "csharpsquid:S1151",
+                        "javascript:S104",
+                        "javascript:S138",
+                        "Pylint:R0915",
+                        "python:S104",
+                        "squid:S104",
+                        "squid:S138",
+                        "squid:S2972",
+                        "typescript:S104",
+                        "typescript:S138",
+                        "vbnet:S104",
+                        "vbnet:S138",
+                        "vbnet:S1151",
+                        "Web:FileLengthCheck",
+                        "Web:LongJavaScriptCheck"
+                    ],
+                    "values": [
+                        "csharpsquid:S104",
+                        "csharpsquid:S138",
+                        "csharpsquid:S1151",
+                        "javascript:S104",
+                        "javascript:S138",
+                        "Pylint:R0915",
+                        "python:S104",
+                        "squid:S104",
+                        "squid:S138",
+                        "squid:S2972",
+                        "typescript:S104",
+                        "typescript:S138",
+                        "vbnet:S104",
+                        "vbnet:S138",
+                        "vbnet:S1151",
+                        "Web:FileLengthCheck",
+                        "Web:LongJavaScriptCheck"
+                    ],
+                    "metrics": [
+                        "long_units"
                     ]
                 },
                 "severities": {
@@ -631,6 +694,25 @@
                 }
             },
             "units": {
+                "long_units": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ],
                 "violations": [
                     {
                         "name": "Message",
