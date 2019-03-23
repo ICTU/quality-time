@@ -6,7 +6,7 @@ import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringInput } from './fields/StringInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
-import { MultipleChoiceInputWithAddition } from './fields/MultipleChoiceInputWithAddition';
+import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -84,7 +84,8 @@ function MetricParameters(props) {
                 </Grid.Row>
                 <Grid.Row columns={3}>
                     <Grid.Column>
-                        <MultipleChoiceInputWithAddition
+                        <MultipleChoiceInput
+                            allowAddition
                             label="Tags"
                             options={[...tags]}
                             readOnly={props.readOnly}
