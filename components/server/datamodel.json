@@ -166,8 +166,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs",
-                        "jobs"
+                        "failed_jobs"
                     ]
                 },
                 "project": {
@@ -175,8 +174,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs",
-                        "jobs"
+                        "failed_jobs"
                     ]
                 },
                 "private_token": {
@@ -185,8 +183,7 @@
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs",
-                        "jobs"
+                        "failed_jobs"
                     ]
                 }
             },
@@ -206,6 +203,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -219,6 +217,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -331,7 +330,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "failed_tests"
+                        "failed_tests",
+                        "tests"
                     ]
                 },
                 "failure_type": {
@@ -423,7 +423,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "failed_tests"
+                        "failed_tests",
+                        "tests"
                     ]
                 },
                 "failure_type": {
@@ -520,11 +521,12 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
-                        "uncovered_branches",
-                        "ncloc",
-                        "loc",
                         "failed_tests",
+                        "loc",
+                        "ncloc",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
                         "violations"
                     ]
                 },
@@ -533,11 +535,12 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "uncovered_lines",
-                        "uncovered_branches",
-                        "ncloc",
-                        "loc",
                         "failed_tests",
+                        "loc",
+                        "ncloc",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
                         "violations"
                     ]
                 },
