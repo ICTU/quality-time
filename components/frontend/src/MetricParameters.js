@@ -6,7 +6,7 @@ import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringInput } from './fields/StringInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
-import { MultipleChoiceParameterAddition} from './MultipleChoiceParameterAddition';
+import { MultipleChoiceInputWithAddition } from './fields/MultipleChoiceInputWithAddition';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -84,13 +84,12 @@ function MetricParameters(props) {
                 </Grid.Row>
                 <Grid.Row columns={3}>
                     <Grid.Column>
-                        <MultipleChoiceParameterAddition
+                        <MultipleChoiceInputWithAddition
                             label="Tags"
-                            parameter_values={[...tags]}
-                            parameter_value={props.metric.tags}
-                            parameter_key="tags"
+                            options={[...tags]}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("tags", value)}
+                            value={props.metric.tags}
                         />
                     </Grid.Column>
                 </Grid.Row>

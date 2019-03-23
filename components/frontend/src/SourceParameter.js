@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
-import { MultipleChoiceParameter } from './MultipleChoiceParameter.js';
+import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 import { Input } from './fields/Input';
 
 class SourceParameter extends Component {
@@ -96,13 +96,12 @@ class SourceParameter extends Component {
       )
     }
     return (
-      <MultipleChoiceParameter
+      <MultipleChoiceInput
         label={label}
-        parameter_key={this.props.parameter_key}
-        parameter_value={this.props.parameter_value}
-        parameter_values={this.props.parameter_values}
+        options={this.props.parameter_values}
         readOnly={this.props.readOnly}
-        set_parameter={(key, value) => this.set_source_parameter(key, value)}
+        set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+        value={this.props.parameter_value}
       />
     )
   }

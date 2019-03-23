@@ -37,7 +37,7 @@ class StringInputWithSuggestions extends Component {
     return (
       <Form>
         <Form.Dropdown
-          {...props}
+          {...this.props}
           allowAdditions
           clearable
           fluid
