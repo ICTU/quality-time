@@ -4,7 +4,7 @@ import { MetricComment } from './MetricComment';
 import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
-import { StringParameter } from './StringParameter';
+import { StringInput } from './fields/StringInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
 import { MultipleChoiceParameterAddition} from './MultipleChoiceParameterAddition';
 
@@ -35,23 +35,21 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <StringParameter
+                        <StringInput
                             label="Metric name"
-                            parameter_key="name"
-                            parameter_value={props.metric.name}
                             placeholder={metric_type.name}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("name", value)}
+                            value={props.metric.name}
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <StringParameter
+                        <StringInput
                             label="Metric unit"
-                            parameter_key="unit"
-                            parameter_value={props.metric.unit}
                             placeholder={metric_type.unit}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("unit", value)}
+                            value={props.metric.unit}
                         />
                     </Grid.Column>
                 </Grid.Row>

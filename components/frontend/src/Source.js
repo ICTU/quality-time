@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Grid, Header, Icon, Image, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
-import { StringParameter } from './StringParameter';
+import { StringInput } from './fields/StringInput';
 
 import AzureDevops from './logos/azure_devops.png';
 import Gitlab from './logos/gitlab.png';
@@ -72,13 +72,12 @@ class Source extends Component {
                                 set_source_attribute={(a, v) => this.set_source_attribute(a, v)} />
                         </Grid.Column>
                         <Grid.Column>
-                            <StringParameter
+                            <StringInput
                                 label="Source name"
-                                parameter_key="name"
-                                parameter_value={props.source.name}
                                 placeholder={source_type.name}
                                 readOnly={props.readOnly}
-                                set_parameter={(a, v) => this.set_source_attribute(a, v)}
+                                set_value={(value) => this.set_source_attribute("name", value)}
+                                value={props.source.name}
                             />
                         </Grid.Column>
                         <SourceParameters

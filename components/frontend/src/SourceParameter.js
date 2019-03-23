@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Icon } from 'semantic-ui-react';
-import { StringParameter } from './StringParameter.js';
+import { StringInput } from './fields/StringInput';
 import { MultipleChoiceParameter } from './MultipleChoiceParameter.js';
 import { Input } from './fields/Input';
 
@@ -60,14 +60,13 @@ class SourceParameter extends Component {
       this.props.parameter_name;
     if (this.props.parameter_type === "string") {
       return (
-        <StringParameter
+        <StringInput
           label={label}
           options={this.state.options}
-          parameter_key={this.props.parameter_key}
-          parameter_value={this.props.parameter_value}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
-          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          value={this.props.parameter_value}
         />
       )
     };
