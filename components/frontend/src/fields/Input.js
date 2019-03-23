@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Form } from 'semantic-ui-react';
 
-class PasswordParameter extends Component {
+class Input extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_value: this.props.parameter_value }
+    this.state = { edited_value: this.props.value }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.parameter_value !== this.props.parameter_value) {
-      this.setState({ edited_value: this.props.parameter_value })
+    if (prevProps.value !== this.props.value) {
+      this.setState({ edited_value: this.props.value })
     }
   }
   onChange(event) {
@@ -16,29 +16,26 @@ class PasswordParameter extends Component {
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
-      this.setState({ edited_value: this.props.parameter_value })
+      this.setState({ edited_value: this.props.value })
     }
   }
   onSubmit(event) {
     event.preventDefault();
-    if (this.state.edited_value !== this.props.parameter_value) {
-      this.props.set_parameter(this.props.parameter_key, this.state.edited_value);
+    if (this.state.edited_value !== this.props.value) {
+      this.props.set_value(this.state.edited_value);
     }
   }
   render() {
     return (
       <Form>
         <Form.Input
+          {...this.props}
           fluid
           focus
-          label={this.props.label}
           onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)}
           onKeyDown={(e) => this.onKeyDown(e)}
           onSubmit={(e) => this.onSubmit(e)}
-          placeholder={this.props.placeholder}
-          readOnly={this.props.readOnly}
-          type="password"
           value={this.state.edited_value || ""}
         />
       </Form>
@@ -46,4 +43,4 @@ class PasswordParameter extends Component {
   }
 }
 
-export { PasswordParameter };
+export { Input };

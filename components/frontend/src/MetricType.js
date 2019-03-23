@@ -1,18 +1,17 @@
 import React from 'react';
-import { SingleChoiceParameter } from './SingleChoiceParameter.js';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
 function MetricType(props) {
   let options = [];
   Object.keys(props.datamodel.metrics).forEach(
     (key) => { options.push({ text: props.datamodel.metrics[key].name, value: key }) });
   return (
-    <SingleChoiceParameter
+    <SingleChoiceInput
       label="Metric type"
-      parameter_key="type"
-      parameter_value={props.metric_type}
-      parameter_values={options}
+      options={options}
       readOnly={props.readOnly}
-      set_parameter={props.set_metric_attribute}
+      set_value={(value) => props.set_metric_attribute("type", value)}
+      value={props.metric_type}
     />
   )
 }

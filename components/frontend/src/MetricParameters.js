@@ -5,7 +5,7 @@ import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringParameter } from './StringParameter';
-import { SingleChoiceParameter } from './SingleChoiceParameter';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 import { MultipleChoiceParameterAddition} from './MultipleChoiceParameterAddition';
 
 function MetricParameters(props) {
@@ -66,13 +66,12 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <SingleChoiceParameter
+                        <SingleChoiceInput
                             label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
-                            parameter_key="accept_debt"
-                            parameter_value={props.metric.accept_debt}
-                            parameter_values={[{ text: "Yes", value: true }, { text: "No", value: false }]}
+                            value={props.metric.accept_debt}
+                            options={[{ text: "Yes", value: true }, { text: "No", value: false }]}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("accept_debt", value)}
                         />
                     </Grid.Column>
                     <Grid.Column>
