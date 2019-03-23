@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Icon } from 'semantic-ui-react';
-import { IntegerParameter } from './IntegerParameter.js';
-import { StringParameter } from './StringParameter.js';
-import { MultipleChoiceParameter } from './MultipleChoiceParameter.js';
-import { PasswordParameter } from './PasswordParameter.js';
+import { StringInput } from './fields/StringInput';
+import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
+import { Input } from './fields/Input';
 
 class SourceParameter extends Component {
   constructor(props) {
@@ -61,49 +60,48 @@ class SourceParameter extends Component {
       this.props.parameter_name;
     if (this.props.parameter_type === "string") {
       return (
-        <StringParameter
+        <StringInput
           label={label}
           options={this.state.options}
-          parameter_key={this.props.parameter_key}
-          parameter_value={this.props.parameter_value}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
-          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          value={this.props.parameter_value}
         />
       )
     };
     if (this.props.parameter_type === "password") {
       return (
-        <PasswordParameter
+        <Input
           label={label}
-          parameter_key={this.props.parameter_key}
-          parameter_value={this.props.parameter_value}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
-          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          type="password"
+          value={this.props.parameter_value}
         />
       )
     }
     if (this.props.parameter_type === "integer") {
       return (
-        <IntegerParameter
+        <Input
           label={label}
-          parameter_key={this.props.parameter_key}
-          parameter_value={this.props.parameter_value}
+          min="0"
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
-          set_parameter={(key, value) => this.set_source_parameter(key, value)}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          type="number"
+          value={this.props.parameter_value}
         />
       )
     }
     return (
-      <MultipleChoiceParameter
+      <MultipleChoiceInput
         label={label}
-        parameter_key={this.props.parameter_key}
-        parameter_value={this.props.parameter_value}
-        parameter_values={this.props.parameter_values}
+        options={this.props.parameter_values}
         readOnly={this.props.readOnly}
-        set_parameter={(key, value) => this.set_source_parameter(key, value)}
+        set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+        value={this.props.parameter_value}
       />
     )
   }

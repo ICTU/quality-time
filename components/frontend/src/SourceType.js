@@ -1,18 +1,17 @@
 import React from 'react';
-import { SingleChoiceParameter } from './SingleChoiceParameter.js';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
 function SourceType(props) {
   let options = [];
   props.datamodel.metrics[props.metric_type].sources.forEach(
-    (key) => { options.push({ text: props.datamodel.sources[key].name, value: key }) });
+    (key) => { options.push({ key: key, text: props.datamodel.sources[key].name, value: key }) });
   return (
-    <SingleChoiceParameter
+    <SingleChoiceInput
       label="Source type"
-      parameter_key="type"
-      parameter_value={props.source_type}
-      parameter_values={options}
+      options={options}
       readOnly={props.readOnly}
-      set_parameter={props.set_source_attribute}
+      set_value={(value) => props.set_source_attribute("type", value)}
+      value={props.source_type}
     />
   )
 }

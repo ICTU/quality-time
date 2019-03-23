@@ -4,6 +4,7 @@ import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
 import { MeasurementDetails } from './MeasurementDetails';
+import { Tag } from './MetricTag';
 
 class Measurement extends Component {
   constructor(props) {
@@ -75,6 +76,9 @@ class Measurement extends Component {
           </Table.Cell>
           <Table.Cell>
             {metric.comment}
+          </Table.Cell>
+          <Table.Cell>
+            {metric.tags.map((tag) => <Tag key={tag} tag={tag}/>)}
           </Table.Cell>
         </Table.Row>
         {this.state.show_details &&

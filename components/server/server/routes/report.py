@@ -82,12 +82,13 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database):
     """Add a new metric."""
     report = latest_report(report_uuid, database)
     subject = report["subjects"][subject_uuid]
-    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"]
-    metric_type = list(metric_types.keys())[0]
-    default_target = metric_types[metric_type]["default_target"]
+    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"] # {"violations": {...}, "size": {...}}
+    metric_type = list(metric_types.keys())[0]  # metric_types.keys()[0] = ["violations", "size", ...][0] == "violations"
+    default_target = metric_types[metric_type]["default_target"]  # {"violations": {"default_target": 0, ...}}
+    default_tags = metric_types[metric_type]["tags"]
     subject["metrics"][uuid()] = dict(
         type=metric_type, sources={}, report_uuid=report_uuid, name=None, unit=None,
-        target=default_target, accept_debt=False, debt_target=None)
+        target=default_target, accept_debt=False, debt_target=None, tags=default_tags)
     return insert_new_report(report, database)
 
 

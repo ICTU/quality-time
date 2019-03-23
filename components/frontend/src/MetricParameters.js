@@ -4,12 +4,16 @@ import { MetricComment } from './MetricComment';
 import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
-import { StringParameter } from './StringParameter';
-import { SingleChoiceParameter } from './SingleChoiceParameter';
+import { StringInput } from './fields/StringInput';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
+import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_unit = props.metric.unit || metric_type.unit;
+    let tags = new Set();
+    Object.values(props.datamodel.metrics).forEach((metric) => {metric.tags.forEach((tag) => tags.add(tag))});
+    props.metric.tags.forEach((tag) => tags.add(tag));
     return (
         <>
             <Header>
@@ -31,23 +35,21 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <StringParameter
+                        <StringInput
                             label="Metric name"
-                            parameter_key="name"
-                            parameter_value={props.metric.name}
                             placeholder={metric_type.name}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("name", value)}
+                            value={props.metric.name}
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <StringParameter
+                        <StringInput
                             label="Metric unit"
-                            parameter_key="unit"
-                            parameter_value={props.metric.unit}
                             placeholder={metric_type.unit}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("unit", value)}
+                            value={props.metric.unit}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -62,13 +64,14 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <SingleChoiceParameter
+                        <SingleChoiceInput
                             label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
-                            parameter_key="accept_debt"
-                            parameter_value={props.metric.accept_debt}
-                            parameter_values={[{ text: "Yes", value: true }, { text: "No", value: false }]}
+                            value={props.metric.accept_debt}
+                            options={[
+                                { key: true, text: "Yes", value: true },
+                                { key: false, text: "No", value: false }]}
                             readOnly={props.readOnly}
-                            set_parameter={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("accept_debt", value)}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -78,6 +81,18 @@ function MetricParameters(props) {
                             set_metric_attribute={props.set_metric_attribute}
                             target={props.metric.debt_target}
                             unit={metric_unit}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
+                    <Grid.Column>
+                        <MultipleChoiceInput
+                            allowAdditions
+                            label="Tags"
+                            options={[...tags]}
+                            readOnly={props.readOnly}
+                            set_value={(value) => props.set_metric_attribute("tags", value)}
+                            value={props.metric.tags}
                         />
                     </Grid.Column>
                 </Grid.Row>

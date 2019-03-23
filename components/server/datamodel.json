@@ -12,8 +12,7 @@
                 "random"
             ],
             "tags": [
-                "test",
-                "coverage"
+                "test"
             ]
         },
         "uncovered_branches": {
@@ -26,6 +25,9 @@
                 "jacoco",
                 "sonarqube",
                 "random"
+            ],
+            "tags": [
+                "test"
             ]
         },
         "failed_jobs": {
@@ -39,6 +41,9 @@
                 "jenkins",
                 "gitlab",
                 "random"
+            ],
+            "tags": [
+                "ci"
             ]
         },
         "unused_jobs": {
@@ -51,6 +56,9 @@
                 "hq",
                 "jenkins",
                 "random"
+            ],
+            "tags": [
+                "ci"
             ]
         },
         "issues": {
@@ -63,8 +71,10 @@
                 "hq",
                 "jira",
                 "random",
-                "azure_devops"
-            ]
+                "azure_devops",
+                "random"
+            ],
+            "tags": []
         },
         "ncloc": {
             "name": "Size (non-commented LOC)",
@@ -75,6 +85,9 @@
             "sources": [
                 "sonarqube",
                 "random"
+            ],
+            "tags": [
+                "size"
             ]
         },
         "loc": {
@@ -87,6 +100,9 @@
                 "hq",
                 "sonarqube",
                 "random"
+            ],
+            "tags": [
+                "size"
             ]
         },
         "tests": {
@@ -100,6 +116,9 @@
                 "junit",
                 "random",
                 "sonarqube"
+            ],
+            "tags": [
+                "test"
             ]
         },
         "failed_tests": {
@@ -114,6 +133,9 @@
                 "hq",
                 "random",
                 "sonarqube"
+            ],
+            "tags": [
+                "test"
             ]
         },
         "violations": {
@@ -127,6 +149,9 @@
                 "ojaudit",
                 "random",
                 "sonarqube"
+            ],
+            "tags": [
+                "maintainability"
             ]
         }
     },
@@ -141,7 +166,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
                         "failed_jobs"
                     ]
                 },
@@ -150,7 +174,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
                         "failed_jobs"
                     ]
                 },
@@ -160,7 +183,6 @@
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
                         "failed_jobs"
                     ]
                 }
@@ -181,6 +203,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -194,6 +217,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -211,9 +235,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
                         "uncovered_lines",
-                        "covered_branches",
                         "uncovered_branches"
                     ]
                 }
@@ -230,7 +252,6 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "jobs",
                         "failed_jobs",
                         "unused_jobs"
                     ]
@@ -309,8 +330,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "tests",
-                        "failed_tests"
+                        "failed_tests",
+                        "tests"
                     ]
                 },
                 "failure_type": {
@@ -402,8 +423,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "tests",
-                        "failed_tests"
+                        "failed_tests",
+                        "tests"
                     ]
                 },
                 "failure_type": {
@@ -500,14 +521,12 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
-                        "uncovered_lines",
-                        "covered_branches",
-                        "uncovered_branches",
-                        "ncloc",
-                        "loc",
-                        "tests",
                         "failed_tests",
+                        "loc",
+                        "ncloc",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
                         "violations"
                     ]
                 },
@@ -516,14 +535,12 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "covered_lines",
-                        "uncovered_lines",
-                        "covered_branches",
-                        "uncovered_branches",
-                        "ncloc",
-                        "loc",
-                        "tests",
                         "failed_tests",
+                        "loc",
+                        "ncloc",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
                         "violations"
                     ]
                 },

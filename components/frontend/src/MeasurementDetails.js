@@ -66,7 +66,7 @@ class MeasurementDetails extends Component {
     }
     return (
       <Table.Row>
-        <Table.Cell colSpan="8">
+        <Table.Cell colSpan="9">
           <Tab panes={panes} />
           {!props.readOnly &&
             <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary

@@ -36,7 +36,7 @@ class Reports extends Component {
   render() {
     return (
       <>
-        <Card.Group itemsPerRow={6}>
+        <Card.Group doubling stackable itemsPerRow={5}>
           {this.props.reports.map((report) =>
             <ReportCard key={report.report_uuid} report={report} open_report={this.props.open_report} />)
           }
