@@ -4,7 +4,7 @@ import { SingleChoiceInput } from './fields/SingleChoiceInput';
 function MetricType(props) {
   let options = [];
   Object.keys(props.datamodel.metrics).forEach(
-    (key) => { options.push({ text: props.datamodel.metrics[key].name, value: key }) });
+    (key) => { options.push({ key: key, text: props.datamodel.metrics[key].name, value: key }) });
   return (
     <SingleChoiceInput
       label="Metric type"

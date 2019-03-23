@@ -67,7 +67,9 @@ function MetricParameters(props) {
                         <SingleChoiceInput
                             label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
                             value={props.metric.accept_debt}
-                            options={[{ text: "Yes", value: true }, { text: "No", value: false }]}
+                            options={[
+                                { key: true, text: "Yes", value: true },
+                                { key: false, text: "No", value: false }]}
                             readOnly={props.readOnly}
                             set_value={(value) => props.set_metric_attribute("accept_debt", value)}
                         />
@@ -85,7 +87,7 @@ function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <MultipleChoiceInput
-                            allowAddition
+                            allowAdditions
                             label="Tags"
                             options={[...tags]}
                             readOnly={props.readOnly}

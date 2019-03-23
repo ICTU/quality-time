@@ -19,7 +19,7 @@ class SingleChoiceInput extends Component {
     }
   }
   render() {
-    const value_text = this.props.options.filter(({text, value}) => value === this.props.value)[0].text;
+    const value_text = this.props.options.filter(({ value }) => value === this.props.value)[0].text;
     return (
       <Form>
         {this.props.readOnly ?

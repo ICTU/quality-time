@@ -4,7 +4,7 @@ import { SingleChoiceInput } from './fields/SingleChoiceInput';
 function SourceType(props) {
   let options = [];
   props.datamodel.metrics[props.metric_type].sources.forEach(
-    (key) => { options.push({ text: props.datamodel.sources[key].name, value: key }) });
+    (key) => { options.push({ key: key, text: props.datamodel.sources[key].name, value: key }) });
   return (
     <SingleChoiceInput
       label="Source type"

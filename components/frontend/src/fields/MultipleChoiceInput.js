@@ -20,7 +20,7 @@ class MultipleChoiceInput extends Component {
   handleAddition = (event, { value }) => {
     event.preventDefault();
     this.setState({
-      options: [{ text: value, value }, ...this.state.options],
+      options: [{ key: value, text: value, value: value }, ...this.state.options],
     })
   }
   onSubmit(event, value) {
@@ -31,7 +31,7 @@ class MultipleChoiceInput extends Component {
   }
   render() {
     return (
-      <Form >
+      <Form>
         {this.props.readOnly ?
           <Form.Input
             {...this.props}
@@ -44,8 +44,8 @@ class MultipleChoiceInput extends Component {
             onAddItem={this.handleAddition}
             onChange={(e, { value }) => this.onSubmit(e, value)}
             options={this.state.options}
-            selection
             search
+            selection
             value={this.state.value || []}
           />
         }
