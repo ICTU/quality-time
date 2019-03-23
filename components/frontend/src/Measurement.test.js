@@ -13,6 +13,7 @@ it('renders without crashing', () => {
             metrics: {
               metric_uuid: {
                 accept_debt: false,
+                tags: [],
                 type: "violations"
               }
             }
