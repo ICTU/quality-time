@@ -46,9 +46,9 @@ class SonarQubeTest(unittest.TestCase):
         self.assertEqual(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",
-                     url="http://sonar/project/issues?id=id&open=a"),
+                     url="http://sonar/project/issues?id=id&issues=a&open=a"),
                 dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                     url="http://sonar/project/issues?id=id&open=b")
+                     url="http://sonar/project/issues?id=id&issues=b&open=b")
             ],
             response["sources"][0]["units"])
         self.assertEqual("2", response["sources"][0]["value"])
@@ -79,3 +79,12 @@ class SonarQubeTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("10", response["sources"][0]["value"])
+
+    def test_long_units(self):
+        """Test that the number of long units is returned."""
+        self.sources["a"]["parameters"]["rules"] = ["rule1"]
+        self.mock_response.json.return_value = dict(total="2", issues=[])
+        metric = dict(type="long_units", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual("2", response["sources"][0]["value"])
