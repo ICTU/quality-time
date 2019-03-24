@@ -95,6 +95,19 @@ class SourceParameter extends Component {
         />
       )
     }
+    if (this.props.parameter_type === "multiple_choice_with_addition") {
+      return (
+        <MultipleChoiceInput
+          allowAdditions
+          label={label}
+          options={this.props.parameter_values}
+          placeholder={this.props.placeholder}
+          readOnly={this.props.readOnly}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          value={this.props.parameter_value}
+        />
+      )
+    }
     return (
       <MultipleChoiceInput
         label={label}

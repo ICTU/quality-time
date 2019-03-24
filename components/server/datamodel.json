@@ -1,15 +1,108 @@
 {
     "metrics": {
-        "uncovered_lines": {
-            "name": "Test line coverage",
-            "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
-            "unit": "uncovered lines",
+        "failed_jobs": {
+            "name": "Number of failed CI-jobs",
+            "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
+            "unit": "CI-jobs",
             "direction": "<=",
             "default_target": "0",
             "sources": [
-                "jacoco",
+                "hq",
+                "jenkins",
+                "gitlab",
+                "random"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
+        "failed_tests": {
+            "name": "Number of failed tests",
+            "description": "Measure the number of tests that fail.",
+            "unit": "failed tests",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "jenkins_test_report",
+                "junit",
+                "hq",
+                "random",
+                "sonarqube"
+            ],
+            "tags": [
+                "test"
+            ]
+        },
+        "issues": {
+            "name": "Number of issues",
+            "description": "Measure the number of issues.",
+            "unit": "issues",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "hq",
+                "jira",
+                "random",
+                "azure_devops",
+                "random"
+            ],
+            "tags": []
+        },
+        "loc": {
+            "name": "Size (LOC)",
+            "description": "Measure the size of the software in lines of code.",
+            "unit": "lines of code",
+            "direction": "<=",
+            "default_target": "75000",
+            "sources": [
+                "hq",
                 "sonarqube",
                 "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
+        "long_units": {
+            "name": "Number of long units",
+            "description": "Measure the number of units (functions, methods, files) that are too long.",
+            "unit": "long units",
+            "direction": "<=",
+            "default_target": "0",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
+        "ncloc": {
+            "name": "Size (non-commented LOC)",
+            "description": "Measure the size of the software in lines of code, excluding comments.",
+            "unit": "non-commented lines of code",
+            "direction": "<=",
+            "default_target": "50000",
+            "sources": [
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
+        "tests": {
+            "name": "Number of tests",
+            "description": "Measure the size of the test suite.",
+            "unit": "tests",
+            "direction": ">=",
+            "default_target": "0",
+            "sources": [
+                "jenkins_test_report",
+                "junit",
+                "random",
+                "sonarqube"
             ],
             "tags": [
                 "test"
@@ -30,20 +123,19 @@
                 "test"
             ]
         },
-        "failed_jobs": {
-            "name": "Number of failed CI-jobs",
-            "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
-            "unit": "CI-jobs",
+        "uncovered_lines": {
+            "name": "Test line coverage",
+            "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
+            "unit": "uncovered lines",
             "direction": "<=",
             "default_target": "0",
             "sources": [
-                "hq",
-                "jenkins",
-                "gitlab",
+                "jacoco",
+                "sonarqube",
                 "random"
             ],
             "tags": [
-                "ci"
+                "test"
             ]
         },
         "unused_jobs": {
@@ -59,83 +151,6 @@
             ],
             "tags": [
                 "ci"
-            ]
-        },
-        "issues": {
-            "name": "Number of issues",
-            "description": "Measure the number of issues.",
-            "unit": "issues",
-            "direction": "<=",
-            "default_target": "0",
-            "sources": [
-                "hq",
-                "jira",
-                "random",
-                "azure_devops",
-                "random"
-            ],
-            "tags": []
-        },
-        "ncloc": {
-            "name": "Size (non-commented LOC)",
-            "description": "Measure the size of the software in lines of code, excluding comments.",
-            "unit": "non-commented lines of code",
-            "direction": "<=",
-            "default_target": "50000",
-            "sources": [
-                "sonarqube",
-                "random"
-            ],
-            "tags": [
-                "size"
-            ]
-        },
-        "loc": {
-            "name": "Size (LOC)",
-            "description": "Measure the size of the software in lines of code.",
-            "unit": "lines of code",
-            "direction": "<=",
-            "default_target": "75000",
-            "sources": [
-                "hq",
-                "sonarqube",
-                "random"
-            ],
-            "tags": [
-                "size"
-            ]
-        },
-        "tests": {
-            "name": "Number of tests",
-            "description": "Measure the size of the test suite.",
-            "unit": "tests",
-            "direction": ">=",
-            "default_target": "0",
-            "sources": [
-                "jenkins_test_report",
-                "junit",
-                "random",
-                "sonarqube"
-            ],
-            "tags": [
-                "test"
-            ]
-        },
-        "failed_tests": {
-            "name": "Number of failed tests",
-            "description": "Measure the number of tests that fail.",
-            "unit": "failed tests",
-            "direction": "<=",
-            "default_target": "0",
-            "sources": [
-                "jenkins_test_report",
-                "junit",
-                "hq",
-                "random",
-                "sonarqube"
-            ],
-            "tags": [
-                "test"
             ]
         },
         "violations": {
@@ -156,6 +171,60 @@
         }
     },
     "sources": {
+        "azure_devops": {
+            "name": "Azure DevOps Server",
+            "description": "Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.",
+            "url": "https://azure.microsoft.com/en-us/services/devops/server/",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private Token",
+                    "type": "password",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "wiql": {
+                    "name": "Issue query in WIQL (Work Item Query Language)",
+                    "type": "string",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {
+                "issues": [
+                    {
+                        "name": "Project",
+                        "key": "project"
+                    },
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Work item type",
+                        "key": "work_item_type"
+                    },
+                    {
+                        "name": "State",
+                        "key": "state"
+                    }
+                ]
+            }
+        },
         "gitlab": {
             "name": "GitLab",
             "description": "GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines.",
@@ -523,6 +592,7 @@
                     "metrics": [
                         "failed_tests",
                         "loc",
+                        "long_units",
                         "ncloc",
                         "tests",
                         "uncovered_branches",
@@ -537,11 +607,58 @@
                     "metrics": [
                         "failed_tests",
                         "loc",
+                        "long_units",
                         "ncloc",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
                         "violations"
+                    ]
+                },
+                "rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "csharpsquid:S104",
+                        "csharpsquid:S138",
+                        "csharpsquid:S1151",
+                        "javascript:S104",
+                        "javascript:S138",
+                        "Pylint:R0915",
+                        "python:S104",
+                        "squid:S104",
+                        "squid:S138",
+                        "squid:S2972",
+                        "typescript:S104",
+                        "typescript:S138",
+                        "vbnet:S104",
+                        "vbnet:S138",
+                        "vbnet:S1151",
+                        "Web:FileLengthCheck",
+                        "Web:LongJavaScriptCheck"
+                    ],
+                    "values": [
+                        "csharpsquid:S104",
+                        "csharpsquid:S138",
+                        "csharpsquid:S1151",
+                        "javascript:S104",
+                        "javascript:S138",
+                        "Pylint:R0915",
+                        "python:S104",
+                        "squid:S104",
+                        "squid:S138",
+                        "squid:S2972",
+                        "typescript:S104",
+                        "typescript:S138",
+                        "vbnet:S104",
+                        "vbnet:S138",
+                        "vbnet:S1151",
+                        "Web:FileLengthCheck",
+                        "Web:LongJavaScriptCheck"
+                    ],
+                    "metrics": [
+                        "long_units"
                     ]
                 },
                 "severities": {
@@ -577,7 +694,7 @@
                 }
             },
             "units": {
-                "violations": [
+                "long_units": [
                     {
                         "name": "Message",
                         "key": "message"
@@ -595,59 +712,24 @@
                         "key": "component",
                         "url": "url"
                     }
-                ]
-            }
-        },
-        "azure_devops": {
-            "name": "Azure DevOps Server",
-            "description": "Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management.",
-            "url": "https://azure.microsoft.com/en-us/services/devops/server/",
-            "parameters": {
-                "url": {
-                    "name": "URL",
-                    "type": "string",
-                    "default_value": "",
-                    "metrics": [
-                        "issues"
-                    ]
-                },
-                "private_token": {
-                    "name": "Private Token",
-                    "type": "password",
-                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
-                    "default_value": "",
-                    "metrics": [
-                        "issues"
-                    ]
-                },
-                "wiql": {
-                    "name": "Issue query in WIQL (Work Item Query Language)",
-                    "type": "string",
-                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
-                    "default_value": "",
-                    "metrics": [
-                        "issues"
-                    ]
-                }
-            },
-            "units": {
-                "issues": [
+                ],
+                "violations": [
                     {
-                        "name": "Project",
-                        "key": "project"
+                        "name": "Message",
+                        "key": "message"
                     },
                     {
-                        "name": "Title",
-                        "key": "title",
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
                         "url": "url"
-                    },
-                    {
-                        "name": "Work item type",
-                        "key": "work_item_type"
-                    },
-                    {
-                        "name": "State",
-                        "key": "state"
                     }
                 ]
             }

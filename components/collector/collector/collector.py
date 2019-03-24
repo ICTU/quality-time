@@ -53,11 +53,11 @@ class Collector:
 
     def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
         """Translate the urls into the landing urls."""
-        return parameters.get("url", "")
+        return parameters.get("url", "").strip("/")
 
     def api_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
-        return parameters.get("url", "")
+        return parameters.get("url", "").strip("/")
 
     def safely_get_source_response(
             self, api_url: URL, **parameters) -> Tuple[Optional[requests.Response], ErrorMessage]:
