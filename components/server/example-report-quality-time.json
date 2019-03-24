@@ -1,9 +1,9 @@
 {
-    "title": "HQ",
-    "report_uuid": "example-report-hq",
+    "title": "Quality-time",
+    "report_uuid": "example-report-quality-time",
     "subjects": [
         {
-            "title": "HQ",
+            "title": "Quality-time",
             "metrics": [
                 {
                     "type": "tests",
@@ -12,7 +12,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -24,7 +24,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -36,7 +36,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -48,7 +48,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -60,7 +60,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -72,7 +72,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -84,7 +84,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -96,7 +96,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]
@@ -108,7 +108,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "nl.ictu:quality-time"
                             }
                         }
                     ]

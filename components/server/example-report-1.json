@@ -1,8 +1,9 @@
 {
+    "title": "Test",
     "report_uuid": "example-report-1",
     "subjects": [
         {
-            "title": "JUnit and JaCoCo metrics",
+            "title": "JUnit and JaCoCo",
             "metrics": [
                 {
                     "type": "tests",
@@ -57,116 +58,6 @@
                             "parameters": {
                                 "url": "https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml"
                             }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "title": "Next-action",
-            "metrics": [
-                {
-                    "type": "tests",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "failed_tests",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "uncovered_lines",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "uncovered_branches",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "loc",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "ncloc",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "violations",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "fniessink:next-action"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "title": "Test",
-            "metrics": [
-                {
-                    "type": "violations",
-                    "sources": [
-                        {
-                            "type": "sonarqube",
-                            "parameters": {
-                                "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
-                            }
-                        },
-                        {
-                            "type": "random",
-                            "parameters": {}
                         }
                     ]
                 }
