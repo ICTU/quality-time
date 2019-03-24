@@ -3,7 +3,7 @@
 import bottle
 
 from ..database.reports import latest_reports, latest_report, insert_new_report
-from ..database.datamodels import latest_datamodel, default_source_parameters
+from ..database.datamodels import latest_datamodel, default_metric_attributes, default_source_parameters
 from ..util import iso_timestamp, report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
@@ -64,8 +64,10 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
             break
     metric[metric_attribute] = value
     if metric_attribute == "type":
-        sources = metric["sources"]
+        metric.update(default_metric_attributes(report_uuid, value, database))
+        # Remove sources that don't support the new metric type and reinitialize the sources that do
         datamodel = latest_datamodel(iso_timestamp(), database)
+        sources = metric["sources"]
         possible_sources = datamodel["metrics"][value]["sources"]
         for source_uuid, source in list(sources.items()):
             if source["type"] in possible_sources:
@@ -85,13 +87,7 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database):
     """Add a new metric."""
     report = latest_report(report_uuid, database)
     subject = report["subjects"][subject_uuid]
-    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"]
-    metric_type = list(metric_types.keys())[0]
-    default_target = metric_types[metric_type]["default_target"]
-    default_tags = metric_types[metric_type]["tags"]
-    subject["metrics"][uuid()] = dict(
-        type=metric_type, sources={}, report_uuid=report_uuid, name=None, unit=None,
-        target=default_target, accept_debt=False, debt_target=None, tags=default_tags)
+    subject["metrics"][uuid()] = default_metric_attributes(report_uuid, None, database)
     return insert_new_report(report, database)
 
 

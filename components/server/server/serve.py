@@ -46,11 +46,11 @@ def import_report(filename: str, database: Database) -> None:
         subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]
-            default_target = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["default_target"]
-            default_tags = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["tags"]
+            target = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["target"]
+            tags = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["tags"]
             metric_to_store = subject_to_store["metrics"][uuid()] = dict(
-                type=metric_type, sources={}, comment="", target=default_target,
-                accept_debt=False, debt_target=None, report_uuid=report_uuid, tags=default_tags)
+                type=metric_type, sources={}, comment="", target=target,
+                accept_debt=False, debt_target=None, report_uuid=report_uuid, tags=tags)
             for imported_source in imported_metric["sources"]:
                 metric_to_store["sources"][uuid()] = imported_source
 
