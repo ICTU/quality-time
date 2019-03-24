@@ -24,7 +24,7 @@ class PostMeasurementTests(unittest.TestCase):
                     s=dict(
                         metrics=dict(
                             metric_uuid=dict(
-                                type="metric_type", target="0", debt_target=None, accept_debt=False))))))
+                                type="metric_type", target="0", debt_target=None, accept_debt=False, tags=[]))))))
         database.datamodels.find_one = Mock(return_value=dict(_id="", metrics=dict(metric_type=dict(direction="<="))))
         with patch("bottle.request") as request:
             request.json = dict(metric_uuid="metric_uuid", sources=[])

@@ -1,5 +1,7 @@
 """Datamodels collection."""
 
+from typing import Optional
+
 import pymongo
 
 from ..util import iso_timestamp
@@ -30,3 +32,15 @@ def default_source_parameters(metric_type: str, source_type: str, database):
         if metric_type in parameter_value["metrics"]:
             parameters[parameter_key] = parameter_value["default_value"]
     return parameters
+
+
+def default_metric_attributes(report_uuid: str, metric_type: Optional[str], database):
+    """Return the metric attributes with their default values for the specified metric type.
+    If no metric type is specified, use the first one from the datamodel."""
+    metric_types = latest_datamodel(iso_timestamp(), database)["metrics"]
+    if not metric_type:
+        metric_type = list(metric_types.keys())[0]
+    defaults = metric_types[metric_type]
+    return dict(
+        type=metric_type, report_uuid=report_uuid, sources={}, name=None, unit=None,
+        accept_debt=False, debt_target=None, target=defaults["target"], tags=defaults["tags"])
