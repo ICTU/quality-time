@@ -1,4 +1,4 @@
 #!/bin/sh
 
-mypy server
-pylint server --exit-zero
+mypy src
+pylint src --exit-zero

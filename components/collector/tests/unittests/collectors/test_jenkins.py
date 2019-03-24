@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import collect_measurement
+from src.collector import collect_measurement
 
 
 class JenkinsTestCase(unittest.TestCase):

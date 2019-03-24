@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch, Mock
 
-from collector.collector import collect_measurement
+from src.collector import collect_measurement
 
 
 class CollectorTest(unittest.TestCase):

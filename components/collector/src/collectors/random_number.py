@@ -5,8 +5,8 @@ import random
 
 import requests
 
-from collector.collector import Collector
-from collector.type import URL
+from ..collector import Collector
+from ..type import URL
 
 
 class Random(Collector):

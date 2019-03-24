@@ -2,8 +2,8 @@
 
 import unittest
 
-from collector.collector import collect_measurement
-from collector.collectors import Random
+from src.collector import collect_measurement
+from src.collectors import Random
 
 
 class RandomNumberTest(unittest.TestCase):

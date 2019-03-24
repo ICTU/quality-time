@@ -7,8 +7,8 @@ from typing import Dict, List, Optional, Tuple
 
 import requests
 
-from collector.collector import Collector
-from collector.type import URL, Units, Value
+from ..collector import Collector
+from ..type import URL, Units, Value
 
 
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping

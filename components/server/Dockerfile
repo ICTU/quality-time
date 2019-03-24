@@ -1,6 +1,6 @@
 FROM python:3.7-alpine
 
-LABEL maintainer="Frank Niessink <frank@niessink.com>"
+LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"
 
 RUN apk add --no-cache --virtual .build-deps \

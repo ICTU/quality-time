@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import requests
 
-from collector.collector import Collector
-from collector.type import Units, URL, Value
+from ..collector import Collector
+from ..type import Units, URL, Value
 
 
 class JiraIssues(Collector):

@@ -4,8 +4,8 @@ import xml.etree.cElementTree
 
 import requests
 
-from collector.collector import Collector
-from collector.type import Value
+from ..collector import Collector
+from ..type import Value
 
 
 class JacocoCoverageBaseClass(Collector):
