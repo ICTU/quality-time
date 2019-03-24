@@ -29,6 +29,7 @@ jobs:
       script:
       - npm test
     - name: "Sonarqube"
+      dist: trusty
       language: python
       python: 3.7
       before_install:
