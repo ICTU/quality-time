@@ -1,4 +1,7 @@
 dist: xenial
+addons:
+  sonarcloud:
+    organization: "ictu"
 jobs:
   include:
     - stage: test
@@ -29,7 +32,6 @@ jobs:
       script:
       - npm test
     - name: "Sonarqube"
-      dist: precise
       language: python
       python: 3.7
       before_install:
