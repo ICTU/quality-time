@@ -19,6 +19,10 @@ class HQ(Collector):
         return metric["value"]
 
 
+class HQDuplicatedLines(HQ):
+    """HQ duplicated lines collector."""
+
+
 class HQViolations(HQ):
     """HQ violations collector."""
 

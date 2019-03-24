@@ -1,7 +1,22 @@
 {
     "metrics": {
+        "duplicated_lines": {
+            "name": "Duplicated lines",
+            "description": "Measure the number of lines that are duplicated.",
+            "unit": "lines",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
         "failed_jobs": {
-            "name": "Number of failed CI-jobs",
+            "name": "Failed CI-jobs",
             "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
             "unit": "CI-jobs",
             "direction": "<=",
@@ -17,7 +32,7 @@
             ]
         },
         "failed_tests": {
-            "name": "Number of failed tests",
+            "name": "Failed tests",
             "description": "Measure the number of tests that fail.",
             "unit": "failed tests",
             "direction": "<=",
@@ -34,7 +49,7 @@
             ]
         },
         "issues": {
-            "name": "Number of issues",
+            "name": "Issues",
             "description": "Measure the number of issues.",
             "unit": "issues",
             "direction": "<=",
@@ -51,7 +66,7 @@
         "loc": {
             "name": "Size (LOC)",
             "description": "Measure the size of the software in lines of code.",
-            "unit": "lines of code",
+            "unit": "lines",
             "direction": "<=",
             "target": "75000",
             "sources": [
@@ -64,7 +79,7 @@
             ]
         },
         "long_units": {
-            "name": "Number of long units",
+            "name": "Long units",
             "description": "Measure the number of units (functions, methods, files) that are too long.",
             "unit": "long units",
             "direction": "<=",
@@ -81,7 +96,7 @@
         "ncloc": {
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
-            "unit": "non-commented lines of code",
+            "unit": "non-commented lines",
             "direction": "<=",
             "target": "50000",
             "sources": [
@@ -93,7 +108,7 @@
             ]
         },
         "tests": {
-            "name": "Number of tests",
+            "name": "Tests",
             "description": "Measure the size of the test suite.",
             "unit": "tests",
             "direction": ">=",
@@ -139,7 +154,7 @@
             ]
         },
         "unused_jobs": {
-            "name": "Number of unused CI-jobs",
+            "name": "Unused CI-jobs",
             "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
             "unit": "CI-jobs",
             "direction": "<=",
@@ -154,7 +169,7 @@
             ]
         },
         "violations": {
-            "name": "Number of violations",
+            "name": "Violations",
             "description": "Measure how many violations of programming rules the software contains. This metric gives an indication of the quality of the source code.",
             "unit": "violations",
             "direction": "<=",
@@ -268,6 +283,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -282,6 +298,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -590,6 +607,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "duplicated_lines",
                         "failed_tests",
                         "loc",
                         "long_units",
@@ -605,6 +623,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "duplicated_lines",
                         "failed_tests",
                         "loc",
                         "long_units",
