@@ -83,6 +83,12 @@ class SonarQubeMetricsBaseClass(Collector):
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
 
 
+class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
+    """SonarQube duplicated lines collector."""
+
+    metricKeys = "duplicated_lines"
+
+
 class SonarQubeTests(SonarQubeMetricsBaseClass):
     """SonarQube tests collector."""
 

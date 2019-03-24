@@ -22,6 +22,10 @@ class Random(Collector):
         return response
 
 
+class RandomDuplicatedLines(Random):
+    """Random number of duplicated lines."""
+
+
 class RandomUncoveredLines(Random):
     """Random number of uncovered lines."""
 
