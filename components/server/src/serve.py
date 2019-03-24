@@ -18,8 +18,8 @@ from pymongo.database import Database
 from . import cors  # pylint: disable=unused-import
 from .routes import report, measurement, datamodel, auth  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
-from .util import iso_timestamp, uuid
-from .database.datamodels import insert_new_datamodel, latest_datamodel
+from .util import uuid
+from .database.datamodels import insert_new_datamodel, default_metric_attributes, default_source_parameters
 from .database.reports import latest_report, insert_new_report
 
 
@@ -46,13 +46,14 @@ def import_report(filename: str, database: Database) -> None:
         subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]
-            target = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["target"]
-            tags = latest_datamodel(iso_timestamp(), database)["metrics"][metric_type]["tags"]
-            metric_to_store = subject_to_store["metrics"][uuid()] = dict(
-                type=metric_type, sources={}, comment="", target=target,
-                accept_debt=False, debt_target=None, report_uuid=report_uuid, tags=tags)
+            metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(
+                report_uuid, metric_type, database)
             for imported_source in imported_metric["sources"]:
-                metric_to_store["sources"][uuid()] = imported_source
+                source_to_store = metric_to_store["sources"][uuid()] = imported_source
+                source_parameters = default_source_parameters(metric_type, imported_source["type"], database)
+                for key, value in source_parameters.items():
+                    if key not in source_to_store["parameters"]:
+                        source_to_store["parameters"][key] = value
 
     insert_new_report(report_to_store, database)
     logging.info("Report %s imported", filename)

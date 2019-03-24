@@ -1,9 +1,9 @@
 {
-    "title": "HQ",
-    "report_uuid": "example-report-hq",
+    "title": "Next-action",
+    "report_uuid": "example-report-next-action",
     "subjects": [
         {
-            "title": "HQ",
+            "title": "Next-action",
             "metrics": [
                 {
                     "type": "tests",
@@ -12,7 +12,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -24,7 +24,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -36,7 +36,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -48,7 +48,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -60,7 +60,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -72,7 +72,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -84,7 +84,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -96,7 +96,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
@@ -108,7 +108,7 @@
                             "type": "sonarqube",
                             "parameters": {
                                 "url": "http://sonarcloud.io",
-                                "component": "nl.ictu:hq"
+                                "component": "fniessink:next-action"
                             }
                         }
                     ]
