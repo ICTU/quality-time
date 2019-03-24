@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from collector.collector import collect_measurement
-from collector.collectors.sonarqube import SonarQubeViolations
+from src.collector import collect_measurement
+from src.collectors.sonarqube import SonarQubeViolations
 
 
 class SonarQubeTest(unittest.TestCase):

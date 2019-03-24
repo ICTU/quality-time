@@ -2,8 +2,8 @@
 
 import requests
 
-from collector.collector import Collector
-from collector.type import Units, URL, Value
+from ..collector import Collector
+from ..type import Units, URL, Value
 
 
 class AzureDevopsIssues(Collector):

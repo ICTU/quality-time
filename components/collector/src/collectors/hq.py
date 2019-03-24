@@ -4,8 +4,8 @@ from urllib.parse import urljoin
 
 import requests
 
-from collector.collector import Collector
-from collector.type import URL, Value
+from ..collector import Collector
+from ..type import URL, Value
 
 
 class HQ(Collector):

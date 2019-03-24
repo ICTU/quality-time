@@ -5,8 +5,8 @@ from typing import List
 
 import requests
 
-from collector.collector import Collector
-from collector.type import Unit, Units, Value
+from ..collector import Collector
+from ..type import Unit, Units, Value
 
 
 class JUnit(Collector):

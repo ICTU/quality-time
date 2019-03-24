@@ -1,5 +1,5 @@
 #!/bin/sh
 
-mypy collector
-pylint collector
+mypy src
+pylint src
 

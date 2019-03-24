@@ -4,8 +4,8 @@ from typing import Dict
 
 import requests
 
-from collector.collector import Collector
-from collector.type import URL, Units, Value
+from ..collector import Collector
+from ..type import URL, Units, Value
 
 
 class SonarQubeViolations(Collector):

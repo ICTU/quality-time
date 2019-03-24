@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from server.routes.measurement import post_measurement
+from src.routes.measurement import post_measurement
 
 
 class PostMeasurementTests(unittest.TestCase):

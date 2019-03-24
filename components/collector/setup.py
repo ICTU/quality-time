@@ -16,8 +16,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "quality-time-collector=collector:collect"
+            "quality-time-collector=src:collect"
         ],
     },
     zip_safe=True)
-

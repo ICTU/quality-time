@@ -4,7 +4,7 @@ import logging
 import unittest
 from unittest.mock import patch, Mock
 
-from collector import collect, fetch_measurements
+from src import collect, fetch_measurements
 
 
 class CollectorTest(unittest.TestCase):

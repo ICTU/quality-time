@@ -16,7 +16,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "quality-time-server=server:serve"
+            "quality-time-server=src:serve"
         ],
     },
     zip_safe=True)

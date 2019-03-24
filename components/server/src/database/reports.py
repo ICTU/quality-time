@@ -1,8 +1,11 @@
 """Reports collection."""
 
+from typing import Dict
+
 import pymongo
 
 from ..util import iso_timestamp
+from ..type import Summary
 
 
 def latest_reports(max_iso_timestamp: str, database):
@@ -26,8 +29,8 @@ def summarize_report(report, database) -> None:
     from .measurements import latest_measurement  # Prevent circular import
     status_color_mapping = dict(target_met="green", debt_target_met="grey", target_not_met="red")
     summary = dict(red=0, green=0, yellow=0, grey=0)
-    summary_by_subject = dict()
-    summary_by_tag = dict()
+    summary_by_subject: Dict[str, Summary] = dict()
+    summary_by_tag: Dict[str, Summary] = dict()
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
             latest = latest_measurement(metric_uuid, database)
