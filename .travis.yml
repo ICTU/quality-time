@@ -28,3 +28,25 @@ jobs:
       - npm install
       script:
       - npm test
+    - name: "Sonarqube"
+      language: python
+      python: 3.7
+      before_install:
+      - nvm install 10
+      install:
+      - cd components/collector
+      - pip install -r requirements.txt -r requirements-dev.txt
+      - cd ../../components/server
+      - pip install -r requirements.txt -r requirements-dev.txt
+      - cd ../../components/frontend
+      - npm install
+      - cd ../..
+      script:
+      - cd components/collector
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
+      - cd ../../components/server
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
+      - cd ../../components/frontend
+      - npm test
+      - cd ../..
+      - sonar-scanner -Dsonar.host.url=http://sonarcloud.io -Dsonar.organization=ictu -Dsonar.login="$SONAR_TOKEN"
