@@ -54,4 +54,4 @@ jobs:
       - cd ../../components/frontend
       - npm test
       - cd ../..
-      - sonar-scanner -Dsonar.host.url=http://sonarcloud.io -Dsonar.organization=ictu -Dsonar.login="$SONAR_TOKEN"
+      - sonar-scanner
