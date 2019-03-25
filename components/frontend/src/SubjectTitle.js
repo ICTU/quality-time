@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
-import { SingleChoiceInput} from './fields/SingleChoiceInput';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
 class SubjectTitle extends Component {
     constructor(props) {
@@ -58,7 +58,7 @@ class SubjectTitle extends Component {
                 </Header>
                 {
                     this.state.show_details &&
-                    <Segment basic>
+                    <Segment>
                         <Header>
                             <Header.Content>
                                 {subject_type.name}
@@ -88,20 +88,23 @@ class SubjectTitle extends Component {
                                     />
                                 </Grid.Column>
                             </Grid.Row>
+                            {!this.props.readOnly &&
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <Button
+                                            basic
+                                            floated='right'
+                                            negative
+                                            icon
+                                            onClick={(e) => this.delete_subject(e)}
+                                            primary
+                                        >
+                                            <Icon name='trash' /> Delete subject
+                                        </Button>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            }
                         </Grid>
-                        {!this.props.readOnly &&
-                            <Button
-                                basic
-                                floated='right'
-                                negative
-                                icon
-                                onClick={(e) => this.delete_subject(e)}
-                                primary
-                                style={{ marginBottom: "10px" }}
-                            >
-                                <Icon name='trash' /> Delete subject
-                            </Button>
-                        }
                     </Segment>
                 }
             </>
