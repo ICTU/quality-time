@@ -769,5 +769,22 @@
                 ]
             }
         }
+    },
+    "subjects": {
+        "application": {
+            "name": "Application",
+            "description": "A custom software application.",
+            "metrics": [
+                "tests",
+                "violations"
+            ]
+        },
+        "process": {
+            "name": "Process",
+            "description": "A software process.",
+            "metrics": [
+                "issues"
+            ]
+        }
     }
 }

@@ -3,7 +3,8 @@
 import bottle
 
 from ..database.reports import latest_reports, latest_report, insert_new_report
-from ..database.datamodels import latest_datamodel, default_metric_attributes, default_source_parameters
+from ..database.datamodels import latest_datamodel, default_subject_attributes, default_metric_attributes, \
+    default_source_parameters
 from ..util import iso_timestamp, report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
@@ -17,12 +18,12 @@ def post_report_title(report_uuid: str, database):
     return insert_new_report(report, database)
 
 
-@bottle.post("/report/<report_uuid>/subject/<subject_uuid>/title")
-def post_subject_title(report_uuid: str, subject_uuid: str, database):
-    """Set the subject title."""
-    title = dict(bottle.request.json)["title"]
+@bottle.post("/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")
+def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribute: str, database):
+    """Set the subject attribute."""
+    value = dict(bottle.request.json)[subject_attribute]
     report = latest_report(report_uuid, database)
-    report["subjects"][subject_uuid]["title"] = title
+    report["subjects"][subject_uuid][subject_attribute] = value
     return insert_new_report(report, database)
 
 
@@ -30,7 +31,7 @@ def post_subject_title(report_uuid: str, subject_uuid: str, database):
 def post_new_subject(report_uuid: str, database):
     """Create a new subject."""
     report = latest_report(report_uuid, database)
-    report["subjects"][uuid()] = dict(title="New subject", metrics={})
+    report["subjects"][uuid()] = default_subject_attributes(None, database)
     return insert_new_report(report, database)
 
 
