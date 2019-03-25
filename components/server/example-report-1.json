@@ -3,7 +3,8 @@
     "report_uuid": "example-report-1",
     "subjects": [
         {
-            "title": "JUnit and JaCoCo",
+            "name": "JUnit and JaCoCo",
+            "type": "application",
             "metrics": [
                 {
                     "type": "tests",

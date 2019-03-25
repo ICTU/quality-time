@@ -1,6 +1,6 @@
 """Datamodels collection."""
 
-from typing import List, Optional
+from typing import Any, Dict, Optional
 
 import pymongo
 
@@ -46,12 +46,12 @@ def default_metric_attributes(report_uuid: str, metric_type: Optional[str], data
         accept_debt=False, debt_target=None, target=defaults["target"], tags=defaults["tags"])
 
 
-def default_subject_attributes(subject_type: Optional[str], database) -> List[str]:
+def default_subject_attributes(subject_type: Optional[str], database) -> Dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(iso_timestamp(), database)["subjects"]
     if not subject_type:
         subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
     return dict(
-        type=subject_type, title=defaults["name"], name=defaults["name"], description=defaults["description"],
+        type=subject_type, name=defaults["name"], description=defaults["description"],
         metrics={})

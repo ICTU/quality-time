@@ -1,74 +1,29 @@
 import React, { Component } from 'react';
-import { Button, Form, Grid, Header, Icon } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { StringInput } from './fields/StringInput';
+import { SingleChoiceInput} from './fields/SingleChoiceInput';
 
-
-class SubjectTitleContainer extends Component {
+class SubjectTitle extends Component {
     constructor(props) {
         super(props);
-        this.state = { edited_title: this.props.subject.title, edit: false }
+        this.state = { show_details: false }
     }
-    onEdit(event) {
-        this.setState({ edit: true });
-    }
-    onChange(event) {
-        this.setState({ edited_title: event.target.value });
-    }
-    onKeyDown(event) {
-        if (event.key === "Escape") {
-            this.setState({ edit: false, edited_title: this.props.subject.title })
-        }
-    }
-    onSubmit(event) {
+    onExpand(event) {
         event.preventDefault();
-        this.setState({ edit: false });
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/title`, {
+        this.setState((state) => ({ show_details: !state.show_details }));
+    }
+    set_subject_attribute(key, value) {
+        const self = this;
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
             method: 'post',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: this.state.edited_title })
-        })
-    }
-    render() {
-        return (
-            <SubjectTitle title={this.state.edited_title} edit={this.state.edit}
-                onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
-                onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)}
-                report_uuid={this.props.report_uuid} subject_uuid={this.props.subject_uuid}
-                reload={this.props.reload} readOnly={this.props.readOnly} />)
-    }
-}
-
-function SubjectTitle(props) {
-    if (props.edit) {
-        return (<SubjectTitleInput title={props.title} onSubmit={props.onSubmit} onChange={props.onChange}
-            onKeyDown={props.onKeyDown} />)
-    }
-    return (
-        <SubjectTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} report_uuid={props.report_uuid} subject_uuid={props.subject_uuid}
-            reload={props.reload} readOnly={props.readOnly} />
-    )
-}
-
-const SubjectTitleInput = props =>
-    <Form onSubmit={(e) => props.onSubmit(e)}>
-        <Form.Input autoFocus focus value={props.title}
-            onChange={props.onChange} onKeyDown={props.onKeyDown} />
-    </Form>
-
-
-class SubjectTitleDisplay extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { editable: false }
-    }
-    onMouseEnter() {
-        this.setState({ editable: true })
-    }
-    onMouseLeave() {
-        this.setState({ editable: false })
+            body: JSON.stringify({ [key]: value })
+        }).then(
+            () => self.props.reload()
+        )
     }
     delete_subject(event) {
         event.preventDefault();
@@ -85,24 +40,73 @@ class SubjectTitleDisplay extends Component {
         );
     }
     render() {
-        if (this.props.readOnly) { return (<Header as='h2'>{this.props.title}</Header>) }
-        const style = this.state.editable ? { borderBottom: "1px dotted #000000" } : {};
+        const subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
+        let options = [];
+        Object.keys(this.props.datamodel.subjects).forEach(
+            (key) => { options.push({ key: key, text: this.props.datamodel.subjects[key].name, value: key }) });
         return (
-            <Grid>
-                <Grid.Column key={0} width={13}>
-                    <Header as='h2' onClick={this.props.onEdit} onKeyPress={this.props.onEdit} style={style}
-                        onMouseEnter={(e) => this.onMouseEnter(e)} onMouseLeave={(e) => this.onMouseLeave(e)} tabIndex="0" >
-                        {this.props.title}
-                    </Header>
-                </Grid.Column>
-                <Grid.Column key={1} width={3}>
-                    <Button floated='right' icon primary negative basic onClick={(e) => this.delete_subject(e)}>
-                        <Icon name='trash' /> Delete subject
-                    </Button>
-                </Grid.Column>
-            </Grid>
+            <>
+                <Header as='h2'>
+                    <Icon
+                        name={this.state.show_details ? "caret down" : "caret right"}
+                        onClick={(e) => this.onExpand(e)}
+                        onKeyPress={(e) => this.onExpand(e)}
+                        size='large'
+                        tabIndex="0"
+                    />
+                    {this.props.subject.name}
+                </Header>
+                {
+                    this.state.show_details &&
+                    <Segment basic>
+                        <Header>
+                            <Header.Content>
+                                {subject_type.name}
+                                <Header.Subheader>
+                                    {subject_type.description}
+                                </Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                        <Grid stackable>
+                            <Grid.Row columns={3}>
+                                <Grid.Column>
+                                    <SingleChoiceInput
+                                        label="Subject type"
+                                        options={options}
+                                        readOnly={this.props.readOnly}
+                                        set_value={(value) => this.set_subject_attribute("type", value)}
+                                        value={this.props.subject.type}
+                                    />
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <StringInput
+                                        label="Subject name"
+                                        placeholder={subject_type.name}
+                                        readOnly={this.props.readOnly}
+                                        set_value={(value) => this.set_subject_attribute("name", value)}
+                                        value={this.props.subject.name}
+                                    />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                        {!this.props.readOnly &&
+                            <Button
+                                basic
+                                floated='right'
+                                negative
+                                icon
+                                onClick={(e) => this.delete_subject(e)}
+                                primary
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <Icon name='trash' /> Delete subject
+                            </Button>
+                        }
+                    </Segment>
+                }
+            </>
         )
     }
 }
 
-export { SubjectTitleContainer };
+export { SubjectTitle };

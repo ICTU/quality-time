@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Icon, Segment, Table } from 'semantic-ui-react';
 import Metric from './Metric.js';
-import { SubjectTitleContainer } from './SubjectTitle.js';
+import { SubjectTitle } from './SubjectTitle.js';
 
 class Subject extends Component {
   onAddMetric(event) {
@@ -36,8 +36,14 @@ class Subject extends Component {
     );
     return (
       <Segment basic>
-        <SubjectTitleContainer report_uuid={this.props.report.report_uuid} subject_uuid={this.props.subject_uuid}
-          subject={subject} reload={this.props.reload} readOnly={this.props.readOnly} />
+        <SubjectTitle
+          datamodel={this.props.datamodel}
+          readOnly={this.props.readOnly}
+          reload={this.props.reload}
+          report_uuid={this.props.report.report_uuid}
+          subject={subject}
+          subject_uuid={this.props.subject_uuid}
+        />
         <Table>
           <Table.Header>
             <Table.Row>
