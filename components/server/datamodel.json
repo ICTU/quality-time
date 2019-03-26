@@ -557,6 +557,22 @@
                         "violations"
                     ]
                 },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
