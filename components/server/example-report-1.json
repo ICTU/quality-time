@@ -4,7 +4,7 @@
     "subjects": [
         {
             "name": "JUnit and JaCoCo",
-            "type": "application",
+            "type": "software",
             "metrics": [
                 {
                     "type": "tests",

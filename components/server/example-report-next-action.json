@@ -4,7 +4,7 @@
     "subjects": [
         {
             "name": "Next-action",
-            "type": "application",
+            "type": "software",
             "metrics": [
                 {
                     "type": "tests",

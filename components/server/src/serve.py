@@ -45,7 +45,8 @@ def import_report(filename: str, database: Database) -> None:
         title=imported_report.get("title", "Quality-time"), report_uuid=report_uuid, subjects={})
     for imported_subject in imported_report["subjects"]:
         subject_to_store = report_to_store["subjects"][uuid()] = default_subject_attributes(
-            imported_subject["type"], database)
+            report_uuid, imported_subject["type"], database)
+        subject_to_store["metrics"] = dict()  # Remove default metrics
         subject_to_store["name"] = imported_subject["name"]
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]

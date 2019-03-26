@@ -10,7 +10,7 @@ function MetricSummaryCard(props) {
         <Card>
             <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} grey={props.grey} />
             <Card.Content>
-                <Card.Header>{props.title}</Card.Header>
+                <Card.Header>{props.header}</Card.Header>
                 <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
             </Card.Content>
         </Card>
@@ -19,10 +19,10 @@ function MetricSummaryCard(props) {
 
 function Dashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
-        <MetricSummaryCard key={subject_uuid} title={props.report.subjects[subject_uuid].title}
+        <MetricSummaryCard key={subject_uuid} header={props.report.subjects[subject_uuid].name}
             red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
     const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
-        <MetricSummaryCard key={tag} title={<Tag tag={tag}/>}
+        <MetricSummaryCard key={tag} header={<Tag tag={tag}/>}
             red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
     const subject_cards_per_row = Math.min(Math.max(subject_cards.length, 5), 7);
     const tag_cards_per_row = Math.min(Math.max(tag_cards.length, 8), 10);

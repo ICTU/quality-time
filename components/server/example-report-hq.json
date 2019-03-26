@@ -4,7 +4,7 @@
     "subjects": [
         {
             "name": "HQ",
-            "type": "application",
+            "type": "software",
             "metrics": [
                 {
                     "type": "tests",

@@ -23,7 +23,14 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]
     report = latest_report(report_uuid, database)
-    report["subjects"][subject_uuid][subject_attribute] = value
+    subject = report["subjects"][subject_uuid]
+    subject[subject_attribute] = value
+    if subject_attribute == "type":
+        default_metric_types = latest_datamodel(iso_timestamp(), database)["subjects"][value]["metrics"]
+        existing_metric_types = [metric["type"] for metric in subject["metrics"].values()]
+        for default_metric_type in default_metric_types:
+            if default_metric_type not in existing_metric_types:
+                subject["metrics"][uuid()] = default_metric_attributes(report_uuid, default_metric_type, database)
     return insert_new_report(report, database)
 
 
