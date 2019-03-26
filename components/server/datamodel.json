@@ -769,5 +769,37 @@
                 ]
             }
         }
+    },
+    "subjects": {
+        "software": {
+            "name": "Software",
+            "description": "A custom software application or component.",
+            "metrics": [
+                "duplicated_lines",
+                "failed_tests",
+                "loc",
+                "long_units",
+                "ncloc",
+                "tests",
+                "uncovered_branches",
+                "uncovered_lines",
+                "violations"
+            ]
+        },
+        "process": {
+            "name": "Process",
+            "description": "A software development and/or maintenance process.",
+            "metrics": [
+                "issues"
+            ]
+        },
+        "ci": {
+            "name": "CI-environment",
+            "description": "A continuous integration environment.",
+            "metrics": [
+                "failed_jobs",
+                "unused_jobs"
+            ]
+        }
     }
 }

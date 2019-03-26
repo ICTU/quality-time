@@ -19,7 +19,8 @@ from . import cors  # pylint: disable=unused-import
 from .routes import report, measurement, datamodel, auth  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
 from .util import uuid
-from .database.datamodels import insert_new_datamodel, default_metric_attributes, default_source_parameters
+from .database.datamodels import insert_new_datamodel, default_subject_attributes, default_metric_attributes, \
+    default_source_parameters
 from .database.reports import latest_report, insert_new_report
 
 
@@ -43,7 +44,10 @@ def import_report(filename: str, database: Database) -> None:
     report_to_store = dict(
         title=imported_report.get("title", "Quality-time"), report_uuid=report_uuid, subjects={})
     for imported_subject in imported_report["subjects"]:
-        subject_to_store = report_to_store["subjects"][uuid()] = dict(title=imported_subject["title"], metrics={})
+        subject_to_store = report_to_store["subjects"][uuid()] = default_subject_attributes(
+            report_uuid, imported_subject["type"], database)
+        subject_to_store["metrics"] = dict()  # Remove default metrics
+        subject_to_store["name"] = imported_subject["name"]
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]
             metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(

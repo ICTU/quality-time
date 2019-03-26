@@ -3,7 +3,8 @@
     "report_uuid": "example-report-next-action",
     "subjects": [
         {
-            "title": "Next-action",
+            "name": "Next-action",
+            "type": "software",
             "metrics": [
                 {
                     "type": "tests",

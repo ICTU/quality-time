@@ -3,7 +3,8 @@
     "report_uuid": "example-report-quality-time",
     "subjects": [
         {
-            "title": "Quality-time",
+            "name": "Quality-time",
+            "type": "software",
             "metrics": [
                 {
                     "type": "tests",
