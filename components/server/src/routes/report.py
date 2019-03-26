@@ -30,7 +30,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
         existing_metric_types = [metric["type"] for metric in subject["metrics"].values()]
         for default_metric_type in default_metric_types:
             if default_metric_type not in existing_metric_types:
-                subject["metrics"][uuid()] = default_metric_attributes(report_uuid, default_metric_type, database)
+                subject["metrics"][uuid()] = default_metric_attributes(report_uuid, default_metric_types, database)
     return insert_new_report(report, database)
 
 
@@ -90,7 +90,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     return dict(ok=True)
 
 
-@bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric")
+@bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric/new")
 def post_metric_new(report_uuid: str, subject_uuid: str, database):
     """Add a new metric."""
     report = latest_report(report_uuid, database)

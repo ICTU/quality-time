@@ -44,6 +44,8 @@ def insert_new_measurement(metric_uuid: str, measurement, database, target: str 
 
 def calculate_measurement_value(sources) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
+    if not sources:
+        return None
     value = 0
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
