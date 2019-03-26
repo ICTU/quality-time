@@ -31,7 +31,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
 def post_new_subject(report_uuid: str, database):
     """Create a new subject."""
     report = latest_report(report_uuid, database)
-    report["subjects"][uuid()] = default_subject_attributes(None, database)
+    report["subjects"][uuid()] = default_subject_attributes(report_uuid, None, database)
     return insert_new_report(report, database)
 
 
