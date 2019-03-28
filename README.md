@@ -92,7 +92,7 @@ Clone this repository:
 git clone git@github.com:ICTU/quality-time.git
 ```
 
-Open four terminals. In the first one, run the standard containers with docker-compose:
+Open five terminals. In the first one, run the standard containers with docker-compose:
 
 ```console
 docker-compose up database ldap mongo-express
@@ -128,6 +128,13 @@ In the fourth one, run the frontend:
 cd components/frontend
 npm run install
 npm run start
+```
+
+In the fifth one, run the testdata server:
+
+```console
+cd components/testdata
+python3 -m http.server
 ```
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
