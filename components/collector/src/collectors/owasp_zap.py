@@ -1,4 +1,4 @@
-"""OWASP Dependency Check metric collector."""
+"""OWASP ZAP metric collector."""
 
 from xml.etree.cElementTree import Element
 
@@ -9,8 +9,8 @@ from ..type import Namespaces, URL, Value
 from ..util import parse_source_response_xml
 
 
-class OWASPDependencyCheckSecurityWarnings(Collector):
-    """Collector to get security warnings from OWASP Dependency Check."""
+class OWASPZAPSecurityWarnings(Collector):
+    """Collector to get security warnings from OWASP ZAP."""
 
     def landing_url(self, **parameters) -> URL:
         return URL(parameters["url"][:-(len("xml"))] + "html")
@@ -22,5 +22,5 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
     @staticmethod
     def warning_count(tree: Element, namespaces: Namespaces) -> str:
         """Return the security warning count."""
-        dependencies = tree.findall(f".//ns:dependency/ns:vulnerabilities/ns:vulnerability", namespaces)
-        return str(len(dependencies))
+        alerts = tree.findall(f".//alertitem", namespaces)
+        return str(len(alerts))

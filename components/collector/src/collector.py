@@ -70,6 +70,7 @@ class Collector:
             response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = traceback.format_exc()
+            print(error)
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
@@ -97,6 +98,7 @@ class Collector:
                 units = self.parse_source_response_units(response, **parameters)
             except Exception:  # pylint: disable=broad-except
                 error = traceback.format_exc()
+                print(error)
         return value, units[:self.MAX_UNITS], error
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

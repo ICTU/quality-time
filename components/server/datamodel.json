@@ -193,7 +193,8 @@
             "sources": [
                 "hq",
                 "random",
-                "owasp_dependency_check"
+                "owasp_dependency_check",
+                "owasp_zap"
             ],
             "tags": [
                 "security"
@@ -627,6 +628,22 @@
             "name": "OWASP Dependency Check",
             "description": "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.",
             "url": "https://www.owasp.org/index.php/OWASP_Dependency_Check",
+            "parameters": {
+                "url": {
+                    "name": "URL to XML report",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "units": {}
+        },
+        "owasp_zap": {
+            "name": "OWASP ZAP",
+            "description": "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools and is actively maintained by hundreds of international volunteers*. It can help you automatically find security vulnerabilities in your web applications while you are developing and testing your applications. Its also a great tool for experienced pentesters to use for manual security testing.",
+            "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
                     "name": "URL to XML report",

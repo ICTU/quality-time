@@ -48,6 +48,12 @@
                             "parameters": {
                                 "url": "http://0.0.0.0:8000/dependency-check-report.xml"
                             }
+                        },
+                        {
+                            "type": "owasp_zap",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/zap-report.xml"
+                            }
                         }
                     ]
                 },
