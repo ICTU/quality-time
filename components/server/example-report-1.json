@@ -41,6 +41,17 @@
                     ]
                 },
                 {
+                    "type": "security_warnings",
+                    "sources": [
+                        {
+                            "type": "owasp_dependency_check",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/dependency-check-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "uncovered_lines",
                     "sources": [
                         {

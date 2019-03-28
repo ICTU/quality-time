@@ -183,6 +183,21 @@
             "tags": [
                 "maintainability"
             ]
+        },
+        "security_warnings": {
+            "name": "Security warnings",
+            "description": "Measure how many security flaws the code contains. This metric gives an indication of the security of the source code.",
+            "unit": "security warnings",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "random",
+                "owasp_dependency_check"
+            ],
+            "tags": [
+                "security"
+            ]
         }
     },
     "sources": {
@@ -288,6 +303,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "security_warnings",
                         "tests",
                         "unused_jobs",
                         "violations"
@@ -303,6 +319,7 @@
                         "failed_tests",
                         "issues",
                         "ncloc",
+                        "security_warnings",
                         "tests",
                         "unused_jobs",
                         "violations"
@@ -606,6 +623,23 @@
                 ]
             }
         },
+        "owasp_dependency_check": {
+            "name": "OWASP Dependency Check",
+            "description": "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.",
+            "url": "https://www.owasp.org/index.php/OWASP_Dependency_Check",
+            "parameters": {
+                "url": {
+                    "name": "URL to XML report",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "units": {}
+        },
+
         "random": {
             "name": "Random",
             "description": "A source that generates random numbers, for testing purposes.",
@@ -780,6 +814,7 @@
                 "loc",
                 "long_units",
                 "ncloc",
+                "security_warnings",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",
