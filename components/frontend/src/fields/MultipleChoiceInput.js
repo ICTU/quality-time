@@ -30,11 +30,12 @@ class MultipleChoiceInput extends Component {
     }
   }
   render() {
+    let { set_value, allowAdditions, ...readOnlyProps } = this.props;
     return (
       <Form>
         {this.props.readOnly ?
           <Form.Input
-            {...this.props}
+            {...readOnlyProps}
           />
           :
           <Form.Dropdown

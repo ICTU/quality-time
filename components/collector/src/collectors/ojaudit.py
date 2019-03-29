@@ -1,17 +1,16 @@
 """OJAudit metric collector."""
 
 import hashlib
-import xml.etree.cElementTree
 from xml.etree.cElementTree import Element
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import requests
 
 from ..collector import Collector
-from ..type import URL, Units, Value
+from ..type import Namespaces, URL, Units, Value
+from ..util import parse_source_response_xml
 
 
-Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 Violation = Dict[str, str]  # Violation attribute key to attribute value mapping
 
@@ -19,29 +18,18 @@ Violation = Dict[str, str]  # Violation attribute key to attribute value mapping
 class OJAuditViolations(Collector):
     """Collector to get violations from OJAudit."""
 
-    def api_url(self, **parameters) -> URL:
-        return URL(parameters["url"])
-
     def landing_url(self, **parameters) -> URL:
         return URL(parameters["url"][:-(len("xml"))] + "html")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = self.parse_source_response(response)
+        tree, namespaces = parse_source_response_xml(response)
         severities = parameters.get("severities", [])
         return self.violation_count(tree, namespaces, severities)
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        tree, namespaces = self.parse_source_response(response)
+        tree, namespaces = parse_source_response_xml(response)
         severities = parameters.get("severities", [])
         return self.violations(tree, namespaces, severities)
-
-    @staticmethod
-    def parse_source_response(response: requests.Response) -> Tuple[Element, Namespaces]:
-        """Parse the XML from the source response."""
-        tree = xml.etree.cElementTree.fromstring(response.text)
-        # ElementTree has no API to get the namespace so we extract it from the root tag:
-        namespaces = dict(ns=tree.tag.split('}')[0][1:])
-        return tree, namespaces
 
     @staticmethod
     def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:

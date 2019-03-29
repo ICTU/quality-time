@@ -54,6 +54,10 @@ class RandomNCLOC(Random):
     """Random number of non-commented lines of code."""
 
 
+class RandomSecurityWarnings(Random):
+    """Random number of security warnings."""
+
+
 class RandomTests(Random):
     """Random number of tests."""
 
