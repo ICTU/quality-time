@@ -9,6 +9,8 @@ import Gitlab from './logos/gitlab.png';
 import HQ from './logos/hq.png';
 import Jenkins from './logos/jenkins.png';
 import Jira from './logos/jira.png';
+import OWASPDependencyCheck from './logos/owasp_dependency_check.png';
+import OWASPZAP from './logos/owasp_zap.png';
 import Sonarqube from './logos/sonarqube.png';
 
 class Source extends Component {
@@ -48,6 +50,8 @@ class Source extends Component {
             hq: HQ,
             jenkins: Jenkins,
             jira: Jira,
+            owasp_dependency_check: OWASPDependencyCheck,
+            owasp_zap: OWASPZAP,
             sonarqube: Sonarqube
         }[props.source.type];
         return (
