@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
-  <site name="http://www.hackazon.gros.ictu" host="www.hackazon.gros.ictu" port="80" ssl="false">
+  <site name="http://www.hackazon.com" host="www.hackazon.com" port="80" ssl="false">
     <alerts>
       <alertitem>
         <pluginid>10021</pluginid>
@@ -12,102 +12,102 @@
         <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/How_to_Marry_a_Millionaire_big_df6c63.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire_big_df6c63.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/15pcs_Nail_Art_Painting_Pen_Brush_big_d36138.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/15pcs_Nail_Art_Painting_Pen_Brush_big_d36138.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=25</uri>
+            <uri>http://www.hackazon.com/category/view?id=25</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Tide_Gentle_HE_Laundry_Detergent_77_Count_small_7fff1b.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Tide_Gentle_HE_Laundry_Detergent_77_Count_small_7fff1b.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Amco_Enameled_Aluminum_Lemon_Squeezer_small_4b571c.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Amco_Enameled_Aluminum_Lemon_Squeezer_small_4b571c.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/js/tools.js</uri>
+            <uri>http://www.hackazon.com/js/tools.js</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=180</uri>
+            <uri>http://www.hackazon.com/product/view?id=180</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/L_Occitane_Aromachologie_Repairing_Mask_6_7_fl_oz_big_639650.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/L_Occitane_Aromachologie_Repairing_Mask_6_7_fl_oz_big_639650.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=26</uri>
+            <uri>http://www.hackazon.com/category/view?id=26</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/user/login?return_url=%2Faccount%2Fdocuments%3Fpage%3Ddelivery.html</uri>
+            <uri>http://www.hackazon.com/user/login?return_url=%2Faccount%2Fdocuments%3Fpage%3Ddelivery.html</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Rizzoli_Isles_big_e1caf9.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Rizzoli_Isles_big_e1caf9.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Baxter_of_California_Soft_Water_Pomade_2_oz_small_a741c9.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Baxter_of_California_Soft_Water_Pomade_2_oz_small_a741c9.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=181</uri>
+            <uri>http://www.hackazon.com/product/view?id=181</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=60</uri>
+            <uri>http://www.hackazon.com/product/view?id=60</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=182</uri>
+            <uri>http://www.hackazon.com/product/view?id=182</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=23</uri>
+            <uri>http://www.hackazon.com/category/view?id=23</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Hobby_Gift_Holiday_Design_Square_Sewing_Basket_Pink_Blue_on_Crea_big_8f5b75.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Hobby_Gift_Holiday_Design_Square_Sewing_Basket_Pink_Blue_on_Crea_big_8f5b75.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/products_pictures/Breville_BES870XL_Barista_Express_Espresso_Machine_big_ae5338.jpg</uri>
+            <uri>http://www.hackazon.com/products_pictures/Breville_BES870XL_Barista_Express_Espresso_Machine_big_ae5338.jpg</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/account/help_articles</uri>
+            <uri>http://www.hackazon.com/account/help_articles</uri>
             <method>GET</method>
             <param>X-Content-Type-Options</param>
           </instance>
@@ -130,102 +130,102 @@
         <desc>&lt;p&gt;No Anti-CSRF tokens were found in a HTML submission form.&lt;/p&gt;&lt;p&gt;A cross-site request forgery is an attack that involves forcing a victim to send an HTTP request to a target destination without their knowledge or intent in order to perform an action as the victim. The underlying cause is application functionality using predictable URL/form actions in a repeatable way. The nature of the attack is that CSRF exploits the trust that a web site has for a user. By contrast, cross-site scripting (XSS) exploits the trust that a user has for a web site. Like XSS, CSRF attacks are not necessarily cross-site, but they can be. Cross-site request forgery is also known as CSRF, XSRF, one-click attack, session riding, confused deputy, and sea surf.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;CSRF attacks are effective in a number of situations, including:&lt;/p&gt;&lt;p&gt;    * The victim has an active session on the target site.&lt;/p&gt;&lt;p&gt;    * The victim is authenticated via HTTP auth on the target site.&lt;/p&gt;&lt;p&gt;    * The victim is on the same local network as the target site.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;CSRF has primarily been used to perform an action against a target site using the victim&apos;s privileges, but recent techniques have been discovered to disclose information by gaining access to the response. The risk of information disclosure is dramatically increased when the target site is vulnerable to XSS, because XSS can be used as a platform for CSRF, allowing the attack to operate within the bounds of the same-origin policy.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=51</uri>
+            <uri>http://www.hackazon.com/product/view?id=51</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist/view/&apos;%20+%20data%5Bi%5D.wishLists%5Bj%5D.id%20+%20&apos;</uri>
+            <uri>http://www.hackazon.com/wishlist/view/&apos;%20+%20data%5Bi%5D.wishLists%5Bj%5D.id%20+%20&apos;</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=164</uri>
+            <uri>http://www.hackazon.com/product/view?id=164</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;cart_form&quot; action=&quot;/cart/add&quot; method=&quot;post&quot; class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=42</uri>
+            <uri>http://www.hackazon.com/product/view?id=42</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;cart_form&quot; action=&quot;/cart/add&quot; method=&quot;post&quot; class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=174</uri>
+            <uri>http://www.hackazon.com/product/view?id=174</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;form&quot; method=&quot;post&quot; class=&quot;signin&quot; action=&quot;/user/login&quot; id=&quot;loginForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=201</uri>
+            <uri>http://www.hackazon.com/product/view?id=201</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=15</uri>
+            <uri>http://www.hackazon.com/category/view?id=15</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;form&quot; method=&quot;post&quot; class=&quot;signin&quot; action=&quot;/user/login&quot; id=&quot;loginForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=116</uri>
+            <uri>http://www.hackazon.com/product/view?id=116</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=173</uri>
+            <uri>http://www.hackazon.com/product/view?id=173</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=99</uri>
+            <uri>http://www.hackazon.com/product/view?id=99</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=52</uri>
+            <uri>http://www.hackazon.com/product/view?id=52</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=163</uri>
+            <uri>http://www.hackazon.com/product/view?id=163</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;cart_form&quot; action=&quot;/cart/add&quot; method=&quot;post&quot; class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=118</uri>
+            <uri>http://www.hackazon.com/product/view?id=118</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/search?brand-filter%5B%5D=5&amp;price-filter=1&amp;quality-filter=9</uri>
+            <uri>http://www.hackazon.com/search?brand-filter%5B%5D=5&amp;price-filter=1&amp;quality-filter=9</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=43</uri>
+            <uri>http://www.hackazon.com/product/view?id=43</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;cart_form&quot; action=&quot;/cart/add&quot; method=&quot;post&quot; class=&quot;form-horizontal&quot; role=&quot;form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=202</uri>
+            <uri>http://www.hackazon.com/product/view?id=202</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=16</uri>
+            <uri>http://www.hackazon.com/category/view?id=16</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;form&quot; method=&quot;post&quot; class=&quot;signin&quot; action=&quot;/user/login&quot; id=&quot;loginForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=117</uri>
+            <uri>http://www.hackazon.com/product/view?id=117</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;search&quot; action=&quot;/search&quot; method=&quot;get&quot; id=&quot;searchForm&quot; &gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=172</uri>
+            <uri>http://www.hackazon.com/product/view?id=172</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=53</uri>
+            <uri>http://www.hackazon.com/product/view?id=53</uri>
             <method>GET</method>
             <evidence>&lt;form class=&quot;form-horizontal js-review-form&quot; role=&quot;form&quot; method=&quot;POST&quot; action=&quot;/review/send&quot; id=&quot;sendForm&quot;&gt;</evidence>
           </instance>
@@ -248,89 +248,89 @@
         <desc>&lt;p&gt;The response appears to contain suspicious comments which may help an attacker.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=139</uri>
+            <uri>http://www.hackazon.com/product/view?id=139</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=18</uri>
+            <uri>http://www.hackazon.com/product/view?id=18</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=39</uri>
+            <uri>http://www.hackazon.com/category/view?id=39</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=38</uri>
+            <uri>http://www.hackazon.com/category/view?id=38</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/search?brand-filter%5B%5D=5&amp;price-filter=1&amp;quality-filter=9</uri>
+            <uri>http://www.hackazon.com/search?brand-filter%5B%5D=5&amp;price-filter=1&amp;quality-filter=9</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=111</uri>
+            <uri>http://www.hackazon.com/product/view?id=111</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=16</uri>
+            <uri>http://www.hackazon.com/product/view?id=16</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=37</uri>
+            <uri>http://www.hackazon.com/category/view?id=37</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/helpdesk/helpdesk.nocache.js</uri>
+            <uri>http://www.hackazon.com/helpdesk/helpdesk.nocache.js</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=17</uri>
+            <uri>http://www.hackazon.com/product/view?id=17</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist/view/&apos;%20+%20data%5Bi%5D.wishLists%5Bj%5D.id%20+%20&apos;</uri>
+            <uri>http://www.hackazon.com/wishlist/view/&apos;%20+%20data%5Bi%5D.wishLists%5Bj%5D.id%20+%20&apos;</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=79</uri>
+            <uri>http://www.hackazon.com/product/view?id=79</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=179</uri>
+            <uri>http://www.hackazon.com/product/view?id=179</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=32</uri>
+            <uri>http://www.hackazon.com/category/view?id=32</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=130</uri>
+            <uri>http://www.hackazon.com/product/view?id=130</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=31</uri>
+            <uri>http://www.hackazon.com/category/view?id=31</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=77</uri>
+            <uri>http://www.hackazon.com/product/view?id=77</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/user/login</uri>
+            <uri>http://www.hackazon.com/user/login</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=131</uri>
+            <uri>http://www.hackazon.com/product/view?id=131</uri>
             <method>GET</method>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=30</uri>
+            <uri>http://www.hackazon.com/category/view?id=30</uri>
             <method>GET</method>
           </instance>
         </instances>
         <count>312</count>
         <solution>&lt;p&gt;Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.&lt;/p&gt;</solution>
-        <otherinfo>&lt;p&gt;&lt;script type=&quot;text/javascript&quot;&gt;&lt;/p&gt;&lt;p&gt;        var App = window.App || {};&lt;/p&gt;&lt;p&gt;        App.config = {&quot;host&quot;:&quot;http:\/\/www.hackazon.gros.ictu&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;3&quot;,&quot;username&quot;:&quot;ZAP&quot;,&quot;first_name&quot;:&quot;ZAP&quot;,&quot;last_name&quot;:&quot;ZAP&quot;,&quot;user_phone&quot;:null,&quot;email&quot;:&quot;foo-bar@example.com&quot;,&quot;created_on&quot;:&quot;2018-10-01 16:21:58&quot;,&quot;photo&quot;:null,&quot;photoUrl&quot;:null},&quot;baseImgPath&quot;:&quot;\/user_pictures\/&quot;,&quot;dataType&quot;:&quot;xml&quot;};&lt;/p&gt;&lt;p&gt;    &lt;/script&gt;&lt;/p&gt;&lt;p&gt;&lt;script type=&quot;text/javascript&quot;&gt;&lt;/p&gt;&lt;p&gt;    jQuery(function ($) {&lt;/p&gt;&lt;p&gt;        $(&apos;.js-review-form&apos;).bootstrapValidator({&lt;/p&gt;&lt;p&gt;            exclude: [&apos;sendreview&apos;],&lt;/p&gt;&lt;p&gt;            feedbackIcons: {&lt;/p&gt;&lt;p&gt;                valid: &apos;glyphicon glyphicon-ok&apos;,&lt;/p&gt;&lt;p&gt;                invalid: &apos;glyphicon glyphicon-remove&apos;,&lt;/p&gt;&lt;p&gt;                validating: &apos;glyphicon glyphicon-refresh&apos;&lt;/p&gt;&lt;p&gt;            },&lt;/p&gt;&lt;p&gt;            container: &apos;tooltip&apos;,&lt;/p&gt;&lt;p&gt;            fields: {&lt;/p&gt;&lt;p&gt;                textReview: {&lt;/p&gt;&lt;p&gt;                    message: &apos;Please write your review&apos;&lt;/p&gt;&lt;p&gt;                },&lt;/p&gt;&lt;p&gt;                userName: {&lt;/p&gt;&lt;p&gt;                    group: &apos;.field-group&apos;&lt;/p&gt;&lt;p&gt;                },&lt;/p&gt;&lt;p&gt;                userEmail: {&lt;/p&gt;&lt;p&gt;                    group: &apos;.field-group&apos;&lt;/p&gt;&lt;p&gt;                }&lt;/p&gt;&lt;p&gt;            }&lt;/p&gt;&lt;p&gt;        });&lt;/p&gt;&lt;p&gt;    });&lt;/p&gt;&lt;p&gt;&lt;/script&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;</otherinfo>
+        <otherinfo>&lt;p&gt;&lt;script type=&quot;text/javascript&quot;&gt;&lt;/p&gt;&lt;p&gt;        var App = window.App || {};&lt;/p&gt;&lt;p&gt;        App.config = {&quot;host&quot;:&quot;http:\/\/www.hackazon.com&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;3&quot;,&quot;username&quot;:&quot;ZAP&quot;,&quot;first_name&quot;:&quot;ZAP&quot;,&quot;last_name&quot;:&quot;ZAP&quot;,&quot;user_phone&quot;:null,&quot;email&quot;:&quot;foo-bar@example.com&quot;,&quot;created_on&quot;:&quot;2018-10-01 16:21:58&quot;,&quot;photo&quot;:null,&quot;photoUrl&quot;:null},&quot;baseImgPath&quot;:&quot;\/user_pictures\/&quot;,&quot;dataType&quot;:&quot;xml&quot;};&lt;/p&gt;&lt;p&gt;    &lt;/script&gt;&lt;/p&gt;&lt;p&gt;&lt;script type=&quot;text/javascript&quot;&gt;&lt;/p&gt;&lt;p&gt;    jQuery(function ($) {&lt;/p&gt;&lt;p&gt;        $(&apos;.js-review-form&apos;).bootstrapValidator({&lt;/p&gt;&lt;p&gt;            exclude: [&apos;sendreview&apos;],&lt;/p&gt;&lt;p&gt;            feedbackIcons: {&lt;/p&gt;&lt;p&gt;                valid: &apos;glyphicon glyphicon-ok&apos;,&lt;/p&gt;&lt;p&gt;                invalid: &apos;glyphicon glyphicon-remove&apos;,&lt;/p&gt;&lt;p&gt;                validating: &apos;glyphicon glyphicon-refresh&apos;&lt;/p&gt;&lt;p&gt;            },&lt;/p&gt;&lt;p&gt;            container: &apos;tooltip&apos;,&lt;/p&gt;&lt;p&gt;            fields: {&lt;/p&gt;&lt;p&gt;                textReview: {&lt;/p&gt;&lt;p&gt;                    message: &apos;Please write your review&apos;&lt;/p&gt;&lt;p&gt;                },&lt;/p&gt;&lt;p&gt;                userName: {&lt;/p&gt;&lt;p&gt;                    group: &apos;.field-group&apos;&lt;/p&gt;&lt;p&gt;                },&lt;/p&gt;&lt;p&gt;                userEmail: {&lt;/p&gt;&lt;p&gt;                    group: &apos;.field-group&apos;&lt;/p&gt;&lt;p&gt;                }&lt;/p&gt;&lt;p&gt;            }&lt;/p&gt;&lt;p&gt;        });&lt;/p&gt;&lt;p&gt;    });&lt;/p&gt;&lt;p&gt;&lt;/script&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;</otherinfo>
         <reference>&lt;p&gt;&lt;/p&gt;</reference>
         <cweid>200</cweid>
         <wascid>13</wascid>
@@ -346,102 +346,102 @@
         <desc>&lt;p&gt;X-Frame-Options header is not included in the HTTP response to protect against &apos;ClickJacking&apos; attacks.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=127</uri>
+            <uri>http://www.hackazon.com/product/view?id=127</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=126</uri>
+            <uri>http://www.hackazon.com/product/view?id=126</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=129</uri>
+            <uri>http://www.hackazon.com/product/view?id=129</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=128</uri>
+            <uri>http://www.hackazon.com/product/view?id=128</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=52</uri>
+            <uri>http://www.hackazon.com/category/view?id=52</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=3</uri>
+            <uri>http://www.hackazon.com/category/view?id=3</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=51</uri>
+            <uri>http://www.hackazon.com/category/view?id=51</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=2</uri>
+            <uri>http://www.hackazon.com/category/view?id=2</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/faq</uri>
+            <uri>http://www.hackazon.com/faq</uri>
             <method>POST</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=50</uri>
+            <uri>http://www.hackazon.com/category/view?id=50</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=5</uri>
+            <uri>http://www.hackazon.com/category/view?id=5</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=4</uri>
+            <uri>http://www.hackazon.com/category/view?id=4</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=45</uri>
+            <uri>http://www.hackazon.com/product/view?id=45</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=7</uri>
+            <uri>http://www.hackazon.com/category/view?id=7</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=46</uri>
+            <uri>http://www.hackazon.com/product/view?id=46</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=6</uri>
+            <uri>http://www.hackazon.com/category/view?id=6</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=43</uri>
+            <uri>http://www.hackazon.com/product/view?id=43</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=9</uri>
+            <uri>http://www.hackazon.com/category/view?id=9</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=44</uri>
+            <uri>http://www.hackazon.com/product/view?id=44</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/category/view?id=8</uri>
+            <uri>http://www.hackazon.com/category/view?id=8</uri>
             <method>GET</method>
             <param>X-Frame-Options</param>
           </instance>
@@ -463,102 +463,102 @@
         <desc>&lt;p&gt;Web Browser XSS Protection is not enabled, or is disabled by the configuration of the &apos;X-XSS-Protection&apos; HTTP response header on the web server&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=161</uri>
+            <uri>http://www.hackazon.com/product/view?id=161</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=87</uri>
+            <uri>http://www.hackazon.com/product/view?id=87</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=160</uri>
+            <uri>http://www.hackazon.com/product/view?id=160</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=40</uri>
+            <uri>http://www.hackazon.com/product/view?id=40</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=88</uri>
+            <uri>http://www.hackazon.com/product/view?id=88</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=85</uri>
+            <uri>http://www.hackazon.com/product/view?id=85</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=163</uri>
+            <uri>http://www.hackazon.com/product/view?id=163</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/account</uri>
+            <uri>http://www.hackazon.com/account</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=162</uri>
+            <uri>http://www.hackazon.com/product/view?id=162</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=86</uri>
+            <uri>http://www.hackazon.com/product/view?id=86</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=165</uri>
+            <uri>http://www.hackazon.com/product/view?id=165</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=43</uri>
+            <uri>http://www.hackazon.com/product/view?id=43</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=164</uri>
+            <uri>http://www.hackazon.com/product/view?id=164</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=44</uri>
+            <uri>http://www.hackazon.com/product/view?id=44</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=167</uri>
+            <uri>http://www.hackazon.com/product/view?id=167</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=41</uri>
+            <uri>http://www.hackazon.com/product/view?id=41</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=89</uri>
+            <uri>http://www.hackazon.com/product/view?id=89</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=166</uri>
+            <uri>http://www.hackazon.com/product/view?id=166</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=42</uri>
+            <uri>http://www.hackazon.com/product/view?id=42</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=169</uri>
+            <uri>http://www.hackazon.com/product/view?id=169</uri>
             <method>GET</method>
             <param>X-XSS-Protection</param>
           </instance>
@@ -581,121 +581,121 @@
         <desc>&lt;p&gt;A cookie has been set without the HttpOnly flag, which means that the cookie can be accessed by JavaScript. If a malicious script can be run on this page then the cookie will be accessible and can be transmitted to another site. If this is a session cookie then session hijacking may be possible.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=8</uri>
+            <uri>http://www.hackazon.com/product/view?id=8</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=34</uri>
+            <uri>http://www.hackazon.com/product/view?id=34</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=156</uri>
+            <uri>http://www.hackazon.com/product/view?id=156</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=7</uri>
+            <uri>http://www.hackazon.com/product/view?id=7</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=33</uri>
+            <uri>http://www.hackazon.com/product/view?id=33</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=157</uri>
+            <uri>http://www.hackazon.com/product/view?id=157</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=32</uri>
+            <uri>http://www.hackazon.com/product/view?id=32</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=154</uri>
+            <uri>http://www.hackazon.com/product/view?id=154</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=9</uri>
+            <uri>http://www.hackazon.com/product/view?id=9</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=31</uri>
+            <uri>http://www.hackazon.com/product/view?id=31</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=79</uri>
+            <uri>http://www.hackazon.com/product/view?id=79</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=155</uri>
+            <uri>http://www.hackazon.com/product/view?id=155</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=152</uri>
+            <uri>http://www.hackazon.com/product/view?id=152</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=30</uri>
+            <uri>http://www.hackazon.com/product/view?id=30</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=78</uri>
+            <uri>http://www.hackazon.com/product/view?id=78</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=153</uri>
+            <uri>http://www.hackazon.com/product/view?id=153</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=77</uri>
+            <uri>http://www.hackazon.com/product/view?id=77</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=150</uri>
+            <uri>http://www.hackazon.com/product/view?id=150</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=76</uri>
+            <uri>http://www.hackazon.com/product/view?id=76</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/product/view?id=198</uri>
+            <uri>http://www.hackazon.com/product/view?id=198</uri>
             <method>GET</method>
             <param>visited_products</param>
             <evidence>Set-Cookie: visited_products</evidence>
@@ -718,32 +718,32 @@
         <desc>&lt;p&gt;Unspecified form action: HTTP parameter override attack potentially possible. This is a known problem with Java Servlets but other platforms may also be vulnerable.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/contact</uri>
+            <uri>http://www.hackazon.com/contact</uri>
             <method>POST</method>
             <evidence>&lt;form role=&quot;form&quot; method=&quot;POST&quot; id=&quot;contactForm&quot; class=&quot;form-horizontal hw-form-contact&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/contact</uri>
+            <uri>http://www.hackazon.com/contact</uri>
             <method>GET</method>
             <evidence>&lt;form role=&quot;form&quot; method=&quot;POST&quot; id=&quot;contactForm&quot; class=&quot;form-horizontal hw-form-contact&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist/?search=ZAP</uri>
+            <uri>http://www.hackazon.com/wishlist/?search=ZAP</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;wishlist_search_form&quot; role=&quot;search&quot; class=&quot;form-inline navbar-form navbar-left search-form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist?search=ZAP</uri>
+            <uri>http://www.hackazon.com/wishlist?search=ZAP</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;wishlist_search_form&quot; role=&quot;search&quot; class=&quot;form-inline navbar-form navbar-left search-form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist</uri>
+            <uri>http://www.hackazon.com/wishlist</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;wishlist_search_form&quot; role=&quot;search&quot; class=&quot;form-inline navbar-form navbar-left search-form&quot;&gt;</evidence>
           </instance>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/wishlist/</uri>
+            <uri>http://www.hackazon.com/wishlist/</uri>
             <method>GET</method>
             <evidence>&lt;form id=&quot;wishlist_search_form&quot; role=&quot;search&quot; class=&quot;form-inline navbar-form navbar-left search-form&quot;&gt;</evidence>
           </instance>
@@ -765,7 +765,7 @@
         <desc>&lt;p&gt;This page contains an error/warning message that may disclose sensitive information like the location of the file that produced the unhandled exception. This information can be used to launch further attacks against the web application. The alert could be a false positive if the error message is found inside a documentation page.&lt;/p&gt;</desc>
         <instances>
           <instance>
-            <uri>http://www.hackazon.gros.ictu/twitter</uri>
+            <uri>http://www.hackazon.com/twitter</uri>
             <method>GET</method>
             <evidence>&lt;b&gt;Fatal error&lt;/b&gt;:  Call to undefined function PHPixie\Auth\Login\curl_init() in &lt;b&gt;/var/www/hackazon/classes/PHPixie/Auth/Login/Twitter.php&lt;/b&gt; on line &lt;b&gt;303&lt;/b&gt;&lt;br /&gt;</evidence>
           </instance>

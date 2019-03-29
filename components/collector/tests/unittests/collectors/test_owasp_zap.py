@@ -14,7 +14,7 @@ class OWASPZAPTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
-            <site name="http://www.hackazon.gros.ictu" host="www.hackazon.gros.ictu" port="80" ssl="false">
+            <site name="http://www.hackazon.com" host="www.hackazon.com" port="80" ssl="false">
                 <alerts>
                     <alertitem>
                         <pluginid>10021</pluginid>
@@ -26,12 +26,12 @@ class OWASPZAPTest(unittest.TestCase):
                         <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;.</desc>
                         <instances>
                             <instance>
-                                <uri>http://www.hackazon.gros.ictu/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
+                                <uri>http://www.hackazon.com/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
                                 <method>GET</method>
                                 <param>X-Content-Type-Options</param>
                             </instance>
                             <instance>
-                                <uri>http://www.hackazon.gros.ictu/products_pictures/How_to_Marry_a_Millionaire_big_df6c63.jpg</uri>
+                                <uri>http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire_big_df6c63.jpg</uri>
                                 <method>GET</method>
                                 <param>X-Content-Type-Options</param>
                             </instance>
