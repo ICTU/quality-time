@@ -130,7 +130,7 @@ npm run install
 npm run start
 ```
 
-In the fifth one, run the testdata server:
+In the fifth one, serve the test data on port 8000 using a webserver, e.g.:
 
 ```console
 cd components/testdata

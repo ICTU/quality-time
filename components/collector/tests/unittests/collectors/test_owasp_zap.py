@@ -23,7 +23,7 @@ class OWASPZAPTest(unittest.TestCase):
                         <riskcode>1</riskcode>
                         <confidence>2</confidence>
                         <riskdesc>Low (Medium)</riskdesc>
-                        <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;. This allows older versions of Internet Explorer and Chrome to perform MIME-sniffing on the response body, potentially causing the response body to be interpreted and displayed as a content type other than the declared content type. Current (early 2014) and legacy versions of Firefox will use the declared content type (if one is set), rather than performing MIME-sniffing.&lt;/p&gt;</desc>
+                        <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;.</desc>
                         <instances>
                             <instance>
                                 <uri>http://www.hackazon.gros.ictu/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
@@ -53,5 +53,9 @@ class OWASPZAPTest(unittest.TestCase):
                                        parameters=dict(url="http://owasp_zap.xml"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
-        self.assertEqual([], response["sources"][0]["units"])
+        self.assertEqual(
+            [dict(key="10021:16:15:3", name="X-Content-Type-Options Header Missing",
+                  description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                  risk="Low (Medium)")],
+            response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])

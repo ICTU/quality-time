@@ -642,7 +642,7 @@
         },
         "owasp_zap": {
             "name": "OWASP ZAP",
-            "description": "The OWASP Zed Attack Proxy (ZAP) is one of the world’s most popular free security tools and is actively maintained by hundreds of international volunteers*. It can help you automatically find security vulnerabilities in your web applications while you are developing and testing your applications. Its also a great tool for experienced pentesters to use for manual security testing.",
+            "description": "The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested.",
             "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
@@ -652,11 +652,39 @@
                     "metrics": [
                         "security_warnings"
                     ]
+                },
+                "risks": {
+                    "name": "Risks",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "informational",
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
                 }
             },
-            "units": {}
+            "units": {
+                "security_warnings": [
+                    {
+                        "name": "Warning",
+                        "key": "name"
+                    },
+                    {
+                        "name": "Risk (Confidence)",
+                        "key": "risk"
+                    },
+                    {
+                        "name": "Description",
+                        "key": "description"
+                    }
+                ]
+            }
         },
-
         "random": {
             "name": "Random",
             "description": "A source that generates random numbers, for testing purposes.",
