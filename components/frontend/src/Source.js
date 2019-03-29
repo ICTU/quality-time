@@ -3,15 +3,7 @@ import { Button, Grid, Header, Icon, Image, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from './fields/StringInput';
-
-import AzureDevops from './logos/azure_devops.png';
-import Gitlab from './logos/gitlab.png';
-import HQ from './logos/hq.png';
-import Jenkins from './logos/jenkins.png';
-import Jira from './logos/jira.png';
-import OWASPDependencyCheck from './logos/owasp_dependency_check.png';
-import OWASPZAP from './logos/owasp_zap.png';
-import Sonarqube from './logos/sonarqube.png';
+import { Logo } from './logos/Logo';
 
 class Source extends Component {
     delete_source(event) {
@@ -44,23 +36,11 @@ class Source extends Component {
     render() {
         const props = this.props;
         const source_type = props.datamodel.sources[props.source.type];
-        const logo = {
-            azure_devops: AzureDevops,
-            gitlab: Gitlab,
-            hq: HQ,
-            jenkins: Jenkins,
-            jira: Jira,
-            owasp_dependency_check: OWASPDependencyCheck,
-            owasp_zap: OWASPZAP,
-            sonarqube: Sonarqube
-        }[props.source.type];
         return (
             <>
                 <Header>
                     <Header.Content>
-                        {logo &&
-                            <Image src={logo} alt={`${source_type.name} logo`} size="mini" spaced="right" />
-                        }
+                        <Logo logo={props.source.type} alt={source_type.name} />
                         {source_type.name}
                         <Header.Subheader>
                             {source_type.description} <a href={source_type.url}><Icon name="external" link /></a>
