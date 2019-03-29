@@ -15,6 +15,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         mock_response.text = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
             <dependency isVirtual="false">
+                <md5>12345</md5>
                 <fileName>jquery.min.js</fileName>
                 <filePath>/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js</filePath>
                 <vulnerabilities>
@@ -33,5 +34,10 @@ class OWASPDependencyCheckTest(unittest.TestCase):
                                        parameters=dict(url="http://owasp_dependency_check.xml"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
-        self.assertEqual([], response["sources"][0]["units"])
+        self.assertEqual(
+            [dict(key="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js:CVE-2012-6708",
+                  name="CVE-2012-6708", severity="Medium",
+                  description="jQuery before 1.9.0 is vulnerable to Cross-site Scripting (XSS) attacks.",
+                  location="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
+            response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])

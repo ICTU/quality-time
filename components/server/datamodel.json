@@ -636,9 +636,41 @@
                     "metrics": [
                         "security_warnings"
                     ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
                 }
             },
-            "units": {}
+            "units": {
+                "security_warnings": [
+                    {
+                        "name": "Warning",
+                        "key": "name"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Description",
+                        "key": "description"
+                    },
+                    {
+                        "name": "Location",
+                        "key": "location"
+                    }
+                ]
+            }
         },
         "owasp_zap": {
             "name": "OWASP ZAP",

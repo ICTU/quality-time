@@ -26,10 +26,11 @@ class Input extends Component {
     }
   }
   render() {
+    let { set_value, ...props } = this.props;
     return (
       <Form>
         <Form.Input
-          {...this.props}
+          {...props}
           fluid
           focus
           onBlur={(e) => this.onSubmit(e)}
