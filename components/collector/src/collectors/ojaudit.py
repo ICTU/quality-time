@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 import requests
 
 from ..collector import Collector
-from ..type import Namespaces, URL, Units, Value
+from ..type import Namespaces, Units, Value
 from ..util import parse_source_response_xml
 
 
@@ -17,9 +17,6 @@ Violation = Dict[str, str]  # Violation attribute key to attribute value mapping
 
 class OJAuditViolations(Collector):
     """Collector to get violations from OJAudit."""
-
-    def landing_url(self, **parameters) -> URL:
-        return URL(parameters["url"][:-(len("xml"))] + "html")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree, namespaces = parse_source_response_xml(response)

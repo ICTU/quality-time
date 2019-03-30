@@ -7,15 +7,12 @@ from xml.etree.cElementTree import Element
 import requests
 
 from ..collector import Collector
-from ..type import Units, URL, Value
+from ..type import Units, Value
 from ..util import parse_source_response_xml
 
 
 class OWASPZAPSecurityWarnings(Collector):
     """Collector to get security warnings from OWASP ZAP."""
-
-    def landing_url(self, **parameters) -> URL:
-        return URL(parameters["url"][:-(len("xml"))] + "html")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(self.alerts(response, **parameters)))

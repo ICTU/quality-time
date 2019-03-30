@@ -52,8 +52,9 @@ class Collector:
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
-        """Translate the urls into the landing urls."""
-        return parameters.get("url", "").strip("/")
+        """Translate the urls into the landing url."""
+        url = parameters.get("url", "").strip("/")
+        return url[:-(len("xml"))] + "html" if url.endswith(".xml") else url
 
     def api_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
         """Translate the url into the API url."""
@@ -73,7 +74,7 @@ class Collector:
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Open the url. Can be overridden if a post rwquest is needed or mmultiple requests need to be made."""
+        """Open the url. Can be overridden if a post request is needed or mmultiple requests need to be made."""
         return requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))
 
     @staticmethod

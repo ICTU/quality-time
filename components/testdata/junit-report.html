@@ -1,0 +1,248 @@
+
+        <html>
+        <head>
+            <title>junit-report.xml - Junit Test Report</title>
+            <style type="text/css">
+              h1 {
+    font-family: sans-serif;
+}
+h2 {
+    font-family: sans-serif;
+}
+
+li > a {
+    font-family: monospace;
+}
+
+body {
+    margin-bottom: 3em;
+}
+
+.testclass > td {
+    border-bottom: 1px solid silver;
+    color: #222222;
+    padding: 3px;
+    font-weight: bold;
+}
+
+.testclass > div {
+    padding-left: 1em;
+}
+
+.testclass > a > div {
+    font-size: 1.3em;
+    font-family: sans-serif;
+}
+
+.testcase > div {
+    border-left: 3px solid black;
+    padding-left: 1em;
+}
+
+.testcase pre {
+    display: block;
+    padding: 4px;
+    margin-right: 1em;
+    background-color: #121212;
+    color: #dedede;
+    white-space: pre-wrap;
+}
+
+.testcase .details b {
+    font-size: 1.2em;
+}
+
+.stdout, .stderr, .property {
+    margin-left: 1em;
+}
+
+.testcase-link {
+    text-decoration: none;
+}
+
+.testcase-cell {
+    height: 1.8em;
+    width: 1.8em;
+    vertical-align: middle;
+    text-align: center;
+}
+.testcase-cell a {
+    display: inline-block;
+    margin: -1em;
+    padding: 1em;
+}
+
+.testcase-combined {
+    white-space: pre;
+    padding-left: 1em;
+}
+
+.skipped {
+    background-color: gold;
+}
+
+.failed {
+    background-color: lightcoral;
+}
+
+.passed {
+    background-color: limegreen;
+}
+
+.tooltip {
+    visibility: hidden;
+    padding: 2px;
+    z-index: 1;
+    position: absolute;
+    background: cornsilk;
+    border: 1px solid black;
+    margin-top: 15px;
+    margin-left: 10px;
+    opacity: 0;
+}
+.tooltip-parent:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.testcase:hover {
+    background-color: gray;
+    color: white;
+}
+
+.result-stats {
+    margin: auto;
+}
+
+            </style>
+        </head><body><h1>Test Report</h1>
+        <div class="testsuite">
+            <h2>Test Suite: tests.ATest</h2><a name="d0d59169-a077-4094-9e44-91ae898ad10d">
+            
+            <table><tr><th>java.vendor</th><td>Sun Microsystems Inc.</td></tr><tr><th>jtreg.home</th><td>/Users/mahmood/research/jtreg</td></tr><tr><th>sun.java.launcher</th><td>SUN_STANDARD</td></tr><tr><th>sun.management.compiler</th><td>HotSpot 64-Bit Server Compiler</td></tr><tr><th>os.name</th><td>Darwin</td></tr><tr><th>sun.boot.class.path</th><td>../../jsr308-langtools/dist/lib/javac.jar:../jsr308-langtools/dist/lib/javac.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/resources.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/rt.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/sunrsasign.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/jce.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/charsets.jar:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/classes</td></tr><tr><th>java.vm.specification.vendor</th><td>Sun Microsystems Inc.</td></tr><tr><th>ant.home</th><td>/usr/share/ant</td></tr><tr><th>bindist.file</th><td>binary/jsr308-all.jar</td></tr><tr><th>java.runtime.version</th><td>1.6.0_03-p3-landonf_19_aug_2008_15_52-b00</td></tr><tr><th>user.name</th><td>mahmood</td></tr><tr><th>user.language</th><td>en</td></tr><tr><th>build</th><td>build</td></tr><tr><th>sun.boot.library.path</th><td>/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/amd64</td></tr><tr><th>ant.project.name</th><td>checkers</td></tr><tr><th>java.version</th><td>1.6.0_03-p3</td></tr><tr><th>build.tests</th><td>tests/build</td></tr><tr><th>user.timezone</th><td></td></tr><tr><th>sun.arch.data.model</th><td>64</td></tr><tr><th>java.endorsed.dirs</th><td>/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/endorsed</td></tr><tr><th>sun.cpu.isalist</th><td></td></tr><tr><th>sun.jnu.encoding</th><td>UTF-8</td></tr><tr><th>file.encoding.pkg</th><td>sun.io</td></tr><tr><th>file.separator</th><td>/</td></tr><tr><th>java.specification.name</th><td>Java Platform API Specification</td></tr><tr><th>src.tests</th><td>/Users/mahmood/research/checker-framework/checkers/tests/src/tests/ATest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/AnnotationBuilderTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/BasicEncryptedTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/BasicSuperSubTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/CheckerParameterized.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/CheckerTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/FailingTests.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/FlowTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/FrameworkTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/I18nTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/IGJTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/InterningTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/JavariTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/LockTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/NullnessTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/OIGJTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/ParameterizedCheckerTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/RegexTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/TaintingTest.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/TestInput.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/TestRun.java /Users/mahmood/research/checker-framework/checkers/tests/src/tests/TestUtilities.java</td></tr><tr><th>java.class.version</th><td>50.0</td></tr><tr><th>src</th><td>src</td></tr><tr><th>user.country</th><td>US</td></tr><tr><th>java.home</th><td>/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre</td></tr><tr><th>java.vm.info</th><td>mixed mode</td></tr><tr><th>ant.file</th><td>/Users/mahmood/research/checker-framework/checkers/build.xml</td></tr><tr><th>os.version</th><td>10.2.0</td></tr><tr><th>temp.dir</th><td>binary/buildbin</td></tr><tr><th>path.separator</th><td>:</td></tr><tr><th>java.vm.version</th><td>1.6.0_03-p3-landonf_19_aug_2008_15_52-b00</td></tr><tr><th>checkers.rel.jp</th><td>../checkers</td></tr><tr><th>ant.library.dir</th><td>/usr/share/ant/lib</td></tr><tr><th>dist.doc</th><td>doc</td></tr><tr><th>java.awt.printerjob</th><td>sun.print.PSPrinterJob</td></tr><tr><th>halt.on.test.failure</th><td>true</td></tr><tr><th>sun.io.unicode.encoding</th><td>UnicodeBig</td></tr><tr><th>compiler.exists</th><td>true</td></tr><tr><th>user.home</th><td>/Users/mahmood</td></tr><tr><th>java.specification.vendor</th><td>Sun Microsystems Inc.</td></tr><tr><th>src.files.spaceseparated</th><td>/Users/mahmood/research/checker-framework/checkers/src/checkers/basetype/BaseTypeChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/basetype/BaseTypeVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/basetype/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/basic/BasicChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/flow/Flow.java /Users/mahmood/research/checker-framework/checkers/src/checkers/flow/GenKillBits.java /Users/mahmood/research/checker-framework/checkers/src/checkers/flow/Location.java /Users/mahmood/research/checker-framework/checkers/src/checkers/flow/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/I18nChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/KeyLookupAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/KeyLookupChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/SubI18Checker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/quals/LocalizableKey.java /Users/mahmood/research/checker-framework/checkers/src/checkers/i18n/quals/Localized.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/IGJAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/IGJBottom.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/IGJChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/IGJVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/Assignable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/AssignsFields.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/I.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/Immutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/Mutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/ReadOnly.java /Users/mahmood/research/checker-framework/checkers/src/checkers/igj/quals/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/InterningAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/InterningChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/InterningVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/quals/Interned.java /Users/mahmood/research/checker-framework/checkers/src/checkers/interning/quals/PolyInterned.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/JavariAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/JavariChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/JavariVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/Assignable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/Mutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/PolyRead.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/QReadOnly.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/ReadOnly.java /Users/mahmood/research/checker-framework/checkers/src/checkers/javari/quals/ThisMutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/LinearAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/LinearChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/LinearVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/quals/Linear.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/quals/Normal.java /Users/mahmood/research/checker-framework/checkers/src/checkers/linear/quals/Unusable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/lock/LockAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/lock/LockChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/lock/LockVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/lock/quals/GuardedBy.java /Users/mahmood/research/checker-framework/checkers/src/checkers/lock/quals/Holding.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/CollectionToArrayHeuristics.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/MapGetHeuristics.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessFlow.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessSubchecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/NullnessVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/RawnessSubchecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/AssertNonNull.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/AssertNonNullIfTrue.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/LazyNonNull.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/NonNull.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/NonNullVariable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/NonRaw.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/Nullable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/PolyNull.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/PolyRaw.java /Users/mahmood/research/checker-framework/checkers/src/checkers/nullness/quals/Raw.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/ImmutabilityAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/ImmutabilitySubchecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/ImmutabilityVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/OIGJChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/OIGJMutabilityBottom.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/OwnershipAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/OwnershipSubchecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/OwnershipVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/Assignable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/AssignsFields.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/Dominator.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/I.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/Immutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/Modifier.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/Mutable.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/O.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/ReadOnly.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/WildCard.java /Users/mahmood/research/checker-framework/checkers/src/checkers/oigj/quals/World.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/DefaultLocation.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/DefaultQualifier.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/DefaultQualifierInHierarchy.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/DefaultQualifiers.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/Dependent.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/ImplicitFor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/PolymorphicQualifier.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/SubtypeOf.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/TypeQualifier.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/TypeQualifiers.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/Unqualified.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/Unused.java /Users/mahmood/research/checker-framework/checkers/src/checkers/quals/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/regex/RegexAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/regex/RegexChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/regex/quals/Regex.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/Result.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/SourceChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/SourceVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/SupportedLintOptions.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/SuppressWarningsKey.java /Users/mahmood/research/checker-framework/checkers/src/checkers/source/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/tainting/TaintingAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/tainting/TaintingChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/tainting/quals/PolyTainted.java /Users/mahmood/research/checker-framework/checkers/src/checkers/tainting/quals/Tainted.java /Users/mahmood/research/checker-framework/checkers/src/checkers/tainting/quals/Untainted.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/AnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/AnnotatedTypeMirror.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/AnnotatedTypes.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/BasicAnnotatedTypeFactory.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/QualifierHierarchy.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/TreeAnnotator.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/TypeAnnotator.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/TypeFromElement.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/TypeFromTree.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/TypeHierarchy.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/VisitorState.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/package-info.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/visitors/AnnotatedTypeComparer.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/visitors/AnnotatedTypeScanner.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/visitors/AnnotatedTypeVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/visitors/SimpleAnnotatedTypeScanner.java /Users/mahmood/research/checker-framework/checkers/src/checkers/types/visitors/SimpleAnnotatedTypeVisitor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/AggregateChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/AnnotationUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/DependentTypes.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/ElementUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/GraphQualifierHierarchy.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/Heuristics.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/InternalUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/QualifierDefaults.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/QualifierPolymorphism.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/TreeUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/TypesUtils.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/count/AnnotationsCounter.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/count/Locations.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/debug/EmptyProcessor.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/debug/SignaturePrinter.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/debug/TreeDebug.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/stub/Skeleton.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/stub/StubGenerator.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/stub/StubParser.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/stub/StubUtil.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/Critical.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/Encrypted.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/FactoryTestChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/FlowTestChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/Odd.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/PolyEncrypted.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/SubQual.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/SuperQual.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/TestChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/TypeOutputtingChecker.java /Users/mahmood/research/checker-framework/checkers/src/checkers/util/test/package-info.java /Users/mahmood/research/checker-framework/checkers/src/edu/umd/cs/findbugs/annotations/CheckForNull.java /Users/mahmood/research/checker-framework/checkers/src/edu/umd/cs/findbugs/annotations/NonNull.java /Users/mahmood/research/checker-framework/checkers/src/edu/umd/cs/findbugs/annotations/Nullable.java /Users/mahmood/research/checker-framework/checkers/src/edu/umd/cs/findbugs/annotations/UnknownNullness.java /Users/mahmood/research/checker-framework/checkers/src/javax/annotation/CheckForNull.java /Users/mahmood/research/checker-framework/checkers/src/javax/annotation/Nonnull.java /Users/mahmood/research/checker-framework/checkers/src/javax/annotation/Nullable.java /Users/mahmood/research/checker-framework/checkers/src/net/jcip/annotations/GuardedBy.java /Users/mahmood/research/checker-framework/checkers/src/net/jcip/annotations/Immutable.java /Users/mahmood/research/checker-framework/checkers/src/net/jcip/annotations/NotThreadSafe.java /Users/mahmood/research/checker-framework/checkers/src/net/jcip/annotations/ThreadSafe.java /Users/mahmood/research/checker-framework/checkers/src/org/jetbrains/annotations/NotNull.java /Users/mahmood/research/checker-framework/checkers/src/org/jetbrains/annotations/Nullable.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/CheckForNull.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/NonNull.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/NullAllowed.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/NullUnknown.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/SuppressWarnings.java /Users/mahmood/research/checker-framework/checkers/src/org/netbeans/api/annotations/common/package-info.java</td></tr><tr><th>java.library.path</th><td>/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/amd64/server:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/amd64:/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/../lib/amd64:/usr/java/packages/lib/amd64:/lib:/usr/lib</td></tr><tr><th>java.vendor.url</th><td>http://java.sun.com/</td></tr><tr><th>javaparser.lib.uptodate</th><td>true</td></tr><tr><th>build.reports</th><td>build/reports</td></tr><tr><th>java.vm.vendor</th><td>Sun Microsystems Inc.</td></tr><tr><th>javac.lib</th><td>../../jsr308-langtools/dist/lib/javac.jar</td></tr><tr><th>run.tests.should.fork</th><td>true</td></tr><tr><th>java.runtime.name</th><td>Java(TM) SE Runtime Environment</td></tr><tr><th>java.class.path</th><td>/Users/mahmood/research/jsr308-langtools/dist/lib/javac.jar:/Users/mahmood/research/checker-framework/jsr308-langtools/dist/lib/javac.jar:/Users/mahmood/research/checker-framework/checkers/tests/build:/Users/mahmood/research/checker-framework/checkers/tests/junit-4.7.jar:/Users/mahmood/research/checker-framework/checkers/build:/usr/share/java/ant-1.7.1/lib/ant-launcher.jar:/usr/share/ant/lib/ant.jar:/usr/share/ant/lib/ant-junit.jar</td></tr><tr><th>jsr308.langtools</th><td>../../jsr308-langtools</td></tr><tr><th>ant.version</th><td>Apache Ant version 1.7.1 compiled on September 22 2009</td></tr><tr><th>annotation-utils.lib</th><td>../annotation-file-utilities/annotation-file-utilities.jar:lib/asmx.jar</td></tr><tr><th>src.astub.files.uptodate</th><td>true</td></tr><tr><th>compiler.version</th><td>javac 1.7.0-jsr308-1.0.2</td></tr><tr><th>checkers.jar.file</th><td>checkers.jar</td></tr><tr><th>build.jtreg.dir</th><td>build/jtreg</td></tr><tr><th>java.vm.specification.name</th><td>Java Virtual Machine Specification</td></tr><tr><th>tmpdir</th><td>/var/tmp//mahmood/checkers</td></tr><tr><th>java.vm.specification.version</th><td>1.0</td></tr><tr><th>sun.cpu.endian</th><td>little</td></tr><tr><th>sun.os.patch.level</th><td>unknown</td></tr><tr><th>build.version</th><td>1.0.3</td></tr><tr><th>tests</th><td>tests</td></tr><tr><th>java.io.tmpdir</th><td>/var/tmp/</td></tr><tr><th>javaparser.lib</th><td>lib/javaparser.jar</td></tr><tr><th>java.vendor.url.bug</th><td>http://java.sun.com/cgi-bin/bugreport.cgi</td></tr><tr><th>javaparser.loc</th><td>../javaparser</td></tr><tr><th>compiler.version.goal</th><td>javac 1.7.0-jsr308-1.0.3</td></tr><tr><th>jp.project</th><td>true</td></tr><tr><th>os.arch</th><td>amd64</td></tr><tr><th>java.awt.graphicsenv</th><td>sun.awt.X11GraphicsEnvironment</td></tr><tr><th>ant.file.checkers</th><td>/Users/mahmood/research/checker-framework/checkers/build.xml</td></tr><tr><th>java.ext.dirs</th><td>/System/Library/Frameworks/JavaVM.framework/Versions/soylatte16-amd64-1.0.3/jre/lib/ext:/usr/java/packages/lib/ext</td></tr><tr><th>javadoc.lib</th><td>../../jsr308-langtools/dist/lib/javadoc.jar:../../jsr308-langtools/dist/lib/doclets.jar</td></tr><tr><th>user.dir</th><td>/Users/mahmood/research/checker-framework/checkers</td></tr><tr><th>checkers.lib</th><td>checkers.jar</td></tr><tr><th>line.separator</th><td> </td></tr><tr><th>compiler.lib</th><td>../../jsr308-langtools/dist/lib/javac.jar:../jsr308-langtools/dist/lib/javac.jar</td></tr><tr><th>java.vm.name</th><td>Java HotSpot(TM) 64-Bit Server VM</td></tr><tr><th>basedir</th><td>/Users/mahmood/research/checker-framework/checkers</td></tr><tr><th>tests.junit</th><td>tests/junit-4.7.jar</td></tr><tr><th>javari.jdk.build</th><td>jdk/javari/build</td></tr><tr><th>ant.java.version</th><td>1.6</td></tr><tr><th>ant.core.lib</th><td>/usr/share/ant/lib/ant.jar</td></tr><tr><th>file.encoding</th><td>UTF-8</td></tr><tr><th>dist.annos.file</th><td>checkers-quals.jar</td></tr><tr><th>javari.jdk.src</th><td>jdk/javari/src</td></tr><tr><th>java.specification.version</th><td>1.6</td></tr></table>
+            <table>
+            <tr><th align="left">Duration</th><td align="right">0.069 sec</td></tr>
+            <tr><th align="left">Test Cases</th><td align="right">3</td></tr>
+            <tr><th align="left">Failures</th><td align="right">2</td></tr>
+            
+            <tr><th colspan='2' align='left'>Output</th></tr><tr><td>Stdout</td><td><pre>here
+</pre></td></tr>
+            </table>
+            <a name="toc"></a>
+            <h2>Results Index</h2>
+            
+        <ul>
+            
+            <li>Failures
+            <ul>
+                    <li>
+                        <a href="#d1fcb229-4fa3-4584-aba9-d464cd349c69">tests.ATest.error</a>
+                    </li>
+                    
+                    <li>
+                        <a href="#c592395a-0e93-49db-b1b6-41f28ea82d77">tests.ATest.fail</a>
+                    </li>
+                    </ul>
+            </li>
+            
+            
+            <li>All Test Classes
+            <ul>
+            <li>
+                <a href="#dfcb0253-798d-4371-8f65-e59aca6d494a">tests.ATest</a>
+                <ul>
+                
+                    <li>
+                        <a href="#d1fcb229-4fa3-4584-aba9-d464cd349c69">error</a>
+                    </li>
+                    
+                    <li>
+                        <a href="#c592395a-0e93-49db-b1b6-41f28ea82d77">fail</a>
+                    </li>
+                    
+                    <li>
+                        <a href="#8ad93ec8-4d5e-412e-aa4d-96fe9377e58c">sucess</a>
+                    </li>
+                    
+                </ul>
+            </li>
+            </ul>
+            </li>
+        </ul>
+        
+            <hr size="2"/>
+            <h2>Test Results</h2>
+            <div class="testclasses">
+            
+        <hr size="2"/>
+        <a name="dfcb0253-798d-4371-8f65-e59aca6d494a">
+        <div class="testclass">
+            <div>Test Class: tests.ATest</div>
+            <div class="testcases">
+            
+    <a name="d1fcb229-4fa3-4584-aba9-d464cd349c69">
+        <div class="testcase">
+            <div class="details">
+                <span class="testname"><b>error</b></span><br/>
+                <span class="testclassname">tests.ATest</span><br/>
+                <span class="duration">Time Taken: 0.006s</span>
+            </div>
+            
+            
+            <hr size="1"/>
+            <div class="failure"><b>Failed: </b><br/>
+                <pre>java.lang.RuntimeException
+	at tests.ATest.error(ATest.java:11)
+</pre>
+            </div>
+            
+            <hr size="1"/>
+            
+            
+        </div>
+    </a>
+        
+    <a name="c592395a-0e93-49db-b1b6-41f28ea82d77">
+        <div class="testcase">
+            <div class="details">
+                <span class="testname"><b>fail</b></span><br/>
+                <span class="testclassname">tests.ATest</span><br/>
+                <span class="duration">Time Taken: 0.002s</span>
+            </div>
+            
+            
+            <hr size="1"/>
+            <div class="failure"><b>Failed: </b><br/>
+                <pre>junit.framework.AssertionFailedError: 
+	at tests.ATest.fail(ATest.java:9)
+</pre>
+            </div>
+            
+            <hr size="1"/>
+            
+            
+        </div>
+    </a>
+        
+    <a name="8ad93ec8-4d5e-412e-aa4d-96fe9377e58c">
+        <div class="testcase">
+            <div class="details">
+                <span class="testname"><b>sucess</b></span><br/>
+                <span class="testclassname">tests.ATest</span><br/>
+                <span class="duration">Time Taken: 0.0s</span>
+            </div>
+            
+            
+            <hr size="1"/>
+            
+            
+        </div>
+    </a>
+        
+            </div>
+        </div>
+        </a>
+        
+            </div>
+        </div>
+        </body></html>

@@ -66,7 +66,7 @@ def import_report(filename: str, database: Database) -> None:
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
     # Until multiple reports can be configured via the front-end, we load example reports on start up
-    for filename in glob.glob("example-report-*.json"):
+    for filename in glob.glob("example-reports/example-report*.json"):
         import_report(filename, database)
 
 
