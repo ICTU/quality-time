@@ -18,14 +18,14 @@ class MetricTarget extends Component {
   onSubmit(event) {
     event.preventDefault();
     if (this.state.edited_target !== this.props.target) {
-      this.props.set_metric_attribute("target", this.state.edited_target || 0);
+      this.props.set_value(this.state.edited_target || 0);
     }
   }
   render() {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Group style={{marginBottom: '0px'}}>
-          <Form.Input width={16} label='Metric target' focus type="number" min="0" value={this.state.edited_target || 0}
+          <Form.Input width={16} label={this.props.label} focus type="number" min="0" value={this.state.edited_target || 0}
             onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} onBlur={(e) => this.onSubmit(e)}
             labelPosition='right' readOnly={this.props.readOnly}>
             <Label basic>{this.props.direction}</Label>
