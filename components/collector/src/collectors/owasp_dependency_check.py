@@ -6,15 +6,12 @@ from xml.etree.cElementTree import Element
 import requests
 
 from ..collector import Collector
-from ..type import Namespaces, Units, URL, Value
+from ..type import Namespaces, Units, Value
 from ..util import parse_source_response_xml
 
 
 class OWASPDependencyCheckSecurityWarnings(Collector):
     """Collector to get security warnings from OWASP Dependency Check."""
-
-    def landing_url(self, **parameters) -> URL:
-        return URL(parameters["url"][:-(len("xml"))] + "html")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree, namespaces = parse_source_response_xml(response)
