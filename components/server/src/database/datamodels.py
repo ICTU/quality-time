@@ -10,7 +10,7 @@ from ..util import iso_timestamp, uuid
 def latest_datamodel(max_iso_timestamp: str, database):
     """Return the latest data model."""
     datamodel = database.datamodels.find_one(
-        {"timestamp": {"$lt": max_iso_timestamp}}, sort=[("timestamp", pymongo.DESCENDING)])
+        {"timestamp": {"$lte": max_iso_timestamp}}, sort=[("timestamp", pymongo.DESCENDING)])
     if datamodel:
         datamodel["_id"] = str(datamodel["_id"])
     return datamodel

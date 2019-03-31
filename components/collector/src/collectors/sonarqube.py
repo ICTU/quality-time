@@ -11,14 +11,13 @@ from ..type import URL, Units, Value
 class SonarQubeViolations(Collector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
+    rules_parameter = None
+
     def landing_url(self, **parameters) -> URL:
         url = super().landing_url(**parameters)
         component = parameters.get("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
-        rules = parameters.get("rules")
-        if rules:
-            landing_url += f"&rules={','.join(rules)}"
-        return URL(landing_url)
+        return URL(landing_url + self.rules_url_parameter(**parameters))
 
     def api_url(self, **parameters) -> URL:
         url = super().api_url(**parameters)
@@ -32,10 +31,15 @@ class SonarQubeViolations(Collector):
         types = ",".join([violation_type.upper() for violation_type in parameters.get("types", [])])
         if types:
             api += f"&types={types}"
-        rules = parameters.get("rules")
-        if rules:
-            api += f"&rules={','.join(rules)}"
-        return URL(api)
+        return URL(api + self.rules_url_parameter(**parameters))
+
+    def rules_url_parameter(self, **parameters) -> str:
+        """Return the rules url parameter, if any."""
+        if self.rules_parameter:
+            rules = parameters.get(self.rules_parameter)
+            if rules:
+                return f"&rules={','.join(rules)}"
+        return ""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(response.json()["total"])
@@ -58,6 +62,14 @@ class SonarQubeViolations(Collector):
 
 class SonarQubeLongUnits(SonarQubeViolations):
     """SonarQube long methods collector."""
+
+    rules_parameter = "long_unit_rules"
+
+
+class SonarQubeManyParameters(SonarQubeViolations):
+    """SonarQube many parameters methods collector."""
+
+    rules_parameter = "many_parameter_rules"
 
 
 class SonarQubeMetricsBaseClass(Collector):
