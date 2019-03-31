@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Header, Icon } from 'semantic-ui-react';
 import { MetricComment } from './MetricComment';
-import { MetricDebtTarget } from './MetricDebtTarget';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
 import { StringInput } from './fields/StringInput';
@@ -57,8 +56,10 @@ function MetricParameters(props) {
                     <Grid.Column>
                         <MetricTarget
                             direction={metric_type.direction}
+                            label="Metric target"
                             readOnly={props.readOnly}
                             set_metric_attribute={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("target", value)}
                             target={props.metric.target}
                             unit={metric_unit}
                         />
@@ -75,10 +76,11 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <MetricDebtTarget
+                        <MetricTarget
                             direction={metric_type.direction}
+                            label="Metric debt target"
                             readOnly={props.readOnly}
-                            set_metric_attribute={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("debt_target", value)}
                             target={props.metric.debt_target}
                             unit={metric_unit}
                         />
