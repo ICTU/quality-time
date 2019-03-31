@@ -9,7 +9,7 @@ from ..collector import Collector
 from ..type import Unit, Units, Value
 
 
-class JUnit(Collector):
+class JUnitBaseClass(Collector):
     """Base class for JUnit test collectors."""
 
     junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
@@ -25,14 +25,14 @@ class JUnit(Collector):
         raise NotImplementedError  # pragma: nocover
 
 
-class JUnitTests(JUnit):
+class JUnitTests(JUnitBaseClass):
     """Collector to get the number of tests from JUnit XML reports."""
 
     def test_statuses_to_count(self, **parameters) -> List[str]:
         return ["passed"]
 
 
-class JUnitFailedTests(JUnit):
+class JUnitFailedTests(JUnitBaseClass):
     """Collector to get the number of failed tests from JUnit XML reports."""
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
