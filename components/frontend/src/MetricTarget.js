@@ -5,10 +5,10 @@ import { Form, Label } from 'semantic-ui-react';
 class MetricTarget extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_target: this.props.target }
+    this.state = { edited_target: this.props.target || 0 }
   }
   onChange(event) {
-    this.setState({ edited_target: event.target.value || 0});
+    this.setState({ edited_target: event.target.value});
   }
   onKeyDown(event) {
     if (event.key === "Escape") {
@@ -25,9 +25,19 @@ class MetricTarget extends Component {
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.Group style={{marginBottom: '0px'}}>
-          <Form.Input width={16} label={this.props.label} focus type="number" min="0" value={this.state.edited_target || 0}
-            onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} onBlur={(e) => this.onSubmit(e)}
-            labelPosition='right' readOnly={this.props.readOnly}>
+          <Form.Input
+            focus
+            label={this.props.label}
+            labelPosition='right'
+            min="0"
+            type="number"
+            onBlur={(e) => this.onSubmit(e)}
+            onChange={(e) => this.onChange(e)}
+            onKeyDown={(e) => this.onKeyDown(e)}
+            readOnly={this.props.readOnly}
+            value={this.state.edited_target}
+            width={16}
+          >
             <Label basic>{this.props.direction}</Label>
             <input />
             <Label basic>{this.props.unit}</Label>
