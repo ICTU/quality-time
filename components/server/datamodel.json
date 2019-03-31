@@ -93,6 +93,21 @@
                 "maintainability"
             ]
         },
+        "many_parameters": {
+            "name": "Many parameters",
+            "description": "Measure the number of units (functions, methods, procedures) that have too many parameters.",
+            "unit": "units with too many parameters",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
         "ncloc": {
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
@@ -736,6 +751,7 @@
                     "metrics": [
                         "duplicated_lines",
                         "failed_tests",
+                        "many_parameters",
                         "loc",
                         "long_units",
                         "ncloc",
@@ -752,6 +768,7 @@
                     "metrics": [
                         "duplicated_lines",
                         "failed_tests",
+                        "many_parameters",
                         "loc",
                         "long_units",
                         "ncloc",
@@ -761,45 +778,114 @@
                         "violations"
                     ]
                 },
-                "rules": {
+                "many_parameter_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
+                        "c:S107",
+                        "csharpsquid:S107",
+                        "cpp:S107",
+                        "flex:S107",
+                        "javascript:ExcessiveParameterList",
+                        "objc:S107",
+                        "php:S107",
+                        "plsql:PlSql.FunctionAndProcedureExcessiveParameters",
+                        "python:S107",
+                        "squid:S00107",
+                        "tsql:S107",
+                        "typescript:S107"
+                    ],
+                    "values": [
+                        "c:S107",
+                        "csharpsquid:S107",
+                        "csharpsquid:S2436",
+                        "cpp:S107",
+                        "flex:S107",
+                        "javascript:ExcessiveParameterList",
+                        "objc:S107",
+                        "php:S107",
+                        "plsql:PlSql.FunctionAndProcedureExcessiveParameters",
+                        "python:S107",
+                        "squid:S00107",
+                        "tsql:S107",
+                        "typescript:S107"
+                    ],
+                    "metrics": [
+                        "many_parameters"
+                    ]
+                },
+                "long_unit_rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "abap:S104",
+                        "c:FileLoc",
+                        "cpp:FileLoc",
                         "csharpsquid:S104",
                         "csharpsquid:S138",
-                        "csharpsquid:S1151",
+                        "flex:S138",
+                        "go:S104",
+                        "go:S138",
                         "javascript:S104",
                         "javascript:S138",
+                        "kotlin:S104",
+                        "kotlin:S138",
+                        "objc:FileLoc",
+                        "php:S104",
+                        "php:S138",
+                        "php:S2042",
                         "Pylint:R0915",
                         "python:S104",
-                        "squid:S104",
+                        "ruby:S104",
+                        "ruby:S138",
+                        "scala:S104",
+                        "scala:S138",
+                        "squid:S00104",
+                        "squid:S1188",
                         "squid:S138",
                         "squid:S2972",
+                        "swift:S104",
                         "typescript:S104",
                         "typescript:S138",
                         "vbnet:S104",
                         "vbnet:S138",
-                        "vbnet:S1151",
                         "Web:FileLengthCheck",
                         "Web:LongJavaScriptCheck"
                     ],
                     "values": [
+                        "abap:S104",
+                        "c:FileLoc",
+                        "cpp:FileLoc",
                         "csharpsquid:S104",
                         "csharpsquid:S138",
-                        "csharpsquid:S1151",
+                        "flex:S138",
+                        "go:S104",
+                        "go:S138",
                         "javascript:S104",
                         "javascript:S138",
+                        "kotlin:S104",
+                        "kotlin:S138",
+                        "objc:FileLoc",
+                        "php:S104",
+                        "php:S138",
+                        "php:S2042",
                         "Pylint:R0915",
                         "python:S104",
-                        "squid:S104",
+                        "ruby:S104",
+                        "ruby:S138",
+                        "scala:S104",
+                        "scala:S138",
+                        "squid:S00104",
+                        "squid:S1188",
                         "squid:S138",
                         "squid:S2972",
+                        "swift:S104",
                         "typescript:S104",
                         "typescript:S138",
                         "vbnet:S104",
                         "vbnet:S138",
-                        "vbnet:S1151",
                         "Web:FileLengthCheck",
                         "Web:LongJavaScriptCheck"
                     ],
@@ -840,6 +926,25 @@
                 }
             },
             "units": {
+                "many_parameters": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ],
                 "long_units": [
                     {
                         "name": "Message",

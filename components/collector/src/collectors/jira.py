@@ -11,12 +11,12 @@ from ..type import Units, URL, Value
 class JiraIssues(Collector):
     """Collector to get issues from Jira."""
     def api_url(self, **parameters) -> URL:
-        url = parameters.get("url")
+        url = super().api_url(**parameters)
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields=summary")
 
     def landing_url(self, **parameters) -> URL:
-        url = parameters.get("url")
+        url = super().landing_url(**parameters)
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/issues?jql={jql}")
 

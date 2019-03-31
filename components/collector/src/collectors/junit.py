@@ -9,8 +9,8 @@ from ..collector import Collector
 from ..type import Unit, Units, Value
 
 
-class JUnit(Collector):
-    """Base class for JUnit test collectors."""
+class JUnitTests(Collector):
+    """Collector for JUnit tests."""
 
     junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
 
@@ -20,19 +20,12 @@ class JUnit(Collector):
         statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
         return str(sum(int(test_suite.get(status, 0)) for status in statuses for test_suite in test_suites))
 
-    def test_statuses_to_count(self, **parameters) -> List[str]:
+    def test_statuses_to_count(self, **parameters) -> List[str]:  # pylint: disable=no-self-use,unused-argument
         """Return the test statuses to count."""
-        raise NotImplementedError  # pragma: nocover
-
-
-class JUnitTests(JUnit):
-    """Collector to get the number of tests from JUnit XML reports."""
-
-    def test_statuses_to_count(self, **parameters) -> List[str]:
         return ["passed"]
 
 
-class JUnitFailedTests(JUnit):
+class JUnitFailedTests(JUnitTests):
     """Collector to get the number of failed tests from JUnit XML reports."""
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")

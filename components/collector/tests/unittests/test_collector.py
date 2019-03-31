@@ -53,3 +53,10 @@ class CollectorTest(unittest.TestCase):
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
             json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+
+    def test_mssing_collector(self):
+        """Test that an exception is thrown if there's no collector for the source and metric type."""
+        self.mock_response.json.return_value = dict(
+            metric_uuid=dict(type="metric", report_uuid="report_uuid", sources=dict(missing=dict(type="source"))))
+        with patch("requests.get", return_value=self.mock_response):
+            self.assertRaises(LookupError, fetch_measurements, "http://server")

@@ -13,7 +13,7 @@ def collect_measurement(metric) -> Response:
     """Connect to the sources to get and parse the measurement for the metric."""
     source_responses = []
     for source_uuid, source in metric["sources"].items():
-        collector_class = cast(Type[Collector], Collector.get_subclass(f"{source['type']}_{metric['type']}"))
+        collector_class = cast(Type[Collector], Collector.get_subclass(source['type'], metric['type']))
         source_collector = collector_class()
         source_response = source_collector.get(source)
         source_response["source_uuid"] = source_uuid
@@ -35,11 +35,14 @@ class Collector:
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_and_metric: str) -> Type["Collector"]:
-        """Return the subclass registered for the source/metric name."""
-        simplified_class_name = source_and_metric.replace("_", "")
-        matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == simplified_class_name]
-        return matching_subclasses[0] if matching_subclasses else cls
+    def get_subclass(cls, source_type: str, metric_type: str) -> Type["Collector"]:
+        """Return the subclass registered for the source/metric name. First try to find a match on both source type
+        and metric type. If no match is found, return the generic collector for the source type."""
+        for class_name in (f"{source_type}{metric_type}", source_type):
+            matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == class_name.replace("_", "")]
+            if matching_subclasses:
+                return matching_subclasses[0]
+        raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
     def get(self, source) -> Response:
         """Return the measurement response for one source."""
@@ -104,7 +107,7 @@ class Collector:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the measurement for the metric. This method can be overridden by collectors
         to parse the retrieved sources data."""
-        return str(response.text)  # pragma: nocover
+        return str(response.text)
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         # pylint: disable=no-self-use,unused-argument

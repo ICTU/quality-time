@@ -8,35 +8,30 @@ from ..collector import Collector
 from ..type import Unit, Units, URL, Value
 
 
-class JenkinsTestReport(Collector):
+class JenkinsTestReportTests(Collector):
     """Collector to get the amount of tests from a Jenkins test report."""
 
     jenkins_test_report_counts = dict(failed="failCount", passed="passCount", skipped="skipCount")
 
     def api_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/lastSuccessfulBuild/testReport/api/json")
+        return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         json = response.json()
         statuses = [self.jenkins_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
         return str(sum(int(json.get(status, 0)) for status in statuses))
 
-    def test_statuses_to_count(self, **parameters) -> List[str]:
+    @staticmethod
+    def test_statuses_to_count(**parameters) -> List[str]:  # pylint: disable=unused-argument
         """Return the test statuses to count."""
-        raise NotImplementedError  # pragma: nocover
-
-
-class JenkinsTestReportTests(JenkinsTestReport):
-    """Collector to get the amount of tests from a Jenkins test report."""
-
-    def test_statuses_to_count(self, **parameters) -> List[str]:
         return ["failed", "passed", "skipped"]
 
 
-class JenkinsTestReportFailedTests(JenkinsTestReport):
+class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    def test_statuses_to_count(self, **parameters) -> List[str]:
+    @staticmethod
+    def test_statuses_to_count(**parameters) -> List[str]:
         return parameters.get("failure_type") or ["failed", "skipped"]
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
