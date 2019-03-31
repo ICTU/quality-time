@@ -11,7 +11,7 @@ from ..type import URL, Units, Value
 class SonarQubeViolations(Collector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
-    rules_parameter = None
+    rules_parameter = "Subclass responsibility"
 
     def landing_url(self, **parameters) -> URL:
         url = super().landing_url(**parameters)
@@ -35,11 +35,8 @@ class SonarQubeViolations(Collector):
 
     def rules_url_parameter(self, **parameters) -> str:
         """Return the rules url parameter, if any."""
-        if self.rules_parameter:
-            rules = parameters.get(self.rules_parameter)
-            if rules:
-                return f"&rules={','.join(rules)}"
-        return ""
+        rules = parameters.get(self.rules_parameter, [])
+        return f"&rules={','.join(rules)}" if rules else ""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(response.json()["total"])

@@ -12,7 +12,8 @@ class GitlabFailedJobs(Collector):
     """Collector class to get failed job counts from Gitlab."""
 
     def api_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/api/v4/projects/{parameters.get('project')}/"
+        url = super().api_url(**parameters)
+        return URL(f"{url}/api/v4/projects/{parameters.get('project')}/"
                    f"jobs?private_token={parameters.get('private_token')}")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

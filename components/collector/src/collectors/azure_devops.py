@@ -1,5 +1,7 @@
 """Azure Devops Server metric collector."""
 
+from typing import Optional
+
 import requests
 
 from ..collector import Collector
@@ -9,12 +11,12 @@ from ..type import Units, URL, Value
 class AzureDevopsIssues(Collector):
     """Collector to get issues from Azure Devops Server."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.unit_response = None
+    def __init__(self) -> None:
+        super().__init__()
+        self.unit_response: Optional[requests.Response] = None
 
     def api_url(self, **parameters) -> URL:
-        url = parameters.get("url")
+        url = super().api_url(**parameters)
         return URL(f"{url}/_apis/wit/wiql?api-version=4.1")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
