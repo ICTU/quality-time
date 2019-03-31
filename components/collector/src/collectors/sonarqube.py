@@ -57,6 +57,12 @@ class SonarQubeViolations(Collector):
         return URL(f"{url}/project/issues?id={component}&issues={unit_key}&open={unit_key}")
 
 
+class SonarQubeComplexUnits(SonarQubeViolations):
+    """SonarQube long methods collector."""
+
+    rules_parameter = "complex_unit_rules"
+
+
 class SonarQubeLongUnits(SonarQubeViolations):
     """SonarQube long methods collector."""
 

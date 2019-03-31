@@ -1,5 +1,21 @@
 {
     "metrics": {
+        "complex_units": {
+            "name": "Complex units",
+            "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
+            "unit": "complex units",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability",
+                "testability"
+            ]
+        },
         "duplicated_lines": {
             "name": "Duplicated lines",
             "description": "Measure the number of lines that are duplicated.",
@@ -45,7 +61,7 @@
                 "sonarqube"
             ],
             "tags": [
-                "test"
+                "test quality"
             ]
         },
         "issues": {
@@ -135,7 +151,7 @@
                 "sonarqube"
             ],
             "tags": [
-                "test"
+                "test quality"
             ]
         },
         "uncovered_branches": {
@@ -150,7 +166,7 @@
                 "random"
             ],
             "tags": [
-                "test"
+                "test quality"
             ]
         },
         "uncovered_lines": {
@@ -165,7 +181,7 @@
                 "random"
             ],
             "tags": [
-                "test"
+                "test quality"
             ]
         },
         "unused_jobs": {
@@ -314,10 +330,13 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "complex_units",
                         "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
+                        "long_units",
+                        "many_parameters",
                         "ncloc",
                         "security_warnings",
                         "tests",
@@ -330,10 +349,13 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "complex_units",
                         "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
+                        "long_units",
+                        "many_parameters",
                         "ncloc",
                         "security_warnings",
                         "tests",
@@ -749,6 +771,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "complex_units",
                         "duplicated_lines",
                         "failed_tests",
                         "many_parameters",
@@ -766,6 +789,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "complex_units",
                         "duplicated_lines",
                         "failed_tests",
                         "many_parameters",
@@ -776,6 +800,56 @@
                         "uncovered_branches",
                         "uncovered_lines",
                         "violations"
+                    ]
+                },
+                "complex_unit_rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "csharpsquid:S1541",
+                        "csharpsquid:S3776",
+                        "flex:FunctionComplexity",
+                        "javascript:FunctionComplexity",
+                        "javascript:S3776",
+                        "go:S3776",
+                        "kotlin:S3776",
+                        "php:S1541",
+                        "php:S3776",
+                        "python:FunctionComplexity",
+                        "python:S3776",
+                        "ruby:S3776",
+                        "scala:S3776",
+                        "squid:MethodCyclomaticComplexity",
+                        "squid:S3776",
+                        "typescript:S1541",
+                        "typescript:S3776",
+                        "vbnet:S1541",
+                        "vbnet:S3776"
+                    ],
+                    "values": [
+                        "csharpsquid:S1541",
+                        "csharpsquid:S3776",
+                        "flex:FunctionComplexity",
+                        "javascript:FunctionComplexity",
+                        "javascript:S3776",
+                        "go:S3776",
+                        "kotlin:S3776",
+                        "php:S1541",
+                        "php:S3776",
+                        "python:FunctionComplexity",
+                        "python:S3776",
+                        "ruby:S3776",
+                        "scala:S3776",
+                        "squid:MethodCyclomaticComplexity",
+                        "squid:S3776",
+                        "typescript:S1541",
+                        "typescript:S3776",
+                        "vbnet:S1541",
+                        "vbnet:S3776"
+                    ],
+                    "metrics": [
+                        "complex_units"
                     ]
                 },
                 "many_parameter_rules": {
@@ -926,6 +1000,25 @@
                 }
             },
             "units": {
+                "complex_units": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ],
                 "many_parameters": [
                     {
                         "name": "Message",
@@ -991,9 +1084,11 @@
             "name": "Software",
             "description": "A custom software application or component.",
             "metrics": [
+                "complex_units",
                 "duplicated_lines",
                 "failed_tests",
                 "loc",
+                "many_parameters",
                 "long_units",
                 "ncloc",
                 "security_warnings",
