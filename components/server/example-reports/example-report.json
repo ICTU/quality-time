@@ -88,6 +88,17 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "owasp_zap",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/zap-report.xml"
+                            }
+                        }
+                    ]
                 }
             ]
         }

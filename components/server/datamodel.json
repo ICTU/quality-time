@@ -149,6 +149,7 @@
                 "jacoco",
                 "random",
                 "owasp_dependency_check",
+                "owasp_zap",
                 "sonarqube"
             ],
             "tags": [
@@ -738,7 +739,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_freshness"
                     ]
                 },
                 "risks": {

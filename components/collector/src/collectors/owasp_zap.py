@@ -1,9 +1,11 @@
 """OWASP ZAP metric collector."""
 
+from datetime import datetime
 import re
 from typing import List
 from xml.etree.cElementTree import Element
 
+from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
@@ -37,3 +39,12 @@ class OWASPZAPSecurityWarnings(Collector):
             risk_code = dict(informational=0, low=1, medium=2, high=3)[risk]
             alerts.extend(tree.findall(f".//alertitem[riskcode='{risk_code}']"))
         return alerts
+
+
+class OWASPZAPSourceFreshness(Collector):
+    """Collector to collect the OWASP ZAP report age."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        tree, _ = parse_source_response_xml(response)
+        report_datetime = parse(tree.get("generated"))
+        return str((datetime.now() - report_datetime).days)
