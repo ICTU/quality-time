@@ -51,6 +51,17 @@
                     ]
                 },
                 {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "jacoco",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/jacoco-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "security_warnings",
                     "sources": [
                         {

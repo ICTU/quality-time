@@ -146,6 +146,7 @@
             "target": "3",
             "sources": [
                 "hq",
+                "jacoco",
                 "random",
                 "owasp_dependency_check",
                 "sonarqube"
@@ -392,6 +393,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "source_freshness",
                         "uncovered_lines",
                         "uncovered_branches"
                     ]
