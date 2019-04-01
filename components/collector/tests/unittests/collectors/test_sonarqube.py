@@ -95,7 +95,7 @@ class SonarQubeTest(unittest.TestCase):
         self.mock_response.json.return_value = dict(analyses=[dict(date="2019-03-29T14:20:15+0100")])
         metric = dict(type="source_freshness", sources=self.sources)
         tzinfo = timezone(timedelta(hours=1))
-        age = (datetime.now(tzinfo) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=tzinfo)).days
+        expected_age = (datetime.now(tzinfo) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=tzinfo)).days
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
-        self.assertEqual(str(age), response["sources"][0]["value"])
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])

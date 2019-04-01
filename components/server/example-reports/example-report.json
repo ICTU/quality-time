@@ -66,6 +66,17 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "owasp_dependency_check",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/dependency-check-report.xml"
+                            }
+                        }
+                    ]
                 }
             ]
         }

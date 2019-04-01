@@ -1,5 +1,6 @@
 """Unit tests for the OWASP Dependency Check source."""
 
+from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
@@ -41,3 +42,22 @@ class OWASPDependencyCheckTest(unittest.TestCase):
                   location="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
             response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])
+
+    def test_source_freshness(self):
+        """Test that the source age in days is returned."""
+        mock_response = Mock()
+        mock_response.text = """<?xml version="1.0"?>
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
+            <projectInfo>
+                <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
+            </projectInfo>
+        </analysis>"""
+        metric = dict(
+            type="source_freshness",
+            sources=dict(sourceid=dict(type="owasp_dependency_check",
+                                       parameters=dict(url="http://owasp_dependency_check.xml"))))
+        with patch("requests.get", return_value=mock_response):
+            response = collect_measurement(metric)
+        tzinfo = timezone(timedelta(hours=2))
+        expected_age = (datetime.now(tzinfo) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=tzinfo)).days
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])

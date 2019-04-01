@@ -147,6 +147,7 @@
             "sources": [
                 "hq",
                 "random",
+                "owasp_dependency_check",
                 "sonarqube"
             ],
             "tags": [
@@ -686,7 +687,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_freshness"
                     ]
                 },
                 "severities": {
