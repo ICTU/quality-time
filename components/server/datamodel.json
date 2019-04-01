@@ -138,6 +138,20 @@
                 "maintainability"
             ]
         },
+        "source_freshness": {
+            "name": "Source freshness",
+            "description": "Measure the number of days since the source was last updated.",
+            "unit": "days",
+            "direction": "<=",
+            "target": "3",
+            "sources": [
+                "hq",
+                "random"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "tests": {
             "name": "Tests",
             "description": "Measure the size of the test suite.",
@@ -1110,6 +1124,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "source_freshness",
                 "unused_jobs"
             ]
         }
