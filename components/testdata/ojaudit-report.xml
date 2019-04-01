@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE audit [
+  <!ATTLIST category id ID #REQUIRED>
+  <!ATTLIST column id ID #REQUIRED>
+  <!ATTLIST construct id ID #REQUIRED parent IDREF #REQUIRED root (false|true) "false">
+  <!ATTLIST model id ID #REQUIRED>
+  <!ATTLIST location model IDREF #REQUIRED>
+  <!ATTLIST rule id ID #REQUIRED category IDREF #REQUIRED>
+  <!ATTLIST transform id ID #REQUIRED>
+  <!ATTLIST transform-applied transform IDREF #REQUIRED>
+  <!ATTLIST value column IDREF #REQUIRED over-threshold (false|true) "false">
+  <!ATTLIST violation rule IDREF #REQUIRED parent IDREF #REQUIRED suppressed (false|true) "false">
+]>
+
+<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+  <title>Audit Results for FooBar.jws</title>
+  <model-count>3</model-count>
+  <violation-count>10</violation-count>
+  <exception-count>0</exception-count>
+  <error-count>0</error-count>
+  <warning-count>6</warning-count>
+  <incomplete-count>0</incomplete-count>
+  <advisory-count>4</advisory-count>
+  <locations>
+    <location model="d0">
+      <offset>0</offset>
+      <length>443554</length>
+      <line-number>1</line-number>
+      <column-offset>0</column-offset>
+    </location>
+  </locations>
+  <profile>
+    <name>Audit Rules</name>
+    <file>
+      <url>file:/root/.jdeveloper/system12.2.1.2.42.170105.1224/o.jdeveloper/audit/profiles/audit-rules.xml</url>
+      <path>/root/.jdeveloper/system12.2.1.2.42.170105.1224/o.jdeveloper/audit/profiles/audit-rules.xml</path>
+    </file>
+  </profile>
+  <columns>
+    <column id="a1">
+      <name>oracle.ide.audit.severity</name>
+      <label>Severity</label>
+      <description>Severity of issue, or severity of worst contained issue</description>
+      <type>class oracle.javatools.status.Severity</type>
+      <threshold/>
+    </column>
+  </columns>
+  <models>
+    <model id="d0">
+      <file>
+        <url>file:/tmp/FooBar/FooBar.jws</url>
+        <path>/tmp/FooBar/FooBar.jws</path>
+      </file>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>FooBar.jws</label>
+    </model>
+    <model id="d1">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+        <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+      </file>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>FooBarController.jpr</label>
+    </model>
+    <model id="d2">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/</url>
+        <path>/tmp/FooBar/FooBarController/src</path>
+      </file>
+      <package/>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>Application Sources</label>
+    </model>
+    <model id="d3">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/</url>
+        <path>/tmp/FooBar/FooBarController/src/nl</path>
+      </file>
+      <package>nl</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>nl</label>
+    </model>
+    <model id="d4">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/foo/bar/</url>
+        <path>/tmp/FooBar/FooBarController/src/foo/bar</path>
+      </file>
+      <package>nl.foo</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>foo</label>
+    </model>
+    <model id="d5">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/foo/bar/</url>
+        <path>/tmp/FooBar/FooBarController/src/nl/foo/bar</path>
+      </file>
+      <package>foo.bar</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>foobar</label>
+    </model>
+    <model id="d6">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/foo/bar/star/</url>
+        <path>/tmp/FooBar/FooBarController/src/nl/foo/bar/star</path>
+      </file>
+      <package>foo.bar.star</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>star</label>
+    </model>
+    <model id="d7">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/</url>
+        <path>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo</path>
+      </file>
+      <package>foo.bar.star.foo</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>foo</label>
+    </model>
+    <model id="d8">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar/</url>
+        <path>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar</path>
+      </file>
+      <package>foo.bar.star.foo.bar</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>bar</label>
+    </model>
+    <model id="d9">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar/Star.java</url>
+        <path>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar/Star.java</path>
+      </file>
+      <package>foo.bar.star.foo.bar</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>Star.java</label>
+    </model>
+    <model id="d10">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/bar/</url>
+        <path>/tmp/FooBar/FooBarController/bar</path>
+      </file>
+      <package/>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>Web Content</label>
+    </model>
+    <model id="d11">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/foo/bar</url>
+        <path>/tmp/FooBar/FooBarController/bar/pages</path>
+      </file>
+      <package>pages</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>pages</label>
+    </model>
+    <model id="d12">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/foo/bar/</url>
+        <path>/tmp/FooBar/FooBarController/foo/bar</path>
+      </file>
+      <package>pages.foo</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>foo</label>
+    </model>
+    <model id="d13">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/foo/bar/Foo.jsff</url>
+        <path>/tmp/FooBar/FooBarController/foo/bar/Foo.jsff</path>
+      </file>
+      <package>pages.foo</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>Foo.jsff</label>
+    </model>
+    <model id="d14">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/foo/bar/</url>
+        <path>/tmp/FooBar/FooBarController/foo/bar</path>
+      </file>
+      <package>pages.bar</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>bar</label>
+    </model>
+    <model id="d15">
+      <file>
+        <url>file:/tmp/FooBar/FooBarController/foo/bar/foo.jsff</url>
+        <path>/tmp/FooBar/FooBarController/foo/bar/foo.jsff</path>
+      </file>
+      <package>pages.bar</package>
+      <project>
+        <label>FooBarController.jpr</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBarController/FooBarController.jpr</url>
+          <path>/tmp/FooBar/FooBarController/FooBarController.jpr</path>
+        </file>
+      </project>
+      <workspace>
+        <label>FooBar.jws</label>
+        <file>
+          <url>file:/tmp/FooBar/FooBar.jws</url>
+          <path>/tmp/FooBar/FooBar.jws</path>
+        </file>
+      </workspace>
+      <label>foo.jsff</label>
+    </model>
+  </models>
+  <categories>
+    <category id="c0">
+      <name>oracle.jdeveloper.java.serialization</name>
+      <label>Serialization</label>
+      <description>Rules which verify proper usage of &lt;a href="http://download.oracle.com/javase/1,5.0/docs/api/java/io/Serializable.html">serialization&lt;/a>.</description>
+    </category>
+    <category id="c1">
+      <name>oracle.jdeveloper.java.javadoc</name>
+      <label>Javadoc Comments</label>
+      <description>Rules that verify completeness and correctness of Javadoc comments.</description>
+    </category>
+    <category id="c2">
+      <name>oracle.jdeveloper.java.unused</name>
+      <label>Usages</label>
+      <description>Rules which report unused declarations, references to deprecated declarations, and unnecesary code.</description>
+    </category>
+    <category id="c3">
+      <name>oracle.ide.xml.xdf</name>
+      <label>XML Dependency Checking</label>
+      <description>Checks for unused references in XML file</description>
+    </category>
+    <category id="c4">
+      <name>oracle.adf.faces.accessibility</name>
+      <label>Accessibility</label>
+      <description>Checks usage of ADF Faces components to verify that they meet basic accessibility requirements. </description>
+    </category>
+  </categories>
+  <rules>
+    <rule id="r0" category="c0">
+      <name>oracle.jdeveloper.java.serialversionuid-stale</name>
+      <label>Serialization Compatibility Changed</label>
+      <description>JDeveloper will attempt to detect changes that may affect serialization compatibility with older versions of a serializable class. A warning will be issued if such a change is detected. The change detection algorithm is sensitive to changes with respect to fields, implemented interfaces, and superclasses.</description>
+      <severity>warning</severity>
+    </rule>
+    <rule id="r1" category="c1">
+      <name>oracle.jdeveloper.java.tag-is-misplaced</name>
+      <label>Misplaced Tag</label>
+      <description>Tags can only be used on specific types of elements. For example, the &lt;B>@author&lt;/B> tag can be used on classes but not on fields or methods. This rule indicates when a tag is used incorrectly.</description>
+      <severity>warning</severity>
+    </rule>
+    <rule id="r2" category="c2">
+      <name>oracle.jdeveloper.java.unused-parameter</name>
+      <label>Unused Parameter</label>
+      <description>Unused parameters add unnecessary complexity and overhead to clients and should be removed if possible. Removal may not be possible if the method  implements a superclass or interface method which cannot be modified.</description>
+      <severity>warning</severity>
+    </rule>
+    <rule id="r3" category="c1">
+      <name>oracle.jdeveloper.java.tag-is-missing</name>
+      <label>Missing Required Tags</label>
+      <description>Identifies missing required tags. Required tags are defined in Preferences in the Javadoc section under Code Editor.</description>
+      <severity>advisory</severity>
+    </rule>
+    <rule id="r4" category="c3">
+      <name>oracle.ide.xml.brokenref-warning</name>
+      <label>Reference Not Found Warning</label>
+      <description>The referenced object has not been found.</description>
+      <severity>warning</severity>
+    </rule>
+    <rule id="r5" category="c4">
+      <name>oracle.adf.faces.compreqshortdesc</name>
+      <label>Verify that the component has a short description.</label>
+      <description>The 'shortDesc' attribute should be set and non-empty.</description>
+      <severity>warning</severity>
+    </rule>
+  </rules>
+  <transforms>
+  </transforms>
+  <construct id="o0" parent="o0" root="true">
+    <location model="d0">
+      <offset>0</offset>
+      <length>443554</length>
+      <line-number>1</line-number>
+      <column-offset>0</column-offset>
+    </location>
+    <type>class oracle.ide.model.Workspace</type>
+    <kind>Applications (.jws)</kind>
+    <name>file:/tmp/FooBar/FooBar.jws</name>
+    <label>FooBar.jws</label>
+    <values>
+      <value column="a1">warning</value>
+    </values>
+    <children>
+      <construct id="o1" parent="o0">
+        <location model="d1">
+          <offset>0</offset>
+          <length>443554</length>
+          <line-number>1</line-number>
+          <column-offset>0</column-offset>
+        </location>
+        <type>class oracle.ide.model.Project</type>
+        <kind>Projects (.jpr)</kind>
+        <name>file:/tmp/FooBar/FooBarController/FooBarController.jpr</name>
+        <label>FooBarController.jpr</label>
+        <values>
+          <value column="a1">warning</value>
+        </values>
+        <children>
+          <construct id="o2" parent="o1">
+            <location model="d2">
+              <offset>0</offset>
+              <length>443554</length>
+              <line-number>1</line-number>
+              <column-offset>0</column-offset>
+            </location>
+            <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+            <kind>Directories</kind>
+            <name>/tmp/FooBar/FooBarController/src</name>
+            <label>Application Sources</label>
+            <values>
+              <value column="a1">warning</value>
+            </values>
+            <children>
+              <construct id="o3" parent="o2">
+                <location model="d3">
+                  <offset>0</offset>
+                  <length>443554</length>
+                  <line-number>1</line-number>
+                  <column-offset>0</column-offset>
+                </location>
+                <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                <kind>Directories</kind>
+                <name>/tmp/FooBar/FooBarController/src/nl</name>
+                <label>nl</label>
+                <values>
+                  <value column="a1">warning</value>
+                </values>
+                <children>
+                  <construct id="o4" parent="o3">
+                    <location model="d4">
+                      <offset>0</offset>
+                      <length>443554</length>
+                      <line-number>1</line-number>
+                      <column-offset>0</column-offset>
+                    </location>
+                    <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                    <kind>Directories</kind>
+                    <name>/tmp/FooBar/FooBarController/src/foo/bar</name>
+                    <label>foo</label>
+                    <values>
+                      <value column="a1">warning</value>
+                    </values>
+                    <children>
+                      <construct id="o5" parent="o4">
+                        <location model="d5">
+                          <offset>0</offset>
+                          <length>443554</length>
+                          <line-number>1</line-number>
+                          <column-offset>0</column-offset>
+                        </location>
+                        <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                        <kind>Directories</kind>
+                        <name>/tmp/FooBar/FooBarController/src/nl/foo/bar</name>
+                        <label>foobar</label>
+                        <values>
+                          <value column="a1">warning</value>
+                        </values>
+                        <children>
+                          <construct id="o6" parent="o5">
+                            <location model="d6">
+                              <offset>0</offset>
+                              <length>443554</length>
+                              <line-number>1</line-number>
+                              <column-offset>0</column-offset>
+                            </location>
+                            <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                            <kind>Directories</kind>
+                            <name>/tmp/FooBar/FooBarController/src/nl/foo/bar/star</name>
+                            <label>star</label>
+                            <values>
+                              <value column="a1">warning</value>
+                            </values>
+                            <children>
+                              <construct id="o7" parent="o6">
+                                <location model="d7">
+                                  <offset>0</offset>
+                                  <length>443554</length>
+                                  <line-number>1</line-number>
+                                  <column-offset>0</column-offset>
+                                </location>
+                                <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                                <kind>Directories</kind>
+                                <name>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo</name>
+                                <label>foo</label>
+                                <values>
+                                  <value column="a1">warning</value>
+                                </values>
+                                <children>
+                                  <construct id="o8" parent="o7">
+                                    <location model="d8">
+                                      <offset>0</offset>
+                                      <length>443554</length>
+                                      <line-number>1</line-number>
+                                      <column-offset>0</column-offset>
+                                    </location>
+                                    <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                                    <kind>Directories</kind>
+                                    <name>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar</name>
+                                    <label>bar</label>
+                                    <values>
+                                      <value column="a1">warning</value>
+                                    </values>
+                                    <children>
+                                      <construct id="o9" parent="o8">
+                                        <location model="d9">
+                                          <offset>0</offset>
+                                          <length>3951</length>
+                                          <line-number>1</line-number>
+                                          <column-offset>0</column-offset>
+                                        </location>
+                                        <type>interface oracle.javatools.parser.java.v2.model.SourceFile</type>
+                                        <kind>File</kind>
+                                        <name>/tmp/FooBar/FooBarController/src/nl/foo/bar/star/foo/bar/Star.java</name>
+                                        <label>Star.java</label>
+                                        <values>
+                                          <value column="a1">warning</value>
+                                        </values>
+                                        <children>
+                                          <violation parent="o9" rule="r0">
+                                            <location model="d9">
+                                              <offset>701</offset>
+                                              <length>21</length>
+                                              <line-number>24</line-number>
+                                              <column-offset>30</column-offset>
+                                            </location>
+                                            <message>Code change that may affect serialization compatibility detected in class 'Star'</message>
+                                            <values>
+                                              <value column="a1">warning</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r1">
+                                            <location model="d9">
+                                              <offset>1075</offset>
+                                              <length>31</length>
+                                              <line-number>39</line-number>
+                                              <column-offset>7</column-offset>
+                                            </location>
+                                            <message>The '@author' tag is misplaced.</message>
+                                            <values>
+                                              <value column="a1">warning</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r2">
+                                            <location model="d9">
+                                              <offset>1139</offset>
+                                              <length>23</length>
+                                              <line-number>42</line-number>
+                                              <column-offset>25</column-offset>
+                                            </location>
+                                            <message>Parameter 'actionEvent' not used</message>
+                                            <values>
+                                              <value column="a1">warning</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r1">
+                                            <location model="d9">
+                                              <offset>2510</offset>
+                                              <length>31</length>
+                                              <line-number>71</line-number>
+                                              <column-offset>7</column-offset>
+                                            </location>
+                                            <message>The '@author' tag is misplaced.</message>
+                                            <values>
+                                              <value column="a1">warning</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r3">
+                                            <location model="d9">
+                                              <offset>3597</offset>
+                                              <length>106</length>
+                                              <line-number>95</line-number>
+                                              <column-offset>4</column-offset>
+                                            </location>
+                                            <message>Comment tags are missing: @param.</message>
+                                            <values>
+                                              <value column="a1">advisory</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r3">
+                                            <location model="d9">
+                                              <offset>3709</offset>
+                                              <length>72</length>
+                                              <line-number>99</line-number>
+                                              <column-offset>4</column-offset>
+                                            </location>
+                                            <message>Comment tags are missing: @return.</message>
+                                            <values>
+                                              <value column="a1">advisory</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r3">
+                                            <location model="d9">
+                                              <offset>4324</offset>
+                                              <length>90</length>
+                                              <line-number>103</line-number>
+                                              <column-offset>4</column-offset>
+                                            </location>
+                                            <message>Comment tags are missing: @param.</message>
+                                            <values>
+                                              <value column="a1">advisory</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                          <violation parent="o9" rule="r3">
+                                            <location model="d9">
+                                              <offset>3883</offset>
+                                              <length>64</length>
+                                              <line-number>107</line-number>
+                                              <column-offset>4</column-offset>
+                                            </location>
+                                            <message>Comment tags are missing: @return.</message>
+                                            <values>
+                                              <value column="a1">advisory</value>
+                                            </values>
+                                            <transforms-applied>
+                                            </transforms-applied>
+                                          </violation>
+                                        </children>
+                                      </construct>
+                                    </children>
+                                  </construct>
+                                </children>
+                              </construct>
+                            </children>
+                          </construct>
+                        </children>
+                      </construct>
+                    </children>
+                  </construct>
+                </children>
+              </construct>
+            </children>
+          </construct>
+          <construct id="o10" parent="o1">
+            <location model="d10">
+              <offset>0</offset>
+              <length>443554</length>
+              <line-number>1</line-number>
+              <column-offset>0</column-offset>
+            </location>
+            <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+            <kind>Directories</kind>
+            <name>/tmp/FooBar/FooBarController/bar</name>
+            <label>Web Content</label>
+            <values>
+              <value column="a1">warning</value>
+            </values>
+            <children>
+              <construct id="o11" parent="o10">
+                <location model="d11">
+                  <offset>0</offset>
+                  <length>443554</length>
+                  <line-number>1</line-number>
+                  <column-offset>0</column-offset>
+                </location>
+                <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                <kind>Directories</kind>
+                <name>/tmp/FooBar/FooBarController/bar/pages</name>
+                <label>pages</label>
+                <values>
+                  <value column="a1">warning</value>
+                </values>
+                <children>
+                  <construct id="o12" parent="o11">
+                    <location model="d12">
+                      <offset>0</offset>
+                      <length>443554</length>
+                      <line-number>1</line-number>
+                      <column-offset>0</column-offset>
+                    </location>
+                    <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                    <kind>Directories</kind>
+                    <name>/tmp/FooBar/FooBarController/foo/bar</name>
+                    <label>foo</label>
+                    <values>
+                      <value column="a1">warning</value>
+                    </values>
+                    <children>
+                      <construct id="o13" parent="o12">
+                        <location model="d13">
+                          <offset>0</offset>
+                          <length>3389</length>
+                          <line-number>1</line-number>
+                          <column-offset>0</column-offset>
+                        </location>
+                        <type>interface org.w3c.dom.Document</type>
+                        <kind>Document</kind>
+                        <name>/tmp/FooBar/FooBarController/foo/bar/Foo.jsff</name>
+                        <label>Foo.jsff</label>
+                        <values>
+                          <value column="a1">warning</value>
+                        </values>
+                        <children>
+                          <construct id="o14" parent="o13">
+                            <location model="d13">
+                              <offset>39</offset>
+                              <length>3350</length>
+                              <line-number>2</line-number>
+                              <column-offset>0</column-offset>
+                            </location>
+                            <type>interface org.w3c.dom.Element</type>
+                            <kind>Element</kind>
+                            <name>Composition</name>
+                            <label>Composition</label>
+                            <values>
+                              <value column="a1">warning</value>
+                            </values>
+                            <children>
+                              <construct id="o15" parent="o14">
+                                <location model="d13">
+                                  <offset>193</offset>
+                                  <length>5432</length>
+                                  <line-number>3</line-number>
+                                  <column-offset>4</column-offset>
+                                </location>
+                                <type>interface org.w3c.dom.Element</type>
+                                <kind>Element</kind>
+                                <name>Panel Grid Layout - pgl1</name>
+                                <label>Panel Grid Layout - pgl1</label>
+                                <values>
+                                  <value column="a1">warning</value>
+                                </values>
+                                <children>
+                                  <construct id="o16" parent="o15">
+                                    <location model="d13">
+                                      <offset>258</offset>
+                                      <length>3154</length>
+                                      <line-number>4</line-number>
+                                      <column-offset>8</column-offset>
+                                    </location>
+                                    <type>interface org.w3c.dom.Element</type>
+                                    <kind>Element</kind>
+                                    <name>Grid Row</name>
+                                    <label>Grid Row</label>
+                                    <values>
+                                      <value column="a1">warning</value>
+                                    </values>
+                                    <children>
+                                      <construct id="o17" parent="o16">
+                                        <location model="d13">
+                                          <offset>340</offset>
+                                          <length>2935</length>
+                                          <line-number>6</line-number>
+                                          <column-offset>12</column-offset>
+                                        </location>
+                                        <type>interface org.w3c.dom.Element</type>
+                                        <kind>Element</kind>
+                                        <name>Grid Cell</name>
+                                        <label>Grid Cell</label>
+                                        <values>
+                                          <value column="a1">warning</value>
+                                        </values>
+                                        <children>
+                                          <construct id="o18" parent="o17">
+                                            <location model="d13">
+                                              <offset>379</offset>
+                                              <length>2954</length>
+                                              <line-number>7</line-number>
+                                              <column-offset>16</column-offset>
+                                            </location>
+                                            <type>interface org.w3c.dom.Element</type>
+                                            <kind>Element</kind>
+                                            <name>Panel Group Layout - vertical</name>
+                                            <label>Panel Group Layout - vertical</label>
+                                            <values>
+                                              <value column="a1">warning</value>
+                                            </values>
+                                            <children>
+                                              <construct id="o19" parent="o18">
+                                                <location model="d13">
+                                                  <offset>490</offset>
+                                                  <length>979</length>
+                                                  <line-number>8</line-number>
+                                                  <column-offset>20</column-offset>
+                                                </location>
+                                                <type>interface org.w3c.dom.Element</type>
+                                                <kind>Element</kind>
+                                                <name>Panel Group Layout - vertical</name>
+                                                <label>Panel Group Layout - vertical</label>
+                                                <values>
+                                                  <value column="a1">warning</value>
+                                                </values>
+                                                <children>
+                                                  <construct id="o20" parent="o19">
+                                                    <location model="d13">
+                                                      <offset>565</offset>
+                                                      <length>861</length>
+                                                      <line-number>9</line-number>
+                                                      <column-offset>24</column-offset>
+                                                    </location>
+                                                    <type>interface org.w3c.dom.Element</type>
+                                                    <kind>Element</kind>
+                                                    <name>Panel Grid Layout - pgl3</name>
+                                                    <label>Panel Grid Layout - pgl3</label>
+                                                    <values>
+                                                      <value column="a1">warning</value>
+                                                    </values>
+                                                    <children>
+                                                      <construct id="o21" parent="o20">
+                                                        <location model="d13">
+                                                          <offset>651</offset>
+                                                          <length>729</length>
+                                                          <line-number>10</line-number>
+                                                          <column-offset>28</column-offset>
+                                                        </location>
+                                                        <type>interface org.w3c.dom.Element</type>
+                                                        <kind>Element</kind>
+                                                        <name>Grid Row - 35px</name>
+                                                        <label>Grid Row - 35px</label>
+                                                        <values>
+                                                          <value column="a1">warning</value>
+                                                        </values>
+                                                        <children>
+                                                          <construct id="o22" parent="o21">
+                                                            <location model="d13">
+                                                              <offset>735</offset>
+                                                              <length>603</length>
+                                                              <line-number>11</line-number>
+                                                              <column-offset>32</column-offset>
+                                                            </location>
+                                                            <type>interface org.w3c.dom.Element</type>
+                                                            <kind>Element</kind>
+                                                            <name>Grid Cell - 20%</name>
+                                                            <label>Grid Cell - 20%</label>
+                                                            <values>
+                                                              <value column="a1">warning</value>
+                                                            </values>
+                                                            <children>
+                                                              <construct id="o23" parent="o22">
+                                                                <location model="d13">
+                                                                  <offset>841</offset>
+                                                                  <length>450</length>
+                                                                  <line-number>12</line-number>
+                                                                  <column-offset>36</column-offset>
+                                                                </location>
+                                                                <type>interface org.w3c.dom.Element</type>
+                                                                <kind>Element</kind>
+                                                                <name>Panel Group Layout - horizontal</name>
+                                                                <label>Panel Group Layout - horizontal</label>
+                                                                <values>
+                                                                  <value column="a1">warning</value>
+                                                                </values>
+                                                                <children>
+                                                                  <construct id="o24" parent="o23">
+                                                                    <location model="d13">
+                                                                      <offset>1061</offset>
+                                                                      <length>171</length>
+                                                                      <line-number>14</line-number>
+                                                                      <column-offset>40</column-offset>
+                                                                    </location>
+                                                                    <type>interface org.w3c.dom.Element</type>
+                                                                    <kind>Element</kind>
+                                                                    <name>Output Text - #{foo_bar}</name>
+                                                                    <label>Output Text - #{foo_bar}</label>
+                                                                    <values>
+                                                                      <value column="a1">warning</value>
+                                                                    </values>
+                                                                    <children>
+                                                                      <violation parent="o24" rule="r4">
+                                                                        <location model="d13">
+                                                                          <offset>1076</offset>
+                                                                          <length>58</length>
+                                                                          <line-number>14</line-number>
+                                                                          <column-offset>55</column-offset>
+                                                                        </location>
+                                                                        <message>Reference "foo_bar" not found</message>
+                                                                        <values>
+                                                                          <value column="a1">warning</value>
+                                                                        </values>
+                                                                        <transforms-applied>
+                                                                        </transforms-applied>
+                                                                      </violation>
+                                                                    </children>
+                                                                  </construct>
+                                                                </children>
+                                                              </construct>
+                                                            </children>
+                                                          </construct>
+                                                        </children>
+                                                      </construct>
+                                                    </children>
+                                                  </construct>
+                                                </children>
+                                              </construct>
+                                            </children>
+                                          </construct>
+                                        </children>
+                                      </construct>
+                                    </children>
+                                  </construct>
+                                </children>
+                              </construct>
+                            </children>
+                          </construct>
+                        </children>
+                      </construct>
+                    </children>
+                  </construct>
+                  <construct id="o25" parent="o11">
+                    <location model="d14">
+                      <offset>0</offset>
+                      <length>443554</length>
+                      <line-number>1</line-number>
+                      <column-offset>0</column-offset>
+                    </location>
+                    <type>interface oracle.jdeveloper.audit.model.ContentDirectory</type>
+                    <kind>Directories</kind>
+                    <name>/tmp/FooBar/FooBarController/foo/bar</name>
+                    <label>bar</label>
+                    <values>
+                      <value column="a1">warning</value>
+                    </values>
+                    <children>
+                      <construct id="o26" parent="o25">
+                        <location model="d15">
+                          <offset>0</offset>
+                          <length>808</length>
+                          <line-number>1</line-number>
+                          <column-offset>0</column-offset>
+                        </location>
+                        <type>interface org.w3c.dom.Document</type>
+                        <kind>Document</kind>
+                        <name>/tmp/FooBar/FooBarController/foo/bar/foo.jsff</name>
+                        <label>foo.jsff</label>
+                        <values>
+                          <value column="a1">warning</value>
+                        </values>
+                        <children>
+                          <construct id="o27" parent="o26">
+                            <location model="d15">
+                              <offset>39</offset>
+                              <length>767</length>
+                              <line-number>2</line-number>
+                              <column-offset>0</column-offset>
+                            </location>
+                            <type>interface org.w3c.dom.Element</type>
+                            <kind>Element</kind>
+                            <name>Composition</name>
+                            <label>Composition</label>
+                            <values>
+                              <value column="a1">warning</value>
+                            </values>
+                            <children>
+                              <construct id="o28" parent="o27">
+                                <location model="d15">
+                                  <offset>154</offset>
+                                  <length>634</length>
+                                  <line-number>3</line-number>
+                                  <column-offset>4</column-offset>
+                                </location>
+                                <type>interface org.w3c.dom.Element</type>
+                                <kind>Element</kind>
+                                <name>Panel Group Layout</name>
+                                <label>Panel Group Layout</label>
+                                <values>
+                                  <value column="a1">warning</value>
+                                </values>
+                                <children>
+                                  <construct id="o29" parent="o28">
+                                    <location model="d15">
+                                      <offset>326</offset>
+                                      <length>120</length>
+                                      <line-number>6</line-number>
+                                      <column-offset>8</column-offset>
+                                    </location>
+                                    <type>interface org.w3c.dom.Element</type>
+                                    <kind>Element</kind>
+                                    <name>Inline Frame</name>
+                                    <label>Inline Frame</label>
+                                    <values>
+                                      <value column="a1">warning</value>
+                                    </values>
+                                    <children>
+                                      <violation parent="o29" rule="r5">
+                                        <location model="d15">
+                                          <offset>326</offset>
+                                          <length>120</length>
+                                          <line-number>6</line-number>
+                                          <column-offset>8</column-offset>
+                                        </location>
+                                        <message>The 'shortDesc' attribute should be set and non-empty.</message>
+                                        <values>
+                                          <value column="a1">warning</value>
+                                        </values>
+                                        <transforms-applied>
+                                        </transforms-applied>
+                                      </violation>
+                                    </children>
+                                  </construct>
+                                </children>
+                              </construct>
+                            </children>
+                          </construct>
+                        </children>
+                      </construct>
+                    </children>
+                  </construct>
+                </children>
+              </construct>
+            </children>
+          </construct>
+        </children>
+      </construct>
+    </children>
+  </construct>
+</audit>

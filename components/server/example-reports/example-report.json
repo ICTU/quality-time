@@ -110,6 +110,17 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "violations",
+                    "sources": [
+                        {
+                            "type": "ojaudit",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/ojaudit-report.xml"
+                            }
+                        }
+                    ]
                 }
             ]
         }
