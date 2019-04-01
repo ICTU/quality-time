@@ -146,7 +146,8 @@
             "target": "3",
             "sources": [
                 "hq",
-                "random"
+                "random",
+                "sonarqube"
             ],
             "tags": [
                 "ci"
@@ -792,6 +793,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
+                        "source_freshness",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -810,6 +812,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
+                        "source_freshness",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -1106,6 +1109,7 @@
                 "long_units",
                 "ncloc",
                 "security_warnings",
+                "source_freshness",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",
@@ -1116,7 +1120,8 @@
             "name": "Process",
             "description": "A software development and/or maintenance process.",
             "metrics": [
-                "issues"
+                "issues",
+                "source_freshness"
             ]
         },
         "ci": {

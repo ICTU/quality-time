@@ -1,7 +1,9 @@
 """Collectors for SonarQube."""
 
+from datetime import datetime, timezone
 from typing import Dict
 
+from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..collector import Collector
@@ -81,12 +83,14 @@ class SonarQubeMetricsBaseClass(Collector):
     metricKeys = "Subclass responsibility"
 
     def landing_url(self, **parameters) -> URL:
-        return URL(f"{parameters.get('url')}/component_measures"
-                   f"?id={parameters.get('component')}&metric={self.metricKeys}")
+        url = super().landing_url(**parameters)
+        component = parameters.get("component")
+        return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
     def api_url(self, **parameters) -> URL:
+        url = super().api_url(**parameters)
         component = parameters.get("component")
-        return URL(f"{parameters.get('url')}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(self._get_metrics(response)[self.metricKeys])
@@ -138,3 +142,20 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
     metricKeys = "uncovered_conditions"
+
+
+class SonarQubeSourceFreshness(Collector):
+    """SonarQube source freshness."""
+
+    def api_url(self, **parameters) -> URL:
+        url = super().api_url(**parameters)
+        component = parameters.get("component")
+        return URL(f"{url}/api/project_analyses/search?project={component}")
+
+    def landing_url(self, **parameters) -> URL:
+        url = super().landing_url(**parameters)
+        component = parameters.get("component")
+        return URL(f"{url}/project/activity?id={component}")
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str((datetime.now(timezone.utc) - isoparse(response.json()["analyses"][0]["date"])).days)
