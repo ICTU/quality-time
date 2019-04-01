@@ -147,6 +147,7 @@
             "sources": [
                 "hq",
                 "jacoco",
+                "junit",
                 "random",
                 "owasp_dependency_check",
                 "owasp_zap",
@@ -584,6 +585,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
+                        "source_freshness",
                         "tests"
                     ]
                 },

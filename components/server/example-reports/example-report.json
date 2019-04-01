@@ -29,6 +29,17 @@
                     ]
                 },
                 {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "junit",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/junit-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "uncovered_lines",
                     "sources": [
                         {

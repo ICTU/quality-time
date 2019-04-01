@@ -36,7 +36,7 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
 
 
 class JacocoSourceFreshness(Collector):
-    """Collector to collectl the Jacoco report age."""
+    """Collector to collect the Jacoco report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree = xml.etree.cElementTree.fromstring(response.text)

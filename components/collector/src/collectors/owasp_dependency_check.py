@@ -43,7 +43,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
 
 
 class OWASPDependencyCheckSourceFreshness(Collector):
-    """Collector to collectl the OWASP Dependency Check report age."""
+    """Collector to collect the OWASP Dependency Check report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         tree, namespaces = parse_source_response_xml(response)

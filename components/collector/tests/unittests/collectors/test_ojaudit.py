@@ -126,8 +126,8 @@ class OJAuditTest(unittest.TestCase):
   </construct>
 </audit>"""
         metric = dict(
-             type="violations",
-             sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml", severities=["high"]))))
+            type="violations",
+            sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml", severities=["high"]))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         self.assertEqual("0", response["sources"][0]["value"])
