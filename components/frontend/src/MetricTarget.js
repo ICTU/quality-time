@@ -7,6 +7,11 @@ class MetricTarget extends Component {
     super(props);
     this.state = { edited_target: this.props.target || 0 }
   }
+  componentDidUpdate(prevProps) {
+    if (prevProps.target !== this.props.target) {
+      this.setState({ edited_target: this.props.target })
+    }
+  }
   onChange(event) {
     this.setState({ edited_target: event.target.value});
   }
