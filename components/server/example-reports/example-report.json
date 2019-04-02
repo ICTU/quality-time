@@ -29,6 +29,17 @@
                     ]
                 },
                 {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "junit",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/junit-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "uncovered_lines",
                     "sources": [
                         {
@@ -51,6 +62,17 @@
                     ]
                 },
                 {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "jacoco",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/jacoco-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "security_warnings",
                     "sources": [
                         {
@@ -63,6 +85,39 @@
                             "type": "owasp_zap",
                             "parameters": {
                                 "url": "http://0.0.0.0:8000/zap-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "owasp_dependency_check",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/dependency-check-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "owasp_zap",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/zap-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "violations",
+                    "sources": [
+                        {
+                            "type": "ojaudit",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/ojaudit-report.xml"
                             }
                         }
                     ]

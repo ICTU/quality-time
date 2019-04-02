@@ -1,5 +1,6 @@
 """Jacoco coverage report collector."""
 
+from datetime import datetime
 import xml.etree.cElementTree
 
 import requests
@@ -32,3 +33,14 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
 
     coverage_status = "missed"
     coverage_type = "branch"
+
+
+class JacocoSourceFreshness(Collector):
+    """Collector to collect the Jacoco report age."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        tree = xml.etree.cElementTree.fromstring(response.text)
+        session_info = tree.find(".//sessioninfo")
+        timestamp = session_info.get("dump") if session_info is not None else "0"
+        report_datetime = datetime.utcfromtimestamp(int(timestamp) / 1000.)
+        return str((datetime.utcnow() - report_datetime).days)

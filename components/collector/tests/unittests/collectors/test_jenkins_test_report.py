@@ -1,5 +1,6 @@
 """Unit tests for the Jenkins test report source."""
 
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -15,7 +16,7 @@ class JenkinsTestReportTest(unittest.TestCase):
         mock_response.json = Mock(return_value=dict(passCount=4, failCount=2))
         metric = dict(
             type="tests",
-            sources=dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job"))))
+            sources=dict(source_id=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/jobjob"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         self.assertEqual("6", response["sources"][0]["value"])
@@ -29,7 +30,7 @@ class JenkinsTestReportTest(unittest.TestCase):
                        dict(status="FAILED", name="tc2", className="c2")])]))
         metric = dict(
             type="failed_tests",
-            sources=dict(a=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job/job"))))
+            sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
@@ -37,3 +38,15 @@ class JenkinsTestReportTest(unittest.TestCase):
             [dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
              dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")],
             response["sources"][0]["units"])
+
+    def test_source_freshness(self):
+        """Test that the source age in days is returned."""
+        mock_response = Mock()
+        mock_response.json = Mock(return_value=dict(suites=[dict(timestamp="2019-04-02T08:52:50")]))
+        metric = dict(
+            type="source_freshness",
+            sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
+        with patch("requests.get", return_value=mock_response):
+            response = collect_measurement(metric)
+        expected_age = (datetime.now() - datetime(2019, 4, 2, 8, 52, 50)).days
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])

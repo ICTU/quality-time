@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, Header, Icon, Image, Message } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from './fields/StringInput';

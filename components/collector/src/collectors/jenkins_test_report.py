@@ -1,7 +1,9 @@
 """Jenkins test report metric collector."""
 
+from datetime import datetime
 from typing import List
 
+from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
@@ -53,3 +55,14 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
         suites = response.json().get("suites", [])
         statuses = self.test_statuses_to_count(**parameters)
         return [unit(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
+
+
+class JenkinsTestReportSourceFreshness(Collector):
+    """Collector to get the age of the Jenkins test report."""
+
+    def api_url(self, **parameters) -> URL:
+        return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        report_datetime = parse(response.json()["suites"][0]["timestamp"])
+        return str((datetime.now() - report_datetime).days)

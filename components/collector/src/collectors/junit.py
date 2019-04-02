@@ -1,8 +1,10 @@
 """JUnit metric collector."""
 
+from datetime import datetime
 import xml.etree.cElementTree
 from typing import List
 
+from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
@@ -47,3 +49,13 @@ class JUnitFailedTests(JUnitTests):
             status_node = self.junit_status_nodes[status]
             units.extend([unit(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
         return units
+
+
+class JunitSourceFreshness(Collector):
+    """Collector to collect the Junit report age."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        tree = xml.etree.cElementTree.fromstring(response.text)
+        test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
+        report_datetime = parse(test_suite.get("timestamp"))
+        return str((datetime.now() - report_datetime).days)

@@ -1,5 +1,6 @@
 """Unit tests for the SonarQube source."""
 
+from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
@@ -88,3 +89,13 @@ class SonarQubeTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
+
+    def test_source_freshness(self):
+        """Test that the number of days since the last analysis is returned."""
+        self.mock_response.json.return_value = dict(analyses=[dict(date="2019-03-29T14:20:15+0100")])
+        metric = dict(type="source_freshness", sources=self.sources)
+        tzinfo = timezone(timedelta(hours=1))
+        expected_age = (datetime.now(tzinfo) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=tzinfo)).days
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])

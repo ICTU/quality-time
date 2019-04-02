@@ -137,6 +137,18 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "source_freshness",
+                    "sources": [
+                        {
+                            "type": "sonarqube",
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "fniessink:next-action"
+                            }
+                        }
+                    ]
                 }
             ]
         }

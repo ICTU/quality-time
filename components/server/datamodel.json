@@ -138,6 +138,26 @@
                 "maintainability"
             ]
         },
+        "source_freshness": {
+            "name": "Source freshness",
+            "description": "Measure the number of days since the source was last updated.",
+            "unit": "days",
+            "direction": "<=",
+            "target": "3",
+            "sources": [
+                "hq",
+                "jacoco",
+                "jenkins_test_report",
+                "junit",
+                "random",
+                "owasp_dependency_check",
+                "owasp_zap",
+                "sonarqube"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "tests": {
             "name": "Tests",
             "description": "Measure the size of the test suite.",
@@ -376,6 +396,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "source_freshness",
                         "uncovered_lines",
                         "uncovered_branches"
                     ]
@@ -472,6 +493,27 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
+                        "source_freshness",
+                        "tests"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_freshness",
+                        "tests"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_freshness",
                         "tests"
                     ]
                 },
@@ -565,6 +607,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
+                        "source_freshness",
                         "tests"
                     ]
                 },
@@ -671,7 +714,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_freshness"
                     ]
                 },
                 "severities": {
@@ -719,7 +763,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "security_warnings"
+                        "security_warnings",
+                        "source_freshness"
                     ]
                 },
                 "risks": {
@@ -778,6 +823,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
+                        "source_freshness",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -796,6 +842,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
+                        "source_freshness",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -1092,6 +1139,7 @@
                 "long_units",
                 "ncloc",
                 "security_warnings",
+                "source_freshness",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",
@@ -1102,7 +1150,8 @@
             "name": "Process",
             "description": "A software development and/or maintenance process.",
             "metrics": [
-                "issues"
+                "issues",
+                "source_freshness"
             ]
         },
         "ci": {
@@ -1110,6 +1159,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "source_freshness",
                 "unused_jobs"
             ]
         }

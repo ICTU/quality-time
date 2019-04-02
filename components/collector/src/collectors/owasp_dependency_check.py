@@ -1,8 +1,10 @@
 """OWASP Dependency Check metric collector."""
 
+from datetime import datetime, timezone
 from typing import List
 from xml.etree.cElementTree import Element
 
+from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..collector import Collector
@@ -38,3 +40,12 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         vulnerabilities = element.findall(".//ns:vulnerabilities/ns:vulnerability", namespaces)
         return [vulnerability for vulnerability in vulnerabilities if
                 vulnerability.findtext("ns:severity", namespaces=namespaces).lower() in severities]
+
+
+class OWASPDependencyCheckSourceFreshness(Collector):
+    """Collector to collect the OWASP Dependency Check report age."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        tree, namespaces = parse_source_response_xml(response)
+        report_datetime = isoparse(tree.findtext(".//ns:reportDate", namespaces=namespaces))
+        return str((datetime.now(timezone.utc) - report_datetime).days)

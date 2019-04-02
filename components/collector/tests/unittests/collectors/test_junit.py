@@ -1,5 +1,6 @@
 """Unit tests for the JUnit XML test report source."""
 
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -38,3 +39,15 @@ class JUnitTestReportTest(unittest.TestCase):
         self.assertEqual(
             [dict(key="tc", name="tc", class_name="cn", failure_type="failed")],
             response["sources"][0]["units"])
+
+    def test_source_freshness(self):
+        """Test that the source age in days is returned."""
+        mock_response = Mock()
+        mock_response.text = """<?xml version="1.0"?>
+        <testsuite timestamp="2009-12-19T17:58:59">
+        </testsuite>"""
+        metric = dict(type="source_freshness", sources=dict(a=dict(type="junit", parameters=dict(url="junit.xml"))))
+        with patch("requests.get", return_value=mock_response):
+            response = collect_measurement(metric)
+        expected_age = (datetime.utcnow() - datetime(2009, 12, 19, 17, 58, 59)).days
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])

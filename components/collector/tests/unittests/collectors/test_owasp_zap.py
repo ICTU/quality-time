@@ -1,5 +1,6 @@
 """Unit tests for the OWASP ZAP source."""
 
+from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
@@ -37,9 +38,9 @@ class OWASPZAPTest(unittest.TestCase):
                             </instance>
                         </instances>
                         <count>759</count>
-                        <solution>&lt;p&gt;Ensure that the application/web server sets the Content-Type header appropriately, and that it sets the X-Content-Type-Options header to &apos;nosniff&apos; for all web pages.&lt;/p&gt;&lt;p&gt;If possible, ensure that the end user uses a standards-compliant and modern web browser that does not perform MIME-sniffing at all, or that can be directed by the web application/web server to not perform MIME-sniffing.&lt;/p&gt;</solution>
-                        <otherinfo>&lt;p&gt;This issue still applies to error type pages (401, 403, 500, etc) as those pages are often still affected by injection issues, in which case there is still concern for browsers sniffing pages away from their actual content type.&lt;/p&gt;&lt;p&gt;At &quot;High&quot; threshold this scanner will not alert on client or server error responses.&lt;/p&gt;</otherinfo>
-                        <reference>&lt;p&gt;http://msdn.microsoft.com/en-us/library/ie/gg622941%28v=vs.85%29.aspx&lt;/p&gt;&lt;p&gt;https://www.owasp.org/index.php/List_of_useful_HTTP_headers&lt;/p&gt;</reference>
+                        <solution>&lt;p&gt;Ensure that the application/web server sets the Content-Type header appropriately</solution>
+                        <otherinfo>&lt;p&gt;This issue still applies to error type pages</otherinfo>
+                        <reference>&lt;p&gt;http://msdn.microsoft.com/en-us/library/ie/gg622941%28v</reference>
                         <cweid>16</cweid>
                         <wascid>15</wascid>
                         <sourceid>3</sourceid>
@@ -59,3 +60,17 @@ class OWASPZAPTest(unittest.TestCase):
                   risk="Low (Medium)")],
             response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])
+
+    def test_source_freshness(self):
+        """Test that the source age in days is returned."""
+        mock_response = Mock()
+        mock_response.text = """<?xml version="1.0"?>
+        <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
+        </OWASPZAPReport>"""
+        metric = dict(
+            type="source_freshness",
+            sources=dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml"))))
+        with patch("requests.get", return_value=mock_response):
+            response = collect_measurement(metric)
+        expected_age = (datetime.now(timezone.utc) - datetime(2019, 3, 28, 13, 20, 20, tzinfo=timezone.utc)).days
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])
