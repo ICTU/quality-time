@@ -321,8 +321,9 @@
                     ]
                 },
                 "project": {
-                    "name": "Project",
+                    "name": "Project (id or path)",
                     "type": "string",
+                    "help_url": "https://docs.gitlab.com/ee/user/project/",
                     "default_value": "",
                     "metrics": [
                         "failed_jobs"

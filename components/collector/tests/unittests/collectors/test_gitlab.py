@@ -21,3 +21,12 @@ class GitLabTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("1", response["sources"][0]["value"])
+
+    def test_nr_of_failed_jobs_with_private_token(self):
+        """Test that the number of failed jobs is returned."""
+        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        self.mock_response.json.return_value = [dict(name="job", url="http://job", status="passed")]
+        metric = dict(type="failed_jobs", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual("0", response["sources"][0]["value"])
