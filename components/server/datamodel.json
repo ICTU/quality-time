@@ -497,6 +497,26 @@
                         "tests"
                     ]
                 },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_freshness",
+                        "tests"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_freshness",
+                        "tests"
+                    ]
+                },
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
