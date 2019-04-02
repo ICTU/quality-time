@@ -147,6 +147,7 @@
             "sources": [
                 "hq",
                 "jacoco",
+                "jenkins_test_report",
                 "junit",
                 "random",
                 "owasp_dependency_check",
@@ -492,6 +493,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
+                        "source_freshness",
                         "tests"
                     ]
                 },
