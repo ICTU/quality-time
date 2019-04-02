@@ -64,6 +64,5 @@ class JenkinsTestReportSourceFreshness(Collector):
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        json = response.json()
-        report_datetime = parse(json["suites"][0]["timestamp"])
+        report_datetime = parse(response.json()["suites"][0]["timestamp"])
         return str((datetime.now() - report_datetime).days)
