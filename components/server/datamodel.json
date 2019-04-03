@@ -250,6 +250,21 @@
             "tags": [
                 "security"
             ]
+        },
+        "suppressed_violations": {
+            "name": "Suppressed violations",
+            "description": "Measure the number of violations suppressed in the source.",
+            "unit": "suppressed violations",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "random",
+                "sonarqube"
+            ],
+            "tags": [
+                "maintainability"
+            ]
         }
     },
     "sources": {
@@ -845,6 +860,7 @@
                         "long_units",
                         "ncloc",
                         "source_freshness",
+                        "suppressed_violations",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -864,6 +880,7 @@
                         "long_units",
                         "ncloc",
                         "source_freshness",
+                        "suppressed_violations",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -1125,6 +1142,25 @@
                         "url": "url"
                     }
                 ],
+                "suppressed_violations": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ],
                 "violations": [
                     {
                         "name": "Message",
@@ -1161,6 +1197,7 @@
                 "ncloc",
                 "security_warnings",
                 "source_freshness",
+                "suppressed_violations",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",
