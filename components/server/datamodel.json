@@ -250,6 +250,21 @@
             "tags": [
                 "security"
             ]
+        },
+        "suppressed_violations": {
+            "name": "Suppressed violations",
+            "description": "Measure the number of violations suppressed in the source.",
+            "unit": "suppressed violations",
+            "direction": "<=",
+            "target": "0",
+            "sources": [
+                "hq",
+                "random",
+                "sonarqube"
+            ],
+            "tags": [
+                "maintainability"
+            ]
         }
     },
     "sources": {
@@ -845,6 +860,7 @@
                         "long_units",
                         "ncloc",
                         "source_freshness",
+                        "suppressed_violations",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -864,6 +880,7 @@
                         "long_units",
                         "ncloc",
                         "source_freshness",
+                        "suppressed_violations",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -1051,6 +1068,34 @@
                         "violations"
                     ]
                 },
+                "suppression_rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "csharpsquid:S1309",
+                        "php:NoSonar",
+                        "Pylint:I0011",
+                        "Pylint:I0020",
+                        "squid:NoSonar",
+                        "squid:S1309",
+                        "squid:S1310",
+                        "squid:S1315"
+                    ],
+                    "value": [
+                        "csharpsquid:S1309",
+                        "php:NoSonar",
+                        "Pylint:I0011",
+                        "Pylint:I0020",
+                        "squid:NoSonar",
+                        "squid:S1309",
+                        "squid:S1310",
+                        "squid:S1315"
+                    ],
+                    "metrics": [
+                        "suppressed_violations"
+                    ]
+                },
                 "types": {
                     "name": "Types",
                     "type": "multiple_choice",
@@ -1125,6 +1170,25 @@
                         "url": "url"
                     }
                 ],
+                "suppressed_violations": [
+                    {
+                        "name": "Message",
+                        "key": "message"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Type",
+                        "key": "type"
+                    },
+                    {
+                        "name": "Component",
+                        "key": "component",
+                        "url": "url"
+                    }
+                ],
                 "violations": [
                     {
                         "name": "Message",
@@ -1161,6 +1225,7 @@
                 "ncloc",
                 "security_warnings",
                 "source_freshness",
+                "suppressed_violations",
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",

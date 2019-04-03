@@ -72,9 +72,15 @@ class SonarQubeLongUnits(SonarQubeViolations):
 
 
 class SonarQubeManyParameters(SonarQubeViolations):
-    """SonarQube many parameters methods collector."""
+    """SonarQube many parameters collector."""
 
     rules_parameter = "many_parameter_rules"
+
+
+class SonarQubeSuppressedViolations(SonarQubeViolations):
+    """SonarQube suppressed violations collector."""
+
+    rules_parameter = "suppression_rules"
 
 
 class SonarQubeMetricsBaseClass(Collector):
