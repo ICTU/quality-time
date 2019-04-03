@@ -1,16 +1,11 @@
 """Jenkins metric collector."""
 
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
 
 import requests
 
 from ..collector import Collector
-from ..type import Units, URL, Value
-
-
-Job = Dict[str, Any]
-Jobs = List[Job]
+from ..type import Job, Jobs, Units, URL, Value
 
 
 class JenkinsJobs(Collector):
@@ -29,7 +24,7 @@ class JenkinsJobs(Collector):
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self.build_status(job),
                 build_age=str(self.build_age(job).days) if self.build_age(job) < timedelta.max else "",
-                build_datetime=str(self.build_datetime(job).date()) if self.build_datetime(job) > datetime.min else "")
+                build_date=str(self.build_datetime(job).date()) if self.build_datetime(job) > datetime.min else "")
             for job in self.jobs(response.json()["jobs"], **parameters)]
 
     def jobs(self, jobs: Jobs, **parameters):

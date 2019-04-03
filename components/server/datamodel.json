@@ -321,15 +321,16 @@
                     ]
                 },
                 "project": {
-                    "name": "Project",
+                    "name": "Project (id or path)",
                     "type": "string",
+                    "help_url": "https://docs.gitlab.com/ee/user/project/",
                     "default_value": "",
                     "metrics": [
                         "failed_jobs"
                     ]
                 },
                 "private_token": {
-                    "name": "Private Token",
+                    "name": "Private token",
                     "type": "password",
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
@@ -338,7 +339,27 @@
                     ]
                 }
             },
-            "units": {}
+            "units": {
+                "failed_jobs": [
+                    {
+                        "name": "Job name",
+                        "key": "name",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Status of most recent build",
+                        "key": "build_status"
+                    },
+                    {
+                        "name": "Date of most recent build",
+                        "key": "build_date"
+                    },
+                    {
+                        "name": "Age of most recent build (in days)",
+                        "key": "build_age"
+                    }
+                ]
+            }
         },
         "hq": {
             "name": "HQ",
@@ -454,7 +475,7 @@
                     },
                     {
                         "name": "Date of most recent build",
-                        "key": "build_datetime"
+                        "key": "build_date"
                     },
                     {
                         "name": "Age of most recent build (in days)",
@@ -473,7 +494,7 @@
                     },
                     {
                         "name": "Date of most recent build",
-                        "key": "build_datetime"
+                        "key": "build_date"
                     },
                     {
                         "name": "Age of most recent build (in days)",

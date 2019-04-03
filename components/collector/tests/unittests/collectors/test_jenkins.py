@@ -41,7 +41,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             response = collect_measurement(metric)
         build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
         self.assertEqual(
-            [dict(build_datetime="2019-03-15", build_age=build_age, build_status="Red",
+            [dict(build_date="2019-03-15", build_age=build_age, build_status="Red",
                   key="job", name="job", url="http://job")], response["sources"][0]["units"])
 
     def test_no_builds(self):
