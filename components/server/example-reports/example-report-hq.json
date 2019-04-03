@@ -54,7 +54,6 @@
                         }
                     ]
                 },
-
                 {
                     "type": "duplicated_lines",
                     "sources": [
@@ -129,6 +128,18 @@
                 },
                 {
                     "type": "violations",
+                    "sources": [
+                        {
+                            "type": "sonarqube",
+                            "parameters": {
+                                "url": "http://sonarcloud.io",
+                                "component": "nl.ictu:hq"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "suppressed_violations",
                     "sources": [
                         {
                             "type": "sonarqube",

@@ -1068,6 +1068,34 @@
                         "violations"
                     ]
                 },
+                "suppression_rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "csharpsquid:S1309",
+                        "php:NoSonar",
+                        "Pylint:I0011",
+                        "Pylint:I0020",
+                        "squid:NoSonar",
+                        "squid:S1309",
+                        "squid:S1310",
+                        "squid:S1315"
+                    ],
+                    "value": [
+                        "csharpsquid:S1309",
+                        "php:NoSonar",
+                        "Pylint:I0011",
+                        "Pylint:I0020",
+                        "squid:NoSonar",
+                        "squid:S1309",
+                        "squid:S1310",
+                        "squid:S1315"
+                    ],
+                    "metrics": [
+                        "suppressed_violations"
+                    ]
+                },
                 "types": {
                     "name": "Types",
                     "type": "multiple_choice",
