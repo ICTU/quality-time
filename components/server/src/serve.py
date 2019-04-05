@@ -79,6 +79,7 @@ def serve() -> None:
     logging.info("Connected to database: %s", database)
     logging.info("Measurements collection has %d measurements", database.measurements.count_documents({}))
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
+    logging.info("Initializing LDAP server at %s", ldap_url)
     ldap_server = ldap.initialize(ldap_url)
     ldap_injection_plugin = InjectionPlugin(value=ldap_server, keyword="ldap_server")
     bottle.install(ldap_injection_plugin)
