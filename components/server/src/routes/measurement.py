@@ -9,6 +9,12 @@ from ..database.measurements import count_measurements, latest_measurement, late
 from ..util import iso_timestamp, report_date_time
 
 
+def equal_measurement_sources(source1, source2) -> bool:
+    """Return whether two measurement sources are equal, taking into account that tracebacks may contain object
+    references that are different on every run."""
+    return source1 == source2
+
+
 @bottle.post("/measurements")
 def post_measurement(database) -> Dict:
     """Put the measurement in the database."""
@@ -20,7 +26,7 @@ def post_measurement(database) -> Dict:
                 # Copy the keys of ignored units that still exist in the new measurement
                 new_unit_keys = set(unit["key"] for unit in new_source.get("units", []))
                 new_source["ignored_units"] = [key for key in latest_source["ignored_units"] if key in new_unit_keys]
-        if latest["sources"] == measurement["sources"]:
+        if equal_measurement_sources(latest["sources"], measurement["sources"]):
             # If the new measurement is equal to the previous one, merge them together
             database.measurements.update_one(filter={"_id": latest["_id"]}, update={"$set": {"end": iso_timestamp()}})
             return dict(ok=True)
