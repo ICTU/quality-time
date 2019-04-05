@@ -867,6 +867,27 @@
                         "violations"
                     ]
                 },
+                "private_token": {
+                    "name": "Private token",
+                    "type": "password",
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/user-token/",
+                    "default_value": "",
+                    "metrics": [
+                        "complex_units",
+                        "duplicated_lines",
+                        "failed_tests",
+                        "many_parameters",
+                        "loc",
+                        "long_units",
+                        "ncloc",
+                        "source_freshness",
+                        "suppressed_violations",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
+                        "violations"
+                    ]
+                },
                 "component": {
                     "name": "Project key",
                     "type": "string",
