@@ -131,6 +131,7 @@
             "direction": "<=",
             "target": "50000",
             "sources": [
+                "hq",
                 "sonarqube",
                 "random"
             ],
@@ -282,7 +283,7 @@
                     ]
                 },
                 "private_token": {
-                    "name": "Private Token",
+                    "name": "Private token",
                     "type": "password",
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
@@ -395,7 +396,6 @@
                         "many_parameters",
                         "ncloc",
                         "security_warnings",
-                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -414,7 +414,6 @@
                         "many_parameters",
                         "ncloc",
                         "security_warnings",
-                        "tests",
                         "unused_jobs",
                         "violations"
                     ]
@@ -1103,7 +1102,7 @@
                         "squid:S1310",
                         "squid:S1315"
                     ],
-                    "value": [
+                    "values": [
                         "csharpsquid:S1309",
                         "php:NoSonar",
                         "Pylint:I0011",
