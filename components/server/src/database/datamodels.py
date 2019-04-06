@@ -1,6 +1,6 @@
 """Datamodels collection."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import pymongo
 from pymongo.database import Database
@@ -17,15 +17,15 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     return datamodel
 
 
-def insert_new_datamodel(data_model, database: Database):
+def insert_new_datamodel(database: Database, data_model):
     """Insert a new datamodel in the datamodels collection."""
     if "_id" in data_model:
         del data_model["_id"]
     data_model["timestamp"] = iso_timestamp()
-    database.datamodels.insert_one(data_model)
+    return database.datamodels.insert_one(data_model)
 
 
-def default_source_parameters(metric_type: str, source_type: str, database: Database):
+def default_source_parameters(database: Database, metric_type: str, source_type: str):
     """Return the source parameters with their default values for the specified metric."""
     datamodel = latest_datamodel(database)
     parameters = dict()
@@ -35,7 +35,7 @@ def default_source_parameters(metric_type: str, source_type: str, database: Data
     return parameters
 
 
-def default_metric_attributes(report_uuid: str, metric_type: Optional[str], database: Database):
+def default_metric_attributes(database: Database, report_uuid: str, metric_type: str = ""):
     """Return the metric attributes with their default values for the specified metric type.
     If no metric type is specified, use the first one from the datamodel."""
     metric_types = latest_datamodel(database)["metrics"]
@@ -47,7 +47,7 @@ def default_metric_attributes(report_uuid: str, metric_type: Optional[str], data
         accept_debt=False, debt_target=None, target=defaults["target"], tags=defaults["tags"])
 
 
-def default_subject_attributes(report_uuid: str, subject_type: Optional[str], database: Database) -> Dict[str, Any]:
+def default_subject_attributes(database: Database, report_uuid: str, subject_type: str = "") -> Dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
     if not subject_type:
@@ -55,5 +55,5 @@ def default_subject_attributes(report_uuid: str, subject_type: Optional[str], da
     defaults = subject_types[subject_type]
     metrics = dict()
     for metric_type in defaults["metrics"]:
-        metrics[uuid()] = default_metric_attributes(report_uuid, metric_type, database)
+        metrics[uuid()] = default_metric_attributes(database, report_uuid, metric_type)
     return dict(type=subject_type, name=defaults["name"], description=defaults["description"], metrics=metrics)

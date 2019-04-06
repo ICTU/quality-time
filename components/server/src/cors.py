@@ -6,7 +6,7 @@ import bottle
 
 
 @bottle.route('/<:re:.*>', method='OPTIONS')
-def enable_cors_generic_route():
+def enable_cors_generic_route() -> str:
     """This route takes priority over all others. So any request with an OPTIONS
     method will be handled by this function.
 

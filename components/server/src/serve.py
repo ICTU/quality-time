@@ -35,16 +35,16 @@ def import_datamodel(database: Database) -> None:
         if data_model == latest:
             logging.info("Skipping loading the datamodel; it is unchanged")
             return
-    insert_new_datamodel(data_model, database)
+    insert_new_datamodel(database, data_model)
     logging.info("Datamodel loaded")
 
 
-def import_report(filename: str, database: Database) -> None:
+def import_report(database: Database, filename: str) -> None:
     """Read the report and store it in the database."""
     with open(filename) as json_report:
         imported_report = json.load(json_report)
     report_uuid = imported_report["report_uuid"]
-    stored_report = latest_report(report_uuid, database)
+    stored_report = latest_report(database, report_uuid)
     if stored_report:
         logging.info("Skipping import of %s; it already exists", filename)
         return
@@ -52,28 +52,28 @@ def import_report(filename: str, database: Database) -> None:
         title=imported_report.get("title", "Quality-time"), report_uuid=report_uuid, subjects={})
     for imported_subject in imported_report["subjects"]:
         subject_to_store = report_to_store["subjects"][uuid()] = default_subject_attributes(
-            report_uuid, imported_subject["type"], database)
+            database, report_uuid, imported_subject["type"])
         subject_to_store["metrics"] = dict()  # Remove default metrics
         subject_to_store["name"] = imported_subject["name"]
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]
             metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(
-                report_uuid, metric_type, database)
+                database, report_uuid, metric_type)
             for imported_source in imported_metric["sources"]:
                 source_to_store = metric_to_store["sources"][uuid()] = imported_source
-                source_parameters = default_source_parameters(metric_type, imported_source["type"], database)
+                source_parameters = default_source_parameters(database, metric_type, imported_source["type"])
                 for key, value in source_parameters.items():
                     if key not in source_to_store["parameters"]:
                         source_to_store["parameters"][key] = value
 
-    insert_new_report(report_to_store, database)
+    insert_new_report(database, report_to_store)
     logging.info("Report %s imported", filename)
 
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
     for filename in glob.glob("example-reports/example-report*.json"):
-        import_report(filename, database)
+        import_report(database, filename)
 
 
 def serve() -> None:
