@@ -29,7 +29,7 @@
                     ]
                 },
                 {
-                    "type": "source_freshness",
+                    "type": "source_up_to_dateness",
                     "sources": [
                         {
                             "type": "junit",
@@ -62,7 +62,7 @@
                     ]
                 },
                 {
-                    "type": "source_freshness",
+                    "type": "source_up_to_dateness",
                     "sources": [
                         {
                             "type": "jacoco",
@@ -90,7 +90,7 @@
                     ]
                 },
                 {
-                    "type": "source_freshness",
+                    "type": "source_up_to_dateness",
                     "sources": [
                         {
                             "type": "owasp_dependency_check",
@@ -101,7 +101,7 @@
                     ]
                 },
                 {
-                    "type": "source_freshness",
+                    "type": "source_up_to_dateness",
                     "sources": [
                         {
                             "type": "owasp_zap",

@@ -42,7 +42,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
                 vulnerability.findtext("ns:severity", namespaces=namespaces).lower() in severities]
 
 
-class OWASPDependencyCheckSourceFreshness(Collector):
+class OWASPDependencyCheckSourceUpToDateness(Collector):
     """Collector to collect the OWASP Dependency Check report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

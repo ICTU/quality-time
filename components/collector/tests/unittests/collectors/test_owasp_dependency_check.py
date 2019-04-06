@@ -44,7 +44,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
             response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])
 
-    def test_source_freshness(self):
+    def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
@@ -52,7 +52,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
                 <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
             </projectInfo>
         </analysis>"""
-        metric = dict(type="source_freshness", addition="max", sources=self.sources)
+        metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         tzinfo = timezone(timedelta(hours=2))

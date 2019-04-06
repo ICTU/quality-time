@@ -150,8 +150,8 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     metricKeys = "uncovered_conditions"
 
 
-class SonarQubeSourceFreshness(Collector):
-    """SonarQube source freshness."""
+class SonarQubeSourceUpToDateness(Collector):
+    """SonarQube source up-to-dateness."""
 
     def api_url(self, **parameters) -> URL:
         url = super().api_url(**parameters)

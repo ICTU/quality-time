@@ -47,17 +47,18 @@ class JunitTestReportFailedTestsTest(unittest.TestCase):
             response["sources"][0]["units"])
 
 
-class JUnitSourceFreshnessTest(unittest.TestCase):
-    """Unit test for the source freshness metric."""
+class JUnitSourceUpToDatenessTest(unittest.TestCase):
+    """Unit test for the source up-to-dateness metric."""
 
-    def test_source_freshness(self):
+    def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         mock_response = Mock()
         mock_response.text = """<?xml version="1.0"?>
         <testsuite timestamp="2009-12-19T17:58:59">
         </testsuite>"""
-        metric = dict(type="source_freshness", sources=dict(a=dict(type="junit", parameters=dict(url="junit.xml"))),
-                      addition="max")
+        metric = dict(
+            type="source_up_to_dateness", sources=dict(a=dict(type="junit", parameters=dict(url="junit.xml"))),
+            addition="max")
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         expected_age = (datetime.utcnow() - datetime(2009, 12, 19, 17, 58, 59)).days

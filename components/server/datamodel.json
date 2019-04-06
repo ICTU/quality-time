@@ -148,8 +148,8 @@
                 "maintainability"
             ]
         },
-        "source_freshness": {
-            "name": "Source freshness",
+        "source_up_to_dateness": {
+            "name": "Source up-to-dateness",
             "description": "Measure the number of days since the source was last updated.",
             "unit": "days",
             "addition": "max",
@@ -448,7 +448,7 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "uncovered_lines",
                         "uncovered_branches"
                     ]
@@ -545,7 +545,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "tests"
                     ]
                 },
@@ -555,7 +555,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "tests"
                     ]
                 },
@@ -565,7 +565,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "tests"
                     ]
                 },
@@ -659,7 +659,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "tests"
                     ]
                 },
@@ -767,7 +767,7 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_freshness"
+                        "source_up_to_dateness"
                     ]
                 },
                 "severities": {
@@ -816,7 +816,7 @@
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
-                        "source_freshness"
+                        "source_up_to_dateness"
                     ]
                 },
                 "risks": {
@@ -875,7 +875,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
                         "uncovered_branches",
@@ -896,7 +896,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
                         "uncovered_branches",
@@ -916,7 +916,7 @@
                         "loc",
                         "long_units",
                         "ncloc",
-                        "source_freshness",
+                        "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
                         "uncovered_branches",
@@ -1261,7 +1261,7 @@
                 "long_units",
                 "ncloc",
                 "security_warnings",
-                "source_freshness",
+                "source_up_to_dateness",
                 "suppressed_violations",
                 "tests",
                 "uncovered_branches",
@@ -1274,7 +1274,7 @@
             "description": "A software development and/or maintenance process.",
             "metrics": [
                 "issues",
-                "source_freshness"
+                "source_up_to_dateness"
             ]
         },
         "ci": {
@@ -1282,7 +1282,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
-                "source_freshness",
+                "source_up_to_dateness",
                 "unused_jobs"
             ]
         }

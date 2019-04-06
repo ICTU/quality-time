@@ -41,7 +41,7 @@ class OWASPZAPSecurityWarnings(Collector):
         return alerts
 
 
-class OWASPZAPSourceFreshness(Collector):
+class OWASPZAPSourceUpToDateness(Collector):
     """Collector to collect the OWASP ZAP report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

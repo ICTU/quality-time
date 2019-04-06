@@ -61,12 +61,12 @@ class OWASPZAPTest(unittest.TestCase):
             response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])
 
-    def test_source_freshness(self):
+    def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
         </OWASPZAPReport>"""
-        metric = dict(type="source_freshness", addition="max", sources=self.sources)
+        metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days

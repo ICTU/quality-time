@@ -151,7 +151,7 @@
                     ]
                 },
                 {
-                    "type": "source_freshness",
+                    "type": "source_up_to_dateness",
                     "sources": [
                         {
                             "type": "sonarqube",

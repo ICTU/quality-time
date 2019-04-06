@@ -51,7 +51,7 @@ class JUnitFailedTests(JUnitTests):
         return units
 
 
-class JunitSourceFreshness(Collector):
+class JunitSourceUpToDateness(Collector):
     """Collector to collect the Junit report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
