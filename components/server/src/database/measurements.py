@@ -53,7 +53,7 @@ def calculate_measurement_value(sources, addition: str) -> Optional[str]:
             return None
         values.append(int(source["value"]) - len(source.get("ignored_units", [])))
     add = dict(sum=sum, max=max)[addition]
-    return str(add(values))
+    return str(add(values))  # type: ignore
 
 
 def determine_measurement_status(

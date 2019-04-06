@@ -25,6 +25,7 @@ The `metrics` part of the datamodel is an object where the keys are the metric t
             "name": "Complex units",
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
             "unit": "complex units",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -41,7 +42,7 @@ The `metrics` part of the datamodel is an object where the keys are the metric t
 }
 ```
 
-The `name` is the default name of metrics of this type. The `description` describes what the metric measures. The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units. The `direction` specifies whether smaller measurement values are better or worse. The `target` is the default target value for the metric. The list of `sources` contains the keys of source types that support this metric type. Finally, `tags` are simple strings used to group related metrics.
+The `name` is the default name of metrics of this type. The `description` describes what the metric measures. The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units. The `addition` determines how values from multiple sources are combined: possible values are `sum` and `max`. The `direction` specifies whether smaller measurement values are better or worse. The `target` is the default target value for the metric. The list of `sources` contains the keys of source types that support this metric type. Finally, `tags` are simple strings used to group related metrics.
 
 Users with sufficient rights can override the name, unit, and target of metrics via the user interface.
 

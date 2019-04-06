@@ -43,3 +43,8 @@ class DataModelTest(unittest.TestCase):
                 if parameter["type"] == "multiple_choice":
                     self.assertTrue("default_value" in parameter)
                     self.assertTrue("values" in parameter)
+
+    def test_addition(self):
+        """Test each metric had its addition defined correctly."""
+        for metric in self.datamodel["metrics"].values():
+            self.assertTrue(metric["addition"] in ["sum", "max"])
