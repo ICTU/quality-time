@@ -5,13 +5,14 @@ import os
 import re
 import urllib.parse
 
+from pymongo.database import Database
 import bottle
 
 from ..database import sessions
 from ..util import uuid
 
 
-def set_session_cookie(session_id: str, clear: bool = False):
+def set_session_cookie(session_id: str, clear: bool = False) -> None:
     """Set the session cookie on the response."""
     expires_datetime = datetime.min if clear else datetime.now() + timedelta(hours=24)
     server_url = os.environ.get("SERVER_URL", "http://localhost:8080")
@@ -21,7 +22,7 @@ def set_session_cookie(session_id: str, clear: bool = False):
 
 
 @bottle.post("/login")
-def login(database, ldap_server=None):
+def login(database: Database, ldap_server):
     """Log the user in."""
     credentials = dict(bottle.request.json)
     safe_characters = re.compile(r"\W+", re.UNICODE)
@@ -34,7 +35,7 @@ def login(database, ldap_server=None):
 
 
 @bottle.post("/logout")
-def logout(database):
+def logout(database: Database):
     """Log the user out."""
     session_id = bottle.request.get_cookie("session_id")
     sessions.delete(database, session_id)

@@ -20,24 +20,31 @@ from .routes import report, measurement, datamodel, auth  # pylint: disable=unus
 from .route_injection_plugin import InjectionPlugin
 from .util import uuid
 from .database.datamodels import insert_new_datamodel, default_subject_attributes, default_metric_attributes, \
-    default_source_parameters
+    default_source_parameters, latest_datamodel
 from .database.reports import latest_report, insert_new_report
 
 
 def import_datamodel(database: Database) -> None:
-    """Read the data model store it in the database."""
+    """Read the data model and store it in the database."""
     with open("datamodel.json") as json_datamodel:
         data_model = json.load(json_datamodel)
-    insert_new_datamodel(data_model, database)
+    latest = latest_datamodel(database)
+    if latest:
+        del latest["timestamp"]
+        del latest["_id"]
+        if data_model == latest:
+            logging.info("Skipping loading the datamodel; it is unchanged")
+            return
+    insert_new_datamodel(database, data_model)
     logging.info("Datamodel loaded")
 
 
-def import_report(filename: str, database: Database) -> None:
-    """Read the example report and store it in the database."""
+def import_report(database: Database, filename: str) -> None:
+    """Read the report and store it in the database."""
     with open(filename) as json_report:
         imported_report = json.load(json_report)
     report_uuid = imported_report["report_uuid"]
-    stored_report = latest_report(report_uuid, database)
+    stored_report = latest_report(database, report_uuid)
     if stored_report:
         logging.info("Skipping import of %s; it already exists", filename)
         return
@@ -45,29 +52,28 @@ def import_report(filename: str, database: Database) -> None:
         title=imported_report.get("title", "Quality-time"), report_uuid=report_uuid, subjects={})
     for imported_subject in imported_report["subjects"]:
         subject_to_store = report_to_store["subjects"][uuid()] = default_subject_attributes(
-            report_uuid, imported_subject["type"], database)
+            database, report_uuid, imported_subject["type"])
         subject_to_store["metrics"] = dict()  # Remove default metrics
         subject_to_store["name"] = imported_subject["name"]
         for imported_metric in imported_subject["metrics"]:
             metric_type = imported_metric["type"]
             metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(
-                report_uuid, metric_type, database)
+                database, report_uuid, metric_type)
             for imported_source in imported_metric["sources"]:
                 source_to_store = metric_to_store["sources"][uuid()] = imported_source
-                source_parameters = default_source_parameters(metric_type, imported_source["type"], database)
+                source_parameters = default_source_parameters(database, metric_type, imported_source["type"])
                 for key, value in source_parameters.items():
                     if key not in source_to_store["parameters"]:
                         source_to_store["parameters"][key] = value
 
-    insert_new_report(report_to_store, database)
+    insert_new_report(database, report_to_store)
     logging.info("Report %s imported", filename)
 
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
-    # Until multiple reports can be configured via the front-end, we load example reports on start up
     for filename in glob.glob("example-reports/example-report*.json"):
-        import_report(filename, database)
+        import_report(database, filename)
 
 
 def serve() -> None:
