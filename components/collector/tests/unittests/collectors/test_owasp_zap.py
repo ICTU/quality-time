@@ -1,6 +1,6 @@
 """Unit tests for the OWASP ZAP source."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -72,5 +72,5 @@ class OWASPZAPTest(unittest.TestCase):
             sources=dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
-        expected_age = (datetime.now(timezone.utc) - datetime(2019, 3, 28, 13, 20, 20, tzinfo=timezone.utc)).days
+        expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
