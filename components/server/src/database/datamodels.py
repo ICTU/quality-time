@@ -43,7 +43,7 @@ def default_metric_attributes(database: Database, report_uuid: str, metric_type:
         metric_type = list(metric_types.keys())[0]
     defaults = metric_types[metric_type]
     return dict(
-        type=metric_type, report_uuid=report_uuid, sources={}, name=None, unit=None,
+        type=metric_type, report_uuid=report_uuid, sources={}, name=None, unit=None, addition=defaults["addition"],
         accept_debt=False, debt_target=None, target=defaults["target"], tags=defaults["tags"])
 
 
