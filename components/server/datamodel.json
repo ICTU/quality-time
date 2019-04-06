@@ -4,6 +4,7 @@
             "name": "Complex units",
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
             "unit": "complex units",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -20,6 +21,7 @@
             "name": "Duplicated lines",
             "description": "Measure the number of lines that are duplicated.",
             "unit": "lines",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -35,6 +37,7 @@
             "name": "Failed CI-jobs",
             "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
             "unit": "CI-jobs",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -51,6 +54,7 @@
             "name": "Failed tests",
             "description": "Measure the number of tests that fail.",
             "unit": "failed tests",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -68,6 +72,7 @@
             "name": "Issues",
             "description": "Measure the number of issues.",
             "unit": "issues",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -83,6 +88,7 @@
             "name": "Size (LOC)",
             "description": "Measure the size of the software in lines of code.",
             "unit": "lines",
+            "addition": "sum",
             "direction": "<=",
             "target": "75000",
             "sources": [
@@ -98,6 +104,7 @@
             "name": "Long units",
             "description": "Measure the number of units (functions, methods, files) that are too long.",
             "unit": "long units",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -113,6 +120,7 @@
             "name": "Many parameters",
             "description": "Measure the number of units (functions, methods, procedures) that have too many parameters.",
             "unit": "units with too many parameters",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -128,6 +136,7 @@
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
             "unit": "non-commented lines",
+            "addition": "sum",
             "direction": "<=",
             "target": "50000",
             "sources": [
@@ -143,6 +152,7 @@
             "name": "Source freshness",
             "description": "Measure the number of days since the source was last updated.",
             "unit": "days",
+            "addition": "max",
             "direction": "<=",
             "target": "3",
             "sources": [
@@ -163,6 +173,7 @@
             "name": "Tests",
             "description": "Measure the size of the test suite.",
             "unit": "tests",
+            "addition": "sum",
             "direction": ">=",
             "target": "0",
             "sources": [
@@ -179,6 +190,7 @@
             "name": "Test branch coverage",
             "description": "Measure the nuber of code branches not covered by tests. This is an indication of the quality of the test suite.",
             "unit": "uncovered branches",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -194,6 +206,7 @@
             "name": "Test line coverage",
             "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
             "unit": "uncovered lines",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -209,6 +222,7 @@
             "name": "Unused CI-jobs",
             "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
             "unit": "CI-jobs",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -224,6 +238,7 @@
             "name": "Violations",
             "description": "Measure how many violations of programming rules the software contains. This metric gives an indication of the quality of the source code.",
             "unit": "violations",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -240,6 +255,7 @@
             "name": "Security warnings",
             "description": "Measure how many security flaws the code contains. This metric gives an indication of the security of the source code.",
             "unit": "security warnings",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [
@@ -256,6 +272,7 @@
             "name": "Suppressed violations",
             "description": "Measure the number of violations suppressed in the source.",
             "unit": "suppressed violations",
+            "addition": "sum",
             "direction": "<=",
             "target": "0",
             "sources": [

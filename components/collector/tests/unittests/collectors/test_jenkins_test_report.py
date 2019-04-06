@@ -15,7 +15,7 @@ class JenkinsTestReportTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(passCount=4, failCount=2))
         metric = dict(
-            type="tests",
+            type="tests", addition="sum",
             sources=dict(source_id=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/jobjob"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
@@ -29,7 +29,7 @@ class JenkinsTestReportTest(unittest.TestCase):
                 cases=[dict(status="FAILED", name="tc1", className="c1"),
                        dict(status="FAILED", name="tc2", className="c2")])]))
         metric = dict(
-            type="failed_tests",
+            type="failed_tests", addition="sum",
             sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
@@ -44,7 +44,7 @@ class JenkinsTestReportTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(suites=[dict(timestamp="2019-04-02T08:52:50")]))
         metric = dict(
-            type="source_freshness",
+            type="source_freshness", addition="max",
             sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)

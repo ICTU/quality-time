@@ -10,10 +10,13 @@ from src.collector import collect_measurement
 class OWASPZAPTest(unittest.TestCase):
     """Unit tests for the OWASP ZAP metrics."""
 
+    def setUp(self):
+        self.mock_response = Mock()
+        self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
+
     def test_violations(self):
         """Test that the number of security warnings is returned."""
-        mock_response = Mock()
-        mock_response.text = """<?xml version="1.0"?>
+        self.mock_response.text = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
             <site name="http://www.hackazon.com" host="www.hackazon.com" port="80" ssl="false">
                 <alerts>
@@ -48,11 +51,8 @@ class OWASPZAPTest(unittest.TestCase):
                 </alerts>
             </site>
         </OWASPZAPReport>"""
-        metric = dict(
-            type="security_warnings",
-            sources=dict(sourceid=dict(type="owasp_zap",
-                                       parameters=dict(url="http://owasp_zap.xml"))))
-        with patch("requests.get", return_value=mock_response):
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual(
             [dict(key="10021:16:15:3", name="X-Content-Type-Options Header Missing",
@@ -63,14 +63,11 @@ class OWASPZAPTest(unittest.TestCase):
 
     def test_source_freshness(self):
         """Test that the source age in days is returned."""
-        mock_response = Mock()
-        mock_response.text = """<?xml version="1.0"?>
+        self.mock_response.text = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
         </OWASPZAPReport>"""
-        metric = dict(
-            type="source_freshness",
-            sources=dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml"))))
-        with patch("requests.get", return_value=mock_response):
+        metric = dict(type="source_freshness", addition="max", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

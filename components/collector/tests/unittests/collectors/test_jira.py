@@ -9,14 +9,16 @@ from src.collector import collect_measurement
 class JiraTest(unittest.TestCase):
     """Unit tests for the Jira metrics."""
 
+    def setUp(self):
+        self.metric = dict(type="issues", addition="sum",
+                           sources=dict(a=dict(type="jira", parameters=dict(url="http://jira", jql="query"))))
+
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         mock_response = Mock()
         mock_response.json.return_value = dict(total=42)
-        metric = dict(
-            type="issues", sources=dict(a=dict(type="jira", parameters=dict(url="http://jira", jql="query"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual("42", response["sources"][0]["value"])
 
     def test_issues(self):
@@ -24,10 +26,8 @@ class JiraTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(
             total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
-        metric = dict(
-            type="issues", sources=dict(a=dict(type="jira", parameters=dict(url="http://jira", jql="query"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual(
             [dict(key="id", summary="Summary", url="http://jira/browse/key")],
             response["sources"][0]["units"])

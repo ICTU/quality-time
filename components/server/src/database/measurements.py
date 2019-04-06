@@ -30,8 +30,8 @@ def insert_new_measurement(database: Database, metric_uuid: str, measurement, ta
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    measurement["value"] = calculate_measurement_value(measurement["sources"])
     metric = latest_metric(database, metric_uuid)
+    measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
     target = metric["target"] if target is None else target
     debt_target = metric["debt_target"] if debt_target is None else debt_target
     accept_debt = metric["accept_debt"] if accept_debt is None else accept_debt
@@ -43,16 +43,17 @@ def insert_new_measurement(database: Database, metric_uuid: str, measurement, ta
     return measurement
 
 
-def calculate_measurement_value(sources) -> Optional[str]:
+def calculate_measurement_value(sources, addition: str) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
     if not sources:
         return None
-    value = 0
+    values = []
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
             return None
-        value += (int(source["value"]) - len(source.get("ignored_units", [])))
-    return str(value)
+        values.append(int(source["value"]) - len(source.get("ignored_units", [])))
+    add = dict(sum=sum, max=max)[addition]
+    return str(add(values))  # type: ignore
 
 
 def determine_measurement_status(

@@ -4,7 +4,7 @@ import logging
 import os
 import urllib.parse
 import time
-from typing import cast, Dict, Type
+from typing import cast, Dict, NoReturn, Type
 
 import requests
 
@@ -41,7 +41,7 @@ def fetch_measurements(server: URL) -> None:
         post(URL(f"{server}/measurements"), measurement)
 
 
-def collect() -> None:
+def collect() -> NoReturn:
     """Collect the measurements indefinitively."""
     logging.getLogger().setLevel(logging.INFO)
 

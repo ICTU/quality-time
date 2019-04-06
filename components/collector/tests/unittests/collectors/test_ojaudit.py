@@ -9,6 +9,10 @@ from src.collector import collect_measurement
 class OJAuditTest(unittest.TestCase):
     """Unit tests for the OJAudit metrics."""
 
+    def setUp(self):
+        self.metric = dict(type="violations", addition="sum",
+                           sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
+
     def test_violations(self):
         """Test that the number of violations is returned."""
         mock_response = Mock()
@@ -55,10 +59,8 @@ class OJAuditTest(unittest.TestCase):
     </children>
   </construct>
 </audit>"""
-        metric = dict(
-          type="violations", sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
@@ -92,11 +94,9 @@ class OJAuditTest(unittest.TestCase):
     </violation>
   </construct>
 </audit>"""
-        metric = dict(
-            type="violations", sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
         with patch("requests.get", return_value=mock_response):
             self.assertTrue(
-                "has no location element" in collect_measurement(metric)["sources"][0]["parse_error"])
+                "has no location element" in collect_measurement(self.metric)["sources"][0]["parse_error"])
 
     def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
@@ -125,10 +125,8 @@ class OJAuditTest(unittest.TestCase):
     </violation>
   </construct>
 </audit>"""
-        metric = dict(
-            type="violations",
-            sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml", severities=["high"]))))
+        self.metric["sources"]["a"]["parameters"]["severities"] = ["high"]
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])
         self.assertEqual([], response["sources"][0]["units"])

@@ -11,6 +11,6 @@ class RandomNumberTest(unittest.TestCase):
 
     def test_violations(self):
         """Test the number of violations."""
-        metric = dict(type="violations", sources=dict(a=dict(type="random")))
+        metric = dict(type="violations", addition="sum", sources=dict(a=dict(type="random")))
         response = collect_measurement(metric)
         self.assertTrue(Random.min <= int(response["sources"][0]["value"]) <= Random.max)
