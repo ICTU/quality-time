@@ -14,7 +14,8 @@ class HQTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(metrics=[dict(stable_metric_id="id", value="10")]))
         metric = dict(
-            type="violations", sources=dict(a=dict(type="hq", parameters=dict(url="metrics.json", metric_id="id"))))
+            type="violations", sources=dict(a=dict(type="hq", parameters=dict(url="metrics.json", metric_id="id"))),
+            addition="sum")
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         self.assertEqual("10", response["sources"][0]["value"])

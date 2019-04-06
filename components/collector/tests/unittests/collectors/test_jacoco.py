@@ -18,7 +18,7 @@ class JaCoCoTest(unittest.TestCase):
     def test_uncovered_lines(self):
         """Test that the number of uncovered lines is returned."""
         self.mock_response.text = "<report><counter type='LINE' missed='2' /></report>"
-        metric = dict(type="uncovered_lines", sources=self.sources)
+        metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
@@ -26,7 +26,7 @@ class JaCoCoTest(unittest.TestCase):
     def test_uncovered_branches(self):
         """Test that the number of uncovered branches is returned."""
         self.mock_response.text = "<report><counter type='BRANCH' missed='4' /></report>"
-        metric = dict(type="uncovered_branches", sources=self.sources)
+        metric = dict(type="uncovered_branches", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("4", response["sources"][0]["value"])
@@ -38,7 +38,7 @@ class JaCoCoTest(unittest.TestCase):
         <report>
             <sessioninfo dump="1553821197442"/>
         </report>"""
-        metric = dict(type="source_freshness", sources=self.sources)
+        metric = dict(type="source_freshness", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days

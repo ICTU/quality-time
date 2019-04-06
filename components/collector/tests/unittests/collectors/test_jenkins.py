@@ -20,15 +20,18 @@ class JenkinsTestCase(unittest.TestCase):
 class JenkinsFailedJobsTest(JenkinsTestCase):
     """Unit tests for the failed jobs metric."""
 
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
+
     def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         self.mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red", builds=[dict(result="red")],
                        jobs=[dict(name="child_job", url="http://child_job", buildable=True, color="red",
                                   builds=[dict(result="red")])])])
-        metric = dict(type="failed_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_failed_jobs(self):
@@ -36,9 +39,8 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self.mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red",
                        builds=[dict(result="red", timestamp="1552686540953")])])
-        metric = dict(type="failed_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
         self.assertEqual(
             [dict(build_date="2019-03-15", build_age=build_age, build_status="Red",
@@ -48,30 +50,31 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         """Test no builds."""
         self.mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="notbuilt", builds=[])])
-        metric = dict(type="failed_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual([], response["sources"][0]["units"])
 
 
 class JenkinsUnusedJobsTest(JenkinsTestCase):
     """Unit tests for the unused jobs metric."""
 
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
+
     def test_unused_jobs(self):
         """Test that the number of unused jobs is returned."""
         self.mock_response.json.return_value = dict(
             jobs=[dict(
                 name="job", url="http://job", buildable=True, color="red", builds=[dict(timestamp="1548311610349")])])
-        metric = dict(type="unused_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
 
     def test_unbuild_job(self):
         """Test that jobs without builds are ignored."""
         self.mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red")])
-        metric = dict(type="unused_jobs", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])

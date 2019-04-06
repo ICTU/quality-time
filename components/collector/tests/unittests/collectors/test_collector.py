@@ -13,7 +13,7 @@ class CollectorTest(unittest.TestCase):
         """Simple response fixture."""
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
-        metric = dict(type="tests", sources=dict(
+        metric = dict(type="tests", addition="sum", sources=dict(
             a=dict(type="junit", parameters=dict(url="http://url"))))
         with patch("requests.get", return_value=mock_response):
             self.response = collect_measurement(metric)
@@ -24,8 +24,7 @@ class CollectorTest(unittest.TestCase):
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual(
-            "http://url", self.response["sources"][0]["landing_url"])
+        self.assertEqual("http://url", self.response["sources"][0]["landing_url"])
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -40,7 +39,7 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "<testsuite tests='2'></testsuite>"
         metric = dict(
-            type="tests",
+            type="tests", addition="sum",
             sources=dict(
                 a=dict(type="junit", parameters=dict(url="http://url")),
                 b=dict(type="junit", parameters=dict(url="http://url2"))))
@@ -69,9 +68,9 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.json.return_value = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red",
-                  builds=[dict(result="red", timestamp="1552686540953")])])
+                       builds=[dict(result="red", timestamp="1552686540953")])])
         metric = dict(
-            type="failed_jobs",
+            type="failed_jobs", addition="sum",
             sources=dict(
                 a=dict(type="jenkins", parameters=dict(url="http://jenkins", failure_type=["Red"])),
                 b=dict(type="random")))
@@ -90,7 +89,7 @@ class CollectorErrorTest(unittest.TestCase):
 
     def setUp(self):
         """Clear cache."""
-        self.metric = dict(type="tests", sources=dict(
+        self.metric = dict(type="tests", addition="sum", sources=dict(
             a=dict(type="junit", parameters=dict(url="http://url"))))
 
     def test_connection_error(self):

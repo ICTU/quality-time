@@ -41,7 +41,7 @@ class SonarQubeTest(unittest.TestCase):
             issues=[
                 dict(key="a", message="a", component="a", severity="INFO", type="BUG"),
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
-        metric = dict(type="violations", sources=self.sources)
+        metric = dict(type="violations", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual(
@@ -58,7 +58,7 @@ class SonarQubeTest(unittest.TestCase):
         """Test that the number of tests is returned."""
         self.mock_response.json.return_value = dict(
             component=dict(measures=[dict(metric="tests", value="88")]))
-        metric = dict(type="tests", sources=self.sources)
+        metric = dict(type="tests", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("88", response["sources"][0]["value"])
@@ -67,7 +67,7 @@ class SonarQubeTest(unittest.TestCase):
         """Test that the number of uncovered lines is returned."""
         self.mock_response.json.return_value = dict(
             component=dict(measures=[dict(metric="uncovered_lines", value="10")]))
-        metric = dict(type="uncovered_lines", sources=self.sources)
+        metric = dict(type="uncovered_lines", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("10", response["sources"][0]["value"])
@@ -76,7 +76,7 @@ class SonarQubeTest(unittest.TestCase):
         """Test that the number of uncovered branches is returned."""
         self.mock_response.json.return_value = dict(
             component=dict(measures=[dict(metric="uncovered_conditions", value="10")]))
-        metric = dict(type="uncovered_branches", sources=self.sources)
+        metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("10", response["sources"][0]["value"])
@@ -85,7 +85,7 @@ class SonarQubeTest(unittest.TestCase):
         """Test that the number of long units is returned."""
         self.sources["a"]["parameters"]["rules"] = ["rule1"]
         self.mock_response.json.return_value = dict(total="2", issues=[])
-        metric = dict(type="long_units", sources=self.sources)
+        metric = dict(type="long_units", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual("2", response["sources"][0]["value"])
@@ -93,7 +93,7 @@ class SonarQubeTest(unittest.TestCase):
     def test_source_freshness(self):
         """Test that the number of days since the last analysis is returned."""
         self.mock_response.json.return_value = dict(analyses=[dict(date="2019-03-29T14:20:15+0100")])
-        metric = dict(type="source_freshness", sources=self.sources)
+        metric = dict(type="source_freshness", addition="max", sources=self.sources)
         tzinfo = timezone(timedelta(hours=1))
         expected_age = (datetime.now(tzinfo) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=tzinfo)).days
         with patch("requests.get", return_value=self.mock_response):

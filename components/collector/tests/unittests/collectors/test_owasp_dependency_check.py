@@ -10,10 +10,14 @@ from src.collector import collect_measurement
 class OWASPDependencyCheckTest(unittest.TestCase):
     """Unit tests for the OWASP Dependency Check metrics."""
 
+    def setUp(self):
+        self.mock_response = Mock()
+        self.sources = dict(
+            sourceid=dict(type="owasp_dependency_check", parameters=dict(url="http://owasp_dependency_check.xml")))
+
     def test_violations(self):
         """Test that the number of violations is returned."""
-        mock_response = Mock()
-        mock_response.text = """<?xml version="1.0"?>
+        self.mock_response.text = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
             <dependency isVirtual="false">
                 <md5>12345</md5>
@@ -29,11 +33,8 @@ class OWASPDependencyCheckTest(unittest.TestCase):
                 </vulnerabilities>
             </dependency>
         </analysis>"""
-        metric = dict(
-            type="security_warnings",
-            sources=dict(sourceid=dict(type="owasp_dependency_check",
-                                       parameters=dict(url="http://owasp_dependency_check.xml"))))
-        with patch("requests.get", return_value=mock_response):
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual(
             [dict(key="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js:CVE-2012-6708",
@@ -45,18 +46,14 @@ class OWASPDependencyCheckTest(unittest.TestCase):
 
     def test_source_freshness(self):
         """Test that the source age in days is returned."""
-        mock_response = Mock()
-        mock_response.text = """<?xml version="1.0"?>
+        self.mock_response.text = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
             <projectInfo>
                 <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
             </projectInfo>
         </analysis>"""
-        metric = dict(
-            type="source_freshness",
-            sources=dict(sourceid=dict(type="owasp_dependency_check",
-                                       parameters=dict(url="http://owasp_dependency_check.xml"))))
-        with patch("requests.get", return_value=mock_response):
+        metric = dict(type="source_freshness", addition="max", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         tzinfo = timezone(timedelta(hours=2))
         expected_age = (datetime.now(tzinfo) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=tzinfo)).days
