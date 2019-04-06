@@ -20,20 +20,27 @@ from .routes import report, measurement, datamodel, auth  # pylint: disable=unus
 from .route_injection_plugin import InjectionPlugin
 from .util import uuid
 from .database.datamodels import insert_new_datamodel, default_subject_attributes, default_metric_attributes, \
-    default_source_parameters
+    default_source_parameters, latest_datamodel
 from .database.reports import latest_report, insert_new_report
 
 
 def import_datamodel(database: Database) -> None:
-    """Read the data model store it in the database."""
+    """Read the data model and store it in the database."""
     with open("datamodel.json") as json_datamodel:
         data_model = json.load(json_datamodel)
+    latest = latest_datamodel(database)
+    if latest:
+        del latest["timestamp"]
+        del latest["_id"]
+        if data_model == latest:
+            logging.info("Skipping loading the datamodel; it is unchanged")
+            return
     insert_new_datamodel(data_model, database)
     logging.info("Datamodel loaded")
 
 
 def import_report(filename: str, database: Database) -> None:
-    """Read the example report and store it in the database."""
+    """Read the report and store it in the database."""
     with open(filename) as json_report:
         imported_report = json.load(json_report)
     report_uuid = imported_report["report_uuid"]
@@ -65,7 +72,6 @@ def import_report(filename: str, database: Database) -> None:
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
-    # Until multiple reports can be configured via the front-end, we load example reports on start up
     for filename in glob.glob("example-reports/example-report*.json"):
         import_report(filename, database)
 

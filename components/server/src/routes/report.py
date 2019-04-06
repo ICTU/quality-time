@@ -5,7 +5,7 @@ import bottle
 from ..database.reports import latest_reports, latest_report, insert_new_report
 from ..database.datamodels import latest_datamodel, default_subject_attributes, default_metric_attributes, \
     default_source_parameters
-from ..util import iso_timestamp, report_date_time, uuid
+from ..util import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
 
@@ -26,7 +26,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
     subject = report["subjects"][subject_uuid]
     subject[subject_attribute] = value
     if subject_attribute == "type":
-        default_metric_types = latest_datamodel(iso_timestamp(), database)["subjects"][value]["metrics"]
+        default_metric_types = latest_datamodel(database)["subjects"][value]["metrics"]
         existing_metric_types = [metric["type"] for metric in subject["metrics"].values()]
         for default_metric_type in default_metric_types:
             if default_metric_type not in existing_metric_types:
@@ -74,7 +74,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     if metric_attribute == "type":
         metric.update(default_metric_attributes(report_uuid, value, database))
         # Remove sources that don't support the new metric type and reinitialize the sources that do
-        datamodel = latest_datamodel(iso_timestamp(), database)
+        datamodel = latest_datamodel(datamodel)
         sources = metric["sources"]
         possible_sources = datamodel["metrics"][value]["sources"]
         for source_uuid, source in list(sources.items()):
@@ -117,7 +117,7 @@ def post_source_new(report_uuid: str, metric_uuid: str, database):
         if metric_uuid in subject["metrics"]:
             metric = subject["metrics"][metric_uuid]
     metric_type = metric["type"]
-    datamodel = latest_datamodel(iso_timestamp(), database)
+    datamodel = latest_datamodel(database)
     source_type = datamodel["metrics"][metric_type]["sources"][0]
     parameters = default_source_parameters(metric_type, source_type, database)
     metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)

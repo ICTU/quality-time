@@ -3,29 +3,30 @@
 from typing import Optional
 
 import pymongo
+from pymongo.database import Database
 
 from ..util import iso_timestamp
 from .datamodels import latest_datamodel
 from .reports import latest_metric
 
 
-def latest_measurement(metric_uuid: str, database):
+def latest_measurement(metric_uuid: str, database: Database):
     """Return the latest measurement."""
     return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
 
 
-def latest_measurements(metric_uuid: str, max_iso_timestamp: str, database):
+def latest_measurements(metric_uuid: str, max_iso_timestamp: str, database: Database):
     """Return the latest measurements."""
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 
-def count_measurements(report_uuid: str, database) -> int:
+def count_measurements(report_uuid: str, database: Database) -> int:
     """Return the number of measurements."""
     return database.measurements.count_documents(filter={"report_uuid": report_uuid})
 
 
-def insert_new_measurement(metric_uuid: str, measurement, database, target: str = None, debt_target: str = None,
-                           accept_debt: bool = None):
+def insert_new_measurement(metric_uuid: str, measurement, database: Database, target: str = None,
+                           debt_target: str = None, accept_debt: bool = None):
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
@@ -56,12 +57,12 @@ def calculate_measurement_value(sources) -> Optional[str]:
 
 def determine_measurement_status(
         metric_uuid: str, measurement_value: Optional[str], metric_target: Optional[str],
-        metric_debt_target: Optional[str], metric_accept_debt: Optional[bool], database) -> Optional[str]:
+        metric_debt_target: Optional[str], metric_accept_debt: Optional[bool], database: Database) -> Optional[str]:
     """Determine the measurement status."""
     if measurement_value is None:
         return None
     metric = latest_metric(metric_uuid, iso_timestamp(), database)
-    datamodel = latest_datamodel(iso_timestamp(), database)
+    datamodel = latest_datamodel(database)
     direction = datamodel["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric_target or metric["target"])
