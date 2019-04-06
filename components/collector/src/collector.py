@@ -7,6 +7,7 @@ from typing import cast, Optional, Set, Tuple, Type
 import requests
 
 from .type import ErrorMessage, Response, Units, URL, Value
+from .util import stable_traceback
 
 
 def collect_measurement(metric) -> Response:
@@ -73,7 +74,7 @@ class Collector:
             response = self.get_source_response(api_url, **parameters)
             response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
-            error = traceback.format_exc()
+            error = stable_traceback(traceback.format_exc())
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
@@ -100,7 +101,7 @@ class Collector:
                 value = self.parse_source_response_value(response, **parameters)
                 units = self.parse_source_response_units(response, **parameters)
             except Exception:  # pylint: disable=broad-except
-                error = traceback.format_exc()
+                error = stable_traceback(traceback.format_exc())
         return value, units[:self.MAX_UNITS], error
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
