@@ -39,12 +39,12 @@ class JenkinsTestReportTest(unittest.TestCase):
              dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")],
             response["sources"][0]["units"])
 
-    def test_source_freshness(self):
+    def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         mock_response = Mock()
         mock_response.json = Mock(return_value=dict(suites=[dict(timestamp="2019-04-02T08:52:50")]))
         metric = dict(
-            type="source_freshness", addition="max",
+            type="source_up_to_dateness", addition="max",
             sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)

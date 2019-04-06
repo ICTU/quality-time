@@ -31,14 +31,14 @@ class JaCoCoTest(unittest.TestCase):
             response = collect_measurement(metric)
         self.assertEqual("4", response["sources"][0]["value"])
 
-    def test_source_freshness(self):
+    def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         mock_response = Mock()
         mock_response.text = """<?xml version="1.0"?>
         <report>
             <sessioninfo dump="1553821197442"/>
         </report>"""
-        metric = dict(type="source_freshness", sources=self.sources, addition="sum")
+        metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
         expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days

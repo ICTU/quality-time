@@ -35,7 +35,7 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
     coverage_type = "branch"
 
 
-class JacocoSourceFreshness(Collector):
+class JacocoSourceUpToDateness(Collector):
     """Collector to collect the Jacoco report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:

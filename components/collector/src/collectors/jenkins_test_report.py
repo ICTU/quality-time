@@ -57,7 +57,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
         return [unit(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
 
-class JenkinsTestReportSourceFreshness(Collector):
+class JenkinsTestReportSourceUpToDateness(Collector):
     """Collector to get the age of the Jenkins test report."""
 
     def api_url(self, **parameters) -> URL:
