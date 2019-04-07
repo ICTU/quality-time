@@ -34,10 +34,11 @@ class StringInputWithSuggestions extends Component {
   }
 
   render() {
+    let { set_value, ...otherProps } = this.props;
     return (
       <Form>
         <Form.Dropdown
-          {...this.props}
+          {...otherProps}
           allowAdditions
           clearable
           fluid

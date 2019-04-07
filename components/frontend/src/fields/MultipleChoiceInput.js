@@ -30,16 +30,17 @@ class MultipleChoiceInput extends Component {
     }
   }
   render() {
-    let { set_value, allowAdditions, ...readOnlyProps } = this.props;
+    let { set_value, allowAdditions, ...otherProps } = this.props;
     return (
       <Form>
         {this.props.readOnly ?
           <Form.Input
-            {...readOnlyProps}
+            {...otherProps}
           />
           :
           <Form.Dropdown
-            {...this.props}
+            {...otherProps}
+            allowAdditions={allowAdditions}
             fluid
             multiple
             onAddItem={this.handleAddition}
