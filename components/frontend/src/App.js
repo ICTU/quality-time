@@ -116,8 +116,14 @@ class App extends Component {
       body: JSON.stringify({ username: username, password: password })
     })
       .then(function (response) {
-        self.setState({ user: username });
-      }).catch(function (error) {
+        return response.json()
+      })
+      .then(function (json) {
+        if (json.ok) {
+          self.setState({ user: username })
+        }
+      })
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -135,7 +141,7 @@ class App extends Component {
       credentials: 'include'
     }).then(function (response) {
       self.setState({ user: null });
-    }).catch(function(error) {
+    }).catch(function (error) {
       console.log(error);
     })
   }

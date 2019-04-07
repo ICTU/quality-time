@@ -7,6 +7,7 @@ import urllib.parse
 
 from pymongo.database import Database
 import bottle
+import ldap
 
 from ..database import sessions
 from ..util import uuid
@@ -27,7 +28,10 @@ def login(database: Database, ldap_server):
     credentials = dict(bottle.request.json)
     safe_characters = re.compile(r"\W+", re.UNICODE)
     username = re.sub(safe_characters, "", credentials.get("username", "no username given"))
-    ldap_server.simple_bind_s(f"cn={username},dc=example,dc=org", credentials.get("password"))
+    try:
+        ldap_server.simple_bind_s(f"cn={username},dc=example,dc=org", credentials.get("password"))
+    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX):
+        return dict(ok=False)
     session_id = uuid()
     sessions.upsert(database, username, session_id)
     set_session_cookie(session_id)
