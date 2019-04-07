@@ -20,17 +20,17 @@ class SingleChoiceInput extends Component {
   }
   render() {
     const value_text = this.props.options.filter(({ value }) => value === this.props.value)[0].text;
-    let { set_value, ...readOnlyProps } = this.props;
+    let { set_value, ...otherProps } = this.props;
     return (
       <Form>
         {this.props.readOnly ?
           <Form.Input
-            {...readOnlyProps}
+            {...otherProps}
             value={value_text}
           />
           :
           <Form.Dropdown
-            {...this.props}
+            {...otherProps}
             fluid
             onChange={(e, { name, value }) => this.onSubmit(e, { name, value })}
             search
