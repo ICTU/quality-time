@@ -31,26 +31,35 @@ def post(api: URL, data) -> None:
         logging.error("Posting %s to %s failed: %s", data, api, reason)
 
 
-def fetch_measurements(server: URL) -> None:
-    """Fetch the metrics and their measurements."""
-    metrics = get(URL(f"{server}/metrics"))
-    for metric_uuid, metric in metrics.items():
-        measurement = collect_measurement(metric)
-        measurement["metric_uuid"] = metric_uuid
-        measurement["report_uuid"] = metric["report_uuid"]
-        post(URL(f"{server}/measurements"), measurement)
+class Fetcher:
+    """Fetch measurements."""
+    def __init__(self):
+        self.server_url = URL(os.environ.get("SERVER_URL", "http://localhost:8080"))
+        self.last_fetch = dict()
+
+    def start(self) -> NoReturn:
+        """Start fetching measurements indefinitely."""
+        while True:
+            logging.info("Collecting...")
+            self.fetch_measurements()
+            logging.info("Sleeping...")
+            time.sleep(60)
+
+    def fetch_measurements(self) -> None:
+        """Fetch the metrics and their measurements."""
+        metrics = get(URL(f"{self.server_url}/metrics"))
+        for metric_uuid, metric in metrics.items():
+            measurement = collect_measurement(metric)
+            measurement["metric_uuid"] = metric_uuid
+            measurement["report_uuid"] = metric["report_uuid"]
+            post(URL(f"{self.server_url}/measurements"), measurement)
 
 
 def collect() -> NoReturn:
-    """Collect the measurements indefinitively."""
+    """Collect the measurements indefinitely."""
     logging.getLogger().setLevel(logging.INFO)
-
-    while True:
-        logging.info("Collecting...")
-        fetch_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
-        logging.info("Sleeping...")
-        time.sleep(60)
+    Fetcher().start()
 
 
 if __name__ == "__main__":
-    collect()  # pragma: nocover
+    collect() # pragma: nocover

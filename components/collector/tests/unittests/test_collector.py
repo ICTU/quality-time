@@ -4,7 +4,7 @@ import logging
 import unittest
 from unittest.mock import patch, Mock
 
-from src import collect, fetch_measurements
+from src import collect, Fetcher
 
 
 class CollectorTest(unittest.TestCase):
@@ -22,16 +22,16 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post") as post:
-                fetch_measurements("http://server")
+                Fetcher().fetch_measurements()
         post.assert_called_once_with(
-            "http://server/measurements",
+            "http://localhost:8080/measurements",
             json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_fetch_with_get_error(self):
         """Test fetching measurement when getting fails."""
         with patch("requests.get", side_effect=RuntimeError):
             with patch("requests.post") as post:
-                fetch_measurements("http://server")
+                Fetcher().fetch_measurements()
         post.assert_not_called()
 
     def test_fetch_with_post_error(self):
@@ -40,9 +40,9 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post", side_effect=RuntimeError) as post:
-                fetch_measurements("http://server")
+                Fetcher().fetch_measurements()
         post.assert_called_once_with(
-            "http://server/measurements",
+            "http://localhost:8080/measurements",
             json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
@@ -63,4 +63,4 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid", sources=dict(missing=dict(type="source"))))
         with patch("requests.get", return_value=self.mock_response):
-            self.assertRaises(LookupError, fetch_measurements, "http://server")
+            self.assertRaises(LookupError, Fetcher().fetch_measurements)
