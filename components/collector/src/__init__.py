@@ -1,5 +1,6 @@
 """Measurement collector."""
 
+from datetime import datetime, timedelta
 import logging
 import os
 import urllib.parse
@@ -31,26 +32,49 @@ def post(api: URL, data) -> None:
         logging.error("Posting %s to %s failed: %s", data, api, reason)
 
 
-def fetch_measurements(server: URL) -> None:
-    """Fetch the metrics and their measurements."""
-    metrics = get(URL(f"{server}/metrics"))
-    for metric_uuid, metric in metrics.items():
-        measurement = collect_measurement(metric)
-        measurement["metric_uuid"] = metric_uuid
-        measurement["report_uuid"] = metric["report_uuid"]
-        post(URL(f"{server}/measurements"), measurement)
+class MetricsCollector:
+    """Collect measurements for all metrics."""
+    def __init__(self):
+        self.server_url = URL(os.environ.get("SERVER_URL", "http://localhost:8080"))
+        self.last_fetch = dict()
+        self.last_parameters = dict()
+
+    def start(self) -> NoReturn:
+        """Start fetching measurements indefinitely."""
+        while True:
+            logging.info("Collecting...")
+            self.fetch_measurements()
+            logging.info("Sleeping...")
+            time.sleep(60)
+
+    def fetch_measurements(self) -> None:
+        """Fetch the metrics and their measurements."""
+        metrics = get(URL(f"{self.server_url}/metrics"))
+        for metric_uuid, metric in metrics.items():
+            if self.skip(metric_uuid, metric):
+                continue
+            self.last_fetch[metric_uuid] = datetime.now()
+            self.last_parameters[metric_uuid] = metric
+            measurement = collect_measurement(metric)
+            measurement["metric_uuid"] = metric_uuid
+            measurement["report_uuid"] = metric["report_uuid"]
+            post(URL(f"{self.server_url}/measurements"), measurement)
+
+    def skip(self, metric_uuid: str, metric) -> bool:
+        """Return whether the metric needs to be measured."""
+        if not metric.get("sources"):
+            return True  # Always skip if the metric has no sources
+        if self.last_parameters.get(metric_uuid) != metric:
+            return False  # Don't skip if metric parameters changed
+        time_ago = datetime.now() - self.last_fetch.get(metric_uuid, datetime.min)
+        return time_ago <= timedelta(seconds=15 * 60)  # Skip if recently measured
 
 
 def collect() -> NoReturn:
-    """Collect the measurements indefinitively."""
+    """Collect the measurements indefinitely."""
     logging.getLogger().setLevel(logging.INFO)
-
-    while True:
-        logging.info("Collecting...")
-        fetch_measurements(URL(os.environ.get("SERVER_URL", "http://localhost:8080")))
-        logging.info("Sleeping...")
-        time.sleep(60)
+    MetricsCollector().start()
 
 
 if __name__ == "__main__":
-    collect()  # pragma: nocover
+    collect() # pragma: nocover
