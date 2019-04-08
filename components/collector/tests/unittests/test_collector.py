@@ -4,12 +4,23 @@ import logging
 import unittest
 from unittest.mock import patch, Mock
 
-from src import collect, Fetcher
+import requests
+
+from src import collect, collector, MetricsCollector
+from src.type import Value
 
 
 class CollectorTest(unittest.TestCase):
     """Unit tests for the collection methods."""
+
     def setUp(self):
+        class SourceMetric(collector.Collector):  # pylint: disable=unused-variable
+            """Fake collector."""
+
+            def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+                """Return the answer."""
+                return "42"
+
         self.mock_response = Mock()
         logging.getLogger().disabled = True
 
@@ -22,45 +33,67 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post") as post:
-                Fetcher().fetch_measurements()
-        post.assert_called_once_with(
-            "http://localhost:8080/measurements",
-            json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+                MetricsCollector().fetch_measurements()
+        post.assert_not_called()
 
     def test_fetch_with_get_error(self):
         """Test fetching measurement when getting fails."""
         with patch("requests.get", side_effect=RuntimeError):
             with patch("requests.post") as post:
-                Fetcher().fetch_measurements()
+                MetricsCollector().fetch_measurements()
         post.assert_not_called()
 
     def test_fetch_with_post_error(self):
         """Test fetching measurement when posting fails."""
         self.mock_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
+                             sources=dict(source_id=dict(type="source"))))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post", side_effect=RuntimeError) as post:
-                Fetcher().fetch_measurements()
+                MetricsCollector().fetch_measurements()
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+                                    parse_error=None, source_uuid="source_id")],
+                      value=42, metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
         """Test the collect method."""
         self.mock_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
+                             sources=dict(source_id=dict(type="source"))))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
                     self.assertRaises(RuntimeError, collect)
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[], value=None, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+                                    parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
+                      report_uuid="report_uuid"))
 
-    def test_mssing_collector(self):
+    def test_missing_collector(self):
         """Test that an exception is thrown if there's no collector for the source and metric type."""
         self.mock_response.json.return_value = dict(
             metric_uuid=dict(
-                type="metric", addition="sum", report_uuid="report_uuid", sources=dict(missing=dict(type="source"))))
+                type="metric", addition="sum", report_uuid="report_uuid",
+                sources=dict(missing=dict(type="unknown_source"))))
         with patch("requests.get", return_value=self.mock_response):
-            self.assertRaises(LookupError, Fetcher().fetch_measurements)
+            self.assertRaises(
+                LookupError, MetricsCollector().fetch_measurements)
+
+    def test_fetch_twice(self):
+        """Test that the metric is skipped on the second fetch."""
+        self.mock_response.json.return_value = dict(
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
+                             sources=dict(source_id=dict(type="source"))))
+        with patch("requests.get", return_value=self.mock_response):
+            with patch("requests.post") as post:
+                metric_collector = MetricsCollector()
+                metric_collector.fetch_measurements()
+                metric_collector.fetch_measurements()
+        post.assert_called_once_with(
+            "http://localhost:8080/measurements",
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+                                    parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
+                      report_uuid="report_uuid"))
