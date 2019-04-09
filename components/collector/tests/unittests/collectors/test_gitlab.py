@@ -1,6 +1,6 @@
 """Unit tests for the GitLab source."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
@@ -22,7 +22,7 @@ class GitLabTest(unittest.TestCase):
         self.mock_response.json.return_value = [
             dict(id="id", status="failed", created_at="2019-03-31T19:50:39.927Z",
                  web_url="http://gitlab/job", ref="ref")]
-        build_age = str((datetime.now() - datetime(2019, 3, 31, 19, 50, 39, 927)).days)
+        build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(self.metric)
         self.assertEqual([dict(key="id", name="ref", url="http://gitlab/job", build_age=build_age,
