@@ -77,7 +77,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
         # Remove sources that don't support the new metric type and reinitialize the sources that do
-        datamodel = latest_datamodel(datamodel)
+        datamodel = latest_datamodel(database)
         sources = metric["sources"]
         possible_sources = datamodel["metrics"][value]["sources"]
         for source_uuid, source in list(sources.items()):
