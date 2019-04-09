@@ -756,6 +756,21 @@
                 ]
             }
         },
+        "open_vas": {
+            "name": "OpenVAS",
+            "description": "OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management.",
+            "url": "http://www.openvas.org",
+            "parameters": {
+                "url": {
+                    "name": "URL to XML report",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                }
+            }
+        },
         "owasp_dependency_check": {
             "name": "OWASP Dependency Check",
             "description": "Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.",
