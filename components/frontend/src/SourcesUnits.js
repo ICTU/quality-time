@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
 
+
+function UnitAttribute(props) {
+  let cell_contents = props.unit[props.unit_attribute.key];
+  cell_contents = props.unit[props.unit_attribute.url] ? <a href={props.unit[props.unit_attribute.url]}>{cell_contents}</a> : cell_contents;
+  cell_contents = props.unit_attribute.pre ? <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-all', hyphens: 'auto'}}>{cell_contents}</div> : cell_contents;
+  return (
+    cell_contents
+  )
+}
+
 function Unit(props) {
   if (props.hide_ignored_units && props.ignored) { return null };
   const style = props.ignored ? { textDecoration: "line-through" } : {};
@@ -10,9 +20,7 @@ function Unit(props) {
     <Table.Row key={props.unit.key} style={style}>
       {props.unit_attributes.map((unit_attribute, col_index) =>
         <Table.Cell key={col_index}>
-          {props.unit[unit_attribute.url] ?
-            <a href={props.unit[unit_attribute.url]}>{props.unit[unit_attribute.key]}</a> :
-            props.unit[unit_attribute.key]}
+          <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />
         </Table.Cell>)
       }
       <Table.Cell collapsing>

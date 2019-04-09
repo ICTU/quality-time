@@ -261,6 +261,7 @@
             "sources": [
                 "hq",
                 "random",
+                "openvas",
                 "owasp_dependency_check",
                 "owasp_zap"
             ],
@@ -756,7 +757,7 @@
                 ]
             }
         },
-        "open_vas": {
+        "openvas": {
             "name": "OpenVAS",
             "description": "OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management.",
             "url": "http://www.openvas.org",
@@ -766,9 +767,49 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
+                        "security_warnings",
                         "source_up_to_dateness"
                     ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "log",
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
                 }
+            },
+            "units": {
+                "security_warnings": [
+                    {
+                        "name": "Warning",
+                        "key": "name"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Description",
+                        "key": "description",
+                        "pre": true
+                    },
+                    {
+                        "name": "Host",
+                        "key": "host"
+                    },
+                    {
+                        "name": "Port",
+                        "key": "port"
+                    }
+                ]
             }
         },
         "owasp_dependency_check": {

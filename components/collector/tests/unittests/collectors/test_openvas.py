@@ -14,6 +14,28 @@ class OpenVASTest(unittest.TestCase):
         self.mock_response = Mock()
         self.sources = dict(source_id=dict(type="openvas", parameters=dict(url="http://openvas.xml")))
 
+    def test_warnings(self):
+        """Test that the number of warnings is returned."""
+        self.mock_response.text = """<?xml version="1.0"?>
+<report>
+    <results>
+        <result id="id">
+            <name>Name</name>
+            <description>Description</description>
+            <threat>Low</threat>
+            <host>1.2.3.4</host>
+            <port>80/tcp</port>
+        </result>
+    </results>
+</report>"""
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual(
+            [dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")],
+            response["sources"][0]["units"])
+        self.assertEqual("1", response["sources"][0]["value"])
+
     def test_source_up_to_dateness(self):
         """Test that the report age in days is returned."""
         self.mock_response.text = """

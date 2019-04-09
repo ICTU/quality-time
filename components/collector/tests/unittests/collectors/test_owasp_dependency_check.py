@@ -15,8 +15,8 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         self.sources = dict(
             sourceid=dict(type="owasp_dependency_check", parameters=dict(url="http://owasp_dependency_check.xml")))
 
-    def test_violations(self):
-        """Test that the number of violations is returned."""
+    def test_warnings(self):
+        """Test that the number of warnings is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
             <dependency isVirtual="false">
