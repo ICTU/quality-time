@@ -8,6 +8,7 @@ from .jenkins import *
 from .jenkins_test_report import *
 from .jira import *
 from .junit import *
+from .openvas import *
 from .owasp_dependency_check import *
 from .owasp_zap import *
 from .ojaudit import *

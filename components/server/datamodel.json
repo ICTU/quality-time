@@ -161,6 +161,7 @@
                 "jenkins_test_report",
                 "junit",
                 "random",
+                "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
                 "sonarqube"
@@ -261,6 +262,7 @@
             "sources": [
                 "hq",
                 "random",
+                "openvas",
                 "owasp_dependency_check",
                 "owasp_zap"
             ],
@@ -752,6 +754,61 @@
                     {
                         "name": "Component",
                         "key": "component"
+                    }
+                ]
+            }
+        },
+        "openvas": {
+            "name": "OpenVAS",
+            "description": "OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management.",
+            "url": "http://www.openvas.org",
+            "parameters": {
+                "url": {
+                    "name": "URL to XML report",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "log",
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "units": {
+                "security_warnings": [
+                    {
+                        "name": "Warning",
+                        "key": "name"
+                    },
+                    {
+                        "name": "Severity",
+                        "key": "severity"
+                    },
+                    {
+                        "name": "Description",
+                        "key": "description",
+                        "pre": true
+                    },
+                    {
+                        "name": "Host",
+                        "key": "host"
+                    },
+                    {
+                        "name": "Port",
+                        "key": "port"
                     }
                 ]
             }

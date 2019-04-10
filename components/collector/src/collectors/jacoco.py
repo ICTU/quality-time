@@ -7,6 +7,7 @@ import requests
 
 from ..collector import Collector
 from ..type import Value
+from ..util import days_ago
 
 
 class JacocoCoverageBaseClass(Collector):
@@ -43,4 +44,4 @@ class JacocoSourceUpToDateness(Collector):
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"
         report_datetime = datetime.utcfromtimestamp(int(timestamp) / 1000.)
-        return str((datetime.utcnow() - report_datetime).days)
+        return str(days_ago(report_datetime))

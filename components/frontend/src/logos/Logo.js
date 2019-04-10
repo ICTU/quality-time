@@ -8,6 +8,7 @@ import JaCoCo from './jacoco.png';
 import Jenkins from './jenkins.png';
 import Jira from './jira.png';
 import Junit from './junit.png';
+import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPZAP from './owasp_zap.png';
 import Sonarqube from './sonarqube.png';
@@ -21,6 +22,7 @@ function Logo(props) {
         jenkins: Jenkins,
         jira: Jira,
         junit: Junit,
+        openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
         sonarqube: Sonarqube

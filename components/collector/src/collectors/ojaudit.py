@@ -8,7 +8,7 @@ import requests
 
 from ..collector import Collector
 from ..type import Namespaces, Units, Value
-from ..util import parse_source_response_xml
+from ..util import parse_source_response_xml_with_namespace
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
@@ -19,12 +19,12 @@ class OJAuditViolations(Collector):
     """Collector to get violations from OJAudit."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = parse_source_response_xml(response)
+        tree, namespaces = parse_source_response_xml_with_namespace(response)
         severities = parameters.get("severities", [])
         return self.violation_count(tree, namespaces, severities)
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        tree, namespaces = parse_source_response_xml(response)
+        tree, namespaces = parse_source_response_xml_with_namespace(response)
         severities = parameters.get("severities", [])
         return self.violations(tree, namespaces, severities)
 

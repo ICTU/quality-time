@@ -1,0 +1,1101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+body {
+  background-color: #FFFFFF;
+  margin: 0px;
+  font: small Verdana, sans-serif;
+  font-size: 12px;
+  color: #1A1A1A;
+}
+
+div.content {
+  width: 98%;
+  align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+tr.table_head {
+  background-color: #d5d5d5;
+}
+
+.diff {
+  white-space: pre;
+  font-family: monospace;
+}
+
+.diff.at {
+  color: #9932CC;
+}
+
+.diff.plus {
+  color: #006400;
+}
+
+.diff.minus {
+  color: #B22222;
+}
+
+div.footer {
+  text-align: center;
+}
+
+div.note, div.override {
+  padding:4px;
+  margin:3px;
+  margin-bottom:0px;
+  margin-top:0px;
+  border: 1px solid #CCCCCC;
+  border-top: 0px;
+  background-color: #ffff90;
+}
+
+.result_head {
+  padding:4px;
+  margin:3px;
+  margin-bottom:0px;
+  color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-bottom: 0px;
+  background:#d5d5d5;
+}
+
+.result_head.low {
+  background:#539dcb
+}
+
+.result_head.medium {
+  background:#f99f31
+}
+
+.result_head.high {
+  background:#cb1d17
+}
+
+.result_section {
+  padding:4px;
+  margin:3px;
+  margin-bottom:0px;
+  margin-top:0px;
+  border: 1px solid #CCCCCC;
+  border-top: 0px;
+}
+
+.location_float {
+  float: right;
+  text-align:right;
+}
+
+.delta_float {
+  float: left;
+  font-size: 24px;
+  border: 2px;
+  padding-left: 2px;
+  padding-right: 8px;
+  margin:0px;
+}
+
+.full_width {
+  width: 100%;
+}
+
+pre {
+ white-space: pre-wrap;
+ word-wrap: break-word;
+}
+        </style>
+<title>Scan Report</title>
+</head>
+<body><div class="content">
+<h1>Summary</h1>
+<p>
+          This document reports on the results of an automatic security scan.
+          The report first summarises the results found.  Then, for each host,
+          the report describes every issue found.  Please consider the
+          advice given in each description, in order to rectify the issue.
+        </p>
+<p>
+              Vendor security updates are not trusted.
+            </p>
+<p>
+              Overrides are off.  Even when a result has an override, this report uses the actual threat of the result.
+            </p>
+<p>
+              Information on overrides is included in the report.
+            </p>
+<p>
+              Notes are included in the report.
+            </p>
+<p>
+      This report might not show details of all issues that were found.
+
+        Issues with the threat level "High" are not shown.
+
+        Issues with the threat level "Medium" are not shown.
+
+        Issues with the threat level "Low" are not shown.
+
+        Issues with the threat level "Log" are not shown.
+
+        Issues with the threat level "Debug" are not shown.
+
+        Issues with the threat level "False Positive" are not shown.
+      Only results with a minimum QoD of 70 are shown. </p>
+<p>This report contains all 18 results selected by the filtering described above.  Before filtering there were 105 results.</p>
+<p>All dates are displayed using the timezone "Coordinated Universal Time", which is abbreviated "UTC".</p>
+<table>
+<tr>
+<td>Scan started:</td>
+<td><b>Tue Apr 9 17:56:14 2019 UTC</b></td>
+</tr>
+<tr>
+<td>Scan ended:</td>
+<td>Tue Apr 9 18:05:40 2019 UTC</td>
+</tr>
+<tr>
+<td>Task:</td>
+<td>scan</td>
+</tr>
+</table>
+<h2>Host Summary</h2>
+<table width="100%">
+<tr class="table_head">
+<td>Host</td>
+<td>Start</td>
+<td>End</td>
+<td>High</td>
+<td>Medium</td>
+<td>Low</td>
+<td>Log</td>
+<td>False Positive</td>
+</tr>
+<tr>
+<td><a href="#0.0.0.0">0.0.0.0 (www.hackazon.org)</a></td>
+<td>Apr 9, 17:56:24</td>
+<td>Apr 9, 18:05:40</td>
+<td>0</td>
+<td>3</td>
+<td>2</td>
+<td>13</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Total: 1</td>
+<td></td>
+<td></td>
+<td>0</td>
+<td>3</td>
+<td>2</td>
+<td>13</td>
+<td>0</td>
+</tr>
+</table>
+<h1>Results per Host</h1>
+<h2 id="0.0.0.0">Host 0.0.0.0</h2>
+<table>
+<tr>
+<td>Scanning of this host started at:</td>
+<td>Tue Apr 9 17:56:24 2019 UTC</td>
+</tr>
+<tr>
+<td>Number of results:</td>
+<td>18</td>
+</tr>
+</table>
+<h3>Port Summary for Host 0.0.0.0</h3>
+<table width="100%">
+<tr class="table_head">
+<td>Service (Port)</td>
+<td>Threat Level</td>
+</tr>
+<tr>
+<td>80/tcp</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>general/icmp</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>general/CPE-T</td>
+<td>Log</td>
+</tr>
+<tr>
+<td>general/tcp</td>
+<td>Medium</td>
+</tr>
+</table>
+<h3>Security Issues for Host 0.0.0.0</h3>
+<div class="result_head medium">
+<div class="location_float">general/tcp</div>
+<b>Medium</b><div class="full_width">
+            NVT:
+            1.3.6.1.4.1.25623.1.0.142220
+            (OID: 1.3.6.1.4.1.25623.1.0.142220)
+          </div>
+</div>
+<div class="result_section">
+            Product detection result:
+            cpe:/a:apache:http_server:2.4.7
+            by
+            Apache Web Server Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.900498)
+          </div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Installed version: 2.4.7
+Fixed version:     2.4.39</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            1.3.6.1.4.1.25623.1.0.142220
+                (OID: 1.3.6.1.4.1.25623.1.0.142220)
+              </p>
+<p>
+                  Version used: 2019-04-08T15:50:06+0000</p>
+</div>
+<div class="result_section">
+<b>Product Detection Result</b><p><table>
+<tr>
+<td>Product:</td>
+<td>cpe:/a:apache:http_server:2.4.7</td>
+</tr>
+<tr>
+<td>Method:</td>
+<td>Apache Web Server Detection
+                    (OID: 1.3.6.1.4.1.25623.1.0.900498)
+                  </td>
+</tr>
+</table></p>
+</div>
+<div class="result_head low">
+<div class="location_float">general/tcp</div>
+<b>Low</b><div class="full_width">
+            NVT:
+            1.3.6.1.4.1.25623.1.0.142228
+            (OID: 1.3.6.1.4.1.25623.1.0.142228)
+          </div>
+</div>
+<div class="result_section">
+            Product detection result:
+            cpe:/a:apache:http_server:2.4.7
+            by
+            Apache Web Server Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.900498)
+          </div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Installed version: 2.4.7
+Fixed version:     2.4.39</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            1.3.6.1.4.1.25623.1.0.142228
+                (OID: 1.3.6.1.4.1.25623.1.0.142228)
+              </p>
+<p>
+                  Version used: 2019-04-08T15:50:06+0000</p>
+</div>
+<div class="result_section">
+<b>Product Detection Result</b><p><table>
+<tr>
+<td>Product:</td>
+<td>cpe:/a:apache:http_server:2.4.7</td>
+</tr>
+<tr>
+<td>Method:</td>
+<td>Apache Web Server Detection
+                    (OID: 1.3.6.1.4.1.25623.1.0.900498)
+                  </td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            Apache Web Server Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.900498)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>Detects the installed version of Apache Web Server</p>
+<p>  The script detects the version of Apache HTTP Server on remote host and sets the KB.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Detected Apache
+
+Version:  2.4.7
+Location: 80/tcp
+CPE:      cpe:/a:apache:http_server:2.4.7
+
+Concluded from version/product identification result:
+Server: Apache/2.4.7</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            Apache Web Server Detection
+                (OID: 1.3.6.1.4.1.25623.1.0.900498)
+              </p>
+<p>
+                  Version used: $Revision: 10290 $</p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            CGI Scanning Consolidation
+            (OID: 1.3.6.1.4.1.25623.1.0.111038)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>The script consolidates various information for CGI scanning.</p>
+<p>  This information is based on the following scripts / settings:</p>
+<p>  - HTTP-Version Detection (OID: 1.3.6.1.4.1.25623.1.0.100034)</p>
+<p>  - No 404 check (OID: 1.3.6.1.4.1.25623.1.0.10386)</p>
+<p>  - Web mirroring / webmirror.nasl (OID: 1.3.6.1.4.1.25623.1.0.10662)</p>
+<p>  - Directory Scanner / DDI_Directory_Scanner.nasl (OID: 1.3.6.1.4.1.25623.1.0.11032)</p>
+<p>  - The configured 'cgi_path' within the 'Scanner Preferences' of the scan config in use</p>
+<p>  - The configured 'Enable CGI scanning', 'Enable generic web application scanning' and
+    'Add historic /scripts and /cgi-bin to directories for CGI scanning' within the
+    'Global variable settings' of the scan config in use</p>
+<p>  If you think any of this information is wrong please report it to the referenced community portal.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>The Hostname/IP "www.hackazon.org" was used to access the remote host.
+
+Generic web application scanning is disabled for this host via the "Enable generic web application scanning" option within the "Global variable settings" of the scan config in use.
+
+Requests to this service are done via HTTP/1.1.
+
+This service seems to be able to host PHP scripts.
+
+This service seems to be NOT able to host ASP scripts.
+
+The User-Agent "Mozilla/5.0 [en] (X11, U; OpenVAS-VT 9.0.3)" was used to access the remote host.
+
+Historic /scripts and /cgi-bin are not added to the directories used for CGI scanning. You can enable this again with the "Add historic /scripts and /cgi-bin to directories for CGI scanning" option within the "Global variable settings" of the scan config in use.
+
+A possible recursion was detected during CGI scanning:
+
+The service is using a relative URL in one or more HTML references where e.g. /file1.html contains &lt;a href="subdir/file2.html"&gt; and a subsequent request for subdir/file2.html is linking to subdir/file2.html. This would resolves to subdir/subdir/file2.html causing a recursion. To work around this counter-measures have been enabled but the service should be fixed as well to not use such problematic links. Below an excerpt of URLs is shown to help identify those issues.
+
+Syntax : URL (HTML link)
+
+http://www.hackazon.org/wishlist/?D=A (data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAIAAAHDVQljAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA7NJREFUeNpiXHHi/o/ffxnAgAnI+vvvv5mSMJDBBBT4/fcfRIZFgItNTYIXyLJTFwMIIMYFh+8wwABID1CDGB8HVA8Q3H/9BUgyXn/2/v9/EP/7778AAQTSAzHdUVMcKHTu4bsvP/6A9EO0cLExQxi6MgJQgyHU119Qx1189B7CYLz5/APQHAYMABBAKO6CAxaI95w0xf/8+8/CxLjv+kuE6X/BDvwDM40JTS/E+VDRe6++AklmJkZGRpgoUF5WmBPIABoAMQSL44B2MmG6F6gcIICgYQIXAioCBqOsMNev3/8uP/kAtAnFGGQOGwuTpYoIxHkMHAzAMH3x8cetF58Q0YJi19//UEfjACiqf//79/vPP0SoMjK8+vQDp2pmRsYjt17D3fr47bf3336huxvoM252Fn1ZQS52ZiAbHhoyQlxA7wKNuPv6y91XX0Bhe+v5hz/YIhcrAAgg7DGOFXCwMrMgBzbYZ4wqYjy8nKwP33wFehFfeIvwsuvICPwDO0xbmh+YSPddf8GEFKZMyGlGXYLvH5IfgOb+/487vP8zoHv3P87YYWT4hRQ1EKWMuFT///+fnZUZWQ7oKGDKwa4a6JvbLz4jJxNg7v+NahuK1mcfvrMgBdm1px+ZUEMQPZ28/vITymZifPf1J840+AeUWpgFudjg2cJGTQwoiByILP/BEspiPMqiPMBcjCLHxOiqLfHt598Lj99/+wkqZBjP3n/Dy8GCP2EBvQ4Mg+vPPrFwsjETTINAC4HWaknxMTEQDYBGAgRotcpyGoaBaLxlaVrSQgCpSCyH4Lochj8ugJBAiB9AVC2kVbpkdZ8TBFVSW61UK/KP7fF43jIhd/fPDQjbm0AeqSqmcqqJ1OBmewBWTvUaR6mGA+869Ds2J9Udsqo4ZhjHZ7T8nqe6KxCWG5K9vTkJOmJT1Ypo1Xzac4Z992WktM014beXDwXwBINblFIaEOCU7upqm89BP1qkBbFMNV2k+d6hkaxv867DpT7rQlpXIcyQ6rbos05z1WL1TABJkqyAanU8oAYYYeJv4zlnW44Cusf36OF1YiCYCQfGyCROslyS1puiZTaaJYLtD+NvxUsZeAJZyxYSfU9cDLy8MGmNN84of2Qk7DrngXfUEYLSrT8auTKe3mXozxbZ13Q5jpO0kLSyj//QNXOPffsscMOuC92VpfVHZwOvsQSzHPg2PkQExdNcjuPVaLqCSrFKnj5+0LuKndvkLgPkAWvpwePW5oOwnCmxltahB8KuAf+pyQJVxN7hAAAAAElFTkSuQmCC)
+
+The following directories require authentication and are tested by the script "HTTP Brute Force Logins with default Credentials (OID: 1.3.6.1.4.1.25623.1.0.108041)":
+
+http://www.hackazon.org/api
+
+The following directories were used for CGI scanning:
+
+http://www.hackazon.org/
+http://www.hackazon.org/cart
+http://www.hackazon.org/category
+http://www.hackazon.org/faq
+http://www.hackazon.org/helpdesk
+http://www.hackazon.org/home
+http://www.hackazon.org/product
+http://www.hackazon.org/products_pictures
+http://www.hackazon.org/search
+http://www.hackazon.org/search/page
+http://www.hackazon.org/user
+http://www.hackazon.org/wishlist
+http://www.hackazon.org/wishlist/view
+
+While this is not, in and of itself, a bug, you should manually inspect these directories to ensure that they are in compliance with company security standards
+
+The following directories were excluded from CGI scanning because the "Regex pattern to exclude directories from CGI scanning" setting of the NVT "Global variable settings" (OID: 1.3.6.1.4.1.25623.1.0.12288) for this scan was: "/(index\.php|image|img|css|js$|js/|javascript|style|theme|icon|jquery|graphic|grafik|picture|bilder|thumbnail|media/|skins?/)"
+
+http://www.hackazon.org/+pageHost+www.adobe.com/images/shared/download_buttons
+http://www.hackazon.org/css
+http://www.hackazon.org/css/nivo-themes/bar
+http://www.hackazon.org/css/nivo-themes/light
+http://www.hackazon.org/css/plugins
+http://www.hackazon.org/css/plugins/metisMenu
+http://www.hackazon.org/font-awesome/css
+http://www.hackazon.org/icons
+http://www.hackazon.org/images
+http://www.hackazon.org/js
+http://www.hackazon.org/js/amf
+http://www.hackazon.org/js/plugins/dataTables
+http://www.hackazon.org/js/plugins/metisMenu
+
+PHP script discloses physical path at:
+
+http://www.hackazon.org/twitter (/var/www/hackazon/classes/PHPixie/Auth/Login/Twitter.php)
+
+The following CGIs were discovered:
+
+Syntax : cginame (arguments [default value])
+
+http://www.hackazon.org/admin/user/login (return_url [%2Fadmin%2F] password [] username [] )
+http://www.hackazon.org/bestprice (userEmail [] _csrf_bestprice [BWGKya2QwKHInsqBKgse2saHfGY4RtZk] )
+http://www.hackazon.org/category/view (id [49] )
+http://www.hackazon.org/faq (userEmail [] _csrf_faq [kNnb7aZbzOkH8LR8C2U8hzHQTWzE9EnS] )
+http://www.hackazon.org/install (force [1] )
+http://www.hackazon.org/install/login (password [] )
+http://www.hackazon.org/product/view (id [16] )
+http://www.hackazon.org/products_pictures/ (products_pictures [] )
+http://www.hackazon.org/search (quality-filter [11] id [] searchString [] price-filter [5] brand-filter[] [8] )
+http://www.hackazon.org/search/page/ (page [1] id [] searchString [] brands [] price [] quality [] )
+http://www.hackazon.org/user/login (return_url [%2Faccount%2F] )
+http://www.hackazon.org/user/password (email [] )
+http://www.hackazon.org/user/register (first_name [] last_name [] username [] )</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            CGI Scanning Consolidation
+                (OID: 1.3.6.1.4.1.25623.1.0.111038)
+              </p>
+<p>
+                  Version used: $Revision: 13679 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table><tr valign="top">
+<td>Other:</td>
+<td>https://community.greenbone.net/c/vulnerability-tests</td>
+</tr></table></p>
+</div>
+<div class="result_head medium">
+<div class="location_float">80/tcp</div>
+<b>Medium</b>
+                 (CVSS: 4.8)
+              <div class="full_width">
+            NVT:
+            Cleartext Transmission of Sensitive Information via HTTP
+            (OID: 1.3.6.1.4.1.25623.1.0.108440)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>The host / application transmits sensitive information (username, passwords) in
+  cleartext via HTTP.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>The following URLs requires Basic Authentication (URL:realm name):
+
+http://www.hackazon.org/api:"Please provide your credentials using url /api/auth"</pre>
+</div>
+<div class="result_section">
+<b>Impact</b><p>An attacker could use this situation to compromise or eavesdrop on the
+  HTTP communication between the client and the server using a man-in-the-middle attack to get access to
+  sensitive data like usernames or passwords.</p>
+</div>
+<div class="result_section">
+<b>Solution</b><p><b>Solution type: </b>Workaround</p>
+<p>Enforce the transmission of sensitive data via an encrypted SSL/TLS connection.
+  Additionally make sure the host / application is redirecting all users to the secured SSL/TLS connection before
+  allowing to input sensitive data into the mentioned functions.</p>
+</div>
+<div class="result_section">
+<b>Affected Software/OS</b><p>Hosts / applications which doesn't enforce the transmission of sensitive data via an
+  encrypted SSL/TLS connection.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Method</b><p>Evaluate previous collected information and check if the host / application is not
+  enforcing the transmission of sensitive data via an encrypted SSL/TLS connection.</p>
+<p>  The script is currently checking the following:</p>
+<p>  - HTTP Basic Authentication (Basic Auth)</p>
+<p>  - HTTP Forms (e.g. Login) with input field of type 'password'</p>
+<p>
+            Details:
+            Cleartext Transmission of Sensitive Information via HTTP
+                (OID: 1.3.6.1.4.1.25623.1.0.108440)
+              </p>
+<p>
+                  Version used: $Revision: 10726 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table>
+<tr valign="top">
+<td>Other:</td>
+<td>https://www.owasp.org/index.php/Top_10_2013-A2-Broken_Authentication_and_Session_Management</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>https://cwe.mitre.org/data/definitions/319.html</td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">general/CPE-T</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            CPE Inventory
+            (OID: 1.3.6.1.4.1.25623.1.0.810002)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This routine uses information collected by other routines about
+  CPE identities of operating systems, services and
+  applications detected during the scan.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>0.0.0.0|cpe:/a:apache:http_server:2.4.7
+0.0.0.0|cpe:/a:jquery:jquery
+0.0.0.0|cpe:/a:php:php:5.5.9
+0.0.0.0|cpe:/o:canonical:ubuntu_linux</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            CPE Inventory
+                (OID: 1.3.6.1.4.1.25623.1.0.810002)
+              </p>
+<p>
+                  Version used: $Revision: 14324 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table><tr valign="top">
+<td>Other:</td>
+<td>http://cpe.mitre.org/</td>
+</tr></table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            HTTP Security Headers Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.112081)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>All known security headers are being checked on the host. On completion a report will hand back whether a specific security header
+      has been implemented (including its value) or is missing on the target.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Missing Headers
+---------------
+Content-Security-Policy
+Referrer-Policy
+X-Content-Type-Options
+X-Frame-Options
+X-Permitted-Cross-Domain-Policies
+X-XSS-Protection</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            HTTP Security Headers Detection
+                (OID: 1.3.6.1.4.1.25623.1.0.112081)
+              </p>
+<p>
+                  Version used: $Revision: 10899 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table>
+<tr valign="top">
+<td>Other:</td>
+<td>https://www.owasp.org/index.php/OWASP_Secure_Headers_Project</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#tab=Headers</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>https://securityheaders.io/</td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            HTTP Server type and version
+            (OID: 1.3.6.1.4.1.25623.1.0.10107)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This detects the HTTP Server's type and version.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>The remote web server type is :
+
+Apache/2.4.7 (Ubuntu)
+
+
+Solution : You can set the directive "ServerTokens Prod" to limit
+the information emanating from the server in its response headers.</pre>
+</div>
+<div class="result_section">
+<b>Solution</b><p>- Configure your server to use an alternate name like
+  'Wintendo httpD w/Dotmatrix display'</p>
+<p>  - Be sure to remove common logos like apache_pb.gif.</p>
+<p>  - With Apache, you can set the directive 'ServerTokens Prod' to limit
+  the information emanating from the server in its response headers.</p>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            HTTP Server type and version
+                (OID: 1.3.6.1.4.1.25623.1.0.10107)
+              </p>
+<p>
+                  Version used: $Revision: 11585 $</p>
+</div>
+<div class="result_head ">
+<div class="location_float">general/icmp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            ICMP Timestamp Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.103190)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>The remote host responded to an ICMP timestamp request.
+  The Timestamp Reply is an ICMP message which replies to a Timestamp message. It consists
+  of the originating timestamp sent by the sender of the Timestamp as well as a receive
+  timestamp and a transmit timestamp. This information could theoretically be used to
+  exploit weak time-based random number generators in other services.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><p>
+                    Vulnerability was detected according to the Vulnerability Detection Method.
+                  </p>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            ICMP Timestamp Detection
+                (OID: 1.3.6.1.4.1.25623.1.0.103190)
+              </p>
+<p>
+                  Version used: $Revision: 10411 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table>
+<tr valign="top">
+<td>CVE:</td>
+<td>CVE-1999-0524</td>
+</tr>
+<tr valign="top">
+<td>CERT:</td>
+<td>CB-K15/1514, CB-K14/0632, DFN-CERT-2014-0658</td>
+</tr>
+<tr valign="top">
+<td>Other:</td>
+<td>http://www.ietf.org/rfc/rfc0792.txt</td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            jQuery Detection
+            (OID: 1.3.6.1.4.1.25623.1.0.141622)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>Detection of jQuery.</p>
+<p>  The script sends a connection request to the server and attempts to detect jQuery and to extract its version.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Detected jQuery
+
+Version:  unknown
+Location: /js/ladda.
+CPE:      cpe:/a:jquery:jquery</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            jQuery Detection
+                (OID: 1.3.6.1.4.1.25623.1.0.141622)
+              </p>
+<p>
+                  Version used: $Revision: 14001 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table><tr valign="top">
+<td>Other:</td>
+<td>https://jquery.com/</td>
+</tr></table></p>
+</div>
+<div class="result_head medium">
+<div class="location_float">80/tcp</div>
+<b>Medium</b>
+                 (CVSS: 5.0)
+              <div class="full_width">
+            NVT:
+            Missing `httpOnly` Cookie Attribute
+            (OID: 1.3.6.1.4.1.25623.1.0.105925)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>The application is missing the 'httpOnly' cookie attribute</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>The cookies:
+
+Set-Cookie: PHPSESSID=***replaced***; path=/
+
+are missing the "httpOnly" attribute.</pre>
+</div>
+<div class="result_section">
+<b>Solution</b><p><b>Solution type: </b>Mitigation</p>
+<p>Set the 'httpOnly' attribute for any session cookie.</p>
+</div>
+<div class="result_section">
+<b>Affected Software/OS</b><p>Application with session handling in cookies.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Insight</b><p>The flaw is due to a cookie is not using the 'httpOnly' attribute. This
+  allows a cookie to be accessed by JavaScript which could lead to session hijacking attacks.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Method</b><p>Check all cookies sent by the application for a missing 'httpOnly' attribute</p>
+<p>
+            Details:
+            Missing `httpOnly` Cookie Attribute
+                (OID: 1.3.6.1.4.1.25623.1.0.105925)
+              </p>
+<p>
+                  Version used: $Revision: 5270 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table>
+<tr valign="top">
+<td>Other:</td>
+<td>https://www.owasp.org/index.php/HttpOnly</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>https://www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)</td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            Nikto (NASL wrapper)
+            (OID: 1.3.6.1.4.1.25623.1.0.14260)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This plugin uses nikto to find weak CGI scripts and other known issues
+  regarding web server security. See the preferences section for configuration options.</p>
+<p>  Note: The plugin needs the 'nikto' or 'nikto.pl' binary found within the PATH of the user running the scanner and
+  needs to be executable for this user. The existence of this binary is checked and reported separately
+  within 'Availability of scanner helper tools' (OID: 1.3.6.1.4.1.25623.1.0.810000).</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Here is the Nikto report:
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          0.0.0.0
++ Target Hostname:    0.0.0.0
++ Target Port:        80
++ Virtual Host:       www.hackazon.org
++ Start Time:         2019-04-09 17:59:23 (GMT0)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.7 (Ubuntu)
++ Retrieved x-powered-by header: PHP/5.5.9-1ubuntu4.11
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ Cookie PHPSESSID created without the httponly flag
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Server leaks inodes via ETags, header found with file /crossdomain.xml, fields: 0x253 0x51add1c831300
++ /crossdomain.xml contains a full wildcard entry. See http://jeremiahgrossman.blogspot.com/2008/05/crossdomainxml-invites-cross-site.html
++ Apache/2.4.7 appears to be outdated (current is at least Apache/2.4.12). Apache 2.0.65 (final release) and 2.2.29 are also current.
++ Web Server returns a valid response with junk HTTP methods, this may cause false positives.
++ DEBUG HTTP verb may show server debugging information. See http://msdn.microsoft.com/en-us/library/e8z01xdh%28VS.80%29.aspx for details.
++ Uncommon header 'union all select filetoclob('/etc/passwd','server')' found, with contents: :html,0 FROM sysusers WHERE username=USER --/.html HTTP/1.1 404 Not Found
++ Uncommon header 'src=javascript' found, with contents: alert('Vulnerable')&gt;&lt;Img Src=\" HTTP/1.1 404 Not Found
++ OSVDB-3092: /home/: This might be interesting...
++ OSVDB-3092: /log.txt: This might be interesting...
++ OSVDB-3233: /icons/README: Apache default file found.
++ Uncommon header '-al&amp;absolute_path_studip=http' found, with contents: //cirt.net/rfiinc.txt?? HTTP/1.1 404 Not Found
++ Uncommon header '-al&amp;_phplib[libdir]=http' found, with contents: //cirt.net/rfiinc.txt?? HTTP/1.1 404 Not Found
++ OSVDB-3092: /helpdesk/: This might be interesting...
++ /portal/changelog: Vignette richtext HTML editor changelog found.
++ 7751 requests: 0 error(s) and 19 item(s) reported on remote host
++ End Time:           2019-04-09 18:01:27 (GMT0) (124 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            Nikto (NASL wrapper)
+                (OID: 1.3.6.1.4.1.25623.1.0.14260)
+              </p>
+<p>
+                  Version used: $Revision: 13985 $</p>
+</div>
+<div class="result_head ">
+<div class="location_float">general/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            OS Detection Consolidation and Reporting
+            (OID: 1.3.6.1.4.1.25623.1.0.105937)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This script consolidates the OS information detected by several NVTs and tries to find the best matching OS.</p>
+<p>  Furthermore it reports all previously collected information leading to this best matching OS. It also reports possible additional information
+  which might help to improve the OS detection.</p>
+<p>  If any of this information is wrong or could be improved please consider to report these to the referenced community portal.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Best matching OS:
+
+OS: Ubuntu
+CPE: cpe:/o:canonical:ubuntu_linux
+Found by NVT: 1.3.6.1.4.1.25623.1.0.111067 (HTTP OS Identification)
+Concluded from PHP Server banner on port 80/tcp: X-Powered-By: PHP/5.5.9-1ubuntu4.11
+Setting key "Host/runs_unixoide" based on this information
+
+Other OS detections (in order of reliability):
+
+OS: Ubuntu
+CPE: cpe:/o:canonical:ubuntu_linux
+Found by NVT: 1.3.6.1.4.1.25623.1.0.111067 (HTTP OS Identification)
+Concluded from HTTP Server banner on port 80/tcp: Server: Apache/2.4.7 (Ubuntu)</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            OS Detection Consolidation and Reporting
+                (OID: 1.3.6.1.4.1.25623.1.0.105937)
+              </p>
+<p>
+                  Version used: $Revision: 14244 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table><tr valign="top">
+<td>Other:</td>
+<td>https://community.greenbone.net/c/vulnerability-tests</td>
+</tr></table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            PHP Version Detection (Remote)
+            (OID: 1.3.6.1.4.1.25623.1.0.800109)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>Detects the installed version of PHP.
+  This script sends HTTP GET request and try to get the version from the
+  response, and sets the result in KB.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Detected PHP
+
+Version:  5.5.9
+Location: 80/tcp
+CPE:      cpe:/a:php:php:5.5.9
+
+Concluded from version/product identification result:
+X-Powered-By: PHP/5.5.9-1ubuntu4.11 </pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            PHP Version Detection (Remote)
+                (OID: 1.3.6.1.4.1.25623.1.0.800109)
+              </p>
+<p>
+                  Version used: $Revision: 13811 $</p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            Services
+            (OID: 1.3.6.1.4.1.25623.1.0.10330)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This routine attempts to guess which service is running on the
+  remote ports. For instance, it searches for a web server which could listen on another port than
+  80 or 443 and makes this information available for other check routines.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>A web server is running on this port</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            Services
+                (OID: 1.3.6.1.4.1.25623.1.0.10330)
+              </p>
+<p>
+                  Version used: $Revision: 13541 $</p>
+</div>
+<div class="result_head low">
+<div class="location_float">general/tcp</div>
+<b>Low</b>
+                 (CVSS: 2.6)
+              <div class="full_width">
+            NVT:
+            TCP timestamps
+            (OID: 1.3.6.1.4.1.25623.1.0.80091)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>The remote host implements TCP timestamps and therefore allows to compute
+  the uptime.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>It was detected that the host implements RFC1323.
+
+The following timestamps were retrieved with a delay of 1 seconds in-between:
+Packet 1: 4286223955
+Packet 2: 4286224990</pre>
+</div>
+<div class="result_section">
+<b>Impact</b><p>A side effect of this feature is that the uptime of the remote
+  host can sometimes be computed.</p>
+</div>
+<div class="result_section">
+<b>Solution</b><p><b>Solution type: </b>Mitigation</p>
+<p>To disable TCP timestamps on linux add the line 'net.ipv4.tcp_timestamps = 0' to
+  /etc/sysctl.conf. Execute 'sysctl -p' to apply the settings at runtime.</p>
+<p>  To disable TCP timestamps on Windows execute 'netsh int tcp set global timestamps=disabled'</p>
+<p>  Starting with Windows Server 2008 and Vista, the timestamp can not be completely disabled.</p>
+<p>  The default behavior of the TCP/IP stack on this Systems is to not use the
+  Timestamp options when initiating TCP connections, but use them if the TCP peer
+  that is initiating communication includes them in their synchronize (SYN) segment.</p>
+<p>  See the references for more information.</p>
+</div>
+<div class="result_section">
+<b>Affected Software/OS</b><p>TCP/IPv4 implementations that implement RFC1323.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Insight</b><p>The remote host implements TCP timestamps, as defined by RFC1323.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Method</b><p>Special IP packets are forged and sent with a little delay in between to the
+  target IP. The responses are searched for a timestamps. If found, the timestamps are reported.</p>
+<p>
+            Details:
+            TCP timestamps
+                (OID: 1.3.6.1.4.1.25623.1.0.80091)
+              </p>
+<p>
+                  Version used: $Revision: 14310 $</p>
+</div>
+<div class="result_section">
+<b>References</b><br><p><table>
+<tr valign="top">
+<td>Other:</td>
+<td>http://www.ietf.org/rfc/rfc1323.txt</td>
+</tr>
+<tr valign="top">
+<td></td>
+<td>http://www.microsoft.com/en-us/download/details.aspx?id=9152</td>
+</tr>
+</table></p>
+</div>
+<div class="result_head ">
+<div class="location_float">general/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            Traceroute
+            (OID: 1.3.6.1.4.1.25623.1.0.51662)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>A traceroute from the scanning server to the target system was
+  conducted. This traceroute is provided primarily for informational value only. In the vast
+  majority of cases, it does not represent a vulnerability. However, if the displayed traceroute
+  contains any private addresses that should not have been publicly visible, then you have an
+  issue you need to correct.</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>Here is the route from 0.0.0.1 to 0.0.0.0:
+
+0.0.0.1
+0.0.0.0</pre>
+</div>
+<div class="result_section">
+<b>Solution</b><p>Block unwanted packets from escaping your network.</p>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            Traceroute
+                (OID: 1.3.6.1.4.1.25623.1.0.51662)
+              </p>
+<p>
+                  Version used: $Revision: 10411 $</p>
+</div>
+<div class="result_head ">
+<div class="location_float">80/tcp</div>
+<b>Log</b>
+                 (CVSS: 0.0)
+              <div class="full_width">
+            NVT:
+            wapiti (NASL wrapper)
+            (OID: 1.3.6.1.4.1.25623.1.0.80110)
+          </div>
+</div>
+<div class="result_section">
+<b>Summary</b><p>This plugin uses wapiti to find
+  web security issues.</p>
+<p>  Make sure to have wapiti 2.x as wapiti 1.x is not supported.</p>
+<p>  See the preferences section for wapiti options.</p>
+<p>  Note that the scanner is using limited set of wapiti options. Therefore, for more complete web
+  assessment, you should use standalone wapiti tool for deeper/customized checks.</p>
+<p>  Note: The plugin needs the 'wapiti' binary found within the PATH of the user running the scanner and
+  needs to be executable for this user. The existence of this binary is checked and reported separately
+  within 'Availability of scanner helper tools' (OID: 1.3.6.1.4.1.25623.1.0.810000).</p>
+</div>
+<div class="result_section">
+<b>Vulnerability Detection Result</b><pre>The wapiti report filename is empty. That could mean that a wrong version of wapiti is used or tmp dir is not accessible. Make sure to have wapiti 2.x as wapiti 1.x is not supported.
+In short: Check the installation of wapiti and the scanner.</pre>
+</div>
+<div class="result_section">
+<b>Log Method</b><p>
+            Details:
+            wapiti (NASL wrapper)
+                (OID: 1.3.6.1.4.1.25623.1.0.80110)
+              </p>
+<p>
+                  Version used: $Revision: 13985 $</p>
+</div>
+<div class="footer">
+                  This file was automatically generated.
+                </div>
+</div></body>
+</html>
