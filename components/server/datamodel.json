@@ -161,6 +161,7 @@
                 "jenkins_test_report",
                 "junit",
                 "random",
+                "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
                 "sonarqube"
