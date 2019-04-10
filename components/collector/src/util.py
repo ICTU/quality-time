@@ -24,7 +24,6 @@ def parse_source_response_xml_with_namespace(response: requests.Response) -> Tup
     return tree, namespaces
 
 
-
 MEMORY_ADDRESS_RE = re.compile(r" at 0x[0-9abcdef]+>")
 
 

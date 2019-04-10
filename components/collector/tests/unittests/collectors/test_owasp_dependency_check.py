@@ -37,8 +37,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(metric)
         self.assertEqual(
-            [dict(key="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js",
-                  url="http://owasp_dependency_check.html#l1_12345",
+            [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Medium", nr_vulnerabilities=2,
                   file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
             response["sources"][0]["units"])

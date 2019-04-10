@@ -15,7 +15,6 @@ def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
     latest = latest_measurement(database, measurement["metric_uuid"])
-    measurement_str, latest_str = str(measurement), str(latest)
     if latest:
         for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
             if "ignored_units" in latest_source:
