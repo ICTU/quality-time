@@ -844,20 +844,17 @@
             "units": {
                 "security_warnings": [
                     {
-                        "name": "Warning",
-                        "key": "name"
+                        "name": "File path",
+                        "key": "file_path",
+                        "url": "url"
                     },
                     {
-                        "name": "Severity",
-                        "key": "severity"
+                        "name": "Highest severity",
+                        "key": "highest_severity"
                     },
                     {
-                        "name": "Description",
-                        "key": "description"
-                    },
-                    {
-                        "name": "Location",
-                        "key": "location"
+                        "name": "Number of vulnerabilities",
+                        "key": "nr_vulnerabilities"
                     }
                 ]
             }
