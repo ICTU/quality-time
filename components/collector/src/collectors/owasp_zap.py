@@ -1,6 +1,5 @@
 """OWASP ZAP metric collector."""
 
-from datetime import datetime
 import re
 from typing import List
 from xml.etree.cElementTree import Element
@@ -10,7 +9,7 @@ import requests
 
 from ..collector import Collector
 from ..type import Units, Value
-from ..util import parse_source_response_xml
+from ..util import days_ago, parse_source_response_xml
 
 
 class OWASPZAPSecurityWarnings(Collector):
@@ -32,7 +31,7 @@ class OWASPZAPSecurityWarnings(Collector):
     @staticmethod
     def alerts(response: requests.Response, **parameters) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
-        tree, _ = parse_source_response_xml(response)
+        tree = parse_source_response_xml(response)
         risks = parameters.get("risks") or ["informational", "low", "medium", "high"]
         alerts = []
         for risk in risks:
@@ -45,6 +44,6 @@ class OWASPZAPSourceUpToDateness(Collector):
     """Collector to collect the OWASP ZAP report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, _ = parse_source_response_xml(response)
+        tree = parse_source_response_xml(response)
         report_datetime = parse(tree.get("generated"))
-        return str((datetime.now() - report_datetime).days)
+        return str(days_ago(report_datetime))

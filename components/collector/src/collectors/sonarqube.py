@@ -1,6 +1,5 @@
 """Collectors for SonarQube."""
 
-from datetime import datetime, timezone
 from typing import Dict
 
 from dateutil.parser import isoparse  # type: ignore
@@ -8,6 +7,7 @@ import requests
 
 from ..collector import Collector
 from ..type import URL, Units, Value
+from ..util import days_ago
 
 
 class SonarQubeViolations(Collector):
@@ -164,4 +164,5 @@ class SonarQubeSourceUpToDateness(Collector):
         return URL(f"{url}/project/activity?id={component}")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str((datetime.now(timezone.utc) - isoparse(response.json()["analyses"][0]["date"])).days)
+        analysis_datetime = isoparse(response.json()["analyses"][0]["date"])
+        return str(days_ago(analysis_datetime))

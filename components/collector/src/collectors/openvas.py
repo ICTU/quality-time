@@ -1,6 +1,5 @@
 """OpenVAS metric collector."""
 
-from datetime import datetime, timezone
 from typing import List
 from xml.etree.cElementTree import Element
 
@@ -9,18 +8,18 @@ import requests
 
 from ..collector import Collector
 from ..type import Value, Units
-from ..util import parse_source_response_xml
+from ..util import days_ago, parse_source_response_xml
 
 
 class OpenVASSecurityWarnings(Collector):
     """Collector to get security warnings from OpenVAS."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, _ = parse_source_response_xml(response)
+        tree = parse_source_response_xml(response)
         return str(len(self.results(tree, **parameters)))
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        tree, _ = parse_source_response_xml(response)
+        tree = parse_source_response_xml(response)
         units = []
         for result in self.results(tree, **parameters):
             units.append(
@@ -40,6 +39,6 @@ class OpenVASSourceUpToDateness(Collector):
     """Collector to collect the OpenVAS report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, _ = parse_source_response_xml(response)
+        tree = parse_source_response_xml(response)
         report_datetime = isoparse(tree.findtext("creation_time"))
-        return str((datetime.now(timezone.utc) - report_datetime).days)
+        return str(days_ago(report_datetime))

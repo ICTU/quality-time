@@ -1,6 +1,5 @@
 """OWASP Dependency Check metric collector."""
 
-from datetime import datetime, timezone
 from typing import List
 from xml.etree.cElementTree import Element
 
@@ -9,18 +8,18 @@ import requests
 
 from ..collector import Collector
 from ..type import Namespaces, Units, Value
-from ..util import parse_source_response_xml
+from ..util import days_ago, parse_source_response_xml_with_namespace
 
 
 class OWASPDependencyCheckSecurityWarnings(Collector):
     """Collector to get security warnings from OWASP Dependency Check."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = parse_source_response_xml(response)
+        tree, namespaces = parse_source_response_xml_with_namespace(response)
         return str(len(self.vulnerabilities(tree, namespaces, **parameters)))
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        tree, namespaces = parse_source_response_xml(response)
+        tree, namespaces = parse_source_response_xml_with_namespace(response)
         units = []
         for dependency in tree.findall(".//ns:dependency", namespaces):
             file_path = dependency.findtext("ns:filePath", namespaces=namespaces)
@@ -46,6 +45,6 @@ class OWASPDependencyCheckSourceUpToDateness(Collector):
     """Collector to collect the OWASP Dependency Check report age."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = parse_source_response_xml(response)
+        tree, namespaces = parse_source_response_xml_with_namespace(response)
         report_datetime = isoparse(tree.findtext(".//ns:reportDate", namespaces=namespaces))
-        return str((datetime.now(timezone.utc) - report_datetime).days)
+        return str(days_ago(report_datetime))

@@ -1,6 +1,5 @@
 """Jenkins test report metric collector."""
 
-from datetime import datetime
 from typing import List
 
 from dateutil.parser import parse
@@ -8,6 +7,7 @@ import requests
 
 from ..collector import Collector
 from ..type import Unit, Units, URL, Value
+from ..util import days_ago
 
 
 class JenkinsTestReportTests(Collector):
@@ -65,4 +65,4 @@ class JenkinsTestReportSourceUpToDateness(Collector):
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         report_datetime = parse(response.json()["suites"][0]["timestamp"])
-        return str((datetime.now() - report_datetime).days)
+        return str(days_ago(report_datetime))
