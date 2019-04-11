@@ -1,11 +1,11 @@
 import React from 'react';
 import { Grid, Header, Icon } from 'semantic-ui-react';
-import { MetricComment } from './MetricComment';
 import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
+import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 import { StringInput } from './fields/StringInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
-import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
+import { TextInput } from './fields/TextInput';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -100,10 +100,11 @@ function MetricParameters(props) {
                 </Grid.Row>
                 <Grid.Row columns={1}>
                     <Grid.Column>
-                        <MetricComment
-                            comment={props.metric.comment}
+                        <TextInput
+                            label="Comment"
                             readOnly={props.readOnly}
-                            set_metric_attribute={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("comment", value)}
+                            value={props.metric.comment}
                         />
                     </Grid.Column>
                 </Grid.Row>

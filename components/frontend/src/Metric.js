@@ -24,6 +24,22 @@ class Metric extends Component {
         self.props.reload();
       })
   }
+  set_rationale_for_ignoring_unit(source_uuid, unit_key, rationale) {
+    const self = this;
+    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/rationale`, {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({rationale: rationale})
+    })
+      .then(function (response) { return response.json(); })
+      .then(function (json) {
+        self.fetch_measurement();
+        self.props.reload();
+      })
+  }
   set_metric_attribute(attribute, value) {
     const self = this;
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
@@ -83,6 +99,7 @@ class Metric extends Component {
         report={this.props.report}
         readOnly={this.props.readOnly}
         set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
+        set_rationale_for_ignoring_unit={(s, u, r) => this.set_rationale_for_ignoring_unit(s, u, r)}
         subject_uuid={this.props.subject_uuid}
       />
     )
