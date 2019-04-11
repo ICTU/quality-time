@@ -46,10 +46,10 @@ class Measurement extends Component {
     const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
     return (
       <>
-        <Table.Row positive={positive} negative={negative} warning={warning} active={active}>
+        <Table.Row positive={positive} negative={negative} warning={warning} active={active} onClick={(e) => this.onExpand(e)}
+              onKeyPress={(e) => this.onExpand(e)} tabIndex="0">
           <Table.Cell collapsing>
-            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
-              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"}  />
           </Table.Cell>
           <Table.Cell>
             {metric_name}
