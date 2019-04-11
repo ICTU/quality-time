@@ -78,4 +78,4 @@ class Report extends Component {
     }
 }
 
-export { Report };
+export { Report, MetricSummaryCard };

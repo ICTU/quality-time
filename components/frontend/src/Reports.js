@@ -18,12 +18,39 @@ function ReportCard(props) {
 }
 
 function Dashboard(props) {
+  const tags = [{
+      "summary": {
+        "red": 15,
+        "green": 5,
+        "yellow": 0,
+        "grey": 1
+      },
+      "title": "security"
+    },
+    {
+      "summary": {
+        "red": 5,
+        "green": 13,
+        "yellow": 4,
+        "grey": 2
+      },
+      "title": "testability"
+    }
+  ];
   return (
-    <Card.Group doubling stackable itemsPerRow={5}>
-          {props.reports.map((report) =>
-            <ReportCard key={report.report_uuid} report={report} open_report={props.open_report} />)
-          }
-    </Card.Group>
+    <>
+      <Card.Group doubling stackable itemsPerRow={5}>
+            {props.reports.map((report) =>
+              <ReportCard key={report.report_uuid} report={report} open_report={props.open_report} />)
+            }
+      </Card.Group>
+      <Card.Group doubling stackable itemsPerRow={5}>
+            {tags.map((tag) =>
+              <ReportCard key={tag.title} report={tag} />)
+            }
+      </Card.Group>
+    </>
+
   )
 }
 
