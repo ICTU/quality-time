@@ -17,6 +17,16 @@ function ReportCard(props) {
   )
 }
 
+function Dashboard(props) {
+  return (
+    <Card.Group doubling stackable itemsPerRow={5}>
+          {props.reports.map((report) =>
+            <ReportCard key={report.report_uuid} report={report} open_report={props.open_report} />)
+          }
+    </Card.Group>
+  )
+}
+
 class Reports extends Component {
   add_report(event) {
     event.preventDefault();
@@ -36,11 +46,7 @@ class Reports extends Component {
   render() {
     return (
       <>
-        <Card.Group doubling stackable itemsPerRow={5}>
-          {this.props.reports.map((report) =>
-            <ReportCard key={report.report_uuid} report={report} open_report={this.props.open_report} />)
-          }
-        </Card.Group>
+        <Dashboard reports={this.props.reports} open_report={this.props.open_report} />
         {!this.props.readOnly &&
         <Segment basic>
           <Button icon primary basic onClick={(e) => this.add_report(e)}>
