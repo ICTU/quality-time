@@ -46,13 +46,13 @@ class SubjectTitle extends Component {
             (key) => { options.push({ key: key, text: this.props.datamodel.subjects[key].name, value: key }) });
         return (
             <>
-                <Header as='h2'>
-                    <Icon
-                        name={this.state.show_details ? "caret down" : "caret right"}
+                <Header as='h2'
                         onClick={(e) => this.onExpand(e)}
                         onKeyPress={(e) => this.onExpand(e)}
+                        tabIndex="0">
+                    <Icon
+                        name={this.state.show_details ? "caret down" : "caret right"}
                         size='large'
-                        tabIndex="0"
                     />
                     {this.props.subject.name}
                 </Header>

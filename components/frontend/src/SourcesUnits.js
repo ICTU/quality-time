@@ -28,10 +28,10 @@ class Unit extends Component {
     if (unit.endsWith("s")) { unit = unit.substring(0, unit.length - 1) };
     return (
       <>
-        <Table.Row key={props.unit.key} style={style}>
+        <Table.Row key={props.unit.key} style={style} onClick={(e) => this.onExpand(e)}
+              onKeyPress={(e) => this.onExpand(e)} tabIndex="0">
           <Table.Cell collapsing>
-            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
-              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
           </Table.Cell>
           {props.unit_attributes.map((unit_attribute, col_index) =>
             <Table.Cell key={col_index}>
