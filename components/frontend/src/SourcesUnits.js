@@ -59,7 +59,7 @@ class Unit extends Component {
                     label="Rationale"
                     placeholder={`Rationale for ignoring this ${unit}...`}
                     readOnly={props.readOnly}
-                    value=""
+                    value={props.rationale_for_ignoring_unit}
                     set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
                   />
                 </Grid.Column>
@@ -112,6 +112,7 @@ class SourceUnits extends Component {
         ignored={ignored_units.includes(unit.key)}
         key={unit.key}
         metric_unit={metric_unit}
+        rationale_for_ignoring_unit={this.props.source.ignored_units_rationale ? this.props.source.ignored_units_rationale[unit.key] : ""}
         readOnly={this.props.readOnly}
         set_rationale_for_ignoring_unit={this.props.set_rationale_for_ignoring_unit}
         source_uuid={this.props.source.source_uuid}
