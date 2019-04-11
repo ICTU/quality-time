@@ -1,38 +1,73 @@
 import React, { Component } from 'react';
-import { Button, Icon, Menu, Label, Tab, Table, Popup } from 'semantic-ui-react';
-
+import { Button, Grid, Icon, Menu, Label, Tab, Table, Popup, Radio } from 'semantic-ui-react';
+import { TextInput } from './fields/TextInput';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
   cell_contents = props.unit[props.unit_attribute.url] ? <a href={props.unit[props.unit_attribute.url]}>{cell_contents}</a> : cell_contents;
-  cell_contents = props.unit_attribute.pre ? <div style={{whiteSpace: 'pre-wrap', wordWrap: 'break-all', hyphens: 'auto'}}>{cell_contents}</div> : cell_contents;
+  cell_contents = props.unit_attribute.pre ? <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-all', hyphens: 'auto' }}>{cell_contents}</div> : cell_contents;
   return (
     cell_contents
   )
 }
 
-function Unit(props) {
-  if (props.hide_ignored_units && props.ignored) { return null };
-  const style = props.ignored ? { textDecoration: "line-through" } : {};
-  const icon = props.ignored ? 'toggle on' : 'toggle off';
-  const help = props.ignored ? 'Stop ignoring' : 'Start ignoring';
-  return (
-    <Table.Row key={props.unit.key} style={style}>
-      {props.unit_attributes.map((unit_attribute, col_index) =>
-        <Table.Cell key={col_index}>
-          <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />
-        </Table.Cell>)
-      }
-      <Table.Cell collapsing>
-        {!props.readOnly &&
-          <Popup trigger={
-            <Button floated='right' icon primary size='small' basic
-              onClick={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}>
-              <Icon name={icon} />
-            </Button>} content={help} />}
-      </Table.Cell>
-    </Table.Row>
-  )
+class Unit extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { show_details: false }
+  }
+  onExpand(event) {
+    event.preventDefault();
+    this.setState((state) => ({ show_details: !state.show_details }));
+  }
+  render() {
+    let props = this.props;
+    if (props.hide_ignored_units && props.ignored) { return null };
+    const style = props.ignored ? { textDecoration: "line-through" } : {};
+    let unit = props.metric_unit;
+    if (unit.endsWith("s")) { unit = unit.substring(0, unit.length - 1) };
+    return (
+      <>
+        <Table.Row key={props.unit.key} style={style}>
+          <Table.Cell collapsing>
+            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} onClick={(e) => this.onExpand(e)}
+              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" />
+          </Table.Cell>
+          {props.unit_attributes.map((unit_attribute, col_index) =>
+            <Table.Cell key={col_index}>
+              <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />
+            </Table.Cell>)
+          }
+          <Table.Cell collapsing>
+          </Table.Cell>
+        </Table.Row>
+        {this.state.show_details && <Table.Row>
+          <Table.Cell colSpan="99">
+            <Grid stackable>
+              <Grid.Row columns={2}>
+                <Grid.Column width={4} verticalAlign='middle'>
+                    <Radio
+                      defaultChecked={props.ignored}
+                      label={`Ignore this ${unit}`}
+                      onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
+                      readOnly={props.readOnly}
+                      toggle
+                    />
+                </Grid.Column>
+                <Grid.Column width={12}>
+                  <TextInput
+                    label="Rationale"
+                    readOnly={props.readOnly}
+                    value=""
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Table.Cell>
+        </Table.Row>}
+      </>
+    )
+  }
 }
 
 class SourceUnits extends Component {
@@ -54,8 +89,11 @@ class SourceUnits extends Component {
     const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric.type];
     const ignored_units = this.props.source.ignored_units || [];
+    const metric_type = this.props.datamodel.metrics[this.props.metric.type];
+    const metric_unit = this.props.metric.unit || metric_type.unit;
     const headers =
       <Table.Row>
+        <Table.HeaderCell collapsing />
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing>
           <Popup trigger={
@@ -68,7 +106,7 @@ class SourceUnits extends Component {
     const rows = this.props.source.units.map((unit) =>
       <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes} source_uuid={this.props.source.source_uuid}
         hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
-        readOnly={this.props.readOnly} ignore_unit={this.props.ignore_unit} />);
+        readOnly={this.props.readOnly} ignore_unit={this.props.ignore_unit} metric_unit={metric_unit} />);
     return (
       <Table size='small'>
         <Table.Header>
