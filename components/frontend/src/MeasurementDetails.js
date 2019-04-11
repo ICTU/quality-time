@@ -57,9 +57,17 @@ class MeasurementDetails extends Component {
       if (nr_units > 0) {
         panes.push({
           menuItem: unit_name, render: () => <Tab.Pane>
-            <SourcesUnits measurement={props.measurement} datamodel={props.datamodel} metric={metric}
-              ignore_unit={props.ignore_unit} metric_uuid={props.metric_uuid} readOnly={props.readOnly}
-              measurements={props.measurements} report_uuid={props.report_uuid} />
+            <SourcesUnits
+              datamodel={props.datamodel}
+              ignore_unit={props.ignore_unit}
+              measurement={props.measurement}
+              measurements={props.measurements}
+              metric={metric}
+              metric_uuid={props.metric_uuid}
+              readOnly={props.readOnly}
+              report_uuid={props.report_uuid}
+              set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
+            />
           </Tab.Pane>
         })
       }

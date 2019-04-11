@@ -92,6 +92,7 @@ class Measurement extends Component {
             reload={this.props.reload}
             report={this.props.report}
             set_metric_attribute={this.props.set_metric_attribute}
+            set_rationale_for_ignoring_unit={this.props.set_rationale_for_ignoring_unit}
             subject_uuid={this.props.subject_uuid}
             unit={metric_unit}
           />}

@@ -35,6 +35,7 @@ class TextInput extends Component {
           onChange={(e) => this.onChange(e)}
           onKeyDown={(e) => this.onKeyDown(e)}
           onKeyPress={(e) => this.onKeyPress(e)}
+          placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           value={this.state.edited_text}
         />

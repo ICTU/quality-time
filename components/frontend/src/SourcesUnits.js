@@ -57,8 +57,10 @@ class Unit extends Component {
                 <Grid.Column width={12}>
                   <TextInput
                     label="Rationale"
+                    placeholder={`Rationale for ignoring this ${unit}...`}
                     readOnly={props.readOnly}
                     value=""
+                    set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
                   />
                 </Grid.Column>
               </Grid.Row>
@@ -104,9 +106,18 @@ class SourceUnits extends Component {
         </Table.HeaderCell>
       </Table.Row>
     const rows = this.props.source.units.map((unit) =>
-      <Unit key={unit.key} unit={unit} unit_attributes={unit_attributes} source_uuid={this.props.source.source_uuid}
-        hide_ignored_units={this.state.hide_ignored_units} ignored={ignored_units.includes(unit.key)}
-        readOnly={this.props.readOnly} ignore_unit={this.props.ignore_unit} metric_unit={metric_unit} />);
+      <Unit
+        hide_ignored_units={this.state.hide_ignored_units}
+        ignore_unit={this.props.ignore_unit}
+        ignored={ignored_units.includes(unit.key)}
+        key={unit.key}
+        metric_unit={metric_unit}
+        readOnly={this.props.readOnly}
+        set_rationale_for_ignoring_unit={this.props.set_rationale_for_ignoring_unit}
+        source_uuid={this.props.source.source_uuid}
+        unit={unit}
+        unit_attributes={unit_attributes}
+      />);
     return (
       <Table size='small'>
         <Table.Header>
@@ -134,8 +145,16 @@ function SourcesUnits(props) {
     panes.push({
       menuItem: (<Menu.Item key={source.source_uuid}>{source_name}<Label>{nr_units}</Label></Menu.Item>),
       render: () => <Tab.Pane>
-        <SourceUnits source={source} datamodel={props.datamodel} metric={props.metric} readOnly={props.readOnly}
-          ignore_unit={props.ignore_unit} report_uuid={props.report_uuid} metric_uuid={props.metric_uuid} />
+        <SourceUnits
+          datamodel={props.datamodel}
+          ignore_unit={props.ignore_unit}
+          metric={props.metric}
+          metric_uuid={props.metric_uuid}
+          readOnly={props.readOnly}
+          report_uuid={props.report_uuid}
+          set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
+          source={source}
+        />
       </Tab.Pane>
     })
   });
