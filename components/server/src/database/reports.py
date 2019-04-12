@@ -29,17 +29,17 @@ def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import latest_measurement  # Prevent circular import
     status_color_mapping = dict(target_met="green", debt_target_met="grey", target_not_met="red")
-    summary = dict(red=0, green=0, yellow=0, grey=0)
+    summary = dict(red=0, green=0, yellow=0, grey=0, white=0)
     summary_by_subject: Dict[str, Summary] = dict()
     summary_by_tag: Dict[str, Summary] = dict()
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
             latest = latest_measurement(database, metric_uuid)
-            color = status_color_mapping.get(latest["status"], "yellow") if latest else "yellow"
+            color = status_color_mapping.get(latest["status"], "white") if latest else "white"
             summary[color] += 1
-            summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0))[color] += 1
+            summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
             for tag in metric["tags"]:
-                summary_by_tag.setdefault(tag, dict(red=0, green=0, yellow=0, grey=0))[color] += 1
+                summary_by_tag.setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
     report["summary"] = summary
     report["summary_by_subject"] = summary_by_subject
     report["summary_by_tag"] = summary_by_tag
