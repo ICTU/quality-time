@@ -1,23 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Card, Icon, Segment } from 'semantic-ui-react';
-import { StatusPieChart } from './StatusPieChart';
+import { Button, Icon, Segment } from 'semantic-ui-react';
+import { CardDashboard } from './CardDashboard';
+import { MetricSummaryCard } from './MetricSummaryCard';
+import { Tag } from './MetricTag';
 
-
-function ReportCard(props) {
-  const summary = props.report.summary;
-  const nr_metrics = summary.red + summary.green + summary.yellow + summary.grey;
-  return (
-    <Card onClick={props.onClick}>
-      <StatusPieChart red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />
-      <Card.Content>
-        <Card.Header>{props.report.title}</Card.Header>
-        <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
-      </Card.Content>
-    </Card>
-  )
-}
-
-function Dashboard(props) {
+function ReportsDashboard(props) {
   var tag_counts = {};
   props.reports.forEach((report) => {
     Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
@@ -27,25 +14,15 @@ function Dashboard(props) {
       Object.entries(counts).forEach(([color, color_count]) => {tag_counts[tag][color] += color_count})
     })
   });
-  let tags = [];
-  Object.entries(tag_counts).forEach(([tag, counts]) => {
-    tags.push({"summary": counts, "title": tag});
-  });
   const report_cards = props.reports.map((report) =>
-    <ReportCard key={report.report_uuid} report={report} onClick={(e) => props.open_report(e, report)} />);
-  const tag_cards = tags.map((tag) =>
-    <ReportCard key={tag.title} report={tag} />);
-  const report_cards_per_row = Math.min(Math.max(report_cards.length, 5), 7);
-  const tag_cards_per_row = Math.min(Math.max(tag_cards.length, 8), 10);
+    <MetricSummaryCard key={report.report_uuid} header={report.title}
+      onClick={(e) => props.open_report(e, report)} {...report.summary}
+    />);
+  const tag_cards = Object.entries(tag_counts).map(([tag, counts]) =>
+    <MetricSummaryCard key={tag} header={<Tag tag={tag}/>} {...counts}
+    />);
   return (
-    <>
-      <Card.Group doubling stackable itemsPerRow={report_cards_per_row}>
-            {report_cards}
-      </Card.Group>
-      <Card.Group doubling stackable itemsPerRow={tag_cards_per_row}>
-            {tag_cards}
-      </Card.Group>
-    </>
+    <CardDashboard big_cards={report_cards} small_cards={tag_cards} />
   )
 }
 
@@ -68,7 +45,7 @@ class Reports extends Component {
   render() {
     return (
       <>
-        <Dashboard reports={this.props.reports} open_report={this.props.open_report} />
+        <ReportsDashboard reports={this.props.reports} open_report={this.props.open_report} />
         {!this.props.readOnly &&
         <Segment basic>
           <Button icon primary basic onClick={(e) => this.add_report(e)}>
