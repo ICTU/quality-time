@@ -1,6 +1,7 @@
 """Metric collectors per source."""
 
 from .azure_devops import *
+from .calendar import *
 from .gitlab import *
 from .hq import *
 from .jacoco import *

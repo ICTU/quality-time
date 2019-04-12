@@ -59,6 +59,8 @@ def import_report(database: Database, filename: str) -> None:
             metric_type = imported_metric["type"]
             metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(
                 database, report_uuid, metric_type)
+            metric_to_store.update(imported_metric)
+            metric_to_store["sources"] = {}  # Sources in the example report json are lists, we transform them to dicts
             for imported_source in imported_metric["sources"]:
                 source_to_store = metric_to_store["sources"][uuid()] = imported_source
                 source_parameters = default_source_parameters(database, metric_type, imported_source["type"])

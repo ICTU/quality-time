@@ -129,6 +129,20 @@
                     ]
                 },
                 {
+                    "type": "source_up_to_dateness",
+                    "name": "Time since last security test",
+                    "target": "90",
+                    "tags": ["security"],
+                    "sources": [
+                        {
+                            "type": "calendar",
+                            "parameters": {
+                                "date": "2019-04-01"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "violations",
                     "sources": [
                         {
