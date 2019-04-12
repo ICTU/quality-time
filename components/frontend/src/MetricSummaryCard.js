@@ -3,10 +3,10 @@ import { Card } from 'semantic-ui-react';
 import { StatusPieChart } from './StatusPieChart';
 
 export function MetricSummaryCard(props) {
-    const nr_metrics = props.red + props.green + props.yellow + props.grey;
+    const nr_metrics = props.red + props.green + props.yellow + props.grey + props.white;
     return (
         <Card onClick={props.onClick}>
-            <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} grey={props.grey} />
+            <StatusPieChart {...props} />
             <Card.Content>
                 <Card.Header>{props.header}</Card.Header>
                 <Card.Meta>Metrics: {nr_metrics}</Card.Meta>

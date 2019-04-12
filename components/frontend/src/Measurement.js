@@ -41,7 +41,7 @@ class Measurement extends Component {
     const positive = status === "target_met";
     const active = status === "debt_target_met";
     const negative = status === "target_not_met";
-    const warning = status === null;
+    const warning = status === "target_warning";
     const metric_unit = metric.unit || this.props.datamodel.metrics[metric.type].unit;
     const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
     return (
