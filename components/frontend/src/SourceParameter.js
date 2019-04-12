@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
 import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
+import { DateInput } from './fields/DateInput';
 import { Input } from './fields/Input';
 
 class SourceParameter extends Component {
@@ -102,6 +103,16 @@ class SourceParameter extends Component {
           label={label}
           options={this.props.parameter_values}
           placeholder={this.props.placeholder}
+          readOnly={this.props.readOnly}
+          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          value={this.props.parameter_value}
+        />
+      )
+    }
+    if (this.props.parameter_type === "date") {
+      return (
+        <DateInput
+          label={label}
           readOnly={this.props.readOnly}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           value={this.props.parameter_value}
