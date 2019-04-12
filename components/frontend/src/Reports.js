@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Card, Icon, Segment } from 'semantic-ui-react';
 import { StatusPieChart } from './StatusPieChart';
+import { Tag } from './MetricTag';
 
 
 function ReportCard(props) {
@@ -10,7 +11,7 @@ function ReportCard(props) {
     <Card onClick={props.onClick}>
       <StatusPieChart red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />
       <Card.Content>
-        <Card.Header>{props.report.title}</Card.Header>
+        <Card.Header>{props.header}</Card.Header>
         <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
       </Card.Content>
     </Card>
@@ -32,9 +33,9 @@ function Dashboard(props) {
     tags.push({"summary": counts, "title": tag});
   });
   const report_cards = props.reports.map((report) =>
-    <ReportCard key={report.report_uuid} report={report} onClick={(e) => props.open_report(e, report)} />);
+    <ReportCard key={report.report_uuid} header={report.title} report={report} onClick={(e) => props.open_report(e, report)} />);
   const tag_cards = tags.map((tag) =>
-    <ReportCard key={tag.title} report={tag} />);
+<ReportCard key={tag.title} report={tag} header={<Tag tag={tag.title}/>} />);
   const report_cards_per_row = Math.min(Math.max(report_cards.length, 5), 7);
   const tag_cards_per_row = Math.min(Math.max(tag_cards.length, 8), 10);
   return (
