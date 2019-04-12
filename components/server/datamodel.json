@@ -765,7 +765,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "exception": "negative",
+                            "error": "negative",
+                            "warning": "warning"
+                        }
                     },
                     {
                         "name": "Component",
@@ -811,7 +816,11 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "High": "negative",
+                            "Medium": "warning"
+                        }
                     },
                     {
                         "name": "Description",
@@ -866,7 +875,11 @@
                     },
                     {
                         "name": "Highest severity",
-                        "key": "highest_severity"
+                        "key": "highest_severity",
+                        "color": {
+                            "High": "negative",
+                            "Medium": "warning"
+                        }
                     },
                     {
                         "name": "Number of vulnerabilities",
@@ -912,7 +925,15 @@
                     },
                     {
                         "name": "Risk (Confidence)",
-                        "key": "risk"
+                        "key": "risk",
+                        "color": {
+                            "High (Low)": "negative",
+                            "High (Medium)": "negative",
+                            "High (High)": "negative",
+                            "Medium (Low)": "warning",
+                            "Medium (Medium)": "warning",
+                            "Medium (High)": "warning"
+                        }
                     },
                     {
                         "name": "Description",
@@ -1227,7 +1248,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "blocker": "negative",
+                            "critical": "negative",
+                            "major": "warning"
+                        }
                     },
                     {
                         "name": "Type",
@@ -1246,7 +1272,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "blocker": "negative",
+                            "critical": "negative",
+                            "major": "warning"
+                        }
                     },
                     {
                         "name": "Type",
@@ -1265,7 +1296,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "blocker": "negative",
+                            "critical": "negative",
+                            "major": "warning"
+                        }
                     },
                     {
                         "name": "Type",
@@ -1284,7 +1320,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "blocker": "negative",
+                            "critical": "negative",
+                            "major": "warning"
+                        }
                     },
                     {
                         "name": "Type",
@@ -1303,7 +1344,12 @@
                     },
                     {
                         "name": "Severity",
-                        "key": "severity"
+                        "key": "severity",
+                        "color": {
+                            "blocker": "negative",
+                            "critical": "negative",
+                            "major": "warning"
+                        }
                     },
                     {
                         "name": "Type",
