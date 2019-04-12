@@ -26,10 +26,19 @@ class Unit extends Component {
     const style = props.ignored ? { textDecoration: "line-through" } : {};
     let unit = props.metric_unit;
     if (unit.endsWith("s")) { unit = unit.substring(0, unit.length - 1) };
+    var negative, warning;
+    props.unit_attributes.forEach((unit_attribute) => {
+      let cell_contents = props.unit[unit_attribute.key];
+      if (unit_attribute.color && unit_attribute.color[cell_contents]) {
+        negative = (unit_attribute.color[cell_contents] === "negative");
+        warning = (unit_attribute.color[cell_contents] === "warning");
+        return;
+      }
+    })
     return (
       <>
         <Table.Row key={props.unit.key} style={style} onClick={(e) => this.onExpand(e)}
-              onKeyPress={(e) => this.onExpand(e)} tabIndex="0">
+              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" negative={negative} warning={warning} >
           <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
           </Table.Cell>
