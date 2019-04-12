@@ -1,40 +1,17 @@
 import React, { Component } from 'react';
-import { Button, Card, Icon, Segment } from 'semantic-ui-react';
-import { StatusPieChart } from './StatusPieChart';
+import { Button, Icon, Segment } from 'semantic-ui-react';
 import { Subjects } from './Subjects.js';
 import { Tag } from './MetricTag.js';
+import { MetricSummaryCard } from './MetricSummaryCard';
+import { CardDashboard } from './CardDashboard';
 
-function MetricSummaryCard(props) {
-    const nr_metrics = props.red + props.green + props.yellow + props.grey;
-    return (
-        <Card>
-            <StatusPieChart red={props.red} green={props.green} yellow={props.yellow} grey={props.grey} />
-            <Card.Content>
-                <Card.Header>{props.header}</Card.Header>
-                <Card.Meta>Metrics: {nr_metrics}</Card.Meta>
-            </Card.Content>
-        </Card>
-    )
-}
-
-function Dashboard(props) {
+function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
-        <MetricSummaryCard key={subject_uuid} header={props.report.subjects[subject_uuid].name}
-            red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
+        <MetricSummaryCard key={subject_uuid} header={props.report.subjects[subject_uuid].name} {...summary} />);
     const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
-        <MetricSummaryCard key={tag} header={<Tag tag={tag}/>}
-            red={summary.red} green={summary.green} yellow={summary.yellow} grey={summary.grey} />);
-    const subject_cards_per_row = Math.min(Math.max(subject_cards.length, 5), 7);
-    const tag_cards_per_row = Math.min(Math.max(tag_cards.length, 8), 10);
+        <MetricSummaryCard key={tag} header={<Tag tag={tag}/>} {...summary} />);
     return (
-        <>
-            <Card.Group doubling stackable itemsPerRow={subject_cards_per_row}>
-                {subject_cards}
-            </Card.Group>
-            <Card.Group itemsPerRow={tag_cards_per_row}>
-                {tag_cards}
-            </Card.Group>
-        </>
+        <CardDashboard big_cards={subject_cards} small_cards={tag_cards} />
     )
 }
 
@@ -56,7 +33,7 @@ class Report extends Component {
     render() {
         return (
             <>
-                <Dashboard report={this.props.report} />
+                <ReportDashboard report={this.props.report} />
                 <Subjects
                     datamodel={this.props.datamodel}
                     nr_new_measurements={this.props.nr_new_measurements}
