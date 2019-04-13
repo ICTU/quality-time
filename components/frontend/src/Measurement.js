@@ -44,6 +44,9 @@ class Measurement extends Component {
     const warning = status === "target_warning";
     const metric_unit = metric.unit || this.props.datamodel.metrics[metric.type].unit;
     const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
+    let week_ago = new Date();
+    week_ago.setDate(week_ago.getDate() - 7)
+    const week_ago_string = week_ago.toISOString();
     return (
       <>
         <Table.Row positive={positive} negative={negative} warning={warning} active={active} onClick={(e) => this.onExpand(e)}
@@ -55,7 +58,7 @@ class Measurement extends Component {
             {metric_name}
           </Table.Cell>
           <Table.Cell>
-            <TrendSparkline measurements={this.props.measurements} />
+            <TrendSparkline measurements={this.props.measurements.filter((measurement) => measurement.end >= week_ago_string)} />
           </Table.Cell>
           <Table.Cell>
             <Icon size='large' name={status_icon} />
