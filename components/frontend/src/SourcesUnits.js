@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid, Icon, Menu, Label, Tab, Table, Popup, Radio } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
+import { FocusableTab} from './FocusableTab';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
@@ -24,8 +25,8 @@ class Unit extends Component {
     let props = this.props;
     if (props.hide_ignored_units && props.ignored) { return null };
     const style = props.ignored ? { textDecoration: "line-through" } : {};
-    let unit = props.metric_unit;
-    if (unit.endsWith("s")) { unit = unit.substring(0, unit.length - 1) };
+    let unit_name = props.metric_unit;
+    if (unit_name.endsWith("s")) { unit_name = unit_name.substring(0, unit_name.length - 1) };
     var negative, warning;
     props.unit_attributes.forEach((unit_attribute) => {
       let cell_contents = props.unit[unit_attribute.key];
@@ -38,7 +39,7 @@ class Unit extends Component {
     return (
       <>
         <Table.Row key={props.unit.key} style={style} onClick={(e) => this.onExpand(e)}
-              onKeyPress={(e) => this.onExpand(e)} tabIndex="0" negative={negative} warning={warning} >
+          onKeyPress={(e) => this.onExpand(e)} tabIndex="0" negative={negative} warning={warning} >
           <Table.Cell collapsing>
             <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
           </Table.Cell>
@@ -55,18 +56,18 @@ class Unit extends Component {
             <Grid stackable>
               <Grid.Row columns={2}>
                 <Grid.Column width={4} verticalAlign='middle'>
-                    <Radio
-                      defaultChecked={props.ignored}
-                      label={`Ignore this ${unit}`}
-                      onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
-                      readOnly={props.readOnly}
-                      toggle
-                    />
+                  <Radio
+                    defaultChecked={props.ignored}
+                    label={`Ignore this ${unit_name}`}
+                    onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
+                    readOnly={props.readOnly}
+                    toggle
+                  />
                 </Grid.Column>
                 <Grid.Column width={12}>
                   <TextInput
                     label="Rationale"
-                    placeholder={`Rationale for ignoring this ${unit}...`}
+                    placeholder={`Rationale for ignoring this ${unit_name}...`}
                     readOnly={props.readOnly}
                     value={props.rationale_for_ignoring_unit}
                     set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
@@ -153,7 +154,7 @@ function SourcesUnits(props) {
     const nr_units_displayed = (source.units && source.units.length) || 0;
     if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
     panes.push({
-      menuItem: (<Menu.Item key={source.source_uuid}>{source_name}<Label>{nr_units}</Label></Menu.Item>),
+      menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name} <Label>{nr_units}</Label></FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
         <SourceUnits
           datamodel={props.datamodel}
