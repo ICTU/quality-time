@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Icon, Tab, Table, Menu } from 'semantic-ui-react';
+import { Button, Icon, Label, Tab, Table, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from './Sources';
-import { SourcesUnits } from './SourcesUnits';
+import { SourceUnits } from './SourceUnits';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from './FocusableTab';
 
@@ -27,25 +27,31 @@ class MeasurementDetails extends Component {
     const panes = [];
     if (props.measurement !== null) {
       const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
-      const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
-      if (nr_units > 0) {
+      props.measurement.sources.forEach((source) => {
+        const report_source = metric.sources[source.source_uuid];
+        if (!report_source) { return }  // source was deleted, continue
+        const source_type = report_source.type;
+        const source_name = report_source.name || props.datamodel.sources[source_type].name;
+        let nr_units = source.value || 0;
+        const nr_units_displayed = (source.units && source.units.length) || 0;
+        if (nr_units_displayed === 0) { return } // no units to show
+        if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
         panes.push({
-          menuItem: <Menu.Item key='units'><FocusableTab>{unit_name}</FocusableTab></Menu.Item>,
+          menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name} <Label basic circular color="grey">{nr_units}</Label></FocusableTab></Menu.Item>,
           render: () => <Tab.Pane>
-            <SourcesUnits
+            <SourceUnits
               datamodel={props.datamodel}
               ignore_unit={props.ignore_unit}
-              measurement={props.measurement}
-              measurements={props.measurements}
               metric={metric}
               metric_uuid={props.metric_uuid}
               readOnly={props.readOnly}
               report_uuid={props.report_uuid}
               set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
+              source={source}
             />
           </Tab.Pane>
-        })
-      }
+        });
+      });
       panes.push(
         {
           menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,

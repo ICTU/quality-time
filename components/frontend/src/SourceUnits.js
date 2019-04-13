@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Menu, Label, Tab, Table, Popup, Radio } from 'semantic-ui-react';
+import { Button, Grid, Icon, Table, Popup, Radio } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
-import { FocusableTab} from './FocusableTab';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
@@ -142,36 +141,4 @@ class SourceUnits extends Component {
   }
 }
 
-function SourcesUnits(props) {
-  if (props.measurement == null) { return null };
-  let panes = [];
-  props.measurement.sources.forEach((source) => {
-    const report_source = props.metric.sources[source.source_uuid];
-    if (!report_source) { return }  // source was deleted, continue
-    const source_type = report_source.type;
-    const source_name = report_source.name || props.datamodel["sources"][source_type]["name"];
-    let nr_units = source.value || 0;
-    const nr_units_displayed = (source.units && source.units.length) || 0;
-    if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
-    panes.push({
-      menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name} <Label>{nr_units}</Label></FocusableTab></Menu.Item>,
-      render: () => <Tab.Pane>
-        <SourceUnits
-          datamodel={props.datamodel}
-          ignore_unit={props.ignore_unit}
-          metric={props.metric}
-          metric_uuid={props.metric_uuid}
-          readOnly={props.readOnly}
-          report_uuid={props.report_uuid}
-          set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
-          source={source}
-        />
-      </Tab.Pane>
-    })
-  });
-  return (
-    <Tab panes={panes} />
-  )
-}
-
-export { SourcesUnits };
+export { SourceUnits };
