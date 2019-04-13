@@ -1,0 +1,10 @@
+.tabbutton {
+    border: none;
+    background: none;
+    font: inherit;
+    padding: 0px;
+}
+
+.tabbutton:focus {
+    outline: thin dotted;
+}
