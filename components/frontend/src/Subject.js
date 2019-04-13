@@ -49,7 +49,7 @@ class Subject extends Component {
             <Table.Row>
               <Table.HeaderCell />
               <Table.HeaderCell>Metric</Table.HeaderCell>
-              <Table.HeaderCell width="2">Trend</Table.HeaderCell>
+              <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Measurement</Table.HeaderCell>
               <Table.HeaderCell>Target</Table.HeaderCell>

@@ -33,7 +33,7 @@ class MeasurementDetails extends Component {
         </Tab.Pane>
       },
       {
-        menuItem: <Menu.Item><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
+        menuItem: <Menu.Item key='sources'><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
         render: () => <Tab.Pane>
           <Sources
             datamodel={props.datamodel}
@@ -60,7 +60,7 @@ class MeasurementDetails extends Component {
       const nr_units = props.measurement.sources.reduce((nr_units, source) => nr_units + (source.units && source.units.length) || 0, 0);
       if (nr_units > 0) {
         panes.push({
-          menuItem: <Menu.Item><FocusableTab>{unit_name}</FocusableTab></Menu.Item>,
+          menuItem: <Menu.Item key='units'><FocusableTab>{unit_name}</FocusableTab></Menu.Item>,
           render: () => <Tab.Pane>
             <SourcesUnits
               datamodel={props.datamodel}
