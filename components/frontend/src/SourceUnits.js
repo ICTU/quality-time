@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid, Icon, Table, Popup, Radio } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
+import { TableRowWithDetails } from './TableRowWithDetails';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
@@ -11,15 +12,34 @@ function UnitAttribute(props) {
   )
 }
 
+function UnitDetails(props) {
+  return (
+    <Grid stackable>
+      <Grid.Row columns={2}>
+        <Grid.Column width={4} verticalAlign='middle'>
+          <Radio
+            defaultChecked={props.ignored}
+            label={`Ignore this ${props.unit_name}`}
+            onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
+            readOnly={props.readOnly}
+            toggle
+          />
+        </Grid.Column>
+        <Grid.Column width={12}>
+          <TextInput
+            label="Rationale"
+            placeholder={`Rationale for ignoring this ${props.unit_name}...`}
+            readOnly={props.readOnly}
+            value={props.rationale_for_ignoring_unit}
+            set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
+          />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  )
+}
+
 class Unit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { show_details: false }
-  }
-  onExpand(event) {
-    event.preventDefault();
-    this.setState((state) => ({ show_details: !state.show_details }));
-  }
   render() {
     let props = this.props;
     if (props.hide_ignored_units && props.ignored) { return null };
@@ -35,48 +55,25 @@ class Unit extends Component {
         return;
       }
     })
+    const details = <UnitDetails
+      ignored={props.ignored}
+      ignore_unit={props.ignore_unit}
+      rationale_for_ignoring_unit={props.rationale_for_ignoring_unit}
+      readOnly={props.readOnly}
+      set_rationale_for_ignoring_unit={props.ignored_units_rationale}
+      source_uuid={props.source_uuid}
+      unit={props.unit}
+      unit_name={unit_name}
+    />
     return (
-      <>
-        <Table.Row key={props.unit.key} style={style} onClick={(e) => this.onExpand(e)}
-          onKeyPress={(e) => this.onExpand(e)} tabIndex="0" negative={negative} warning={warning} >
-          <Table.Cell collapsing>
-            <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
-          </Table.Cell>
-          {props.unit_attributes.map((unit_attribute, col_index) =>
-            <Table.Cell key={col_index}>
-              <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />
-            </Table.Cell>)
-          }
-          <Table.Cell collapsing>
-          </Table.Cell>
-        </Table.Row>
-        {this.state.show_details && <Table.Row>
-          <Table.Cell colSpan="99">
-            <Grid stackable>
-              <Grid.Row columns={2}>
-                <Grid.Column width={4} verticalAlign='middle'>
-                  <Radio
-                    defaultChecked={props.ignored}
-                    label={`Ignore this ${unit_name}`}
-                    onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
-                    readOnly={props.readOnly}
-                    toggle
-                  />
-                </Grid.Column>
-                <Grid.Column width={12}>
-                  <TextInput
-                    label="Rationale"
-                    placeholder={`Rationale for ignoring this ${unit_name}...`}
-                    readOnly={props.readOnly}
-                    value={props.rationale_for_ignoring_unit}
-                    set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Table.Cell>
-        </Table.Row>}
-      </>
+      <TableRowWithDetails key={props.unit.key} style={style} details={details} negative={negative} warning={warning}>
+        {props.unit_attributes.map((unit_attribute, col_index) =>
+          <Table.Cell key={col_index}>
+            <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />
+          </Table.Cell>)
+        }
+        <Table.Cell collapsing />
+      </TableRowWithDetails>
     )
   }
 }
