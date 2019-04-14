@@ -7,6 +7,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -24,6 +25,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -40,6 +42,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "5",
             "sources": [
                 "hq",
                 "jenkins",
@@ -57,6 +60,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "0",
             "sources": [
                 "jenkins_test_report",
                 "junit",
@@ -75,6 +79,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "jira",
@@ -90,7 +95,8 @@
             "unit": "lines",
             "addition": "sum",
             "direction": "<=",
-            "target": "75000",
+            "target": "40000",
+            "near_target": "50000",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -107,6 +113,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -123,6 +130,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -138,7 +146,8 @@
             "unit": "non-commented lines",
             "addition": "sum",
             "direction": "<=",
-            "target": "50000",
+            "target": "30000",
+            "near_target": "35000",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -155,6 +164,7 @@
             "addition": "max",
             "direction": "<=",
             "target": "3",
+            "near_target": "7",
             "sources": [
                 "calendar",
                 "hq",
@@ -178,6 +188,7 @@
             "addition": "sum",
             "direction": ">=",
             "target": "0",
+            "near_target": "0",
             "sources": [
                 "jenkins_test_report",
                 "junit",
@@ -195,6 +206,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "100",
             "sources": [
                 "jacoco",
                 "sonarqube",
@@ -211,6 +223,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "100",
             "sources": [
                 "jacoco",
                 "sonarqube",
@@ -227,6 +240,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "5",
             "sources": [
                 "hq",
                 "jenkins",
@@ -243,6 +257,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "ojaudit",
@@ -260,6 +275,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "5",
             "sources": [
                 "hq",
                 "random",
@@ -278,6 +294,7 @@
             "addition": "sum",
             "direction": "<=",
             "target": "0",
+            "near_target": "10",
             "sources": [
                 "hq",
                 "random",

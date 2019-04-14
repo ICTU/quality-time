@@ -60,7 +60,7 @@ class Unit extends Component {
       ignore_unit={props.ignore_unit}
       rationale_for_ignoring_unit={props.rationale_for_ignoring_unit}
       readOnly={props.readOnly}
-      set_rationale_for_ignoring_unit={props.ignored_units_rationale}
+      set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
       source_uuid={props.source_uuid}
       unit={props.unit}
       unit_name={unit_name}

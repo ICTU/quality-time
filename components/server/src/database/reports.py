@@ -28,7 +28,8 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import latest_measurement  # Prevent circular import
-    status_color_mapping = dict(target_met="green", debt_target_met="grey", target_not_met="red")
+    status_color_mapping = dict(
+        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
     summary = dict(red=0, green=0, yellow=0, grey=0, white=0)
     summary_by_subject: Dict[str, Summary] = dict()
     summary_by_tag: Dict[str, Summary] = dict()

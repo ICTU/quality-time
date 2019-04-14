@@ -65,6 +65,29 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
+                        <MetricTarget
+                            direction={metric_type.direction}
+                            label="Metric near target"
+                            readOnly={props.readOnly}
+                            set_metric_attribute={props.set_metric_attribute}
+                            set_value={(value) => props.set_metric_attribute("near_target", value)}
+                            target={props.metric.near_target}
+                            unit={metric_unit}
+                        />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <MultipleChoiceInput
+                            allowAdditions
+                            label="Tags"
+                            options={[...tags]}
+                            readOnly={props.readOnly}
+                            set_value={(value) => props.set_metric_attribute("tags", value)}
+                            value={props.metric.tags}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
+                    <Grid.Column>
                         <SingleChoiceInput
                             label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
                             value={props.metric.accept_debt}
@@ -83,18 +106,6 @@ function MetricParameters(props) {
                             set_value={(value) => props.set_metric_attribute("debt_target", value)}
                             target={props.metric.debt_target}
                             unit={metric_unit}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={3}>
-                    <Grid.Column>
-                        <MultipleChoiceInput
-                            allowAdditions
-                            label="Tags"
-                            options={[...tags]}
-                            readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("tags", value)}
-                            value={props.metric.tags}
                         />
                     </Grid.Column>
                 </Grid.Row>

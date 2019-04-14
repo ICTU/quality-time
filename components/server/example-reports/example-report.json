@@ -132,6 +132,7 @@
                     "type": "source_up_to_dateness",
                     "name": "Time since last security test",
                     "target": "90",
+                    "near_target": "120",
                     "tags": ["security"],
                     "sources": [
                         {
