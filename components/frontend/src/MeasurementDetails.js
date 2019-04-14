@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Label, Tab, Table, Menu } from 'semantic-ui-react';
+import { Button, Icon, Label, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from './Sources';
 import { SourceUnits } from './SourceUnits';
@@ -88,16 +88,15 @@ class MeasurementDetails extends Component {
       }
     );
     return (
-      <Table.Row>
-        <Table.Cell colSpan="9">
-          <Tab panes={panes} />
-          {!props.readOnly &&
-            <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
-              onClick={(e) => this.delete_metric(e)}>
-              <Icon name='trash' /> Delete metric
-            </Button>}
-        </Table.Cell>
-      </Table.Row>
+      <>
+        <Tab panes={panes} />
+        {!props.readOnly &&
+          <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
+            onClick={(e) => this.delete_metric(e)}>
+            <Icon name='trash' /> Delete metric
+          </Button>
+        }
+      </>
     )
   }
 }
