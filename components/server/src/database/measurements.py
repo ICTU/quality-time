@@ -26,17 +26,18 @@ def count_measurements(database: Database, report_uuid: str) -> int:
 
 
 def insert_new_measurement(database: Database, metric_uuid: str, measurement, target: str = None,
-                           debt_target: str = None, accept_debt: bool = None):
+                           near_target: str = None, debt_target: str = None, accept_debt: bool = None):
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
     metric = latest_metric(database, metric_uuid)
     measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
     target = metric["target"] if target is None else target
+    near_target = metric["near_target"] if near_target is None else near_target
     debt_target = metric["debt_target"] if debt_target is None else debt_target
     accept_debt = metric["accept_debt"] if accept_debt is None else accept_debt
     measurement["status"] = determine_measurement_status(
-        database, metric, measurement["value"], target, debt_target, accept_debt)
+        database, metric, measurement["value"], target, near_target, debt_target, accept_debt)
     measurement["start"] = measurement["end"] = iso_timestamp()
     database.measurements.insert_one(measurement)
     measurement["_id"] = str(measurement["_id"])
@@ -58,7 +59,8 @@ def calculate_measurement_value(sources, addition: str) -> Optional[str]:
 
 def determine_measurement_status(
         database: Database, metric, measurement_value: Optional[str], metric_target: Optional[str],
-        metric_debt_target: Optional[str], metric_accept_debt: Optional[bool]) -> Optional[str]:
+        metric_near_target: Optional[str], metric_debt_target: Optional[str],
+        metric_accept_debt: Optional[bool]) -> Optional[str]:
     """Determine the measurement status."""
     if measurement_value is None:
         return None
@@ -66,12 +68,15 @@ def determine_measurement_status(
     direction = datamodel["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric_target or metric["target"])
+    near_target = int(metric_near_target or metric["near_target"])
     debt_target = int(metric_debt_target or metric["debt_target"] or target)
     better_or_equal = {">=": int.__ge__, "<=": int.__le__, "==": int.__eq__}[direction]
     if better_or_equal(value, target):
         status = "target_met"
     elif metric_accept_debt and better_or_equal(value, debt_target):
         status = "debt_target_met"
+    elif better_or_equal(value, near_target):
+        status = "near_target_met"
     else:
         status = "target_not_met"
     return status

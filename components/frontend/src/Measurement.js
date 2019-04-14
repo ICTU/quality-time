@@ -27,14 +27,15 @@ class Measurement extends Component {
       end = new Date(latest_measurement.end);
       measurement_timestring = latest_measurement.end;
     }
-    const status_icon = { target_met: 'smile', debt_target_met: 'money', target_not_met: 'frown', null: 'question' }[status];
+    const status_icon = { target_met: 'smile', near_target_met: 'meh', debt_target_met: 'money',
+                          target_not_met: 'frown', null: 'question' }[status];
     const metric = this.props.report.subjects[this.props.subject_uuid].metrics[this.props.metric_uuid];
     const target = metric.accept_debt ? metric.debt_target : metric.target;
     const metric_direction = this.props.datamodel.metrics[metric.type].direction;
     const positive = status === "target_met";
     const active = status === "debt_target_met";
     const negative = status === "target_not_met";
-    const warning = status === "target_warning";
+    const warning = status === "near_target_met";
     const metric_unit = metric.unit || this.props.datamodel.metrics[metric.type].unit;
     const metric_name = metric.name || this.props.datamodel.metrics[metric.type].name;
     let week_ago = new Date();
