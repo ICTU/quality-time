@@ -13,8 +13,8 @@ export class TableRowWithDetails extends Component {
   render() {
     var { children, details, ...otherProps } = this.props;
     return (<>
-      <Table.Row onClick={this.expand_or_collapse} onKeyPress={this.expand_or_collapse} tabIndex="0" {...otherProps}>
-        <Table.Cell collapsing>
+      <Table.Row {...otherProps}>
+        <Table.Cell collapsing onClick={this.expand_or_collapse} onKeyPress={this.expand_or_collapse} tabIndex="0">
           <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
         </Table.Cell>
         {children}
