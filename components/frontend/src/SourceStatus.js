@@ -11,15 +11,13 @@ function SourceStatus(props) {
     return (
       <Popup
         flowing hoverable
-        trigger={<Label color='red' tabIndex="0"><a href={props.source.landing_url}>{source_name}</a></Label>}>
+        trigger={<Label color='red'><a href={props.source.landing_url}>{source_name}</a></Label>}>
           {props.source.connection_error ? 'Connection error' : 'Parse error'}
       </Popup>
     )
   } else {
     return (
-      <Label tabIndex="0">
         <a href={props.source.landing_url}>{source_name}</a>
-      </Label>
     )
   }
 }

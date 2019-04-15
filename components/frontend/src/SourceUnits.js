@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Table, Popup, Radio } from 'semantic-ui-react';
+import { Button, Grid, Icon, Popup, Radio, Table } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
 import { TableRowWithDetails } from './TableRowWithDetails';
 

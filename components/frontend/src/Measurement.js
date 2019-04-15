@@ -77,8 +77,8 @@ class Measurement extends Component {
           {metric_direction} {target} {metric_unit} {metric.accept_debt ? "(debt)" : ""}
         </Table.Cell>
         <Table.Cell>
-          {sources.map((source) => <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-            metric={metric} source={source} datamodel={this.props.datamodel} />)}
+          {sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
+          metric={metric} source={source} datamodel={this.props.datamodel} />])}
         </Table.Cell>
         <Table.Cell>
           {metric.comment}
