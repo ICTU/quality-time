@@ -29,11 +29,28 @@ class GitLabTest(unittest.TestCase):
                                build_date="2019-03-31", build_status="failed")], response["sources"][0]["units"])
         self.assertEqual("1", response["sources"][0]["value"])
 
-    def test_nr_of_failed_jobs_with_private_token(self):
+    def test_nr_of_failed_jobs_without_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
-        self.sources["source_id"]["parameters"]["private_token"] = "token"
         self.mock_response.json.return_value = [
             dict(name="job", url="http://job", status="success")]
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])
+
+    def test_source_up_to_dateness(self):
+        """Test that the age of a file in a repo can be measured."""
+        parameters = self.sources["source_id"]["parameters"]
+        parameters["private_token"] = "token"
+        parameters["project"] = "project"
+        parameters["file_path"] = "file"
+        parameters["branch"] = "branch"
+        self.metric["type"] = "source_up_to_dateness"
+        response = Mock()
+        response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
+        self.mock_response.json.return_value = dict(committed_date="2019-01-01T09:06:12+03:00")
+        with patch("requests.head", return_value=response):
+            with patch("requests.get", return_value=self.mock_response):
+                response = collect_measurement(self.metric)
+        expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
+        self.assertEqual(str(expected_age), response["sources"][0]["value"])
+        self.assertEqual("http://gitlab/project/blob/branch/file", response["sources"][0]["landing_url"])

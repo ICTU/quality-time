@@ -11,17 +11,25 @@ from ..collector import Collector
 from ..type import Job, Jobs, Units, URL, Value
 
 
-class GitlabFailedJobs(Collector):
-    """Collector class to get failed job counts from Gitlab."""
+class GitlabBase(Collector):
+    """Baseclass for Gitlab collectors."""
 
-    def api_url(self, **parameters) -> URL:
+    def gitlab_api_url(self, api: str, **parameters):
+        """Return a Gitlab API url with private token, if present in the parameters."""
         url = super().api_url(**parameters)
         project = quote(str(parameters.get("project")), safe="")
-        api_url = f"{url}/api/v4/projects/{project}/jobs"
+        api_url = f"{url}/api/v4/projects/{project}/{api}"
         private_token = parameters.get("private_token")
         if private_token:
             api_url += f"?private_token={private_token}"
         return URL(api_url)
+
+
+class GitlabFailedJobs(GitlabBase):
+    """Collector class to get failed job counts from Gitlab."""
+
+    def api_url(self, **parameters) -> URL:
+        return self.gitlab_api_url("jobs")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(self.failed_jobs(response)))
@@ -50,3 +58,29 @@ class GitlabFailedJobs(Collector):
     def failed_jobs(response: requests.Response) -> Jobs:
         """Return the failed jobs."""
         return [job for job in response.json() if job["status"] == "failed"]
+
+
+class GitlabSourceUpToDateness(GitlabBase):
+    """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
+
+    def api_url(self, **parameters) -> URL:
+        file_path = quote(parameters.get("file_path", ""), safe="")
+        branch = quote(parameters.get("branch", "master"), safe="")
+        return self.gitlab_api_url(f"repository/files/{file_path}?ref={branch}", **parameters)
+
+    def landing_url(self, **parameters) -> URL:
+        landing_url = super().landing_url(**parameters)
+        project = parameters.get("project", "").strip("/")
+        file_path = parameters.get("file_path", "").strip("/")
+        branch = parameters.get("branch", "master").strip("/")
+        return f"{landing_url}/{project}/blob/{branch}/{file_path}"
+
+    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+        """Override because we want to do a head request and get the last commit metadata."""
+        response = requests.head(api_url, timeout=self.TIMEOUT)
+        last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
+        commit_api_url = self.gitlab_api_url(f"repository/commits/{last_commit_id}", **parameters)
+        return requests.get(commit_api_url, timeout=self.TIMEOUT)
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days)
