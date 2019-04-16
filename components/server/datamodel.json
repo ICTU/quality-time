@@ -167,6 +167,7 @@
             "near_target": "7",
             "sources": [
                 "calendar",
+                "gitlab",
                 "hq",
                 "jacoco",
                 "jenkins_test_report",
@@ -385,7 +386,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs"
+                        "failed_jobs",
+                        "source_up_to_dateness"
                     ]
                 },
                 "project": {
@@ -394,7 +396,8 @@
                     "help_url": "https://docs.gitlab.com/ee/user/project/",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs"
+                        "failed_jobs",
+                        "source_up_to_dateness"
                     ]
                 },
                 "private_token": {
@@ -403,7 +406,26 @@
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
-                        "failed_jobs"
+                        "failed_jobs",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "file_path": {
+                    "name": "File path",
+                    "type": "string",
+                    "help_url": "https://docs.gitlab.com/ee/api/repository_files.html",
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "branch" : {
+                    "name": "Branch",
+                    "type": "string",
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "default_value": "master",
+                    "metrics": [
+                        "source_up_to_dateness"
                     ]
                 }
             },

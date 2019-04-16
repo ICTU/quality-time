@@ -55,6 +55,7 @@ venv.bak/
 
 # IDE
 .vscode
+.idea
 
 # Node
 node_modules/
