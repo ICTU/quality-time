@@ -73,7 +73,7 @@ class GitlabSourceUpToDateness(GitlabBase):
         project = parameters.get("project", "").strip("/")
         file_path = parameters.get("file_path", "").strip("/")
         branch = parameters.get("branch", "master").strip("/")
-        return f"{landing_url}/{project}/blob/{branch}/{file_path}"
+        return URL(f"{landing_url}/{project}/blob/{branch}/{file_path}")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we want to do a head request and get the last commit metadata."""

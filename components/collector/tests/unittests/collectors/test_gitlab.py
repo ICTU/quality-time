@@ -47,7 +47,7 @@ class GitLabTest(unittest.TestCase):
         self.metric["type"] = "source_up_to_dateness"
         response = Mock()
         response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
-        self.mock_response.json.return_value = dict(committed_date="2019-01-01T09:06:12+03:00")
+        self.mock_response.json.return_value = dict(committed_date="2019-01-01T09:06:12+00:00")
         with patch("requests.head", return_value=response):
             with patch("requests.get", return_value=self.mock_response):
                 response = collect_measurement(self.metric)
