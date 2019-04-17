@@ -161,6 +161,23 @@
                             }
                         }
                     ]
+                },
+                {
+                    "type": "source_up_to_dateness",
+                    "name": "README up-to-dateness",
+                    "target": "90",
+                    "near_target": "60",
+                    "sources": [
+                        {
+                            "type": "gitlab",
+                            "name": "README.md",
+                            "parameters": {
+                                "url": "https://gitlab.com",
+                                "project": "fniessink/next-action",
+                                "file_path": "README.md"
+                            }
+                        }
+                    ]
                 }
             ]
         }
