@@ -14,7 +14,7 @@ class CalendarSourceUpToDateness(Collector):
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Return a random number as the response."""
-        days = (datetime.now() - datetime.fromisoformat(parameters.get("date"))).days
+        days = (datetime.now() - datetime.fromisoformat(parameters.get("date", ""))).days
         response = requests.Response()
         response.raw = io.BytesIO(bytes(str(days), "utf-8"))
         response.status_code = requests.status_codes.codes["OK"]
