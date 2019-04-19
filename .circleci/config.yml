@@ -9,7 +9,9 @@ jobs:
       - run: 
          command: | 
            cd components/collector
-           pip install --user -r requirements.txt -r requirements-dev.txt
+           python -m venv .venv
+           . .venv/bin/activate
+           pip install -r requirements.txt -r requirements-dev.txt
            ci/unittest.sh
            ci/quality.sh
 
