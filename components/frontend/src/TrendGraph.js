@@ -9,7 +9,7 @@ function readableNumber(number) {
 
 function TrendGraph(props) {
   let measurements = [];
-  let max_y = 100;
+  let max_y = 10;
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const m = measurement.value !== null ? Number(measurement.value) : null;
@@ -22,7 +22,7 @@ function TrendGraph(props) {
   return (
     <VictoryChart theme={VictoryTheme.material} style={{parent: {maxWidth: "50%", background: "white"}}} scale={{ x: "time", y: "linear" }}>
       <VictoryAxis/>
-      <VictoryAxis dependentAxis label={props.unit} style={{axisLabel: {padding: 35 }}} domain={[0, max_y]}
+      <VictoryAxis dependentAxis label={props.unit} style={{axisLabel: {padding: 35 }}} domain={[0, max_y + 10]}
         tickFormat={(t) => `${readableNumber(t)}`} />
       <VictoryLine data={measurements} interpolation="stepBefore" style={{
         data: {
