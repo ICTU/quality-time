@@ -17,6 +17,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.setState({user: localStorage.getItem("user")});
     this.reload();
   }
 
@@ -121,6 +122,7 @@ class App extends Component {
       .then(function (json) {
         if (json.ok) {
           self.setState({ user: username })
+          localStorage.setItem("user", username)
         }
       })
       .catch(function (error) {
@@ -141,6 +143,7 @@ class App extends Component {
       credentials: 'include'
     }).then(function (response) {
       self.setState({ user: null });
+      localStorage.setItem("user", null);
     }).catch(function (error) {
       console.log(error);
     })
