@@ -1,0 +1,15 @@
+version: 2
+
+jobs:
+  build: 
+    docker: 
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: 
+         command: | 
+           cd components/collector
+           pip install -r requirements.txt -r requirements-dev.txt
+           ci/unittest.sh
+           ci/quality.sh
+
