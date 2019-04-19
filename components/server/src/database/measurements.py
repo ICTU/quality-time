@@ -75,7 +75,7 @@ def determine_measurement_status(
         status = "target_met"
     elif metric_accept_debt and better_or_equal(value, debt_target):
         status = "debt_target_met"
-    elif better_or_equal(value, near_target):
+    elif better_or_equal(target, near_target) and better_or_equal(value, near_target):
         status = "near_target_met"
     else:
         status = "target_not_met"
