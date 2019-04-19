@@ -9,7 +9,7 @@ jobs:
       - run: 
          command: | 
            cd components/collector
-           pip install -r requirements.txt -r requirements-dev.txt
+           pip install --user -r requirements.txt -r requirements-dev.txt
            ci/unittest.sh
            ci/quality.sh
 
