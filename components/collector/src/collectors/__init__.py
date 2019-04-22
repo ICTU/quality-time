@@ -14,4 +14,5 @@ from .owasp_dependency_check import *
 from .owasp_zap import *
 from .ojaudit import *
 from .random_number import *
+from .robot_framework import *
 from .sonarqube import *

@@ -66,6 +66,7 @@
                 "junit",
                 "hq",
                 "random",
+                "robot_framework",
                 "sonarqube"
             ],
             "tags": [
@@ -173,6 +174,7 @@
                 "jenkins_test_report",
                 "junit",
                 "random",
+                "robot_framework",
                 "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
@@ -194,6 +196,7 @@
                 "jenkins_test_report",
                 "junit",
                 "random",
+                "robot_framework",
                 "sonarqube"
             ],
             "tags": [
@@ -987,6 +990,35 @@
             "url": "https://en.wikipedia.org/wiki/Special:Random",
             "parameters": {},
             "units": {}
+        },
+        "robot_framework": {
+            "name": "Robot Framework",
+            "description": "Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation.",
+            "url": "https://robotframework.org",
+            "parameters": {
+                "url": {
+                    "name": "URL to Robot Framework output.xml",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                }
+            },
+            "units": {
+                "failed_tests": [
+                    {
+                        "name": "Test name",
+                        "key": "name"
+                    },
+                    {
+                        "name": "Failure type",
+                        "key": "failure_type"
+                    }
+                ]
+            }
         },
         "sonarqube": {
             "name": "SonarQube",

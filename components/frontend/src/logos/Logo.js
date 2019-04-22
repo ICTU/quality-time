@@ -11,6 +11,7 @@ import Junit from './junit.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPZAP from './owasp_zap.png';
+import RobotFramework from './robot_framework.png';
 import Sonarqube from './sonarqube.png';
 
 function Logo(props) {
@@ -25,6 +26,7 @@ function Logo(props) {
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
+        robot_framework: RobotFramework,
         sonarqube: Sonarqube
     }[props.logo];
     return (

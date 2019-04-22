@@ -14,6 +14,12 @@
                             "parameters": {
                                 "url": "http://0.0.0.0:8000/junit-report.xml"
                             }
+                        },
+                        {
+                            "type": "robot_framework",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
+                            }
                         }
                     ]
                 },
@@ -25,6 +31,12 @@
                             "parameters": {
                                 "url": "http://0.0.0.0:8000/junit-report.xml"
                             }
+                        },
+                        {
+                            "type": "robot_framework",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
+                            }
                         }
                     ]
                 },
@@ -35,6 +47,12 @@
                             "type": "junit",
                             "parameters": {
                                 "url": "http://0.0.0.0:8000/junit-report.xml"
+                            }
+                        },
+                        {
+                            "type": "robot_framework",
+                            "parameters": {
+                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
                             }
                         }
                     ]
