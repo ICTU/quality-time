@@ -61,5 +61,5 @@ class JUnitSourceUpToDatenessTest(unittest.TestCase):
             addition="max")
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(metric)
-        expected_age = (datetime.utcnow() - datetime(2009, 12, 19, 17, 58, 59)).days
+        expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
