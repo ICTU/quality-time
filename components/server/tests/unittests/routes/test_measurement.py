@@ -21,7 +21,7 @@ class PostMeasurementTests(unittest.TestCase):
             return_value=dict(
                 _id="report_uuid",
                 subjects=dict(
-                    s=dict(
+                    subject_uuid=dict(
                         metrics=dict(
                             metric_uuid=dict(
                                 type="metric_type", addition="sum", target="0", near_target="10", debt_target=None,

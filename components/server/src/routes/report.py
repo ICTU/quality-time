@@ -69,22 +69,11 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            metric = subject["metrics"][metric_uuid]
-            break
+    metric = [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
+              if metric_uuid in subject["metrics"]][0]
     metric[metric_attribute] = value
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
-        # Remove sources that don't support the new metric type and reinitialize the sources that do
-        datamodel = latest_datamodel(database)
-        sources = metric["sources"]
-        possible_sources = datamodel["metrics"][value]["sources"]
-        for source_uuid, source in list(sources.items()):
-            if source["type"] in possible_sources:
-                source["parameters"] = default_source_parameters(database, value, source["type"])
-            else:
-                del sources[source_uuid]
     insert_new_report(database, report)
     if metric_attribute in ("accept_debt", "debt_target", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
