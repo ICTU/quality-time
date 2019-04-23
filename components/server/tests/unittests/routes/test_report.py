@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.report import post_metric_attribute
+from src.routes.report import post_metric_attribute, post_source_new
 
 
 @patch("src.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -56,3 +56,27 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.assertEqual(
             dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
+
+
+class PostSourceNewTest(unittest.TestCase):
+    """Unit tests for the post new source."""
+
+    def test_new_source(self):
+        """Test that a new source is added."""
+        report = dict(
+            _id="report_uuid",
+            subjects=dict(
+                other_subject=dict(metrics=dict()),
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict(
+                            name=None, type="metric_type", addition="sum", target="0", near_target="10",
+                            debt_target=None, accept_debt=False, tags=[], sources=dict())))))
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        database.datamodels.find_one = Mock(return_value=dict(
+            _id="",
+            metrics=dict(metric_type=dict(direction="<=", sources=["source_type"])),
+            sources=dict(source_type=dict(parameters=dict()))))
+        self.assertEqual(dict(ok=True), post_source_new("report_uuid", "metric_uuid", database))
+        database.reports.insert.assert_called_once_with(report)

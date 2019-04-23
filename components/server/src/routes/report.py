@@ -12,6 +12,12 @@ from ..util import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
 
+def get_metric(report, metric_uuid: str):
+    """Return the metric with the specified uuid."""
+    return [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
+            if metric_uuid in subject["metrics"]][0]
+
+
 @bottle.post("/report/<report_uuid>/title")
 def post_report_title(report_uuid: str, database: Database):
     """Set the report title."""
@@ -69,8 +75,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
     report = latest_report(database, report_uuid)
-    metric = [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
-              if metric_uuid in subject["metrics"]][0]
+    metric = get_metric(report, metric_uuid)
     metric[metric_attribute] = value
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
@@ -105,9 +110,7 @@ def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
 def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     """Add a new source."""
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            metric = subject["metrics"][metric_uuid]
+    metric = get_metric(report, metric_uuid)
     metric_type = metric["type"]
     datamodel = latest_datamodel(database)
     source_type = datamodel["metrics"][metric_type]["sources"][0]
