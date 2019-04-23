@@ -3,7 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.report import post_metric_attribute, post_source_attribute, post_source_new
+from src.routes.report import delete_source, post_metric_attribute, post_source_attribute, post_source_new, \
+   post_source_parameter
 
 
 @patch("src.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -108,3 +109,41 @@ class PostSourceAttributeTest(unittest.TestCase):
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_source_attribute("report_uuid", "source_uuid", "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
+
+
+@patch("bottle.request")
+class PostSourceParameterTest(unittest.TestCase):
+    """Unit tests for the post source parameter route."""
+
+    def test_url(self, request):
+        """Test that the source url can be changed."""
+        request.json = dict(url="http://url")
+        report = dict(
+            _id="report_uuid",
+            subjects=dict(
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict(
+                            type="type", sources=dict(source_uuid=dict(type="type", parameters=dict())))))))
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "url", database))
+        database.reports.insert.assert_called_once_with(report)
+
+
+class DeleteSourceTest(unittest.TestCase):
+    """Unit tests for the delete source route."""
+
+    def test_delete(self):
+        """Test that the source can be deleted."""
+        report = dict(
+            _id="report_uuid",
+            subjects=dict(
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict(
+                            type="type", sources=dict(source_uuid=dict()))))))
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), delete_source("report_uuid", "source_uuid", database))
+        database.reports.insert.assert_called_once_with(report)
