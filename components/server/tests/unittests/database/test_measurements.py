@@ -3,7 +3,7 @@
 import unittest
 from unittest import mock
 
-from src.database.measurements import determine_measurement_status
+from src.database.measurements import calculate_measurement_value, determine_measurement_status
 
 
 class DetermineMeasurementStatusTest(unittest.TestCase):
@@ -55,3 +55,33 @@ class DetermineMeasurementStatusTest(unittest.TestCase):
         metric = dict(type="metric_type", target="20", near_target="15", debt_target=None, accept_debt=False)
         self.assertEqual(
             "target_met", determine_measurement_status(self.database, metric, "17"))
+
+
+class CalculateMeasurementValueTest(unittest.TestCase):
+    """Unit tests for calculating the measurement value from one or more source measurements."""
+
+    def test_no_source_measurements(self):
+        """Test that the measurement value is None if there are no sources."""
+        self.assertEqual(None, calculate_measurement_value([], "sum"))
+
+    def test_error(self):
+        """Test that the measurement value is None if a source has an erro."""
+        sources = [dict(parse_error="error")]
+        self.assertEqual(None, calculate_measurement_value(sources, "sum"))
+
+    def test_add_two_sources(self):
+        """Test that the values of two sources are added."""
+        sources = [dict(parse_error=None, connection_error=None, value="10"),
+                   dict(parse_error=None, connection_error=None, value="20")]
+        self.assertEqual("30", calculate_measurement_value(sources, "sum"))
+
+    def test_max_two_sources(self):
+        """Test that the max value of two sources is returned."""
+        sources = [dict(parse_error=None, connection_error=None, value="10"),
+                   dict(parse_error=None, connection_error=None, value="20")]
+        self.assertEqual("20", calculate_measurement_value(sources, "max"))
+
+    def test_ignored_units(self):
+        """Test that the number of ignored units is subtracted."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", ignored_units=["unit1", "unit2", "unit3"])]
+        self.assertEqual("7", calculate_measurement_value(sources, "sum"))
