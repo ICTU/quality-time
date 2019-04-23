@@ -12,6 +12,11 @@ from ..util import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
 
+def get_subject(report, metric_uuid: str):
+    """Return the subject that has the metric with the specified uuid."""
+    return [subject for subject in report["subjects"].values() if metric_uuid in subject["metrics"]][0]
+
+
 def get_metric(report, metric_uuid: str):
     """Return the metric with the specified uuid."""
     return [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
@@ -106,9 +111,8 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
 def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
     """Delete a metric."""
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            del subject["metrics"][metric_uuid]
+    subject = get_subject(report, metric_uuid)
+    del subject["metrics"][metric_uuid]
     return insert_new_report(database, report)
 
 

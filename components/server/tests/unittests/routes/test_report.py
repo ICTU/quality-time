@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.report import delete_source, post_metric_attribute, post_source_attribute, post_source_new, \
-   post_source_parameter
+from src.routes.report import delete_metric, delete_source, post_metric_attribute, post_source_attribute, \
+    post_source_new, post_source_parameter
 
 
 @patch("src.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -146,4 +146,21 @@ class DeleteSourceTest(unittest.TestCase):
         database = Mock()
         database.reports.find_one = Mock(return_value=report)
         self.assertEqual(dict(ok=True), delete_source("report_uuid", "source_uuid", database))
+        database.reports.insert.assert_called_once_with(report)
+
+
+class DeleteMetricTest(unittest.TestCase):
+    """Unit tests for the delete metric route."""
+
+    def test_delete(self):
+        """Test that the metric can be deleted."""
+        report = dict(
+            _id="report_uuid",
+            subjects=dict(
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict()))))
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), delete_metric("report_uuid", "metric_uuid", database))
         database.reports.insert.assert_called_once_with(report)
