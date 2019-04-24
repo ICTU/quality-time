@@ -25,6 +25,11 @@ def count_measurements(database: Database, report_uuid: str) -> int:
     return database.measurements.count_documents(filter={"report_uuid": report_uuid})
 
 
+def update_measurement_end(database: Database, measurement_id: str):
+    """Set the end date and time of the measurement to the current date and time."""
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
+
+
 def insert_new_measurement(database: Database, measurement, metric=None):
     """Insert a new measurement."""
     if "_id" in measurement:
