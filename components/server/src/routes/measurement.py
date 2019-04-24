@@ -6,8 +6,9 @@ from typing import Dict
 from pymongo.database import Database
 import bottle
 
-from ..database.measurements import count_measurements, latest_measurement, latest_measurements, insert_new_measurement
-from ..util import iso_timestamp, report_date_time
+from ..database.measurements import count_measurements, latest_measurement, latest_measurements, \
+    insert_new_measurement, update_measurement_end
+from ..util import report_date_time
 
 
 @bottle.post("/measurements")
@@ -28,7 +29,7 @@ def post_measurement(database: Database) -> Dict:
                                                          if key in new_unit_keys}
         if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
-            database.measurements.update_one(filter={"_id": latest["_id"]}, update={"$set": {"end": iso_timestamp()}})
+            update_measurement_end(database, latest["_id"])
             return dict(ok=True)
     return insert_new_measurement(database, measurement)
 

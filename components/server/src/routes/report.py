@@ -12,6 +12,23 @@ from ..util import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
 
+def get_subject(report, metric_uuid: str):
+    """Return the subject that has the metric with the specified uuid."""
+    return [subject for subject in report["subjects"].values() if metric_uuid in subject["metrics"]][0]
+
+
+def get_metric(report, metric_uuid: str):
+    """Return the metric with the specified uuid."""
+    return [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
+            if metric_uuid in subject["metrics"]][0]
+
+
+def get_metric_by_source_uuid(report, source_uuid: str):
+    """Return the metric that has a source with the specified uuid."""
+    return [metric for subject in report["subjects"].values() for metric in subject["metrics"].values()
+            if source_uuid in metric["sources"]][0]
+
+
 @bottle.post("/report/<report_uuid>/title")
 def post_report_title(report_uuid: str, database: Database):
     """Set the report title."""
@@ -69,22 +86,10 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            metric = subject["metrics"][metric_uuid]
-            break
+    metric = get_metric(report, metric_uuid)
     metric[metric_attribute] = value
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
-        # Remove sources that don't support the new metric type and reinitialize the sources that do
-        datamodel = latest_datamodel(database)
-        sources = metric["sources"]
-        possible_sources = datamodel["metrics"][value]["sources"]
-        for source_uuid, source in list(sources.items()):
-            if source["type"] in possible_sources:
-                source["parameters"] = default_source_parameters(database, value, source["type"])
-            else:
-                del sources[source_uuid]
     insert_new_report(database, report)
     if metric_attribute in ("accept_debt", "debt_target", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
@@ -106,9 +111,8 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
 def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
     """Delete a metric."""
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            del subject["metrics"][metric_uuid]
+    subject = get_subject(report, metric_uuid)
+    del subject["metrics"][metric_uuid]
     return insert_new_report(database, report)
 
 
@@ -116,9 +120,7 @@ def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
 def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     """Add a new source."""
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        if metric_uuid in subject["metrics"]:
-            metric = subject["metrics"][metric_uuid]
+    metric = get_metric(report, metric_uuid)
     metric_type = metric["type"]
     datamodel = latest_datamodel(database)
     source_type = datamodel["metrics"][metric_type]["sources"][0]
@@ -131,10 +133,8 @@ def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
 def delete_source(report_uuid: str, source_uuid: str, database: Database):
     """Delete a source."""
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                del metric["sources"][source_uuid]
+    metric = get_metric_by_source_uuid(report, source_uuid)
+    del metric["sources"][source_uuid]
     return insert_new_report(database, report)
 
 
@@ -143,15 +143,11 @@ def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: 
     """Set a source attribute."""
     value = dict(bottle.request.json)[source_attribute]
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                source = metric["sources"][source_uuid]
-                metric_type = metric["type"]
-                break
+    metric = get_metric_by_source_uuid(report, source_uuid)
+    source = metric["sources"][source_uuid]
     source[source_attribute] = value
     if source_attribute == "type":
-        source["parameters"] = default_source_parameters(database, metric_type, value)
+        source["parameters"] = default_source_parameters(database, metric["type"], value)
     return insert_new_report(database, report)
 
 
@@ -160,11 +156,8 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     """Set the source parameter."""
     parameter_value = dict(bottle.request.json)[parameter_key]
     report = latest_report(database, report_uuid)
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            if source_uuid in metric["sources"]:
-                metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
-                break
+    metric = get_metric_by_source_uuid(report, source_uuid)
+    metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
     return insert_new_report(database, report)
 
 
