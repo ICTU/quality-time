@@ -12,17 +12,22 @@ class WekanTest(unittest.TestCase):
     def setUp(self):
         self.metric = dict(
             type="issues", addition="sum",
-            sources=dict(a=dict(type="wekan", parameters=dict(url="http://wekan", username="user", password="pass"))))
+            sources=dict(
+                source_id=dict(
+                    type="wekan",
+                    parameters=dict(url="http://wekan", board="board", username="user", password="pass"))))
 
     def test_issues(self):
         """Test that the number of issues and the individual issues are returned."""
         mock_post_response = Mock()
         mock_post_response.json.return_value = dict(token="token")
         mock_get_response = Mock()
-        mock_get_response.json.side_effect = [[dict(_id="list1")], [dict(_id="card1", title="Card 1")]] * 2
+        mock_get_response.json.side_effect = [
+            dict(slug="board-slug"), [dict(_id="list1")], [dict(_id="card1", title="Card 1")]] * 2
         with patch("requests.post", return_value=mock_post_response):
             with patch("requests.get", return_value=mock_get_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(key="card1", url="http://wekan/c/card1", title="Card 1")], response["sources"][0]["units"])
+            [dict(key="card1", url="http://wekan/b/board/board-slug/card1", title="Card 1")],
+            response["sources"][0]["units"])
