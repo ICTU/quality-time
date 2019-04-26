@@ -24,6 +24,7 @@ class WekanTest(unittest.TestCase):
     def test_issues(self):
         """Test that the number of issues and the individual issues are returned."""
         self.mock_get_response.json.side_effect = [
+            dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
@@ -39,6 +40,7 @@ class WekanTest(unittest.TestCase):
     def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
         self.mock_get_response.json.side_effect = [
+            dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1"), dict(_id="list2", title="List 2")],
