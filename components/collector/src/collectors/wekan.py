@@ -24,14 +24,16 @@ class WekanIssues(Collector):
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         headers = dict(Authorization=f"Bearer {response.json()['token']}")
         api_url = self.api_url(**parameters)
-        boards_url = f"{api_url}/api/boards"
+        user_url = f"{api_url}/api/user"
+        user_id = requests.get(user_url, timeout=self.TIMEOUT, headers=headers).json()["_id"]
+        boards_url = f"{api_url}/api/users/{user_id}/boards"
         boards = requests.get(boards_url, timeout=self.TIMEOUT, headers=headers).json()
         board_id = [board for board in boards if parameters.get("board") in board.values()][0]["_id"]
-        board_url = f"{boards_url}/{board_id}"
-        return self.get_units(api_url, board_id, board_url, headers, **parameters)
+        return self.get_units(api_url, board_id, headers, **parameters)
 
-    def get_units(self, api_url, board_id, board_url, headers, **parameters) -> Units:
+    def get_units(self, api_url, board_id, headers, **parameters) -> Units:
         """Convert the cards to units."""
+        board_url = f"{api_url}/api/boards/{board_id}"
         board_slug = requests.get(board_url, timeout=self.TIMEOUT, headers=headers).json()["slug"]
         lists_url = f"{board_url}/lists"
         lists_to_ignore = parameters.get("lists_to_ignore") or []

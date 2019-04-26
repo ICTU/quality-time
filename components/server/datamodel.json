@@ -1449,7 +1449,7 @@
                     ]
                 },
                 "board": {
-                    "name": "Board id",
+                    "name": "Board (title or id)",
                     "type": "string",
                     "default_value": "",
                     "metrics": [
@@ -1473,7 +1473,7 @@
                     ]
                 },
                 "lists_to_ignore": {
-                    "name": "Lists to ignore (name or id)",
+                    "name": "Lists to ignore (title or id)",
                     "type": "multiple_choice_with_addition",
                     "default_value": "",
                     "metrics": [
