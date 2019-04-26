@@ -24,14 +24,20 @@ class WekanIssues(Collector):
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         headers = dict(Authorization=f"Bearer {response.json()['token']}")
         api_url = self.api_url(**parameters)
-        board_id = parameters.get("board")
-        board_url = f"{api_url}/api/boards/{board_id}"
+        boards_url = f"{api_url}/api/boards"
+        boards = requests.get(boards_url, timeout=self.TIMEOUT, headers=headers).json()
+        board_id = [board for board in boards if parameters.get("board") in board.values()][0]["_id"]
+        board_url = f"{boards_url}/{board_id}"
+        return self.get_units(api_url, board_id, board_url, headers, **parameters)
+
+    def get_units(self, api_url, board_id, board_url, headers, **parameters) -> Units:
+        """Convert the cards to units."""
         board_slug = requests.get(board_url, timeout=self.TIMEOUT, headers=headers).json()["slug"]
         lists_url = f"{board_url}/lists"
         lists_to_ignore = parameters.get("lists_to_ignore") or []
-        units = []
+        units: Units = []
         for card_list in requests.get(lists_url, timeout=self.TIMEOUT, headers=headers).json():
-            if (card_list["_id"] in lists_to_ignore) or (card_list["title"] in lists_to_ignore):
+            if bool((card_list["_id"] in lists_to_ignore) or (card_list["title"] in lists_to_ignore)):
                 continue
             cards_url = f"{lists_url}/{card_list['_id']}/cards"
             cards = requests.get(cards_url, timeout=self.TIMEOUT, headers=headers).json()
