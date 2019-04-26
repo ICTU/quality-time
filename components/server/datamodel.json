@@ -86,7 +86,8 @@
                 "jira",
                 "random",
                 "azure_devops",
-                "random"
+                "random",
+                "wekan"
             ],
             "tags": []
         },
@@ -422,7 +423,7 @@
                         "source_up_to_dateness"
                     ]
                 },
-                "branch" : {
+                "branch": {
                     "name": "Branch",
                     "type": "string",
                     "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
@@ -1433,6 +1434,46 @@
                     }
                 ]
             }
+        },
+        "wekan": {
+            "name": "Wekan",
+            "description": "Open-source kanban.",
+            "url": "https://wekan.github.io",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "board": {
+                    "name": "Board id",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "username": {
+                    "name": "Username",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "password": {
+                    "name": "Password",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {}
         }
     },
     "subjects": {

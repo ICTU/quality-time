@@ -16,3 +16,4 @@ from .ojaudit import *
 from .random_number import *
 from .robot_framework import *
 from .sonarqube import *
+from .wekan import *
