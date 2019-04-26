@@ -13,6 +13,7 @@ import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPZAP from './owasp_zap.png';
 import RobotFramework from './robot_framework.png';
 import Sonarqube from './sonarqube.png';
+import Wekan from './wekan.png';
 
 function Logo(props) {
     const logo = {
@@ -27,7 +28,8 @@ function Logo(props) {
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
         robot_framework: RobotFramework,
-        sonarqube: Sonarqube
+        sonarqube: Sonarqube,
+        wekan: Wekan
     }[props.logo];
     return (
         logo ? <Image src={logo} alt={`${props.alt} logo`} size="mini" spaced="right" /> : null
