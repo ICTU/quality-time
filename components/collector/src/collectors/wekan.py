@@ -28,11 +28,10 @@ class WekanIssues(Collector):
         board_url = f"{api_url}/api/boards/{board_id}"
         board_slug = requests.get(board_url, timeout=self.TIMEOUT, headers=headers).json()["slug"]
         lists_url = f"{board_url}/lists"
-        lists = requests.get(lists_url, timeout=self.TIMEOUT, headers=headers).json()
-        cards_urls = [f"{lists_url}/{card_list['_id']}/cards" for card_list in lists]
         units = []
-        for cards_url in cards_urls:
+        for card_list in requests.get(lists_url, timeout=self.TIMEOUT, headers=headers).json():
+            cards_url = f"{lists_url}/{card_list['_id']}/cards"
             cards = requests.get(cards_url, timeout=self.TIMEOUT, headers=headers).json()
             units.extend(dict(key=card["_id"], url=f"{api_url}/b/{board_id}/{board_slug}/{card['_id']}",
-                              title=card["title"]) for card in cards)
+                              list=card_list["title"], title=card["title"]) for card in cards)
         return units
