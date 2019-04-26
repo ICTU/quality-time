@@ -1471,6 +1471,14 @@
                     "metrics": [
                         "issues"
                     ]
+                },
+                "lists_to_ignore": {
+                    "name": "Lists to ignore (name or id)",
+                    "type": "multiple_choice_with_addition",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
                 }
             },
             "units": {

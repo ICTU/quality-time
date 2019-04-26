@@ -28,8 +28,11 @@ class WekanIssues(Collector):
         board_url = f"{api_url}/api/boards/{board_id}"
         board_slug = requests.get(board_url, timeout=self.TIMEOUT, headers=headers).json()["slug"]
         lists_url = f"{board_url}/lists"
+        lists_to_ignore = parameters.get("lists_to_ignore") or []
         units = []
         for card_list in requests.get(lists_url, timeout=self.TIMEOUT, headers=headers).json():
+            if (card_list["_id"] in lists_to_ignore) or (card_list["title"] in lists_to_ignore):
+                continue
             cards_url = f"{lists_url}/{card_list['_id']}/cards"
             cards = requests.get(cards_url, timeout=self.TIMEOUT, headers=headers).json()
             units.extend(dict(key=card["_id"], url=f"{api_url}/b/{board_id}/{board_slug}/{card['_id']}",
