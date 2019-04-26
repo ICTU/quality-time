@@ -1473,7 +1473,15 @@
                     ]
                 }
             },
-            "units": {}
+            "units": {
+                "issues": [
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    }
+                ]
+            }
         }
     },
     "subjects": {

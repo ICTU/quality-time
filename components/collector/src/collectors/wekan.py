@@ -3,7 +3,7 @@
 import requests
 
 from ..collector import Collector
-from ..type import URL, Value
+from ..type import Units, URL, Value
 
 
 class WekanIssues(Collector):
@@ -19,6 +19,9 @@ class WekanIssues(Collector):
         return requests.post(api_url + "/users/login", data=credentials, timeout=self.TIMEOUT)
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str(len(self.parse_source_response_units(response, **parameters)))
+
+    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         token = response.json()["token"]
         headers = dict(Authorization=f"Bearer {token}")
         api_url = self.api_url(**parameters)
@@ -26,5 +29,8 @@ class WekanIssues(Collector):
         lists_url = f"{api_url}/api/boards/{board_id}/lists"
         lists = requests.get(lists_url, timeout=self.TIMEOUT, headers=headers).json()
         cards_urls = [f"{lists_url}/{card_list['_id']}/cards" for card_list in lists]
-        nr_cards = sum([len(requests.get(url, timeout=self.TIMEOUT, headers=headers).json()) for url in cards_urls])
-        return str(nr_cards)
+        units = []
+        for cards_url in cards_urls:
+            cards = requests.get(cards_url, timeout=self.TIMEOUT, headers=headers).json()
+            units.extend(dict(key=card["_id"], url=f"{api_url}/c/{card['_id']}", title=card["title"]) for card in cards)
+        return units
