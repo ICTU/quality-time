@@ -9,9 +9,11 @@ from ..type import Units, URL, Value
 class WekanIssues(Collector):
     """Collector to get issues (cards) from Wekan."""
 
-    def landing_url(self, **parameters) -> URL:
-        url = super().api_url(**parameters)
-        return URL(f"{url}/b/{parameters.get('board')}")
+    def landing_url(self, response: requests.Response, **parameters) -> URL:
+        api_url = self.api_url(**parameters)
+        headers = dict(Authorization=f"Bearer {response.json()['token']}")
+        board_id = self.board_id(api_url, headers, **parameters)
+        return URL(f"{api_url}/b/{board_id}")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we want to do a post request to login."""
@@ -24,11 +26,7 @@ class WekanIssues(Collector):
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         headers = dict(Authorization=f"Bearer {response.json()['token']}")
         api_url = self.api_url(**parameters)
-        user_url = f"{api_url}/api/user"
-        user_id = requests.get(user_url, timeout=self.TIMEOUT, headers=headers).json()["_id"]
-        boards_url = f"{api_url}/api/users/{user_id}/boards"
-        boards = requests.get(boards_url, timeout=self.TIMEOUT, headers=headers).json()
-        board_id = [board for board in boards if parameters.get("board") in board.values()][0]["_id"]
+        board_id = self.board_id(api_url, headers, **parameters)
         return self.get_units(api_url, board_id, headers, **parameters)
 
     def get_units(self, api_url, board_id, headers, **parameters) -> Units:
@@ -46,3 +44,11 @@ class WekanIssues(Collector):
             units.extend(dict(key=card["_id"], url=f"{api_url}/b/{board_id}/{board_slug}/{card['_id']}",
                               list=card_list["title"], title=card["title"]) for card in cards)
         return units
+
+    def board_id(self, api_url, headers, **parameters) -> str:
+        """Return the id of the board specified by the user."""
+        user_url = f"{api_url}/api/user"
+        user_id = requests.get(user_url, timeout=self.TIMEOUT, headers=headers).json()["_id"]
+        boards_url = f"{api_url}/api/users/{user_id}/boards"
+        boards = requests.get(boards_url, timeout=self.TIMEOUT, headers=headers).json()
+        return [board for board in boards if parameters.get("board") in board.values()][0]["_id"]

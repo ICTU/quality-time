@@ -28,7 +28,14 @@ class WekanTest(unittest.TestCase):
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
-            [dict(_id="card1", title="Card 1")]] * 2
+            [dict(_id="card1", title="Card 1")],
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")],
+            dict(slug="board-slug"),
+            [dict(_id="list1", title="List 1")],
+            [dict(_id="card1", title="Card 1")],
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")]]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
@@ -44,7 +51,14 @@ class WekanTest(unittest.TestCase):
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1"), dict(_id="list2", title="List 2")],
-            [dict(_id="card1", title="Card 1")]] * 2
+            [dict(_id="card1", title="Card 1")],
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")],
+            dict(slug="board-slug"),
+            [dict(_id="list1", title="List 1"), dict(_id="list2", title="List 2")],
+            [dict(_id="card1", title="Card 1")],
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")]]
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
