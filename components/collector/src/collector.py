@@ -56,7 +56,7 @@ class Collector:
         return dict(api_url=api_url, landing_url=landing_url, value=value, units=units,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, response: Response, **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Translate the url parameter into the landing url."""
         url = parameters.get("url", "").strip("/")
         return url[:-(len("xml"))] + "html" if url.endswith(".xml") else url

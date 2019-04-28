@@ -1,6 +1,6 @@
 """Collectors for SonarQube."""
 
-from typing import Dict
+from typing import Dict, Optional
 
 from dateutil.parser import isoparse  # type: ignore
 import requests
@@ -15,7 +15,7 @@ class SonarQubeViolations(Collector):
 
     rules_parameter = "Subclass responsibility"
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
@@ -88,7 +88,7 @@ class SonarQubeMetricsBaseClass(Collector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
@@ -158,7 +158,7 @@ class SonarQubeSourceUpToDateness(Collector):
         component = parameters.get("component")
         return URL(f"{url}/api/project_analyses/search?project={component}")
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/activity?id={component}")

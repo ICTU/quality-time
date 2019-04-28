@@ -1,6 +1,7 @@
 """Wekan metric collector."""
 
 from datetime import datetime
+from typing import cast, Optional
 
 import cachetools.func
 from dateutil.parser import parse
@@ -13,10 +14,9 @@ from ..type import Unit, Units, URL, Value
 class WekanIssues(Collector):
     """Collector to get issues (cards) from Wekan."""
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         api_url = self.api_url(**parameters)
-        board_id = self.board_id(response.json()["token"], **parameters)
-        return URL(f"{api_url}/b/{board_id}")
+        return URL(f"{api_url}/b/{self.board_id(response.json()['token'], **parameters)}") if response else api_url
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we want to do a post request to login."""
@@ -65,7 +65,7 @@ class WekanIssues(Collector):
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""
             date_last_activity = parse(card["dateLastActivity"])
-            return (datetime.now() - date_last_activity).days > int(parameters.get("inactive_days"))
+            return (datetime.now() - date_last_activity).days > int(cast(int, parameters.get("inactive_days")))
 
         if card["archived"]:
             return True

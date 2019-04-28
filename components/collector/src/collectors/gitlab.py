@@ -14,7 +14,7 @@ from ..type import Job, Jobs, Units, URL, Value
 class GitlabBase(Collector):
     """Baseclass for Gitlab collectors."""
 
-    def gitlab_api_url(self, api: str, **parameters):
+    def gitlab_api_url(self, api: str, **parameters) -> URL:
         """Return a Gitlab API url with private token, if present in the parameters."""
         url = super().api_url(**parameters)
         project = quote(str(parameters.get("project")), safe="")
@@ -68,7 +68,7 @@ class GitlabSourceUpToDateness(GitlabBase):
         branch = quote(parameters.get("branch", "master"), safe="")
         return self.gitlab_api_url(f"repository/files/{file_path}?ref={branch}", **parameters)
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         landing_url = super().landing_url(response, **parameters)
         project = parameters.get("project", "").strip("/")
         file_path = parameters.get("file_path", "").strip("/")

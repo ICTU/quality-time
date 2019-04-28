@@ -1,5 +1,6 @@
 """Jira metric collector."""
 
+from typing import Optional
 from urllib.parse import quote
 
 import requests
@@ -16,7 +17,7 @@ class JiraIssues(Collector):
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields=summary")
 
-    def landing_url(self, response: requests.Response, **parameters) -> URL:
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
         url = super().landing_url(response, **parameters)
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/issues?jql={jql}")
