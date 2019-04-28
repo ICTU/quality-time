@@ -1479,6 +1479,25 @@
                     "metrics": [
                         "issues"
                     ]
+                },
+                "cards_to_count": {
+                    "name": "Cards to count",
+                    "type": "multiple_choice",
+                    "default_value": "",
+                    "values": [
+                        "overdue"
+                    ],
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "inactive_days": {
+                    "name": "Number of days without activity after which to consider cards inactive.",
+                    "type": "integer",
+                    "default_value": "90",
+                    "metrics": [
+                        "issues"
+                    ]
                 }
             },
             "units": {
