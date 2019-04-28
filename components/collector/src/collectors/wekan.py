@@ -1,6 +1,9 @@
 """Wekan metric collector."""
 
+from datetime import datetime
+
 import cachetools.func
+from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
@@ -58,12 +61,20 @@ class WekanIssues(Collector):
     @staticmethod
     def ignore_card(card, **parameters) -> bool:
         """Return whether the card should be ignored."""
+
+        def card_is_inactive() -> bool:
+            """Return whether the card is inactive."""
+            date_last_activity = parse(card["dateLastActivity"])
+            return (datetime.now() - date_last_activity).days > int(parameters.get("inactive_days"))
+
         if card["archived"]:
             return True
         cards_to_count = parameters.get("cards_to_count")
         if not cards_to_count:
             return False
         if "overdue" in cards_to_count and card["isOvertime"]:
+            return False
+        if "inactive" in cards_to_count and card_is_inactive():
             return False
         return True
 

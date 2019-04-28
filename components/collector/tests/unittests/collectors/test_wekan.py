@@ -1,5 +1,6 @@
 """Unit tests for the Wekan metric source."""
 
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -16,7 +17,8 @@ class WekanTest(unittest.TestCase):
                 source_id=dict(
                     type="wekan",
                     parameters=dict(
-                        url="http://wekan", board="board1", username="user", password="pass", lists_to_ignore=[]))))
+                        url="http://wekan", board="board1", username="user", password="pass",
+                        inactive_days="90", lists_to_ignore=[]))))
         self.mock_post_response = Mock()
         self.mock_post_response.json.return_value = dict(token="token")
         self.mock_get_response = Mock()
@@ -68,6 +70,25 @@ class WekanTest(unittest.TestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", isOvertime=False),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", isOvertime=True)]
+        with patch("requests.post", return_value=self.mock_post_response):
+            with patch("requests.get", return_value=self.mock_get_response):
+                response = collect_measurement(self.metric)
+        self.assertEqual("1", response["sources"][0]["value"])
+        self.assertEqual(
+            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1")],
+            response["sources"][0]["units"])
+
+    def test_inactive_issues(self):
+        """Test inactive issues."""
+        self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["inactive"]
+        self.mock_get_response.json.side_effect = [
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")],
+            dict(slug="board-slug"),
+            [dict(_id="list1", title="List 1")],
+            [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity=datetime.now().isoformat()),
+            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
