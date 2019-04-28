@@ -1475,7 +1475,8 @@
                 "lists_to_ignore": {
                     "name": "Lists to ignore (title or id)",
                     "type": "multiple_choice_with_addition",
-                    "default_value": "",
+                    "default_value": [],
+                    "placeholder": "none",
                     "metrics": [
                         "issues"
                     ]
@@ -1483,7 +1484,8 @@
                 "cards_to_count": {
                     "name": "Cards to count",
                     "type": "multiple_choice",
-                    "default_value": "",
+                    "default_value": [],
+                    "placeholder": "all",
                     "values": [
                         "inactive",
                         "overdue"
@@ -1493,7 +1495,7 @@
                     ]
                 },
                 "inactive_days": {
-                    "name": "Number of days without activity after which to consider cards inactive.",
+                    "name": "Number of days without activity after which to consider cards inactive",
                     "type": "integer",
                     "default_value": "30",
                     "metrics": [

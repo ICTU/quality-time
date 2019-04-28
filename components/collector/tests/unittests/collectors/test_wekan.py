@@ -68,8 +68,8 @@ class WekanTest(unittest.TestCase):
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1", isOvertime=False),
-            dict(_id="card2", title="Card 2", archived=False, boardId="board1", isOvertime=True)]
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1"),
+            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dueAt="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)

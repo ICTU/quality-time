@@ -105,7 +105,7 @@ class SourceParameter extends Component {
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
-          value={this.props.parameter_value}
+          value={this.props.parameter_value || []}
         />
       )
     }
@@ -123,9 +123,10 @@ class SourceParameter extends Component {
       <MultipleChoiceInput
         label={label}
         options={this.props.parameter_values}
+        placeholder={this.props.placeholder}
         readOnly={this.props.readOnly}
         set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
-        value={this.props.parameter_value}
+        value={this.props.parameter_value || []}
       />
     )
   }

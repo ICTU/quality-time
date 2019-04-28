@@ -9,6 +9,7 @@ import requests
 
 from ..collector import Collector
 from ..type import Unit, Units, URL, Value
+from ..util import days_ago
 
 
 class WekanIssues(Collector):
@@ -68,14 +69,19 @@ class WekanIssues(Collector):
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""
             date_last_activity = parse(card["dateLastActivity"])
-            return (datetime.now() - date_last_activity).days > int(cast(int, parameters.get("inactive_days")))
+            return days_ago(date_last_activity) > int(cast(int, parameters.get("inactive_days")))
+
+        def card_is_overdue() -> bool:
+            """Return whether the card is overdue."""
+            due_date = parse(card["dueAt"]) if "dueAt" in card else datetime.max
+            return due_date < datetime.now(tz=due_date.tzinfo)
 
         if card["archived"]:
             return True
         cards_to_count = parameters.get("cards_to_count")
         if not cards_to_count:
             return False
-        if "overdue" in cards_to_count and card["isOvertime"]:
+        if "overdue" in cards_to_count and card_is_overdue():
             return False
         if "inactive" in cards_to_count and card_is_inactive():
             return False
