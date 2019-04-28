@@ -1485,6 +1485,7 @@
                     "type": "multiple_choice",
                     "default_value": "",
                     "values": [
+                        "inactive",
                         "overdue"
                     ],
                     "metrics": [
@@ -1494,7 +1495,7 @@
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive.",
                     "type": "integer",
-                    "default_value": "90",
+                    "default_value": "30",
                     "metrics": [
                         "issues"
                     ]

@@ -1,7 +1,7 @@
 """Wekan metric collector."""
 
 from datetime import datetime
-from typing import cast, Optional
+from typing import cast, List, Optional
 
 import cachetools.func
 from dateutil.parser import parse
@@ -31,18 +31,10 @@ class WekanIssues(Collector):
         api_url = self.api_url(**parameters)
         board_url = f"{api_url}/api/boards/{self.board_id(token, **parameters)}"
         board_slug = self.get_json(board_url, token)["slug"]
-        lists_url = f"{board_url}/lists"
         units: Units = []
-        for card_list in self.get_json(lists_url, token):
-            if self.ignore_list(card_list, **parameters):
-                continue
-            list_id = card_list["_id"]
-            cards_url = f"{lists_url}/{list_id}/cards"
-            for card_summary in self.get_json(cards_url, token):
-                card = self.get_json(f"{cards_url}/{card_summary['_id']}", token)
-                if self.ignore_card(card, **parameters):
-                    continue
-                units.append(self.card_to_unit(card, api_url, board_slug, card_list["title"]))
+        for lst in self.lists(board_url, token, **parameters):
+            for card in self.cards(f"{board_url}/lists/{lst['_id']}", token, **parameters):
+                units.append(self.card_to_unit(card, api_url, board_slug, lst["title"]))
         return units
 
     def board_id(self, token, **parameters) -> str:
@@ -51,6 +43,17 @@ class WekanIssues(Collector):
         user_id = self.get_json(f"{api_url}/api/user", token)["_id"]
         boards = self.get_json(f"{api_url}/api/users/{user_id}/boards", token)
         return [board for board in boards if parameters.get("board") in board.values()][0]["_id"]
+
+    def lists(self, board_url: str, token: str, **parameters) -> List:
+        """Return the lists on the board."""
+        return [lst for lst in self.get_json(f"{board_url}/lists", token)
+                if not self.ignore_list(lst, **parameters)]
+
+    def cards(self, list_url: str, token: str, **parameters) -> List:
+        """Return the cards on the board."""
+        cards = self.get_json(f"{list_url}/cards", token)
+        full_cards = [self.get_json(f"{list_url}/cards/{card['_id']}", token) for card in cards]
+        return [card for card in full_cards if not self.ignore_card(card, **parameters)]
 
     @staticmethod
     def ignore_list(card_list, **parameters) -> bool:
@@ -87,5 +90,4 @@ class WekanIssues(Collector):
     @cachetools.func.ttl_cache(ttl=60)
     def get_json(self, api_url: URL, token: str):
         """Get the JSON from the API url."""
-        headers = dict(Authorization=f"Bearer {token}")
-        return requests.get(api_url, timeout=self.TIMEOUT, headers=headers).json()
+        return requests.get(api_url, timeout=self.TIMEOUT, headers=dict(Authorization=f"Bearer {token}")).json()
