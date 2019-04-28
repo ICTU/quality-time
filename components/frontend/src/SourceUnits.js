@@ -5,6 +5,8 @@ import { TableRowWithDetails } from './TableRowWithDetails';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
+  cell_contents = cell_contents && props.unit_attribute.type === "datetime" ? new Date(cell_contents).toLocaleString() : cell_contents;
+  cell_contents = cell_contents && props.unit_attribute.type === "date" ? new Date(cell_contents).toLocaleDateString() : cell_contents;
   cell_contents = props.unit[props.unit_attribute.url] ? <a href={props.unit[props.unit_attribute.url]}>{cell_contents}</a> : cell_contents;
   cell_contents = props.unit_attribute.pre ? <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-all', hyphens: 'auto' }}>{cell_contents}</div> : cell_contents;
   return (
@@ -46,12 +48,14 @@ class Unit extends Component {
     const style = props.ignored ? { textDecoration: "line-through" } : {};
     let unit_name = props.metric_unit;
     if (unit_name.endsWith("s")) { unit_name = unit_name.substring(0, unit_name.length - 1) };
-    var negative, warning;
+    var positive, negative, warning, active;
     props.unit_attributes.forEach((unit_attribute) => {
       let cell_contents = props.unit[unit_attribute.key];
       if (unit_attribute.color && unit_attribute.color[cell_contents]) {
+        positive = (unit_attribute.color[cell_contents] === "positive");
         negative = (unit_attribute.color[cell_contents] === "negative");
         warning = (unit_attribute.color[cell_contents] === "warning");
+        active = (unit_attribute.color[cell_contents] === "active");
         return;
       }
     })
@@ -66,7 +70,8 @@ class Unit extends Component {
       unit_name={unit_name}
     />
     return (
-      <TableRowWithDetails key={props.unit.key} style={style} details={details} negative={negative} warning={warning}>
+      <TableRowWithDetails key={props.unit.key} style={style} details={details}
+        active={active} positive={positive} negative={negative} warning={warning}>
         {props.unit_attributes.map((unit_attribute, col_index) =>
           <Table.Cell key={col_index}>
             <UnitAttribute unit={props.unit} unit_attribute={unit_attribute} />

@@ -15,7 +15,10 @@ class MultipleChoiceInput extends Component {
     }
   }
   options() {
-    return this.props.options.map((value) => ({ key: value, text: value, value: value }));
+    let options = [];
+    this.props.options.forEach((option) => {options.push({key: option, text: option, value: option})});
+    this.props.value.forEach((val) => {options.push({key: val, text: val, value: val})});
+    return options;
   }
   handleAddition = (event, { value }) => {
     event.preventDefault();

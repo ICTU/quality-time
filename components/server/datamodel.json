@@ -86,7 +86,8 @@
                 "jira",
                 "random",
                 "azure_devops",
-                "random"
+                "random",
+                "wekan"
             ],
             "tags": []
         },
@@ -422,7 +423,7 @@
                         "source_up_to_dateness"
                     ]
                 },
-                "branch" : {
+                "branch": {
                     "name": "Branch",
                     "type": "string",
                     "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
@@ -441,11 +442,17 @@
                     },
                     {
                         "name": "Status of most recent build",
-                        "key": "build_status"
+                        "key": "build_status",
+                        "color": {
+                            "canceled": "active",
+                            "failed": "negative",
+                            "success": "positive"
+                        }
                     },
                     {
                         "name": "Date of most recent build",
-                        "key": "build_date"
+                        "key": "build_date",
+                        "type": "date"
                     },
                     {
                         "name": "Age of most recent build (in days)",
@@ -562,11 +569,18 @@
                     },
                     {
                         "name": "Status of most recent build",
-                        "key": "build_status"
+                        "key": "build_status",
+                        "color": {
+                            "Success": "success",
+                            "Failed": "negative",
+                            "Aborted": "selected",
+                            "Unstable": "warning"
+                        }
                     },
                     {
                         "name": "Date of most recent build",
-                        "key": "build_date"
+                        "key": "build_date",
+                        "type": "date"
                     },
                     {
                         "name": "Age of most recent build (in days)",
@@ -581,11 +595,18 @@
                     },
                     {
                         "name": "Status of most recent build",
-                        "key": "build_status"
+                        "key": "build_status",
+                        "color": {
+                            "Success": "positive",
+                            "Failure": "negative",
+                            "Aborted": "active",
+                            "Unstable": "warning"
+                        }
                     },
                     {
                         "name": "Date of most recent build",
-                        "key": "build_date"
+                        "key": "build_date",
+                        "type": "date"
                     },
                     {
                         "name": "Age of most recent build (in days)",
@@ -654,7 +675,12 @@
                     },
                     {
                         "name": "Failure type",
-                        "key": "failure_type"
+                        "key": "failure_type",
+                        "color": {
+                            "failed": "negative",
+                            "passed": "positive",
+                            "skipped": "warning"
+                        }
                     }
                 ]
             }
@@ -749,7 +775,13 @@
                     },
                     {
                         "name": "Failure type",
-                        "key": "failure_type"
+                        "key": "failure_type",
+                        "color": {
+                            "errored": "negative",
+                            "failed": "negative",
+                            "passed": "positive",
+                            "skipped": "warning"
+                        }
                     }
                 ]
             }
@@ -1015,7 +1047,11 @@
                     },
                     {
                         "name": "Failure type",
-                        "key": "failure_type"
+                        "key": "failure_type",
+                        "color": {
+                            "fail" : "negative",
+                            "pass": "positive"
+                        }
                     }
                 ]
             }
@@ -1430,6 +1466,98 @@
                         "name": "Component",
                         "key": "component",
                         "url": "url"
+                    }
+                ]
+            }
+        },
+        "wekan": {
+            "name": "Wekan",
+            "description": "Open-source kanban.",
+            "url": "https://wekan.github.io",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "board": {
+                    "name": "Board (title or id)",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "username": {
+                    "name": "Username",
+                    "type": "string",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "password": {
+                    "name": "Password",
+                    "type": "password",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "lists_to_ignore": {
+                    "name": "Lists to ignore (title or id)",
+                    "type": "multiple_choice_with_addition",
+                    "default_value": [],
+                    "placeholder": "none",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "cards_to_count": {
+                    "name": "Cards to count",
+                    "type": "multiple_choice",
+                    "default_value": [],
+                    "placeholder": "all",
+                    "values": [
+                        "inactive",
+                        "overdue"
+                    ],
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "inactive_days": {
+                    "name": "Number of days without activity after which to consider cards inactive",
+                    "type": "integer",
+                    "default_value": "30",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {
+                "issues": [
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "List",
+                        "key": "list"
+                    },
+                    {
+                        "name": "Due date",
+                        "key": "due_date",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "Date of last activity",
+                        "key": "date_last_activity",
+                        "type": "datetime"
                     }
                 ]
             }

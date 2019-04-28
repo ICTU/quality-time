@@ -1,5 +1,7 @@
 """Robot Framework metric collector."""
 
+from typing import Optional
+
 from dateutil.parser import parse
 import requests
 
@@ -11,8 +13,8 @@ from ..util import days_ago, parse_source_response_xml
 class RobotFrameworkBaseClass(Collector):
     """Base class for Robot Framework collectors."""
 
-    def landing_url(self, **parameters) -> URL:
-        url = super().landing_url(**parameters)
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
+        url = super().landing_url(response, **parameters)
         return URL(url.replace("output.html", "report.html"))
 
 

@@ -50,19 +50,19 @@ class Collector:
         """Return the measurement response for one source."""
         parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
-        landing_url = self.landing_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url, **parameters)
         value, units, parse_error = self.safely_parse_source_response(response, **parameters)
+        landing_url = self.landing_url(response, **parameters)
         return dict(api_url=api_url, landing_url=landing_url, value=value, units=units,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
-        """Translate the urls into the landing url."""
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
+        """Translate the url parameter into the landing url."""
         url = parameters.get("url", "").strip("/")
         return url[:-(len("xml"))] + "html" if url.endswith(".xml") else url
 
     def api_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
-        """Translate the url into the API url."""
+        """Translate the url parameter into the API url."""
         return parameters.get("url", "").strip("/")
 
     def safely_get_source_response(

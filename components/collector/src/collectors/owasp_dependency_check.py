@@ -26,7 +26,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
 
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         tree, namespaces = parse_source_response_xml_with_namespace(response)
-        landing_url = self.landing_url(**parameters)
+        landing_url = self.landing_url(response, **parameters)
         return [self.parse_unit(dependency, index, namespaces, landing_url, ** parameters) for (index, dependency)
                 in self.vulnerable_dependencies(tree, namespaces, **parameters)]
 

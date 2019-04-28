@@ -1,6 +1,6 @@
 """Collectors for SonarQube."""
 
-from typing import Dict
+from typing import Dict, Optional
 
 from dateutil.parser import isoparse  # type: ignore
 import requests
@@ -15,8 +15,8 @@ class SonarQubeViolations(Collector):
 
     rules_parameter = "Subclass responsibility"
 
-    def landing_url(self, **parameters) -> URL:
-        url = super().landing_url(**parameters)
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
+        url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
         return URL(landing_url + self.rules_url_parameter(**parameters))
@@ -46,15 +46,15 @@ class SonarQubeViolations(Collector):
     def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
         return [dict(
             key=unit["key"],
-            url=self.unit_landing_url(unit["key"], **parameters),
+            url=self.unit_landing_url(unit["key"], response, **parameters),
             message=unit["message"],
             severity=unit["severity"].lower(),
             type=unit["type"].lower(),
             component=unit["component"]) for unit in response.json()["issues"]]
 
-    def unit_landing_url(self, unit_key, **parameters):
+    def unit_landing_url(self, unit_key, response: requests.Response, **parameters):
         """Generate a landing url for the unit."""
-        url = super().landing_url(**parameters)
+        url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/issues?id={component}&issues={unit_key}&open={unit_key}")
 
@@ -88,8 +88,8 @@ class SonarQubeMetricsBaseClass(Collector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, **parameters) -> URL:
-        url = super().landing_url(**parameters)
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
+        url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
@@ -158,8 +158,8 @@ class SonarQubeSourceUpToDateness(Collector):
         component = parameters.get("component")
         return URL(f"{url}/api/project_analyses/search?project={component}")
 
-    def landing_url(self, **parameters) -> URL:
-        url = super().landing_url(**parameters)
+    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
+        url = super().landing_url(response, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/activity?id={component}")
 
