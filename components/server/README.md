@@ -104,6 +104,11 @@ The `sources` part of the datamodel is an object where the keys are the source t
                     {
                         "name": "State",
                         "key": "state"
+                    },
+                    {
+                        "name": "Date of last update",
+                        "key:": "last_update",
+                        "type": "datetime"
                     }
                 ]
             }
@@ -116,7 +121,7 @@ The `name` is the default name of sources of this type. The `description` gives 
 
 The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`; in which case the possible `values` need to be specified. A `default_value` can also be given. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
-The `units` object contains a list of columns to be used to display the units of the metric. Each columns consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way.
+The `units` object contains a list of columns to be used to display the units of the metric. Each column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the type of the column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. The only other type supported at the moment is `datetime`. The column should be an ISO-formatted date string and `Date.toLocaleString()` is used to format the date and time.
 
 ## Subjects
 

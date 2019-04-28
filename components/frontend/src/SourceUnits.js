@@ -5,6 +5,7 @@ import { TableRowWithDetails } from './TableRowWithDetails';
 
 function UnitAttribute(props) {
   let cell_contents = props.unit[props.unit_attribute.key];
+  cell_contents = cell_contents && props.unit_attribute.type === "datetime"? new Date(cell_contents).toLocaleString() : cell_contents;
   cell_contents = props.unit[props.unit_attribute.url] ? <a href={props.unit[props.unit_attribute.url]}>{cell_contents}</a> : cell_contents;
   cell_contents = props.unit_attribute.pre ? <div style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-all', hyphens: 'auto' }}>{cell_contents}</div> : cell_contents;
   return (
