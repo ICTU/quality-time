@@ -91,7 +91,8 @@ class WekanIssues(Collector):
     def card_to_unit(card, api_url: URL, board_slug: str, list_title: str) -> Unit:
         """Convert a card into a unit."""
         return dict(key=card["_id"], url=f"{api_url}/b/{card['boardId']}/{board_slug}/{card['_id']}",
-                    list=list_title, title=card["title"])
+                    list=list_title, title=card["title"], due_date=card.get("dueAt", ""),
+                    date_last_activity=card["dateLastActivity"])
 
     @cachetools.func.ttl_cache(ttl=60)
     def get_json(self, api_url: URL, token: str):

@@ -31,14 +31,15 @@ class WekanTest(unittest.TestCase):
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1"),
-            dict(_id="card2", title="Card 2", archived=True, boardId="board1")]
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
+            dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1")],
+            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
+                  due_date="", date_last_activity="2019-01-01")],
             response["sources"][0]["units"])
 
     def test_issues_with_ignored_list(self):
@@ -49,14 +50,15 @@ class WekanTest(unittest.TestCase):
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1"), dict(_id="list2", title="List 2")],
             [dict(_id="card1", title="Card 1")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1")]
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2")],
+            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
+                  due_date="", date_last_activity="2019-01-01")],
             response["sources"][0]["units"])
 
     def test_overdue_issues(self):
@@ -68,14 +70,16 @@ class WekanTest(unittest.TestCase):
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1"),
-            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dueAt="2019-01-01")]
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
+            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01",
+                 dueAt="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1")],
+            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
+                  due_date="2019-01-01", date_last_activity="2019-01-01")],
             response["sources"][0]["units"])
 
     def test_inactive_issues(self):
@@ -87,12 +91,14 @@ class WekanTest(unittest.TestCase):
             dict(slug="board-slug"),
             [dict(_id="list1", title="List 1")],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity=datetime.now().isoformat()),
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1",
+                 dateLastActivity=datetime.now().isoformat()),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
-            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1")],
+            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
+                  date_last_activity="2000-01-01")],
             response["sources"][0]["units"])

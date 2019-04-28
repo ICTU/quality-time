@@ -1513,6 +1513,14 @@
                     {
                         "name": "List",
                         "key": "list"
+                    },
+                    {
+                        "name": "Due date",
+                        "key": "due_date"
+                    },
+                    {
+                        "name": "Date of last activity",
+                        "key": "date_last_activity"
                     }
                 ]
             }
