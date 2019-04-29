@@ -41,7 +41,7 @@ def login(database: Database, ldap_server):
 @bottle.post("/logout")
 def logout(database: Database):
     """Log the user out."""
-    session_id = bottle.request.get_cookie("session_id")
+    session_id = str(bottle.request.get_cookie("session_id"))
     sessions.delete(database, session_id)
     set_session_cookie(session_id, clear=True)
     return dict(ok=True)
