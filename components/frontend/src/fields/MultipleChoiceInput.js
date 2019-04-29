@@ -18,6 +18,7 @@ class MultipleChoiceInput extends Component {
     let options = [];
     this.props.options.forEach((option) => {options.push({key: option, text: option, value: option})});
     this.props.value.forEach((val) => {options.push({key: val, text: val, value: val})});
+    options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
   }
   handleAddition = (event, { value }) => {

@@ -82,10 +82,9 @@
             "target": "0",
             "near_target": "10",
             "sources": [
+                "azure_devops",
                 "hq",
                 "jira",
-                "random",
-                "azure_devops",
                 "random",
                 "wekan"
             ],

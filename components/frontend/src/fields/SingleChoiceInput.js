@@ -20,7 +20,8 @@ class SingleChoiceInput extends Component {
   }
   render() {
     const value_text = this.props.options.filter(({ value }) => value === this.props.value)[0].text;
-    let { set_value, ...otherProps } = this.props;
+    let { set_value, options, ...otherProps } = this.props;
+    options.sort((a, b) => a.text.localeCompare(b.text));
     return (
       <Form>
         {this.props.readOnly ?
@@ -33,6 +34,7 @@ class SingleChoiceInput extends Component {
             {...otherProps}
             fluid
             onChange={(e, { name, value }) => this.onSubmit(e, { name, value })}
+            options={options}
             search
             selection
             selectOnNavigation={false}
