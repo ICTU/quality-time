@@ -25,11 +25,15 @@ def parse_source_response_xml_with_namespace(response: requests.Response) -> Tup
 
 
 MEMORY_ADDRESS_RE = re.compile(r" at 0x[0-9abcdef]+>")
+TOKEN_RE = re.compile(r"token=[0-9abcdef]+")
+KEY_RE = re.compile(r"key=[0-9abcdef]+")
 
 
 def stable_traceback(traceback: str) -> str:
     """Remove memory addresses from the traceback so make it easier to compare tracebacks."""
-    return re.sub(MEMORY_ADDRESS_RE, ">", traceback)
+    for reg_exp, replacement in [(MEMORY_ADDRESS_RE, ">"), (TOKEN_RE, "token=<redacted>"), (KEY_RE, "key=<redacted>")]:
+        traceback = re.sub(reg_exp, replacement, traceback)
+    return traceback
 
 
 def days_ago(date_time: datetime) -> int:
