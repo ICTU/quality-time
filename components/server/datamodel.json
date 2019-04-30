@@ -1502,7 +1502,7 @@
                     ]
                 },
                 "board": {
-                    "name": "Board (name or id)",
+                    "name": "Board (id)",
                     "type": "string",
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
                     "default_value": "",
