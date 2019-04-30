@@ -86,6 +86,7 @@
                 "hq",
                 "jira",
                 "random",
+                "trello",
                 "wekan"
             ],
             "tags": []
@@ -1465,6 +1466,101 @@
                         "name": "Component",
                         "key": "component",
                         "url": "url"
+                    }
+                ]
+            }
+        },
+        "trello": {
+            "name": "Trello",
+            "description": "Trello is a collaboration tool that organizes projects into boards.",
+            "url": "https://trello.com",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "default_value": "https://trello.com",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "api_key": {
+                    "name": "API key",
+                    "type": "string",
+                    "help_url": "https://trello.com/app-key",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "token": {
+                    "name": "Token",
+                    "type": "string",
+                    "help_url": "https://trello.com/app-key",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "board": {
+                    "name": "Board (name or id)",
+                    "type": "string",
+                    "help_url": "https://trello.com/1/members/me/boards?fields=name",
+                    "default_value": "",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "lists_to_ignore": {
+                    "name": "Lists to ignore (title or id)",
+                    "type": "multiple_choice_with_addition",
+                    "default_value": [],
+                    "placeholder": "none",
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "cards_to_count": {
+                    "name": "Cards to count",
+                    "type": "multiple_choice",
+                    "default_value": [],
+                    "placeholder": "all",
+                    "values": [
+                        "inactive",
+                        "overdue"
+                    ],
+                    "metrics": [
+                        "issues"
+                    ]
+                },
+                "inactive_days": {
+                    "name": "Number of days without activity after which to consider cards inactive",
+                    "type": "integer",
+                    "default_value": "30",
+                    "metrics": [
+                        "issues"
+                    ]
+                }
+            },
+            "units": {
+                "issues": [
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "List",
+                        "key": "list"
+                    },
+                    {
+                        "name": "Due date",
+                        "key": "due_date",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "Date of last activity",
+                        "key": "date_last_activity",
+                        "type": "datetime"
                     }
                 ]
             }
