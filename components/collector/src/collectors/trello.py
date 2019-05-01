@@ -11,15 +11,19 @@ from ..type import Unit, Units, URL, Value
 from ..util import days_ago
 
 
+# pylint: disable=duplicate-code
+
+
 class TrelloIssues(Collector):
     """Collector to get issues (cards) from Trello."""
 
     def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        return f"https://trello.com/b/{response.json()['id']}"
+        return URL(f"https://trello.com/b/{response.json()['id']}" if response else "https://trello.com")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we need to do multiple requests to get all the data we need."""
-        api = f"1/boards/{self.board_id(**parameters)}?fields=id,url,dateLastActivity&lists=open&list_fields=name&cards=visible&card_fields=name,closed,dateLastActivity,due,idList,url"
+        api = f"1/boards/{self.board_id(**parameters)}?fields=id,url,dateLastActivity&lists=open&" \
+            "list_fields=name&cards=visible&card_fields=name,closed,dateLastActivity,due,idList,url"
         return requests.get(self.url_with_auth(api, **parameters), timeout=self.TIMEOUT)
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
@@ -54,14 +58,12 @@ class TrelloIssues(Collector):
         lists_to_ignore = parameters.get("lists_to_ignore") or []
         if card["idList"] in lists_to_ignore or lists[card["idList"]] in lists_to_ignore:
             return True
-        cards_to_count = parameters.get("cards_to_count")
-        if not cards_to_count:
-            return False
+        cards_to_count = parameters.get("cards_to_count") or []
         if "overdue" in cards_to_count and card_is_overdue():
             return False
         if "inactive" in cards_to_count and card_is_inactive():
             return False
-        return True
+        return bool(cards_to_count)
 
     @staticmethod
     def card_to_unit(card, lists) -> Unit:
