@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 from src.collector import collect_measurement
 
 
-class TrelloTest(unittest.TestCase):
-    """Unit tests for the Trello metrics."""
+class TrelloIssuesTest(unittest.TestCase):
+    """Unit tests for the Trello issue metric."""
 
     def setUp(self):
         self.metric = dict(
@@ -24,7 +24,7 @@ class TrelloTest(unittest.TestCase):
     def test_issues(self):
         """Test that the number of issues and the individual issues are returned."""
         cards = dict(
-            id="board1",
+            id="board1", url="http://trello/board1",
             cards=[
                 dict(
                     id="card1", name="Card 1", idList="list1", due=None, dateLastActivity="2019-01-01",
@@ -44,7 +44,7 @@ class TrelloTest(unittest.TestCase):
         """Test that lists can be ignored when counting issues."""
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         cards = dict(
-            id="board1",
+            id="board1", url="http://trello/board1",
             cards=[
                 dict(
                     id="card1", name="Card 1", idList="list1", due=None, dateLastActivity="2019-01-01",
@@ -66,7 +66,7 @@ class TrelloTest(unittest.TestCase):
         """Test overdue issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["overdue"]
         cards = dict(
-            id="board1",
+            id="board1", url="http://trello/board1",
             cards=[
                 dict(
                     id="card1", name="Card 1", idList="list1", due=None, dateLastActivity="2019-01-01",
@@ -88,7 +88,7 @@ class TrelloTest(unittest.TestCase):
         """Test inactive issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["inactive"]
         cards = dict(
-            id="board1",
+            id="board1", url="http://trello/board1",
             cards=[
                 dict(
                     id="card1", name="Card 1", idList="list1", due=None,
@@ -105,3 +105,28 @@ class TrelloTest(unittest.TestCase):
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 1", due_date=None,
                   date_last_activity="2019-01-01")],
             response["sources"][0]["units"])
+
+
+class TrelloSourceUpToDatenessTest(unittest.TestCase):
+    """Unit tests for the Trello source up-to-dateness metric."""
+
+    def test_age(self):
+        """Test that the source up to dateness is the number of days since the most recent change."""
+        metric = dict(
+            type="source_up_to_dateness", addition="max",
+            sources=dict(
+                source_id=dict(
+                    type="trello",
+                    parameters=dict(
+                        url="http://trello", board="board1", api_key="abcdef123", token="4533dea"))))
+        mock_get_response = Mock()
+        cards = dict(
+            id="board1", url="http://trello/board1",
+            dateLastActivity="2019-02-10",
+            cards=[
+                dict(id="card1", name="Card 1", dateLastActivity="2019-03-03"),
+                dict(id="card2", name="Card 2", dateLastActivity="2019-01-01")])
+        mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards]
+        with patch("requests.get", return_value=mock_get_response):
+            response = collect_measurement(metric)
+        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

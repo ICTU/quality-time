@@ -179,7 +179,8 @@
                 "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
-                "sonarqube"
+                "sonarqube",
+                "trello"
             ],
             "tags": [
                 "ci"
@@ -1480,7 +1481,8 @@
                     "type": "string",
                     "default_value": "https://trello.com",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "api_key": {
@@ -1489,7 +1491,8 @@
                     "help_url": "https://trello.com/app-key",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "token": {
@@ -1498,7 +1501,8 @@
                     "help_url": "https://trello.com/app-key",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "board": {
@@ -1507,7 +1511,8 @@
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "lists_to_ignore": {
