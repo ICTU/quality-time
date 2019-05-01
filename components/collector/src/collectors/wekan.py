@@ -78,14 +78,12 @@ class WekanIssues(Collector):
 
         if card["archived"]:
             return True
-        cards_to_count = parameters.get("cards_to_count")
-        if not cards_to_count:
+        cards_to_count = parameters.get("cards_to_count") or []
+        if "inactive" in cards_to_count and card_is_inactive():
             return False
         if "overdue" in cards_to_count and card_is_overdue():
             return False
-        if "inactive" in cards_to_count and card_is_inactive():
-            return False
-        return True
+        return bool(cards_to_count)
 
     @staticmethod
     def card_to_unit(card, api_url: URL, board_slug: str, list_title: str) -> Unit:
