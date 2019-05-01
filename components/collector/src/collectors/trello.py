@@ -11,20 +11,34 @@ from ..type import Unit, Units, URL, Value
 from ..util import days_ago
 
 
-# pylint: disable=duplicate-code
-
-
-class TrelloIssues(Collector):
-    """Collector to get issues (cards) from Trello."""
+class TrelloBase(Collector):
+    """Base class for Trello collectors."""
 
     def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        return URL(f"https://trello.com/b/{response.json()['id']}" if response else "https://trello.com")
+        return URL(response.json()["url"] if response else "https://trello.com")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{self.board_id(**parameters)}?fields=id,url,dateLastActivity&lists=open&" \
-            "list_fields=name&cards=visible&card_fields=name,closed,dateLastActivity,due,idList,url"
+            "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
         return requests.get(self.url_with_auth(api, **parameters), timeout=self.TIMEOUT)
+
+    def board_id(self, **parameters) -> str:
+        """Return the id of the board specified by the user."""
+        url = self.url_with_auth("1/members/me/boards?fields=name", **parameters)
+        boards = requests.get(url, timeout=self.TIMEOUT).json()
+        return [board for board in boards if parameters.get("board") in board.values()][0]["id"]
+
+    def url_with_auth(self, api_part: str, **parameters) -> str:
+        """Return the authentication URL parameters."""
+        sep = "&" if "?" in api_part else "?"
+        api_key = parameters.get("api_key")
+        token = parameters.get("token")
+        return f"{self.api_url(**parameters)}/{api_part}{sep}key={api_key}&token={token}"
+
+
+class TrelloIssues(TrelloBase):
+    """Collector to get issues (cards) from Trello."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(self.parse_source_response_units(response, **parameters)))
@@ -34,12 +48,6 @@ class TrelloIssues(Collector):
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         return [self.card_to_unit(card, lists) for card in cards if not self.ignore_card(card, lists, **parameters)]
-
-    def board_id(self, **parameters) -> str:
-        """Return the id of the board specified by the user."""
-        url = self.url_with_auth("1/members/me/boards?fields=name", **parameters)
-        boards = requests.get(url, timeout=self.TIMEOUT).json()
-        return [board for board in boards if parameters.get("board") in board.values()][0]["id"]
 
     @staticmethod
     def ignore_card(card, lists, **parameters) -> bool:
@@ -72,9 +80,11 @@ class TrelloIssues(Collector):
             key=card["id"], title=card["name"], url=card["url"], list=lists[card["idList"]], due_date=card["due"],
             date_last_activity=card["dateLastActivity"])
 
-    def url_with_auth(self, api_part: str, **parameters) -> str:
-        """Return the authentication URL parameters."""
-        sep = "&" if "?" in api_part else "?"
-        api_key = parameters.get("api_key")
-        token = parameters.get("token")
-        return f"{self.api_url(**parameters)}/{api_part}{sep}key={api_key}&token={token}"
+
+class TrelloSourceUpToDateness(TrelloBase):
+    """Collector to measure how up-to-date a Trello board is."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        json = response.json()
+        dates = [json["dateLastActivity"]] + [card["dateLastActivity"] for card in json["cards"]]
+        return str(days_ago(parse(min(dates))))
