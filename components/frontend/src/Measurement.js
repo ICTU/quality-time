@@ -56,7 +56,7 @@ class Measurement extends Component {
       unit={metric_unit}
     />
     return (
-      <TableRowWithDetails positive={positive} negative={negative} warning={warning} active={active} details={details}>
+      <TableRowWithDetails show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>
         <Table.Cell>
           {metric_name}
         </Table.Cell>
