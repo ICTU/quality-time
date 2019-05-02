@@ -22,6 +22,6 @@ it('renders without crashing', () => {
       }}
       metric_uuid="metric_uuid"
       subject_uuid="subject_uuid"
-      datamodel={{metrics: {violations: {direction: "<="}}}} />, container);
+      datamodel={{metrics: {violations: {direction: "<=", tags: []}}}} />, container);
   ReactDOM.unmountComponentAtNode(container);
 });
