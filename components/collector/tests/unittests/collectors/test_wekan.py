@@ -102,3 +102,32 @@ class WekanTest(unittest.TestCase):
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
                   date_last_activity="2000-01-01")],
             response["sources"][0]["units"])
+
+
+class WekanSourceUpToDatenessTest(unittest.TestCase):
+    """Unit tests for the Wekan source up-to-dateness collector."""
+
+    def test_age(self):
+        """Test that the number of days since the last activity is returned."""
+        metric = dict(
+            type="source_up_to_dateness", addition="max",
+            sources=dict(
+                source_id=dict(
+                    type="wekan",
+                    parameters=dict(
+                        url="http://wekan", board="board1", username="user", password="pass"))))
+        mock_post_response = Mock()
+        mock_post_response.json.return_value = dict(token="token")
+        mock_get_response = Mock()
+        mock_get_response.json.side_effect = [
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")],
+            dict(_id="board1", createdAt="2019-01-01"),
+            [dict(_id="list1", title="List 1")],
+            [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
+            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
+        with patch("requests.post", return_value=mock_post_response):
+            with patch("requests.get", return_value=mock_get_response):
+                response = collect_measurement(metric)
+        self.assertEqual("-1", response["sources"][0]["value"])

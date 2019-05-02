@@ -103,6 +103,7 @@ class Collector:
                 units = self.parse_source_response_units(response, **parameters)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
+                print(error)
         return value, units[:self.MAX_UNITS], error
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
