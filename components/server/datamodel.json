@@ -180,7 +180,8 @@
                 "owasp_dependency_check",
                 "owasp_zap",
                 "sonarqube",
-                "trello"
+                "trello",
+                "wekan"
             ],
             "tags": [
                 "ci"
@@ -1580,7 +1581,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "board": {
@@ -1588,7 +1590,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "username": {
@@ -1596,7 +1599,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "password": {
@@ -1604,7 +1608,8 @@
                     "type": "password",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "lists_to_ignore": {
