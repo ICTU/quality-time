@@ -49,11 +49,11 @@ class WekanBase(Collector):
 
     def ignore_list(self, card_list, **parmaeters) -> bool:  # pylint: disable=unused-argument,no-self-use
         """Return whether the list should be ignored."""
-        return card_list["archived"]
+        return card_list.get("archived", False)
 
     def ignore_card(self, card, **parameters) -> bool:  # pylint: disable=unused-argument,no-self-use
         """Return whether the card should be ignored."""
-        return card["archived"]
+        return card.get("archived", False)
 
 
 class WekanIssues(WekanBase):
@@ -115,9 +115,9 @@ class WekanSourceUpToDateness(WekanBase):
         token = response.json()['token']
         board_url = f"{self.api_url(**parameters)}/api/boards/{self.board_id(token, **parameters)}"
         board = self.get_json(board_url, token)
-        dates = [board["createdAt"], board.get("modifiedAt")]
+        dates = [board.get("createdAt"), board.get("modifiedAt")]
         for lst in self.lists(board_url, token, **parameters):
-            dates.extend([lst["createdAt"], lst.get("updatedAt")])
+            dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             list_url = f"{board_url}/lists/{lst['_id']}"
             dates.extend([card["dateLastActivity"] for card in self.cards(list_url, token, **parameters)])
         return str(days_ago(parse(min([date for date in dates if date]))))
