@@ -29,7 +29,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
-            [dict(_id="list1", title="List 1")],
+            [dict(_id="list1", title="List 1", archived=False)],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
@@ -48,7 +48,8 @@ class WekanTest(unittest.TestCase):
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
-            [dict(_id="list1", title="List 1"), dict(_id="list2", title="List 2")],
+            [dict(_id="list1", title="List 1", archived=False), dict(_id="list2", title="List 2", archived=False),
+             dict(_id="list3", archived=True)],
             [dict(_id="card1", title="Card 1")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
@@ -68,7 +69,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
-            [dict(_id="list1", title="List 1")],
+            [dict(_id="list1", title="List 1", archived=False)],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01",
@@ -89,7 +90,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
-            [dict(_id="list1", title="List 1")],
+            [dict(_id="list1", title="List 1", archived=False)],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1",
                  dateLastActivity=datetime.now().isoformat()),
@@ -123,11 +124,11 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(_id="board1", createdAt="2019-01-01"),
-            [dict(_id="list1", title="List 1")],
+            [dict(_id="list1", title="List 1", archived=False, createdAt="2019-01-01")],
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=mock_post_response):
             with patch("requests.get", return_value=mock_get_response):
                 response = collect_measurement(metric)
-        self.assertEqual("-1", response["sources"][0]["value"])
+        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

@@ -109,17 +109,15 @@ class WekanIssues(WekanBase):
 
 
 class WekanSourceUpToDateness(WekanBase):
-    """Collector to measure how up-yo-date a Wekan board is."""
+    """Collector to measure how up-to-date a Wekan board is."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         token = response.json()['token']
-        api_url = self.api_url(**parameters)
-        board_id = self.board_id(token, **parameters)
-        board_url = f"{api_url}/api/boards/{board_id}"
+        board_url = f"{self.api_url(**parameters)}/api/boards/{self.board_id(token, **parameters)}"
         board = self.get_json(board_url, token)
         dates = [board["createdAt"], board.get("modifiedAt")]
         for lst in self.lists(board_url, token, **parameters):
-            dates.extend([lst["updatedAt"], lst.get("updatedAt")])
+            dates.extend([lst["createdAt"], lst.get("updatedAt")])
             list_url = f"{board_url}/lists/{lst['_id']}"
             dates.extend([card["dateLastActivity"] for card in self.cards(list_url, token, **parameters)])
-        return str(days_ago(parse(min(dates))))
+        return str(days_ago(parse(min([date for date in dates if date]))))
