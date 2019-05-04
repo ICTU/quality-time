@@ -56,7 +56,7 @@ class MeasurementDetails extends Component {
         {
           menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
           render: () => <Tab.Pane>
-            <TrendGraph measurements={props.measurements} unit={unit_name} />
+            <TrendGraph measurements={props.measurements} unit={unit_name} title={this.props.metric_name} />
           </Tab.Pane>
         }
       );
