@@ -25,7 +25,7 @@ class MeasurementDetails extends Component {
     const props = this.props;
     const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
     const panes = [];
-    if (props.measurement !== null) {
+    if (props.measurement) {
       const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
       props.measurement.sources.forEach((source) => {
         const report_source = metric.sources[source.source_uuid];
@@ -52,14 +52,17 @@ class MeasurementDetails extends Component {
           </Tab.Pane>
         });
       });
-      panes.push(
-        {
-          menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-          render: () => <Tab.Pane>
-            <TrendGraph measurements={props.measurements} unit={unit_name} title={this.props.metric_name} />
-          </Tab.Pane>
-        }
-      );
+      if (props.measurements.length > 0) {
+        console.log(props.measurements);
+        panes.push(
+          {
+            menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane>
+              <TrendGraph measurements={props.measurements} unit={unit_name} title={this.props.metric_name} />
+            </Tab.Pane>
+          }
+        );
+      }
     }
     panes.push(
       {
