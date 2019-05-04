@@ -46,6 +46,7 @@ class Measurement extends Component {
       ignore_unit={this.props.ignore_unit}
       measurement={latest_measurement}
       measurements={this.props.measurements}
+      metric_name={metric_name}
       metric_uuid={this.props.metric_uuid}
       readOnly={this.props.readOnly}
       reload={this.props.reload}
