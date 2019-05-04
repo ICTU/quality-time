@@ -17,7 +17,6 @@ class MultipleChoiceInput extends Component {
   options() {
     let options = new Set();
     this.props.options.forEach((option) => {options.add({key: option, text: option, value: option})});
-    this.props.value.forEach((val) => {options.add({key: val, text: val, value: val})});
     options = Array.from(options);
     options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
