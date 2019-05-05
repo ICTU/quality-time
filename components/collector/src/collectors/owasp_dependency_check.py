@@ -40,8 +40,8 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         unit_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
         key = sha1 if sha1 else hashlib.sha1(bytes(file_path, "utf8")).hexdigest()
         vulnerabilities = self.vulnerabilities(dependency, namespaces, **parameters)
-        severities = set(vulnerability.findtext("ns:severity", namespaces=namespaces).lower() for vulnerability in
-                         vulnerabilities)
+        severities = set(vulnerability.findtext(".//ns:severity", namespaces=namespaces).lower()
+                         for vulnerability in vulnerabilities)
         highest_severity = "high" if "high" in severities else "medium" if "medium" in severities else "low"
         return dict(key=key, file_path=file_path, highest_severity=highest_severity.capitalize(), url=unit_landing_url,
                     nr_vulnerabilities=len(vulnerabilities))
@@ -52,7 +52,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         severities = parameters.get("severities") or ["low", "medium", "high"]
         vulnerabilities = element.findall(".//ns:vulnerabilities/ns:vulnerability", namespaces)
         return [vulnerability for vulnerability in vulnerabilities if
-                vulnerability.findtext("ns:severity", namespaces=namespaces).lower() in severities]
+                vulnerability.findtext(".//ns:severity", namespaces=namespaces).lower() in severities]
 
 
 class OWASPDependencyCheckSourceUpToDateness(Collector):
