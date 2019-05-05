@@ -18,17 +18,21 @@ class OWASPDependencyCheckTest(unittest.TestCase):
     def test_warnings(self):
         """Test that the number of warnings is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
-        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
             <dependency isVirtual="false">
                 <sha1>12345</sha1>
                 <fileName>jquery.min.js</fileName>
                 <filePath>/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js</filePath>
                 <vulnerabilities>
                     <vulnerability source="NVD">
-                        <severity>Medium</severity>
+                        <cvssV2>
+                            <severity>MEDIUM</severity>
+                        </cvssV2>
                     </vulnerability>
                     <vulnerability source="NVD">
-                        <severity>Low</severity>
+                        <cvssV2>
+                            <severity>LOW</severity>
+                        </cvssV2>
                     </vulnerability>
                 </vulnerabilities>
             </dependency>
@@ -46,7 +50,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
-        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
             <projectInfo>
                 <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
             </projectInfo>
