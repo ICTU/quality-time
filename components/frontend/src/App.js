@@ -23,7 +23,7 @@ class App extends Component {
 
   reload(event) {
     if (event) { event.preventDefault(); }
-    const report_date = this.report_date() || new Date();
+    const report_date = this.report_date() || new Date(3000, 12, 31);
     fetch(`${window.server_url}/datamodel?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
