@@ -28,7 +28,7 @@ function TrendGraph(props) {
       theme={VictoryTheme.material}
       width={750}
     >
-      <VictoryLabel x={375} y={10} text={props.title} textAnchor="middle" />
+      <VictoryLabel x={375} y={20} text={props.title} textAnchor="middle" />
       <VictoryAxis
         label={"Time"}
         style={axisStyle} />
