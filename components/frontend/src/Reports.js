@@ -16,7 +16,7 @@ function ReportsDashboard(props) {
   });
   const report_cards = props.reports.map((report) =>
     <MetricSummaryCard key={report.report_uuid} header={report.title}
-      onClick={(e) => props.open_report(e, report)} {...report.summary}
+      onClick={(e) => props.open_report(e, report.report_uuid)} {...report.summary}
     />);
   const tag_cards = Object.entries(tag_counts).map(([tag, counts]) =>
     <MetricSummaryCard key={tag} header={<Tag tag={tag}/>} {...counts}

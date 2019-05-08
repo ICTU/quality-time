@@ -3,22 +3,33 @@ import { Container, Dimmer, Loader } from 'semantic-ui-react';
 import { Report } from './Report.js';
 import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
+import { createBrowserHistory } from 'history';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datamodel: {}, reports: [], report: null, search_string: '', report_date_string: '',
+      datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
+    this.history = createBrowserHistory();
+    this.history.listen((location, action) => {
+      if (action === "POP") {
+        const pathname = this.history.location.pathname;
+        const report_uuid = pathname.slice(1, pathname.length);
+        this.setState({ report_uuid: report_uuid }, () => this.reload());
+      }
+    });
   }
 
   componentDidMount() {
-    this.setState({user: localStorage.getItem("user")});
     this.reload();
+    const pathname = this.history.location.pathname;
+    const report_uuid = pathname.slice(1, pathname.length);
+    this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") });
   }
 
   reload(event) {
@@ -31,7 +42,6 @@ class App extends Component {
       .then(function (json) {
         self.setState({ datamodel: json });
       });
-    const report_uuid = this.state.report ? this.state.report["report_uuid"] : null;
     let self = this;
     fetch(`${window.server_url}/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
@@ -39,17 +49,9 @@ class App extends Component {
       })
       .then(function (json) {
         const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
-        var report = null;
-        if (report_uuid != null) {
-          const reports = json.reports.filter((report) => report.report_uuid === report_uuid);
-          if (reports.length === 1) {
-            report = reports[0];
-          }
-        }
         self.setState(
           {
             reports: json.reports,
-            report: report,
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
             loading: false
@@ -70,16 +72,18 @@ class App extends Component {
 
   go_home(event) {
     event.preventDefault();
-    this.setState({ report: null });
+    this.history.push("/");
+    this.setState({ report_uuid: "" });
     if (this.source) {
       this.source.close()
     }
   }
 
-  open_report(event, report) {
+  open_report(event, report_uuid) {
     event.preventDefault();
-    this.setState({ report: report }, () => this.reload());
-    this.source = new EventSource(`${window.server_url}/nr_measurements/${report.report_uuid}`);
+    this.setState({ report_uuid: report_uuid }, () => this.reload());
+    this.history.push(report_uuid);
+    this.source = new EventSource(`${window.server_url}/nr_measurements/${report_uuid}`);
     let self = this;
     this.source.addEventListener('init', function (e) {
       self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });
@@ -96,6 +100,7 @@ class App extends Component {
       }
     }, false);
   }
+
   report_date() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -151,13 +156,14 @@ class App extends Component {
 
   render() {
     const report_date = this.report_date();
+    const report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     return (
       <>
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
           nr_new_measurements={this.state.nr_new_measurements} user={this.state.user}
-          report={this.state.report} report_date={report_date} login={(u, p) => this.login(u, p)}
+          report={report} report_date={report_date} login={(u, p) => this.login(u, p)}
           logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
         <Container fluid style={{ marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
@@ -166,11 +172,11 @@ class App extends Component {
               <Loader size='large'>Loading</Loader>
             </Dimmer>
             :
-            this.state.report === null ?
+            this.state.report_uuid === "" ?
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
                 open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
-              <Report datamodel={this.state.datamodel} report={this.state.report}
+              <Report datamodel={this.state.datamodel} report={report}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
