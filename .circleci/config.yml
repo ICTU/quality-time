@@ -48,12 +48,12 @@ jobs:
           docker images
           docker ps -a
       #run ui_tests
-      - run: "cd ./art && npm install --save-dev"
+      - run: "cd components/art && npm install --save-dev"
       - run: "cd /home/circleci/project"
 
       - run:
           name: Running E2E tests with Single reporter
-          command: "cd ./art && npx cypress run"
+          command: "cd components/art && npx cypress run"
       - store_test_results:
           path: multiple-results
       - store_artifacts:
