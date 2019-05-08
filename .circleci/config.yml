@@ -57,9 +57,9 @@ jobs:
       - store_test_results:
           path: multiple-results
       - store_artifacts:
-          path: /home/circleci/project/art/cypress/videos/
+          path: /home/circleci/project/components/art/cypress/videos/
       - store_artifacts:
-          path: /home/circleci/project/art/cypress/screenshots/
+          path: /home/circleci/project/components/art/cypress/screenshots/
 
 workflows:
   version: 2
