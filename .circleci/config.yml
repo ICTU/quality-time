@@ -12,6 +12,7 @@ jobs:
            sudo pip install -r requirements.txt -r requirements-dev.txt
            ci/unittest.sh
            ci/quality.sh
+           echo "hello world"
 
   unittest_server:
     docker:
