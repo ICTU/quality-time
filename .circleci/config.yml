@@ -1,17 +1,79 @@
 version: 2
 
 jobs:
-  build: 
-    docker: 
+  unittest_collector:
+    docker:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - run: 
-         command: | 
+      - run:
+         command: |
            cd components/collector
-           python -m venv .venv
-           . .venv/bin/activate
-           pip install -r requirements.txt -r requirements-dev.txt
+           sudo pip install -r requirements.txt -r requirements-dev.txt
            ci/unittest.sh
            ci/quality.sh
 
+  unittest_server:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+            cd components/server
+            sudo pip install -r requirements.txt -r requirements-dev.txt
+            ci/unittest.sh
+            ci/quality.sh
+
+  unittest_frontend:
+    docker:
+      - image: circleci/node:9
+    steps:
+      - checkout
+      - run:
+          command: |
+            cd components/frontend
+            npm install
+            npm test
+
+  ui_tests:
+    machine: true
+    parallelism: 1
+    steps:
+      - checkout
+      # build the application image
+      - run: |
+          docker-compose build && docker-compose up -d
+          docker images
+          docker ps -a
+      #run ui_tests
+      - run: "cd components/art && npm install --save-dev"
+      - run: "cd /home/circleci/project"
+
+      - run:
+          name: Running E2E tests with Single reporter
+          command: "cd components/art && npx cypress run"
+      - store_test_results:
+          path: multiple-results
+      - store_artifacts:
+          path: /home/circleci/project/components/art/cypress/videos/
+      - store_artifacts:
+          path: /home/circleci/project/components/art/cypress/screenshots/
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - unittest_collector:
+          context: QualityTime
+      - unittest_server:
+          context: QualityTime
+      - unittest_frontend:
+          context: QualityTime
+      - ui_tests:
+          context: QualityTime
+          requires:
+            - unittest_collector
+            - unittest_server
+            - unittest_frontend

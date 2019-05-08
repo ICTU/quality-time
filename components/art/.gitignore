@@ -1,0 +1,9 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+#videos&screenshots
+/videos
+/screenshots
