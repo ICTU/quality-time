@@ -4,6 +4,7 @@ import { Subjects } from './Subjects.js';
 import { Tag } from './MetricTag.js';
 import { MetricSummaryCard } from './MetricSummaryCard';
 import { CardDashboard } from './CardDashboard';
+import { ReportTitle } from './ReportTitle'
 
 function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
@@ -27,12 +28,19 @@ class Report extends Component {
             },
             body: JSON.stringify({})
         }).then(
-            () => self.props.reload()
+            () => self.props.go_home()
         );
     }
     render() {
         return (
             <>
+                <ReportTitle
+                    report={this.props.report}
+                    datamodel={this.props.datamodel}
+                    readOnly={this.props.readOnly}
+                    reload={this.props.reload}
+                    delete_report={(e) => this.delete_report(e, this.props.report)}
+                />
                 <ReportDashboard report={this.props.report} />
                 <Subjects
                     datamodel={this.props.datamodel}

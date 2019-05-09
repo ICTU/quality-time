@@ -71,7 +71,7 @@ class App extends Component {
   }
 
   go_home(event) {
-    event.preventDefault();
+    this.reload(event);
     this.history.push("/");
     this.setState({ report_uuid: "" });
     if (this.source) {
@@ -176,7 +176,7 @@ class App extends Component {
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
                 open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
-              <Report datamodel={this.state.datamodel} report={report}
+              <Report datamodel={this.state.datamodel} report={report} go_home={(e) => this.go_home(e)}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
