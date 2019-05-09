@@ -72,10 +72,12 @@ class App extends Component {
 
   go_home(event) {
     this.reload(event);
-    this.history.push("/");
-    this.setState({ report_uuid: "" });
-    if (this.source) {
-      this.source.close()
+    if (this.history.location.pathname !== "/") {
+      this.history.push("/");
+      this.setState({ report_uuid: "" });
+      if (this.source) {
+        this.source.close()
+      }
     }
   }
 

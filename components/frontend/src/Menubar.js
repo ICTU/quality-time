@@ -53,7 +53,7 @@ function Menubar(props) {
   return (
     <Menu fixed='top' inverted>
       <Container fluid>
-        <Menu.Item header>
+        <Menu.Item header onClick={(e) => props.go_home(e)}>
             <Image size='mini' src='/favicon.ico' />
         </Menu.Item>
         <Menu.Item>
