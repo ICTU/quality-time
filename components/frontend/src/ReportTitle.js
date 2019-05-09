@@ -28,14 +28,17 @@ class ReportTitle extends Component {
         return (
             <>
                 <Header as='h1'
-                        onClick={(e) => this.onExpand(e)}
-                        onKeyPress={(e) => this.onExpand(e)}
-                        tabIndex="0">
+                    onClick={(e) => this.onExpand(e)}
+                    onKeyPress={(e) => this.onExpand(e)}
+                    tabIndex="0">
                     <Icon
                         name={this.state.show_details ? "caret down" : "caret right"}
                         size='large'
                     />
-                    {this.props.report.title}
+                    <Header.Content>
+                        {this.props.report.title}
+                        <Header.Subheader>{this.props.report.subtitle}</Header.Subheader>
+                    </Header.Content>
                 </Header>
                 {
                     this.state.show_details &&
@@ -44,10 +47,18 @@ class ReportTitle extends Component {
                             <Grid.Row columns={3}>
                                 <Grid.Column>
                                     <StringInput
-                                        label="Subject title"
+                                        label="Report title"
                                         readOnly={this.props.readOnly}
                                         set_value={(value) => this.set_report_attribute("title", value)}
                                         value={this.props.report.title}
+                                    />
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <StringInput
+                                        label="Report subtitle"
+                                        readOnly={this.props.readOnly}
+                                        set_value={(value) => this.set_report_attribute("subtitle", value)}
+                                        value={this.props.report.subtitle}
                                     />
                                 </Grid.Column>
                             </Grid.Row>
