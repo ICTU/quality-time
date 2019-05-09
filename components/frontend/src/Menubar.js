@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { ReportTitleContainer } from './ReportTitleOld'
 
 class Login extends Component {
   constructor(props) {
