@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Segment, Table } from 'semantic-ui-react';
+import { Button, Icon, Table } from 'semantic-ui-react';
 import Metric from './Metric.js';
 import { SubjectTitle } from './SubjectTitle.js';
 
@@ -35,7 +35,7 @@ class Subject extends Component {
       />
     );
     return (
-      <Segment basic>
+      <>
         <SubjectTitle
           datamodel={this.props.datamodel}
           readOnly={this.props.readOnly}
@@ -70,7 +70,7 @@ class Subject extends Component {
               </Table.Row>
             </Table.Footer>}
         </Table>
-      </Segment>
+      </>
     )
   }
 }
