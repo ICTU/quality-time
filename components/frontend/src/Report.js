@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Icon, Segment } from 'semantic-ui-react';
 import { Subjects } from './Subjects.js';
 import { Tag } from './MetricTag.js';
 import { MetricSummaryCard } from './MetricSummaryCard';
@@ -51,13 +50,6 @@ class Report extends Component {
                     report_date={this.props.report_date}
                     search_string={this.props.search_string}
                 />
-                {!this.props.readOnly &&
-                    <Segment basic>
-                        <Button icon negative basic floated='right'
-                            onClick={(e) => this.delete_report(e, this.props.report)}>
-                            <Icon name='trash' /> Delete report
-                        </Button>
-                    </Segment>}
             </>
         )
     }
