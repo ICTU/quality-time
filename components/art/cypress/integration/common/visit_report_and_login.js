@@ -1,8 +1,8 @@
 import {Given} from "cypress-cucumber-preprocessor/steps";
 
-const url = "/";
+const url = "/example-report-hq";
 
-Given(/^I visit the main page and login$/, () => {
+Given(/^I visit the report and login$/, () => {
     cy.visit(url);
     cy.title().should('eq', 'Quality-time');
     cy.get(".button").contains('Login').click();
