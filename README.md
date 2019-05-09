@@ -126,7 +126,7 @@ In the fourth one, run the frontend:
 
 ```console
 cd components/frontend
-npm run install
+npm install
 npm run start
 ```
 
