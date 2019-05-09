@@ -1,87 +1,115 @@
 import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { StringInput } from './fields/StringInput';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
-
-class ReportTitleContainer extends Component {
+class ReportTitle extends Component {
     constructor(props) {
         super(props);
-        this.state = { title: props.report ? props.report.title : "Quality-time", edit: false }
+        this.state = { show_details: false }
     }
-    onEdit(event) {
-        this.setState((state) => ({ edit: true, previous_title: state.title }));
-    }
-    onChange(event) {
-        this.setState({ title: event.target.value });
-    }
-    onKeyDown(event) {
-        if (event.key === "Escape") {
-            this.setState((state) => ({ edit: false, title: state.previous_title }))
-        }
-    }
-    onSubmit(event) {
+    onExpand(event) {
         event.preventDefault();
-        this.setState({ edit: false });
-        let self = this;
-        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/title`, {
+        this.setState((state) => ({ show_details: !state.show_details }));
+    }
+    set_subject_attribute(key, value) {
+        const self = this;
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
             method: 'post',
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: this.state.title })
-        }).then(() => self.props.reload())
+            body: JSON.stringify({ [key]: value })
+        }).then(
+            () => self.props.reload()
+        )
+    }
+    delete_subject(event) {
+        event.preventDefault();
+        const self = this;
+        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
+            method: 'delete',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        }).then(
+            () => self.props.reload()
+        );
     }
     render() {
+        const subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
+        let options = [];
+        Object.keys(this.props.datamodel.subjects).forEach(
+            (key) => { options.push({ key: key, text: this.props.datamodel.subjects[key].name, value: key }) });
         return (
-            <ReportTitle title={this.state.title} edit={this.state.edit}
-                readOnly={this.props.readOnly}
-                onSubmit={(e) => this.onSubmit(e)} onEdit={(e) => this.onEdit(e)}
-                onChange={(e) => this.onChange(e)} onKeyDown={(e) => this.onKeyDown(e)} />)
-    }
-}
-
-function ReportTitle(props) {
-    if (props.edit) {
-        return (<ReportTitleInput title={props.title} onSubmit={props.onSubmit} onChange={props.onChange}
-            onKeyDown={props.onKeyDown} />)
-    }
-    return (
-        <ReportTitleDisplay title={props.title} onEdit={props.onEdit} onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} readOnly={props.readOnly} />
-    )
-}
-
-const ReportTitleInput = props =>
-    <Form onSubmit={(e) => props.onSubmit(e)}>
-        <Form.Input autoFocus focus value={props.title} readOnly={props.readOnly}
-            onChange={props.onChange} onKeyDown={props.onKeyDown} />
-    </Form>
-
-
-class ReportTitleDisplay extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { editable: false }
-    }
-    onMouseEnter() {
-        this.setState({ editable: true })
-    }
-    onMouseLeave() {
-        this.setState({ editable: false })
-    }
-    render() {
-        if (this.props.readOnly) { return (<font size="+3">{this.props.title}</font>) }
-        const style = this.state.editable ? { borderBottom: "1px dotted #FFFFFF" } : {};
-        return (
-            <div onClick={this.props.onEdit} onKeyPress={this.props.onEdit} onMouseEnter={(e) => this.onMouseEnter(e)}
-                onMouseLeave={(e) => this.onMouseLeave(e)} style={style} tabIndex="0">
-                <font size="+3">
-                    {this.props.title}
-                </font>
-            </div>
+            <>
+                <Header as='h2'
+                        onClick={(e) => this.onExpand(e)}
+                        onKeyPress={(e) => this.onExpand(e)}
+                        tabIndex="0">
+                    <Icon
+                        name={this.state.show_details ? "caret down" : "caret right"}
+                        size='large'
+                    />
+                    {this.props.subject.name}
+                </Header>
+                {
+                    this.state.show_details &&
+                    <Segment>
+                        <Header>
+                            <Header.Content>
+                                {subject_type.name}
+                                <Header.Subheader>
+                                    {subject_type.description}
+                                </Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                        <Grid stackable>
+                            <Grid.Row columns={3}>
+                                <Grid.Column>
+                                    <SingleChoiceInput
+                                        label="Subject type"
+                                        options={options}
+                                        readOnly={this.props.readOnly}
+                                        set_value={(value) => this.set_subject_attribute("type", value)}
+                                        value={this.props.subject.type}
+                                    />
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <StringInput
+                                        label="Subject name"
+                                        placeholder={subject_type.name}
+                                        readOnly={this.props.readOnly}
+                                        set_value={(value) => this.set_subject_attribute("name", value)}
+                                        value={this.props.subject.name}
+                                    />
+                                </Grid.Column>
+                            </Grid.Row>
+                            {!this.props.readOnly &&
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <Button
+                                            basic
+                                            floated='right'
+                                            negative
+                                            icon
+                                            onClick={(e) => this.delete_subject(e)}
+                                            primary
+                                        >
+                                            <Icon name='trash' /> Delete subject
+                                        </Button>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            }
+                        </Grid>
+                    </Segment>
+                }
+            </>
         )
     }
 }
 
-
-export { ReportTitleContainer };
+export { SubjectTitle };
