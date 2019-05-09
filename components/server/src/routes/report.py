@@ -29,12 +29,12 @@ def get_metric_by_source_uuid(report, source_uuid: str):
             if source_uuid in metric["sources"]][0]
 
 
-@bottle.post("/report/<report_uuid>/title")
-def post_report_title(report_uuid: str, database: Database):
-    """Set the report title."""
-    title = dict(bottle.request.json).get("title", "Quality-time")
+@bottle.post("/report/<report_uuid>/<report_attribute>")
+def post_report_attribute(report_uuid: str, report_attribute: str, database: Database):
+    """Set a report attribute."""
+    value = dict(bottle.request.json).get(report_attribute, "Quality-time")
     report = latest_report(database, report_uuid)
-    report["title"] = title
+    report[report_attribute] = value
     return insert_new_report(database, report)
 
 

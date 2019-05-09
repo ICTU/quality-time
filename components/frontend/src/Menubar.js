@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { ReportTitleContainer } from './ReportTitle.js'
 
 class Login extends Component {
   constructor(props) {
@@ -55,20 +54,10 @@ function Menubar(props) {
     <Menu fixed='top' inverted>
       <Container fluid>
         <Menu.Item header>
-          {props.report === null ?
             <Image size='mini' src='/favicon.ico' />
-            :
-            <Button icon compact color='black' onClick={props.go_home}>
-              <Icon name='home' size='big' />
-            </Button>
-          }
         </Menu.Item>
         <Menu.Item>
-          {props.report === null ?
             <font size="+3">Quality-time</font>
-            :
-            <ReportTitleContainer report={props.report} reload={props.reload} user={props.user} />
-          }
           <NewMeasurementsLabel onClick={props.reload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>
         <Menu.Menu position='right'>

@@ -5,5 +5,5 @@
 /coverage
 
 #videos&screenshots
-/videos
-/screenshots
+/cypress/videos
+/cypress/screenshots
