@@ -55,13 +55,7 @@ function Menubar(props) {
     <Menu fixed='top' inverted>
       <Container fluid>
         <Menu.Item header>
-          {props.report === null ?
             <Image size='mini' src='/favicon.ico' />
-            :
-            <Button icon compact color='black' onClick={props.go_home}>
-              <Icon name='home' size='big' />
-            </Button>
-          }
         </Menu.Item>
         <Menu.Item>
             <font size="+3">Quality-time</font>
