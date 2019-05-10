@@ -32,7 +32,7 @@ def get_metric_by_source_uuid(report, source_uuid: str):
 @bottle.post("/report/<report_uuid>/<report_attribute>")
 def post_report_attribute(report_uuid: str, report_attribute: str, database: Database):
     """Set a report attribute."""
-    value = dict(bottle.request.json).get(report_attribute, "Quality-time")
+    value = dict(bottle.request.json)[report_attribute]
     report = latest_report(database, report_uuid)
     report[report_attribute] = value
     return insert_new_report(database, report)
@@ -43,14 +43,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]
     report = latest_report(database, report_uuid)
-    subject = report["subjects"][subject_uuid]
-    subject[subject_attribute] = value
-    if subject_attribute == "type":
-        default_metric_types = latest_datamodel(database)["subjects"][value]["metrics"]
-        existing_metric_types = [metric["type"] for metric in subject["metrics"].values()]
-        for default_metric_type in default_metric_types:
-            if default_metric_type not in existing_metric_types:
-                subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid, default_metric_type)
+    report["subjects"][subject_uuid][subject_attribute] = value
     return insert_new_report(database, report)
 
 
@@ -58,7 +51,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
 def post_new_subject(report_uuid: str, database: Database):
     """Create a new subject."""
     report = latest_report(database, report_uuid)
-    report["subjects"][uuid()] = default_subject_attributes(database, report_uuid)
+    report["subjects"][uuid()] = default_subject_attributes(database)
     return insert_new_report(database, report)
 
 
@@ -167,7 +160,7 @@ def get_reports(database: Database):
     return dict(reports=latest_reports(database, report_date_time()))
 
 
-@bottle.post("/reports/new")
+@bottle.post("/report/new")
 def post_report_new(database: Database):
     """Add a new report."""
     report = dict(report_uuid=uuid(), title="New report", subjects={})

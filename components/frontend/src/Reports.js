@@ -30,7 +30,7 @@ class Reports extends Component {
   add_report(event) {
     event.preventDefault();
     const self = this;
-    fetch(`${window.server_url}/reports/new`, {
+    fetch(`${window.server_url}/report/new`, {
       method: 'post',
       mode: 'cors',
       headers: {
