@@ -7,7 +7,7 @@ import urllib.parse
 
 from pymongo.database import Database
 import bottle
-import ldap
+import ldap  # pylint: disable=import-error,wrong-import-order
 
 from ..database import sessions
 from ..util import uuid
@@ -30,7 +30,7 @@ def login(database: Database, ldap_server):
     username = re.sub(safe_characters, "", credentials.get("username", "no username given"))
     try:
         ldap_server.simple_bind_s(f"cn={username},dc=example,dc=org", credentials.get("password"))
-    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX):
+    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX):  # pylint: disable=no-member
         return dict(ok=False)
     session_id = uuid()
     sessions.upsert(database, username, session_id)

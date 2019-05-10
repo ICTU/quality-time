@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Segment } from 'semantic-ui-react';
 
 export function CardDashboard(props) {
+    if (props.big_cards.length === 0) { return null }
     const big_cards_per_row = Math.min(Math.max(props.big_cards.length, 5), 7);
     const small_cards_per_row = Math.min(Math.max(props.small_cards.length, 8), 10);
     return (

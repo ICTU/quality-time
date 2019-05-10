@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pymongo
 from pymongo.database import Database
 
-from ..util import iso_timestamp, uuid
+from ..util import iso_timestamp
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
@@ -48,13 +48,10 @@ def default_metric_attributes(database: Database, report_uuid: str, metric_type:
         tags=defaults["tags"])
 
 
-def default_subject_attributes(database: Database, report_uuid: str, subject_type: str = "") -> Dict[str, Any]:
+def default_subject_attributes(database: Database, subject_type: str = "") -> Dict[str, Any]:
     """Return the default attributes for the subject."""
     subject_types = latest_datamodel(database)["subjects"]
     if not subject_type:
         subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
-    metrics = dict()
-    for metric_type in defaults["metrics"]:
-        metrics[uuid()] = default_metric_attributes(database, report_uuid, metric_type)
-    return dict(type=subject_type, name=defaults["name"], description=defaults["description"], metrics=metrics)
+    return dict(type=subject_type, name=defaults["name"], description=defaults["description"], metrics=dict())
