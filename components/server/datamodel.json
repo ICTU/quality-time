@@ -497,6 +497,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "ready_user_story_points",
                         "security_warnings",
                         "unused_jobs",
                         "violations"
@@ -515,6 +516,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "ready_user_story_points",
                         "security_warnings",
                         "unused_jobs",
                         "violations"
