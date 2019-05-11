@@ -168,6 +168,7 @@
             "target": "100",
             "near_target": "75",
             "sources": [
+                "azure_devops",
                 "hq",
                 "random"
             ],
@@ -339,7 +340,8 @@
                     "type": "string",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "private_token": {
@@ -348,7 +350,8 @@
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "wiql": {
@@ -357,7 +360,8 @@
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 }
             },
@@ -379,6 +383,29 @@
                     {
                         "name": "State",
                         "key": "state"
+                    }
+                ],
+                "ready_user_story_points": [
+                    {
+                        "name": "Project",
+                        "key": "project"
+                    },
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "Work item type",
+                        "key": "work_item_type"
+                    },
+                    {
+                        "name": "State",
+                        "key": "state"
+                    },
+                    {
+                        "name": "Story points",
+                        "key": "story_points"
                     }
                 ]
             }
