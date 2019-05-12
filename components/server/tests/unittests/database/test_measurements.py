@@ -83,5 +83,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
 
     def test_ignored_units(self):
         """Test that the number of ignored units is subtracted."""
-        sources = [dict(parse_error=None, connection_error=None, value="10", ignored_units=["unit1", "unit2", "unit3"])]
+        sources = [
+            dict(parse_error=None, connection_error=None, value="10",
+                 unit_attributes=dict(status=dict(unit1="fixed", unit2="wont_fix", unit3="false_positive")))]
         self.assertEqual("7", calculate_measurement_value(sources, "sum"))

@@ -72,8 +72,10 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a measurement where the old one has ignored units."""
         self.database.measurements.find_one = Mock(return_value=dict(
             _id="id", status="target_met",
-            sources=[dict(value="1", parse_error=None, connection_error=None, ignored_units=["unit1"],
-                     ignored_units_rationale=dict(unit1="rationale"), units=[dict(key="unit1")])]))
+            sources=[
+                dict(value="1", parse_error=None, connection_error=None,
+                     unit_attributes=dict(status=dict(unit1="false_positive"), rationale=dict(unit1="Rationale")),
+                     units=[dict(key="unit1")])]))
         sources = [dict(value="1", parse_error=None, connection_error=None, units=[dict(key="unit1")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         self.assertEqual(dict(ok=True), post_measurement(self.database))

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Popup, Radio, Table } from 'semantic-ui-react';
+import { Button, Grid, Icon, Popup, Table } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
+import { SingleChoiceInput } from './fields/SingleChoiceInput';
 import { TableRowWithDetails } from './TableRowWithDetails';
 
 function UnitAttribute(props) {
@@ -15,25 +16,32 @@ function UnitAttribute(props) {
 }
 
 function UnitDetails(props) {
+  const options = [
+    {key: 'unconfirmed', text: 'Unconfirmed', value: 'unconfirmed'},
+    {key: 'confirmed', text: 'Confirmed', value: 'confirmed'},
+    {key: 'false_positive', text: 'False positive', value: 'false_positive'},
+    {key: 'fixed', text: 'Fixed', value: 'fixed'},
+    {key: 'wont_fix', text: "Won't fix", value: "wont_fix"}
+  ];
   return (
     <Grid stackable>
-      <Grid.Row columns={2}>
-        <Grid.Column width={4} verticalAlign='middle'>
-          <Radio
-            defaultChecked={props.ignored}
-            label={`Ignore this ${props.unit_name}`}
-            onChange={(e) => props.ignore_unit(e, props.source_uuid, props.unit.key)}
+      <Grid.Row columns={4}>
+        <Grid.Column width={4}>
+          <SingleChoiceInput
+            label={`${props.unit_name[0].toUpperCase()}${props.unit_name.slice(1)} status`}
+            options={options}
             readOnly={props.readOnly}
-            toggle
+            set_value={(value) => props.set_unit_attribute(props.source_uuid, props.unit.key, "status", value)}
+            value={props.status}
           />
         </Grid.Column>
         <Grid.Column width={12}>
           <TextInput
             label="Rationale"
-            placeholder={`Rationale for ignoring this ${props.unit_name}...`}
+            placeholder={`Rationale for ${props.unit_name} status...`}
             readOnly={props.readOnly}
-            value={props.rationale_for_ignoring_unit}
-            set_value={(value) => props.set_rationale_for_ignoring_unit(props.source_uuid, props.unit.key, value)}
+            set_value={(value) => props.set_unit_attribute(props.source_uuid, props.unit.key, "rationale", value)}
+            value={props.rationale}
           />
         </Grid.Column>
       </Grid.Row>
@@ -44,8 +52,9 @@ function UnitDetails(props) {
 class Unit extends Component {
   render() {
     let props = this.props;
-    if (props.hide_ignored_units && props.ignored) { return null };
-    const style = props.ignored ? { textDecoration: "line-through" } : {};
+    const ignored_unit = ["wont_fix", "fixed", "false_positive"].indexOf(props.status) > -1;
+    if (props.hide_ignored_units && ignored_unit ) { return null };
+    const style = ignored_unit ? { textDecoration: "line-through" } : {};
     let unit_name = props.metric_unit;
     if (unit_name.endsWith("s")) { unit_name = unit_name.substring(0, unit_name.length - 1) };
     var positive, negative, warning, active;
@@ -60,11 +69,10 @@ class Unit extends Component {
       }
     })
     const details = <UnitDetails
-      ignored={props.ignored}
-      ignore_unit={props.ignore_unit}
-      rationale_for_ignoring_unit={props.rationale_for_ignoring_unit}
+      status={props.status}
+      rationale={props.rationale}
       readOnly={props.readOnly}
-      set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
+      set_unit_attribute={props.set_unit_attribute}
       source_uuid={props.source_uuid}
       unit={props.unit}
       unit_name={unit_name}
@@ -101,7 +109,6 @@ class SourceUnits extends Component {
     const report_source = this.props.metric["sources"][this.props.source.source_uuid];
     const source_type = report_source["type"];
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric.type];
-    const ignored_units = this.props.source.ignored_units || [];
     const metric_type = this.props.datamodel.metrics[this.props.metric.type];
     const metric_unit = this.props.metric.unit || metric_type.unit;
     const headers =
@@ -110,7 +117,7 @@ class SourceUnits extends Component {
         {unit_attributes.map((unit_attribute) => <Table.HeaderCell key={unit_attribute.key}>{unit_attribute.name}</Table.HeaderCell>)}
         <Table.HeaderCell collapsing>
           <Popup trigger={
-            <Button floated='right' icon primary size='small' basic disabled={ignored_units.length === 0}
+            <Button floated='right' icon primary size='small' basic
               onClick={(e) => this.hide_ignored_units(e)}>
               <Icon name={this.state.hide_ignored_units ? 'unhide' : 'hide'} />
             </Button>} content={this.state.hide_ignored_units ? 'Show ignored items' : 'Hide ignored items'} />
@@ -119,13 +126,16 @@ class SourceUnits extends Component {
     const rows = this.props.source.units.map((unit) =>
       <Unit
         hide_ignored_units={this.state.hide_ignored_units}
-        ignore_unit={this.props.ignore_unit}
-        ignored={ignored_units.includes(unit.key)}
+        status={
+          this.props.source.unit_attributes && this.props.source.unit_attributes.status &&
+          this.props.source.unit_attributes.status[unit.key] ? this.props.source.unit_attributes.status[unit.key] : "unconfirmed"}
         key={unit.key}
         metric_unit={metric_unit}
-        rationale_for_ignoring_unit={this.props.source.ignored_units_rationale ? this.props.source.ignored_units_rationale[unit.key] : ""}
+        rationale={
+          this.props.source.unit_attributes && this.props.source.unit_attributes.rationale &&
+          this.props.source.unit_attributes.rationale[unit.key] ? this.props.source.unit_attributes.rationale[unit.key] : ""}
         readOnly={this.props.readOnly}
-        set_rationale_for_ignoring_unit={this.props.set_rationale_for_ignoring_unit}
+        set_unit_attribute={this.props.set_unit_attribute}
         source_uuid={this.props.source.source_uuid}
         unit={unit}
         unit_attributes={unit_attributes}
