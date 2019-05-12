@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Grid, Icon, Popup, Table } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Popup, Table } from 'semantic-ui-react';
 import { TextInput } from './fields/TextInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
 import { TableRowWithDetails } from './TableRowWithDetails';
@@ -17,11 +17,16 @@ function UnitAttribute(props) {
 
 function UnitDetails(props) {
   const options = [
-    {key: 'unconfirmed', text: 'Unconfirmed', value: 'unconfirmed'},
-    {key: 'confirmed', text: 'Confirmed', value: 'confirmed'},
-    {key: 'false_positive', text: 'False positive', value: 'false_positive'},
-    {key: 'fixed', text: 'Fixed', value: 'fixed'},
-    {key: 'wont_fix', text: "Won't fix", value: "wont_fix"}
+    {key: 'unconfirmed', text: 'Unconfirmed', value: 'unconfirmed',
+     content: <Header as="h5" content="Unconfirmed" subheader={`This ${props.unit_name} should be reviewed to decide what to do with it`} />},
+    {key: 'confirmed', text: 'Confirmed', value: 'confirmed',
+     content: <Header as="h5" content="Confirmed" subheader={`This ${props.unit_name} has been reviewed and should be dealt with`} />},
+    {key: 'false_positive', text: 'False positive', value: 'false_positive',
+     content: <Header as="h5" content="False positive" subheader={`This ${props.unit_name} can be ignored because it's been incorrectly identified as ${props.unit_name}`} />},
+    {key: 'fixed', text: 'Fixed', value: 'fixed',
+     content: <Header as="h5" content="Fixed" subheader={`This ${props.unit_name} has been fixed and will disappear shortly`} />},
+    {key: 'wont_fix', text: "Won't fix", value: "wont_fix",
+     content: <Header as="h5" content="Won't fix" subheader={`This ${props.unit_name} will not be fixed`} />}
   ];
   return (
     <Grid stackable>
