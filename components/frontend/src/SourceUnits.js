@@ -127,13 +127,13 @@ class SourceUnits extends Component {
       <Unit
         hide_ignored_units={this.state.hide_ignored_units}
         status={
-          this.props.source.unit_attributes && this.props.source.unit_attributes.status &&
-          this.props.source.unit_attributes.status[unit.key] ? this.props.source.unit_attributes.status[unit.key] : "unconfirmed"}
+          this.props.source.unit_attributes && this.props.source.unit_attributes[unit.key] &&
+          this.props.source.unit_attributes[unit.key].status ? this.props.source.unit_attributes[unit.key].status : "unconfirmed"}
         key={unit.key}
         metric_unit={metric_unit}
         rationale={
-          this.props.source.unit_attributes && this.props.source.unit_attributes.rationale &&
-          this.props.source.unit_attributes.rationale[unit.key] ? this.props.source.unit_attributes.rationale[unit.key] : ""}
+          this.props.source.unit_attributes && this.props.source.unit_attributes[unit.key] &&
+          this.props.source.unit_attributes[unit.key].rationale ? this.props.source.unit_attributes[unit.key].rationale : ""}
         readOnly={this.props.readOnly}
         set_unit_attribute={this.props.set_unit_attribute}
         source_uuid={this.props.source.source_uuid}

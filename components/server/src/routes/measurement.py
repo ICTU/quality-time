@@ -20,9 +20,9 @@ def post_measurement(database: Database) -> Dict:
         for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
             new_unit_keys = set(unit["key"] for unit in new_source.get("units", []))
             # Copy the attributes of units that still exist in the new measurement
-            for attribute, values in latest_source.get("unit_attributes", {}).items():
-                new_source.setdefault("unit_attributes", {})[attribute] = {
-                    unit_key: value for unit_key, value in values.items() if unit_key in new_unit_keys}
+            for unit_key, attributes in latest_source.get("unit_attributes", {}).items():
+                if unit_key in new_unit_keys:
+                    new_source.setdefault("unit_attributes", {})[unit_key] = attributes
         if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
@@ -35,7 +35,7 @@ def set_unit_attribute(metric_uuid: str, source_uuid: str, unit_key: str, attrib
     """Set a unit attribute."""
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
-    source.setdefault("unit_attributes", {}).setdefault(attribute, {})[unit_key] = dict(bottle.request.json)[attribute]
+    source.setdefault("unit_attributes", {}).setdefault(unit_key, {})[attribute] = dict(bottle.request.json)[attribute]
     return insert_new_measurement(database, measurement)
 
 

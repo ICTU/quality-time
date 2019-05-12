@@ -51,9 +51,9 @@ def calculate_measurement_value(sources, addition: str) -> Optional[str]:
     for source in sources:
         if source["parse_error"] or source["connection_error"]:
             return None
-        statuses = source.get("unit_attributes", {}).get("status", {}).items()
-        units_to_ignore = {
-            unit_key: status for unit_key, status in statuses if status in ("wont_fix", "false_positive", "fixed")}
+        units_to_ignore = [
+            unit for unit in source.get("unit_attributes", {}).values()
+            if unit.get("status") in ("fixed", "false_positive", "wont_fix")]
         values.append(int(source["value"]) - len(units_to_ignore))
     add = dict(sum=sum, max=max)[addition]
     return str(add(values))  # type: ignore
