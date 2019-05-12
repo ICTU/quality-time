@@ -74,7 +74,7 @@ class PostMeasurementTests(unittest.TestCase):
             _id="id", status="target_met",
             sources=[
                 dict(value="1", parse_error=None, connection_error=None,
-                     unit_attributes=dict(unit1=dict(status="false_positive", rationale="Rationale")),
+                     unit_user_data=dict(unit1=dict(status="false_positive", rationale="Rationale")),
                      units=[dict(key="unit1")])]))
         sources = [dict(value="1", parse_error=None, connection_error=None, units=[dict(key="unit1")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
