@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
-import { SingleChoiceInput } from './fields/SingleChoiceInput';
+import { SubjectType } from './SubjectType';
 
 class SubjectTitle extends Component {
     constructor(props) {
@@ -41,16 +41,6 @@ class SubjectTitle extends Component {
     }
     render() {
         const current_subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
-        let options = [];
-        Object.keys(this.props.datamodel.subjects).forEach(
-            (key) => {
-                let subject_type = this.props.datamodel.subjects[key];
-                options.push(
-                    {
-                        key: key, text: subject_type.name, value: key,
-                        content: <Header as="h4" content={subject_type.name} subheader={subject_type.description} />
-                    })
-            });
         return (
             <>
                 <Header as='h2'
@@ -77,12 +67,11 @@ class SubjectTitle extends Component {
                         <Grid stackable>
                             <Grid.Row columns={3}>
                                 <Grid.Column>
-                                    <SingleChoiceInput
-                                        label="Subject type"
-                                        options={options}
+                                    <SubjectType
+                                        datamodel={this.props.datamodel}
                                         readOnly={this.props.readOnly}
                                         set_value={(value) => this.set_subject_attribute("type", value)}
-                                        value={this.props.subject.type}
+                                        subject_type={this.props.subject.type}
                                     />
                                 </Grid.Column>
                                 <Grid.Column>
