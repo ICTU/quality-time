@@ -5,7 +5,7 @@ import { SingleChoiceInput } from './fields/SingleChoiceInput';
 export function SubjectType(props) {
     let options = [];
     Object.keys(props.datamodel.subjects).forEach((key) => {
-        let subject_type = props.datamodel.subjects[key];
+        const subject_type = props.datamodel.subjects[key];
         options.push({
             key: key, text: subject_type.name, value: key,
             content: <Header as="h4" content={subject_type.name} subheader={subject_type.description} />

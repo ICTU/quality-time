@@ -3,7 +3,7 @@ import { Header } from 'semantic-ui-react';
 import { Logo } from './logos/Logo';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
-function SourceType(props) {
+export function SourceType(props) {
   let options = [];
   props.datamodel.metrics[props.metric_type].sources.forEach(
     (key) => {
@@ -11,9 +11,14 @@ function SourceType(props) {
       options.push(
         {
           key: key,
-          text: props.datamodel.sources[key].name,
+          text: source_type.name,
           value: key,
-          content: <Header as="h4"><Header.Content><Logo logo={key} alt={source_type.name} />{source_type.name}<Header.Subheader>{source_type.description}</Header.Subheader></Header.Content></Header>
+          content:
+            <Header as="h4">
+              <Header.Content>
+                <Logo logo={key} alt={source_type.name} />{source_type.name}<Header.Subheader>{source_type.description}</Header.Subheader>
+              </Header.Content>
+            </Header>
         })
     });
   return (
@@ -26,5 +31,3 @@ function SourceType(props) {
     />
   )
 }
-
-export { SourceType };
