@@ -19,14 +19,10 @@ def post_measurement(database: Database) -> Dict:
     if latest:
         for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
             new_unit_keys = set(unit["key"] for unit in new_source.get("units", []))
-            if "ignored_units" in latest_source:
-                # Copy the keys of ignored units that still exist in the new measurement
-                new_source["ignored_units"] = [key for key in latest_source["ignored_units"] if key in new_unit_keys]
-            if "ignored_units_rationale" in latest_source:
-                # Copy the rationale of ignored units that still exist in the new measurement
-                new_source["ignored_units_rationale"] = {key: rationale for key, rationale in
-                                                         latest_source["ignored_units_rationale"].items()
-                                                         if key in new_unit_keys}
+            # Copy the user data of units that still exist in the new measurement
+            for unit_key, attributes in latest_source.get("unit_user_data", {}).items():
+                if unit_key in new_unit_keys:
+                    new_source.setdefault("unit_user_data", {})[unit_key] = attributes
         if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
@@ -34,27 +30,12 @@ def post_measurement(database: Database) -> Dict:
     return insert_new_measurement(database, measurement)
 
 
-@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/ignore")
-def ignore_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database: Database) -> Dict:
-    """Ignore or stop ignoring the source unit."""
-    measurement = latest_measurement(database, metric_uuid)
-    source = [s for s in measurement["sources"]
-              if s["source_uuid"] == source_uuid][0]
-    if "ignored_units" not in source:
-        source["ignored_units"] = []
-    if unit_key in source["ignored_units"]:
-        source["ignored_units"].remove(unit_key)
-    else:
-        source["ignored_units"].append(unit_key)
-    return insert_new_measurement(database, measurement)
-
-
-@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/rationale")
-def rationale_for_ignoring_source_unit(metric_uuid: str, source_uuid: str, unit_key: str, database: Database) -> Dict:
-    """Add a rationale for ignoring the unit."""
+@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/<attribute>")
+def set_unit_attribute(metric_uuid: str, source_uuid: str, unit_key: str, attribute: str, database: Database) -> Dict:
+    """Set a unit attribute."""
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
-    source.setdefault("ignored_units_rationale", {})[unit_key] = dict(bottle.request.json)["rationale"]
+    source.setdefault("unit_user_data", {}).setdefault(unit_key, {})[attribute] = dict(bottle.request.json)[attribute]
     return insert_new_measurement(database, measurement)
 
 

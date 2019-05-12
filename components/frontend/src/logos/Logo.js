@@ -13,6 +13,7 @@ import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPZAP from './owasp_zap.png';
 import RobotFramework from './robot_framework.png';
 import Sonarqube from './sonarqube.png';
+import Trello from './trello.png';
 import Wekan from './wekan.png';
 
 function Logo(props) {
@@ -29,6 +30,7 @@ function Logo(props) {
         owasp_zap: OWASPZAP,
         robot_framework: RobotFramework,
         sonarqube: Sonarqube,
+        trello: Trello,
         wekan: Wekan
     }[props.logo];
     return (

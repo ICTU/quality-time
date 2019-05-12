@@ -170,7 +170,8 @@
             "sources": [
                 "azure_devops",
                 "hq",
-                "random"
+                "random",
+                "trello"
             ],
             "tags": [
                 "process efficiency"
@@ -508,7 +509,7 @@
         },
         "hq": {
             "name": "HQ",
-            "description": "Holistic Software Quality Reporting",
+            "description": "Holistic Software Quality Reporting.",
             "url": "https://github.com/ICTU/quality-report",
             "parameters": {
                 "url": {
@@ -1528,6 +1529,7 @@
                     "default_value": "https://trello.com",
                     "metrics": [
                         "issues",
+                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -1538,6 +1540,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -1548,6 +1551,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -1558,6 +1562,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -1567,7 +1572,8 @@
                     "default_value": [],
                     "placeholder": "none",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "cards_to_count": {
@@ -1612,6 +1618,21 @@
                         "name": "Date of last activity",
                         "key": "date_last_activity",
                         "type": "datetime"
+                    }
+                ],
+                "ready_user_story_points": [
+                    {
+                        "name": "Title",
+                        "key": "title",
+                        "url": "url"
+                    },
+                    {
+                        "name": "List",
+                        "key": "list"
+                    },
+                    {
+                        "name": "User story points",
+                        "key": "story_points"
                     }
                 ]
             }

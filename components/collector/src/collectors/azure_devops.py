@@ -34,7 +34,7 @@ class AzureDevopsBase(Collector):
             return []
         return [
             dict(
-                key=work_item["id"], project=work_item["fields"]["System.TeamProject"],
+                key=str(work_item["id"]), project=work_item["fields"]["System.TeamProject"],
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"],
                 url=work_item["url"]) for work_item in self.unit_response.json()["value"]]

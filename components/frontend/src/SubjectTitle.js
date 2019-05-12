@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
-import { SingleChoiceInput } from './fields/SingleChoiceInput';
+import { SubjectType } from './SubjectType';
 
 class SubjectTitle extends Component {
     constructor(props) {
@@ -40,16 +40,13 @@ class SubjectTitle extends Component {
         );
     }
     render() {
-        const subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
-        let options = [];
-        Object.keys(this.props.datamodel.subjects).forEach(
-            (key) => { options.push({ key: key, text: this.props.datamodel.subjects[key].name, value: key }) });
+        const current_subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
         return (
             <>
                 <Header as='h2'
-                        onClick={(e) => this.onExpand(e)}
-                        onKeyPress={(e) => this.onExpand(e)}
-                        tabIndex="0">
+                    onClick={(e) => this.onExpand(e)}
+                    onKeyPress={(e) => this.onExpand(e)}
+                    tabIndex="0">
                     <Icon
                         name={this.state.show_details ? "caret down" : "caret right"}
                         size='large'
@@ -61,27 +58,26 @@ class SubjectTitle extends Component {
                     <Segment>
                         <Header>
                             <Header.Content>
-                                {subject_type.name}
+                                {current_subject_type.name}
                                 <Header.Subheader>
-                                    {subject_type.description}
+                                    {current_subject_type.description}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
                         <Grid stackable>
                             <Grid.Row columns={3}>
                                 <Grid.Column>
-                                    <SingleChoiceInput
-                                        label="Subject type"
-                                        options={options}
+                                    <SubjectType
+                                        datamodel={this.props.datamodel}
                                         readOnly={this.props.readOnly}
                                         set_value={(value) => this.set_subject_attribute("type", value)}
-                                        value={this.props.subject.type}
+                                        subject_type={this.props.subject.type}
                                     />
                                 </Grid.Column>
                                 <Grid.Column>
                                     <StringInput
                                         label="Subject name"
-                                        placeholder={subject_type.name}
+                                        placeholder={current_subject_type.name}
                                         readOnly={this.props.readOnly}
                                         set_value={(value) => this.set_subject_attribute("name", value)}
                                         value={this.props.subject.name}

@@ -43,7 +43,6 @@ class Measurement extends Component {
     const week_ago_string = week_ago.toISOString();
     const details = <MeasurementDetails
       datamodel={this.props.datamodel}
-      ignore_unit={this.props.ignore_unit}
       measurement={latest_measurement}
       measurements={this.props.measurements}
       metric_name={metric_name}
@@ -52,7 +51,7 @@ class Measurement extends Component {
       reload={this.props.reload}
       report={this.props.report}
       set_metric_attribute={this.props.set_metric_attribute}
-      set_rationale_for_ignoring_unit={this.props.set_rationale_for_ignoring_unit}
+      set_unit_attribute={this.props.set_unit_attribute}
       subject_uuid={this.props.subject_uuid}
       unit={metric_unit}
     />

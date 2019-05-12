@@ -40,12 +40,11 @@ class MeasurementDetails extends Component {
           render: () => <Tab.Pane>
             <SourceUnits
               datamodel={props.datamodel}
-              ignore_unit={props.ignore_unit}
               metric={metric}
               metric_uuid={props.metric_uuid}
               readOnly={props.readOnly}
               report_uuid={props.report_uuid}
-              set_rationale_for_ignoring_unit={props.set_rationale_for_ignoring_unit}
+              set_unit_attribute={props.set_unit_attribute}
               source={source}
             />
           </Tab.Pane>

@@ -7,32 +7,15 @@ class Metric extends Component {
     super(props);
     this.state = { measurements: [] }
   }
-  ignore_unit(event, source_uuid, unit_key) {
-    event.preventDefault();
+  set_unit_attribute(source_uuid, unit_key, attribute, value) {
     const self = this;
-    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/ignore`, {
+    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/${attribute}`, {
       method: 'post',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({})
-    })
-      .then(function (response) { return response.json(); })
-      .then(function (json) {
-        self.fetch_measurement();
-        self.props.reload();
-      })
-  }
-  set_rationale_for_ignoring_unit(source_uuid, unit_key, rationale) {
-    const self = this;
-    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/rationale`, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({rationale: rationale})
+      body: JSON.stringify({[attribute]: value})
     })
       .then(function (response) { return response.json(); })
       .then(function (json) {
@@ -91,7 +74,6 @@ class Metric extends Component {
     return (
       <Measurement
         datamodel={this.props.datamodel}
-        ignore_unit={(e, s, u) => this.ignore_unit(e, s, u)}
         measurements={this.state.measurements}
         metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements}
@@ -99,7 +81,7 @@ class Metric extends Component {
         report={this.props.report}
         readOnly={this.props.readOnly}
         set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
-        set_rationale_for_ignoring_unit={(s, u, r) => this.set_rationale_for_ignoring_unit(s, u, r)}
+        set_unit_attribute={(s, u, a, v) => this.set_unit_attribute(s, u, a, v)}
         subject_uuid={this.props.subject_uuid}
       />
     )
