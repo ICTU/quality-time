@@ -509,7 +509,7 @@
         },
         "hq": {
             "name": "HQ",
-            "description": "Holistic Software Quality Reporting",
+            "description": "Holistic Software Quality Reporting.",
             "url": "https://github.com/ICTU/quality-report",
             "parameters": {
                 "url": {

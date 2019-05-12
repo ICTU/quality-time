@@ -1,10 +1,11 @@
 import React from 'react';
+import { Header } from 'semantic-ui-react';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
 
 function SourceType(props) {
   let options = [];
   props.datamodel.metrics[props.metric_type].sources.forEach(
-    (key) => { options.push({ key: key, text: props.datamodel.sources[key].name, value: key }) });
+    (key) => { options.push({ key: key, text: props.datamodel.sources[key].name, value: key, content: <Header as="h4" content={props.datamodel.sources[key].name} subheader={props.datamodel.sources[key].description} /> }) });
   return (
     <SingleChoiceInput
       label="Source type"

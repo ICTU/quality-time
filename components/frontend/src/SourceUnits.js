@@ -18,15 +18,15 @@ function UnitAttribute(props) {
 function UnitDetails(props) {
   const options = [
     {key: 'unconfirmed', text: 'Unconfirmed', value: 'unconfirmed',
-     content: <Header as="h5" content="Unconfirmed" subheader={`This ${props.unit_name} should be reviewed to decide what to do with it`} />},
+     content: <Header as="h5" content="Unconfirmed" subheader={`This ${props.unit_name} should be reviewed to decide what to do with it.`} />},
     {key: 'confirmed', text: 'Confirmed', value: 'confirmed',
-     content: <Header as="h5" content="Confirmed" subheader={`This ${props.unit_name} has been reviewed and should be dealt with`} />},
+     content: <Header as="h5" content="Confirmed" subheader={`This ${props.unit_name} has been reviewed and should be dealt with.`} />},
     {key: 'false_positive', text: 'False positive', value: 'false_positive',
-     content: <Header as="h5" content="False positive" subheader={`This ${props.unit_name} can be ignored because it's been incorrectly identified as ${props.unit_name}`} />},
+     content: <Header as="h5" content="False positive" subheader={`This ${props.unit_name} can be ignored because it's been incorrectly identified as ${props.unit_name}.`} />},
     {key: 'fixed', text: 'Fixed', value: 'fixed',
-     content: <Header as="h5" content="Fixed" subheader={`This ${props.unit_name} has been fixed and will disappear shortly`} />},
+     content: <Header as="h5" content="Fixed" subheader={`This ${props.unit_name} has been fixed and will disappear shortly.`} />},
     {key: 'wont_fix', text: "Won't fix", value: "wont_fix",
-     content: <Header as="h5" content="Won't fix" subheader={`This ${props.unit_name} will not be fixed`} />}
+     content: <Header as="h5" content="Won't fix" subheader={`This ${props.unit_name} will not be fixed.`} />}
   ];
   return (
     <Grid stackable>
@@ -111,8 +111,8 @@ class SourceUnits extends Component {
     if (!Array.isArray(this.props.source.units) || this.props.source.units.length === 0) {
       return null;
     }
-    const report_source = this.props.metric["sources"][this.props.source.source_uuid];
-    const source_type = report_source["type"];
+    const report_source = this.props.metric.sources[this.props.source.source_uuid];
+    const source_type = report_source.type;
     const unit_attributes = this.props.datamodel.sources[source_type].units[this.props.metric.type];
     const metric_type = this.props.datamodel.metrics[this.props.metric.type];
     const metric_unit = this.props.metric.unit || metric_type.unit;
