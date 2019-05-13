@@ -6,7 +6,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Units, URL, Value
+from ..type import Entities, URL, Value
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -34,7 +34,7 @@ class RobotFrameworkFailedTests(RobotFrameworkTests):
 
     stat_types = ["fail"]
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         """Return a list of failed tests."""
         tree = parse_source_response_xml(response)
         failed_tests = tree.findall(".//test/status[@status='FAIL']/..")

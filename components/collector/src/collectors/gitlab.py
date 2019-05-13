@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Job, Jobs, Units, URL, Value
+from ..type import Job, Jobs, Entities, URL, Value
 
 
 class GitlabBase(Collector):
@@ -38,7 +38,7 @@ class GitlabFailedJobs(GitlabBase):
     def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
         return None  # The private token is passed as URI parameter
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         return [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],

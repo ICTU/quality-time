@@ -51,7 +51,7 @@ class SonarQubeTest(unittest.TestCase):
                 dict(component="b", key="b", message="b", severity="major", type="code_smell",
                      url="http://sonar/project/issues?id=id&issues=b&open=b")
             ],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_tests(self):

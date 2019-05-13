@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import requests
 
 from ..collector import Collector
-from ..type import Job, Jobs, Units, URL, Value
+from ..type import Job, Jobs, Entities, URL, Value
 
 
 class JenkinsJobs(Collector):
@@ -19,7 +19,7 @@ class JenkinsJobs(Collector):
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(list(self.jobs(response.json()["jobs"], **parameters))))
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         return [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self.build_status(job),

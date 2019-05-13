@@ -366,7 +366,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "issues": [
                     {
                         "name": "Project",
@@ -424,7 +424,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "gitlab": {
             "name": "GitLab",
@@ -479,7 +479,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "failed_jobs": [
                     {
                         "name": "Job name",
@@ -551,7 +551,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "jacoco": {
             "name": "JaCoCo",
@@ -569,7 +569,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "jenkins": {
             "name": "Jenkins",
@@ -608,7 +608,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "failed_jobs": [
                     {
                         "name": "Job name",
@@ -711,7 +711,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "failed_tests": [
                     {
                         "name": "Class name",
@@ -772,7 +772,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "issues": [
                     {
                         "name": "Summary",
@@ -811,7 +811,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "failed_tests": [
                     {
                         "name": "Class name",
@@ -879,7 +879,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "violations": [
                     {
                         "name": "Message",
@@ -930,7 +930,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "security_warnings": [
                     {
                         "name": "Warning",
@@ -988,7 +988,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "security_warnings": [
                     {
                         "name": "File path",
@@ -1039,7 +1039,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "security_warnings": [
                     {
                         "name": "Warning",
@@ -1069,7 +1069,7 @@
             "description": "A source that generates random numbers, for testing purposes.",
             "url": "https://en.wikipedia.org/wiki/Special:Random",
             "parameters": {},
-            "units": {}
+            "entities": {}
         },
         "robot_framework": {
             "name": "Robot Framework",
@@ -1087,7 +1087,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "failed_tests": [
                     {
                         "name": "Test name",
@@ -1395,7 +1395,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "complex_units": [
                     {
                         "name": "Message",
@@ -1598,7 +1598,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "issues": [
                     {
                         "name": "Title",
@@ -1709,7 +1709,7 @@
                     ]
                 }
             },
-            "units": {
+            "entities": {
                 "issues": [
                     {
                         "name": "Title",

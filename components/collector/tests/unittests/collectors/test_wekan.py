@@ -40,7 +40,7 @@ class WekanTest(unittest.TestCase):
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
                   due_date="", date_last_activity="2019-01-01")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
     def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
@@ -60,7 +60,7 @@ class WekanTest(unittest.TestCase):
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
                   due_date="", date_last_activity="2019-01-01")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
     def test_overdue_issues(self):
         """Test overdue issues."""
@@ -81,7 +81,7 @@ class WekanTest(unittest.TestCase):
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
                   due_date="2019-01-01", date_last_activity="2019-01-01")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
     def test_inactive_issues(self):
         """Test inactive issues."""
@@ -102,7 +102,7 @@ class WekanTest(unittest.TestCase):
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
                   date_last_activity="2000-01-01")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
 
 class WekanSourceUpToDatenessTest(unittest.TestCase):

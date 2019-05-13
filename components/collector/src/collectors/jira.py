@@ -6,7 +6,7 @@ from urllib.parse import quote
 import requests
 
 from ..collector import Collector
-from ..type import Units, URL, Value
+from ..type import Entities, URL, Value
 
 
 class JiraIssues(Collector):
@@ -25,7 +25,7 @@ class JiraIssues(Collector):
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(response.json()["total"])
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         url = parameters.get("url")
         return [dict(key=issue["id"], summary=issue["fields"]["summary"],
                      url=f"{url}/browse/{issue['key']}") for issue in response.json().get("issues", [])]

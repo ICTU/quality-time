@@ -33,7 +33,7 @@ class OpenVASTest(unittest.TestCase):
             response = collect_measurement(metric)
         self.assertEqual(
             [dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):

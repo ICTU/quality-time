@@ -18,11 +18,11 @@ def post_measurement(database: Database) -> Dict:
     latest = latest_measurement(database, measurement["metric_uuid"])
     if latest:
         for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
-            new_unit_keys = set(unit["key"] for unit in new_source.get("units", []))
-            # Copy the user data of units that still exist in the new measurement
-            for unit_key, attributes in latest_source.get("unit_user_data", {}).items():
-                if unit_key in new_unit_keys:
-                    new_source.setdefault("unit_user_data", {})[unit_key] = attributes
+            new_entity_keys = set(entity["key"] for entity in new_source.get("entities", []))
+            # Copy the user data of entities that still exist in the new measurement
+            for entity_key, attributes in latest_source.get("entity_user_data", {}).items():
+                if entity_key in new_entity_keys:
+                    new_source.setdefault("entity_user_data", {})[entity_key] = attributes
         if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
@@ -30,12 +30,14 @@ def post_measurement(database: Database) -> Dict:
     return insert_new_measurement(database, measurement)
 
 
-@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/unit/<unit_key>/<attribute>")
-def set_unit_attribute(metric_uuid: str, source_uuid: str, unit_key: str, attribute: str, database: Database) -> Dict:
-    """Set a unit attribute."""
+@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
+def set_entity_attribute(metric_uuid: str, source_uuid: str, entity_key: str, attribute: str,
+                         database: Database) -> Dict:
+    """Set a entity attribute."""
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
-    source.setdefault("unit_user_data", {}).setdefault(unit_key, {})[attribute] = dict(bottle.request.json)[attribute]
+    value = dict(bottle.request.json)[attribute]
+    source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
     return insert_new_measurement(database, measurement)
 
 

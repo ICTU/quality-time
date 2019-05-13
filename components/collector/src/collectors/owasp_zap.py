@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Units, Value
+from ..type import Entities, Value
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -18,15 +18,15 @@ class OWASPZAPSecurityWarnings(Collector):
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(self.alerts(response, **parameters)))
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        units = []
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+        entities = []
         tag_re = re.compile(r"<[^>]*>")
         for alert in self.alerts(response, **parameters):
             key = ":".join([alert.findtext(id_tag) for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
-            units.append(
+            entities.append(
                 dict(key=key, name=alert.findtext("name"), description=tag_re.sub("", alert.findtext("desc")),
                      risk=alert.findtext("riskdesc")))
-        return units
+        return entities
 
     @staticmethod
     def alerts(response: requests.Response, **parameters) -> List[Element]:

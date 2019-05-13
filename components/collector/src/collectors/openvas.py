@@ -7,7 +7,7 @@ from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..collector import Collector
-from ..type import Value, Units
+from ..type import Value, Entities
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -18,14 +18,11 @@ class OpenVASSecurityWarnings(Collector):
         tree = parse_source_response_xml(response)
         return str(len(self.results(tree, **parameters)))
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         tree = parse_source_response_xml(response)
-        units = []
-        for result in self.results(tree, **parameters):
-            units.append(
-                dict(key=result.attrib["id"], name=result.findtext("name"), description=result.findtext("description"),
-                     host=result.findtext("host"), port=result.findtext("port"), severity=result.findtext("threat")))
-        return units
+        return [dict(key=result.attrib["id"], name=result.findtext("name"), description=result.findtext("description"),
+                     host=result.findtext("host"), port=result.findtext("port"), severity=result.findtext("threat"))
+                for result in self.results(tree, **parameters)]
 
     @staticmethod
     def results(element: Element, **parameters) -> List[Element]:

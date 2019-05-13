@@ -7,12 +7,11 @@ from typing import Dict, List, Optional
 import requests
 
 from ..collector import Collector
-from ..type import Namespaces, Units, Value
+from ..type import Namespaces, Entities, Entity, Value
 from ..util import parse_source_response_xml_with_namespace
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
-Violation = Dict[str, str]  # Violation attribute key to attribute value mapping
 
 
 class OJAuditViolations(Collector):
@@ -23,7 +22,7 @@ class OJAuditViolations(Collector):
         severities = parameters.get("severities", [])
         return self.violation_count(tree, namespaces, severities)
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(response)
         severities = parameters.get("severities", [])
         return self.violations(tree, namespaces, severities)
@@ -36,7 +35,7 @@ class OJAuditViolations(Collector):
             count += int(tree.findtext(f"./ns:{severity}-count", namespaces=namespaces))
         return str(count)
 
-    def violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> List[Violation]:
+    def violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""
         models = self.model_file_paths(tree, namespaces)
         violation_elements = tree.findall(f".//ns:violation", namespaces)
@@ -45,8 +44,8 @@ class OJAuditViolations(Collector):
 
     @staticmethod
     def violation(violation: Element, namespaces: Namespaces, models: ModelFilePaths,
-                  severities: List[str]) -> Optional[Violation]:
-        """Return the violation as unit."""
+                  severities: List[str]) -> Optional[Entity]:
+        """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
         if not location:
             raise ValueError(f"OJAudit violation {violation} has no location element")

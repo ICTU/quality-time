@@ -57,8 +57,8 @@ class RobotFrameworkTestReportFailedTestsTest(unittest.TestCase):
             response = collect_measurement(self.metric)
         self.assertEqual("3", response["sources"][0]["value"])
 
-    def test_failed_tests_units(self):
-        """Test that the failed tests are returned as units."""
+    def test_failed_tests_entities(self):
+        """Test that the failed tests are returned as entities."""
         self.mock_response.text = """<?xml version="1.0"?>
 <robot>
     <suite>
@@ -80,7 +80,7 @@ class RobotFrameworkTestReportFailedTestsTest(unittest.TestCase):
             response = collect_measurement(self.metric)
         self.assertEqual(
             [dict(key="s1-t1", name="Test 1", failure_type="fail")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
 
 class RobotFrameworkSourceUpToDatenessTest(unittest.TestCase):
