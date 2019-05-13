@@ -7,9 +7,9 @@ class Metric extends Component {
     super(props);
     this.state = { measurements: [] }
   }
-  set_unit_attribute(source_uuid, unit_key, attribute, value) {
+  set_entity_attribute(source_uuid, entity_key, attribute, value) {
     const self = this;
-    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/unit/${unit_key}/${attribute}`, {
+    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`, {
       method: 'post',
       mode: 'cors',
       headers: {
@@ -81,7 +81,7 @@ class Metric extends Component {
         report={this.props.report}
         readOnly={this.props.readOnly}
         set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
-        set_unit_attribute={(s, u, a, v) => this.set_unit_attribute(s, u, a, v)}
+        set_entity_attribute={(s, u, a, v) => this.set_entity_attribute(s, u, a, v)}
         subject_uuid={this.props.subject_uuid}
       />
     )

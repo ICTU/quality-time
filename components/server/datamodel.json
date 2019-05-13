@@ -368,7 +368,8 @@
             },
             "entities": {
                 "issues": {
-                    "name": "issues",
+                    "name": "issue",
+                    "name_plular": "issues",
                     "attributes": [
                         {
                             "name": "Project",
@@ -390,7 +391,8 @@
                     ]
                 },
                 "ready_user_story_points": {
-                    "name": "user stories",
+                    "name": "user story",
+                    "name_plular": "user stories",
                     "attributes": [
                         {
                             "name": "Project",
@@ -487,7 +489,8 @@
             },
             "entities": {
                 "failed_jobs": {
-                    "name": "jobs",
+                    "name": "job",
+                    "name_plular": "jobs",
                     "attributes": [
                         {
                             "name": "Job name",
@@ -619,7 +622,8 @@
             },
             "entities": {
                 "failed_jobs": {
-                    "name": "jobs",
+                    "name": "job",
+                    "name_plural": "jobs",
                     "attributes": [
                         {
                             "name": "Job name",
@@ -648,7 +652,8 @@
                     ]
                 },
                 "unused_jobs": {
-                    "name": "jobs",
+                    "name": "job",
+                    "name_plural": "jobs",
                     "attributes": [
                         {
                             "name": "Job name",
@@ -728,7 +733,8 @@
             },
             "entities": {
                 "failed_tests": {
-                    "name": "tests",
+                    "name": "test",
+                    "name_plural": "tests",
                     "attributes": [
                         {
                             "name": "Class name",
@@ -792,7 +798,8 @@
             },
             "entities": {
                 "issues": {
-                    "name": "issues",
+                    "name": "issue",
+                    "name_plural": "issues",
                     "attributes": [
                         {
                             "name": "Summary",
@@ -834,7 +841,8 @@
             },
             "entities": {
                 "failed_tests": {
-                    "name": "tests",
+                    "name": "test",
+                    "name_plural": "tests",
                     "attributes": [
                         {
                             "name": "Class name",
@@ -905,7 +913,8 @@
             },
             "entities": {
                 "violations": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -959,7 +968,8 @@
             },
             "entities": {
                 "security_warnings": {
-                    "name": "security warnings",
+                    "name": "security warning",
+                    "name_plural": "security warnings",
                     "attributes": [
                         {
                             "name": "Warning",
@@ -1020,7 +1030,8 @@
             },
             "entities": {
                 "security_warnings": {
-                    "name": "security warnings",
+                    "name": "security warning",
+                    "name_plural": "security warnings",
                     "attributes": [
                         {
                             "name": "File path",
@@ -1074,7 +1085,8 @@
             },
             "entities": {
                 "security_warnings": {
-                    "name": "security warnings",
+                    "name": "security warning",
+                    "name_plural": "security warnings",
                     "attributes": [
                         {
                             "name": "Warning",
@@ -1125,7 +1137,8 @@
             },
             "entities": {
                 "failed_tests": {
-                    "name": "tests",
+                    "name": "test",
+                    "name_plural": "tests",
                     "attributes": [
                         {
                             "name": "Test name",
@@ -1436,7 +1449,8 @@
             },
             "entities": {
                 "complex_units": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -1463,7 +1477,8 @@
                     ]
                 },
                 "many_parameters": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -1490,7 +1505,8 @@
                     ]
                 },
                 "long_units": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -1517,7 +1533,8 @@
                     ]
                 },
                 "suppressed_violations": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -1544,7 +1561,8 @@
                     ]
                 },
                 "violations": {
-                    "name": "violations",
+                    "name": "violation",
+                    "name_plural": "violations",
                     "attributes": [
                         {
                             "name": "Message",
@@ -1654,7 +1672,8 @@
             },
             "entities": {
                 "issues": {
-                    "name": "issues",
+                    "name": "issue",
+                    "name_plural": "issues",
                     "attributes": [
                         {
                             "name": "Title",
@@ -1753,7 +1772,8 @@
             },
             "entities": {
                 "issues": {
-                    "name": "issues",
+                    "name": "issue",
+                    "name_plural": "issues",
                     "attributes": [
                         {
                             "name": "Title",
