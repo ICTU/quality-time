@@ -113,7 +113,8 @@ class SourceEntities extends Component {
     }
     const report_source = this.props.metric.sources[this.props.source.source_uuid];
     const source_type = report_source.type;
-    const entity_attributes = this.props.datamodel.sources[source_type].entities[this.props.metric.type];
+    const entity_attributes = this.props.datamodel.sources[source_type].entities[this.props.metric.type].attributes;
+    const entity_name = this.props.datamodel.sources[source_type].entities[this.props.metric.type].name;
     const metric_type = this.props.datamodel.metrics[this.props.metric.type];
     const metric_unit = this.props.metric.unit || metric_type.unit;
     const headers =
@@ -125,7 +126,7 @@ class SourceEntities extends Component {
             <Button floated='right' icon primary size='small' basic
               onClick={(e) => this.hide_ignored_entities(e)}>
               <Icon name={this.state.hide_ignored_entities ? 'unhide' : 'hide'} />
-            </Button>} content={this.state.hide_ignored_entities ? 'Show ignored items' : 'Hide ignored items'} />
+            </Button>} content={this.state.hide_ignored_entities ? `Show ignored ${entity_name}` : `Hide ignored ${entity_name}`} />
         </Table.HeaderCell>
       </Table.Row>
     const rows = this.props.source.entities.map((entity) =>
