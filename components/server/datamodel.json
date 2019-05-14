@@ -258,6 +258,23 @@
                 "test quality"
             ]
         },
+        "unmerged_branches": {
+            "name": "Unmerged branches",
+            "description": "Measure the number of branches that have not been merged to master.",
+            "unit": "branches",
+            "addition": "sum",
+            "direction": "<=",
+            "target": "0",
+            "near_target": "5",
+            "sources": [
+                "gitlab",
+                "hq",
+                "random"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "unused_jobs": {
             "name": "Unused CI-jobs",
             "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
@@ -445,7 +462,8 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "unmerged_branches"
                     ]
                 },
                 "project": {
@@ -455,7 +473,8 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "unmerged_branches"
                     ]
                 },
                 "private_token": {
@@ -465,7 +484,8 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "unmerged_branches"
                     ]
                 },
                 "file_path": {
@@ -484,6 +504,14 @@
                     "default_value": "master",
                     "metrics": [
                         "source_up_to_dateness"
+                    ]
+                },
+                "inactive_days": {
+                    "name": "Number of days since last commit after which to consider branches inactive",
+                    "type": "integer",
+                    "default_value": "7",
+                    "metrics": [
+                        "unmerged_branches"
                     ]
                 }
             },
@@ -516,6 +544,24 @@
                             "key": "build_age"
                         }
                     ]
+                },
+                "unmerged_branches": {
+                    "name": "branch",
+                    "name_plural": "branches",
+                    "attributes": [
+                        {
+                            "name": "Branch name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Date of most recent commit",
+                            "key": "commit_date"
+                        },
+                        {
+                            "name": "Age of most recent commit (in days)",
+                            "key": "commit_age"
+                        }
+                    ]
                 }
             }
         },
@@ -539,6 +585,7 @@
                         "ncloc",
                         "ready_user_story_points",
                         "security_warnings",
+                        "unmerged_branches",
                         "unused_jobs",
                         "violations"
                     ]
@@ -558,6 +605,7 @@
                         "ncloc",
                         "ready_user_story_points",
                         "security_warnings",
+                        "unmerged_branches",
                         "unused_jobs",
                         "violations"
                     ]

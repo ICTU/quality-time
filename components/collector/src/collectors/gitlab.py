@@ -1,7 +1,7 @@
 """Gitlab metric source."""
 
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
@@ -19,10 +19,16 @@ class GitlabBase(Collector):
         url = super().api_url(**parameters)
         project = quote(str(parameters.get("project")), safe="")
         api_url = f"{url}/api/v4/projects/{project}/{api}"
+        sep = "&" if "?" in api_url else "?"
+        api_url += f"{sep}per_page=100"
         private_token = parameters.get("private_token")
         if private_token:
-            api_url += f"?private_token={private_token}"
+            api_url += f"&private_token={private_token}"
         return URL(api_url)
+
+    @staticmethod
+    def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
+        return None  # The private token is passed as URI parameter
 
 
 class GitlabFailedJobs(GitlabBase):
@@ -33,10 +39,6 @@ class GitlabFailedJobs(GitlabBase):
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(len(self.failed_jobs(response)))
-
-    @staticmethod
-    def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
-        return None  # The private token is passed as URI parameter
 
     def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         return [
@@ -84,3 +86,33 @@ class GitlabSourceUpToDateness(GitlabBase):
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days)
+
+
+class GitlabUnmergedBranches(GitlabBase):
+    """Collector class to measure the number of unmerged branches."""
+
+    def api_url(self, **parameters) -> URL:
+        return self.gitlab_api_url("repository/branches", **parameters)
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        return str(len(self.unmerged_branches(response, **parameters)))
+
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+        return [
+            dict(key=branch["name"], name=branch["name"], commit_age=str(self.commit_age(branch).days),
+                 commit_date=str(self.commit_datetime(branch).date()))
+            for branch in self.unmerged_branches(response, **parameters)]
+
+    def unmerged_branches(self, response: requests.Response, **parameters) -> List:
+        """Return the unmerged branches."""
+        return [branch for branch in response.json() if branch["name"] != "master" and not branch["merged"] and
+                self.commit_age(branch).days > int(parameters.get("inactive_days") or "7")]
+
+    def commit_age(self, branch) -> timedelta:
+        """Return the age of the last commit on the branch."""
+        return datetime.now(timezone.utc) - self.commit_datetime(branch)
+
+    @staticmethod
+    def commit_datetime(branch) -> datetime:
+        """Return the age of the last commit on the branch."""
+        return parse(branch["commit"]["committed_date"])
