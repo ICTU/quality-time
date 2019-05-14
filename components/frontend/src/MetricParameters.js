@@ -56,7 +56,7 @@ function MetricParameters(props) {
                     <Grid.Column>
                         <MetricTarget
                             direction={metric_type.direction}
-                            label="Metric target"
+                            label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
                             readOnly={props.readOnly}
                             set_metric_attribute={props.set_metric_attribute}
                             set_value={(value) => props.set_metric_attribute("target", value)}
@@ -67,7 +67,7 @@ function MetricParameters(props) {
                     <Grid.Column>
                         <MetricTarget
                             direction={metric_type.direction}
-                            label="Metric near target"
+                            label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
                             readOnly={props.readOnly}
                             set_metric_attribute={props.set_metric_attribute}
                             set_value={(value) => props.set_metric_attribute("near_target", value)}
