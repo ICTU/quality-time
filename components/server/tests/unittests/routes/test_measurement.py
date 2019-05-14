@@ -49,34 +49,34 @@ class PostMeasurementTests(unittest.TestCase):
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
         self.database.measurements.find_one = Mock(return_value=dict(
-            _id="id", status="target_met", sources=[dict(value="0", units=[])]))
-        sources = [dict(value="1", parse_error=None, connection_error=None, units=[])]
+            _id="id", status="target_met", sources=[dict(value="0", entities=[])]))
+        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", status="near_target_met",
                                start="2019-01-01", end="2019-01-01", value="1", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
-    def test_changed_measurement_units(self, request):
-        """Post a measurement whose value is the same, but with different units."""
+    def test_changed_measurement_entities(self, request):
+        """Post a measurement whose value is the same, but with different entities."""
         self.database.measurements.find_one = Mock(return_value=dict(
-            _id="id", status="target_met", sources=[dict(value="1", units=[dict(key="a")])]))
-        sources = [dict(value="1", parse_error=None, connection_error=None, units=[dict(key="b")])]
+            _id="id", status="target_met", sources=[dict(value="1", entities=[dict(key="a")])]))
+        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", status="near_target_met",
                                start="2019-01-01", end="2019-01-01", value="1", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
-    def test_ignored_measurement_units(self, request):
-        """Post a measurement where the old one has ignored units."""
+    def test_ignored_measurement_entities(self, request):
+        """Post a measurement where the old one has ignored entities."""
         self.database.measurements.find_one = Mock(return_value=dict(
             _id="id", status="target_met",
             sources=[
                 dict(value="1", parse_error=None, connection_error=None,
-                     unit_user_data=dict(unit1=dict(status="false_positive", rationale="Rationale")),
-                     units=[dict(key="unit1")])]))
-        sources = [dict(value="1", parse_error=None, connection_error=None, units=[dict(key="unit1")])]
+                     entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
+                     entities=[dict(key="entity1")])]))
+        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(

@@ -58,7 +58,7 @@ class OWASPZAPTest(unittest.TestCase):
             [dict(key="10021:16:15:3", name="X-Content-Type-Options Header Missing",
                   description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
                   risk="Low (Medium)")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):

@@ -81,10 +81,11 @@ class CalculateMeasurementValueTest(unittest.TestCase):
                    dict(parse_error=None, connection_error=None, value="20")]
         self.assertEqual("20", calculate_measurement_value(sources, "max"))
 
-    def test_ignored_units(self):
-        """Test that the number of ignored units is subtracted."""
+    def test_ignored_entities(self):
+        """Test that the number of ignored entities is subtracted."""
         sources = [
             dict(parse_error=None, connection_error=None, value="10",
-                 unit_user_data=dict(
-                     unit1=dict(status="fixed"), unit2=dict(status="wont_fix"), unit3=dict(status="false_positive")))]
+                 entity_user_data=dict(
+                     entity1=dict(status="fixed"), entity2=dict(status="wont_fix"),
+                     entity3=dict(status="false_positive")))]
         self.assertEqual("7", calculate_measurement_value(sources, "sum"))

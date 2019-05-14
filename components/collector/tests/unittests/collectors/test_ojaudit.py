@@ -65,7 +65,7 @@ class OJAuditTest(unittest.TestCase):
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
                   severity="exception")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_missing_location(self):
@@ -129,4 +129,4 @@ class OJAuditTest(unittest.TestCase):
         with patch("requests.get", return_value=mock_response):
             response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])
-        self.assertEqual([], response["sources"][0]["units"])
+        self.assertEqual([], response["sources"][0]["entities"])

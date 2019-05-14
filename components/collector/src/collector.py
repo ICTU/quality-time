@@ -6,7 +6,7 @@ from typing import cast, Optional, Set, Tuple, Type
 
 import requests
 
-from .type import ErrorMessage, Response, Units, URL, Value
+from .type import ErrorMessage, Response, Entities, URL, Value
 from .util import stable_traceback
 
 
@@ -29,7 +29,7 @@ class Collector:
     """Base class for metric collectors."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
-    MAX_UNITS = 100  # The maximum number of units (e.g. violations, warnings) to send to the server
+    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
 
     def __init_subclass__(cls) -> None:
@@ -51,9 +51,9 @@ class Collector:
         parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
         response, connection_error = self.safely_get_source_response(api_url, **parameters)
-        value, units, parse_error = self.safely_parse_source_response(response, **parameters)
+        value, entities, parse_error = self.safely_parse_source_response(response, **parameters)
         landing_url = self.landing_url(response, **parameters)
-        return dict(api_url=api_url, landing_url=landing_url, value=value, units=units,
+        return dict(api_url=api_url, landing_url=landing_url, value=value, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
     def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
@@ -92,18 +92,18 @@ class Collector:
         return (username, password) if username and password else None
 
     def safely_parse_source_response(
-            self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Units, ErrorMessage]:
+            self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Entities, ErrorMessage]:
         """Parse the data from the response, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        units: Units = []
+        entities: Entities = []
         value, error = None, None
         if response:
             try:
                 value = self.parse_source_response_value(response, **parameters)
-                units = self.parse_source_response_units(response, **parameters)
+                entities = self.parse_source_response_entities(response, **parameters)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
-        return value, units[:self.MAX_UNITS], error
+        return value, entities[:self.MAX_ENTITIES], error
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         # pylint: disable=no-self-use,unused-argument
@@ -111,8 +111,8 @@ class Collector:
         to parse the retrieved sources data."""
         return str(response.text)
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the units (e.g. violations, test cases, user stories) for the metric.
-        This method can to be overridden by collectors when a source can provide the metric units."""
+        """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
+        This method can to be overridden by collectors when a source can provide the measured entities."""
         return []

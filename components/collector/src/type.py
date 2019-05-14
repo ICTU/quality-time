@@ -7,8 +7,8 @@ Job = Dict[str, Any]
 Jobs = List[Job]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
 URL = NewType("URL", str)
-Unit = Dict  # pylint: disable=invalid-name
-Units = List[Unit]
+Entity = Dict  # pylint: disable=invalid-name
+Entities = List[Entity]
 Value = Optional[str]
 ErrorMessage = Optional[str]
 Subject = Dict[str, Union[str, Sequence[URL]]]

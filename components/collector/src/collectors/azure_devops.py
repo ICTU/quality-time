@@ -5,7 +5,7 @@ from typing import Optional
 import requests
 
 from ..collector import Collector
-from ..type import Units, URL, Value
+from ..type import Entities, URL, Value
 
 
 class AzureDevopsBase(Collector):
@@ -13,31 +13,31 @@ class AzureDevopsBase(Collector):
 
     def __init__(self) -> None:
         super().__init__()
-        self.unit_response: Optional[requests.Response] = None
+        self.entity_response: Optional[requests.Response] = None
 
     def api_url(self, **parameters) -> URL:
         url = super().api_url(**parameters)
         return URL(f"{url}/_apis/wit/wiql?api-version=4.1")
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Override because we need to do a post request and need to separately get the units."""
+        """Override because we need to do a post request and need to separately get the entities."""
         auth = self.basic_auth_credentials(**parameters)
         response = requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=parameters.get("wiql", "")))
         ids = ",".join([str(work_item["id"]) for work_item in response.json().get("workItems", [])])
         if ids:
             work_items_url = URL(f"{super().api_url(**parameters)}/_apis/wit/workitems?ids={ids}&api-version=4.1")
-            self.unit_response = requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)
+            self.entity_response = requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)
         return response
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        if not self.unit_response:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+        if not self.entity_response:
             return []
         return [
             dict(
                 key=str(work_item["id"]), project=work_item["fields"]["System.TeamProject"],
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"],
-                url=work_item["url"]) for work_item in self.unit_response.json()["value"]]
+                url=work_item["url"]) for work_item in self.entity_response.json()["value"]]
 
 
 class AzureDevopsIssues(AzureDevopsBase):
@@ -53,12 +53,12 @@ class AzureDevopsReadyUserStoryPoints(AzureDevopsBase):
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(round(sum(
             [work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints", 0)
-             for work_item in self.unit_response.json()["value"]]))) if self.unit_response else "0"
+             for work_item in self.entity_response.json()["value"]]))) if self.entity_response else "0"
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
-        units = super().parse_source_response_units(response, **parameters)
-        # Add story points to the units:
-        if self.unit_response:
-            for unit, work_item in zip(units, self.unit_response.json()["value"]):
-                unit["story_points"] = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
-        return units
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+        entities = super().parse_source_response_entities(response, **parameters)
+        # Add story points to the entities:
+        if self.entity_response:
+            for entity, work_item in zip(entities, self.entity_response.json()["value"]):
+                entity["story_points"] = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
+        return entities

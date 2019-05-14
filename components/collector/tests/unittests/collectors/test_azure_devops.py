@@ -12,7 +12,7 @@ class AzureDevopsIssuesTest(unittest.TestCase):
     def setUp(self):
         """Test fixture."""
         self.mock_response = Mock()
-        self.mock_unit_response = Mock()
+        self.mock_entity_response = Mock()
         self.work_item = dict(
             id="id", url="http://url",
             fields={"System.TeamProject": "Project", "System.Title": "Title", "System.WorkItemType": "Task",
@@ -24,9 +24,9 @@ class AzureDevopsIssuesTest(unittest.TestCase):
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         self.mock_response.json.return_value = dict(workItems=[dict(id="id1"), dict(id="id2")])
-        self.mock_unit_response.json.return_value = dict(value=[self.work_item, self.work_item])
+        self.mock_entity_response.json.return_value = dict(value=[self.work_item, self.work_item])
         with patch("requests.post", return_value=self.mock_response):
-            with patch("requests.get", return_value=self.mock_unit_response):
+            with patch("requests.get", return_value=self.mock_entity_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("2", response["sources"][0]["value"])
 
@@ -34,20 +34,20 @@ class AzureDevopsIssuesTest(unittest.TestCase):
         """Test zero issues."""
         self.mock_response.json.return_value = dict(workItems=[])
         with patch("requests.post", return_value=self.mock_response):
-            with patch("requests.get", return_value=self.mock_unit_response):
+            with patch("requests.get", return_value=self.mock_entity_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])
 
     def test_issues(self):
         """Test that the issues are returned."""
         self.mock_response.json.return_value = dict(workItems=[dict(id="id")])
-        self.mock_unit_response.json.return_value = dict(value=[self.work_item])
+        self.mock_entity_response.json.return_value = dict(value=[self.work_item])
         with patch("requests.post", return_value=self.mock_response):
-            with patch("requests.get", return_value=self.mock_unit_response):
+            with patch("requests.get", return_value=self.mock_entity_response):
                 response = collect_measurement(self.metric)
         self.assertEqual(
             [dict(key="id", project="Project", title="Title", work_item_type="Task", state="New", url="http://url")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
 
 
 class AzureDevopsReadyStoryPointsTest(unittest.TestCase):
@@ -56,7 +56,7 @@ class AzureDevopsReadyStoryPointsTest(unittest.TestCase):
     def setUp(self):
         """Test fixture."""
         self.mock_response = Mock()
-        self.mock_unit_response = Mock()
+        self.mock_entity_response = Mock()
         self.work_item = dict(
             id="id", url="http://url",
             fields={"System.TeamProject": "Project", "System.Title": "Title", "System.WorkItemType": "Task",
@@ -68,17 +68,17 @@ class AzureDevopsReadyStoryPointsTest(unittest.TestCase):
     def test_story_points(self):
         """Test that the number of story points are returned."""
         self.mock_response.json.return_value = dict(workItems=[dict(id="id1"), dict(id="id2")])
-        self.mock_unit_response.json.return_value = dict(value=[self.work_item, self.work_item])
+        self.mock_entity_response.json.return_value = dict(value=[self.work_item, self.work_item])
         with patch("requests.post", return_value=self.mock_response):
-            with patch("requests.get", return_value=self.mock_unit_response):
+            with patch("requests.get", return_value=self.mock_entity_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("4", response["sources"][0]["value"])
 
     def test_story_points_without_stories(self):
         """Test that the number of story points is zero when there are no work items."""
         self.mock_response.json.return_value = dict(workItems=[])
-        self.mock_unit_response.json.return_value = dict(value=[])
+        self.mock_entity_response.json.return_value = dict(value=[])
         with patch("requests.post", return_value=self.mock_response):
-            with patch("requests.get", return_value=self.mock_unit_response):
+            with patch("requests.get", return_value=self.mock_entity_response):
                 response = collect_measurement(self.metric)
         self.assertEqual("0", response["sources"][0]["value"])

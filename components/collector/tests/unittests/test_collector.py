@@ -53,7 +53,7 @@ class CollectorTest(unittest.TestCase):
                 MetricsCollector().fetch_measurements()
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
                                     parse_error=None, source_uuid="source_id")],
                       value=42, metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -68,7 +68,7 @@ class CollectorTest(unittest.TestCase):
                     self.assertRaises(RuntimeError, collect)
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
                                     parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
                       report_uuid="report_uuid"))
 
@@ -94,6 +94,6 @@ class CollectorTest(unittest.TestCase):
                 metric_collector.fetch_measurements()
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", units=[], connection_error=None,
+            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
                                     parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
                       report_uuid="report_uuid"))

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Icon, Label, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from './Sources';
-import { SourceUnits } from './SourceUnits';
+import { SourceEntities } from './SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from './FocusableTab';
 
@@ -29,22 +29,20 @@ class MeasurementDetails extends Component {
       props.measurement.sources.forEach((source) => {
         const report_source = metric.sources[source.source_uuid];
         if (!report_source) { return }  // source was deleted, continue
+        const nr_entities = (source.entities && source.entities.length) || 0;
+        if (nr_entities === 0) { return } // no entities to show, continue
         const source_type = report_source.type;
         const source_name = report_source.name || props.datamodel.sources[source_type].name;
-        let nr_units = source.value || 0;
-        const nr_units_displayed = (source.units && source.units.length) || 0;
-        if (nr_units_displayed === 0) { return } // no units to show
-        if (Number(nr_units) !== Number(nr_units_displayed)) { nr_units = `${nr_units_displayed} of ${nr_units}` };
         panes.push({
-          menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name} <Label basic circular color="grey">{nr_units}</Label></FocusableTab></Menu.Item>,
+          menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
           render: () => <Tab.Pane>
-            <SourceUnits
+            <SourceEntities
               datamodel={props.datamodel}
               metric={metric}
               metric_uuid={props.metric_uuid}
               readOnly={props.readOnly}
               report_uuid={props.report_uuid}
-              set_unit_attribute={props.set_unit_attribute}
+              set_entity_attribute={props.set_entity_attribute}
               source={source}
             />
           </Tab.Pane>

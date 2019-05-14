@@ -6,7 +6,7 @@ from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..collector import Collector
-from ..type import URL, Units, Value
+from ..type import URL, Entities, Value
 from ..util import days_ago
 
 
@@ -25,7 +25,7 @@ class SonarQubeViolations(Collector):
         url = super().api_url(**parameters)
         component = parameters.get("component")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
-        # the number of "units" sent to the server anyway (that limit is 100 currently).
+        # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
         severities = ",".join([severity.upper() for severity in parameters.get("severities", [])])
         if severities:
@@ -43,20 +43,20 @@ class SonarQubeViolations(Collector):
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         return str(response.json()["total"])
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         return [dict(
-            key=unit["key"],
-            url=self.unit_landing_url(unit["key"], response, **parameters),
-            message=unit["message"],
-            severity=unit["severity"].lower(),
-            type=unit["type"].lower(),
-            component=unit["component"]) for unit in response.json()["issues"]]
+            key=issue["key"],
+            url=self.issue_landing_url(issue["key"], response, **parameters),
+            message=issue["message"],
+            severity=issue["severity"].lower(),
+            type=issue["type"].lower(),
+            component=issue["component"]) for issue in response.json()["issues"]]
 
-    def unit_landing_url(self, unit_key, response: requests.Response, **parameters):
-        """Generate a landing url for the unit."""
+    def issue_landing_url(self, issue_key, response: requests.Response, **parameters):
+        """Generate a landing url for the issue."""
         url = super().landing_url(response, **parameters)
         component = parameters.get("component")
-        return URL(f"{url}/project/issues?id={component}&issues={unit_key}&open={unit_key}")
+        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 
 
 class SonarQubeComplexUnits(SonarQubeViolations):

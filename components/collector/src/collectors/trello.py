@@ -7,7 +7,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Unit, Units, URL, Value
+from ..type import Entity, Entities, URL, Value
 from ..util import days_ago
 
 
@@ -41,13 +41,13 @@ class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.parse_source_response_units(response, **parameters)))
+        return str(len(self.parse_source_response_entities(response, **parameters)))
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         json = response.json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
-        return [self.card_to_unit(card, lists) for card in cards if not self.ignore_card(card, lists, **parameters)]
+        return [self.card_to_entity(card, lists) for card in cards if not self.ignore_card(card, lists, **parameters)]
 
     @staticmethod
     def ignore_card(card, lists, **parameters) -> bool:
@@ -74,8 +74,8 @@ class TrelloIssues(TrelloBase):
         return bool(cards_to_count)
 
     @staticmethod
-    def card_to_unit(card, lists) -> Unit:
-        """Convert a card into a unit."""
+    def card_to_entity(card, lists) -> Entity:
+        """Convert a card into a entity."""
         return dict(
             key=card["id"], title=card["name"], url=card["url"], list=lists[card["idList"]], due_date=card["due"],
             date_last_activity=card["dateLastActivity"])

@@ -44,7 +44,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
         self.assertEqual(
             [dict(build_date="2019-03-15", build_age=build_age, build_status="Red",
-                  key="job", name="job", url="http://job")], response["sources"][0]["units"])
+                  key="job", name="job", url="http://job")], response["sources"][0]["entities"])
 
     def test_no_builds(self):
         """Test no builds."""
@@ -52,7 +52,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             jobs=[dict(name="job", url="http://job", buildable=True, color="notbuilt", builds=[])])
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(self.metric)
-        self.assertEqual([], response["sources"][0]["units"])
+        self.assertEqual([], response["sources"][0]["entities"])
 
 
 class JenkinsUnusedJobsTest(JenkinsTestCase):

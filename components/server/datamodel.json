@@ -366,49 +366,57 @@
                     ]
                 }
             },
-            "units": {
-                "issues": [
-                    {
-                        "name": "Project",
-                        "key": "project"
-                    },
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Work item type",
-                        "key": "work_item_type"
-                    },
-                    {
-                        "name": "State",
-                        "key": "state"
-                    }
-                ],
-                "ready_user_story_points": [
-                    {
-                        "name": "Project",
-                        "key": "project"
-                    },
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Work item type",
-                        "key": "work_item_type"
-                    },
-                    {
-                        "name": "State",
-                        "key": "state"
-                    },
-                    {
-                        "name": "Story points",
-                        "key": "story_points"
-                    }
-                ]
+            "entities": {
+                "issues": {
+                    "name": "issue",
+                    "name_plular": "issues",
+                    "attributes": [
+                        {
+                            "name": "Project",
+                            "key": "project"
+                        },
+                        {
+                            "name": "Title",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Work item type",
+                            "key": "work_item_type"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state"
+                        }
+                    ]
+                },
+                "ready_user_story_points": {
+                    "name": "user story",
+                    "name_plular": "user stories",
+                    "attributes": [
+                        {
+                            "name": "Project",
+                            "key": "project"
+                        },
+                        {
+                            "name": "Title",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Work item type",
+                            "key": "work_item_type"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state"
+                        },
+                        {
+                            "name": "Story points",
+                            "key": "story_points"
+                        }
+                    ]
+                }
             }
         },
         "calendar": {
@@ -424,7 +432,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "gitlab": {
             "name": "GitLab",
@@ -479,32 +487,36 @@
                     ]
                 }
             },
-            "units": {
-                "failed_jobs": [
-                    {
-                        "name": "Job name",
-                        "key": "name",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Status of most recent build",
-                        "key": "build_status",
-                        "color": {
-                            "canceled": "active",
-                            "failed": "negative",
-                            "success": "positive"
+            "entities": {
+                "failed_jobs": {
+                    "name": "job",
+                    "name_plular": "jobs",
+                    "attributes": [
+                        {
+                            "name": "Job name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "canceled": "active",
+                                "failed": "negative",
+                                "success": "positive"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
                         }
-                    },
-                    {
-                        "name": "Date of most recent build",
-                        "key": "build_date",
-                        "type": "date"
-                    },
-                    {
-                        "name": "Age of most recent build (in days)",
-                        "key": "build_age"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "hq": {
@@ -551,7 +563,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "jacoco": {
             "name": "JaCoCo",
@@ -569,7 +581,7 @@
                     ]
                 }
             },
-            "units": {}
+            "entities": {}
         },
         "jenkins": {
             "name": "Jenkins",
@@ -608,59 +620,67 @@
                     ]
                 }
             },
-            "units": {
-                "failed_jobs": [
-                    {
-                        "name": "Job name",
-                        "key": "name",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Status of most recent build",
-                        "key": "build_status",
-                        "color": {
-                            "Success": "success",
-                            "Failed": "negative",
-                            "Aborted": "selected",
-                            "Unstable": "warning"
+            "entities": {
+                "failed_jobs": {
+                    "name": "job",
+                    "name_plural": "jobs",
+                    "attributes": [
+                        {
+                            "name": "Job name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "Success": "success",
+                                "Failed": "negative",
+                                "Aborted": "selected",
+                                "Unstable": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
                         }
-                    },
-                    {
-                        "name": "Date of most recent build",
-                        "key": "build_date",
-                        "type": "date"
-                    },
-                    {
-                        "name": "Age of most recent build (in days)",
-                        "key": "build_age"
-                    }
-                ],
-                "unused_jobs": [
-                    {
-                        "name": "Job name",
-                        "key": "name",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Status of most recent build",
-                        "key": "build_status",
-                        "color": {
-                            "Success": "positive",
-                            "Failure": "negative",
-                            "Aborted": "active",
-                            "Unstable": "warning"
+                    ]
+                },
+                "unused_jobs": {
+                    "name": "job",
+                    "name_plural": "jobs",
+                    "attributes": [
+                        {
+                            "name": "Job name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "Success": "positive",
+                                "Failure": "negative",
+                                "Aborted": "active",
+                                "Unstable": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
                         }
-                    },
-                    {
-                        "name": "Date of most recent build",
-                        "key": "build_date",
-                        "type": "date"
-                    },
-                    {
-                        "name": "Age of most recent build (in days)",
-                        "key": "build_age"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "jenkins_test_report": {
@@ -711,26 +731,30 @@
                     ]
                 }
             },
-            "units": {
-                "failed_tests": [
-                    {
-                        "name": "Class name",
-                        "key": "class_name"
-                    },
-                    {
-                        "name": "Test case",
-                        "key": "name"
-                    },
-                    {
-                        "name": "Failure type",
-                        "key": "failure_type",
-                        "color": {
-                            "failed": "negative",
-                            "passed": "positive",
-                            "skipped": "warning"
+            "entities": {
+                "failed_tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Class name",
+                            "key": "class_name"
+                        },
+                        {
+                            "name": "Test case",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Failure type",
+                            "key": "failure_type",
+                            "color": {
+                                "failed": "negative",
+                                "passed": "positive",
+                                "skipped": "warning"
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
         "jira": {
@@ -772,14 +796,18 @@
                     ]
                 }
             },
-            "units": {
-                "issues": [
-                    {
-                        "name": "Summary",
-                        "key": "summary",
-                        "url": "url"
-                    }
-                ]
+            "entities": {
+                "issues": {
+                    "name": "issue",
+                    "name_plural": "issues",
+                    "attributes": [
+                        {
+                            "name": "Summary",
+                            "key": "summary",
+                            "url": "url"
+                        }
+                    ]
+                }
             }
         },
         "junit": {
@@ -811,27 +839,31 @@
                     ]
                 }
             },
-            "units": {
-                "failed_tests": [
-                    {
-                        "name": "Class name",
-                        "key": "class_name"
-                    },
-                    {
-                        "name": "Test case",
-                        "key": "name"
-                    },
-                    {
-                        "name": "Failure type",
-                        "key": "failure_type",
-                        "color": {
-                            "errored": "negative",
-                            "failed": "negative",
-                            "passed": "positive",
-                            "skipped": "warning"
+            "entities": {
+                "failed_tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Class name",
+                            "key": "class_name"
+                        },
+                        {
+                            "name": "Test case",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Failure type",
+                            "key": "failure_type",
+                            "color": {
+                                "errored": "negative",
+                                "failed": "negative",
+                                "passed": "positive",
+                                "skipped": "warning"
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
         "ojaudit": {
@@ -879,26 +911,30 @@
                     ]
                 }
             },
-            "units": {
-                "violations": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "exception": "negative",
-                            "error": "negative",
-                            "warning": "warning"
+            "entities": {
+                "violations": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "exception": "negative",
+                                "error": "negative",
+                                "warning": "warning"
+                            }
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component"
                         }
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "openvas": {
@@ -930,34 +966,38 @@
                     ]
                 }
             },
-            "units": {
-                "security_warnings": [
-                    {
-                        "name": "Warning",
-                        "key": "name"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "High": "negative",
-                            "Medium": "warning"
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Warning",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "High": "negative",
+                                "Medium": "warning"
+                            }
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description",
+                            "pre": true
+                        },
+                        {
+                            "name": "Host",
+                            "key": "host"
+                        },
+                        {
+                            "name": "Port",
+                            "key": "port"
                         }
-                    },
-                    {
-                        "name": "Description",
-                        "key": "description",
-                        "pre": true
-                    },
-                    {
-                        "name": "Host",
-                        "key": "host"
-                    },
-                    {
-                        "name": "Port",
-                        "key": "port"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "owasp_dependency_check": {
@@ -988,26 +1028,30 @@
                     ]
                 }
             },
-            "units": {
-                "security_warnings": [
-                    {
-                        "name": "File path",
-                        "key": "file_path",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Highest severity",
-                        "key": "highest_severity",
-                        "color": {
-                            "High": "negative",
-                            "Medium": "warning"
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "File path",
+                            "key": "file_path",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Highest severity",
+                            "key": "highest_severity",
+                            "color": {
+                                "High": "negative",
+                                "Medium": "warning"
+                            }
+                        },
+                        {
+                            "name": "Number of vulnerabilities",
+                            "key": "nr_vulnerabilities"
                         }
-                    },
-                    {
-                        "name": "Number of vulnerabilities",
-                        "key": "nr_vulnerabilities"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "owasp_zap": {
@@ -1039,29 +1083,33 @@
                     ]
                 }
             },
-            "units": {
-                "security_warnings": [
-                    {
-                        "name": "Warning",
-                        "key": "name"
-                    },
-                    {
-                        "name": "Risk (Confidence)",
-                        "key": "risk",
-                        "color": {
-                            "High (Low)": "negative",
-                            "High (Medium)": "negative",
-                            "High (High)": "negative",
-                            "Medium (Low)": "warning",
-                            "Medium (Medium)": "warning",
-                            "Medium (High)": "warning"
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Warning",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Risk (Confidence)",
+                            "key": "risk",
+                            "color": {
+                                "High (Low)": "negative",
+                                "High (Medium)": "negative",
+                                "High (High)": "negative",
+                                "Medium (Low)": "warning",
+                                "Medium (Medium)": "warning",
+                                "Medium (High)": "warning"
+                            }
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description"
                         }
-                    },
-                    {
-                        "name": "Description",
-                        "key": "description"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "random": {
@@ -1069,7 +1117,7 @@
             "description": "A source that generates random numbers, for testing purposes.",
             "url": "https://en.wikipedia.org/wiki/Special:Random",
             "parameters": {},
-            "units": {}
+            "entities": {}
         },
         "robot_framework": {
             "name": "Robot Framework",
@@ -1087,21 +1135,25 @@
                     ]
                 }
             },
-            "units": {
-                "failed_tests": [
-                    {
-                        "name": "Test name",
-                        "key": "name"
-                    },
-                    {
-                        "name": "Failure type",
-                        "key": "failure_type",
-                        "color": {
-                            "fail" : "negative",
-                            "pass": "positive"
+            "entities": {
+                "failed_tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Test name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Failure type",
+                            "key": "failure_type",
+                            "color": {
+                                "fail": "negative",
+                                "pass": "positive"
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
         "sonarqube": {
@@ -1395,127 +1447,147 @@
                     ]
                 }
             },
-            "units": {
-                "complex_units": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "blocker": "negative",
-                            "critical": "negative",
-                            "major": "warning"
+            "entities": {
+                "complex_units": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
                         }
-                    },
-                    {
-                        "name": "Type",
-                        "key": "type"
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component",
-                        "url": "url"
-                    }
-                ],
-                "many_parameters": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "blocker": "negative",
-                            "critical": "negative",
-                            "major": "warning"
+                    ]
+                },
+                "many_parameters": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
                         }
-                    },
-                    {
-                        "name": "Type",
-                        "key": "type"
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component",
-                        "url": "url"
-                    }
-                ],
-                "long_units": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "blocker": "negative",
-                            "critical": "negative",
-                            "major": "warning"
+                    ]
+                },
+                "long_units": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
                         }
-                    },
-                    {
-                        "name": "Type",
-                        "key": "type"
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component",
-                        "url": "url"
-                    }
-                ],
-                "suppressed_violations": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "blocker": "negative",
-                            "critical": "negative",
-                            "major": "warning"
+                    ]
+                },
+                "suppressed_violations": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
                         }
-                    },
-                    {
-                        "name": "Type",
-                        "key": "type"
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component",
-                        "url": "url"
-                    }
-                ],
-                "violations": [
-                    {
-                        "name": "Message",
-                        "key": "message"
-                    },
-                    {
-                        "name": "Severity",
-                        "key": "severity",
-                        "color": {
-                            "blocker": "negative",
-                            "critical": "negative",
-                            "major": "warning"
+                    ]
+                },
+                "violations": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
                         }
-                    },
-                    {
-                        "name": "Type",
-                        "key": "type"
-                    },
-                    {
-                        "name": "Component",
-                        "key": "component",
-                        "url": "url"
-                    }
-                ]
+                    ]
+                }
             }
         },
         "trello": {
@@ -1598,43 +1670,32 @@
                     ]
                 }
             },
-            "units": {
-                "issues": [
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "List",
-                        "key": "list"
-                    },
-                    {
-                        "name": "Due date",
-                        "key": "due_date",
-                        "type": "datetime"
-                    },
-                    {
-                        "name": "Date of last activity",
-                        "key": "date_last_activity",
-                        "type": "datetime"
-                    }
-                ],
-                "ready_user_story_points": [
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "List",
-                        "key": "list"
-                    },
-                    {
-                        "name": "User story points",
-                        "key": "story_points"
-                    }
-                ]
+            "entities": {
+                "issues": {
+                    "name": "issue",
+                    "name_plural": "issues",
+                    "attributes": [
+                        {
+                            "name": "Title",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "List",
+                            "key": "list"
+                        },
+                        {
+                            "name": "Due date",
+                            "key": "due_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Date of last activity",
+                            "key": "date_last_activity",
+                            "type": "datetime"
+                        }
+                    ]
+                }
             }
         },
         "wekan": {
@@ -1709,28 +1770,32 @@
                     ]
                 }
             },
-            "units": {
-                "issues": [
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "List",
-                        "key": "list"
-                    },
-                    {
-                        "name": "Due date",
-                        "key": "due_date",
-                        "type": "datetime"
-                    },
-                    {
-                        "name": "Date of last activity",
-                        "key": "date_last_activity",
-                        "type": "datetime"
-                    }
-                ]
+            "entities": {
+                "issues": {
+                    "name": "issue",
+                    "name_plural": "issues",
+                    "attributes": [
+                        {
+                            "name": "Title",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "List",
+                            "key": "list"
+                        },
+                        {
+                            "name": "Due date",
+                            "key": "due_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Date of last activity",
+                            "key": "date_last_activity",
+                            "type": "datetime"
+                        }
+                    ]
+                }
             }
         }
     },

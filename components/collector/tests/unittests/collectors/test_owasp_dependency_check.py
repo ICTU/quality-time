@@ -44,7 +44,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
             [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Medium", nr_vulnerabilities=2,
                   file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):

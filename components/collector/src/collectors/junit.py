@@ -6,7 +6,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Unit, Units, Value
+from ..type import Entity, Entities, Value
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -34,20 +34,20 @@ class JUnitFailedTests(JUnitTests):
     def test_statuses_to_count(self, **parameters) -> List[str]:
         return parameters.get("failure_type") or ["errored", "failed", "skipped"]
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         """Return a list of failed tests."""
 
-        def unit(case_node, status: str) -> Unit:
-            """Transform a test case into a test case unit."""
+        def entity(case_node, status: str) -> Entity:
+            """Transform a test case into a test case entity."""
             name = case_node.get("name", "<nameless test case>")
             return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=status)
 
         tree = parse_source_response_xml(response)
-        units = []
+        entities = []
         for status in self.test_statuses_to_count(**parameters):
             status_node = self.junit_status_nodes[status]
-            units.extend([unit(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
-        return units
+            entities.extend([entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
+        return entities
 
 
 class JunitSourceUpToDateness(Collector):

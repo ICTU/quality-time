@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Unit, Units, URL, Value
+from ..type import Entity, Entities, URL, Value
 from ..util import days_ago
 
 
@@ -60,18 +60,18 @@ class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.parse_source_response_units(response, **parameters)))
+        return str(len(self.parse_source_response_entities(response, **parameters)))
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         token = response.json()['token']
         api_url = self.api_url(**parameters)
         board_url = f"{api_url}/api/boards/{self.board_id(token, **parameters)}"
         board_slug = self.get_json(board_url, token)["slug"]
-        units: Units = []
+        entities: Entities = []
         for lst in self.lists(board_url, token, **parameters):
             for card in self.cards(f"{board_url}/lists/{lst['_id']}", token, **parameters):
-                units.append(self.card_to_unit(card, api_url, board_slug, lst["title"]))
-        return units
+                entities.append(self.card_to_entity(card, api_url, board_slug, lst["title"]))
+        return entities
 
     def ignore_list(self, card_list, **parameters) -> bool:
         if super().ignore_list(card_list, **parameters):
@@ -101,8 +101,8 @@ class WekanIssues(WekanBase):
         return bool(cards_to_count)
 
     @staticmethod
-    def card_to_unit(card, api_url: URL, board_slug: str, list_title: str) -> Unit:
-        """Convert a card into a unit."""
+    def card_to_entity(card, api_url: URL, board_slug: str, list_title: str) -> Entity:
+        """Convert a card into a entity."""
         return dict(key=card["_id"], url=f"{api_url}/b/{card['boardId']}/{board_slug}/{card['_id']}",
                     list=list_title, title=card["title"], due_date=card.get("dueAt", ""),
                     date_last_activity=card["dateLastActivity"])

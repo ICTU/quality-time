@@ -26,7 +26,7 @@ class GitLabTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = collect_measurement(self.metric)
         self.assertEqual([dict(key="id", name="ref", url="http://gitlab/job", build_age=build_age,
-                               build_date="2019-03-31", build_status="failed")], response["sources"][0]["units"])
+                               build_date="2019-03-31", build_status="failed")], response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
 
     def test_nr_of_failed_jobs_without_failed_jobs(self):

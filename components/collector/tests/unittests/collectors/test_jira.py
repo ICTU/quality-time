@@ -29,4 +29,4 @@ class JiraTest(unittest.TestCase):
             response = collect_measurement(self.metric)
         self.assertEqual(
             [dict(key="id", summary="Summary", url="http://jira/browse/key")],
-            response["sources"][0]["units"])
+            response["sources"][0]["entities"])

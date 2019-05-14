@@ -6,7 +6,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Unit, Units, URL, Value
+from ..type import Entity, Entities, URL, Value
 from ..util import days_ago
 
 
@@ -36,11 +36,11 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     def test_statuses_to_count(**parameters) -> List[str]:
         return parameters.get("failure_type") or ["failed", "skipped"]
 
-    def parse_source_response_units(self, response: requests.Response, **parameters) -> Units:
+    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
         """Return a list of failed tests."""
 
-        def unit(case) -> Unit:
-            """Transform a test case into a test case unit."""
+        def entity(case) -> Entity:
+            """Transform a test case into a test case entity."""
             name = case.get("name", "<nameless test case>")
             return dict(key=name, name=name, class_name=case.get("className", ""), failure_type=status(case))
 
@@ -54,7 +54,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
 
         suites = response.json().get("suites", [])
         statuses = self.test_statuses_to_count(**parameters)
-        return [unit(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
+        return [entity(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
 
 class JenkinsTestReportSourceUpToDateness(Collector):
