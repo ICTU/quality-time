@@ -29,14 +29,12 @@ class MeasurementDetails extends Component {
       props.measurement.sources.forEach((source) => {
         const report_source = metric.sources[source.source_uuid];
         if (!report_source) { return }  // source was deleted, continue
+        const nr_entities = (source.entities && source.entities.length) || 0;
+        if (nr_entities === 0) { return } // no entities to show, continue
         const source_type = report_source.type;
         const source_name = report_source.name || props.datamodel.sources[source_type].name;
-        let nr_entities = source.value || 0;
-        const nr_entities_displayed = (source.entities && source.entities.length) || 0;
-        if (nr_entities_displayed === 0) { return } // no entities to show
-        if (Number(nr_entities) !== Number(nr_entities_displayed)) { nr_entities = `${nr_entities_displayed} of ${nr_entities}` };
         panes.push({
-          menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name} <Label basic circular color="grey">{nr_entities}</Label></FocusableTab></Menu.Item>,
+          menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
           render: () => <Tab.Pane>
             <SourceEntities
               datamodel={props.datamodel}
