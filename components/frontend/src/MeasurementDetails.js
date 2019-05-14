@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Label, Tab, Menu } from 'semantic-ui-react';
+import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from './Sources';
 import { SourceEntities } from './SourceEntities';
