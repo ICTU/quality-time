@@ -149,5 +149,3 @@ The `subjects` part of the datamodel is an object where the keys are the subject
 ```
 
 The `name` is the default name of the subject. The `description` describes the subject type. The list of `metrics` contains the default metrics for the subject. If a user creates a new subject, these metrics are added to it automatically.
-
-..
