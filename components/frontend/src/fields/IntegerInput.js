@@ -22,11 +22,11 @@ class IntegerInput extends Component {
     onSubmit(event) {
         event.preventDefault();
         if (this.state.edited_value !== this.props.value) {
-            this.props.set_value(this.state.edited_value);
+            this.props.set_value(this.state.edited_value || 0);
         }
     }
     render() {
-        let { set_value, unit, ...props } = this.props;
+        let { prefix, set_value, unit, ...props } = this.props;
         return (
             <Form onSubmit={(e) => this.onSubmit(e)}>
                 <Form.Group style={{ marginBottom: '0px' }}>
@@ -44,6 +44,7 @@ class IntegerInput extends Component {
                         value={this.state.edited_value}
                         width={16}
                     >
+                        {prefix ? <Label basic>{prefix}</Label> : null}
                         <input />
                         <Label basic>{unit}</Label>
                     </Form.Input>
