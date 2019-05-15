@@ -3,6 +3,7 @@ import { Icon } from 'semantic-ui-react';
 import { StringInput } from './fields/StringInput';
 import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 import { DateInput } from './fields/DateInput';
+import { IntegerInput } from './fields/IntegerInput';
 import { Input } from './fields/Input';
 
 class SourceParameter extends Component {
@@ -85,14 +86,13 @@ class SourceParameter extends Component {
     }
     if (this.props.parameter_type === "integer") {
       return (
-        <Input
+        <IntegerInput
           label={label}
-          min="0"
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
-          type="number"
           value={this.props.parameter_value}
+          unit={this.props.parameter_unit}
         />
       )
     }

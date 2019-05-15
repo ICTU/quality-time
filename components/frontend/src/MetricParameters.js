@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Header, Icon } from 'semantic-ui-react';
-import { MetricTarget } from './MetricTarget';
 import { MetricType } from './MetricType';
+import { IntegerInput } from './fields/IntegerInput';
 import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
 import { StringInput } from './fields/StringInput';
 import { SingleChoiceInput } from './fields/SingleChoiceInput';
@@ -54,25 +54,23 @@ function MetricParameters(props) {
                 </Grid.Row>
                 <Grid.Row columns={3}>
                     <Grid.Column>
-                        <MetricTarget
-                            direction={metric_type.direction}
+                        <IntegerInput
                             label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
+                            prefix={metric_type.direction}
                             readOnly={props.readOnly}
-                            set_metric_attribute={props.set_metric_attribute}
                             set_value={(value) => props.set_metric_attribute("target", value)}
-                            target={props.metric.target}
                             unit={metric_unit}
+                            value={props.metric.target}
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <MetricTarget
-                            direction={metric_type.direction}
+                        <IntegerInput
                             label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
+                            prefix={metric_type.direction}
                             readOnly={props.readOnly}
-                            set_metric_attribute={props.set_metric_attribute}
                             set_value={(value) => props.set_metric_attribute("near_target", value)}
-                            target={props.metric.near_target}
                             unit={metric_unit}
+                            value={props.metric.near_target}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -99,13 +97,13 @@ function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <MetricTarget
-                            direction={metric_type.direction}
+                        <IntegerInput
                             label="Metric debt target"
+                            prefix={metric_type.direction}
                             readOnly={props.readOnly}
                             set_value={(value) => props.set_metric_attribute("debt_target", value)}
-                            target={props.metric.debt_target}
                             unit={metric_unit}
+                            value={props.metric.debt_target}
                         />
                     </Grid.Column>
                 </Grid.Row>

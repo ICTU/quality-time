@@ -19,6 +19,7 @@ function SourceParameters(props) {
                     parameter_values={all_parameters[parameter_key].values || []}
                     parameter_value={props.source.parameters ?
                         props.source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
+                    parameter_unit={all_parameters[parameter_key].unit}
                     placeholder={all_parameters[parameter_key].placeholder || ""}
                     readOnly={props.readOnly}
                     reload={props.reload}

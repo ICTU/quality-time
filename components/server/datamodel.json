@@ -509,6 +509,7 @@
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
                     "type": "integer",
+                    "unit": "days",
                     "default_value": "7",
                     "metrics": [
                         "unmerged_branches"
@@ -648,6 +649,7 @@
                 "inactive_days": {
                     "name": "Number of days without builds after which to consider CI-jobs unused.",
                     "type": "integer",
+                    "unit": "days",
                     "default_value": "90",
                     "metrics": [
                         "unused_jobs"
@@ -1712,6 +1714,7 @@
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
                     "type": "integer",
+                    "unit": "days",
                     "default_value": "30",
                     "metrics": [
                         "issues"
@@ -1812,6 +1815,7 @@
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
                     "type": "integer",
+                    "unit": "days",
                     "default_value": "30",
                     "metrics": [
                         "issues"
