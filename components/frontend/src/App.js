@@ -12,7 +12,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
-      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null
+      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date()
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
@@ -44,6 +44,7 @@ class App extends Component {
         self.setState({ datamodel: json });
       });
     let self = this;
+    const current_date = new Date()
     fetch(`${window.server_url}/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
@@ -55,7 +56,8 @@ class App extends Component {
             reports: json.reports,
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
-            loading: false
+            loading: false,
+            last_update: current_date
           }
         );
       });
@@ -184,7 +186,7 @@ class App extends Component {
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
         </Container>
-        <Footer>
+        <Footer last_update={this.state.last_update} report={report}>
         </Footer>
       </>
     );
