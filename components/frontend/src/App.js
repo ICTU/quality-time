@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Segment } from 'semantic-ui-react';
 import { Report } from './Report.js';
 import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
 import { createBrowserHistory } from 'history';
+import { Footer } from './Footer.js';
 
 
 class App extends Component {
@@ -11,7 +12,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
-      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null
+      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date()
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
@@ -43,6 +44,7 @@ class App extends Component {
         self.setState({ datamodel: json });
       });
     let self = this;
+    const current_date = new Date()
     fetch(`${window.server_url}/reports?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
@@ -54,7 +56,8 @@ class App extends Component {
             reports: json.reports,
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
-            loading: false
+            loading: false,
+            last_update: current_date
           }
         );
       });
@@ -160,7 +163,7 @@ class App extends Component {
     const report_date = this.report_date();
     const report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     return (
-      <>
+      <div style={{display:"flex", minHeight:"100vh", flexDirection:"column"}}>
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
@@ -168,11 +171,9 @@ class App extends Component {
           report={report} report_date={report_date} login={(u, p) => this.login(u, p)}
           logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
-        <Container fluid style={{ marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
+        <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
           {this.state.loading ?
-            <Dimmer active inverted>
-              <Loader size='large'>Loading</Loader>
-            </Dimmer>
+            <Segment basic placeholder loading size="massive" />
             :
             this.state.report_uuid === "" ?
               <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
@@ -183,7 +184,8 @@ class App extends Component {
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
         </Container>
-      </>
+        <Footer last_update={this.state.last_update} report={report} />
+      </div>
     );
   }
 }
