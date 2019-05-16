@@ -13,6 +13,7 @@ The collector collects metrics data from metric sources such as SonarQube and Ji
 - [Installation](#installation)
 - [Usage](#usage)
 - [Test](#test)
+- [Deployment](#deployment)
 - [Recent changes](#recent-changes)
 
 ## Screenshots
@@ -52,7 +53,7 @@ Implemented features so far include:
 
 For more plans, see the issue tracker.
 
-## Installation
+## Trying it out
 
 *Quality-time* requires Docker and Docker-compose.
 
@@ -69,8 +70,6 @@ Build the containers:
 ```console
 docker-compose build
 ```
-
-## Usage
 
 Start the containers:
 
@@ -98,7 +97,7 @@ Open five terminals. In the first one, run the standard containers with docker-c
 docker-compose up database ldap mongo-express
 ```
 
-Mongo-express is served at [http://localhost:8081](http://localhost:8081).
+Mongo-express is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
 In the second one, run the server:
 
@@ -156,12 +155,58 @@ To run mypy and pylint:
 ci/quality.sh
 ```
 
-To run the frontend tests (which are unfortunately mostly missing at the moment):
+To run the frontend unit tests (which are unfortunately mostly missing at the moment):
 
 ```console
 cd compontents/frontend
 npm run test
 ```
+
+To run the frontend UI tests (automated regression test):
+
+```console
+cd components/art
+npm install --save-dev
+npx cypress run
+```
+
+Cypress stores screenshots (if a test fails) and video in `components/art/cypress/screenshots` and `components/art/cypress/videos`.
+
+## Deployment
+
+(To be completed)
+
+### LDAP
+
+To configure a LDAP server to authenticate users with, set the `LDAP_URL` and `LDAP_ROOT_DN` environment variables. When running locally, this can be done in the shell:
+
+```console
+$ export LDAP_URL="ldap://ldap.example.org:389"
+$ export LDAP_ROOT_DN="dc=example,dc=org"
+$ quality-report-server
+INFO:root:Connected to database: Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quality_time_db')
+INFO:root:Measurements collection has 108 measurements
+INFO:root:Initializing LDAP server at ldap://ldap.example.org:389
+...
+```
+
+When using docker-compose, add the LDAP environment variables to the server section:
+
+```yaml
+...
+server:
+    image: docker-registry.example.org:5000/ictu/quality-time-server
+    ports:
+    - "8080:8080"
+    environment:
+    - FRONTEND_URL=http://www.quality-time.example.org:5000
+    - SERVER_URL=http://server.quality-time.example.org:8080
+    - DATABASE_URL=mongodb://root:root@database:27017
+    - LDAP_URL=ldap://ldap.example.org:389
+    - LDAP_ROOT_DN="dc=example,dc=org"
+```
+
+Users can only use their canonical name (`cn`) to login at the moment.
 
 ## Recent changes
 
