@@ -1,6 +1,7 @@
 """Login/logout."""
 
 from datetime import datetime, timedelta
+import logging
 import os
 import re
 import urllib.parse
@@ -26,11 +27,14 @@ def set_session_cookie(session_id: str, clear: bool = False) -> None:
 def login(database: Database, ldap_server):
     """Log the user in."""
     credentials = dict(bottle.request.json)
-    safe_characters = re.compile(r"\W+", re.UNICODE)
-    username = re.sub(safe_characters, "", credentials.get("username", "no username given"))
+    unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
+    username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
+    ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     try:
-        ldap_server.simple_bind_s(f"cn={username},dc=example,dc=org", credentials.get("password"))
-    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX):  # pylint: disable=no-member
+        ldap_server.simple_bind_s(f"cn={username},{ldap_root_dn}", credentials.get("password"))
+    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX,
+            ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
+        logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
     session_id = uuid()
     sessions.upsert(database, username, session_id)
