@@ -4,6 +4,7 @@ import { Report } from './Report.js';
 import { Reports } from './Reports.js';
 import { Menubar } from './Menubar.js';
 import { createBrowserHistory } from 'history';
+import { Footer } from './Footer.js';
 
 
 class App extends Component {
@@ -183,6 +184,8 @@ class App extends Component {
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
         </Container>
+        <Footer>
+        </Footer>
       </>
     );
   }
