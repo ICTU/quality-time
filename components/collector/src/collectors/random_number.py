@@ -12,8 +12,8 @@ from ..type import URL
 
 class Random(Collector):
     """Random number metric collector."""
-    min = 0
-    max = 50
+    min = 1
+    max = 99
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Return a random number as the response."""
