@@ -25,7 +25,7 @@ def parse_source_response_xml_with_namespace(response: requests.Response) -> Tup
 
 
 MEMORY_ADDRESS_RE = re.compile(r" at 0x[0-9abcdef]+>")
-TOKEN_RE = re.compile(r"token=[0-9abcdef]+")
+TOKEN_RE = re.compile(r"token=[0-9a-zA-Z]+")
 KEY_RE = re.compile(r"key=[0-9abcdef]+")
 
 
