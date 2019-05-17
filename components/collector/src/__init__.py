@@ -62,8 +62,12 @@ class MetricsCollector:
 
     def skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""
-        if not metric.get("sources"):
+        sources = metric.get("sources")
+        if not sources:
             return True  # Always skip if the metric has no sources
+        urls = [source.get("parameters", {}).get("url") for source in sources.values()]
+        if not any(urls):
+            return True  # Always skip if none of the sources has a url
         if self.last_parameters.get(metric_uuid) != metric:
             return False  # Don't skip if metric parameters changed
         time_ago = datetime.now() - self.last_fetch.get(metric_uuid, datetime.min)

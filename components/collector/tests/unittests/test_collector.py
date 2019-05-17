@@ -47,37 +47,41 @@ class CollectorTest(unittest.TestCase):
         """Test fetching measurement when posting fails."""
         self.mock_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source"))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post", side_effect=RuntimeError) as post:
                 MetricsCollector().fetch_measurements()
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
-                                    parse_error=None, source_uuid="source_id")],
-                      value=42, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+            json=dict(
+                sources=[
+                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
+                         parse_error=None, source_uuid="source_id")],
+                value=42, metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
         """Test the collect method."""
         self.mock_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source"))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
                     self.assertRaises(RuntimeError, collect)
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
-                                    parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
-                      report_uuid="report_uuid"))
+            json=dict(
+                sources=[
+                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
+                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
+                report_uuid="report_uuid"))
 
     def test_missing_collector(self):
         """Test that an exception is thrown if there's no collector for the source and metric type."""
         self.mock_response.json.return_value = dict(
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid",
-                sources=dict(missing=dict(type="unknown_source"))))
+                sources=dict(missing=dict(type="unknown_source", parameters=dict(url="http://url")))))
         with patch("requests.get", return_value=self.mock_response):
             self.assertRaises(
                 LookupError, MetricsCollector().fetch_measurements)
@@ -86,7 +90,7 @@ class CollectorTest(unittest.TestCase):
         """Test that the metric is skipped on the second fetch."""
         self.mock_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source"))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
         with patch("requests.get", return_value=self.mock_response):
             with patch("requests.post") as post:
                 metric_collector = MetricsCollector()
@@ -94,6 +98,19 @@ class CollectorTest(unittest.TestCase):
                 metric_collector.fetch_measurements()
         post.assert_called_once_with(
             "http://localhost:8080/measurements",
-            json=dict(sources=[dict(api_url="", landing_url="", value="42", entities=[], connection_error=None,
-                                    parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
-                      report_uuid="report_uuid"))
+            json=dict(
+                sources=[
+                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
+                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
+                report_uuid="report_uuid"))
+
+    def test_no_urls(self):
+        """Test that a metric with sources but without urls is skipped."""
+        self.mock_response.json.return_value = dict(
+            metric_uuid=dict(
+                type="metric", addition="sum", report_uuid="report_uuid",
+                sources=dict(missing=dict(type="source", parameters=dict(url="")))))
+        with patch("requests.get", return_value=self.mock_response):
+            with patch("requests.post") as post:
+                MetricsCollector().fetch_measurements()
+        post.assert_not_called()
