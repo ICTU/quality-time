@@ -1194,6 +1194,26 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
                 "risks": {
                     "name": "Risks",
                     "type": "multiple_choice",
