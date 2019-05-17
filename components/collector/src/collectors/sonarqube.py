@@ -59,6 +59,12 @@ class SonarQubeViolations(Collector):
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 
 
+class SonarQubeCommentedOutCode(SonarQubeViolations):
+    """SonarQube commented out code collector."""
+
+    rules_parameter = "commented_out_rules"
+
+
 class SonarQubeComplexUnits(SonarQubeViolations):
     """SonarQube long methods collector."""
 

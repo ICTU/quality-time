@@ -1,5 +1,22 @@
 {
     "metrics": {
+        "commented_out_code": {
+            "name": "Commented out code",
+            "description": "Measure the number of lines of code commented out.",
+            "unit": "lines",
+            "addition": "sum",
+            "direction": "<=",
+            "target": "0",
+            "near_target": "100",
+            "sources": [
+                "hq",
+                "sonarqube",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
         "complex_units": {
             "name": "Complex units",
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
@@ -587,6 +604,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
                         "failed_jobs",
@@ -608,6 +626,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
                         "failed_jobs",
@@ -1254,6 +1273,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
                         "failed_tests",
@@ -1276,6 +1296,7 @@
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/user-token/",
                     "default_value": "",
                     "metrics": [
+                        "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
                         "failed_tests",
@@ -1297,6 +1318,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
                         "failed_tests",
@@ -1310,6 +1332,55 @@
                         "uncovered_branches",
                         "uncovered_lines",
                         "violations"
+                    ]
+                },
+                "commented_out_rules": {
+                    "name": "Rules",
+                    "type": "multiple_choice_with_addition",
+                    "mandatory": true,
+                    "help_url": "https://rules.sonarsource.com",
+                    "default_value": [
+                        "abap:S125",
+                        "apex:S125",
+                        "c:CommentedCode",
+                        "cpp:CommentedCode",
+                        "flex:CommentedCode",
+                        "csharpsquid:S125",
+                        "javascript:CommentedCode",
+                        "kotlin:S125",
+                        "objc:CommentedCode",
+                        "php:S125",
+                        "plsql:S125",
+                        "python:S125",
+                        "scala:S125",
+                        "squid:CommentedOutCodeLine",
+                        "swift:S125",
+                        "typescript:S125",
+                        "Web:AvoidCommentedOutCodeCheck",
+                        "xml:S125"
+                    ],
+                    "values": [
+                        "abap:S125",
+                        "apex:S125",
+                        "c:CommentedCode",
+                        "cpp:CommentedCode",
+                        "flex:CommentedCode",
+                        "csharpsquid:S125",
+                        "javascript:CommentedCode",
+                        "kotlin:S125",
+                        "objc:CommentedCode",
+                        "php:S125",
+                        "plsql:S125",
+                        "python:S125",
+                        "scala:S125",
+                        "squid:CommentedOutCodeLine",
+                        "swift:S125",
+                        "typescript:S125",
+                        "Web:AvoidCommentedOutCodeCheck",
+                        "xml:S125"
+                    ],
+                    "metrics": [
+                        "commented_out_code"
                     ]
                 },
                 "complex_unit_rules": {
