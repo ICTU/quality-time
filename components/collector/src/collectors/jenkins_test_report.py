@@ -64,5 +64,5 @@ class JenkinsTestReportSourceUpToDateness(Collector):
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        report_datetime = parse(response.json()["suites"][0]["timestamp"])
-        return str(days_ago(report_datetime))
+        timestamps = [suite.get("timestamp") for suite in response.json().get("suites", []) if suite.get("timestamp")]
+        return str(days_ago(parse(max(timestamps))))
