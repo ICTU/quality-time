@@ -42,14 +42,18 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         vulnerabilities = self.vulnerabilities(dependency, namespaces, **parameters)
         severities = set(vulnerability.findtext(".//ns:severity", namespaces=namespaces).lower()
                          for vulnerability in vulnerabilities)
-        highest_severity = "high" if "high" in severities else "medium" if "medium" in severities else "low"
+        highest_severity = "low"
+        for severity in ("critical", "high", "medium"):
+            if severity in severities:
+                highest_severity = severity
+                break
         return dict(key=key, file_path=file_path, highest_severity=highest_severity.capitalize(),
                     url=entity_landing_url, nr_vulnerabilities=len(vulnerabilities))
 
     @staticmethod
     def vulnerabilities(element: Element, namespaces: Namespaces, **parameters) -> List[Element]:
         """Return the vulnerabilities that have one of the severities specified in the parameters."""
-        severities = parameters.get("severities") or ["low", "medium", "high"]
+        severities = parameters.get("severities") or ["low", "medium", "high", "critical"]
         vulnerabilities = element.findall(".//ns:vulnerabilities/ns:vulnerability", namespaces)
         return [vulnerability for vulnerability in vulnerabilities if
                 vulnerability.findtext(".//ns:severity", namespaces=namespaces).lower() in severities]

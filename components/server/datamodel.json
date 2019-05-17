@@ -1144,7 +1144,8 @@
                     "values": [
                         "low",
                         "medium",
-                        "high"
+                        "high",
+                        "critical"
                     ],
                     "metrics": [
                         "security_warnings"
@@ -1165,6 +1166,7 @@
                             "name": "Highest severity",
                             "key": "highest_severity",
                             "color": {
+                                "Critical": "negative",
                                 "High": "negative",
                                 "Medium": "warning"
                             }
