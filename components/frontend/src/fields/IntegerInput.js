@@ -4,19 +4,19 @@ import { Form, Label } from 'semantic-ui-react';
 class IntegerInput extends Component {
     constructor(props) {
         super(props);
-        this.state = { edited_value: this.props.value || 0}
+        this.state = { edited_value: this.props.value || 0 }
     }
     componentDidUpdate(prevProps) {
         if (prevProps.value !== this.props.value) {
-            this.setState({ edited_value: this.props.value })
+            this.setState({ edited_value: this.props.value || 0 })
         }
     }
     onChange(event) {
-        this.setState({ edited_value: event.target.value });
+        this.setState({ edited_value: event.target.value || 0 });
     }
     onKeyDown(event) {
         if (event.key === "Escape") {
-            this.setState({ edited_value: this.props.value })
+            this.setState({ edited_value: this.props.value || 0 })
         }
     }
     onSubmit(event) {

@@ -67,6 +67,7 @@ class SourceParameter extends Component {
           options={this.state.options}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
+          required={this.props.required}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           value={this.props.parameter_value}
         />
@@ -78,6 +79,7 @@ class SourceParameter extends Component {
           label={label}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
+          required={this.props.required}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           type="password"
           value={this.props.parameter_value}
@@ -90,6 +92,7 @@ class SourceParameter extends Component {
           label={label}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
+          required={this.props.required}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           value={this.props.parameter_value}
           unit={this.props.parameter_unit}
@@ -104,6 +107,7 @@ class SourceParameter extends Component {
           options={this.props.parameter_values}
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
+          required={this.props.required}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           value={this.props.parameter_value || []}
         />
@@ -114,6 +118,7 @@ class SourceParameter extends Component {
         <DateInput
           label={label}
           readOnly={this.props.readOnly}
+          required={this.props.required}
           set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
           value={this.props.parameter_value}
         />
@@ -125,6 +130,7 @@ class SourceParameter extends Component {
         options={this.props.parameter_values}
         placeholder={this.props.placeholder}
         readOnly={this.props.readOnly}
+        required={this.props.required}
         set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
         value={this.props.parameter_value || []}
       />

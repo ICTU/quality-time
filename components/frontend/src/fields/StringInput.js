@@ -5,7 +5,7 @@ import { Input } from './Input';
 class StringInputWithSuggestions extends Component {
   constructor(props) {
     super(props);
-    this.state = { options: props.options, edited_value: props.value }
+    this.state = { options: props.options, edited_value: props.value || ""}
   }
 
   componentDidUpdate(prevProps) {
@@ -34,12 +34,13 @@ class StringInputWithSuggestions extends Component {
   }
 
   render() {
-    let { set_value, ...otherProps } = this.props;
+    let { required, set_value, ...otherProps } = this.props;
     return (
       <Form>
         <Form.Dropdown
           {...otherProps}
           allowAdditions
+          error={required && this.state.edited_value === ""}
           fluid
           onAddItem={this.handleAddition}
           onChange={this.handleChange}
