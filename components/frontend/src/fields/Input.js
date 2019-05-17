@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 class Input extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_value: this.props.value }
+    this.state = { edited_value: this.props.value || ""}
   }
   componentDidUpdate(prevProps) {
     if (prevProps.value !== this.props.value) {
@@ -26,11 +26,12 @@ class Input extends Component {
     }
   }
   render() {
-    let { set_value, ...props } = this.props;
+    let { required, set_value, ...props } = this.props;
     return (
       <Form>
         <Form.Input
           {...props}
+          error={required && this.state.edited_value === ""}
           fluid
           focus
           onBlur={(e) => this.onSubmit(e)}

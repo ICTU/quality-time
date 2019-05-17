@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 class TextInput extends Component {
   constructor(props) {
     super(props);
-    this.state = { edited_text: props.value }
+    this.state = { edited_text: props.value || "" }
   }
   onChange(event) {
     this.setState({ edited_text: event.target.value });
@@ -21,22 +21,21 @@ class TextInput extends Component {
   }
   onSubmit(event) {
     event.preventDefault();
-    const edited_text = this.state.edited_text || "";
-    if (edited_text !== this.props.value) {
-      this.props.set_value(edited_text);
+    if (this.state.edited_text !== this.props.value) {
+      this.props.set_value(this.state.edited_text);
     }
   }
   render() {
+    let { required, set_value, ...otherProps } = this.props;
     return (
       <Form onSubmit={(e) => this.onSubmit(e)}>
         <Form.TextArea
-          label={this.props.label}
+          {...otherProps}
+          error={required && this.state.edited_text === ""}
           onBlur={(e) => this.onSubmit(e)}
           onChange={(e) => this.onChange(e)}
           onKeyDown={(e) => this.onKeyDown(e)}
           onKeyPress={(e) => this.onKeyPress(e)}
-          placeholder={this.props.placeholder}
-          readOnly={this.props.readOnly}
           value={this.state.edited_text}
         />
       </Form>

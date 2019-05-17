@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 class MultipleChoiceInput extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: props.value, options: this.options() }
+    this.state = { value: props.value || [], options: this.options() }
   }
   componentDidUpdate(prevProps) {
     if (prevProps.values !== this.props.values) {
@@ -34,7 +34,7 @@ class MultipleChoiceInput extends Component {
     }
   }
   render() {
-    let { set_value, allowAdditions, ...otherProps } = this.props;
+    let { required, set_value, allowAdditions, ...otherProps } = this.props;
     return (
       <Form>
         {this.props.readOnly ?
@@ -45,6 +45,7 @@ class MultipleChoiceInput extends Component {
           <Form.Dropdown
             {...otherProps}
             allowAdditions={allowAdditions}
+            error={required && this.state.value.length === 0}
             fluid
             multiple
             onAddItem={this.handleAddition}
@@ -52,7 +53,7 @@ class MultipleChoiceInput extends Component {
             options={this.state.options}
             search
             selection
-            value={this.state.value || []}
+            value={this.state.value}
           />
         }
       </Form>

@@ -24,6 +24,7 @@ function SourceParameters(props) {
                     readOnly={props.readOnly}
                     reload={props.reload}
                     report={props.report}
+                    required={all_parameters[parameter_key].mandatory}
                     source={props.source}
                     source_uuid={props.source_uuid}
                 />

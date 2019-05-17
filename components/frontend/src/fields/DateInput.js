@@ -17,9 +17,10 @@ class EditableDateInput extends Component {
             <Form>
                 <CalendarDateInput
                     dateFormat="YYYY-MM-DD"
+                    disabled={this.props.readOnly}
                     label={this.props.label}
                     onChange={this.onChange}
-                    disabled={this.props.readOnly}
+                    error={this.props.required && this.state.edited_date === ""}
                     value={this.state.edited_date}
                 />
             </Form>

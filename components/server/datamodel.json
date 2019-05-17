@@ -356,6 +356,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "issues",
@@ -365,6 +366,7 @@
                 "private_token": {
                     "name": "Private token",
                     "type": "password",
+                    "mandatory": false,
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
                     "metrics": [
@@ -375,6 +377,7 @@
                 "wiql": {
                     "name": "Issue query in WIQL (Work Item Query Language)",
                     "type": "string",
+                    "mandatory": true,
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
                     "default_value": "",
                     "metrics": [
@@ -443,6 +446,7 @@
                 "date": {
                     "name": "Date",
                     "type": "date",
+                    "mandatory": true,
                     "default_value": "2019-01-01",
                     "metrics": [
                         "source_up_to_dateness"
@@ -459,6 +463,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
@@ -469,6 +474,7 @@
                 "project": {
                     "name": "Project (id or path)",
                     "type": "string",
+                    "mandatory": true,
                     "help_url": "https://docs.gitlab.com/ee/user/project/",
                     "default_value": "",
                     "metrics": [
@@ -480,6 +486,7 @@
                 "private_token": {
                     "name": "Private token",
                     "type": "password",
+                    "mandatory": false,
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
                     "default_value": "",
                     "metrics": [
@@ -491,6 +498,7 @@
                 "file_path": {
                     "name": "File path",
                     "type": "string",
+                    "mandatory": true,
                     "help_url": "https://docs.gitlab.com/ee/api/repository_files.html",
                     "default_value": "",
                     "metrics": [
@@ -500,6 +508,7 @@
                 "branch": {
                     "name": "Branch",
                     "type": "string",
+                    "mandatory": false,
                     "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
                     "default_value": "master",
                     "metrics": [
@@ -509,6 +518,7 @@
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
                     "type": "integer",
+                    "mandatory": false,
                     "unit": "days",
                     "default_value": "7",
                     "metrics": [
@@ -574,6 +584,7 @@
                 "url": {
                     "name": "URL to HQ-report",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "complex_units",
@@ -594,6 +605,7 @@
                 "metric_id": {
                     "name": "Stable metric ID",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "complex_units",
@@ -622,6 +634,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
@@ -640,6 +653,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
@@ -649,6 +663,7 @@
                 "inactive_days": {
                     "name": "Number of days without builds after which to consider CI-jobs unused.",
                     "type": "integer",
+                    "mandatory": false,
                     "unit": "days",
                     "default_value": "90",
                     "metrics": [
@@ -658,6 +673,7 @@
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "Aborted",
@@ -741,6 +757,7 @@
                 "url": {
                     "name": "URL to job",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
@@ -751,6 +768,7 @@
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
@@ -761,6 +779,7 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
@@ -771,6 +790,7 @@
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "failed",
@@ -815,6 +835,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "issues"
@@ -823,6 +844,7 @@
                 "jql": {
                     "name": "Issue query in JQL (Jira Query Language)",
                     "type": "string",
+                    "mandatory": false,
                     "help_url": "https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html",
                     "default_value": "",
                     "metrics": [
@@ -832,6 +854,7 @@
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues"
@@ -840,6 +863,7 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues"
@@ -868,6 +892,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
@@ -878,6 +903,7 @@
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "errored",
@@ -924,6 +950,7 @@
                 "url": {
                     "name": "URL to XML report",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "violations"
@@ -932,6 +959,7 @@
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "violations"
@@ -940,6 +968,7 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "violations"
@@ -948,6 +977,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "advisory",
@@ -995,6 +1025,7 @@
                 "url": {
                     "name": "URL to XML report",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -1004,6 +1035,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "log",
@@ -1058,6 +1090,7 @@
                 "url": {
                     "name": "URL to XML report",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -1067,6 +1100,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "low",
@@ -1112,6 +1146,7 @@
                 "url": {
                     "name": "URL to XML report",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -1121,6 +1156,7 @@
                 "risks": {
                     "name": "Risks",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": "",
                     "values": [
                         "informational",
@@ -1177,6 +1213,7 @@
                 "url": {
                     "name": "URL to Robot Framework output.xml",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
@@ -1214,6 +1251,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "complex_units",
@@ -1234,6 +1272,7 @@
                 "private_token": {
                     "name": "Private token",
                     "type": "password",
+                    "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/user-token/",
                     "default_value": "",
                     "metrics": [
@@ -1255,6 +1294,7 @@
                 "component": {
                     "name": "Project key",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "complex_units",
@@ -1275,6 +1315,7 @@
                 "complex_unit_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": true,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "csharpsquid:S1541",
@@ -1325,6 +1366,7 @@
                 "many_parameter_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": true,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "c:S107",
@@ -1362,6 +1404,7 @@
                 "long_unit_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": true,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "abap:S104",
@@ -1440,6 +1483,7 @@
                 "severities": {
                     "name": "Severities",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/issues/",
                     "default_value": "",
                     "values": [
@@ -1456,6 +1500,7 @@
                 "suppression_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": true,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "csharpsquid:S1309",
@@ -1484,6 +1529,7 @@
                 "types": {
                     "name": "Types",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
                     "default_value": "",
                     "values": [
@@ -1648,6 +1694,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "https://trello.com",
                     "metrics": [
                         "issues",
@@ -1658,6 +1705,7 @@
                 "api_key": {
                     "name": "API key",
                     "type": "string",
+                    "mandatory": false,
                     "help_url": "https://trello.com/app-key",
                     "default_value": "",
                     "metrics": [
@@ -1669,6 +1717,7 @@
                 "token": {
                     "name": "Token",
                     "type": "string",
+                    "mandatory": false,
                     "help_url": "https://trello.com/app-key",
                     "default_value": "",
                     "metrics": [
@@ -1680,6 +1729,7 @@
                 "board": {
                     "name": "Board (id)",
                     "type": "string",
+                    "mandatory": true,
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
                     "default_value": "",
                     "metrics": [
@@ -1691,6 +1741,7 @@
                 "lists_to_ignore": {
                     "name": "Lists to ignore (title or id)",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": false,
                     "default_value": [],
                     "placeholder": "none",
                     "metrics": [
@@ -1701,6 +1752,7 @@
                 "cards_to_count": {
                     "name": "Cards to count",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": [],
                     "placeholder": "all",
                     "values": [
@@ -1714,6 +1766,7 @@
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
                     "type": "integer",
+                    "mandatory": false,
                     "unit": "days",
                     "default_value": "30",
                     "metrics": [
@@ -1757,6 +1810,7 @@
                 "url": {
                     "name": "URL",
                     "type": "string",
+                    "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "issues",
@@ -1766,6 +1820,7 @@
                 "board": {
                     "name": "Board (title or id)",
                     "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues",
@@ -1775,6 +1830,7 @@
                 "username": {
                     "name": "Username",
                     "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues",
@@ -1784,6 +1840,7 @@
                 "password": {
                     "name": "Password",
                     "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "issues",
@@ -1793,6 +1850,7 @@
                 "lists_to_ignore": {
                     "name": "Lists to ignore (title or id)",
                     "type": "multiple_choice_with_addition",
+                    "mandatory": false,
                     "default_value": [],
                     "placeholder": "none",
                     "metrics": [
@@ -1802,6 +1860,7 @@
                 "cards_to_count": {
                     "name": "Cards to count",
                     "type": "multiple_choice",
+                    "mandatory": false,
                     "default_value": [],
                     "placeholder": "all",
                     "values": [
@@ -1815,6 +1874,7 @@
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
                     "type": "integer",
+                    "mandatory": false,
                     "unit": "days",
                     "default_value": "30",
                     "metrics": [

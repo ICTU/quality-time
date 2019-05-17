@@ -48,3 +48,15 @@ class DataModelTest(unittest.TestCase):
         """Test each metric had its addition defined correctly."""
         for metric in self.datamodel["metrics"].values():
             self.assertTrue(metric["addition"] in ["sum", "max"])
+
+    def test_mandatory_parameters(self):
+        """Test that each metric has a mandatory field with true or false value."""
+        for source_id, source in self.datamodel["sources"].items():
+            for parameter_id, parameter_values in source["parameters"].items():
+                self.assertTrue(
+                    "mandatory" in parameter_values,
+                    f"The parameter '{parameter_id}' of source '{source_id}' has no 'mandatory' field")
+                self.assertTrue(
+                    parameter_values["mandatory"] in (True, False),
+                    f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
+                    "true nor false")
