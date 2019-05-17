@@ -47,6 +47,33 @@ class OWASPDependencyCheckTest(unittest.TestCase):
             response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
 
+    def test_low_warnings(self):
+        """Test that the number of warnings is returned."""
+        self.mock_response.text = """<?xml version="1.0"?>
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
+            <dependency isVirtual="false">
+                <sha1>12345</sha1>
+                <fileName>jquery.min.js</fileName>
+                <filePath>/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js</filePath>
+                <vulnerabilities>
+                    <vulnerability source="NVD">
+                        <cvssV2>
+                            <severity>LOW</severity>
+                        </cvssV2>
+                    </vulnerability>
+                </vulnerabilities>
+            </dependency>
+        </analysis>"""
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = collect_measurement(metric)
+        self.assertEqual(
+            [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
+                  highest_severity="Low", nr_vulnerabilities=1,
+                  file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
+            response["sources"][0]["entities"])
+        self.assertEqual("1", response["sources"][0]["value"])
+
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
