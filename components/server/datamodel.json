@@ -204,6 +204,7 @@
             "near_target": "7",
             "sources": [
                 "calendar",
+                "cxsast",
                 "gitlab",
                 "hq",
                 "jacoco",
@@ -471,6 +472,49 @@
                 }
             },
             "entities": {}
+        },
+        "cxsast": {
+            "name": "Checkmarx CxSAST",
+            "description": "Static analysis software to identify security vulnerabilities in both custom code and open source components.",
+            "url": "https://www.checkmarx.com/products/static-application-security-testing/",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "project": {
+                    "name": "Project (id or name)",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                }
+            }
         },
         "gitlab": {
             "name": "GitLab",
