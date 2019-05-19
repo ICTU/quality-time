@@ -18,7 +18,8 @@ class CxSASTSourceUpToDatenessTest(unittest.TestCase):
                     url="http://checkmarx/", username="user", password="pass", project="project")))
         metric = dict(type="source_up_to_dateness", sources=sources, addition="sum")
         get_response = Mock()
-        get_response.json.return_value = [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))]
+        get_response.json.side_effect = [
+            [dict(name="project", id="id")], [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))]]
         post_response = Mock()
         post_response.json.return_value = dict(access_token="token")
         with patch("requests.post", return_value=post_response):

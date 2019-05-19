@@ -79,7 +79,7 @@ class Collector:
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Open the url. Can be overridden if a post request is needed or mmultiple requests need to be made."""
+        """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
         return requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))
 
     @staticmethod
