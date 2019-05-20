@@ -337,6 +337,7 @@
             "target": "0",
             "near_target": "5",
             "sources": [
+                "cxsast",
                 "hq",
                 "random",
                 "openvas",
@@ -484,6 +485,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "security_warnings",
                         "source_up_to_dateness"
                     ]
                 },
@@ -493,6 +495,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "security_warnings",
                         "source_up_to_dateness"
                     ]
                 },
@@ -502,6 +505,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "security_warnings",
                         "source_up_to_dateness"
                     ]
                 },
@@ -511,7 +515,23 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "security_warnings",
                         "source_up_to_dateness"
+                    ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "info",
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
                     ]
                 }
             }

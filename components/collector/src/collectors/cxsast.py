@@ -10,12 +10,16 @@ from ..type import URL, Value
 from ..util import days_ago
 
 
-class CxSASTSourceUpToDateness(Collector):
-    """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
+class CxSASTBase(Collector):
+    """Base class for CxSAST collectors."""
 
     def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        project_id = parameters.get("project")
-        return URL(f"{self.api_url(**parameters)}/CxWebClient/projectscans.aspx?id={project_id}")
+        api_url = self.api_url(**parameters)
+        if response:
+            token = response.json()['access_token']
+            project_id = self.project_id(token, **parameters)
+            return URL(f"{api_url}/CxWebClient/projectscans.aspx?id={project_id}")
+        return api_url
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
         """Override because we need to do multiple requests to get all the data we need."""
@@ -30,17 +34,16 @@ class CxSASTSourceUpToDateness(Collector):
         response.raise_for_status()
         return response
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        token = response.json()['access_token']
-        project_id = self.project_id(token, **parameters)
-        response = self.open_api(f"sast/scans?projectId={project_id}&scanStatus=Finished&last=1", token, **parameters)
-        return str(days_ago(parse(response.json()[0]["dateAndTime"]["finishedOn"])))
-
     def project_id(self, token: str, **parameters) -> str:
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = parameters.get("project")
         projects = self.open_api(f"projects", token, **parameters).json()
         return [project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"]
+
+    def last_finished_scan(self, token: str, **parameters):
+        """Return the last finished scan."""
+        project_id = self.project_id(token, **parameters)
+        return self.open_api(f"sast/scans?projectId={project_id}&scanStatus=Finished&last=1", token, **parameters)
 
     def open_api(self, api: str, token: str, **parameters) -> requests.Response:
         """Open the API and return the response."""
@@ -49,3 +52,23 @@ class CxSASTSourceUpToDateness(Collector):
             timeout=self.TIMEOUT, verify=False)
         response.raise_for_status()
         return response
+
+
+class CxSASTSourceUpToDateness(CxSASTBase):
+    """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        token = response.json()['access_token']
+        scan = self.last_finished_scan(token, **parameters).json()[0]
+        return str(days_ago(parse(scan["dateAndTime"]["finishedOn"])))
+
+
+class CxSASTSecurityWarnings(CxSASTBase):
+    """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
+
+    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+        token = response.json()['access_token']
+        scan_id = self.last_finished_scan(token, **parameters).json()[0]["id"]
+        stats = self.open_api(f"sast/scans/{scan_id}/resultsStatistics", token, **parameters).json()
+        severities = parameters.get("severities") or ["info", "low", "medium", "high"]
+        return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
