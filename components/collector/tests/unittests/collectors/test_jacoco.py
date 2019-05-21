@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class JaCoCoTest(unittest.TestCase):
@@ -20,7 +20,7 @@ class JaCoCoTest(unittest.TestCase):
         self.mock_response.text = "<report><counter type='LINE' missed='2' /></report>"
         metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_uncovered_branches(self):
@@ -28,7 +28,7 @@ class JaCoCoTest(unittest.TestCase):
         self.mock_response.text = "<report><counter type='BRANCH' missed='4' /></report>"
         metric = dict(type="uncovered_branches", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("4", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):
@@ -40,6 +40,6 @@ class JaCoCoTest(unittest.TestCase):
         </report>"""
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

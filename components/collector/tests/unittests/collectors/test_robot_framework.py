@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class RobotFrameworkTestReportTest(unittest.TestCase):
@@ -27,7 +27,7 @@ class RobotFrameworkTestReportTest(unittest.TestCase):
     </statistics>
 </robot>"""
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("11", response["sources"][0]["value"])
         self.assertEqual("report.html", response["sources"][0]["landing_url"])
 
@@ -54,7 +54,7 @@ class RobotFrameworkTestReportFailedTestsTest(unittest.TestCase):
     </statistics>
 </robot>"""
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("3", response["sources"][0]["value"])
 
     def test_failed_tests_entities(self):
@@ -77,7 +77,7 @@ class RobotFrameworkTestReportFailedTestsTest(unittest.TestCase):
     </statistics>
 </robot>"""
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual(
             [dict(key="s1-t1", name="Test 1", failure_type="fail")],
             response["sources"][0]["entities"])
@@ -95,6 +95,6 @@ class RobotFrameworkSourceUpToDatenessTest(unittest.TestCase):
             sources=dict(source_id=dict(type="robot_framework", parameters=dict(url="output.xml"))),
             addition="max")
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

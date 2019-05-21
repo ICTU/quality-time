@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class OJAuditTest(unittest.TestCase):
@@ -60,7 +60,7 @@ class OJAuditTest(unittest.TestCase):
   </construct>
 </audit>"""
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
@@ -96,7 +96,7 @@ class OJAuditTest(unittest.TestCase):
 </audit>"""
         with patch("requests.get", return_value=mock_response):
             self.assertTrue(
-                "has no location element" in collect_measurement(self.metric)["sources"][0]["parse_error"])
+                "has no location element" in MetricCollector(self.metric).get()["sources"][0]["parse_error"])
 
     def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
@@ -127,6 +127,6 @@ class OJAuditTest(unittest.TestCase):
 </audit>"""
         self.metric["sources"]["a"]["parameters"]["severities"] = ["high"]
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("0", response["sources"][0]["value"])
         self.assertEqual([], response["sources"][0]["entities"])

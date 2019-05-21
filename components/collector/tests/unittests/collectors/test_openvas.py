@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class OpenVASTest(unittest.TestCase):
@@ -30,7 +30,7 @@ class OpenVASTest(unittest.TestCase):
 </report>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual(
             [dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")],
             response["sources"][0]["entities"])
@@ -46,6 +46,6 @@ class OpenVASTest(unittest.TestCase):
 </report>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 4, 9, 17, 56, 14, tzinfo=timezone.utc)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

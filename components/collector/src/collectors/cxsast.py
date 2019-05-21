@@ -1,5 +1,6 @@
 """Collectors for the Checkmarx CxSAST product."""
 
+from datetime import datetime
 from typing import Optional
 import xml.etree.cElementTree
 import urllib3
@@ -82,11 +83,14 @@ class CxSASTSecurityWarnings(CxSASTBase):
     # Mapping of scan ids to scan report ids
     CXSAST_SCAN_REPORTS = cachetools.LRUCache(256)
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.report_status = "In Process"
+
     def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
         token = response.json()['access_token']
         scan_id = self.last_finished_scan(token, **parameters).json()[0]["id"]
-        stats = self.api_get(
-            f"sast/scans/{scan_id}/resultsStatistics", token, **parameters).json()
+        stats = self.api_get(f"sast/scans/{scan_id}/resultsStatistics", token, **parameters).json()
         severities = parameters.get("severities") or ["info", "low", "medium", "high"]
         return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
 
@@ -99,10 +103,21 @@ class CxSASTSecurityWarnings(CxSASTBase):
             self.CXSAST_SCAN_REPORTS[scan_id] = response.json()["reportId"]
             return []
         response = self.api_get(f"reports/sastScan/{report_id}/status", token, **parameters)
-        if response.json()["status"]["value"] != "Created":
+        self.report_status = response.json()["status"]["value"]
+        if self.report_status != "Created":
             return []
         response = self.api_get(f"reports/sastScan/{report_id}", token, **parameters)
-        root = xml.etree.cElementTree.fromstring(response.text)
+        return self.parse_xml_report(response.text, **parameters)
+
+    def next_collection(self) -> datetime:
+        """If the CxSAST report is in process, try again as soon as possible, otherwise return the regular next
+        collection datetime."""
+        return datetime.min if self.report_status == "In Process" else super().next_collection()
+
+    @staticmethod
+    def parse_xml_report(xml_string: str, **parameters) -> Entities:
+        """Get the entities from the CxSAST XML report."""
+        root = xml.etree.cElementTree.fromstring(xml_string)
         severities = parameters.get("severities") or ["info", "low", "medium", 'high']
         entities = []
         for query in root.findall(".//Query"):

@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class JenkinsTestReportTest(unittest.TestCase):
@@ -18,7 +18,7 @@ class JenkinsTestReportTest(unittest.TestCase):
             type="tests", addition="sum",
             sources=dict(source_id=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/jobjob"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("6", response["sources"][0]["value"])
 
     def test_nr_of_failed_tests(self):
@@ -32,7 +32,7 @@ class JenkinsTestReportTest(unittest.TestCase):
             type="failed_tests", addition="sum",
             sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("2", response["sources"][0]["value"])
         self.assertEqual(
             [dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
@@ -47,6 +47,6 @@ class JenkinsTestReportTest(unittest.TestCase):
             type="source_up_to_dateness", addition="max",
             sources=dict(source_ida=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job"))))
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         expected_age = (datetime.now() - datetime(2019, 4, 2, 8, 52, 50)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

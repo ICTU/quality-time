@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class TrelloIssuesTest(unittest.TestCase):
@@ -32,7 +32,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(
@@ -55,7 +55,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1"), dict(id="list2", name="List 2")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 2",
@@ -77,7 +77,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 1",
@@ -99,7 +99,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 1", due_date=None,
@@ -128,5 +128,5 @@ class TrelloSourceUpToDatenessTest(unittest.TestCase):
                 dict(id="card2", name="Card 2", dateLastActivity="2019-01-01")])
         mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards]
         with patch("requests.get", return_value=mock_get_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
