@@ -70,6 +70,9 @@ class MetricsCollector:
             return True  # Always skip if none of the sources has a url
         if self.last_parameters.get(metric_uuid) != metric:
             return False  # Don't skip if metric parameters changed
+        source_types = [source.get("type") for source in sources.values()]
+        if "cxsast" in source_types:
+            return False  # Don't skip Checkmarx cxSAST as work is distributed across multiple runs of the collector
         time_ago = datetime.now() - self.last_fetch.get(metric_uuid, datetime.min)
         return time_ago <= timedelta(seconds=15 * 60)  # Skip if recently measured
 
