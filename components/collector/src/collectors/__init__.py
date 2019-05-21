@@ -2,6 +2,7 @@
 
 from .azure_devops import *
 from .calendar import *
+from .cxsast import *
 from .gitlab import *
 from .hq import *
 from .jacoco import *

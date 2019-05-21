@@ -2,7 +2,8 @@
 
 import logging
 import traceback
-from typing import cast, Optional, Set, Tuple, Type
+from datetime import datetime, timedelta
+from typing import cast, Dict, Optional, Set, Tuple, Type
 
 import requests
 
@@ -10,23 +11,40 @@ from .type import ErrorMessage, Response, Entities, URL, Value
 from .util import stable_traceback
 
 
-def collect_measurement(metric) -> Response:
-    """Connect to the sources to get and parse the measurement for the metric."""
-    source_responses = []
-    for source_uuid, source in metric["sources"].items():
-        collector_class = cast(Type[Collector], Collector.get_subclass(source['type'], metric['type']))
-        source_collector = collector_class()
-        source_response = source_collector.get(source)
-        source_response["source_uuid"] = source_uuid
-        source_responses.append(source_response)
-    values = [source_response["value"] for source_response in source_responses]
-    add = dict(sum=sum, max=max)[metric.get("addition", "sum")]
-    value = add([int(value) for value in values]) if (values and None not in values) else None  # type: ignore
-    return dict(sources=source_responses, value=value)
+class MetricCollector:
+    """Base class for collecting measurements from multiple sources for a metric."""
+
+    def __init__(self, metric) -> None:
+        self.metric = metric
+        self.collectors: Dict[str, Collector] = dict()
+        for source_uuid, source in self.metric["sources"].items():
+            collector_class = cast(Type[Collector], Collector.get_subclass(source['type'], self.metric['type']))
+            self.collectors[source_uuid] = collector_class()
+
+    def can_collect(self) -> bool:
+        """Return whether the user has specified enough information to measure this metric."""
+        sources = self.metric.get("sources")
+        return any(source.get("parameters", {}).get("url") for source in sources.values()) if sources else False
+
+    def next_collection(self) -> datetime:
+        """Return when the metric can/should be collected again."""
+        return min([collector.next_collection() for collector in self.collectors.values()], default=datetime.min)
+
+    def get(self) -> Response:
+        """Connect to the sources to get and parse the measurement for the metric."""
+        source_responses = []
+        for source_uuid, source in self.metric["sources"].items():
+            source_response = self.collectors[source_uuid].get(source)
+            source_response["source_uuid"] = source_uuid
+            source_responses.append(source_response)
+        values = [source_response["value"] for source_response in source_responses]
+        add = dict(sum=sum, max=max)[self.metric.get("addition", "sum")]
+        value = add([int(value) for value in values]) if (values and None not in values) else None  # type: ignore
+        return dict(sources=source_responses, value=value)
 
 
 class Collector:
-    """Base class for metric collectors."""
+    """Base class for source collectors."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
@@ -79,7 +97,7 @@ class Collector:
         return response, error
 
     def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
-        """Open the url. Can be overridden if a post request is needed or mmultiple requests need to be made."""
+        """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
         return requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))
 
     @staticmethod
@@ -116,3 +134,7 @@ class Collector:
         """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
         This method can to be overridden by collectors when a source can provide the measured entities."""
         return []
+
+    def next_collection(self) -> datetime:  # pylint: disable=no-self-use
+        """Return when this source should be connected again for measurement data."""
+        return datetime.now() + timedelta(15 * 60)

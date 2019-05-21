@@ -2,6 +2,7 @@ import React from 'react';
 import { Image } from 'semantic-ui-react';
 
 import AzureDevops from './azure_devops.png';
+import Checkmarx from './checkmarx.png';
 import Gitlab from './gitlab.png';
 import HQ from './hq.png';
 import JaCoCo from './jacoco.png';
@@ -19,6 +20,7 @@ import Wekan from './wekan.png';
 function Logo(props) {
     const logo = {
         azure_devops: AzureDevops,
+        cxsast: Checkmarx,
         gitlab: Gitlab,
         hq: HQ,
         jacoco: JaCoCo,

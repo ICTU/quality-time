@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class OWASPDependencyCheckTest(unittest.TestCase):
@@ -39,7 +39,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         </analysis>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual(
             [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Medium", nr_vulnerabilities=2,
@@ -66,7 +66,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         </analysis>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual(
             [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Low", nr_vulnerabilities=1,
@@ -84,7 +84,7 @@ class OWASPDependencyCheckTest(unittest.TestCase):
         </analysis>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         tzinfo = timezone(timedelta(hours=2))
         expected_age = (datetime.now(tzinfo) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=tzinfo)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

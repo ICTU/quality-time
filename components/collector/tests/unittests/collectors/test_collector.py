@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch, Mock
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class CollectorTest(unittest.TestCase):
@@ -16,7 +16,7 @@ class CollectorTest(unittest.TestCase):
         metric = dict(type="tests", addition="sum", sources=dict(
             a=dict(type="junit", parameters=dict(url="http://url"))))
         with patch("requests.get", return_value=mock_response):
-            self.response = collect_measurement(metric)
+            self.response = MetricCollector(metric).get()
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -44,7 +44,7 @@ class CollectorWithMultipleSourcesTest(unittest.TestCase):
                 a=dict(type="junit", parameters=dict(url="http://url")),
                 b=dict(type="junit", parameters=dict(url="http://url2"))))
         with patch("requests.get", return_value=mock_response):
-            self.response = collect_measurement(metric)
+            self.response = MetricCollector(metric).get()
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -75,7 +75,7 @@ class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
                 a=dict(type="jenkins", parameters=dict(url="http://jenkins", failure_type=["Red"])),
                 b=dict(type="random")))
         with patch("requests.get", return_value=mock_response):
-            self.response = collect_measurement(metric)
+            self.response = MetricCollector(metric).get()
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
@@ -95,7 +95,7 @@ class CollectorErrorTest(unittest.TestCase):
     def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertTrue(response["sources"][0]
                         ["connection_error"].startswith("Traceback"))
 
@@ -104,6 +104,6 @@ class CollectorErrorTest(unittest.TestCase):
         mock_response = Mock()
         mock_response.text = "1"
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertTrue(response["sources"][0]
                         ["parse_error"].startswith("Traceback"))

@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class WekanTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = collect_measurement(self.metric)
+                response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
@@ -55,7 +55,7 @@ class WekanTest(unittest.TestCase):
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = collect_measurement(self.metric)
+                response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
@@ -76,7 +76,7 @@ class WekanTest(unittest.TestCase):
                  dueAt="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = collect_measurement(self.metric)
+                response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
@@ -97,7 +97,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = collect_measurement(self.metric)
+                response = MetricCollector(self.metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
@@ -130,5 +130,5 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=mock_post_response):
             with patch("requests.get", return_value=mock_get_response):
-                response = collect_measurement(metric)
+                response = MetricCollector(metric).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

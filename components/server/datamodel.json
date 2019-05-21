@@ -204,6 +204,7 @@
             "near_target": "7",
             "sources": [
                 "calendar",
+                "cxsast",
                 "gitlab",
                 "hq",
                 "jacoco",
@@ -336,6 +337,7 @@
             "target": "0",
             "near_target": "5",
             "sources": [
+                "cxsast",
                 "hq",
                 "random",
                 "openvas",
@@ -471,6 +473,93 @@
                 }
             },
             "entities": {}
+        },
+        "cxsast": {
+            "name": "Checkmarx CxSAST",
+            "description": "Static analysis software to identify security vulnerabilities in both custom code and open source components.",
+            "url": "https://www.checkmarx.com/products/static-application-security-testing/",
+            "parameters": {
+                "url": {
+                    "name": "URL",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "project": {
+                    "name": "Project (id or name)",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "info",
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Warning",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Location",
+                            "key": "location",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "High": "negative",
+                                "Medium": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
         },
         "gitlab": {
             "name": "GitLab",

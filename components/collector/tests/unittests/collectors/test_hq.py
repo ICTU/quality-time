@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class HQTest(unittest.TestCase):
@@ -17,5 +17,5 @@ class HQTest(unittest.TestCase):
             type="violations", sources=dict(a=dict(type="hq", parameters=dict(url="metrics.json", metric_id="id"))),
             addition="sum")
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("10", response["sources"][0]["value"])

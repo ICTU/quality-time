@@ -4,7 +4,7 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class OWASPZAPTest(unittest.TestCase):
@@ -53,7 +53,7 @@ class OWASPZAPTest(unittest.TestCase):
         </OWASPZAPReport>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual(
             [dict(key="10021:16:15:3", name="X-Content-Type-Options Header Missing",
                   description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
@@ -68,6 +68,6 @@ class OWASPZAPTest(unittest.TestCase):
         </OWASPZAPReport>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

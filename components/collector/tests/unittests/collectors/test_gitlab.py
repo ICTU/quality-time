@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.collector import collect_measurement
+from src.collector import MetricCollector
 
 
 class GitLabTest(unittest.TestCase):
@@ -24,7 +24,7 @@ class GitLabTest(unittest.TestCase):
                  web_url="http://gitlab/job", ref="ref")]
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual([dict(key="id", name="ref", url="http://gitlab/job", build_age=build_age,
                                build_date="2019-03-31", build_status="failed")], response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
@@ -34,7 +34,7 @@ class GitLabTest(unittest.TestCase):
         self.mock_response.json.return_value = [
             dict(name="job", url="http://job", status="success")]
         with patch("requests.get", return_value=self.mock_response):
-            response = collect_measurement(self.metric)
+            response = MetricCollector(self.metric).get()
         self.assertEqual("0", response["sources"][0]["value"])
 
 
@@ -55,7 +55,7 @@ class GitlabSourceUpToDatenessTest(unittest.TestCase):
         head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
         with patch("requests.head", return_value=head_response):
             with patch("requests.get", return_value=get_response):
-                response = collect_measurement(metric)
+                response = MetricCollector(metric).get()
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
         self.assertEqual("http://gitlab/project/blob/branch/file", response["sources"][0]["landing_url"])
@@ -80,7 +80,7 @@ class GitlabUnmergedBranchesTest(unittest.TestCase):
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
             dict(name="merged_branch", merged=True)]
         with patch("requests.get", return_value=mock_response):
-            response = collect_measurement(metric)
+            response = MetricCollector(metric).get()
         self.assertEqual("1", response["sources"][0]["value"])
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=(timezone.utc))).days)
         self.assertEqual(
