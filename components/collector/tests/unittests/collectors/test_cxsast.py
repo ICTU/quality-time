@@ -53,11 +53,17 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
         metric = dict(type="security_warnings", sources=sources, addition="sum")
         get_response = Mock()
         get_response.json.side_effect = [
-            [dict(name="project", id="id")], [dict(id=1000)],
+            [dict(name="project", id="id")],
+            [dict(id=1000)],
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
+            [dict(name="project", id="id")],
+            [dict(id=1000)],
             [dict(name="project", id="id")]]
         post_response = Mock()
-        post_response.json.return_value = dict(access_token="token")
+        post_response.json.side_effect = [
+            dict(access_token="token"),
+            dict(reportId=1),
+            dict(access_token="token")]
         with patch("requests.post", return_value=post_response):
             with patch("requests.get", return_value=get_response):
                 response = collect_measurement(metric)
