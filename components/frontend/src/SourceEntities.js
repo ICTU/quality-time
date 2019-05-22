@@ -56,7 +56,14 @@ class SourceEntities extends Component {
           </Table.HeaderCell>)
         }
       </Table.Row>
-    const rows = this.props.source.entities.map((entity) =>
+    let entities = Array.from(this.props.source.entities);
+    if (sort_column !== null) {
+      entities.sort((a, b) => a[sort_column] < b[sort_column] ? -1 : 1)
+      if (sort_direction === 'descending') {
+        entities.reverse()
+      }
+    }
+    const rows = entities.map((entity) =>
       <SourceEntity
         entity={entity}
         entity_attributes={entity_attributes}
