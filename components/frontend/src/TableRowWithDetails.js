@@ -4,7 +4,7 @@ import { Icon, Table } from 'semantic-ui-react';
 export class TableRowWithDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { show_details: props.show_details};
+    this.state = { show_details: props.show_details };
   }
   expand_or_collapse = (event) => {
     event.preventDefault();
@@ -14,7 +14,13 @@ export class TableRowWithDetails extends Component {
     var { children, show_details, details, ...otherProps } = this.props;
     return (<>
       <Table.Row {...otherProps}>
-        <Table.Cell collapsing onClick={this.expand_or_collapse} onKeyPress={this.expand_or_collapse} tabIndex="0">
+        <Table.Cell
+          collapsing
+          onClick={this.expand_or_collapse}
+          onKeyPress={this.expand_or_collapse}
+          tabIndex="0"
+          textAlign="center"
+        >
           <Icon size='large' name={this.state.show_details ? "caret down" : "caret right"} />
         </Table.Cell>
         {children}
