@@ -60,3 +60,8 @@ class DataModelTest(unittest.TestCase):
                     parameter_values["mandatory"] in (True, False),
                     f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
                     "true nor false")
+
+    def test_default_source(self):
+        """Test that each metric has a default source, and that the default source is listed as possible source."""
+        for metric in self.datamodel["metrics"].values():
+            self.assertTrue(metric["default_source"] in metric["sources"])
