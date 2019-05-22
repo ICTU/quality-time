@@ -8,6 +8,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "100",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -25,6 +26,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -43,6 +45,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -60,6 +63,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "5",
+            "default_source": "jenkins",
             "sources": [
                 "hq",
                 "jenkins",
@@ -78,6 +82,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "0",
+            "default_source": "sonarqube",
             "sources": [
                 "jenkins_test_report",
                 "junit",
@@ -98,6 +103,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "jira",
             "sources": [
                 "azure_devops",
                 "hq",
@@ -116,6 +122,7 @@
             "direction": "<=",
             "target": "40000",
             "near_target": "50000",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -133,6 +140,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -150,6 +158,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -167,6 +176,7 @@
             "direction": "<=",
             "target": "30000",
             "near_target": "35000",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "sonarqube",
@@ -184,6 +194,7 @@
             "direction": ">=",
             "target": "100",
             "near_target": "75",
+            "default_source": "azure_devops",
             "sources": [
                 "azure_devops",
                 "hq",
@@ -202,6 +213,7 @@
             "direction": "<=",
             "target": "3",
             "near_target": "7",
+            "default_source": "sonarqube",
             "sources": [
                 "calendar",
                 "cxsast",
@@ -231,6 +243,7 @@
             "direction": ">=",
             "target": "0",
             "near_target": "0",
+            "default_source": "jenkins_test_report",
             "sources": [
                 "jenkins_test_report",
                 "junit",
@@ -250,6 +263,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "100",
+            "default_source": "sonarqube",
             "sources": [
                 "jacoco",
                 "sonarqube",
@@ -267,6 +281,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "100",
+            "default_source": "sonarqube",
             "sources": [
                 "jacoco",
                 "sonarqube",
@@ -284,6 +299,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "5",
+            "default_source": "gitlab",
             "sources": [
                 "gitlab",
                 "hq",
@@ -301,6 +317,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "5",
+            "default_source": "jenkins",
             "sources": [
                 "hq",
                 "jenkins",
@@ -318,6 +335,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "ojaudit",
@@ -336,6 +354,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "5",
+            "default_source": "owasp_dependency_check",
             "sources": [
                 "cxsast",
                 "hq",
@@ -356,6 +375,7 @@
             "direction": "<=",
             "target": "0",
             "near_target": "10",
+            "default_source": "sonarqube",
             "sources": [
                 "hq",
                 "random",

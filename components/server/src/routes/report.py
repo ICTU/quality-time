@@ -116,7 +116,7 @@ def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     metric = get_metric(report, metric_uuid)
     metric_type = metric["type"]
     datamodel = latest_datamodel(database)
-    source_type = datamodel["metrics"][metric_type]["sources"][0]
+    source_type = datamodel["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
     metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     return insert_new_report(database, report)

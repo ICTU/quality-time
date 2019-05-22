@@ -76,7 +76,7 @@ class PostSourceNewTest(unittest.TestCase):
         database.reports.find_one = Mock(return_value=report)
         database.datamodels.find_one = Mock(return_value=dict(
             _id="",
-            metrics=dict(metric_type=dict(direction="<=", sources=["source_type"])),
+            metrics=dict(metric_type=dict(direction="<=", default_source="source_type")),
             sources=dict(source_type=dict(parameters=dict()))))
         self.assertEqual(dict(ok=True), post_source_new("report_uuid", "metric_uuid", database))
         database.reports.insert.assert_called_once_with(report)
