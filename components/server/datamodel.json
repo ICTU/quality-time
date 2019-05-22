@@ -769,6 +769,28 @@
                         "uncovered_lines",
                         "uncovered_branches"
                     ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_lines",
+                        "uncovered_branches"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_lines",
+                        "uncovered_branches"
+                    ]
                 }
             },
             "entities": {}
@@ -782,6 +804,26 @@
                     "name": "URL",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
@@ -1028,6 +1070,28 @@
                         "tests"
                     ]
                 },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
@@ -1154,6 +1218,26 @@
                     "name": "URL to XML report",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -1384,6 +1468,28 @@
                     "name": "URL to Robot Framework output.xml",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",
