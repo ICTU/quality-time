@@ -63,29 +63,28 @@ class Subject extends Component {
     );
     if (sort_column !== null) {
       let self = this;
+      const status_order = {"": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4"};
       metric_components.sort(function (m1, m2) {
+        let attribute1 = '';
+        let attribute2 = '';
         if (sort_column === 'name') {
-          const m1_name = m1.props.metric.name || self.props.datamodel.metrics[m1.props.metric.type].name;
-          const m2_name = m2.props.metric.name || self.props.datamodel.metrics[m2.props.metric.type].name;
-          return m1_name.localeCompare(m2_name);
+          attribute1 = m1.props.metric.name || self.props.datamodel.metrics[m1.props.metric.type].name;
+          attribute2 = m2.props.metric.name || self.props.datamodel.metrics[m2.props.metric.type].name;
         } else if (sort_column === 'comment') {
-          const m1_comment = m1.props.metric.comment || '';
-          const m2_comment = m2.props.metric.comment || '';
-          return m1_comment.localeCompare(m2_comment);
+          attribute1 = m1.props.metric.comment || '';
+          attribute2 = m2.props.metric.comment || '';
         } else if (sort_column === 'status') {
-          const m1_status = self.state.last_measurements[m1.props.metric_uuid].status || '';
-          const m2_status = self.state.last_measurements[m2.props.metric_uuid].status || '';
-          return m1_status < m2_status ? -1 : 1;
+          attribute1 = status_order[self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].status || ''];
+          attribute2 = status_order[self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].status || ''];
         } else if (sort_column === 'source') {
           let m1_sources = Object.values(m1.props.metric.sources).map((source) => source.name || self.props.datamodel.sources[source.type].name);
           m1_sources.sort();
           let m2_sources = Object.values(m2.props.metric.sources).map((source) => source.name || self.props.datamodel.sources[source.type].name);
           m2_sources.sort();
-          const m1_source = m1_sources.length > 0 ? m1_sources[0] : '';
-          const m2_source = m2_sources.length > 0 ? m2_sources[0] : '';
-          return m1_source < m2_source ? -1 : 1;
+          attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
+          attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
         }
-        return 0;
+        return attribute1.localeCompare(attribute2);
       });
       if (sort_direction === 'descending') {
         metric_components.reverse()
