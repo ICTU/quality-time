@@ -84,7 +84,7 @@ class Measurement extends Component {
           {metric.comment}
         </Table.Cell>
         <Table.Cell>
-          {metric.tags.map((tag) => <Tag key={tag} tag={tag} />)}
+          {metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}
         </Table.Cell>
       </TableRowWithDetails>
     )

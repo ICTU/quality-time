@@ -15,7 +15,7 @@ class Metric extends Component {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({[attribute]: value})
+      body: JSON.stringify({ [attribute]: value })
     })
       .then(function (response) { return response.json(); })
       .then(function (json) {
@@ -42,7 +42,7 @@ class Metric extends Component {
         }
         self.props.reload();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       })
   }
@@ -55,6 +55,8 @@ class Metric extends Component {
       })
       .then(function (json) {
         self.setState({ measurements: json.measurements });
+        const last_measurement = json.measurements && json.measurements.length > 0 ? json.measurements[json.measurements.length - 1] : null;
+        self.props.set_last_measurement(self.props.metric_uuid, last_measurement);
       })
   }
   componentDidMount() {
