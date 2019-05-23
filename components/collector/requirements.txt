@@ -1,3 +1,3 @@
-cachetools==3.1.0
+cachetools==3.1.1
 python-dateutil==2.8.0
 requests==2.22.0
