@@ -137,4 +137,4 @@ class Collector:
 
     def next_collection(self) -> datetime:  # pylint: disable=no-self-use
         """Return when this source should be connected again for measurement data."""
-        return datetime.now() + timedelta(15 * 60)
+        return datetime.now() + timedelta(seconds=15 * 60)
