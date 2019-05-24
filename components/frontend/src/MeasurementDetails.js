@@ -13,6 +13,7 @@ class MeasurementDetails extends Component {
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}`, {
       method: 'delete',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },

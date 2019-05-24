@@ -15,6 +15,7 @@ class Subject extends Component {
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/metric/new`, {
       method: 'post',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },

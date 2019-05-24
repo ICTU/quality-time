@@ -22,6 +22,7 @@ class Report extends Component {
         fetch(`${window.server_url}/report/${report.report_uuid}`, {
             method: 'delete',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },

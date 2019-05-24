@@ -10,6 +10,7 @@ class Sources extends Component {
         fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/source/new`, {
             method: 'post',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },

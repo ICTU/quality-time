@@ -9,9 +9,9 @@ function ReportsDashboard(props) {
   props.reports.forEach((report) => {
     Object.entries(report.summary_by_tag).forEach(([tag, counts]) => {
       if (Object.keys(tag_counts).indexOf(tag) === -1) {
-        tag_counts[tag] = {"red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 0}
+        tag_counts[tag] = { "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 0 }
       }
-      Object.entries(counts).forEach(([color, color_count]) => {tag_counts[tag][color] += color_count})
+      Object.entries(counts).forEach(([color, color_count]) => { tag_counts[tag][color] += color_count })
     })
   });
   const report_cards = props.reports.map((report) =>
@@ -19,7 +19,7 @@ function ReportsDashboard(props) {
       onClick={(e) => props.open_report(e, report.report_uuid)} {...report.summary}
     />);
   const tag_cards = Object.entries(tag_counts).map(([tag, counts]) =>
-    <MetricSummaryCard key={tag} header={<Tag tag={tag}/>} {...counts}
+    <MetricSummaryCard key={tag} header={<Tag tag={tag} />} {...counts}
     />);
   return (
     <CardDashboard big_cards={report_cards} small_cards={tag_cards} />
@@ -33,6 +33,7 @@ class Reports extends Component {
     fetch(`${window.server_url}/report/new`, {
       method: 'post',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -46,12 +47,13 @@ class Reports extends Component {
     return (
       <>
         <ReportsDashboard reports={this.props.reports} open_report={this.props.open_report} />
-        {!this.props.readOnly &&
         <Segment basic>
-          <Button icon primary basic onClick={(e) => this.add_report(e)}>
-            <Icon name='plus' /> Add report
-          </Button>
-        </Segment>}
+          {!this.props.readOnly &&
+            <Button icon primary basic onClick={(e) => this.add_report(e)}>
+              <Icon name='plus' /> Add report
+            </Button>
+          }
+        </Segment>
       </>
     )
   }

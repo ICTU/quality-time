@@ -17,6 +17,7 @@ class SubjectTitle extends Component {
         fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
             method: 'post',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -31,6 +32,7 @@ class SubjectTitle extends Component {
         fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
             method: 'delete',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
