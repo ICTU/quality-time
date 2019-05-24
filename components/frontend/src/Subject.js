@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Icon, Table } from 'semantic-ui-react';
+import { Button, Icon, Popup, Table } from 'semantic-ui-react';
 import Metric from './Metric.js';
 import { SubjectTitle } from './SubjectTitle.js';
 
 class Subject extends Component {
   constructor(props) {
     super(props);
-    this.state = { sort_column: null, sort_direction: null, last_measurements: {} };
+    this.state = { hide_metrics_not_requiring_action: false, sort_column: null, sort_direction: null, last_measurements: {} };
   }
 
   onAddMetric(event) {
@@ -23,6 +23,11 @@ class Subject extends Component {
     }).then(
       () => self.props.reload()
     );
+  }
+
+  hide_metrics_not_requiring_action(event) {
+    event.preventDefault();
+    this.setState({ hide_metrics_not_requiring_action: !this.state.hide_metrics_not_requiring_action })
   }
 
   handle_sort(event, column) {
@@ -43,9 +48,11 @@ class Subject extends Component {
 
   render() {
     const subject = this.props.report.subjects[this.props.subject_uuid];
-    const { sort_column, sort_direction } = this.state;
+    const { hide_metrics_not_requiring_action, sort_column, sort_direction } = this.state;
     let metric_components = [];
-    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) =>
+    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+      const status = (this.state.last_measurements[metric_uuid] && this.state.last_measurements[metric_uuid].status) || '';
+      if (hide_metrics_not_requiring_action && (status === "target_met" || status === "debt_target_met")) { return }
       metric_components.push(
         <Metric
           datamodel={this.props.datamodel}
@@ -61,37 +68,37 @@ class Subject extends Component {
           set_last_measurement={(m, l) => this.set_last_measurement(m, l)}
           subject_uuid={this.props.subject_uuid}
         />)
-    );
+    });
     if (sort_column !== null) {
       let self = this;
       const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
       const sorters = {
-        name: function(m1, m2) {
+        name: function (m1, m2) {
           const attribute1 = m1.props.metric.name || self.props.datamodel.metrics[m1.props.metric.type].name;
           const attribute2 = m2.props.metric.name || self.props.datamodel.metrics[m2.props.metric.type].name;
           return attribute1.localeCompare(attribute2)
         },
-        measurement: function(m1, m2) {
+        measurement: function (m1, m2) {
           const attribute1 = (self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].value) || '';
           const attribute2 = (self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].value) || '';
           return attribute1.localeCompare(attribute2)
         },
-        target: function(m1, m2) {
+        target: function (m1, m2) {
           const attribute1 = m1.props.metric.accept_debt ? m1.props.metric.debt_target : m1.props.metric.target;
           const attribute2 = m2.props.metric.accept_debt ? m2.props.metric.debt_target : m2.props.metric.target;
           return attribute1.localeCompare(attribute2)
         },
-        comment: function(m1, m2) {
+        comment: function (m1, m2) {
           const attribute1 = m1.props.metric.comment || '';
           const attribute2 = m2.props.metric.comment || '';
           return attribute1.localeCompare(attribute2)
         },
-        status: function(m1, m2) {
+        status: function (m1, m2) {
           const attribute1 = status_order[(self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].status) || ''];
           const attribute2 = status_order[(self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].status) || ''];
           return attribute1.localeCompare(attribute2)
         },
-        source: function(m1, m2) {
+        source: function (m1, m2) {
           let m1_sources = Object.values(m1.props.metric.sources).map((source) => source.name || self.props.datamodel.sources[source.type].name);
           m1_sources.sort();
           let m2_sources = Object.values(m2.props.metric.sources).map((source) => source.name || self.props.datamodel.sources[source.type].name);
@@ -100,7 +107,7 @@ class Subject extends Component {
           const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
           return attribute1.localeCompare(attribute2)
         },
-        tags: function(m1, m2) {
+        tags: function (m1, m2) {
           let m1_tags = m1.props.metric.tags;
           m1_tags.sort();
           let m2_tags = m2.props.metric.tags;
@@ -128,7 +135,17 @@ class Subject extends Component {
         <Table sortable>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell />
+              <Table.HeaderCell collapsing textAlign="center">
+                <Popup trigger={
+                  <Button
+                    basic
+                    compact
+                    icon={hide_metrics_not_requiring_action ? 'unhide' : 'hide'}
+                    onClick={(e) => this.hide_metrics_not_requiring_action(e)}
+                    primary
+                  />
+                } content={hide_metrics_not_requiring_action ? 'Show all metrics' : 'Hide metrics not requiring action'} />
+              </Table.HeaderCell>
               <Table.HeaderCell
                 onClick={(event) => this.handle_sort(event, 'name')}
                 sorted={sort_column === 'name' ? sort_direction : null}
