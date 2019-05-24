@@ -1872,6 +1872,34 @@
                 }
             },
             "entities": {
+                "commented_out_code": {
+                    "name": "violation",
+                    "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
+                        }
+                    ]
+                },
                 "complex_units": {
                     "name": "violation",
                     "name_plural": "violations",
