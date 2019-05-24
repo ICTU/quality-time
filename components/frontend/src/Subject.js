@@ -72,8 +72,8 @@ class Subject extends Component {
           return attribute1.localeCompare(attribute2)
         },
         measurement: function(m1, m2) {
-          const attribute1 = self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].value || '';
-          const attribute2 = self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].value || '';
+          const attribute1 = (self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].value) || '';
+          const attribute2 = (self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].value) || '';
           return attribute1.localeCompare(attribute2)
         },
         target: function(m1, m2) {
@@ -87,8 +87,8 @@ class Subject extends Component {
           return attribute1.localeCompare(attribute2)
         },
         status: function(m1, m2) {
-          const attribute1 = status_order[self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].status || ''];
-          const attribute2 = status_order[self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].status || ''];
+          const attribute1 = status_order[(self.state.last_measurements[m1.props.metric_uuid] && self.state.last_measurements[m1.props.metric_uuid].status) || ''];
+          const attribute2 = status_order[(self.state.last_measurements[m2.props.metric_uuid] && self.state.last_measurements[m2.props.metric_uuid].status) || ''];
           return attribute1.localeCompare(attribute2)
         },
         source: function(m1, m2) {
