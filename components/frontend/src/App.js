@@ -120,10 +120,10 @@ class App extends Component {
     fetch(`${window.server_url}/login`, {
       method: 'post',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify({ username: username, password: password })
     })
       .then(function (response) {
@@ -146,11 +146,11 @@ class App extends Component {
     fetch(`${window.server_url}/logout`, {
       method: 'post',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({}),
-      credentials: 'include'
+      body: JSON.stringify({})
     }).then(function (response) {
       self.setState({ user: null });
       localStorage.setItem("user", null);

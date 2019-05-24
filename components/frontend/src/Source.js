@@ -12,6 +12,7 @@ class Source extends Component {
         fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}`, {
             method: 'delete',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -25,6 +26,7 @@ class Source extends Component {
         fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
             method: 'post',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },

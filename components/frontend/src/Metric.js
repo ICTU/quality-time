@@ -11,6 +11,7 @@ class Metric extends Component {
     const self = this;
     fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`, {
       method: 'post',
+      credentials: 'include',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
@@ -28,6 +29,7 @@ class Metric extends Component {
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
       method: 'post',
       mode: 'cors',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },

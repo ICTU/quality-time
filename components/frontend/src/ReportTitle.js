@@ -16,6 +16,7 @@ class ReportTitle extends Component {
         fetch(`${window.server_url}/report/${this.props.report.report_uuid}/${key}`, {
             method: 'post',
             mode: 'cors',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },

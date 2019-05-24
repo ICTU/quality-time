@@ -18,6 +18,7 @@ from pymongo.database import Database
 from . import cors  # pylint: disable=unused-import
 from .routes import report, measurement, datamodel, auth  # pylint: disable=unused-import
 from .route_injection_plugin import InjectionPlugin
+from .route_authentication_plugin import AuthenticationPlugin
 from .util import uuid
 from .database.datamodels import insert_new_datamodel, default_subject_attributes, default_metric_attributes, \
     default_source_parameters, latest_datamodel
@@ -93,6 +94,7 @@ def serve() -> None:
     bottle.install(ldap_injection_plugin)
     database_injection_plugin = InjectionPlugin(value=database, keyword="database")
     bottle.install(database_injection_plugin)
+    bottle.install(AuthenticationPlugin())
     import_datamodel(database)
     import_example_reports(database)
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)

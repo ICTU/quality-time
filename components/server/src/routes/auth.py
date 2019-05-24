@@ -14,6 +14,11 @@ from ..database import sessions
 from ..util import uuid
 
 
+def generate_session_id() -> str:
+    """Generate a new random, secret and unique session id."""
+    return uuid()
+
+
 def set_session_cookie(session_id: str, clear: bool = False) -> None:
     """Set the session cookie on the response."""
     expires_datetime = datetime.min if clear else datetime.now() + timedelta(hours=24)
@@ -36,7 +41,7 @@ def login(database: Database, ldap_server):
             ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
         logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
-    session_id = uuid()
+    session_id = generate_session_id()
     sessions.upsert(database, username, session_id)
     set_session_cookie(session_id)
     return dict(ok=True)
