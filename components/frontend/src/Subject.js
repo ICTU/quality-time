@@ -123,7 +123,7 @@ class Subject extends Component {
       }
     }
     return (
-      <>
+      <div id={this.props.subject_uuid}>
         <SubjectTitle
           datamodel={this.props.datamodel}
           readOnly={this.props.readOnly}
@@ -202,7 +202,7 @@ class Subject extends Component {
               </Table.Row>
             </Table.Footer>}
         </Table>
-      </>
+      </div>
     )
   }
 }

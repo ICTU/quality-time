@@ -45,7 +45,7 @@ class SubjectTitle extends Component {
         const current_subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
         return (
             <>
-                <Header as='h2'
+                <Header as='h2' style={{marginTop: 50}}
                     onClick={(e) => this.onExpand(e)}
                     onKeyPress={(e) => this.onExpand(e)}
                     tabIndex="0">
