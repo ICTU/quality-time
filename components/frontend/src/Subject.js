@@ -22,7 +22,7 @@ class Subject extends Component {
       () => self.props.reload()
     )
   }
-  onAddMetric(event) {
+  add_metric(event) {
     event.preventDefault();
     const self = this;
     fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/metric/new`, {
@@ -221,7 +221,7 @@ class Subject extends Component {
             <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell colSpan='9'>
-                  <Button floated='left' icon primary basic onClick={(e) => this.onAddMetric(e)}>
+                  <Button floated='left' icon primary basic onClick={(e) => this.add_metric(e)}>
                     <Icon name='plus' /> Add metric
                 </Button>
                 </Table.HeaderCell>
