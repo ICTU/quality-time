@@ -163,7 +163,7 @@ class App extends Component {
     const report_date = this.report_date();
     const report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     return (
-      <div style={{display:"flex", minHeight:"100vh", flexDirection:"column"}}>
+      <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}

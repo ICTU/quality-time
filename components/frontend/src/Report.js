@@ -7,7 +7,9 @@ import { ReportTitle } from './ReportTitle'
 
 function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
-        <MetricSummaryCard key={subject_uuid} header={props.report.subjects[subject_uuid].name} {...summary} />);
+        <MetricSummaryCard
+            key={subject_uuid} header={props.report.subjects[subject_uuid].name}
+            onClick={(event) => props.onClick(event, subject_uuid)} {...summary} />);
     const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
         <MetricSummaryCard key={tag} header={<Tag tag={tag}/>} {...summary} />);
     return (
@@ -31,6 +33,11 @@ class Report extends Component {
             () => self.props.go_home()
         );
     }
+    navigate_to_subject(event, subject_uuid) {
+        event.preventDefault();
+        document.getElementById(subject_uuid).scrollIntoView();
+        window.scrollBy(0, -65);  // Correct for menu bar
+    }
     render() {
         return (
             <>
@@ -41,7 +48,7 @@ class Report extends Component {
                     reload={this.props.reload}
                     delete_report={(e) => this.delete_report(e, this.props.report)}
                 />
-                <ReportDashboard report={this.props.report} />
+                <ReportDashboard report={this.props.report} onClick={(e, s) => this.navigate_to_subject(e, s)} />
                 <Subjects
                     datamodel={this.props.datamodel}
                     nr_new_measurements={this.props.nr_new_measurements}
