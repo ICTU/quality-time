@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
-import { Report } from './Report.js';
-import { Reports } from './Reports.js';
-import { Menubar } from './Menubar.js';
+import { Report } from './report/Report.js';
+import { Reports } from './report/Reports.js';
+import { Menubar } from './header_footer/Menubar';
+import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
-import { Footer } from './Footer.js';
 
 
 class App extends Component {

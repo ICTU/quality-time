@@ -1,11 +1,11 @@
 import React from 'react';
 import { Grid, Header, Icon } from 'semantic-ui-react';
 import { MetricType } from './MetricType';
-import { IntegerInput } from './fields/IntegerInput';
-import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
-import { StringInput } from './fields/StringInput';
-import { SingleChoiceInput } from './fields/SingleChoiceInput';
-import { TextInput } from './fields/TextInput';
+import { IntegerInput } from '../fields/IntegerInput';
+import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
+import { StringInput } from '../fields/StringInput';
+import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { TextInput } from '../fields/TextInput';
 
 function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];

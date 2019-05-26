@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
-import { StringInput } from './fields/StringInput';
-import { HeaderWithDetails } from './HeaderWithDetails';
+import { StringInput } from '../fields/StringInput';
+import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 
 export function ReportTitle(props) {
     return (

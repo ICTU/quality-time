@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
-import { SingleChoiceInput } from './fields/SingleChoiceInput';
+import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function MetricType(props) {
   let options = [];

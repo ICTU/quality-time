@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
-import { Sources } from './Sources';
-import { SourceEntities } from './SourceEntities';
+import { Sources } from '../source/Sources';
+import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
-import { FocusableTab } from './FocusableTab';
+import { FocusableTab } from '../widgets/FocusableTab';
 
 class MeasurementDetails extends Component {
   delete_metric(event) {

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button, Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
-import { StringInput } from './fields/StringInput';
-import { Logo } from './logos/Logo';
+import { StringInput } from '../fields/StringInput';
+import { Logo } from '../logos/Logo';
 
 class Source extends Component {
     delete_source(event) {

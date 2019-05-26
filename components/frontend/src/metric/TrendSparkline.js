@@ -1,8 +1,7 @@
 import React from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme } from 'victory';
 
-
-function TrendSparkline(props) {
+export function TrendSparkline(props) {
   let measurements = [];
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
@@ -22,6 +21,3 @@ function TrendSparkline(props) {
     </VictoryGroup>
   )
 }
-
-
-export { TrendSparkline };

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Subjects } from './Subjects.js';
-import { Tag } from './MetricTag.js';
-import { MetricSummaryCard } from './MetricSummaryCard';
-import { CardDashboard } from './CardDashboard';
+import { Subjects } from '../subject/Subjects';
+import { Tag } from '../widgets/Tag';
+import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
+import { CardDashboard } from '../dashboard/CardDashboard';
 import { ReportTitle } from './ReportTitle'
 
 function ReportDashboard(props) {

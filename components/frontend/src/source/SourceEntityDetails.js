@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Header } from 'semantic-ui-react';
-import { TextInput } from './fields/TextInput';
-import { SingleChoiceInput } from './fields/SingleChoiceInput';
+import { TextInput } from '../fields/TextInput';
+import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function SourceEntityDetails(props) {
   const options = [
