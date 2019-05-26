@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Icon, Segment } from 'semantic-ui-react';
-import { CardDashboard } from './CardDashboard';
-import { MetricSummaryCard } from './MetricSummaryCard';
-import { Tag } from './MetricTag';
+import { CardDashboard } from '../dashboard/CardDashboard';
+import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
+import { Tag } from '../widgets/Tag';
 
 function ReportsDashboard(props) {
   var tag_counts = {};

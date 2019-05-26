@@ -4,8 +4,8 @@ import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
 import { MeasurementDetails } from './MeasurementDetails';
-import { Tag } from './MetricTag';
-import { TableRowWithDetails } from './TableRowWithDetails';
+import { Tag } from '../widgets/Tag';
+import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 
 class Measurement extends Component {
   render() {

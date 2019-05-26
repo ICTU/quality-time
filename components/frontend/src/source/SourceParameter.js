@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Icon } from 'semantic-ui-react';
-import { StringInput } from './fields/StringInput';
-import { MultipleChoiceInput } from './fields/MultipleChoiceInput';
-import { DateInput } from './fields/DateInput';
-import { IntegerInput } from './fields/IntegerInput';
-import { Input } from './fields/Input';
+import { StringInput } from '../fields/StringInput';
+import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
+import { DateInput } from '../fields/DateInput';
+import { IntegerInput } from '../fields/IntegerInput';
+import { Input } from '../fields/Input';
 
 class SourceParameter extends Component {
   constructor(props) {

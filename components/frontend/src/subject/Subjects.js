@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Icon, Segment } from 'semantic-ui-react';
-import { Subject } from './Subject.js';
+import { Subject } from './Subject';
 
 
 class Subjects extends Component {

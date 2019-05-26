@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
-import { StringInput } from './fields/StringInput';
+import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
-import { HeaderWithDetails } from './HeaderWithDetails';
+import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };

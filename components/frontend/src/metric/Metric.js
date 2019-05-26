@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Measurement from './Measurement.js';
-
+import Measurement from './Measurement';
 
 class Metric extends Component {
   constructor(props) {

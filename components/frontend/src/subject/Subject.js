@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Icon, Popup, Table } from 'semantic-ui-react';
-import Metric from './Metric.js';
-import { SubjectTitle } from './SubjectTitle.js';
+import Metric from '../metric/Metric';
+import { SubjectTitle } from './SubjectTitle';
 
 class Subject extends Component {
   constructor(props) {
