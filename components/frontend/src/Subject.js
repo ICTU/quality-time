@@ -8,7 +8,20 @@ class Subject extends Component {
     super(props);
     this.state = { hide_metrics_not_requiring_action: false, sort_column: null, sort_direction: null, last_measurements: {} };
   }
-
+  set_subject_attribute(key, value) {
+    const self = this;
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
+      method: 'post',
+      mode: 'cors',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ [key]: value })
+    }).then(
+      () => self.props.reload()
+    )
+  }
   onAddMetric(event) {
     event.preventDefault();
     const self = this;
@@ -24,7 +37,21 @@ class Subject extends Component {
       () => self.props.reload()
     );
   }
-
+  delete_subject(event) {
+    event.preventDefault();
+    const self = this;
+    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}`, {
+      method: 'delete',
+      mode: 'cors',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(
+      () => self.props.reload()
+    );
+  }
   hide_metrics_not_requiring_action(event) {
     event.preventDefault();
     this.setState({ hide_metrics_not_requiring_action: !this.state.hide_metrics_not_requiring_action })
@@ -126,11 +153,10 @@ class Subject extends Component {
       <div id={this.props.subject_uuid}>
         <SubjectTitle
           datamodel={this.props.datamodel}
+          delete_subject={(event) => this.delete_subject(event)}
           readOnly={this.props.readOnly}
-          reload={this.props.reload}
-          report_uuid={this.props.report.report_uuid}
+          set_subject_attribute={(k, v) => this.set_subject_attribute(k, v)}
           subject={subject}
-          subject_uuid={this.props.subject_uuid}
         />
         <Table sortable>
           <Table.Header>

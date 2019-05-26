@@ -18,10 +18,10 @@ function ReportDashboard(props) {
 }
 
 class Report extends Component {
-    delete_report(event, report) {
+    delete_report(event) {
         event.preventDefault();
         const self = this;
-        fetch(`${window.server_url}/report/${report.report_uuid}`, {
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}`, {
             method: 'delete',
             mode: 'cors',
             credentials: 'include',
@@ -33,6 +33,20 @@ class Report extends Component {
             () => self.props.go_home()
         );
     }
+    set_report_attribute(key, value) {
+        const self = this;
+        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/${key}`, {
+            method: 'post',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [key]: value })
+        }).then(
+            () => self.props.reload()
+        )
+    }
     navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
@@ -43,10 +57,9 @@ class Report extends Component {
             <>
                 <ReportTitle
                     report={this.props.report}
-                    datamodel={this.props.datamodel}
                     readOnly={this.props.readOnly}
-                    reload={this.props.reload}
-                    delete_report={(e) => this.delete_report(e, this.props.report)}
+                    delete_report={(e) => this.delete_report(e)}
+                    set_report_attribute={(k, v) => this.set_report_attribute(k, v)}
                 />
                 <ReportDashboard report={this.props.report} onClick={(e, s) => this.navigate_to_subject(e, s)} />
                 <Subjects

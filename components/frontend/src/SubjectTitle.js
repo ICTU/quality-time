@@ -12,35 +12,6 @@ class SubjectTitle extends Component {
         event.preventDefault();
         this.setState((state) => ({ show_details: !state.show_details }));
     }
-    set_subject_attribute(key, value) {
-        const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
-            method: 'post',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ [key]: value })
-        }).then(
-            () => self.props.reload()
-        )
-    }
-    delete_subject(event) {
-        event.preventDefault();
-        const self = this;
-        fetch(`${window.server_url}/report/${this.props.report_uuid}/subject/${this.props.subject_uuid}`, {
-            method: 'delete',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        }).then(
-            () => self.props.reload()
-        );
-    }
     render() {
         const current_subject_type = this.props.datamodel.subjects[this.props.subject.type] || { name: "Unknown subject type", description: "No description" };
         return (
@@ -72,7 +43,7 @@ class SubjectTitle extends Component {
                                     <SubjectType
                                         datamodel={this.props.datamodel}
                                         readOnly={this.props.readOnly}
-                                        set_value={(value) => this.set_subject_attribute("type", value)}
+                                        set_value={(value) => this.props.set_subject_attribute("type", value)}
                                         subject_type={this.props.subject.type}
                                     />
                                 </Grid.Column>
@@ -81,7 +52,7 @@ class SubjectTitle extends Component {
                                         label="Subject name"
                                         placeholder={current_subject_type.name}
                                         readOnly={this.props.readOnly}
-                                        set_value={(value) => this.set_subject_attribute("name", value)}
+                                        set_value={(value) => this.props.set_subject_attribute("name", value)}
                                         value={this.props.subject.name}
                                     />
                                 </Grid.Column>
@@ -94,7 +65,7 @@ class SubjectTitle extends Component {
                                             floated='right'
                                             negative
                                             icon
-                                            onClick={(e) => this.delete_subject(e)}
+                                            onClick={(e) => this.props.delete_subject(e)}
                                             primary
                                         >
                                             <Icon name='trash' /> Delete subject

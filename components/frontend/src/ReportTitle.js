@@ -11,20 +11,6 @@ class ReportTitle extends Component {
         event.preventDefault();
         this.setState((state) => ({ show_details: !state.show_details }));
     }
-    set_report_attribute(key, value) {
-        const self = this;
-        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/${key}`, {
-            method: 'post',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ [key]: value })
-        }).then(
-            () => self.props.reload()
-        )
-    }
     render() {
         return (
             <>
@@ -50,7 +36,7 @@ class ReportTitle extends Component {
                                     <StringInput
                                         label="Report title"
                                         readOnly={this.props.readOnly}
-                                        set_value={(value) => this.set_report_attribute("title", value)}
+                                        set_value={(value) => this.props.set_report_attribute("title", value)}
                                         value={this.props.report.title}
                                     />
                                 </Grid.Column>
@@ -58,7 +44,7 @@ class ReportTitle extends Component {
                                     <StringInput
                                         label="Report subtitle"
                                         readOnly={this.props.readOnly}
-                                        set_value={(value) => this.set_report_attribute("subtitle", value)}
+                                        set_value={(value) => this.props.set_report_attribute("subtitle", value)}
                                         value={this.props.report.subtitle}
                                     />
                                 </Grid.Column>
