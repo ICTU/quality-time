@@ -27,7 +27,7 @@ export function MeasurementDetails(props) {
             metric={metric}
             metric_uuid={props.metric_uuid}
             readOnly={props.readOnly}
-            report_uuid={props.report_uuid}
+            report_uuid={props.report.report_uuid}
             source={source}
           />
         </Tab.Pane>
@@ -49,8 +49,15 @@ export function MeasurementDetails(props) {
     {
       menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters datamodel={props.datamodel} metric={metric}
-          readOnly={props.readOnly} set_metric_attribute={props.set_metric_attribute} />
+        <MetricParameters
+          datamodel={props.datamodel}
+          fetch_measurement_and_reload={props.fetch_measurement_and_reload}
+          metric={metric}
+          metric_uuid={props.metric_uuid}
+          readOnly={props.readOnly}
+          reload={props.reload}
+          report_uuid={props.report.report_uuid}
+        />
       </Tab.Pane>
     }
   );

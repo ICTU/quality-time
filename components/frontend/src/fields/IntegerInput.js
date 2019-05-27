@@ -22,7 +22,7 @@ class IntegerInput extends Component {
     onSubmit(event) {
         event.preventDefault();
         if (this.state.edited_value !== this.props.value) {
-            this.props.set_value(this.state.edited_value || 0);
+            this.props.set_value(parseInt(this.state.edited_value, 10) || 0);
         }
     }
     render() {
