@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Measurement } from './Measurement';
-import { set_metric_attribute } from '../api/metric';
 
-class Metric extends Component {
+export class Metric extends Component {
   constructor(props) {
     super(props);
     this.state = { measurements: [] }
@@ -48,11 +47,8 @@ class Metric extends Component {
         fetch_measurement_and_reload={() => this.fetch_measurement_and_reload()}
         report={this.props.report}
         readOnly={this.props.readOnly}
-        set_metric_attribute={(a, v) => set_metric_attribute(this.props.report.report_uuid, this.props.metric_uuid, a, v, () => this.fetch_measurement_and_reload())}
         subject_uuid={this.props.subject_uuid}
       />
     )
   }
 }
-
-export default Metric;
