@@ -7,7 +7,7 @@ import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { TextInput } from '../fields/TextInput';
 
-function MetricParameters(props) {
+export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_unit = props.metric.unit || metric_type.unit;
     let tags = new Set();
@@ -121,5 +121,3 @@ function MetricParameters(props) {
         </>
     )
 }
-
-export { MetricParameters };

@@ -40,7 +40,7 @@ export function MeasurementDetails(props) {
       {
         menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
         render: () => <Tab.Pane>
-          <TrendGraph measurements={props.measurements} unit={unit_name} title={this.props.metric_name} />
+          <TrendGraph measurements={props.measurements} unit={unit_name} title={props.metric_name} />
         </Tab.Pane>
       }
     );
