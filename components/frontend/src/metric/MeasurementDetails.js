@@ -23,11 +23,11 @@ export function MeasurementDetails(props) {
         render: () => <Tab.Pane>
           <SourceEntities
             datamodel={props.datamodel}
+            fetch_measurement_and_reload={props.fetch_measurement_and_reload}
             metric={metric}
             metric_uuid={props.metric_uuid}
             readOnly={props.readOnly}
             report_uuid={props.report_uuid}
-            set_entity_attribute={props.set_entity_attribute}
             source={source}
           />
         </Tab.Pane>

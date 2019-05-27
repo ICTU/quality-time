@@ -68,8 +68,10 @@ class SourceEntities extends Component {
         entity={entity}
         entity_attributes={entity_attributes}
         entity_name={entity_name}
+        fetch_measurement_and_reload={this.props.fetch_measurement_and_reload}
         hide_ignored_entities={hide_ignored_entities}
         key={entity.key}
+        metric_uuid={this.props.metric_uuid}
         status={
           this.props.source.entity_user_data && this.props.source.entity_user_data[entity.key] &&
             this.props.source.entity_user_data[entity.key].status ? this.props.source.entity_user_data[entity.key].status : "unconfirmed"}
@@ -77,7 +79,6 @@ class SourceEntities extends Component {
           this.props.source.entity_user_data && this.props.source.entity_user_data[entity.key] &&
             this.props.source.entity_user_data[entity.key].rationale ? this.props.source.entity_user_data[entity.key].rationale : ""}
         readOnly={this.props.readOnly}
-        set_entity_attribute={this.props.set_entity_attribute}
         source_uuid={this.props.source.source_uuid}
       />);
     return (

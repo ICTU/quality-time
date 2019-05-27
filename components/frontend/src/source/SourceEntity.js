@@ -23,10 +23,11 @@ export function SourceEntity(props) {
   });
   const details = <SourceEntityDetails
     entity={props.entity}
+    fetch_measurement_and_reload={props.fetch_measurement_and_reload}
+    metric_uuid={props.metric_uuid}
     name={props.entity_name}
     rationale={props.rationale}
     readOnly={props.readOnly}
-    set_entity_attribute={props.set_entity_attribute}
     source_uuid={props.source_uuid}
     status={props.status}
   />;

@@ -44,6 +44,7 @@ export function Measurement(props) {
   const week_ago_string = week_ago.toISOString();
   const details = <MeasurementDetails
     datamodel={props.datamodel}
+    fetch_measurement_and_reload={props.fetch_measurement_and_reload}
     measurement={latest_measurement}
     measurements={props.measurements}
     metric_name={metric_name}
@@ -52,7 +53,6 @@ export function Measurement(props) {
     reload={props.reload}
     report={props.report}
     set_metric_attribute={props.set_metric_attribute}
-    set_entity_attribute={props.set_entity_attribute}
     subject_uuid={props.subject_uuid}
     unit={metric_unit}
   />

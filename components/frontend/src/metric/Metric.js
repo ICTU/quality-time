@@ -7,23 +7,6 @@ class Metric extends Component {
     super(props);
     this.state = { measurements: [] }
   }
-  set_entity_attribute(source_uuid, entity_key, attribute, value) {
-    const self = this;
-    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`, {
-      method: 'post',
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [attribute]: value })
-    })
-      .then(function (response) { return response.json(); })
-      .then(function (json) {
-        self.fetch_measurement();
-        self.props.reload();
-      })
-  }
   fetch_measurement_and_reload() {
     this.fetch_measurement()
     this.props.reload()
@@ -62,10 +45,10 @@ class Metric extends Component {
         metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements}
         reload={this.props.reload}
+        fetch_measurement_and_reload={() => this.fetch_measurement_and_reload()}
         report={this.props.report}
         readOnly={this.props.readOnly}
         set_metric_attribute={(a, v) => set_metric_attribute(this.props.report.report_uuid, this.props.metric_uuid, a, v, () => this.fetch_measurement_and_reload())}
-        set_entity_attribute={(s, u, a, v) => this.set_entity_attribute(s, u, a, v)}
         subject_uuid={this.props.subject_uuid}
       />
     )
