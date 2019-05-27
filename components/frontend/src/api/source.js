@@ -8,4 +8,8 @@ function delete_source(report_uuid, source_uuid, reload) {
     fetch_server_api('delete', `report/${report_uuid}/source/${source_uuid}`, {}, reload)
 }
 
-export { add_source, delete_source }
+function set_source_attribute(report_uuid, source_uuid, attribute, value, reload) {
+    fetch_server_api('post', `report/${report_uuid}/source/${source_uuid}/${attribute}`, { [attribute]: value }, reload)
+}
+
+export { add_source, delete_source, set_source_attribute }
