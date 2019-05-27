@@ -4,23 +4,9 @@ import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
+import { delete_source } from '../api/source';
 
 class Source extends Component {
-    delete_source(event) {
-        event.preventDefault();
-        const self = this;
-        fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}`, {
-            method: 'delete',
-            mode: 'cors',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        }).then(
-            () => self.props.reload()
-        );
-    }
     set_source_attribute(attribute, value) {
         const self = this;
         fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}/${attribute}`, {
@@ -95,9 +81,16 @@ class Source extends Component {
                     {!props.readOnly &&
                         <Grid.Row columns={1}>
                             <Grid.Column>
-                                <Button floated='right' icon primary negative basic onClick={(e) => this.delete_source(e)}>
+                                <Button
+                                    basic
+                                    floated='right'
+                                    icon
+                                    negative
+                                    onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                                    primary
+                                >
                                     <Icon name='trash' /> Delete source
-                            </Button>
+                                </Button>
                             </Grid.Column>
                         </Grid.Row>}
                 </Grid>
