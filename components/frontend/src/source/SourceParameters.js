@@ -2,8 +2,7 @@ import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { SourceParameter } from './SourceParameter';
 
-
-function SourceParameters(props) {
+export function SourceParameters(props) {
     const all_parameters = props.datamodel.sources[props.source.type].parameters;
     const parameter_keys = Object.keys(all_parameters).filter((parameter_key) =>
         all_parameters[parameter_key].metrics.includes(props.metric_type)
@@ -37,5 +36,3 @@ function SourceParameters(props) {
         </>
     )
 }
-
-export { SourceParameters };

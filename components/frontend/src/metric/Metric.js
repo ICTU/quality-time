@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Measurement from './Measurement';
+import { Measurement } from './Measurement';
 import { set_metric_attribute } from '../api/metric';
 
 class Metric extends Component {

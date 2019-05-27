@@ -12,4 +12,10 @@ function set_source_attribute(report_uuid, source_uuid, attribute, value, reload
     fetch_server_api('post', `report/${report_uuid}/source/${source_uuid}/${attribute}`, { [attribute]: value }, reload)
 }
 
-export { add_source, delete_source, set_source_attribute }
+function set_source_entity_attribute(metric_uuid, source_uuid, entity_key, attribute, value, reload) {
+    fetch_server_api(
+        'post', `measurement/${metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`,
+        { [attribute]: value }, reload)
+}
+
+export { add_source, delete_source, set_source_attribute, set_source_entity_attribute }
