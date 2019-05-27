@@ -5,6 +5,7 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';
 import { IntegerInput } from '../fields/IntegerInput';
 import { Input } from '../fields/Input';
+import { set_source_parameter } from '../api/source';
 
 class SourceParameter extends Component {
   constructor(props) {
@@ -35,27 +36,6 @@ class SourceParameter extends Component {
     }
     return [...values].sort().map((value) => ({ key: value, value: value, text: value }));
   }
-  set_source_parameter(key, value) {
-    let self = this;
-    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/source/${this.props.source_uuid}/parameter/${key}`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [key]: value })
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (json) {
-        self.props.reload();
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-  }
   render() {
     const label = this.props.help_url ?
       <label>{this.props.parameter_name} <a href={this.props.help_url}><Icon name="help circle" link /></a></label>
@@ -69,7 +49,7 @@ class SourceParameter extends Component {
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           required={this.props.required}
-          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
           value={this.props.parameter_value}
         />
       )
@@ -81,7 +61,7 @@ class SourceParameter extends Component {
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           required={this.props.required}
-          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
           type="password"
           value={this.props.parameter_value}
         />
@@ -94,7 +74,7 @@ class SourceParameter extends Component {
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           required={this.props.required}
-          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
           value={this.props.parameter_value}
           unit={this.props.parameter_unit}
         />
@@ -109,7 +89,7 @@ class SourceParameter extends Component {
           placeholder={this.props.placeholder}
           readOnly={this.props.readOnly}
           required={this.props.required}
-          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
           value={this.props.parameter_value || []}
         />
       )
@@ -120,7 +100,7 @@ class SourceParameter extends Component {
           label={label}
           readOnly={this.props.readOnly}
           required={this.props.required}
-          set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+          set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
           value={this.props.parameter_value}
         />
       )
@@ -132,7 +112,7 @@ class SourceParameter extends Component {
         placeholder={this.props.placeholder}
         readOnly={this.props.readOnly}
         required={this.props.required}
-        set_value={(value) => this.set_source_parameter(this.props.parameter_key, value)}
+        set_value={(value) => set_source_parameter(this.props.report.report_uuid, this.props.source_uuid, this.props.parameter_key, value, this.props.reload)}
         value={this.props.parameter_value || []}
       />
     )
