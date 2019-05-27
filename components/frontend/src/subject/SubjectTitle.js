@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { delete_subject, set_subject_attribute } from '../api/subject';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
@@ -23,7 +24,7 @@ export function SubjectTitle(props) {
                             <SubjectType
                                 datamodel={props.datamodel}
                                 readOnly={props.readOnly}
-                                set_value={(value) => props.set_subject_attribute("type", value)}
+                                set_value={(value) => set_subject_attribute(props.report_uuid, props.subject_uuid, "type", value, props.reload)}
                                 subject_type={props.subject.type}
                             />
                         </Grid.Column>
@@ -32,7 +33,7 @@ export function SubjectTitle(props) {
                                 label="Subject name"
                                 placeholder={current_subject_type.name}
                                 readOnly={props.readOnly}
-                                set_value={(value) => props.set_subject_attribute("name", value)}
+                                set_value={(value) => set_subject_attribute(props.report_uuid, props.subject_uuid, "name", value, props.reload)}
                                 value={props.subject.name}
                             />
                         </Grid.Column>
@@ -45,7 +46,7 @@ export function SubjectTitle(props) {
                                     floated='right'
                                     negative
                                     icon
-                                    onClick={(e) => props.delete_subject(e)}
+                                    onClick={() => delete_subject(props.report_uuid, props.subject_uuid, props.reload)}
                                     primary
                                 >
                                     <Icon name='trash' /> Delete subject

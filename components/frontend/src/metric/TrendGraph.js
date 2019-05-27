@@ -7,7 +7,7 @@ function readableNumber(number) {
   return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
-function TrendGraph(props) {
+export function TrendGraph(props) {
   let measurements = [];
   let max_y = 10;
   for (var i = 0; i < props.measurements.length; i++) {
@@ -45,6 +45,3 @@ function TrendGraph(props) {
     </VictoryChart>
   )
 }
-
-
-export { TrendGraph };

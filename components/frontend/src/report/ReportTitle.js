@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { delete_report, set_report_attribute } from '../api/report';
 
 export function ReportTitle(props) {
     return (
@@ -13,7 +14,7 @@ export function ReportTitle(props) {
                             <StringInput
                                 label="Report title"
                                 readOnly={props.readOnly}
-                                set_value={(value) => props.set_report_attribute("title", value)}
+                                set_value={(value) => set_report_attribute(props.report.report_uuid, "title", value, props.reload)}
                                 value={props.report.title}
                             />
                         </Grid.Column>
@@ -21,7 +22,7 @@ export function ReportTitle(props) {
                             <StringInput
                                 label="Report subtitle"
                                 readOnly={props.readOnly}
-                                set_value={(value) => props.set_report_attribute("subtitle", value)}
+                                set_value={(value) => set_report_attribute(props.report.report_uuid, "subtitle", value, props.reload)}
                                 value={props.report.subtitle}
                             />
                         </Grid.Column>
@@ -34,7 +35,7 @@ export function ReportTitle(props) {
                                     floated='right'
                                     negative
                                     icon
-                                    onClick={(e) => props.delete_report(e)}
+                                    onClick={() => delete_report(props.report.report_uuid, props.go_home)}
                                     primary
                                 >
                                     <Icon name='trash' /> Delete report

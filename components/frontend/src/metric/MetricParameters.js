@@ -6,8 +6,9 @@ import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { TextInput } from '../fields/TextInput';
+import { set_metric_attribute } from '../api/metric';
 
-function MetricParameters(props) {
+export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_unit = props.metric.unit || metric_type.unit;
     let tags = new Set();
@@ -29,8 +30,10 @@ function MetricParameters(props) {
                         <MetricType
                             datamodel={props.datamodel}
                             metric_type={props.metric.type}
+                            metric_uuid={props.metric_uuid}
                             readOnly={props.readOnly}
-                            set_metric_attribute={props.set_metric_attribute}
+                            reload={props.reload}
+                            report_uuid={props.report_uuid}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -38,7 +41,7 @@ function MetricParameters(props) {
                             label="Metric name"
                             placeholder={metric_type.name}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("name", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "name", value, props.reload)}
                             value={props.metric.name}
                         />
                     </Grid.Column>
@@ -47,7 +50,7 @@ function MetricParameters(props) {
                             label="Metric unit"
                             placeholder={metric_type.unit}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("unit", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "unit", value, props.reload)}
                             value={props.metric.unit}
                         />
                     </Grid.Column>
@@ -58,7 +61,7 @@ function MetricParameters(props) {
                             label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("target", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.target}
                         />
@@ -68,7 +71,7 @@ function MetricParameters(props) {
                             label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("near_target", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.near_target}
                         />
@@ -79,7 +82,7 @@ function MetricParameters(props) {
                             label="Tags"
                             options={[...tags]}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("tags", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "tags", value, props.reload)}
                             value={props.metric.tags}
                         />
                     </Grid.Column>
@@ -93,7 +96,7 @@ function MetricParameters(props) {
                                 { key: true, text: "Yes", value: true },
                                 { key: false, text: "No", value: false }]}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("accept_debt", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "accept_debt", value, props.fetch_measurement_and_reload)}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -101,7 +104,7 @@ function MetricParameters(props) {
                             label="Metric debt target"
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("debt_target", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.debt_target}
                         />
@@ -112,7 +115,7 @@ function MetricParameters(props) {
                         <TextInput
                             label="Comment"
                             readOnly={props.readOnly}
-                            set_value={(value) => props.set_metric_attribute("comment", value)}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "comment", value, props.reload)}
                             value={props.metric.comment}
                         />
                     </Grid.Column>
@@ -121,5 +124,3 @@ function MetricParameters(props) {
         </>
     )
 }
-
-export { MetricParameters };

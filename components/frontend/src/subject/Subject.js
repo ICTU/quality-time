@@ -1,56 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Icon, Popup, Table } from 'semantic-ui-react';
-import Metric from '../metric/Metric';
+import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
+import { add_metric } from '../api/metric';
 
 class Subject extends Component {
   constructor(props) {
     super(props);
     this.state = { hide_metrics_not_requiring_action: false, sort_column: null, sort_direction: null, last_measurements: {} };
-  }
-  set_subject_attribute(key, value) {
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/${key}`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [key]: value })
-    }).then(
-      () => self.props.reload()
-    )
-  }
-  add_metric(event) {
-    event.preventDefault();
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}/metric/new`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.props.reload()
-    );
-  }
-  delete_subject(event) {
-    event.preventDefault();
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/subject/${this.props.subject_uuid}`, {
-      method: 'delete',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.props.reload()
-    );
   }
   hide_metrics_not_requiring_action(event) {
     event.preventDefault();
@@ -153,10 +110,11 @@ class Subject extends Component {
       <div id={this.props.subject_uuid}>
         <SubjectTitle
           datamodel={this.props.datamodel}
-          delete_subject={(event) => this.delete_subject(event)}
           readOnly={this.props.readOnly}
-          set_subject_attribute={(k, v) => this.set_subject_attribute(k, v)}
+          reload={this.props.reload}
+          report_uuid={this.props.report.report_uuid}
           subject={subject}
+          subject_uuid={this.props.subject_uuid}
         />
         <Table sortable>
           <Table.Header>
@@ -221,9 +179,15 @@ class Subject extends Component {
             <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell colSpan='9'>
-                  <Button floated='left' icon primary basic onClick={(e) => this.add_metric(e)}>
+                  <Button
+                    basic
+                    floated='left'
+                    icon
+                    onClick={() => add_metric(this.props.report.report_uuid, this.props.subject_uuid, this.props.reload)}
+                    primary
+                  >
                     <Icon name='plus' /> Add metric
-                </Button>
+                  </Button>
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Footer>}

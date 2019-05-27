@@ -1,55 +1,18 @@
 import React, { Component } from 'react';
-import Measurement from './Measurement';
+import { Measurement } from './Measurement';
 
 class Metric extends Component {
   constructor(props) {
     super(props);
     this.state = { measurements: [] }
   }
-  set_entity_attribute(source_uuid, entity_key, attribute, value) {
-    const self = this;
-    fetch(`${window.server_url}/measurement/${this.props.metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`, {
-      method: 'post',
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [attribute]: value })
-    })
-      .then(function (response) { return response.json(); })
-      .then(function (json) {
-        self.fetch_measurement();
-        self.props.reload();
-      })
-  }
-  set_metric_attribute(attribute, value) {
-    const self = this;
-    fetch(`${window.server_url}/report/${this.props.report.report_uuid}/metric/${this.props.metric_uuid}/${attribute}`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ [attribute]: value })
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (json) {
-        if (attribute === "target" || attribute === "near_target" || attribute === "debt_target" || attribute === "accept_debt") {
-          self.fetch_measurement();
-        }
-        self.props.reload();
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+  fetch_measurement_and_reload() {
+    this.fetch_measurement()
+    this.props.reload()
   }
   fetch_measurement() {
     let self = this;
-    const report_date = this.props.report_date ? this.props.report_date : new Date();
+    const report_date = this.props.report_date || new Date(3000, 12, 31);
     fetch(`${window.server_url}/measurements/${this.props.metric_uuid}?report_date=${report_date.toISOString()}`)
       .then(function (response) {
         return response.json();
@@ -81,14 +44,13 @@ class Metric extends Component {
         metric_uuid={this.props.metric_uuid}
         nr_new_measurements={this.props.nr_new_measurements}
         reload={this.props.reload}
+        fetch_measurement_and_reload={() => this.fetch_measurement_and_reload()}
         report={this.props.report}
         readOnly={this.props.readOnly}
-        set_metric_attribute={(a, v) => this.set_metric_attribute(a, v)}
-        set_entity_attribute={(s, u, a, v) => this.set_entity_attribute(s, u, a, v)}
         subject_uuid={this.props.subject_uuid}
       />
     )
   }
 }
 
-export default Metric;
+export { Metric };

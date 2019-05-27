@@ -1,6 +1,7 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { set_metric_attribute } from '../api/metric';
 
 export function MetricType(props) {
   let options = [];
@@ -17,7 +18,7 @@ export function MetricType(props) {
       label="Metric type"
       options={options}
       readOnly={props.readOnly}
-      set_value={(value) => props.set_metric_attribute("type", value)}
+      set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "type", value, props.reload)}
       value={props.metric_type}
     />
   )

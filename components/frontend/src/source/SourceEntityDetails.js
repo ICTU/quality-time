@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Header } from 'semantic-ui-react';
 import { TextInput } from '../fields/TextInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { set_source_entity_attribute } from '../api/source';
 
 export function SourceEntityDetails(props) {
   const options = [
@@ -58,7 +59,7 @@ export function SourceEntityDetails(props) {
           label={`${props.name[0].toUpperCase()}${props.name.slice(1)} status`}
           options={options}
           readOnly={props.readOnly}
-          set_value={(value) => props.set_entity_attribute(props.source_uuid, props.entity.key, "status", value)}
+          set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.fetch_measurement_and_reload)}
           value={props.status}
         />
       </Grid.Column>
@@ -67,7 +68,7 @@ export function SourceEntityDetails(props) {
           label="Rationale"
           placeholder={`Rationale for ${props.name} status...`}
           readOnly={props.readOnly}
-          set_value={(value) => props.set_entity_attribute(props.source_uuid, props.entity.key, "rationale", value)}
+          set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.fetch_measurement_and_reload)}
           value={props.rationale}
         />
       </Grid.Column>

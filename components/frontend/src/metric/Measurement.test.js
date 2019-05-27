@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Measurement from './Measurement';
+import { Measurement } from './Measurement';
 
 it('renders without crashing', () => {
   const container = document.createElement('tbody');
@@ -8,6 +8,7 @@ it('renders without crashing', () => {
     <Measurement
       measurements={[]}
       report={{
+        report_uuid: "report_uuid",
         subjects: {
           subject_uuid: {
             metrics: {
@@ -22,6 +23,6 @@ it('renders without crashing', () => {
       }}
       metric_uuid="metric_uuid"
       subject_uuid="subject_uuid"
-      datamodel={{metrics: {violations: {direction: "<=", tags: []}}}} />, container);
+      datamodel={{ metrics: { violations: { direction: "<=", tags: [] } } }} />, container);
   ReactDOM.unmountComponentAtNode(container);
 });

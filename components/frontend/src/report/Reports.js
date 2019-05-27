@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Icon, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
+import { add_report } from '../api/report';
 
 function ReportsDashboard(props) {
   var tag_counts = {};
@@ -26,37 +27,17 @@ function ReportsDashboard(props) {
   )
 }
 
-class Reports extends Component {
-  add_report(event) {
-    event.preventDefault();
-    const self = this;
-    fetch(`${window.server_url}/report/new`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(
-      () => self.props.reload()
-    );
-  }
-
-  render() {
-    return (
-      <>
-        <ReportsDashboard reports={this.props.reports} open_report={this.props.open_report} />
-        <Segment basic>
-          {!this.props.readOnly &&
-            <Button icon primary basic onClick={(e) => this.add_report(e)}>
-              <Icon name='plus' /> Add report
-            </Button>
-          }
-        </Segment>
-      </>
-    )
-  }
+export function Reports(props) {
+  return (
+    <>
+      <ReportsDashboard reports={props.reports} open_report={props.open_report} />
+      <Segment basic>
+        {!props.readOnly &&
+          <Button icon primary basic onClick={() => add_report(props.reload)}>
+            <Icon name='plus' /> Add report
+          </Button>
+        }
+      </Segment>
+    </>
+  )
 }
-
-export { Reports };
