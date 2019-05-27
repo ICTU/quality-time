@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Measurement } from './Measurement';
 
-export class Metric extends Component {
+class Metric extends Component {
   constructor(props) {
     super(props);
     this.state = { measurements: [] }
@@ -52,3 +52,5 @@ export class Metric extends Component {
     )
   }
 }
+
+export { Metric };

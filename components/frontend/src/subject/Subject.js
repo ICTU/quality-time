@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Icon, Popup, Table } from 'semantic-ui-react';
-import Metric from '../metric/Metric';
+import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { add_metric } from '../api/metric';
 
