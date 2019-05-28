@@ -88,7 +88,8 @@ class Collector:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
         logging.info("Retrieving %s", api_url)
-        responses, error = [], None
+        responses: List[requests.Response] = []
+        error = None
         try:
             responses = self.get_source_responses(api_url, **parameters)
             for response in responses:

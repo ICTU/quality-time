@@ -1,7 +1,7 @@
 """Wekan metric collector."""
 
 from datetime import datetime
-from typing import cast, List, Optional
+from typing import cast, List
 
 import cachetools.func
 from dateutil.parser import parse

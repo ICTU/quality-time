@@ -3,6 +3,7 @@
 import logging
 import unittest
 from unittest.mock import patch, Mock
+from typing import List
 
 import requests
 
@@ -17,7 +18,7 @@ class CollectorTest(unittest.TestCase):
         class SourceMetric(collector.Collector):  # pylint: disable=unused-variable
             """Fake collector."""
 
-            def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+            def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:  # pylint: disable=unused-argument
                 """Return the answer."""
                 return "42"
 

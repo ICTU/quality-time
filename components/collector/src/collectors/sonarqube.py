@@ -54,7 +54,7 @@ class SonarQubeViolations(Collector):
 
     def issue_landing_url(self, issue_key, response: requests.Response, **parameters):
         """Generate a landing url for the issue."""
-        url = super().landing_url(response, **parameters)
+        url = super().landing_url([response], **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 

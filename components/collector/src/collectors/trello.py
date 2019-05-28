@@ -1,7 +1,7 @@
 """Trello metric collector."""
 
 from datetime import datetime
-from typing import cast, List, Optional
+from typing import cast, List
 
 from dateutil.parser import parse
 import requests
