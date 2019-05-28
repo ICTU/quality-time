@@ -99,3 +99,24 @@ class SonarQubeTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
+
+    def test_suppressed_violations(self):
+        """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
+        self.mock_response.json.side_effect = 2 * [
+            dict(total="1",
+                 issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG")]),
+            dict(total="1",
+                 issues=[dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL",
+                              resolution="WONTFIX")])]
+        metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual(
+            [
+                dict(component="a", key="a", message="a", severity="info", type="bug",
+                     resolution="", url="http://sonar/project/issues?id=id&issues=a&open=a"),
+                dict(component="b", key="b", message="b", severity="major", type="code_smell",
+                     resolution="won't fix", url="http://sonar/project/issues?id=id&issues=b&open=b")
+            ],
+            response["sources"][0]["entities"])
+        self.assertEqual("2", response["sources"][0]["value"])

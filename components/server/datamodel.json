@@ -1822,6 +1822,7 @@
                         "blocker"
                     ],
                     "metrics": [
+                        "suppressed_violations",
                         "violations"
                     ]
                 },
@@ -1867,6 +1868,7 @@
                         "security_hotspot"
                     ],
                     "metrics": [
+                        "suppressed_violations",
                         "violations"
                     ]
                 }
@@ -2004,6 +2006,10 @@
                         {
                             "name": "Type",
                             "key": "type"
+                        },
+                        {
+                            "name": "Resolution",
+                            "key": "resolution"
                         },
                         {
                             "name": "Component",

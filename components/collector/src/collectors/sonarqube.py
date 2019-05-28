@@ -6,7 +6,7 @@ from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..collector import Collector
-from ..type import URL, Entities, Value
+from ..type import URL, Entities, Entity, Value
 from ..util import days_ago
 
 
@@ -44,19 +44,24 @@ class SonarQubeViolations(Collector):
         return str(sum(int(response.json()["total"]) for response in responses))
 
     def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
-        return [dict(
+        return [self.entity(issue, response, **parameters)
+                for response in responses for issue in response.json()["issues"]]
+
+    def issue_landing_url(self, issue_key: str, response: requests.Response, **parameters) -> URL:
+        """Generate a landing url for the issue."""
+        url = super().landing_url([response], **parameters)
+        component = parameters.get("component")
+        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
+
+    def entity(self, issue, response: requests.Response, **parameters) -> Entity:
+        """Create an entity from an issue."""
+        return dict(
             key=issue["key"],
             url=self.issue_landing_url(issue["key"], response, **parameters),
             message=issue["message"],
             severity=issue["severity"].lower(),
             type=issue["type"].lower(),
-            component=issue["component"]) for response in responses for issue in response.json()["issues"]]
-
-    def issue_landing_url(self, issue_key, response: requests.Response, **parameters):
-        """Generate a landing url for the issue."""
-        url = super().landing_url([response], **parameters)
-        component = parameters.get("component")
-        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
+            component=issue["component"])
 
 
 class SonarQubeCommentedOutCode(SonarQubeViolations):
@@ -87,6 +92,22 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
     """SonarQube suppressed violations collector."""
 
     rules_parameter = "suppression_rules"
+
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
+        """Next to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube."""
+        responses = super().get_source_responses(api_url, **parameters)
+        url = Collector.api_url(self, **parameters)
+        component = parameters.get("component")
+        api_url = URL(f"{url}/api/issues/search?componentKeys={component}&status=RESOLVED&"
+                      "resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
+        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))]
+
+    def entity(self, issue, response: requests.Response, **parameters) -> Entity:
+        """Also add the resolution to the entity."""
+        entity = super().entity(issue, response, **parameters)
+        resolution = issue.get("resolution", "").lower()
+        entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
+        return entity
 
 
 class SonarQubeMetricsBaseClass(Collector):
