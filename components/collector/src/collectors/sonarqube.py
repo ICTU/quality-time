@@ -88,6 +88,13 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
+        responses = super().get_source_responses(api_url, **parameters)
+        url = Collector.api_url(self, **parameters)
+        component = parameters.get("component")
+        api_url = URL(f"{url}/api/issues/search?componentKeys={component}&resolution=WONTFIX,FALSE-POSITIVE&ps=500")
+        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))]
+
 
 class SonarQubeMetricsBaseClass(Collector):
     """Base class for collectors that use the SonarQube measures/component API."""
