@@ -37,15 +37,15 @@ class GitlabFailedJobs(GitlabBase):
     def api_url(self, **parameters) -> URL:
         return self.gitlab_api_url("jobs")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.failed_jobs(response)))
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(len(self.failed_jobs(responses)))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         return [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],
                 build_age=str(self.build_age(job).days), build_date=str(self.build_datetime(job).date()))
-            for job in self.failed_jobs(response)]
+            for job in self.failed_jobs(responses)]
 
     def build_age(self, job: Job) -> timedelta:
         """Return the age of the job in days."""
@@ -57,9 +57,9 @@ class GitlabFailedJobs(GitlabBase):
         return parse(job["created_at"])
 
     @staticmethod
-    def failed_jobs(response: requests.Response) -> Jobs:
+    def failed_jobs(responses: List[requests.Response]) -> Jobs:
         """Return the failed jobs."""
-        return [job for job in response.json() if job["status"] == "failed"]
+        return [job for response in responses for job in response.json() if job["status"] == "failed"]
 
 
 class GitlabSourceUpToDateness(GitlabBase):
@@ -70,22 +70,22 @@ class GitlabSourceUpToDateness(GitlabBase):
         branch = quote(parameters.get("branch", "master"), safe="")
         return self.gitlab_api_url(f"repository/files/{file_path}?ref={branch}", **parameters)
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        landing_url = super().landing_url(response, **parameters)
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        landing_url = super().landing_url(responses, **parameters)
         project = parameters.get("project", "").strip("/")
         file_path = parameters.get("file_path", "").strip("/")
         branch = parameters.get("branch", "master").strip("/")
         return URL(f"{landing_url}/{project}/blob/{branch}/{file_path}")
 
-    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
         """Override because we want to do a head request and get the last commit metadata."""
         response = requests.head(api_url, timeout=self.TIMEOUT)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = self.gitlab_api_url(f"repository/commits/{last_commit_id}", **parameters)
-        return requests.get(commit_api_url, timeout=self.TIMEOUT)
+        return [requests.get(commit_api_url, timeout=self.TIMEOUT)]
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str((datetime.now(timezone.utc) - parse(responses[0].json()["committed_date"])).days)
 
 
 class GitlabUnmergedBranches(GitlabBase):
@@ -94,18 +94,18 @@ class GitlabUnmergedBranches(GitlabBase):
     def api_url(self, **parameters) -> URL:
         return self.gitlab_api_url("repository/branches", **parameters)
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.unmerged_branches(response, **parameters)))
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(len(self.unmerged_branches(responses, **parameters)))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         return [
             dict(key=branch["name"], name=branch["name"], commit_age=str(self.commit_age(branch).days),
                  commit_date=str(self.commit_datetime(branch).date()))
-            for branch in self.unmerged_branches(response, **parameters)]
+            for branch in self.unmerged_branches(responses, **parameters)]
 
-    def unmerged_branches(self, response: requests.Response, **parameters) -> List:
+    def unmerged_branches(self, responses: List[requests.Response], **parameters) -> List:
         """Return the unmerged branches."""
-        return [branch for branch in response.json() if branch["name"] != "master" and not branch["merged"] and
+        return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
                 self.commit_age(branch).days > int(parameters.get("inactive_days") or "7")]
 
     def commit_age(self, branch) -> timedelta:

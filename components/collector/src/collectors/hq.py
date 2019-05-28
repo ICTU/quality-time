@@ -1,5 +1,7 @@
 """HQ metrics collector."""
 
+from typing import List
+
 import requests
 
 from ..collector import Collector
@@ -12,6 +14,6 @@ class HQ(Collector):
     def api_url(self, **parameters) -> URL:
         return URL(f"{super().api_url(**parameters)}/json/metrics.json")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        metric = [m for m in response.json()["metrics"] if m["stable_metric_id"] == parameters.get("metric_id")][0]
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        metric = [m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == parameters.get("metric_id")][0]
         return metric["value"]

@@ -59,16 +59,14 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
         get_response.json.side_effect = [
             [dict(name="project", id="id")],
             [dict(id=1000)],
+            dict(status=dict(value="In Process")),
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
-            [dict(name="project", id="id")],
-            [dict(id=1000)],
             [dict(name="project", id="id")]]
         post_response = Mock()
         post_response.json.side_effect = [
             dict(access_token="token"),
             dict(access_token="token"),
-            dict(reportId=1),
-            dict(access_token="token")]
+            dict(reportId=1)]
         with patch("requests.post", return_value=post_response):
             with patch("requests.get", return_value=get_response):
                 collector = MetricCollector(self.metric)
@@ -78,31 +76,6 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
         self.assertEqual(1, CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS[1000])
         self.assertEqual(datetime.min, collector.next_collection())
 
-    def test_report_requested(self):
-        """Test that there are no entities while the report hasn't been created yet."""
-        CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS[1000] = 1
-        get_response = Mock()
-        get_response.json.side_effect = [
-            [dict(name="project", id="id")],
-            [dict(id=1000)],
-            dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
-            [dict(name="project", id="id")],
-            [dict(id=1000)],
-            dict(status=dict(value="In Process")),
-            [dict(name="project", id="id")]]
-        post_response = Mock()
-        post_response.json.side_effect = [
-            dict(access_token="token"),
-            dict(access_token="token"),
-            dict(access_token="token")]
-        with patch("requests.post", return_value=post_response):
-            with patch("requests.get", return_value=get_response):
-                collector = MetricCollector(self.metric)
-                response = collector.get()
-        self.assertEqual("10", response["sources"][0]["value"])
-        self.assertEqual([], response["sources"][0]["entities"])
-        self.assertEqual(datetime.min, collector.next_collection())
-
     def test_report_finished(self):
         """Test that there are entities when the report is ready."""
         CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS[1000] = 1
@@ -110,6 +83,7 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
         get_response.json.side_effect = [
             [dict(name="project", id="id")],
             [dict(id=1000)],
+            dict(status=dict(value="Created")),
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
             [dict(name="project", id="id")],
             [dict(id=1000)],

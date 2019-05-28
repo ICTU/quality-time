@@ -3,7 +3,7 @@
 import logging
 import traceback
 from datetime import datetime, timedelta
-from typing import cast, Dict, Optional, Set, Tuple, Type
+from typing import cast, Dict, List, Optional, Set, Tuple, Type
 
 import requests
 
@@ -68,13 +68,13 @@ class Collector:
         """Return the measurement response for one source."""
         parameters = source.get("parameters", {})
         api_url = self.api_url(**parameters)
-        response, connection_error = self.safely_get_source_response(api_url, **parameters)
-        value, entities, parse_error = self.safely_parse_source_response(response, **parameters)
-        landing_url = self.landing_url(response, **parameters)
+        responses, connection_error = self.safely_get_source_responses(api_url, **parameters)
+        value, entities, parse_error = self.safely_parse_source_responses(responses, **parameters)
+        landing_url = self.landing_url(responses, **parameters)
         return dict(api_url=api_url, landing_url=landing_url, value=value, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Translate the url parameter into the landing url."""
         url = parameters.get("url", "").strip("/")
         return url[:-(len("xml"))] + "html" if url.endswith(".xml") else url
@@ -83,22 +83,24 @@ class Collector:
         """Translate the url parameter into the API url."""
         return parameters.get("url", "").strip("/")
 
-    def safely_get_source_response(
-            self, api_url: URL, **parameters) -> Tuple[Optional[requests.Response], ErrorMessage]:
+    def safely_get_source_responses(
+            self, api_url: URL, **parameters) -> Tuple[List[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
         logging.info("Retrieving %s", api_url)
-        response, error = None, None
+        responses: List[requests.Response] = []
+        error = None
         try:
-            response = self.get_source_response(api_url, **parameters)
-            response.raise_for_status()
+            responses = self.get_source_responses(api_url, **parameters)
+            for response in responses:
+                response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-        return response, error
+        return responses, error
 
-    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        return requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))
+        return [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))]
 
     @staticmethod
     def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
@@ -109,27 +111,27 @@ class Collector:
         username, password = parameters.get("username"), parameters.get("password")
         return (username, password) if username and password else None
 
-    def safely_parse_source_response(
-            self, response: Optional[requests.Response], **parameters) -> Tuple[Value, Entities, ErrorMessage]:
-        """Parse the data from the response, without failing. This method should not be overridden because it
+    def safely_parse_source_responses(
+            self, responses: List[requests.Response], **parameters) -> Tuple[Value, Entities, ErrorMessage]:
+        """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
         entities: Entities = []
         value, error = None, None
-        if response:
+        if responses:
             try:
-                value = self.parse_source_response_value(response, **parameters)
-                entities = self.parse_source_response_entities(response, **parameters)
+                value = self.parse_source_responses_value(responses, **parameters)
+                entities = self.parse_source_responses_entities(responses, **parameters)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
         return value, entities[:self.MAX_ENTITIES], error
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
         # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the measurement for the metric. This method can be overridden by collectors
+        """Parse the responses to get the measurement for the metric. This method can be overridden by collectors
         to parse the retrieved sources data."""
-        return str(response.text)
+        return str(responses[0].text)
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
         This method can to be overridden by collectors when a source can provide the measured entities."""

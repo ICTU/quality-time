@@ -15,8 +15,8 @@ from ..util import days_ago, parse_source_response_xml_with_namespace
 class OWASPDependencyCheckSecurityWarnings(Collector):
     """Collector to get security warnings from OWASP Dependency Check."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(response)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         return str(len(self.vulnerable_dependencies(tree, namespaces, **parameters)))
 
     def vulnerable_dependencies(self, tree: Element, namespaces: Namespaces, **parameters) -> List[Tuple[int, Element]]:
@@ -24,9 +24,9 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         return [(index, dependency) for (index, dependency) in enumerate(tree.findall(".//ns:dependency", namespaces))
                 if self.vulnerabilities(dependency, namespaces, **parameters)]
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
-        tree, namespaces = parse_source_response_xml_with_namespace(response)
-        landing_url = self.landing_url(response, **parameters)
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
+        landing_url = self.landing_url(responses, **parameters)
         return [self.parse_entity(dependency, index, namespaces, landing_url, ** parameters) for (index, dependency)
                 in self.vulnerable_dependencies(tree, namespaces, **parameters)]
 
@@ -62,7 +62,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
 class OWASPDependencyCheckSourceUpToDateness(Collector):
     """Collector to collect the OWASP Dependency Check report age."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(response)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         report_datetime = isoparse(tree.findtext(".//ns:reportDate", namespaces=namespaces))
         return str(days_ago(report_datetime))

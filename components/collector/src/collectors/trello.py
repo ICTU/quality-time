@@ -1,7 +1,7 @@
 """Trello metric collector."""
 
 from datetime import datetime
-from typing import cast, Optional
+from typing import cast, List
 
 from dateutil.parser import parse
 import requests
@@ -14,14 +14,14 @@ from ..util import days_ago
 class TrelloBase(Collector):
     """Base class for Trello collectors."""
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        return URL(response.json()["url"] if response else "https://trello.com")
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        return URL(responses[0].json()["url"] if responses else "https://trello.com")
 
-    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{self.board_id(**parameters)}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
-        return requests.get(self.url_with_auth(api, **parameters), timeout=self.TIMEOUT)
+        return [requests.get(self.url_with_auth(api, **parameters), timeout=self.TIMEOUT)]
 
     def board_id(self, **parameters) -> str:
         """Return the id of the board specified by the user."""
@@ -40,11 +40,11 @@ class TrelloBase(Collector):
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.parse_source_response_entities(response, **parameters)))
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(len(self.parse_source_responses_entities(responses, **parameters)))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
-        json = response.json()
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+        json = responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         return [self.card_to_entity(card, lists) for card in cards if not self.ignore_card(card, lists, **parameters)]
@@ -84,7 +84,7 @@ class TrelloIssues(TrelloBase):
 class TrelloSourceUpToDateness(TrelloBase):
     """Collector to measure how up-to-date a Trello board is."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        json = response.json()
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        json = responses[0].json()
         dates = [json["dateLastActivity"]] + [card["dateLastActivity"] for card in json["cards"]]
         return str(days_ago(parse(min(dates))))

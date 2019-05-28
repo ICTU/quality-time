@@ -1,6 +1,6 @@
 """Jira metric collector."""
 
-from typing import Optional
+from typing import List
 from urllib.parse import quote
 
 import requests
@@ -17,15 +17,15 @@ class JiraIssues(Collector):
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields=summary")
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        url = super().landing_url(response, **parameters)
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        url = super().landing_url(responses, **parameters)
         jql = quote(str(parameters.get("jql")))
         return URL(f"{url}/issues?jql={jql}")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(response.json()["total"])
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(responses[0].json()["total"])
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         url = parameters.get("url")
-        return [dict(key=issue["id"], summary=issue["fields"]["summary"],
-                     url=f"{url}/browse/{issue['key']}") for issue in response.json().get("issues", [])]
+        return [dict(key=issue["id"], summary=issue["fields"]["summary"], url=f"{url}/browse/{issue['key']}")
+                for issue in responses[0].json().get("issues", [])]

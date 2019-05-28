@@ -1,6 +1,6 @@
 """Collectors for SonarQube."""
 
-from typing import Dict, Optional
+from typing import Dict, List
 
 from dateutil.parser import isoparse  # type: ignore
 import requests
@@ -15,8 +15,8 @@ class SonarQubeViolations(Collector):
 
     rules_parameter = "Subclass responsibility"
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        url = super().landing_url(response, **parameters)
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        url = super().landing_url(responses, **parameters)
         component = parameters.get("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
         return URL(landing_url + self.rules_url_parameter(**parameters))
@@ -40,21 +40,21 @@ class SonarQubeViolations(Collector):
         rules = parameters.get(self.rules_parameter, [])
         return f"&rules={','.join(rules)}" if rules else ""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(response.json()["total"])
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(sum(int(response.json()["total"]) for response in responses))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         return [dict(
             key=issue["key"],
             url=self.issue_landing_url(issue["key"], response, **parameters),
             message=issue["message"],
             severity=issue["severity"].lower(),
             type=issue["type"].lower(),
-            component=issue["component"]) for issue in response.json()["issues"]]
+            component=issue["component"]) for response in responses for issue in response.json()["issues"]]
 
     def issue_landing_url(self, issue_key, response: requests.Response, **parameters):
         """Generate a landing url for the issue."""
-        url = super().landing_url(response, **parameters)
+        url = super().landing_url([response], **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 
@@ -94,8 +94,8 @@ class SonarQubeMetricsBaseClass(Collector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        url = super().landing_url(response, **parameters)
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        url = super().landing_url(responses, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
@@ -104,13 +104,13 @@ class SonarQubeMetricsBaseClass(Collector):
         component = parameters.get("component")
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(self._get_metrics(response)[self.metricKeys])
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(self._get_metrics(responses)[self.metricKeys])
 
     @staticmethod
-    def _get_metrics(response: requests.Response) -> Dict[str, int]:
-        """Get the metric(s) from the response."""
-        measures = response.json()["component"]["measures"]
+    def _get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
+        """Get the metric(s) from the responses."""
+        measures = [measure for measure in responses[0].json()["component"]["measures"]]
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
 
 
@@ -164,11 +164,11 @@ class SonarQubeSourceUpToDateness(Collector):
         component = parameters.get("component")
         return URL(f"{url}/api/project_analyses/search?project={component}")
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
-        url = super().landing_url(response, **parameters)
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+        url = super().landing_url(responses, **parameters)
         component = parameters.get("component")
         return URL(f"{url}/project/activity?id={component}")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        analysis_datetime = isoparse(response.json()["analyses"][0]["date"])
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])
         return str(days_ago(analysis_datetime))
