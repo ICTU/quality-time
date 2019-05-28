@@ -1,6 +1,7 @@
 """Jacoco coverage report collector."""
 
 from datetime import datetime
+from typing import List
 import xml.etree.cElementTree
 
 import requests
@@ -16,8 +17,8 @@ class JacocoCoverageBaseClass(Collector):
     coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree = xml.etree.cElementTree.fromstring(response.text)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree = xml.etree.cElementTree.fromstring(responses[0].text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
         return str(counter.get(self.coverage_status))
 
@@ -39,8 +40,8 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
 class JacocoSourceUpToDateness(Collector):
     """Collector to collect the Jacoco report age."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree = xml.etree.cElementTree.fromstring(response.text)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree = xml.etree.cElementTree.fromstring(responses[0].text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"
         report_datetime = datetime.utcfromtimestamp(int(timestamp) / 1000.)

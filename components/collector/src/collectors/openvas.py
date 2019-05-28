@@ -14,12 +14,12 @@ from ..util import days_ago, parse_source_response_xml
 class OpenVASSecurityWarnings(Collector):
     """Collector to get security warnings from OpenVAS."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree = parse_source_response_xml(response)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree = parse_source_response_xml(responses[0])
         return str(len(self.results(tree, **parameters)))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
-        tree = parse_source_response_xml(response)
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+        tree = parse_source_response_xml(responses[0])
         return [dict(key=result.attrib["id"], name=result.findtext("name"), description=result.findtext("description"),
                      host=result.findtext("host"), port=result.findtext("port"), severity=result.findtext("threat"))
                 for result in self.results(tree, **parameters)]
@@ -35,7 +35,7 @@ class OpenVASSecurityWarnings(Collector):
 class OpenVASSourceUpToDateness(Collector):
     """Collector to collect the OpenVAS report age."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        tree = parse_source_response_xml(response)
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        tree = parse_source_response_xml(responses[0])
         report_datetime = isoparse(tree.findtext("creation_time"))
         return str(days_ago(report_datetime))

@@ -18,10 +18,9 @@ class JenkinsTestReportTests(Collector):
     def api_url(self, **parameters) -> URL:
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        json = response.json()
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
         statuses = [self.jenkins_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
-        return str(sum(int(json.get(status, 0)) for status in statuses))
+        return str(sum(int(response.json().get(status, 0)) for response in responses for status in statuses))
 
     @staticmethod
     def test_statuses_to_count(**parameters) -> List[str]:  # pylint: disable=unused-argument
@@ -36,7 +35,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     def test_statuses_to_count(**parameters) -> List[str]:
         return parameters.get("failure_type") or ["failed", "skipped"]
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         """Return a list of failed tests."""
 
         def entity(case) -> Entity:
@@ -52,7 +51,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
             status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
             return dict(regression="failed", fixed="passed").get(status, status)
 
-        suites = response.json().get("suites", [])
+        suites = [suite for response in responses for suite in response.json().get("suites", [])]
         statuses = self.test_statuses_to_count(**parameters)
         return [entity(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
@@ -63,6 +62,7 @@ class JenkinsTestReportSourceUpToDateness(Collector):
     def api_url(self, **parameters) -> URL:
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        timestamps = [suite.get("timestamp") for suite in response.json().get("suites", []) if suite.get("timestamp")]
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        timestamps = [suite.get("timestamp") for response in responses for suite in response.json().get("suites", [])
+                      if suite.get("timestamp")]
         return str(days_ago(parse(max(timestamps))))

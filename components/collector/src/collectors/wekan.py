@@ -15,14 +15,14 @@ from ..util import days_ago
 class WekanBase(Collector):
     """Base class for Wekan collectors."""
 
-    def landing_url(self, response: Optional[requests.Response], **parameters) -> URL:
+    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
         api_url = self.api_url(**parameters)
-        return URL(f"{api_url}/b/{self.board_id(response.json()['token'], **parameters)}") if response else api_url
+        return URL(f"{api_url}/b/{self.board_id(responses[0].json()['token'], **parameters)}") if responses else api_url
 
-    def get_source_response(self, api_url: URL, **parameters) -> requests.Response:
+    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
         """Override because we want to do a post request to login."""
         credentials = dict(username=parameters.get("username"), password=parameters.get("password"))
-        return requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)
+        return [requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)]
 
     def board_id(self, token, **parameters) -> str:
         """Return the id of the board specified by the user."""
@@ -59,11 +59,11 @@ class WekanBase(Collector):
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        return str(len(self.parse_source_response_entities(response, **parameters)))
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        return str(len(self.parse_source_responses_entities(responses, **parameters)))
 
-    def parse_source_response_entities(self, response: requests.Response, **parameters) -> Entities:
-        token = response.json()['token']
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+        token = responses[0].json()['token']
         api_url = self.api_url(**parameters)
         board_url = f"{api_url}/api/boards/{self.board_id(token, **parameters)}"
         board_slug = self.get_json(board_url, token)["slug"]
@@ -111,8 +111,8 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    def parse_source_response_value(self, response: requests.Response, **parameters) -> Value:
-        token = response.json()['token']
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+        token = responses[0].json()['token']
         board_url = f"{self.api_url(**parameters)}/api/boards/{self.board_id(token, **parameters)}"
         board = self.get_json(board_url, token)
         dates = [board.get("createdAt"), board.get("modifiedAt")]
