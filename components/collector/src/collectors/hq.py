@@ -15,6 +15,5 @@ class HQ(Collector):
         return URL(f"{super().api_url(**parameters)}/json/metrics.json")
 
     def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
-        metric = [m for response in responses for m in response.json()["metrics"]
-                  if m["stable_metric_id"] == parameters.get("metric_id")][0]
+        metric = [m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == parameters.get("metric_id")][0]
         return metric["value"]

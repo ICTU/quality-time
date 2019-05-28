@@ -23,9 +23,9 @@ class JiraIssues(Collector):
         return URL(f"{url}/issues?jql={jql}")
 
     def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
-        return str(sum(int(response.json()["total"]) for response in responses))
+        return str(responses[0].json()["total"])
 
     def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         url = parameters.get("url")
         return [dict(key=issue["id"], summary=issue["fields"]["summary"], url=f"{url}/browse/{issue['key']}")
-                for response in responses for issue in response.json().get("issues", [])]
+                for issue in responses[0].json().get("issues", [])]

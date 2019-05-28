@@ -18,7 +18,7 @@ class JenkinsJobs(Collector):
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
     def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
-        return str(sum(len(list(self.jobs(response.json()["jobs"], **parameters))) for response in responses))
+        return str(len(list(self.jobs(responses[0].json()["jobs"], **parameters))))
 
     def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
         return [
@@ -26,7 +26,7 @@ class JenkinsJobs(Collector):
                 key=job["name"], name=job["name"], url=job["url"], build_status=self.build_status(job),
                 build_age=str(self.build_age(job).days) if self.build_age(job) < timedelta.max else "",
                 build_date=str(self.build_datetime(job).date()) if self.build_datetime(job) > datetime.min else "")
-            for response in responses for job in self.jobs(response.json()["jobs"], **parameters)]
+            for job in self.jobs(responses[0].json()["jobs"], **parameters)]
 
     def jobs(self, jobs: Jobs, **parameters):
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""

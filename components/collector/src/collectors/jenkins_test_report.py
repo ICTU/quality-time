@@ -20,7 +20,7 @@ class JenkinsTestReportTests(Collector):
 
     def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
         statuses = [self.jenkins_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
-        return str(sum(int(response.json().get(status, 0)) for response in responses for status in statuses))
+        return str(sum(int(responses[0].json().get(status, 0)) for status in statuses))
 
     @staticmethod
     def test_statuses_to_count(**parameters) -> List[str]:  # pylint: disable=unused-argument
@@ -51,7 +51,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
             status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
             return dict(regression="failed", fixed="passed").get(status, status)
 
-        suites = [suite for response in responses for suite in response.json().get("suites", [])]
+        suites = [suite for suite in responses[0].json().get("suites", [])]
         statuses = self.test_statuses_to_count(**parameters)
         return [entity(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
@@ -63,6 +63,6 @@ class JenkinsTestReportSourceUpToDateness(Collector):
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
     def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
-        timestamps = [suite.get("timestamp") for response in responses for suite in response.json().get("suites", [])
+        timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
                       if suite.get("timestamp")]
         return str(days_ago(parse(max(timestamps))))
