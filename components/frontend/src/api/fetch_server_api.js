@@ -1,5 +1,5 @@
 export function fetch_server_api(method, api, body, success) {
-  fetch(`${window.server_url}/${api}`, {
+  return fetch(`${window.server_url}/${api}`, {
     method: method,
     mode: 'cors',
     credentials: 'include',
@@ -7,5 +7,5 @@ export function fetch_server_api(method, api, body, success) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
-  }).then(() => success());
+  }).then((response) => response.json());
 }

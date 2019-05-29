@@ -5,7 +5,7 @@ import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
-
+import { login, logout } from './api/auth';
 
 class App extends Component {
   constructor(props) {
@@ -117,18 +117,7 @@ class App extends Component {
 
   login(username, password) {
     let self = this;
-    fetch(`${window.server_url}/login`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username: username, password: password })
-    })
-      .then(function (response) {
-        return response.json()
-      })
+    login(username, password)
       .then(function (json) {
         if (json.ok) {
           self.setState({ user: username })
@@ -143,19 +132,9 @@ class App extends Component {
   logout(event) {
     event.preventDefault();
     let self = this;
-    fetch(`${window.server_url}/logout`, {
-      method: 'post',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    }).then(function (response) {
+    logout().then(() => {
       self.setState({ user: null });
       localStorage.setItem("user", null);
-    }).catch(function (error) {
-      console.log(error);
     })
   }
 
