@@ -6,6 +6,8 @@ import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
 import { login, logout } from './api/auth';
+import { get_datamodel } from './api/datamodel';
+import { get_reports } from './api/report';
 
 class App extends Component {
   constructor(props) {
@@ -36,21 +38,15 @@ class App extends Component {
   reload(event) {
     if (event) { event.preventDefault(); }
     const report_date = this.report_date() || new Date(3000, 12, 31);
-    fetch(`${window.server_url}/datamodel?report_date=${report_date.toISOString()}`)
-      .then(function (response) {
-        return response.json();
-      })
+    let self = this;
+    get_datamodel(report_date)
       .then(function (json) {
         self.setState({ datamodel: json });
       });
-    let self = this;
-    const current_date = new Date()
-    fetch(`${window.server_url}/reports?report_date=${report_date.toISOString()}`)
-      .then(function (response) {
-        return response.json();
-      })
+    get_reports(report_date)
       .then(function (json) {
         const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
+        const current_date = new Date()
         self.setState(
           {
             reports: json.reports,
