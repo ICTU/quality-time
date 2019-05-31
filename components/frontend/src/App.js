@@ -64,9 +64,10 @@ class App extends Component {
   }
 
   handleDateChange(event, { name, value }) {
-    if (this.state.hasOwnProperty(name)) {
-      this.setState({ [name]: value }, () => this.reload())
-    }
+    const today = new Date();
+    const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
+    const new_report_date_string = value === today_string ? '' : value;
+    this.setState({ [name]: new_report_date_string }, () => this.reload())
   }
 
   go_home(event) {
