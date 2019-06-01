@@ -15,4 +15,4 @@ class CalendarTest(unittest.TestCase):
             type="source_up_to_dateness", addition="max",
             sources=dict(a=dict(type="calendar", parameters=dict(date="2019-01-01"))))
         response = MetricCollector(metric).get()
-        self.assertEqual(str(((datetime.now() - datetime(2019, 1, 1))).days), response["sources"][0]["value"])
+        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

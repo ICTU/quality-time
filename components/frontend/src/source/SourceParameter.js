@@ -53,7 +53,7 @@ class SourceParameter extends Component {
           value={this.props.parameter_value}
         />
       )
-    };
+    }
     if (this.props.parameter_type === "password") {
       return (
         <Input
