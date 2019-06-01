@@ -13,7 +13,7 @@ export function Input(props) {
         focus
         onBlur={() => { if (value !== props.value) { set_value(value) } }}
         onChange={(event) => setValue(event.target.value)}
-        onKeyDown={(event) => { if (event.key === "Escape") { setValue(props.value) } }}
+        onKeyDown={(event) => { if (event.key === "Escape") { setValue(props.value || "") } }}
         onSubmit={() => { if (value !== props.value) { set_value(value) } }}
         value={value}
       />

@@ -11,7 +11,7 @@ export function TextInput(props) {
         error={required && text === ""}
         onBlur={() => props.set_value(text)}
         onChange={(event) => setText(event.target.value)}
-        onKeyDown={(event) => { if (event.key === "Escape") { setText(props.value) } }}
+        onKeyDown={(event) => { if (event.key === "Escape") { setText(props.value || "") } }}
         onKeyPress={(event) => { if (event.key === "Enter" && event.shiftKey) { props.set_value(text) } }}
         value={text}
       />
