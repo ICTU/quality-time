@@ -1,48 +1,22 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 
-class Input extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { edited_value: this.props.value || ""}
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.setState({ edited_value: this.props.value })
-    }
-  }
-  onChange(event) {
-    this.setState({ edited_value: event.target.value });
-  }
-  onKeyDown(event) {
-    if (event.key === "Escape") {
-      this.setState({ edited_value: this.props.value })
-    }
-  }
-  onSubmit(event) {
-    event.preventDefault();
-    if (this.state.edited_value !== this.props.value) {
-      this.props.set_value(this.state.edited_value);
-    }
-  }
-  render() {
-    let { required, set_value, ...props } = this.props;
-    return (
-      <Form>
-        <Form.Input
-          {...props}
-          error={required && this.state.edited_value === ""}
-          fluid
-          focus
-          onBlur={(e) => this.onSubmit(e)}
-          onChange={(e) => this.onChange(e)}
-          onKeyDown={(e) => this.onKeyDown(e)}
-          onSubmit={(e) => this.onSubmit(e)}
-          value={this.state.edited_value || ""}
-        />
-      </Form>
-    )
-  }
+export function Input(props) {
+  let { required, set_value, ...otherProps } = props;
+  const [value, setValue] = useState(props.value || "");
+  return (
+    <Form>
+      <Form.Input
+        {...otherProps}
+        error={required && value === ""}
+        fluid
+        focus
+        onBlur={() => { if (value !== props.value) { set_value(value) } }}
+        onChange={(event) => setValue(event.target.value)}
+        onKeyDown={(event) => { if (event.key === "Escape") { setValue(props.value) } }}
+        onSubmit={() => { if (value !== props.value) { set_value(value) } }}
+        value={value}
+      />
+    </Form>
+  )
 }
-
-export { Input };
