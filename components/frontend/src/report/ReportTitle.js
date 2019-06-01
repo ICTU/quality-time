@@ -6,7 +6,7 @@ import { delete_report, set_report_attribute } from '../api/report';
 
 export function ReportTitle(props) {
     return (
-        <HeaderWithDetails level="h2" header={props.report.title} subheader={props.report.subtitle}>
+        <HeaderWithDetails level="h1" header={props.report.title} subheader={props.report.subtitle}>
             <Segment>
                 <Grid stackable>
                     <Grid.Row columns={3}>
