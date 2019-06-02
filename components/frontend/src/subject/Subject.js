@@ -38,7 +38,7 @@ export function Subject(props) {
         subject_uuid={props.subject_uuid}
       />)
   });
-  if (sort_column !== null) {
+  if (sortColumn !== null) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
     const sorters = {
       name: (m1, m2) => {
@@ -85,7 +85,7 @@ export function Subject(props) {
         return attribute1.localeCompare(attribute2)
       }
     }
-    metric_components.sort(sorters[sort_column]);
+    metric_components.sort(sorters[sortColumn]);
     if (sortDirection === 'descending') {
       metric_components.reverse()
     }
