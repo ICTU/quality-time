@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 
 function sort_options(option_list) {
@@ -10,9 +10,8 @@ function sort_options(option_list) {
 }
 
 export function MultipleChoiceInput(props) {
-  let { required, set_value, allowAdditions, ...otherProps } = props;
+  let { allowAdditions, required, set_value, ...otherProps } = props;
   const [value, setValue] = useState(props.value || []);
-  useEffect(() => { props.set_value(value) }, [value]);
   const [options, setOptions] = useState(sort_options(props.options));
   return (
     <Form>
@@ -28,7 +27,7 @@ export function MultipleChoiceInput(props) {
           fluid
           multiple
           onAddItem={(event, { value }) => { setOptions(options => sort_options([value, ...options.map(option => option.text)])) }}
-          onChange={(event, { value }) => { setValue(value) }}
+          onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
           options={options}
           search
           selection
