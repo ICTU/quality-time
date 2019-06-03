@@ -1,4 +1,5 @@
 import React from 'react';
+import { Message } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -22,6 +23,16 @@ export function Report(props) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
+    }
+    if (!props.report) {
+        return props.report_date ?
+            <Message warning size='huge'>
+                <Message.Header>{`Sorry, this report didn't exist at ${props.report_date}`}</Message.Header>
+            </Message>
+            :
+            <Message negative size='huge'>
+                <Message.Header>Sorry, this report doesn't exist</Message.Header>
+            </Message>
     }
     return (
         <>
