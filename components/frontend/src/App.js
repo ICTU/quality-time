@@ -142,9 +142,8 @@ class App extends Component {
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <Menubar onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-          reload={(e) => this.reload(e)} go_home={(e) => this.go_home(e)}
-          nr_new_measurements={this.state.nr_new_measurements} user={this.state.user}
-          report={report} report_date={report_date} login={(u, p) => this.login(u, p)}
+          go_home={(e) => this.go_home(e)} user={this.state.user}
+          report_date={report_date} login={(u, p) => this.login(u, p)}
           logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
         <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>

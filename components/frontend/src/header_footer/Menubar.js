@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Modal, Popup } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Input, Menu, Modal } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 
 function Login(props) {
@@ -25,20 +25,7 @@ function Logout(props) {
   )
 }
 
-function NewMeasurementsLabel(props) {
-  if (props.nr_new_measurements === 0) { return null }
-  const plural_s = props.nr_new_measurements > 1 ? 's' : '';
-  return (
-    <Popup trigger={
-      <Label as='a' circular color='blue' onClick={props.onClick} onKeyPress={props.onClick}>
-        {props.nr_new_measurements}
-      </Label>}
-      content={`Click to retrieve ${props.nr_new_measurements} new measurement${plural_s}`}
-    />
-  )
-}
-
-function Menubar(props) {
+export function Menubar(props) {
   const today = new Date();
   const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
   return (
@@ -49,7 +36,6 @@ function Menubar(props) {
         </Menu.Item>
         <Menu.Item>
           <font size="+3">Quality-time</font>
-          <NewMeasurementsLabel onClick={props.reload} nr_new_measurements={props.nr_new_measurements} />
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
@@ -68,5 +54,3 @@ function Menubar(props) {
     </Menu>
   )
 }
-
-export { Menubar };
