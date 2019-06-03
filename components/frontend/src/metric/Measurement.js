@@ -27,8 +27,8 @@ export function Measurement(props) {
     measurement_timestring = latest_measurement.end;
   }
   const status_icon = {
-    target_met: 'smile', near_target_met: 'meh', debt_target_met: 'money',
-    target_not_met: 'frown', null: 'question'
+    target_met: 'check', near_target_met: 'warning', debt_target_met: 'money',
+    target_not_met: 'x', null: 'question'
   }[status];
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const target = metric.accept_debt ? metric.debt_target : metric.target;
