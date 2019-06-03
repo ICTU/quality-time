@@ -37,7 +37,7 @@ class App extends Component {
 
   reload(event) {
     if (event) { event.preventDefault(); }
-    const report_date = this.report_date() || new Date(3000, 12, 31);
+    const report_date = this.report_date() || new Date(3000, 1, 1);
     let self = this;
     get_datamodel(report_date)
       .then(function (json) {
