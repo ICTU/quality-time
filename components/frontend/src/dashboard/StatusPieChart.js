@@ -1,7 +1,7 @@
 import React from 'react';
 import { VictoryPie } from 'victory';
 
-function StatusPieChart(props) {
+export function StatusPieChart(props) {
     return (
         <VictoryPie
             colorScale={["rgb(211,59,55)", "rgb(30,148,78)", "rgb(253,197,54)", "rgb(150,150,150)", "rgb(245,245,245)"]}
@@ -22,5 +22,3 @@ function StatusPieChart(props) {
         />
     )
 }
-
-export { StatusPieChart };
