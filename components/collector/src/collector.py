@@ -24,7 +24,8 @@ class MetricCollector:
     def can_collect(self) -> bool:
         """Return whether the user has specified enough information to measure this metric."""
         sources = self.metric.get("sources")
-        return any(source.get("parameters", {}).get("url") for source in sources.values()) if sources else False
+        return any(source.get("parameters", {}).get("url") or (source["type"] in ("calendar", "random"))
+                   for source in sources.values()) if sources else False
 
     def next_collection(self) -> datetime:
         """Return when the metric can/should be collected again."""
