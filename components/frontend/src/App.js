@@ -14,7 +14,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
-      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date()
+      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
     };
     this.handleSearchChange = this.handleSearchChange.bind(this);
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
@@ -117,12 +117,14 @@ class App extends Component {
     login(username, password)
       .then(function (json) {
         if (json.ok) {
-          self.setState({ user: username })
+          self.setState({ user: username, login_error: false })
           localStorage.setItem("user", username)
+        } else {
+          self.setState({ login_error: true })
         }
       })
       .catch(function (error) {
-        console.log(error);
+        self.setState({login_error: true});
       });
   }
 
@@ -140,10 +142,13 @@ class App extends Component {
     const report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
-        <Menubar onSearch={(e) => this.handleSearchChange(e)}
+        <Menubar
+          onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           go_home={(e) => this.go_home(e)} user={this.state.user}
-          report_date={report_date} login={(u, p) => this.login(u, p)}
+          report_date={report_date}
+          login={(u, p) => this.login(u, p)}
+          login_error={this.state.login_error}
           logout={(e) => this.logout(e)}
           report_date_string={this.state.report_date_string} />
         <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
