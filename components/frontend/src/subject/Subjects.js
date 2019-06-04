@@ -17,6 +17,7 @@ export function Subjects(props) {
           report_date={props.report_date}
           search_string={props.search_string}
           subject_uuid={subject_uuid}
+          tags={props.tags}
         />
       )}
       {!props.readOnly &&

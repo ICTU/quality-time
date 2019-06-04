@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
@@ -9,10 +9,20 @@ import { ReportTitle } from './ReportTitle'
 function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
         <MetricSummaryCard
-            key={subject_uuid} header={props.report.subjects[subject_uuid].name}
-            onClick={(event) => props.onClick(event, subject_uuid)} {...summary} />);
+            header={props.report.subjects[subject_uuid].name}
+            key={subject_uuid}
+            onClick={(event) => props.onClick(event, subject_uuid)}
+            {...summary}
+        />
+    );
     const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
-        <MetricSummaryCard key={tag} header={<Tag tag={tag} />} {...summary} />);
+        <MetricSummaryCard
+            header={<Tag tag={tag} color={props.tags.includes(tag) ? "blue" : null} />}
+            key={tag}
+            onClick={() => props.setTags(tags => (tags.includes(tag) ? tags.filter((value) => value !== tag) : [tag, ...tags]))}
+            {...summary}
+        />
+    );
     return (
         <CardDashboard big_cards={subject_cards} small_cards={tag_cards} />
     )
@@ -24,6 +34,7 @@ export function Report(props) {
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
     }
+    const [tags, setTags] = useState([]);
     if (!props.report) {
         return props.report_date ?
             <Message warning size='huge'>
@@ -42,7 +53,12 @@ export function Report(props) {
                 readOnly={props.readOnly}
                 reload={props.reload}
             />
-            <ReportDashboard report={props.report} onClick={(e, s) => navigate_to_subject(e, s)} />
+            <ReportDashboard
+                onClick={(e, s) => navigate_to_subject(e, s)}
+                report={props.report}
+                setTags={setTags}
+                tags={tags}
+            />
             <Subjects
                 datamodel={props.datamodel}
                 nr_new_measurements={props.nr_new_measurements}
@@ -51,6 +67,7 @@ export function Report(props) {
                 report={props.report}
                 report_date={props.report_date}
                 search_string={props.search_string}
+                tags={tags}
             />
         </>
     )
