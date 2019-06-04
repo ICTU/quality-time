@@ -22,6 +22,7 @@ export function Subject(props) {
   Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
     const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid].status) || '';
     if (hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
+    if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
     metric_components.push(
       <Metric
         datamodel={props.datamodel}

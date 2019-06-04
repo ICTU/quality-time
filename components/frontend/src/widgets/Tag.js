@@ -3,6 +3,6 @@ import { Label } from 'semantic-ui-react';
 
 export function Tag(props) {
     return (
-        <Label tag>{props.tag}</Label>
+        <Label color={props.color} tag>{props.tag}</Label>
     )
 }

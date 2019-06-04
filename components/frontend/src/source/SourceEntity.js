@@ -5,7 +5,7 @@ import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 
 export function SourceEntity(props) {
-  const ignored_entity = ["wont_fix", "fixed", "false_positive"].indexOf(props.status) > -1;
+  const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(props.status);
   if (props.hide_ignored_entities && ignored_entity) {
     return null;
   }
