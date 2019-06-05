@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
 
 export function IntegerInput(props) {
     let { prefix, set_value, unit, ...otherProps } = props;
     const [value, setValue] = useState(props.value || 0)
+    useEffect(() => { const new_value = props.value || 0; if (new_value !== value) { setValue(new_value)}}, [props.value]);
     return (
         <Form onSubmit={() => { if (value !== props.value) { props.set_value(value) } }}>
             <Form.Group style={{ marginBottom: '0px' }}>
