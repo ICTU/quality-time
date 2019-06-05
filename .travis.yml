@@ -57,4 +57,9 @@ jobs:
       - cd ../../components/frontend
       - npm test
       - cd ../..
+      - touch components/__init__.py
+      - touch components/server/__init__.py
+      - touch components/server/src/__init__.py
+      - touch components/collector/__init__.py
+      - touch components/collector/src/__init__.py
       - sonar-scanner
