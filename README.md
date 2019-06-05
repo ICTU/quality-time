@@ -2,9 +2,13 @@
 
 [![Build Status](https://travis-ci.org/ICTU/quality-time.svg?branch=master)](https://travis-ci.org/ICTU/quality-time)
 
-Quality report software for software development and maintenance. **Alpha-stage** currently. At the moment, *Quality-time* consists of a Mongo database server, a LDAP server, an API-server, a metrics data collector, and a React frontend. Its main purpose is to experiment with features for a successor of [HQ](https://github.com/ICTU/quality-report).
+Quality report software for software development and maintenance. *Quality-time* continuously collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
-The collector collects metrics data from metric sources such as SonarQube and Jira. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents it to the user.
+*Quality-time* is **Alpha-stage** currently. We hope to have a beta-version ready by the 1st of July, 2019.
+
+Technically, *Quality-time* consists of a Mongo database server, an LDAP server, a API-server written in Python, a metrics data collector also written in Python, and a React frontend. One of its purposes is to become a successor of [HQ](https://github.com/ICTU/quality-report).
+
+Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured lmetric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
 ## Table of contents
 
@@ -18,7 +22,7 @@ The collector collects metrics data from metric sources such as SonarQube and Ji
 
 ## Screenshots
 
-Some preliminary screenshots to wet your appetite.
+Some screenshots to wet your appetite.
 
 ### Projects dashboard
 
@@ -42,10 +46,10 @@ Users can expand the metrics to see and configure the metric details and manage 
 
 Implemented features so far include:
 
-- Simpler and more robust scheduled data collection.
-- History in a database, allowing for time travel.
+- Rubost data collection (the collector should never fail, even in the face of misconfigured or unavailable sources).
+- Measurement history is kept in a database, allowing for time travel.
 - Easy report configuration via the UI.
-- Multiple reports in one Quality-time instance.
+- Multiple reports in one *Quality-time* instance.
 - The possibility to use HQ as a metric source.
 - Simple/naive LDAP-integration.
 - Generic false-positive management.
@@ -99,7 +103,7 @@ docker-compose up database ldap mongo-express
 
 Mongo-express is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
-In the second one, run the server:
+In the second terminal, run the server:
 
 ```console
 cd components/server
@@ -110,7 +114,7 @@ python setup.py develop
 quality-time-server
 ```
 
-In the third one, run the collector:
+In the third terminal, run the collector:
 
 ```console
 cd components/collector
@@ -121,7 +125,7 @@ python setup.py develop
 quality-time-collector
 ```
 
-In the fourth one, run the frontend:
+In the fourth temrinal, run the frontend:
 
 ```console
 cd components/frontend
@@ -129,7 +133,7 @@ npm install
 npm run start
 ```
 
-In the fifth one, serve the test data on port 8000 using a webserver, e.g.:
+In the fifth terminal, serve the test data on port 8000 using a webserver, e.g.:
 
 ```console
 cd components/testdata
@@ -142,7 +146,7 @@ By default, there is one user defined. Use username `admin` and password `admin`
 
 ## Test
 
-To run the unit tests and measure unit test coverage change directory into the component folders, e.g.:
+To run the unit tests and measure unit test coverage, change directory into the component folders, e.g.:
 
 ```console
 cd compontents/server
