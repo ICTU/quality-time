@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react';
 import { Input } from './Input';
 
 function EditableDateInput(props) {
     const [date, setDate] = useState(props.value);
+    useEffect(() => { if (props.value !== date) { setDate(props.value) } }, [props.value]);
     return (
         <Form>
             <CalendarDateInput
+                closable
                 dateFormat="YYYY-MM-DD"
                 disabled={props.readOnly}
                 label={props.label}
