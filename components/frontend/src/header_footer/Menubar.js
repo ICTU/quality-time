@@ -32,7 +32,7 @@ export function Menubar(props) {
   return (
     <Menu fixed='top' inverted>
       <Container fluid>
-        <Menu.Item header onClick={(e) => props.go_home(e)}>
+        <Menu.Item header onClick={() => props.go_home()}>
           <Image size='mini' src='/favicon.ico' />
         </Menu.Item>
         <Menu.Item>

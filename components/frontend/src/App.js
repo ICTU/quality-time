@@ -16,7 +16,6 @@ class App extends Component {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
     };
-    this.handleSearchChange = this.handleSearchChange.bind(this);
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
@@ -35,8 +34,7 @@ class App extends Component {
     this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") });
   }
 
-  reload(event) {
-    if (event) { event.preventDefault(); }
+  reload() {
     const report_date = this.report_date() || new Date(3000, 1, 1);
     let self = this;
     get_datamodel(report_date)
@@ -70,8 +68,8 @@ class App extends Component {
     this.setState({ [name]: new_report_date_string }, () => this.reload())
   }
 
-  go_home(event) {
-    this.reload(event);
+  go_home() {
+    this.reload();
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
       this.setState({ report_uuid: "" });
@@ -145,7 +143,7 @@ class App extends Component {
         <Menubar
           onSearch={(e) => this.handleSearchChange(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
-          go_home={(e) => this.go_home(e)} user={this.state.user}
+          go_home={() => this.go_home()} user={this.state.user}
           report_date={report_date}
           login={(u, p) => this.login(u, p)}
           login_error={this.state.login_error}
@@ -156,10 +154,10 @@ class App extends Component {
             <Segment basic placeholder loading size="massive" />
             :
             this.state.report_uuid === "" ?
-              <Reports reports={this.state.reports} reload={(e) => this.reload(e)}
+              <Reports reports={this.state.reports} reload={() => this.reload()}
                 open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
-              <Report datamodel={this.state.datamodel} report={report} go_home={(e) => this.go_home(e)}
+              <Report datamodel={this.state.datamodel} report={report} go_home={() => this.go_home()}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
                 search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
           }
