@@ -15,10 +15,11 @@ Users can add and configure reports, metrics, and sources (such as SonarQube and
 - [Screenshots](#screenshots)
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Test](#test)
 - [Deployment](#deployment)
 - [Recent changes](#recent-changes)
+
+Also see the [user manual](USAGE.md).
 
 ## Screenshots
 
@@ -28,19 +29,19 @@ Some screenshots to wet your appetite.
 
 *Quality-time* shows a summary of the projects on its landing page:
 
-![Screenshot](docs/screenshot_projects_dashboard.png)
+![Screenshot](screenshots/projects_dashboard.png)
 
 ### Metrics overview
 
 For each metric, *Quality-time* displays the key data:
 
-![Screenshot](docs/screenshot_metrics.png)
+![Screenshot](screenshots/metrics.png)
 
 ### Metric details
 
 Users can expand the metrics to see and configure the metric details and manage false positives:
 
-![Screenshot](docs/screenshot_metric_details.png)
+![Screenshot](screenshots/metric_details.png)
 
 ## Features
 
