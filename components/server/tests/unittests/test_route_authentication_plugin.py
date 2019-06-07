@@ -31,7 +31,6 @@ class AuthenticationPluginTest(unittest.TestCase):
     def test_apply_invalid_session(self):
         """Test that session ids are authenticated."""
         database_mock = mock.Mock()
-        database_mock.sessions = mock.Mock()
         database_mock.sessions.find_one = mock.Mock(return_value=None)
         bottle.install(InjectionPlugin(database_mock, "database"))
         bottle.install(AuthenticationPlugin())
@@ -42,7 +41,6 @@ class AuthenticationPluginTest(unittest.TestCase):
     def test_apply_to_get_route(self):
         """Test that session ids are not authenticated with non-post routes."""
         database_mock = mock.Mock()
-        database_mock.sessions = mock.Mock()
         database_mock.sessions.find_one = mock.Mock(return_value=None)
         bottle.install(InjectionPlugin(database_mock, "database"))
         bottle.install(AuthenticationPlugin())

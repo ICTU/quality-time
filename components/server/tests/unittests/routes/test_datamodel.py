@@ -11,6 +11,5 @@ class DatamodelTest(unittest.TestCase):
     def test_get_datamodel(self):
         """Test that the datamodel can be retrieved."""
         database = mock.Mock()
-        database.datamodels = mock.Mock()
         database.datamodels.find_one = mock.Mock(return_value=dict(_id=123))
         self.assertEqual(dict(_id="123"), datamodel.get_datamodel(database))

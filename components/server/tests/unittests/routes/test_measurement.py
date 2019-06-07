@@ -12,7 +12,6 @@ class GetMeasurementsTest(unittest.TestCase):
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
         database = Mock()
-        database.measurements = Mock()
         database.measurements.find = Mock(return_value=[dict(_id="id")])
         self.assertEqual(dict(measurements=[dict(_id="id")]), get_measurements("metric_uuid", database))
 
@@ -99,7 +98,6 @@ class SetEntityAttributeTest(unittest.TestCase):
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
-        database.measurements = Mock()
         database.measurements.find_one = Mock(
             return_value=dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
