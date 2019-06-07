@@ -26,6 +26,7 @@ class PostMeasurementTests(unittest.TestCase):
         report = dict(
             _id="report_uuid",
             subjects=dict(
+                other_subject=dict(),
                 subject_uuid=dict(
                     metrics=dict(
                         metric_uuid=dict(

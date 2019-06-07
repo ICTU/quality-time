@@ -204,11 +204,11 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_metric_new("report_uuid", "subject_uuid", database))
 
     def test_get_metrics(self):
-        """Test that the metrics can be retrieved."""
+        """Test that the metrics can be retrieved and deleted reports are skipped."""
         report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[])))))
         database = Mock()
-        database.reports.distinct = Mock(return_value=["report_uuid"])
-        database.reports.find_one = Mock(return_value=report)
+        database.reports.distinct = Mock(return_value=["report_uuid", "deleted_report"])
+        database.reports.find_one = Mock(side_effect=[report, dict(deleted=True)])
         database.measurements.find_one = Mock(
             return_value=dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
@@ -242,7 +242,6 @@ class SubjectTest(unittest.TestCase):
         report = dict(subjects=dict(subject_uuid=dict()))
         database.reports.find_one = Mock(return_value=report)
         self.assertEqual(dict(ok=True), delete_subject("report_uuid", "subject_uuid", database))
-
 
 
 class ReportTest(unittest.TestCase):
