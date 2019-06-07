@@ -3,7 +3,18 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.measurement import post_measurement
+from src.routes.measurement import get_measurements, post_measurement, set_entity_attribute
+
+
+class GetMeasurementsTest(unittest.TestCase):
+    """Unit tests for the get measurements route."""
+
+    def test_get_measurements(self):
+        """Tests that the measurements for the requested metric are returned."""
+        database = Mock()
+        database.measurements = Mock()
+        database.measurements.find = Mock(return_value=[dict(_id="id")])
+        self.assertEqual(dict(measurements=[dict(_id="id")]), get_measurements("metric_uuid", database))
 
 
 @patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -81,3 +92,35 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(
             filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01'}})
+
+
+class SetEntityAttributeTest(unittest.TestCase):
+    """Unit tests for the set entity attribute route."""
+    def test_set_attribute(self):
+        """Test that setting an attribute inserts a new measurement."""
+        database = Mock()
+        database.measurements = Mock()
+        database.measurements.find_one = Mock(
+            return_value=dict(
+                _id="id", metric_uuid="metric_uuid", status="red",
+                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")]))
+        def insert_one(measurement):
+            measurement["_id"] = "id"
+        database.measurements.insert_one = insert_one
+        database.reports = Mock()
+        database.reports.distinct = Mock(return_value=["report_uuid"])
+        database.reports.find_one = Mock(
+            return_value=dict(
+                _id="id",
+                subjects=dict(
+                    subject_uuid=dict(
+                        metrics=dict(
+                            metric_uuid=dict(
+                                type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
+                                addition="sum", tags=[]))))))
+        database.datamodels = Mock()
+        database.datamodels.find_one = Mock(return_value=dict(_id=123, metrics=dict(metric_type=dict(direction="<="))))
+        with patch("bottle.request", Mock(json=dict(attribute="value"))):
+            measurement = set_entity_attribute("metric_uuid", "source_uuid", "entity_key", "attribute", database)
+        entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
+        self.assertEqual(dict(attribute="value"), entity)
