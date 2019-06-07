@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.measurement import get_measurements, post_measurement, set_entity_attribute
+from src.routes.measurement import get_measurements, post_measurement, set_entity_attribute, stream_nr_measurements
 
 
 class GetMeasurementsTest(unittest.TestCase):
@@ -70,7 +70,8 @@ class PostMeasurementTests(unittest.TestCase):
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities."""
         self.database.measurements.find_one = Mock(return_value=dict(
-            _id="id", status="target_met", sources=[dict(value="1", entities=[dict(key="a")])]))
+            _id="id", status="target_met",
+            sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))]))
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", status="near_target_met",
@@ -122,3 +123,18 @@ class SetEntityAttributeTest(unittest.TestCase):
             measurement = set_entity_attribute("metric_uuid", "source_uuid", "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
+
+
+class StreamNrMeasurementsTest(unittest.TestCase):
+    """Unit tests for the number of measurements stream."""
+
+    def test_stream(self):
+        """Test that the stream returns the number of measurements whenever it changes."""
+        def sleep(seconds):
+            return seconds
+        database = Mock()
+        database.measurements.count_documents = Mock(side_effect=[42, 42, 43])
+        with patch("time.sleep", sleep):
+            stream = stream_nr_measurements("report_uuid", database)
+            self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
+            self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))

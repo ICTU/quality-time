@@ -3,9 +3,37 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.routes.report import delete_metric, delete_report, delete_source, get_metrics, get_reports, \
-    post_metric_attribute, post_metric_new, post_report_new, post_source_attribute, post_source_new, \
-    post_source_parameter
+from src.routes.report import delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports, \
+    post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new, \
+    post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
+
+
+@patch("bottle.request")
+class PostReportAttributeTest(unittest.TestCase):
+    """Unit tests for the post report attribute route."""
+    def test_post_report_name(self, request):
+        """Test that the report name can be changed."""
+        report = dict(_id="report_uuid")
+        request.json = dict(name="name")
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), post_report_attribute(
+            "report_uuid", "name", database))
+        database.reports.insert.assert_called_once_with(report)
+
+
+@patch("bottle.request")
+class PostSubjecrAttributeTest(unittest.TestCase):
+    """Unit tests for the post subjecr report attribute route."""
+    def test_post_subject_name(self, request):
+        """Test that the subject name can be changed."""
+        report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict()))
+        request.json = dict(name="name")
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), post_subject_attribute(
+            "report_uuid", "subject_uuid", "name", database))
+        database.reports.insert.assert_called_once_with(report)
 
 
 @patch("src.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -67,31 +95,6 @@ class PostMetricAttributeTest(unittest.TestCase):
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
 
 
-class PostSourceNewTest(unittest.TestCase):
-    """Unit tests for the post new source route."""
-
-    def test_new_source(self):
-        """Test that a new source is added."""
-        report = dict(
-            _id="report_uuid",
-            subjects=dict(
-                subject_uuid=dict(
-                    metrics=dict(
-                        metric_uuid=dict(
-                            name=None, type="metric_type", addition="sum", target="0", near_target="10",
-                            debt_target=None, accept_debt=False, tags=[], sources=dict())))))
-        database = Mock()
-        database.reports.find_one = Mock(return_value=report)
-        database.datamodels.find_one = Mock(return_value=dict(
-            _id="",
-            metrics=dict(metric_type=dict(
-                direction="<=", default_source="source_type")),
-            sources=dict(source_type=dict(parameters=dict()))))
-        self.assertEqual(dict(ok=True), post_source_new(
-            "report_uuid", "metric_uuid", database))
-        database.reports.insert.assert_called_once_with(report)
-
-
 @patch("bottle.request")
 class PostSourceAttributeTest(unittest.TestCase):
     """Unit tests for the post source attribute route."""
@@ -144,10 +147,31 @@ class PostSourceParameterTest(unittest.TestCase):
         database.reports.insert.assert_called_once_with(report)
 
 
-class DeleteSourceTest(unittest.TestCase):
-    """Unit tests for the delete source route."""
+class SourceTest(unittest.TestCase):
+    """Unit tests for adding and deleting sources."""
 
-    def test_delete(self):
+    def test_add_source(self):
+        """Test that a new source is added."""
+        report = dict(
+            _id="report_uuid",
+            subjects=dict(
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict(
+                            name=None, type="metric_type", addition="sum", target="0", near_target="10",
+                            debt_target=None, accept_debt=False, tags=[], sources=dict())))))
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        database.datamodels.find_one = Mock(return_value=dict(
+            _id="",
+            metrics=dict(metric_type=dict(
+                direction="<=", default_source="source_type")),
+            sources=dict(source_type=dict(parameters=dict()))))
+        self.assertEqual(dict(ok=True), post_source_new(
+            "report_uuid", "metric_uuid", database))
+        database.reports.insert.assert_called_once_with(report)
+
+    def test_delete_source(self):
         """Test that the source can be deleted."""
         report = dict(
             _id="report_uuid",
@@ -200,6 +224,27 @@ class MetricTest(unittest.TestCase):
         database.reports.insert.assert_called_once_with(report)
 
 
+class SubjectTest(unittest.TestCase):
+    """Unit tests for adding and deleting subjects."""
+
+    def test_add_subject(self):
+        """Test that a subject can be added."""
+        report = dict(_id="report_uuid", subjects=dict())
+        database = Mock()
+        database.reports.find_one = Mock(return_value=report)
+        database.datamodels.find_one = Mock(return_value=dict(
+            _id="", subjects=dict(subject_type=dict(name="Subject", description=""))))
+        self.assertEqual(dict(ok=True), post_new_subject("report_uuid", database))
+
+    def test_delete_subject(self):
+        """Test that a subject can be deleted."""
+        database = Mock()
+        report = dict(subjects=dict(subject_uuid=dict()))
+        database.reports.find_one = Mock(return_value=report)
+        self.assertEqual(dict(ok=True), delete_subject("report_uuid", "subject_uuid", database))
+
+
+
 class ReportTest(unittest.TestCase):
     """Unit tests for adding, deleting, and getting reports."""
 
@@ -223,7 +268,7 @@ class ReportTest(unittest.TestCase):
                     metrics=dict(
                         metric_uuid=dict(
                             type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
-                            addition="sum", tags=[])))))
+                            addition="sum", tags=["a"])))))
         database.reports.find_one = Mock(return_value=report)
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1))
