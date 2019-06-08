@@ -29,14 +29,14 @@ def import_report(database: Database, filename: str) -> None:
         report_to_store["subjects"][uuid()] = subject_to_store
         for imported_metric in imported_subject["metrics"]:
             metric_to_store = default_metric_attributes(
-                database, imported_report["report_uuid"], imported_metric["metric_type"])
+                database, imported_report["report_uuid"], imported_metric["type"])
             metric_to_store.update(imported_metric)
             metric_to_store["sources"] = {}  # Sources in the example report json are lists, we transform them to dicts
             subject_to_store["metrics"][uuid()] = metric_to_store
             for imported_source in imported_metric["sources"]:
                 source_to_store = metric_to_store["sources"][uuid()] = imported_source
                 source_parameters = default_source_parameters(
-                    database, imported_metric["metric_type"], imported_source["type"])
+                    database, imported_metric["type"], imported_source["type"])
                 for key, value in source_parameters.items():
                     if key not in source_to_store["parameters"]:
                         source_to_store["parameters"][key] = value
