@@ -1,6 +1,5 @@
 """Unit tests for the route authentication plugin."""
 
-import json
 import unittest
 from unittest import mock
 
@@ -36,7 +35,7 @@ class AuthenticationPluginTest(unittest.TestCase):
         bottle.install(AuthenticationPlugin())
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         with mock.patch("logging.warning", mock.Mock()):  # Suppress logging
-            self.assertEqual(json.dumps(dict(ok=False)), route.call())
+            self.assertEqual(dict(ok=False), route.call())
 
     def test_apply_to_get_route(self):
         """Test that session ids are not authenticated with non-post routes."""
