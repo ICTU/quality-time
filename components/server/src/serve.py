@@ -1,6 +1,6 @@
 """Quality-time server."""
 
-from gevent import monkey
+from gevent import monkey  # pylint: disable=import-error
 monkey.patch_all()
 
 # pylint: disable=wrong-import-order,wrong-import-position
