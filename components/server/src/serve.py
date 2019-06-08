@@ -17,7 +17,7 @@ from .initialization import init_bottle, init_database, init_ldap
 def serve() -> None:  # pragma: nocover
     """Connect to the database and start the application server."""
     logging.getLogger().setLevel(logging.INFO)
-    init_bottle()
     init_ldap()
     init_database()
+    init_bottle()
     bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)

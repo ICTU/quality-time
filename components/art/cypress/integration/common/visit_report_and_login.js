@@ -1,6 +1,6 @@
 import {Given} from "cypress-cucumber-preprocessor/steps";
 
-const url = "/example-report-hq";
+const url = "/example-report";
 
 Given(/^I visit the report and login$/, () => {
     cy.visit(url);

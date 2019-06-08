@@ -12,6 +12,6 @@ Feature: Technical Debt
     Then the metric is marked as <end_value>
     Examples:
       | debt_target | metric_target | accept_td | start_value      | end_value        | debt_changed | metric_changed | accept_td_changed |
-      | 0           | 0             | 1         | x large icon     | money large icon | 200          | 0              | 2                 |
-      | 200         | 0             | 2         | money large icon | check large icon | 0            | 200            | 1                 |
-      | 200         | 0             | 2         | money large icon | x large icon     | 0            | 0              | 1                 |
+      | 0           | 0             | 1         | x large icon     | money large icon | 400          | 0              | 2                 |
+      | 400         | 0             | 2         | money large icon | check large icon | 0            | 400            | 1                 |
+      | 400         | 0             | 2         | money large icon | x large icon     | 0            | 0              | 1                 |
