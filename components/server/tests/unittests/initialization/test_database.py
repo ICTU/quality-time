@@ -18,9 +18,11 @@ class DatabaseInitTest(unittest.TestCase):
     def test_init(self):
         """Test the initialization."""
         mock_mongo_client = Mock()
-        quality_time_db = Mock()
-        quality_time_db.datamodels.find_one.return_value = None
-        mock_mongo_client().quality_time_db = quality_time_db
+        database = Mock()
+        database.datamodels.find_one.return_value = None
+        database.database.reports.count_documents.return_value = 10
+        database.database.measurements.count_documents.return_value = 20
+        mock_mongo_client().quality_time_db = database
         with patch("pymongo.MongoClient", mock_mongo_client):
             init_database()
         self.assertEqual(InjectionPlugin, bottle.app().plugins[-1].__class__)
