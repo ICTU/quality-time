@@ -4,7 +4,7 @@ import logging
 import os
 
 import bottle
-import pymongo
+import pymongo  # pylint: disable=wrong-import-order
 
 from ..route_injection_plugin import InjectionPlugin
 from .datamodel import import_datamodel

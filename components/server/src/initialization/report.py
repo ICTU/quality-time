@@ -16,27 +16,27 @@ def import_report(database: Database, filename: str) -> None:
     """Read the report and store it in the database."""
     with open(filename) as json_report:
         imported_report = json.load(json_report)
-    report_uuid = imported_report["report_uuid"]
-    stored_report = latest_report(database, report_uuid)
+    stored_report = latest_report(database, imported_report["report_uuid"])
     if stored_report:
         logging.info("Skipping import of %s; it already exists", filename)
         return
     report_to_store = dict(
-        title=imported_report.get("title", "Quality-time"), report_uuid=report_uuid, subjects={})
+        title=imported_report.get("title", "Quality-time"), report_uuid=imported_report["report_uuid"], subjects={})
     for imported_subject in imported_report["subjects"]:
-        subject_to_store = report_to_store["subjects"][uuid()] = default_subject_attributes(
-            database, imported_subject["type"])
+        subject_to_store = default_subject_attributes(database, imported_subject["type"])
         subject_to_store["metrics"] = dict()  # Remove default metrics
         subject_to_store["name"] = imported_subject["name"]
+        report_to_store["subjects"][uuid()] = subject_to_store
         for imported_metric in imported_subject["metrics"]:
-            metric_type = imported_metric["type"]
-            metric_to_store = subject_to_store["metrics"][uuid()] = default_metric_attributes(
-                database, report_uuid, metric_type)
+            metric_to_store = default_metric_attributes(
+                database, imported_report["report_uuid"], imported_metric["metric_type"])
             metric_to_store.update(imported_metric)
             metric_to_store["sources"] = {}  # Sources in the example report json are lists, we transform them to dicts
+            subject_to_store["metrics"][uuid()] = metric_to_store
             for imported_source in imported_metric["sources"]:
                 source_to_store = metric_to_store["sources"][uuid()] = imported_source
-                source_parameters = default_source_parameters(database, metric_type, imported_source["type"])
+                source_parameters = default_source_parameters(
+                    database, imported_metric["metric_type"], imported_source["type"])
                 for key, value in source_parameters.items():
                     if key not in source_to_store["parameters"]:
                         source_to_store["parameters"][key] = value

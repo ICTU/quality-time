@@ -4,7 +4,7 @@ import logging
 import os
 
 import bottle
-import ldap
+import ldap  # pylint: disable=wrong-import-order,import-error
 
 from ..route_injection_plugin import InjectionPlugin
 
