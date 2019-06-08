@@ -20,8 +20,8 @@ class DatabaseInitTest(unittest.TestCase):
         mock_mongo_client = Mock()
         database = Mock()
         database.datamodels.find_one.return_value = None
-        database.database.reports.count_documents.return_value = 10
-        database.database.measurements.count_documents.return_value = 20
+        database.reports.count_documents.return_value = 10
+        database.measurements.count_documents.return_value = 20
         mock_mongo_client().quality_time_db = database
         with patch("pymongo.MongoClient", mock_mongo_client):
             init_database()
