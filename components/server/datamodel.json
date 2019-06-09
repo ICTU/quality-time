@@ -198,8 +198,8 @@
             "sources": [
                 "azure_devops",
                 "hq",
-                "random",
-                "trello"
+                "jira",
+                "random"
             ],
             "tags": [
                 "process efficiency"
@@ -1008,7 +1008,8 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "jql": {
@@ -1018,7 +1019,8 @@
                     "help_url": "https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html",
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "username": {
@@ -1027,7 +1029,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
                     ]
                 },
                 "password": {
@@ -1036,7 +1039,18 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "ready_user_story_points"
+                    ]
+                },
+                "story_points_field": {
+                    "name": "Story points field id",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "ready_user_story_points"
                     ]
                 }
             },
@@ -1049,6 +1063,21 @@
                             "name": "Summary",
                             "key": "summary",
                             "url": "url"
+                        }
+                    ]
+                },
+                "ready_user_story_points": {
+                    "name": "user story",
+                    "name_plural": "user stories",
+                    "attributes": [
+                        {
+                            "name": "Summary",
+                            "key": "summary",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Points",
+                            "key": "points"
                         }
                     ]
                 }
@@ -2060,7 +2089,6 @@
                     "default_value": "https://trello.com",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -2072,7 +2100,6 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -2084,7 +2111,6 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -2096,7 +2122,6 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points",
                         "source_up_to_dateness"
                     ]
                 },
@@ -2107,8 +2132,7 @@
                     "default_value": [],
                     "placeholder": "none",
                     "metrics": [
-                        "issues",
-                        "ready_user_story_points"
+                        "issues"
                     ]
                 },
                 "cards_to_count": {
