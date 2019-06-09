@@ -2,4 +2,3 @@
 
 mypy src
 pylint src
-

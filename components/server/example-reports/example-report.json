@@ -12,13 +12,13 @@
                         {
                             "type": "junit",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/junit-report.xml"
+                                "url": "http://testdata:8000/junit-report.xml"
                             }
                         },
                         {
                             "type": "robot_framework",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
+                                "url": "http://testdata:8000/robot-framework-report/output.xml"
                             }
                         }
                     ]
@@ -29,13 +29,13 @@
                         {
                             "type": "junit",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/junit-report.xml"
+                                "url": "http://testdata:8000/junit-report.xml"
                             }
                         },
                         {
                             "type": "robot_framework",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
+                                "url": "http://testdata:8000/robot-framework-report/output.xml"
                             }
                         }
                     ]
@@ -46,13 +46,13 @@
                         {
                             "type": "junit",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/junit-report.xml"
+                                "url": "http://testdata:8000/junit-report.xml"
                             }
                         },
                         {
                             "type": "robot_framework",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/robot-framework-report/output.xml"
+                                "url": "http://testdata:8000/robot-framework-report/output.xml"
                             }
                         }
                     ]
@@ -63,7 +63,7 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/jacoco-report.xml"
                             }
                         }
                     ]
@@ -74,7 +74,7 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/jacoco-report.xml"
                             }
                         }
                     ]
@@ -85,7 +85,7 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/jacoco-report.xml"
                             }
                         }
                     ]
@@ -96,19 +96,19 @@
                         {
                             "type": "owasp_dependency_check",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/dependency-check-report.xml"
+                                "url": "http://testdata:8000/dependency-check-report.xml"
                             }
                         },
                         {
                             "type": "owasp_zap",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/zap-report.xml"
+                                "url": "http://testdata:8000/zap-report.xml"
                             }
                         },
                         {
                             "type": "openvas",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/openvas-report.xml"
+                                "url": "http://testdata:8000/openvas-report.xml"
                             }
                         }
                     ]
@@ -119,7 +119,7 @@
                         {
                             "type": "owasp_dependency_check",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/dependency-check-report.xml"
+                                "url": "http://testdata:8000/dependency-check-report.xml"
                             }
                         }
                     ]
@@ -130,7 +130,7 @@
                         {
                             "type": "owasp_zap",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/zap-report.xml"
+                                "url": "http://testdata:8000/zap-report.xml"
                             }
                         }
                     ]
@@ -141,7 +141,7 @@
                         {
                             "type": "openvas",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/openvas-report.xml"
+                                "url": "http://testdata:8000/openvas-report.xml"
                             }
                         }
                     ]
@@ -167,7 +167,7 @@
                         {
                             "type": "ojaudit",
                             "parameters": {
-                                "url": "http://0.0.0.0:8000/ojaudit-report.xml"
+                                "url": "http://testdata:8000/ojaudit-report.xml"
                             }
                         }
                     ]

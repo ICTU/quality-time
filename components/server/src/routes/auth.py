@@ -37,8 +37,7 @@ def login(database: Database, ldap_server):
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     try:
         ldap_server.simple_bind_s(f"cn={username},{ldap_root_dn}", credentials.get("password"))
-    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX,
-            ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
+    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX, ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
         logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
     session_id = generate_session_id()

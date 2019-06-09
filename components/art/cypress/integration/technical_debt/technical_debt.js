@@ -2,14 +2,14 @@ import {Given, When, Then} from "cypress-cucumber-preprocessor/steps";
 
 
 Given(/^a metric whose measurement value is (.+) as the target value$/, (startValue) => {
-    cy.get("#root > div > div.ui.fluid.container > div > table > tbody > tr:nth-child(3)")
+    cy.get("#root > div > div.ui.fluid.container > div > table > tbody > tr:nth-child(4)")
         .as('testLineCoverage');
 
     cy.get("@testLineCoverage").within(() => {
         cy.get('td:nth-child(4) > i')
         .should('have.class', startValue);
     });
-    cy.get("#root > div > div.ui.fluid.container > div > table > tbody > tr:nth-child(4)")
+    cy.get("#root > div > div.ui.fluid.container > div > table > tbody > tr:nth-child(5)")
         .as('metricScreen');
 
     cy.get("@metricScreen").within(() => {
