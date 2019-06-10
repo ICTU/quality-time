@@ -165,7 +165,7 @@ class SourceTest(unittest.TestCase):
         database.datamodels.find_one = Mock(return_value=dict(
             _id="",
             metrics=dict(metric_type=dict(
-                direction="<=", default_source="source_type")),
+                direction="≦", default_source="source_type")),
             sources=dict(source_type=dict(parameters=dict()))))
         self.assertEqual(dict(ok=True), post_source_new(
             "report_uuid", "metric_uuid", database))
@@ -200,7 +200,7 @@ class MetricTest(unittest.TestCase):
                 _id="",
                 metrics=dict(
                     metric_type=dict(
-                        addition="sum", direction="<=", target="0", near_target="1", tags=[]))))
+                        addition="sum", direction="≦", target="0", near_target="1", tags=[]))))
         self.assertEqual(dict(ok=True), post_metric_new("report_uuid", "subject_uuid", database))
 
     def test_get_metrics(self):

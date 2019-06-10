@@ -69,7 +69,7 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     target = int(metric["target"])
     near_target = int(metric["near_target"])
     debt_target = int(metric["debt_target"] or target)
-    better_or_equal = {">=": int.__ge__, "<=": int.__le__, "==": int.__eq__}[direction]
+    better_or_equal = {"≧": int.__ge__, "≦": int.__le__, "=": int.__eq__}[direction]
     if better_or_equal(value, target):
         status = "target_met"
     elif metric["accept_debt"] and better_or_equal(value, debt_target):
