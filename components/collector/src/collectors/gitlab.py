@@ -1,20 +1,20 @@
 """Gitlab metric source."""
 
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Tuple
+from typing import cast, List, Optional, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Job, Jobs, Entities, URL, Value
+from ..type import Job, Jobs, Entities, Parameter, URL, Value
 
 
 class GitlabBase(Collector):
     """Baseclass for Gitlab collectors."""
 
-    def gitlab_api_url(self, api: str, **parameters) -> URL:
+    def gitlab_api_url(self, api: str, **parameters: Parameter) -> URL:
         """Return a Gitlab API url with private token, if present in the parameters."""
         url = super().api_url(**parameters)
         project = quote(str(parameters.get("project")), safe="")
@@ -27,20 +27,20 @@ class GitlabBase(Collector):
         return URL(api_url)
 
     @staticmethod
-    def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
+    def basic_auth_credentials(**parameters: Parameter) -> Optional[Tuple[str, str]]:
         return None  # The private token is passed as URI parameter
 
 
 class GitlabFailedJobs(GitlabBase):
     """Collector class to get failed job counts from Gitlab."""
 
-    def api_url(self, **parameters) -> URL:
+    def api_url(self, **parameters: Parameter) -> URL:
         return self.gitlab_api_url("jobs")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         return str(len(self.failed_jobs(responses)))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
         return [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],
@@ -65,48 +65,48 @@ class GitlabFailedJobs(GitlabBase):
 class GitlabSourceUpToDateness(GitlabBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
-    def api_url(self, **parameters) -> URL:
-        file_path = quote(parameters.get("file_path", ""), safe="")
-        branch = quote(parameters.get("branch", "master"), safe="")
+    def api_url(self, **parameters: Parameter) -> URL:
+        file_path = quote(cast(str, parameters.get("file_path", "")), safe="")
+        branch = quote(cast(str, parameters.get("branch", "master")), safe="")
         return self.gitlab_api_url(f"repository/files/{file_path}?ref={branch}", **parameters)
 
-    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
+    def landing_url(self, responses: List[requests.Response], **parameters: Parameter) -> URL:
         landing_url = super().landing_url(responses, **parameters)
-        project = parameters.get("project", "").strip("/")
-        file_path = parameters.get("file_path", "").strip("/")
-        branch = parameters.get("branch", "master").strip("/")
+        project = cast(str, parameters.get("project", "")).strip("/")
+        file_path = cast(str, parameters.get("file_path", "")).strip("/")
+        branch = cast(str, parameters.get("branch", "master")).strip("/")
         return URL(f"{landing_url}/{project}/blob/{branch}/{file_path}")
 
-    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
+    def get_source_responses(self, api_url: URL, **parameters: Parameter) -> List[requests.Response]:
         """Override because we want to do a head request and get the last commit metadata."""
         response = requests.head(api_url, timeout=self.TIMEOUT)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = self.gitlab_api_url(f"repository/commits/{last_commit_id}", **parameters)
         return [requests.get(commit_api_url, timeout=self.TIMEOUT)]
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         return str((datetime.now(timezone.utc) - parse(responses[0].json()["committed_date"])).days)
 
 
 class GitlabUnmergedBranches(GitlabBase):
     """Collector class to measure the number of unmerged branches."""
 
-    def api_url(self, **parameters) -> URL:
+    def api_url(self, **parameters: Parameter) -> URL:
         return self.gitlab_api_url("repository/branches", **parameters)
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         return str(len(self.unmerged_branches(responses, **parameters)))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
         return [
             dict(key=branch["name"], name=branch["name"], commit_age=str(self.commit_age(branch).days),
                  commit_date=str(self.commit_datetime(branch).date()))
             for branch in self.unmerged_branches(responses, **parameters)]
 
-    def unmerged_branches(self, responses: List[requests.Response], **parameters) -> List:
+    def unmerged_branches(self, responses: List[requests.Response], **parameters: Parameter) -> List:
         """Return the unmerged branches."""
         return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
-                self.commit_age(branch).days > int(parameters.get("inactive_days") or "7")]
+                self.commit_age(branch).days > int(cast(str, parameters.get("inactive_days") or "7"))]
 
     def commit_age(self, branch) -> timedelta:
         """Return the age of the last commit on the branch."""

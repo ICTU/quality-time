@@ -1,12 +1,12 @@
 """JUnit metric collector."""
 
-from typing import List
+from typing import cast, List
 
 from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Entity, Entities, Value
+from ..type import Entity, Entities, Parameter, Value
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -15,7 +15,7 @@ class JUnitTests(Collector):
 
     junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         tree = parse_source_response_xml(responses[0])
         test_suites = [tree] if tree.tag == "testsuite" else tree.findall("testsuite")
         statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
@@ -31,10 +31,10 @@ class JUnitFailedTests(JUnitTests):
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
-    def test_statuses_to_count(self, **parameters) -> List[str]:
-        return parameters.get("failure_type") or ["errored", "failed", "skipped"]
+    def test_statuses_to_count(self, **parameters: Parameter) -> List[str]:
+        return cast(List[str], parameters.get("failure_type", [])) or ["errored", "failed", "skipped"]
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
         """Return a list of failed tests."""
 
         def entity(case_node, status: str) -> Entity:
@@ -53,7 +53,7 @@ class JUnitFailedTests(JUnitTests):
 class JunitSourceUpToDateness(Collector):
     """Collector to collect the Junit report age."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         tree = parse_source_response_xml(responses[0])
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
         report_datetime = parse(test_suite.get("timestamp"))

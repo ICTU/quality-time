@@ -1,6 +1,7 @@
 """Login/logout."""
 
 from datetime import datetime, timedelta
+from typing import Dict
 import logging
 import os
 import re
@@ -29,7 +30,7 @@ def set_session_cookie(session_id: str, clear: bool = False) -> None:
 
 
 @bottle.post("/login")
-def login(database: Database, ldap_server):
+def login(database: Database, ldap_server) -> Dict[str, bool]:
     """Log the user in."""
     credentials = dict(bottle.request.json)
     unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
@@ -47,7 +48,7 @@ def login(database: Database, ldap_server):
 
 
 @bottle.post("/logout")
-def logout(database: Database):
+def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
     session_id = str(bottle.request.get_cookie("session_id"))
     sessions.delete(database, session_id)

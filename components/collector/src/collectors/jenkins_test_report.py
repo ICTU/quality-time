@@ -1,12 +1,12 @@
 """Jenkins test report metric collector."""
 
-from typing import List
+from typing import cast, List
 
 from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Entity, Entities, URL, Value
+from ..type import Entity, Entities, Parameter, URL, Value
 from ..util import days_ago
 
 
@@ -15,15 +15,15 @@ class JenkinsTestReportTests(Collector):
 
     jenkins_test_report_counts = dict(failed="failCount", passed="passCount", skipped="skipCount")
 
-    def api_url(self, **parameters) -> URL:
+    def api_url(self, **parameters: Parameter) -> URL:
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         statuses = [self.jenkins_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
         return str(sum(int(responses[0].json().get(status, 0)) for status in statuses))
 
     @staticmethod
-    def test_statuses_to_count(**parameters) -> List[str]:  # pylint: disable=unused-argument
+    def test_statuses_to_count(**parameters: Parameter) -> List[str]:  # pylint: disable=unused-argument
         """Return the test statuses to count."""
         return ["failed", "passed", "skipped"]
 
@@ -32,10 +32,10 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     """Collector to get the amount of tests from a Jenkins test report."""
 
     @staticmethod
-    def test_statuses_to_count(**parameters) -> List[str]:
-        return parameters.get("failure_type") or ["failed", "skipped"]
+    def test_statuses_to_count(**parameters: Parameter) -> List[str]:
+        return cast(List[str], parameters.get("failure_type")) or ["failed", "skipped"]
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
         """Return a list of failed tests."""
 
         def entity(case) -> Entity:
@@ -59,10 +59,10 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
 class JenkinsTestReportSourceUpToDateness(Collector):
     """Collector to get the age of the Jenkins test report."""
 
-    def api_url(self, **parameters) -> URL:
+    def api_url(self, **parameters: Parameter) -> URL:
         return URL(f"{super().api_url(**parameters)}/lastSuccessfulBuild/testReport/api/json")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
                       if suite.get("timestamp")]
         return str(days_ago(parse(max(timestamps))))

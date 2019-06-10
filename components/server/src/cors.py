@@ -17,7 +17,7 @@ def enable_cors_generic_route() -> str:
 
 
 @bottle.hook('after_request')
-def enable_cors_after_request_hook():
+def enable_cors_after_request_hook() -> None:
     """This executes after every route. We use it to attach CORS headers when applicable."""
     frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
     headers = dict(

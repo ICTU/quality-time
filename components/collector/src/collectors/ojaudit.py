@@ -2,12 +2,12 @@
 
 import hashlib
 from xml.etree.cElementTree import Element
-from typing import Dict, List, Optional
+from typing import cast, Dict, List, Optional
 
 import requests
 
 from ..collector import Collector
-from ..type import Namespaces, Entities, Entity, Value
+from ..type import Namespaces, Entities, Entity, Parameter, Value
 from ..util import parse_source_response_xml_with_namespace
 
 
@@ -17,14 +17,14 @@ ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 class OJAuditViolations(Collector):
     """Collector to get violations from OJAudit."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = parameters.get("severities", [])
+        severities = cast(List[str], parameters.get("severities", []))
         return self.violation_count(tree, namespaces, severities)
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = parameters.get("severities", [])
+        severities = cast(List[str], parameters.get("severities", []))
         return self.violations(tree, namespaces, severities)
 
     @staticmethod
