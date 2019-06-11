@@ -6,15 +6,15 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Entities, Parameter, URL, Value
+from ..type import Entities, URL, Value
 from ..util import days_ago, parse_source_response_xml
 
 
 class RobotFrameworkBaseClass(Collector):
     """Base class for Robot Framework collectors."""
 
-    def landing_url(self, responses: List[requests.Response], **parameters: Parameter) -> URL:
-        url = str(super().landing_url(responses, **parameters))
+    def landing_url(self, responses: List[requests.Response]) -> URL:
+        url = str(super().landing_url(responses))
         return URL(url.replace("output.html", "report.html"))
 
 
@@ -23,7 +23,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
 
     stat_types = ["pass", "fail"]
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         stats = tree.findall("statistics/total/stat")[1]
         return str(sum([int(stats.get(stat_type)) for stat_type in self.stat_types]))
@@ -34,7 +34,7 @@ class RobotFrameworkFailedTests(RobotFrameworkTests):
 
     stat_types = ["fail"]
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of failed tests."""
         tree = parse_source_response_xml(responses[0])
         failed_tests = tree.findall(".//test/status[@status='FAIL']/..")
@@ -44,7 +44,7 @@ class RobotFrameworkFailedTests(RobotFrameworkTests):
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass):
     """Collector to collect the Robot Framework report age."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         report_datetime = parse(tree.get("generated"))
         return str(days_ago(report_datetime))

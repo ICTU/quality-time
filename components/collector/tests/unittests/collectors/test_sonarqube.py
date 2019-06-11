@@ -19,20 +19,22 @@ class SonarQubeTest(unittest.TestCase):
     def test_violations_api_url(self):
         """Test that the api url is correct."""
         self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500",
-            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar"))
+            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500",
+            SonarQubeViolations(self.sources["a"]).api_url())
 
     def test_blocker_violations_api_url(self):
         """Test that the api url is correct."""
+        self.sources["a"]["parameters"]["severities"] = ["blocker"]
         self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500&severities=BLOCKER",
-            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar", severities=["blocker"]))
+            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500&severities=BLOCKER",
+            SonarQubeViolations(self.sources["a"]).api_url())
 
     def test_code_smell_violations_api_url(self):
         """Test that the api url is correct."""
+        self.sources["a"]["parameters"]["types"] = ["code_smell"]
         self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500&types=CODE_SMELL",
-            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar", types=["code_smell"]))
+            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500&types=CODE_SMELL",
+            SonarQubeViolations(self.sources["a"]).api_url())
 
     def test_violations(self):
         """Test that the number of violations is returned."""

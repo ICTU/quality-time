@@ -6,7 +6,7 @@ from dateutil.parser import parse
 import requests
 
 from ..collector import Collector
-from ..type import Entity, Entities, Parameter, Value
+from ..type import Entity, Entities, Value
 from ..util import days_ago, parse_source_response_xml
 
 
@@ -15,13 +15,13 @@ class JUnitTests(Collector):
 
     junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         test_suites = [tree] if tree.tag == "testsuite" else tree.findall("testsuite")
-        statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count(**parameters)]
+        statuses = [self.junit_test_report_counts[status] for status in self.test_statuses_to_count()]
         return str(sum(int(test_suite.get(status, 0)) for status in statuses for test_suite in test_suites))
 
-    def test_statuses_to_count(self, **parameters) -> List[str]:  # pylint: disable=no-self-use,unused-argument
+    def test_statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
         """Return the test statuses to count."""
         return ["passed"]
 
@@ -31,10 +31,10 @@ class JUnitFailedTests(JUnitTests):
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
-    def test_statuses_to_count(self, **parameters: Parameter) -> List[str]:
-        return cast(List[str], parameters.get("failure_type", [])) or ["errored", "failed", "skipped"]
+    def test_statuses_to_count(self) -> List[str]:
+        return cast(List[str], self.parameters.get("failure_type", [])) or ["errored", "failed", "skipped"]
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters: Parameter) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of failed tests."""
 
         def entity(case_node, status: str) -> Entity:
@@ -44,7 +44,7 @@ class JUnitFailedTests(JUnitTests):
 
         tree = parse_source_response_xml(responses[0])
         entities = []
-        for status in self.test_statuses_to_count(**parameters):
+        for status in self.test_statuses_to_count():
             status_node = self.junit_status_nodes[status]
             entities.extend([entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
         return entities
@@ -53,7 +53,7 @@ class JUnitFailedTests(JUnitTests):
 class JunitSourceUpToDateness(Collector):
     """Collector to collect the Junit report age."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters: Parameter) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
         report_datetime = parse(test_suite.get("timestamp"))
