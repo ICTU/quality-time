@@ -84,7 +84,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
     insert_new_report(database, report)
-    if metric_attribute in ("accept_debt", "debt_target", "near_target", "target"):
+    if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
         if latest:
             return insert_new_measurement(database, latest, metric)
