@@ -19,7 +19,7 @@ class MetricCollector:
         self.collectors: Dict[str, Collector] = dict()
         for source_uuid, source in self.metric["sources"].items():
             collector_class = cast(Type[Collector], Collector.get_subclass(source['type'], self.metric['type']))
-            self.collectors[source_uuid] = collector_class()
+            self.collectors[source_uuid] = collector_class(source)
 
     def can_collect(self) -> bool:
         """Return whether the user has specified enough information to measure this metric."""
@@ -34,8 +34,8 @@ class MetricCollector:
     def get(self) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
         source_responses = []
-        for source_uuid, source in self.metric["sources"].items():
-            source_response = self.collectors[source_uuid].get(source)
+        for source_uuid in self.metric["sources"]:
+            source_response = self.collectors[source_uuid].get()
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
         values = [source_response["value"] for source_response in source_responses]
@@ -51,6 +51,10 @@ class Collector:
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
 
+    def __init__(self, source) -> None:
+        self.source = source
+        self.parameters: Dict[str, str] = source.get("parameters", {})
+
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
         super().__init_subclass__()
@@ -65,74 +69,71 @@ class Collector:
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    def get(self, source) -> Response:
+    def get(self) -> Response:
         """Return the measurement response for one source."""
-        parameters = source.get("parameters", {})
-        api_url = self.api_url(**parameters)
-        responses, connection_error = self.safely_get_source_responses(api_url, **parameters)
-        value, entities, parse_error = self.safely_parse_source_responses(responses, **parameters)
-        landing_url = self.landing_url(responses, **parameters)
+        api_url = self.api_url()
+        responses, connection_error = self.safely_get_source_responses(api_url)
+        value, entities, parse_error = self.safely_parse_source_responses(responses)
+        landing_url = self.landing_url(responses)
         return dict(api_url=api_url, landing_url=landing_url, value=value, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:  # pylint: disable=no-self-use,unused-argument
+    def landing_url(self, responses: List[requests.Response]) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Translate the url parameter into the landing url."""
-        url = parameters.get("url", "").strip("/")
-        return url[:-(len("xml"))] + "html" if url.endswith(".xml") else url
+        url = cast(str, self.parameters.get("url", "")).strip("/")
+        return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
-    def api_url(self, **parameters) -> URL:  # pylint: disable=no-self-use
+    def api_url(self) -> URL:  # pylint: disable=no-self-use
         """Translate the url parameter into the API url."""
-        return parameters.get("url", "").strip("/")
+        return URL(cast(str, self.parameters.get("url", "")).strip("/"))
 
-    def safely_get_source_responses(
-            self, api_url: URL, **parameters) -> Tuple[List[requests.Response], ErrorMessage]:
+    def safely_get_source_responses(self, api_url: URL) -> Tuple[List[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
         logging.info("Retrieving %s", api_url)
         responses: List[requests.Response] = []
         error = None
         try:
-            responses = self.get_source_responses(api_url, **parameters)
+            responses = self.get_source_responses(api_url)
             for response in responses:
                 response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
         return responses, error
 
-    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
+    def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        return [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))]
+        return [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials())]
 
-    @staticmethod
-    def basic_auth_credentials(**parameters) -> Optional[Tuple[str, str]]:
+    def basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
-        token = parameters.get("private_token")
+        token = cast(str, self.parameters.get("private_token", ""))
         if token:
             return (token, "")
-        username, password = parameters.get("username"), parameters.get("password")
+        username = cast(str, self.parameters.get("username", ""))
+        password = cast(str, self.parameters.get("password", ""))
         return (username, password) if username and password else None
 
-    def safely_parse_source_responses(
-            self, responses: List[requests.Response], **parameters) -> Tuple[Value, Entities, ErrorMessage]:
+    def safely_parse_source_responses(self, responses: List[requests.Response]) -> Tuple[Value, Entities, ErrorMessage]:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
         entities: Entities = []
         value, error = None, None
         if responses:
             try:
-                value = self.parse_source_responses_value(responses, **parameters)
-                entities = self.parse_source_responses_entities(responses, **parameters)
+                value = self.parse_source_responses_value(responses)
+                entities = self.parse_source_responses_entities(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
         return value, entities[:self.MAX_ENTITIES], error
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         # pylint: disable=no-self-use,unused-argument
         """Parse the responses to get the measurement for the metric. This method can be overridden by collectors
         to parse the retrieved sources data."""
         return str(responses[0].text)
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
+    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
         This method can to be overridden by collectors when a source can provide the measured entities."""

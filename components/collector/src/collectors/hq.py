@@ -11,9 +11,10 @@ from ..type import URL, Value
 class HQ(Collector):
     """HQ collector."""
 
-    def api_url(self, **parameters) -> URL:
-        return URL(f"{super().api_url(**parameters)}/json/metrics.json")
+    def api_url(self) -> URL:
+        return URL(f"{super().api_url()}/json/metrics.json")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
-        metric = [m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == parameters.get("metric_id")][0]
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        metric = [
+            m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == self.parameters.get("metric_id")][0]
         return metric["value"]

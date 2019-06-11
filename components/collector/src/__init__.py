@@ -5,7 +5,7 @@ import logging
 import os
 import urllib.parse
 import time
-from typing import cast, Dict, NoReturn, Type
+from typing import Any, cast, Dict, NoReturn, Type
 
 import requests
 
@@ -34,10 +34,10 @@ def post(api: URL, data) -> None:
 
 class MetricsCollector:
     """Collect measurements for all metrics."""
-    def __init__(self):
+    def __init__(self) -> None:
         self.server_url = URL(os.environ.get("SERVER_URL", "http://localhost:8080"))
-        self.next_fetch = dict()
-        self.last_parameters = dict()
+        self.next_fetch: Dict[str, datetime] = dict()
+        self.last_parameters: Dict[str, Any] = dict()
 
     def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""

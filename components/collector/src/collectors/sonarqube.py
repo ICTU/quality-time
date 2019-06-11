@@ -15,49 +15,48 @@ class SonarQubeViolations(Collector):
 
     rules_parameter = "Subclass responsibility"
 
-    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
-        url = super().landing_url(responses, **parameters)
-        component = parameters.get("component")
+    def landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super().landing_url(responses)
+        component = self.parameters.get("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
-        return URL(landing_url + self.rules_url_parameter(**parameters))
+        return URL(landing_url + self.rules_url_parameter())
 
-    def api_url(self, **parameters) -> URL:
-        url = super().api_url(**parameters)
-        component = parameters.get("component")
+    def api_url(self) -> URL:
+        url = super().api_url()
+        component = self.parameters.get("component")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
-        severities = ",".join([severity.upper() for severity in parameters.get("severities", [])])
+        severities = ",".join([severity.upper() for severity in self.parameters.get("severities", [])])
         if severities:
             api += f"&severities={severities}"
-        types = ",".join([violation_type.upper() for violation_type in parameters.get("types", [])])
+        types = ",".join([violation_type.upper() for violation_type in self.parameters.get("types", [])])
         if types:
             api += f"&types={types}"
-        return URL(api + self.rules_url_parameter(**parameters))
+        return URL(api + self.rules_url_parameter())
 
-    def rules_url_parameter(self, **parameters) -> str:
+    def rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = parameters.get(self.rules_parameter, [])
+        rules = self.parameters.get(self.rules_parameter, [])
         return f"&rules={','.join(rules)}" if rules else ""
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         return str(sum(int(response.json()["total"]) for response in responses))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response], **parameters) -> Entities:
-        return [self.entity(issue, response, **parameters)
-                for response in responses for issue in response.json()["issues"]]
+    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+        return [self.entity(issue, response) for response in responses for issue in response.json()["issues"]]
 
-    def issue_landing_url(self, issue_key: str, response: requests.Response, **parameters) -> URL:
+    def issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
         """Generate a landing url for the issue."""
-        url = super().landing_url([response], **parameters)
-        component = parameters.get("component")
+        url = super().landing_url([response])
+        component = self.parameters.get("component")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 
-    def entity(self, issue, response: requests.Response, **parameters) -> Entity:
+    def entity(self, issue, response: requests.Response) -> Entity:
         """Create an entity from an issue."""
         return dict(
             key=issue["key"],
-            url=self.issue_landing_url(issue["key"], response, **parameters),
+            url=self.issue_landing_url(issue["key"], response),
             message=issue["message"],
             severity=issue["severity"].lower(),
             type=issue["type"].lower(),
@@ -93,18 +92,18 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    def get_source_responses(self, api_url: URL, **parameters) -> List[requests.Response]:
+    def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Next to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube."""
-        responses = super().get_source_responses(api_url, **parameters)
-        url = Collector.api_url(self, **parameters)
-        component = parameters.get("component")
+        responses = super().get_source_responses(api_url)
+        url = Collector.api_url(self)
+        component = self.parameters.get("component")
         api_url = URL(f"{url}/api/issues/search?componentKeys={component}&status=RESOLVED&"
                       "resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
-        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials(**parameters))]
+        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials())]
 
-    def entity(self, issue, response: requests.Response, **parameters) -> Entity:
+    def entity(self, issue, response: requests.Response) -> Entity:
         """Also add the resolution to the entity."""
-        entity = super().entity(issue, response, **parameters)
+        entity = super().entity(issue, response)
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
         return entity
@@ -115,17 +114,17 @@ class SonarQubeMetricsBaseClass(Collector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
-        url = super().landing_url(responses, **parameters)
-        component = parameters.get("component")
+    def landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super().landing_url(responses)
+        component = self.parameters.get("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
-    def api_url(self, **parameters) -> URL:
-        url = super().api_url(**parameters)
-        component = parameters.get("component")
+    def api_url(self) -> URL:
+        url = super().api_url()
+        component = self.parameters.get("component")
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         return str(self._get_metrics(responses)[self.metricKeys])
 
     @staticmethod
@@ -180,16 +179,16 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
 class SonarQubeSourceUpToDateness(Collector):
     """SonarQube source up-to-dateness."""
 
-    def api_url(self, **parameters) -> URL:
-        url = super().api_url(**parameters)
-        component = parameters.get("component")
+    def api_url(self) -> URL:
+        url = super().api_url()
+        component = self.parameters.get("component")
         return URL(f"{url}/api/project_analyses/search?project={component}")
 
-    def landing_url(self, responses: List[requests.Response], **parameters) -> URL:
-        url = super().landing_url(responses, **parameters)
-        component = parameters.get("component")
+    def landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super().landing_url(responses)
+        component = self.parameters.get("component")
         return URL(f"{url}/project/activity?id={component}")
 
-    def parse_source_responses_value(self, responses: List[requests.Response], **parameters) -> Value:
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])
         return str(days_ago(analysis_datetime))

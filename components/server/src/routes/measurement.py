@@ -1,7 +1,7 @@
 """Measurement routes."""
 
 import time
-from typing import Dict
+from typing import Dict, Iterator
 
 from pymongo.database import Database
 import bottle
@@ -47,7 +47,7 @@ def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
 
 
 @bottle.get("/nr_measurements/<report_uuid>")
-def stream_nr_measurements(report_uuid: str, database: Database):
+def stream_nr_measurements(report_uuid: str, database: Database) -> Iterator[str]:
     """Return the number of measurements for the given report as server sent events."""
     # Keep event IDs consistent
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1

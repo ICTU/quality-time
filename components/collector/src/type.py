@@ -3,14 +3,15 @@
 from typing import Any, Dict, List, NewType, Optional, Sequence, Union
 
 
+Entity = Dict[str, Union[int, str]]  # pylint: disable=invalid-name
+Entities = List[Entity]
+ErrorMessage = Optional[str]
 Job = Dict[str, Any]
 Jobs = List[Job]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
+Response = Dict[str, Any]
 URL = NewType("URL", str)
-Entity = Dict  # pylint: disable=invalid-name
-Entities = List[Entity]
-Value = Optional[str]
-ErrorMessage = Optional[str]
 Subject = Dict[str, Union[str, Sequence[URL]]]
 Report = Dict[str, Sequence[Subject]]
-Response = Dict[str, Any]
+Value = Optional[str]
+Parameter = Union[str, List[str]]

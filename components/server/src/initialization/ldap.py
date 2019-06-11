@@ -9,7 +9,7 @@ import ldap  # pylint: disable=wrong-import-order,import-error
 from ..route_injection_plugin import InjectionPlugin
 
 
-def init_ldap():
+def init_ldap() -> None:
     """Initialize the LDAP connection."""
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
     logging.info("Initializing LDAP server at %s", ldap_url)

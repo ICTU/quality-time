@@ -12,7 +12,7 @@ class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
 
     api = 2
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "route-authentication"
 
     @staticmethod

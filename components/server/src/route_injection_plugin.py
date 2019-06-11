@@ -9,12 +9,12 @@ class InjectionPlugin:
 
     api = 2
 
-    def __init__(self, value, keyword):
+    def __init__(self, value, keyword: str) -> None:
         self.value = value
         self.keyword = keyword
         self.name = f"{keyword}-injection"
 
-    def setup(self, app):
+    def setup(self, app) -> None:
         """Make sure that other installed plugins don't use the same keyword argument."""
         for other in app.plugins:
             if not isinstance(other, self.__class__):
