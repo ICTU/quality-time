@@ -81,18 +81,30 @@ class PostMetricAttributeTest(unittest.TestCase):
     @patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
-        self.database.measurements.find_one = Mock(
-            return_value=dict(_id="id", sources=[]))
+        self.database.measurements.find_one = Mock(return_value=dict(_id="id", sources=[]))
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
-        self.database.measurements.insert_one = Mock(
-            side_effect=set_measurement_id)
+
+        self.database.measurements.insert_one = Mock(side_effect=set_measurement_id)
         request.json = dict(target="10")
         self.assertEqual(
-            dict(_id="measurement_id", end="2019-01-01", sources=[],
-                 start="2019-01-01", status=None, value=None),
+            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
+
+    @patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_post_metric_debt_end_date_with_measurements(self, request):
+        """Test that changing the metric debt end date adds a new measurement if one or more exist."""
+        self.database.measurements.find_one = Mock(return_value=dict(_id="id", sources=[]))
+
+        def set_measurement_id(measurement):
+            measurement["_id"] = "measurement_id"
+
+        self.database.measurements.insert_one = Mock(side_effect=set_measurement_id)
+        request.json = dict(debt_end_date="2019-06-07")
+        self.assertEqual(
+            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
+            post_metric_attribute("report_uuid", "metric_uuid", "debt_end_date", self.database))
 
 
 @patch("bottle.request")

@@ -7,6 +7,7 @@ import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { TextInput } from '../fields/TextInput';
 import { set_metric_attribute } from '../api/metric';
+import { DateInput } from '../fields/DateInput';
 
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
@@ -107,6 +108,14 @@ export function MetricParameters(props) {
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.debt_target}
+                        />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <DateInput
+                            label="Metric debt end date"
+                            readOnly={props.readOnly}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_end_date", value, props.fetch_measurement_and_reload)}
+                            value={props.metric.debt_end_date || ""}
                         />
                     </Grid.Column>
                 </Grid.Row>
