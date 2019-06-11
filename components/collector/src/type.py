@@ -3,7 +3,7 @@
 from typing import Any, Dict, List, NewType, Optional, Sequence, Union
 
 
-Entity = Dict  # pylint: disable=invalid-name
+Entity = Dict[str, Union[int, str]]  # pylint: disable=invalid-name
 Entities = List[Entity]
 ErrorMessage = Optional[str]
 Job = Dict[str, Any]

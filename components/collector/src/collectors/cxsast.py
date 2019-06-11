@@ -125,7 +125,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         """Get the entities from the CxSAST XML report."""
         root = xml.etree.cElementTree.fromstring(xml_string)
         severities = self.parameters.get("severities") or ["info", "low", "medium", 'high']
-        entities = []
+        entities: Entities = []
         for query in root.findall(".//Query"):
             for result in query.findall("Result"):
                 severity = result.attrib["Severity"]

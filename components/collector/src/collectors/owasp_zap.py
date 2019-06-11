@@ -19,7 +19,7 @@ class OWASPZAPSecurityWarnings(Collector):
         return str(len(self.alerts(responses)))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
-        entities = []
+        entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
         for alert in self.alerts(responses):
             key = ":".join([alert.findtext(id_tag) for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
