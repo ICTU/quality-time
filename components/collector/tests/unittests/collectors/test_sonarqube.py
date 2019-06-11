@@ -20,19 +20,19 @@ class SonarQubeTest(unittest.TestCase):
         """Test that the api url is correct."""
         self.assertEqual(
             "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500",
-            SonarQubeViolations().api_url(url="http://sonar"))
+            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar"))
 
     def test_blocker_violations_api_url(self):
         """Test that the api url is correct."""
         self.assertEqual(
             "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500&severities=BLOCKER",
-            SonarQubeViolations().api_url(url="http://sonar", severities=["blocker"]))
+            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar", severities=["blocker"]))
 
     def test_code_smell_violations_api_url(self):
         """Test that the api url is correct."""
         self.assertEqual(
             "http://sonar/api/issues/search?componentKeys=None&resolved=false&ps=500&types=CODE_SMELL",
-            SonarQubeViolations().api_url(url="http://sonar", types=["code_smell"]))
+            SonarQubeViolations(self.sources["a"]).api_url(url="http://sonar", types=["code_smell"]))
 
     def test_violations(self):
         """Test that the number of violations is returned."""

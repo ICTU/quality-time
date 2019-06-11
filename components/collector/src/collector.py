@@ -19,7 +19,7 @@ class MetricCollector:
         self.collectors: Dict[str, Collector] = dict()
         for source_uuid, source in self.metric["sources"].items():
             collector_class = cast(Type[Collector], Collector.get_subclass(source['type'], self.metric['type']))
-            self.collectors[source_uuid] = collector_class()
+            self.collectors[source_uuid] = collector_class(source)
 
     def can_collect(self) -> bool:
         """Return whether the user has specified enough information to measure this metric."""
@@ -34,8 +34,8 @@ class MetricCollector:
     def get(self) -> Response:
         """Connect to the sources to get and parse the measurement for the metric."""
         source_responses = []
-        for source_uuid, source in self.metric["sources"].items():
-            source_response = self.collectors[source_uuid].get(source)
+        for source_uuid in self.metric["sources"]:
+            source_response = self.collectors[source_uuid].get()
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
         values = [source_response["value"] for source_response in source_responses]
@@ -51,6 +51,10 @@ class Collector:
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["Collector"]] = set()
 
+    def __init__(self, source) -> None:
+        self.source = source
+        self.parameters: Dict[str, str] = source.get("parameters", {})
+
     def __init_subclass__(cls) -> None:
         Collector.subclasses.add(cls)
         super().__init_subclass__()
@@ -65,13 +69,12 @@ class Collector:
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    def get(self, source) -> Response:
+    def get(self) -> Response:
         """Return the measurement response for one source."""
-        parameters: Dict[str, str] = source.get("parameters", {})
-        api_url = self.api_url(**parameters)
-        responses, connection_error = self.safely_get_source_responses(api_url, **parameters)
-        value, entities, parse_error = self.safely_parse_source_responses(responses, **parameters)
-        landing_url = self.landing_url(responses, **parameters)
+        api_url = self.api_url(**self.parameters)
+        responses, connection_error = self.safely_get_source_responses(api_url, **self.parameters)
+        value, entities, parse_error = self.safely_parse_source_responses(responses, **self.parameters)
+        landing_url = self.landing_url(responses, **self.parameters)
         return dict(api_url=api_url, landing_url=landing_url, value=value, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
