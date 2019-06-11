@@ -4,7 +4,6 @@ from typing import Any, Dict
 
 import pymongo
 from pymongo.database import Database
-from pymongo.results import InsertOneResult
 
 from ..util import iso_timestamp
 
@@ -18,7 +17,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     return datamodel
 
 
-def insert_new_datamodel(database: Database, data_model) -> InsertOneResult:
+def insert_new_datamodel(database: Database, data_model):
     """Insert a new datamodel in the datamodels collection."""
     if "_id" in data_model:
         del data_model["_id"]
