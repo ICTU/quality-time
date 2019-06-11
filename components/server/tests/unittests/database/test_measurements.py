@@ -12,7 +12,7 @@ class DetermineMeasurementStatusTest(unittest.TestCase):
     def setUp(self):
         self.database = mock.Mock()
         self.database.datamodels.find_one = mock.Mock(
-            return_value=dict(_id="", metrics=dict(metric_type=dict(direction="<="))))
+            return_value=dict(_id="", metrics=dict(metric_type=dict(direction="≦"))))
 
     def test_green(self):
         """Test a green measurement."""
