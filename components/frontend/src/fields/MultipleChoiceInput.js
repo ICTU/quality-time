@@ -28,7 +28,7 @@ export function MultipleChoiceInput(props) {
           error={required && value.length === 0}
           fluid
           multiple
-          onAddItem={(event, { value }) => { setOptions(options => sort_options([value, ...options.map(option => option.text)])) }}
+          onAddItem={(event, { value }) => { setOptions(options => ([value, ...options])) }}
           onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
           options={sort_options(options)}
           search
