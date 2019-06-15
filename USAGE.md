@@ -4,6 +4,7 @@
 
 - [Logging in and out](#logging-in-and-out)
 - [Configuring quality reports](#configuring-quality-reports)
+- [Customizing quality reports](#customizing-quality-reports)
 
 ## Logging in and out
 
@@ -116,3 +117,19 @@ The parameters that sources need differ per source type. Most sources need a URL
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
 > Be careful, there's no way to undo your action via the user interface.
+
+## Customizing quality reports
+
+Users can customize quality reports on an individual basis by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
+
+### Customizing dashboards
+
+Both the reports dashboard on the Quality-time landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the local storage of the user's browser. There is currently no mechanism to share dashboard layouts with other users.
+
+### Filtering metrics by tag
+
+In a report's dashboard, click on a tag card to show only metrics that have the selected tag. The selected tag turns blue to indicate it is filtered on. Click the selected tag again to turn off the filtering. Selecting multiple tags shows metrics that have at least one of the selected tags.
+
+### Filtering metrics by status
+
+Each metric table has a button on the top left hand side that can clicked to hide metrics that need to action. Click it again to undo the filtering.

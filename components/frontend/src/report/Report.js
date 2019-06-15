@@ -24,7 +24,7 @@ function ReportDashboard(props) {
         />
     );
     return (
-        <CardDashboard big_cards={subject_cards} small_cards={tag_cards} />
+        <CardDashboard cards={subject_cards.concat(tag_cards)} readOnly={props.readOnly} uuid={props.report.report_uuid} />
     )
 }
 
@@ -55,6 +55,7 @@ export function Report(props) {
             />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
+                readOnly={props.readOnly}
                 report={props.report}
                 setTags={setTags}
                 tags={tags}
