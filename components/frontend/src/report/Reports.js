@@ -23,14 +23,14 @@ function ReportsDashboard(props) {
     <MetricSummaryCard key={tag} header={<Tag tag={tag} />} {...counts}
     />);
   return (
-    <CardDashboard big_cards={report_cards} small_cards={tag_cards} />
+    <CardDashboard cards={report_cards.concat(tag_cards)} readOnly={props.readOnly} uuid={"/"} />
   )
 }
 
 export function Reports(props) {
   return (
     <>
-      <ReportsDashboard reports={props.reports} open_report={props.open_report} />
+      <ReportsDashboard reports={props.reports} open_report={props.open_report} readOnly={props.readOnly} />
       <Segment basic>
         {!props.readOnly &&
           <Button icon primary basic onClick={() => add_report(props.reload)}>
