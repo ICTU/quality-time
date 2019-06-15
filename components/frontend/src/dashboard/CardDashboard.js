@@ -11,7 +11,7 @@ export function CardDashboard(props) {
 
     if (props.cards.length === 0) { return null }
     const [dragging, setDragging] = useState(false);
-    const [mouseXY, setMouseXY] = useState([0, 0]);
+    const [mousePos, setMousePos] = useState([0, 0, 0]);
     const cols = 32;
     const card_width = 4;
     const card_height = 6;
@@ -41,10 +41,15 @@ export function CardDashboard(props) {
             <ReactGridLayout
                 onDragStart={(layout, oldItem, newItem, placeholder, e) => {
                     setDragging(true);
-                    setMouseXY([e.clientX, e.clientY])
+                    const now = new Date();
+                    setMousePos([e.clientX, e.clientY, now.getTime()]);
                 }}
                 onDragStop={(layout, oldItem, newItem, placeholder, e) => {
-                    if (Math.abs(e.clientX - mouseXY[0]) > 10 || Math.abs(e.clientY - mouseXY[1]) > 10) {
+                    const now = new Date();
+                    const distanceX = Math.abs(e.clientX - mousePos[0]);
+                    const distanceY = Math.abs(e.clientY - mousePos[1]);
+                    const timedelta = now.getTime() - mousePos[2];
+                    if (distanceX > 10 || distanceY > 10 || timedelta > 250) {
                         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
                     } else {
                         setDragging(false);  // User was clicking, don't prevent click event propagation
