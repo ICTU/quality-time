@@ -12,7 +12,7 @@ function Login(props) {
         <Form error={props.error} onSubmit={() => props.login(username, password)}>
           <Form.Input autoFocus label='Username' name='username' onChange={(event, { name, value }) => setUsername(value)} />
           <Form.Input type='password' label='Password' name='password' onChange={(event, { name, value }) => setPassword(value)} />
-          <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.'/>
+          <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
           <Form.Button>Submit</Form.Button>
         </Form>
       </Modal.Content>
@@ -39,9 +39,11 @@ export function Menubar(props) {
           <font size="+3">Quality-time</font>
         </Menu.Item>
         <Menu.Menu position='right'>
-          <Menu.Item>
-            <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
-          </Menu.Item>
+          {props.searchable &&
+            <Menu.Item>
+              <Input icon='search' iconPosition='left' placeholder='Search...' onChange={props.onSearch} />
+            </Menu.Item>
+          }
           <Menu.Item>
             <DateInput name="report_date_string" value={props.report_date_string}
               placeholder={today_string} closable={true} initialDate={today}
