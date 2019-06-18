@@ -4,7 +4,7 @@ import { StatusPieChart } from './StatusPieChart';
 
 export function MetricSummaryCard(props) {
     return (
-        <Card fluid onClick={props.onClick} onKeyPress={props.onClick} tabIndex="0">
+        <Card style={{ height: '200px' }} onClick={props.onClick} onKeyPress={props.onClick} tabIndex="0">
             <StatusPieChart {...props} />
             <Card.Content>
                 <Card.Header textAlign='center'>{props.header}</Card.Header>
