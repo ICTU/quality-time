@@ -9,7 +9,16 @@ from pymongo.database import Database
 from ..util import uuid
 from ..database.datamodels import default_subject_attributes, default_metric_attributes, \
     default_source_parameters
-from ..database.reports import latest_report, insert_new_report
+from ..database.reports import latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview
+
+
+def initialize_reports_overview(database: Database) -> None:
+    """Initialize the reports overview if not present in the database."""
+    if latest_reports_overview(database):
+        logging.info("Skipping initializing reports overview; it already exists")
+    else:
+        logging.info("Initializing reports overview")
+        insert_new_reports_overview(database, dict(title="Reports", subtitle=""))
 
 
 def import_report(database: Database, filename: str) -> None:
@@ -21,7 +30,7 @@ def import_report(database: Database, filename: str) -> None:
         logging.info("Skipping import of %s; it already exists", filename)
         return
     report_to_store = dict(
-        title=imported_report.get("title", "Quality-time"), report_uuid=imported_report["report_uuid"], subjects={})
+        title=imported_report.get("title", "Example report"), report_uuid=imported_report["report_uuid"], subjects={})
     for imported_subject in imported_report["subjects"]:
         subject_to_store = default_subject_attributes(database, imported_subject["type"])
         subject_to_store["metrics"] = dict()  # Remove default metrics

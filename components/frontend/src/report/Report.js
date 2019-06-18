@@ -52,7 +52,6 @@ export function Report(props) {
     return (
         <>
             <ReportTitle
-                go_home={props.go_home}
                 report={props.report}
                 readOnly={props.readOnly}
                 reload={props.reload}

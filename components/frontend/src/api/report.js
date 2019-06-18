@@ -16,4 +16,8 @@ function set_report_attribute(report_uuid, attribute, value, reload) {
   return fetch_server_api('post', `report/${report_uuid}/${attribute}`, { [attribute]: value }).then(reload)
 }
 
-export { add_report, delete_report, get_reports, set_report_attribute }
+function set_reports_attribute(attribute, value, reload) {
+  return fetch_server_api('post', `reports/${attribute}`, { [attribute]: value }).then(reload)
+}
+
+export { add_report, delete_report, get_reports, set_report_attribute, set_reports_attribute }

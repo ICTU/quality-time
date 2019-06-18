@@ -5,7 +5,8 @@ from typing import Any, Dict
 from pymongo.database import Database
 import bottle
 
-from ..database.reports import latest_reports, latest_report, insert_new_report
+from ..database.reports import latest_reports, latest_report, insert_new_report, latest_reports_overview, \
+    insert_new_reports_overview
 from ..database.datamodels import latest_datamodel, default_subject_attributes, default_metric_attributes, \
     default_source_parameters
 from ..util import report_date_time, uuid
@@ -157,7 +158,19 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
 @bottle.get("/reports")
 def get_reports(database: Database):
     """Return the quality reports."""
-    return dict(reports=latest_reports(database, report_date_time()))
+    date_time = report_date_time()
+    overview = latest_reports_overview(database, date_time)
+    overview["reports"] = latest_reports(database, date_time)
+    return overview
+
+
+@bottle.post("/reports/<reports_attribute>")
+def post_reports_attribute(reports_attribute: str, database: Database):
+    """Set a reports overview attribute."""
+    value = dict(bottle.request.json)[reports_attribute]
+    overview = latest_reports_overview(database)
+    overview[reports_attribute] = value
+    return insert_new_reports_overview(database, overview)
 
 
 @bottle.post("/report/new")

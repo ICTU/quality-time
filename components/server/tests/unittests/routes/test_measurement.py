@@ -12,7 +12,7 @@ class GetMeasurementsTest(unittest.TestCase):
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
         database = Mock()
-        database.measurements.find = Mock(return_value=[dict(_id="id")])
+        database.measurements.find.return_value = [dict(_id="id")]
         self.assertEqual(dict(measurements=[dict(_id="id")]), get_measurements("metric_uuid", database))
 
 
@@ -32,18 +32,17 @@ class PostMeasurementTests(unittest.TestCase):
                         metric_uuid=dict(
                             name="name", type="metric_type", addition="sum", target="0", near_target="10",
                             debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict()))))))
-        self.database.reports.find_one = Mock(return_value=report)
-        self.database.reports.distinct = Mock(return_value=["report_uuid"])
-        self.database.datamodels.find_one = Mock(
-            return_value=dict(_id="", metrics=dict(metric_type=dict(direction="≦"))))
+        self.database.reports.find_one.return_value = report
+        self.database.reports.distinct.return_value = ["report_uuid"]
+        self.database.datamodels.find_one.return_value = dict(_id="", metrics=dict(metric_type=dict(direction="≦")))
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
-        self.database.measurements.insert_one = Mock(side_effect=set_measurement_id)
+        self.database.measurements.insert_one.side_effect = set_measurement_id
         self.database.measurements.update_one = Mock()
 
     def test_first_measurement(self, request):
         """Post the first measurement for a metric."""
-        self.database.measurements.find_one = Mock(return_value=None)
+        self.database.measurements.find_one.return_value = None
         request.json = dict(metric_uuid="metric_uuid", sources=[])
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", sources=[], value=None, status=None,
                                start="2019-01-01", end="2019-01-01")
@@ -52,15 +51,15 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_unchanged_measurement(self, request):
         """Post an unchanged measurement for a metric."""
-        self.database.measurements.find_one = Mock(return_value=dict(_id="id", sources=[]))
+        self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
         request.json = dict(metric_uuid="metric_uuid", sources=[])
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once()
 
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
-        self.database.measurements.find_one = Mock(return_value=dict(
-            _id="id", status="target_met", sources=[dict(value="0", entities=[])]))
+        self.database.measurements.find_one.return_value = dict(
+            _id="id", status="target_met", sources=[dict(value="0", entities=[])])
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", status="near_target_met",
@@ -70,9 +69,9 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities."""
-        self.database.measurements.find_one = Mock(return_value=dict(
+        self.database.measurements.find_one.return_value = dict(
             _id="id", status="target_met",
-            sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))]))
+            sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))])
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(_id="measurement_id", metric_uuid="metric_uuid", status="near_target_met",
@@ -82,12 +81,12 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_ignored_measurement_entities(self, request):
         """Post a measurement where the old one has ignored entities."""
-        self.database.measurements.find_one = Mock(return_value=dict(
+        self.database.measurements.find_one.return_value = dict(
             _id="id", status="target_met",
             sources=[
                 dict(value="1", parse_error=None, connection_error=None,
                      entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
-                     entities=[dict(key="entity1")])]))
+                     entities=[dict(key="entity1")])])
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         self.assertEqual(dict(ok=True), post_measurement(self.database))
@@ -100,26 +99,24 @@ class SetEntityAttributeTest(unittest.TestCase):
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
-        database.measurements.find_one = Mock(
-            return_value=dict(
+        database.measurements.find_one.return_value = dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
-                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")]))
+                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
         def insert_one(measurement):
             measurement["_id"] = "id"
         database.measurements.insert_one = insert_one
         database.reports = Mock()
-        database.reports.distinct = Mock(return_value=["report_uuid"])
-        database.reports.find_one = Mock(
-            return_value=dict(
-                _id="id",
-                subjects=dict(
-                    subject_uuid=dict(
-                        metrics=dict(
-                            metric_uuid=dict(
-                                type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
-                                addition="sum", tags=[]))))))
+        database.reports.distinct.return_value = ["report_uuid"]
+        database.reports.find_one.return_value = dict(
+            _id="id",
+            subjects=dict(
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_uuid=dict(
+                            type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
+                            addition="sum", tags=[])))))
         database.datamodels = Mock()
-        database.datamodels.find_one = Mock(return_value=dict(_id=123, metrics=dict(metric_type=dict(direction="≦"))))
+        database.datamodels.find_one.return_value = dict(_id=123, metrics=dict(metric_type=dict(direction="≦")))
         with patch("bottle.request", Mock(json=dict(attribute="value"))):
             measurement = set_entity_attribute("metric_uuid", "source_uuid", "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
@@ -134,7 +131,7 @@ class StreamNrMeasurementsTest(unittest.TestCase):
         def sleep(seconds):
             return seconds
         database = Mock()
-        database.measurements.count_documents = Mock(side_effect=[42, 42, 43])
+        database.measurements.count_documents.side_effect =[42, 42, 43]
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements("report_uuid", database)
             self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))

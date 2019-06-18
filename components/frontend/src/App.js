@@ -13,7 +13,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '',
+      datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
     };
     window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
@@ -48,6 +48,7 @@ class App extends Component {
         self.setState(
           {
             reports: json.reports,
+            reports_overview: {title: json.title, subtitle: json.subtitle},
             nr_measurements: nr_measurements,
             nr_new_measurements: 0,
             loading: false,
@@ -156,7 +157,7 @@ class App extends Component {
             <Segment basic placeholder loading size="massive" />
             :
             this.state.report_uuid === "" ?
-              <Reports reports={this.state.reports} reload={() => this.reload()}
+              <Reports reports={this.state.reports} reload={() => this.reload()} reports_overview={this.state.reports_overview}
                 open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
               <Report datamodel={this.state.datamodel} report={report} go_home={() => this.go_home()}

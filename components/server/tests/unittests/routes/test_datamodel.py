@@ -12,13 +12,13 @@ class DatamodelTest(unittest.TestCase):
     def test_get_datamodel(self):
         """Test that the datamodel can be retrieved."""
         database = Mock()
-        database.datamodels.find_one = Mock(return_value=dict(_id=123))
+        database.datamodels.find_one.return_value = dict(_id=123)
         self.assertEqual(dict(_id="123"), datamodel.get_datamodel(database))
 
     def test_get_datamodel_missing(self):
         """Test that the datamodel is None if it's not there."""
         database = Mock()
-        database.datamodels.find_one = Mock(return_value=None)
+        database.datamodels.find_one.return_value = None
         self.assertEqual(None, datamodel.get_datamodel(database))
 
     def test_insert_datamodel_with_id(self):
@@ -36,23 +36,20 @@ class DatamodelTest(unittest.TestCase):
     def test_default_source_parameters(self):
         """Test that the default source parameters can be retrieved from the datamodel."""
         database = Mock()
-        database.datamodels.find_one = Mock(
-            return_value=dict(
-                _id=123,
-                sources=dict(
-                    source_type=dict(parameters=dict(
-                        other_parameter=dict(metrics=[]),
-                        parameter=dict(default_value="name", metrics=["metric_type"]))))))
+        database.datamodels.find_one.return_value = dict(
+            _id=123,
+            sources=dict(
+                source_type=dict(parameters=dict(
+                    other_parameter=dict(metrics=[]),
+                    parameter=dict(default_value="name", metrics=["metric_type"])))))
         self.assertEqual(dict(parameter="name"), default_source_parameters(database, "metric_type", "source_type"))
 
     def test_default_subject_attribures(self):
         """Test that the default subject attributes can be retrieved from the datamodel."""
         database = Mock()
-        database.datamodels.find_one = Mock(
-            return_value=dict(
-                _id=123,
-                subjects=dict(
-                    subject_type=dict(name="name", description="description"))))
+        database.datamodels.find_one.return_value = dict(
+            _id=123,
+            subjects=dict(subject_type=dict(name="name", description="description")))
         self.assertEqual(
             dict(name="name", description="description", type="subject_type", metrics={}),
             default_subject_attributes(database, "subject_type"))
