@@ -55,7 +55,7 @@ export function CardDashboard(props) {
                         setDragging(false);  // User was clicking, don't prevent click event propagation
                     }
                 }}
-                cols={cols} rowHeight={31} layout={layout} preventCollision={true} compactType={null} onLayoutChange={onLayoutChange}
+                cols={cols} rowHeight={24} layout={layout} preventCollision={true} compactType={null} onLayoutChange={onLayoutChange}
             >
                 {divs}
             </ReactGridLayout>
