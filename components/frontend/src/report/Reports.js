@@ -4,6 +4,7 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
 import { add_report } from '../api/report';
+import { ReportsTitle } from './ReportsTitle';
 
 function ReportsDashboard(props) {
   var tag_counts = {};
@@ -30,6 +31,7 @@ function ReportsDashboard(props) {
 export function Reports(props) {
   return (
     <>
+      <ReportsTitle title={props.reports_overview.title} subtitle={props.reports_overview.subtitle} readOnly={props.readOnly} reload={props.reload} />
       <ReportsDashboard reports={props.reports} open_report={props.open_report} readOnly={props.readOnly} />
       <Segment basic>
         {!props.readOnly &&

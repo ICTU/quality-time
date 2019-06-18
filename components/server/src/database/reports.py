@@ -25,6 +25,16 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
     return reports
 
 
+def latest_reports_overview(database: Database, max_iso_timestamp: str = ""):
+    """Return the latest reports overview."""
+    overview = database.reports_overviews.find_one(
+        filter={"timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
+        sort=[("timestamp", pymongo.DESCENDING)])
+    if overview:
+        overview["_id"] = str(overview["_id"])
+    return overview
+
+
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import latest_measurement  # pylint:disable=cyclic-import
@@ -68,4 +78,13 @@ def insert_new_report(database: Database, report):
         del report["_id"]
     report["timestamp"] = iso_timestamp()
     database.reports.insert(report)
+    return dict(ok=True)
+
+
+def insert_new_reports_overview(database: Database, reports_overview):
+    """Insert a new reports overview in the reports overview collection."""
+    if "_id" in reports_overview:
+        del reports_overview["_id"]
+    reports_overview["timestamp"] = iso_timestamp()
+    database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
