@@ -35,14 +35,13 @@ export function Report(props) {
         window.scrollBy(0, -65);  // Correct for menu bar
     }
     if (!props.report) {
-        return props.report_date ?
+        return (
             <Message warning size='huge'>
-                <Message.Header>{`Sorry, this report didn't exist at ${props.report_date}`}</Message.Header>
+                <Message.Header>
+                    {props.report_date ? `Sorry, this report didn't exist at ${props.report_date}` : "Sorry, this report doesn't exist"}
+                </Message.Header>
             </Message>
-            :
-            <Message negative size='huge'>
-                <Message.Header>Sorry, this report doesn't exist</Message.Header>
-            </Message>
+        )
     }
     const [tags, setTags] = useState([]);
     useEffect(() => {

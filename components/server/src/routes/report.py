@@ -188,18 +188,18 @@ def delete_report(report_uuid: str, database: Database):
     return insert_new_report(database, report)
 
 
-@bottle.get("/tag_report/<tag>")
+@bottle.get("/tagreport/<tag>")
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
     reports = latest_reports(database, date_time)
     tag_report = dict(title=f"Tag {tag} report", report_uuid=f"tag-{tag}", timestamp=date_time, subjects=dict())
     for report in reports:
-        for subject_uuid, subject in list(report["subjects"].items()):
-            for metric_uuid, metric in list(subject["metrics"].items()):
+        for subject_uuid, subject in list(report.get("subjects", {}).items()):
+            for metric_uuid, metric in list(subject.get("metrics", {}).items()):
                 if tag not in metric.get("tags", []):
                     del subject["metrics"][metric_uuid]
-            if subject["metrics"]:
+            if subject.get("metrics", {}):
                 tag_report["subjects"][subject_uuid] = subject
     summarize_report(database, tag_report)
     return tag_report

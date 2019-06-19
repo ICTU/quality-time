@@ -21,8 +21,8 @@ function ReportsDashboard(props) {
       onClick={(e) => props.open_report(e, report.report_uuid)} {...report.summary}
     />);
   const tag_cards = Object.entries(tag_counts).map(([tag, counts]) =>
-    <MetricSummaryCard key={tag} header={<Tag tag={tag} onClick={(e) => props.open_tag_report(e, tag)} />} {...counts}
-    />);
+    <MetricSummaryCard key={tag} header={<Tag tag={tag} />} onClick={(e) => props.open_tag_report(e, tag)} {...counts} />
+  );
   return (
     <CardDashboard cards={report_cards.concat(tag_cards)} readOnly={props.readOnly} uuid={"/"} />
   )

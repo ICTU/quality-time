@@ -48,7 +48,7 @@ class App extends Component {
         .then(function(json) {
           self.setState(
             {
-              reports: { [tag]: json },
+              reports: [json],
               loading: false,
               last_update: current_date
             }
@@ -84,10 +84,9 @@ class App extends Component {
   }
 
   go_home() {
-    this.reload();
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "" });
+      this.setState({ report_uuid: "" }, () => this.reload());
       if (this.source) {
         this.source.close()
       }
@@ -117,7 +116,6 @@ class App extends Component {
   }
 
   open_tag_report(event, tag) {
-    console.log(tag);
     event.preventDefault();
     const report_uuid = `tag-${tag}`
     this.setState({ report_uuid: report_uuid }, () => this.reload());

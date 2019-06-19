@@ -13,7 +13,7 @@ function get_reports(date) {
 }
 
 function get_tag_report(tag, date) {
-  return fetch_server_api('get', `tag_report?report_date=${date.toISOString()}`, { "tag": tag })
+  return fetch_server_api('get', `tagreport/${tag}?report_date=${date.toISOString()}`)
 }
 
 function set_report_attribute(report_uuid, attribute, value, reload) {
