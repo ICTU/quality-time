@@ -34,7 +34,6 @@ class App extends Component {
   }
 
   reload() {
-    this.setState({loading: true});
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date()
     let self = this;
@@ -43,6 +42,7 @@ class App extends Component {
         self.setState({ datamodel: json });
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
+      this.setState({loading: true});
       const tag = this.state.report_uuid.slice(4);
       get_tag_report(tag, report_date)
         .then(function(json) {
