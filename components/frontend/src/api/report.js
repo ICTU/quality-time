@@ -12,6 +12,10 @@ function get_reports(date) {
   return fetch_server_api('get', `reports?report_date=${date.toISOString()}`)
 }
 
+function get_tag_report(tag, date) {
+  return fetch_server_api('get', `tag_report?report_date=${date.toISOString()}`, { "tag": tag })
+}
+
 function set_report_attribute(report_uuid, attribute, value, reload) {
   return fetch_server_api('post', `report/${report_uuid}/${attribute}`, { [attribute]: value }).then(reload)
 }
@@ -20,4 +24,4 @@ function set_reports_attribute(attribute, value, reload) {
   return fetch_server_api('post', `reports/${attribute}`, { [attribute]: value }).then(reload)
 }
 
-export { add_report, delete_report, get_reports, set_report_attribute, set_reports_attribute }
+export { add_report, delete_report, get_reports, get_tag_report, set_report_attribute, set_reports_attribute }

@@ -1,10 +1,12 @@
 """Unit tests for the report routes."""
 
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
+from src.util import iso_timestamp
 from src.routes.report import delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports, \
-    post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new, \
+    get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new, \
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 
 
@@ -245,19 +247,20 @@ class SubjectTest(unittest.TestCase):
 class ReportTest(unittest.TestCase):
     """Unit tests for adding, deleting, and getting reports."""
 
+    def setUp(self):
+        self.database = Mock()
+
     def test_add_report(self):
         """Test that a report can be added."""
-        database = Mock()
-        self.assertEqual(dict(ok=True), post_report_new(database))
+        self.assertEqual(dict(ok=True), post_report_new(self.database))
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
-        database = Mock()
-        database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        database.measurements.find_one.return_value = dict(
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
+        self.database.measurements.find_one.return_value = dict(
             _id="id", metric_uuid="metric_uuid", status="red",
             sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
-        database.reports.distinct.return_value = ["report_uuid"]
+        self.database.reports.distinct.return_value = ["report_uuid"]
         report = dict(
             _id="id",
             subjects=dict(
@@ -266,23 +269,45 @@ class ReportTest(unittest.TestCase):
                         metric_uuid=dict(
                             type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
                             addition="sum", tags=["a"])))))
-        database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = report
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1))
         report["summary_by_tag"] = {}
-        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(database))
+        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
         report = dict(_id="report_uuid")
-        database = Mock()
-        database.reports.find_one.return_value = report
-        self.assertEqual(dict(ok=True), delete_report("report_uuid", database))
+        self.database.reports.find_one.return_value = report
+        self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
 
     @patch("bottle.request")
     def test_post_reports_attribute(self, request):
         """Test that a reports (overview) attribute can be changed."""
-        database = Mock()
-        database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
         request.json = dict(title="All the reports")
-        self.assertEqual(dict(ok=True), post_reports_attribute("title", database))
+        self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
+
+    @patch("bottle.request")
+    def test_get_tag_report(self, request):
+        """Test that a tag report can be retrieved."""
+        date_time = request.report_date = iso_timestamp()
+        self.database.reports.find_one.return_value = None
+        self.database.measurements.find_one.return_value = None
+        self.database.reports.distinct.return_value = ["report_uuid"]
+        self.database.reports.find_one.return_value = dict(
+            _id="id",
+            subjects=dict(
+                subject_without_metrics=dict(metrics=dict()),
+                subject_uuid=dict(
+                    metrics=dict(
+                        metric_with_tag=dict(tags=["tag"]),
+                        metric_without_tag=dict(tags=["other tag"])))))
+        self.assertEqual(
+            dict(
+                summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
+                summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
+                summary_by_subject=dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1)),
+                title="Tag tag report", report_uuid="tag-tag", timestamp=date_time, subjects=dict(
+                    subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
+            get_tag_report("tag", self.database))

@@ -7,7 +7,7 @@ import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
 import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
-import { get_reports } from './api/report';
+import { get_reports, get_tag_report } from './api/report';
 
 class App extends Component {
   constructor(props) {
@@ -36,26 +36,40 @@ class App extends Component {
 
   reload() {
     const report_date = this.report_date() || new Date(3000, 1, 1);
+    const current_date = new Date()
     let self = this;
     get_datamodel(report_date)
       .then(function (json) {
         self.setState({ datamodel: json });
       });
-    get_reports(report_date)
-      .then(function (json) {
-        const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
-        const current_date = new Date()
-        self.setState(
-          {
-            reports: json.reports,
-            reports_overview: {title: json.title, subtitle: json.subtitle},
-            nr_measurements: nr_measurements,
-            nr_new_measurements: 0,
-            loading: false,
-            last_update: current_date
-          }
-        );
-      });
+    if (this.state.report_uuid.slice(0, 4) === "tag-") {
+      const tag = this.state.report_uuid.slice(4);
+      get_tag_report(tag, report_date)
+        .then(function(json) {
+          self.setState(
+            {
+              reports: { [tag]: json },
+              loading: false,
+              last_update: current_date
+            }
+          );
+        })
+    } else {
+      get_reports(report_date)
+        .then(function (json) {
+          const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
+          self.setState(
+            {
+              reports: json.reports,
+              reports_overview: { title: json.title, subtitle: json.subtitle },
+              nr_measurements: nr_measurements,
+              nr_new_measurements: 0,
+              loading: false,
+              last_update: current_date
+            }
+          );
+        });
+    }
   }
 
   handleSearchChange(event) {
@@ -102,6 +116,14 @@ class App extends Component {
     }, false);
   }
 
+  open_tag_report(event, tag) {
+    console.log(tag);
+    event.preventDefault();
+    const report_uuid = `tag-${tag}`
+    this.setState({ report_uuid: report_uuid }, () => this.reload());
+    this.history.push(report_uuid);
+  }
+
   report_date() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -123,7 +145,7 @@ class App extends Component {
         }
       })
       .catch(function (error) {
-        self.setState({login_error: true});
+        self.setState({ login_error: true });
       });
   }
 
@@ -158,6 +180,7 @@ class App extends Component {
             :
             this.state.report_uuid === "" ?
               <Reports reports={this.state.reports} reload={() => this.reload()} reports_overview={this.state.reports_overview}
+                open_tag_report={(e, t) => this.open_tag_report(e, t)}
                 open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
               :
               <Report datamodel={this.state.datamodel} report={report} go_home={() => this.go_home()}
