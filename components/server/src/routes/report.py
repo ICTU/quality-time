@@ -6,7 +6,7 @@ from pymongo.database import Database
 import bottle
 
 from ..database.reports import latest_reports, latest_report, insert_new_report, latest_reports_overview, \
-    insert_new_reports_overview
+    insert_new_reports_overview, summarize_report
 from ..database.datamodels import latest_datamodel, default_subject_attributes, default_metric_attributes, \
     default_source_parameters
 from ..util import report_date_time, uuid
@@ -186,3 +186,23 @@ def delete_report(report_uuid: str, database: Database):
     report = latest_report(database, report_uuid)
     report["deleted"] = "true"
     return insert_new_report(database, report)
+
+
+@bottle.get("/tagreport/<tag>")
+def get_tag_report(tag: str, database: Database):
+    """Get a report with all metrics that have the specified tag."""
+    date_time = report_date_time()
+    reports = latest_reports(database, date_time)
+    subjects = dict()
+    for report in reports:
+        for subject_uuid, subject in list(report.get("subjects", {}).items()):
+            for metric_uuid, metric in list(subject.get("metrics", {}).items()):
+                if tag not in metric.get("tags", []):
+                    del subject["metrics"][metric_uuid]
+            if subject.get("metrics", {}):
+                subjects[subject_uuid] = subject
+    tag_report = dict(
+        title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
+        timestamp=date_time, subjects=subjects)
+    summarize_report(database, tag_report)
+    return tag_report

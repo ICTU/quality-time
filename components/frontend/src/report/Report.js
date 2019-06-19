@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Message } from 'semantic-ui-react';
+import { Dimmer, Loader, Message, Segment } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -34,15 +34,23 @@ export function Report(props) {
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
     }
+    if (props.loading) {
+        return (
+            <Segment>
+                <Dimmer active>
+                    <Loader />
+                </Dimmer>
+            </Segment>
+        )
+    }
     if (!props.report) {
-        return props.report_date ?
+        return (
             <Message warning size='huge'>
-                <Message.Header>{`Sorry, this report didn't exist at ${props.report_date}`}</Message.Header>
+                <Message.Header>
+                    {props.report_date ? `Sorry, this report didn't exist at ${props.report_date}` : "Sorry, this report doesn't exist"}
+                </Message.Header>
             </Message>
-            :
-            <Message negative size='huge'>
-                <Message.Header>Sorry, this report doesn't exist</Message.Header>
-            </Message>
+        )
     }
     const [tags, setTags] = useState([]);
     useEffect(() => {
