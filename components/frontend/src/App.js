@@ -28,13 +28,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.reload();
     const pathname = this.history.location.pathname;
     const report_uuid = pathname.slice(1, pathname.length);
-    this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") });
+    this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") }, () => this.reload());
   }
 
   reload() {
+    this.setState({loading: true});
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date()
     let self = this;
@@ -183,7 +183,8 @@ class App extends Component {
               :
               <Report datamodel={this.state.datamodel} report={report} go_home={() => this.go_home()}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-                search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null} />
+                loading={this.state.loading}
+                search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null || this.state.report_uuid.slice(0, 4) === "tag-"} />
           }
         </Container>
         <Footer last_update={this.state.last_update} report={report} />

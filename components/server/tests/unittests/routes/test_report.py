@@ -1,6 +1,5 @@
 """Unit tests for the report routes."""
 
-from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -308,6 +307,7 @@ class ReportTest(unittest.TestCase):
                 summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
                 summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
                 summary_by_subject=dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1)),
-                title="Tag tag report", report_uuid="tag-tag", timestamp=date_time, subjects=dict(
-                    subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
+                title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
+                    timestamp=date_time, subjects=dict(
+                        subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
             get_tag_report("tag", self.database))

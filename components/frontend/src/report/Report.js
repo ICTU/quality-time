@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Message } from 'semantic-ui-react';
+import { Dimmer, Loader, Message, Segment } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -33,6 +33,15 @@ export function Report(props) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
+    }
+    if (props.loading) {
+        return (
+            <Segment>
+                <Dimmer active>
+                    <Loader />
+                </Dimmer>
+            </Segment>
+        )
     }
     if (!props.report) {
         return (
