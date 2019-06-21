@@ -164,6 +164,17 @@ def get_reports(database: Database):
     return overview
 
 
+@bottle.delete("/reports")
+def delete_reports(database: Database):
+    """Delete all quality reports."""
+    title = dict(bottle.request.json).get("title")
+    for report in latest_reports(database):
+        if not title or title == report["title"]:
+            report["deleted"] = True
+            insert_new_report(database, report)
+    return dict(ok=True)
+
+
 @bottle.post("/reports/<reports_attribute>")
 def post_reports_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""

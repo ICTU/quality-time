@@ -10,10 +10,8 @@ Feature: Create quality report
     And the quality manager adds a new subject
     And the quality manager adds a new metric
     And the quality manager sets the metric target value to <metric_target_value>
-    And the quality manager adds a new source
-    And the quality manager changes the source type to Random
-    Then the metric is marked as <metric_status>
+    Then the metric target is <expected_metric_target_value>
     Examples:
-      | metric_target_value | metric_status    |
-      | 100                 | frown large icon |
-      | 0                   | smile large icon |
+      | metric_target_value | expected_metric_target_value |
+      | 100                 | 100                          |
+      | -1                  | 0                            |

@@ -18,3 +18,8 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+beforeEach(function () {
+    cy.request('POST', 'http://localhost:8080/login', { username: 'admin', password: 'admin' })
+    cy.request('DELETE', 'http://localhost:8080/reports', { title: "New report" })
+});

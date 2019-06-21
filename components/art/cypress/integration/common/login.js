@@ -1,10 +1,7 @@
 import {Given} from "cypress-cucumber-preprocessor/steps";
 
-const url = "/example-report";
-
-Given(/^I visit the report and login$/, () => {
-    cy.visit(url);
-    cy.title().should('eq', 'Quality-time');
+Given(/^the quality manager logs in$/, () => {
+    cy.visit("/");
     cy.get(".button").contains('Login').click();
     cy.fixture('credentials.json').then((credentials) =>
         cy.get('input[name="username"]')
