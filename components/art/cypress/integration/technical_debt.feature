@@ -5,7 +5,8 @@ Feature: Technical Debt
   So that it is clear which metrics need immediate attention and which do not
 
   Scenario Outline: Accept technical debt
-    Given I visit the report and login
+    Given the quality manager logs in
+    And the quality manager visits the report
     And I make sure the Metric debt target is <debt_target>, Metric target is <metric_target> and Accept technical debt <accept_td>
     And a metric whose measurement value is <start_value> as the target value
     When the quality manager changes debt target to <debt_changed>, Metric target to <metric_changed> and Accept technical debt to <accept_td_changed>
