@@ -6,7 +6,7 @@ When(/^the quality manager creates a new report$/, () => {
 });
 
 When(/^the quality manager adds a new subject$/, () => {
-    cy.wait(2000);
+    cy.wait(2000);  // Only thing that works from things suggested @ https://github.com/cypress-io/cypress/issues/695
     cy.contains('button', 'Add subject').click();
 });
 
