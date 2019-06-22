@@ -13,5 +13,5 @@ Feature: Create quality report
     Then the metric target is <expected_metric_target_value>
     Examples:
       | metric_target_value | expected_metric_target_value |
-      | 100                 | 100                          |
-      | -1                  | 0                            |
+      | 100                 | ≦ 100 lines                  |
+      | -1                  | ≦ 1 lines                    |
