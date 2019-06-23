@@ -1,4 +1,4 @@
-bottle==0.12.16
+bottle==0.12.17
 bottle-mongo==0.3.0
 gevent==1.4.0
 pymongo==3.8.0
