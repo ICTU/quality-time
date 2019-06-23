@@ -54,6 +54,7 @@ venv.bak/
 .mypy_cache/
 
 # IDE
+*.code-workspace
 .vscode
 .idea
 
