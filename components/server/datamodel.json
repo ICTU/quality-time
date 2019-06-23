@@ -205,6 +205,24 @@
                 "process efficiency"
             ]
         },
+        "slow_transactions": {
+            "name": "Slow transactions",
+            "description": "Measure the number of transactions slower than their performance treshhold.",
+            "unit": "transactions",
+            "addition": "sum",
+            "direction": "≦",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "performancetest_runner",
+            "sources": [
+                "hq",
+                "performancetest_runner",
+                "random"
+            ],
+            "tags": [
+                "performance"
+            ]
+        },
         "source_up_to_dateness": {
             "name": "Source up-to-dateness",
             "description": "Measure the number of days since the source was last updated.",
@@ -227,12 +245,52 @@
                 "openvas",
                 "owasp_dependency_check",
                 "owasp_zap",
+                "performancetest_runner",
                 "sonarqube",
                 "trello",
                 "wekan"
             ],
             "tags": [
                 "ci"
+            ]
+        },
+        "security_warnings": {
+            "name": "Security warnings",
+            "description": "Measure how many security flaws the code contains. This metric gives an indication of the security of the source code.",
+            "unit": "security warnings",
+            "addition": "sum",
+            "direction": "≦",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "owasp_dependency_check",
+            "sources": [
+                "cxsast",
+                "hq",
+                "random",
+                "openvas",
+                "owasp_dependency_check",
+                "owasp_zap"
+            ],
+            "tags": [
+                "security"
+            ]
+        },
+        "suppressed_violations": {
+            "name": "Suppressed violations",
+            "description": "Measure the number of violations suppressed in the source.",
+            "unit": "suppressed violations",
+            "addition": "sum",
+            "direction": "≦",
+            "target": "0",
+            "near_target": "10",
+            "default_source": "sonarqube",
+            "sources": [
+                "hq",
+                "random",
+                "sonarqube"
+            ],
+            "tags": [
+                "maintainability"
             ]
         },
         "tests": {
@@ -339,45 +397,6 @@
             "sources": [
                 "hq",
                 "ojaudit",
-                "random",
-                "sonarqube"
-            ],
-            "tags": [
-                "maintainability"
-            ]
-        },
-        "security_warnings": {
-            "name": "Security warnings",
-            "description": "Measure how many security flaws the code contains. This metric gives an indication of the security of the source code.",
-            "unit": "security warnings",
-            "addition": "sum",
-            "direction": "≦",
-            "target": "0",
-            "near_target": "5",
-            "default_source": "owasp_dependency_check",
-            "sources": [
-                "cxsast",
-                "hq",
-                "random",
-                "openvas",
-                "owasp_dependency_check",
-                "owasp_zap"
-            ],
-            "tags": [
-                "security"
-            ]
-        },
-        "suppressed_violations": {
-            "name": "Suppressed violations",
-            "description": "Measure the number of violations suppressed in the source.",
-            "unit": "suppressed violations",
-            "addition": "sum",
-            "direction": "≦",
-            "target": "0",
-            "near_target": "10",
-            "default_source": "sonarqube",
-            "sources": [
-                "hq",
                 "random",
                 "sonarqube"
             ],
@@ -1481,6 +1500,79 @@
                 }
             }
         },
+        "performancetest_runner": {
+            "name": "Performancetest-runner",
+            "description": "An open source tool to run performancetests and create performancetest reports.",
+            "url": "https://github.com/ICTU/performancetest-runner",
+            "parameters": {
+                "url": {
+                    "name": "URL to Performancetest-runner HTML report",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "slow_transactions",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "slow_transactions",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "slow_transactions",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "thresholds": {
+                    "name": "Thresholds",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [
+                        "high",
+                        "warning"
+                    ],
+                    "values": [
+                        "high",
+                        "warning"
+                    ],
+                    "metrics": [
+                        "slow_transactions"
+                    ]
+                }
+            },
+            "entities": {
+                "slow_transactions": {
+                    "name": "slow transaction",
+                    "name_plural": "slow transactions",
+                    "attributes": [
+                        {
+                            "name": "Transaction",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Threshold",
+                            "key": "threshold",
+                            "color": {
+                                "high": "negative",
+                                "warning": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "random": {
             "name": "Random",
             "description": "A source that generates random numbers, for testing purposes.",
@@ -2310,6 +2402,7 @@
                 "long_units",
                 "ncloc",
                 "security_warnings",
+                "slow_transactions",
                 "source_up_to_dateness",
                 "suppressed_violations",
                 "tests",
