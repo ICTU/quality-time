@@ -22,8 +22,8 @@ def main():
     """Create the release."""
     release = sys.argv[1]
     check_version_number(release)
-    os.system(f"cd components/frontend && npm version --allow-same-version {release}")
-
+    os.system(f"cd components/frontend && npm version --no-git-tag-version --allow-same-version {release}")
+    os.system(f"git tag v{release} && git push --tags")
 
 if __name__ == "__main__":
     main()
