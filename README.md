@@ -170,6 +170,19 @@ npx cypress run
 
 Cypress stores screenshots (if a test fails) and video in `components/art/cypress/screenshots` and `components/art/cypress/videos`.
 
+## Release
+
+To release *Quality-time*, follow these steps:
+
+```console
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements-dev.txt
+ci/release.py major|minor|patch
+```
+
+The `release.py` script will bump the version numbers, commit the changes, push the commit, tag the commit, and push the tag to Github.
+
 ## Deployment
 
 (To be completed)
