@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="Quality-time collector",
-    version="0.1.2",
+    version="0.1.3",
     description="Quality report metrics collector.",
     author="Frank Niessink",
     author_email="frank.niessink@ictu.nl",
