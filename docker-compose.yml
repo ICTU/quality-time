@@ -3,8 +3,6 @@ services:
   frontend:
     build:
       context: components/frontend
-      args:
-      - REACT_APP_SERVER_URL=http://localhost:8080
     depends_on:
     - server
     ports:

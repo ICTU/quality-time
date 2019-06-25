@@ -16,7 +16,12 @@ class App extends Component {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
     };
-    window.server_url = process.env.REACT_APP_SERVER_URL || "http://localhost:8080";
+    if (window.location.hostname === "localhost") {
+      window.server_url = "http://localhost:8080"
+    } else {
+      const domain = window.location.hostname.slice("www.".length);
+      window.server_url = `http://server.${domain}:8080`
+    }
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
       if (action === "POP") {
