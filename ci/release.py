@@ -11,6 +11,7 @@ def main():
     bump = sys.argv[1]
     assert bump in ('patch', 'minor', 'major')
     subprocess.run(("bumpversion", bump), check=True)
+    subprocess.run(("git", "push"), check=True)
     subprocess.run(("git", "push", "--tags"), check=True)
 
 
