@@ -19,8 +19,8 @@ class App extends Component {
     if (window.location.hostname === "localhost") {
       window.server_url = "http://localhost:8080"
     } else {
-      const domain = window.location.hostname.slice("www.quality-time.".length);
-      window.server_url = `http://www.server.${domain}:8080`
+      const domain = window.location.hostname.slice("www.".length);
+      window.server_url = `http://server.${domain}:8080`
     }
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
