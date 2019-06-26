@@ -73,14 +73,14 @@ jobs:
       - sonar-scanner
 
     - stage: deploy
-      name: "Integration tests and optionally deploy"
+      name: "Integration tests and optionally deploy"  # Combined stage so we don't have to build containers twice
       language: node_js
       node_js: 10
       install:
-      - docker-compose build && docker-compose up -d
+      - docker-compose build && docker-compose up -d  # Start immediately so metric data is collected before tests run
       - cd components/art && npm install --save-dev
       script:
-      - npx cypress run -c video=false,screenshotOnRunFailure=false
+      - npx cypress run -c video=false
       deploy:
       - provider: script
         skip_cleanup: true
@@ -88,7 +88,9 @@ jobs:
           tags: true
         script:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-        - docker push ictu/quality-time_collector
-        - docker push ictu/quality-time_server
-        - docker push ictu/quality-time_frontend
-        - docker push ictu/quality-time_testdata
+        - docker tag quality-time_collector ictu/quality-time_collector:$TRAVIS_TAG
+        - docker tag quality-time_server ictu/quality-time_server:$TRAVIS_TAG
+        - docker tag quality-time_frontend ictu/quality-time_frontend:$TRAVIS_TAG
+        - docker push ictu/quality-time_collector:$TRAVIS_TAG
+        - docker push ictu/quality-time_server:$TRAVIS_TAG
+        - docker push ictu/quality-time_frontend:$TRAVIS_TAG
