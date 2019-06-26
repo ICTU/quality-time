@@ -77,11 +77,10 @@ jobs:
       language: node_js
       node_js: 10
       install:
-      - docker-compose build
-      - cd components/art && npm install --save-dev && cd ../..
+      - docker-compose build && docker-compose up -d
+      - cd components/art && npm install --save-dev
       script:
-      - docker-compose up -d
-      - cd components/art && npx cypress run
+      - npx cypress run -c video=false,screenshotOnRunFailure=false
       deploy:
       - provider: script
         skip_cleanup: true
