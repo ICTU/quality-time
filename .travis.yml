@@ -4,6 +4,9 @@ services:
 addons:
   sonarcloud:
     organization: "ictu"
+  apt:
+    packages:
+      - libgconf-2-4  # For cypress
 jobs:
   include:
     - stage: test
@@ -34,6 +37,8 @@ jobs:
       script:
       - npm test
     - name: "UI-tests"
+      language: node_js
+      node_js: 10
       install:
       - docker-compose build
       - cd components/art && npm install --save-dev && cd ../..
