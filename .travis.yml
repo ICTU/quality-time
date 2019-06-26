@@ -1,11 +1,16 @@
 dist: xenial
+services:
+  - docker
 addons:
   sonarcloud:
     organization: "ictu"
+  apt:
+    packages:
+      - libgconf-2-4  # For Cypress
 jobs:
   include:
     - stage: test
-      name: "Collector"
+      name: "Collector unit tests"
       language: python
       python: 3.7
       install:
@@ -14,7 +19,8 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - name: "Server"
+
+    - name: "Server unit tests"
       language: python
       python: 3.7
       install:
@@ -23,7 +29,8 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - name: "Frontend"
+
+    - name: "Frontend unit tests"
       language: node_js
       node_js: 10
       install:
@@ -31,7 +38,8 @@ jobs:
       - npm install
       script:
       - npm test
-    - name: "Sonarqube"
+
+    - name: "SonarQube"
       language: python
       python: 3.7
       before_install:
@@ -63,3 +71,26 @@ jobs:
       - touch components/collector/__init__.py
       - touch components/collector/src/__init__.py
       - sonar-scanner
+
+    - stage: deploy
+      name: "Integration tests and optionally deploy"  # Combined stage so we don't have to build containers twice
+      language: node_js
+      node_js: 10
+      install:
+      - docker-compose build && docker-compose up -d  # Start immediately so metric data is collected before tests run
+      - cd components/art && npm install --save-dev
+      script:
+      - npx cypress run -c video=false
+      deploy:
+      - provider: script
+        skip_cleanup: true
+        on:
+          tags: true
+        script:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker tag quality-time_collector ictu/quality-time_collector:$TRAVIS_TAG
+        - docker tag quality-time_server ictu/quality-time_server:$TRAVIS_TAG
+        - docker tag quality-time_frontend ictu/quality-time_frontend:$TRAVIS_TAG
+        - docker push ictu/quality-time_collector:$TRAVIS_TAG
+        - docker push ictu/quality-time_server:$TRAVIS_TAG
+        - docker push ictu/quality-time_frontend:$TRAVIS_TAG
