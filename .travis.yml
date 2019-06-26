@@ -6,11 +6,11 @@ addons:
     organization: "ictu"
   apt:
     packages:
-      - libgconf-2-4  # For cypress
+      - libgconf-2-4  # For Cypress
 jobs:
   include:
     - stage: test
-      name: "Collector"
+      name: "Collector unit tests"
       language: python
       python: 3.7
       install:
@@ -19,7 +19,8 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - name: "Server"
+
+    - name: "Server unit tests"
       language: python
       python: 3.7
       install:
@@ -28,7 +29,8 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-    - name: "Frontend"
+
+    - name: "Frontend unit tests"
       language: node_js
       node_js: 10
       install:
@@ -36,15 +38,7 @@ jobs:
       - npm install
       script:
       - npm test
-    - name: "UI-tests"
-      language: node_js
-      node_js: 10
-      install:
-      - docker-compose build
-      - cd components/art && npm install --save-dev && cd ../..
-      script:
-      - docker-compose up -d
-      - cd components/art && npx cypress run
+
     - name: "SonarQube"
       language: python
       python: 3.7
@@ -77,3 +71,25 @@ jobs:
       - touch components/collector/__init__.py
       - touch components/collector/src/__init__.py
       - sonar-scanner
+
+    - stage: deploy
+      name: "Integration tests and optionally deploy"
+      language: node_js
+      node_js: 10
+      install:
+      - docker-compose build
+      - cd components/art && npm install --save-dev && cd ../..
+      script:
+      - docker-compose up -d
+      - cd components/art && npx cypress run
+      deploy:
+      - provider: script
+        skip_cleanup: true
+        on:
+          tags: true
+        script:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker push ictu/quality-time_collector
+        - docker push ictu/quality-time_server
+        - docker push ictu/quality-time_frontend
+        - docker push ictu/quality-time_testdata
