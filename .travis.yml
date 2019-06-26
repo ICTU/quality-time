@@ -1,4 +1,6 @@
 dist: xenial
+services:
+  - docker
 addons:
   sonarcloud:
     organization: "ictu"
@@ -31,7 +33,14 @@ jobs:
       - npm install
       script:
       - npm test
-    - name: "Sonarqube"
+    - name: "UI-tests"
+      install:
+      - docker-compose build
+      - cd components/art && npm install --save-dev
+      script:
+      - docker-compose up -d
+      - cd components/art && npx cypress run
+    - name: "SonarQube"
       language: python
       python: 3.7
       before_install:
