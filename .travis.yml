@@ -36,7 +36,7 @@ jobs:
     - name: "UI-tests"
       install:
       - docker-compose build
-      - cd components/art && npm install --save-dev
+      - cd components/art && npm install --save-dev && cd ../..
       script:
       - docker-compose up -d
       - cd components/art && npx cypress run
