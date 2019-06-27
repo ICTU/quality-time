@@ -36,6 +36,15 @@ jobs:
             cd components/frontend
             npm install
             npm test
+
+  security_frontend:
+    machine: true
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          command: |
+            cd components/frontend
             ci/security.sh
       - store_artifacts:
           path: /home/circleci/project/components/frontend/build/owasp_dependency_check/reports
@@ -72,6 +81,8 @@ workflows:
           context: QualityTime
       - unittest_server:
           context: QualityTime
+      - security_frontend:
+          context: QualityTime
       - unittest_frontend:
           context: QualityTime
       - ui_tests:
@@ -80,3 +91,4 @@ workflows:
             - unittest_collector
             - unittest_server
             - unittest_frontend
+            - security_frontend
