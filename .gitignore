@@ -42,7 +42,6 @@ components/frontend/coverage/
 .python-version
 
 # Environments
-.env
 .venv
 env/
 venv/
