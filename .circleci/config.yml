@@ -41,8 +41,8 @@ jobs:
     machine: true
     parallelism: 1
     steps:
-        - restore_cache:
-          key: owasp_dependency_check_data_cache
+      - restore_cache:
+        key: owasp_dependency_check_data_cache
       - checkout
       - run:
           command: |
