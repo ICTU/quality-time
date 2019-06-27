@@ -19,7 +19,6 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-      - safety check
 
     - name: "Server unit tests"
       language: python
@@ -30,7 +29,6 @@ jobs:
       script:
       - ci/unittest.sh
       - ci/quality.sh
-      - safety check
 
     - name: "Frontend unit tests"
       language: node_js
