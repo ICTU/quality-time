@@ -31,9 +31,6 @@ jobs:
       - ci/quality.sh
 
     - name: "Frontend component tests"
-      cache:
-        directories:
-        - components/frontend/build/owasp_dependency_check/data
       language: node_js
       node_js: 10
       install:
@@ -41,7 +38,6 @@ jobs:
       - npm install
       script:
       - npm test
-      - ci/security.sh
 
     - name: "SonarQube"
       language: python
