@@ -41,6 +41,8 @@ jobs:
     machine: true
     parallelism: 1
     steps:
+        - restore_cache:
+          key: owasp_dependency_check_data_cache
       - checkout
       - run:
           command: |
@@ -48,6 +50,9 @@ jobs:
             ci/security.sh
       - store_artifacts:
           path: /home/circleci/project/components/frontend/build/owasp_dependency_check/reports
+      - save_cache:
+          key: owasp_dependency_check_data_cache
+          path: /home/circleci/project/components/frontend/build/owasp_dependency_check/data
 
   ui_tests:
     machine: true
