@@ -10,7 +10,7 @@ addons:
 jobs:
   include:
     - stage: test
-      name: "Collector unit tests"
+      name: "Collector component tests"
       language: python
       python: 3.7
       install:
@@ -20,7 +20,7 @@ jobs:
       - ci/unittest.sh
       - ci/quality.sh
 
-    - name: "Server unit tests"
+    - name: "Server component tests"
       language: python
       python: 3.7
       install:
@@ -30,7 +30,7 @@ jobs:
       - ci/unittest.sh
       - ci/quality.sh
 
-    - name: "Frontend unit tests"
+    - name: "Frontend component tests"
       language: node_js
       node_js: 10
       install:
@@ -38,6 +38,7 @@ jobs:
       - npm install
       script:
       - npm test
+      - ci/security.sh
 
     - name: "SonarQube"
       language: python

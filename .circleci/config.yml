@@ -36,6 +36,9 @@ jobs:
             cd components/frontend
             npm install
             npm test
+            ci/security.sh
+      - store_artifacts:
+        parth: /home/circleci/project/components/frontend/build/owasp_dependency_check/reports
 
   ui_tests:
     machine: true

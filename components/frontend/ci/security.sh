@@ -1,14 +1,12 @@
 #!/bin/sh
 
-OWASPDC_DIRECTORY=$(pwd)/owasp_dependency_check
+OWASPDC_DIRECTORY=$(pwd)/build/owasp_dependency_check
 DATA_DIRECTORY="$OWASPDC_DIRECTORY/data"
 REPORT_DIRECTORY="$OWASPDC_DIRECTORY/reports"
 
 if [ ! -d "$DATA_DIRECTORY" ]; then
-    echo "Initially creating persistent directories"
     mkdir -p "$DATA_DIRECTORY"
     chmod -R 777 "$DATA_DIRECTORY"
-
     mkdir -p "$REPORT_DIRECTORY"
     chmod -R 777 "$REPORT_DIRECTORY"
 fi
