@@ -52,7 +52,8 @@ jobs:
           path: /home/circleci/project/components/frontend/build/owasp_dependency_check/reports
       - save_cache:
           key: owasp_dependency_check_data_cache
-          path: /home/circleci/project/components/frontend/build/owasp_dependency_check/data
+          paths:
+          - /home/circleci/project/components/frontend/build/owasp_dependency_check/data
 
   ui_tests:
     machine: true
