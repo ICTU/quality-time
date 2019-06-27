@@ -47,6 +47,7 @@ jobs:
       - run:
           command: |
             cd components/frontend
+            npm install
             ci/security.sh
       - store_artifacts:
           path: /home/circleci/project/components/frontend/build/owasp_dependency_check/reports
