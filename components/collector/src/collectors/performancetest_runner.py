@@ -43,5 +43,6 @@ class PerformanceTestRunnerSourceUpToDateness(Collector):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         soup = BeautifulSoup(responses[0].text, "html.parser")
-        test_datetime = datetime(*[int(part) for part in soup.find(id="start_of_the_test").string.split(".")])
+        datetime_parts = [int(part) for part in soup.find(id="start_of_the_test").string.split(".")]
+        test_datetime = datetime(*datetime_parts)  # type: ignore
         return str(days_ago(test_datetime))
