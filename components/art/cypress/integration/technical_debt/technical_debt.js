@@ -29,7 +29,7 @@ When(/^the quality manager changes debt target to (.+), Metric target to (.+) an
 
     cy.get('@metricDebt').within( () => {
         cy.get('> div:nth-child(2) > form > div > div > div > input[type=number]').clear().type(debtChanged);
-        cy.wait(2000);
+        cy.wait(4000);
         cy.get('> div:nth-child(1) > form > div > div').within(() => {
             cy.get('> i').click();
             cy.get(`> div.visible.menu.transition > div:nth-child(${acceptTdChanged})`).click();
@@ -38,7 +38,7 @@ When(/^the quality manager changes debt target to (.+), Metric target to (.+) an
 });
 
 Then(/^the metric is marked as (.+)$/, (endTarget) => {
-    cy.wait(2000);
+    cy.wait(4000);
     cy.get("@testLineCoverage").within(() => {
         cy.get('> td:nth-child(4) > i').should('have.class', endTarget);
     });

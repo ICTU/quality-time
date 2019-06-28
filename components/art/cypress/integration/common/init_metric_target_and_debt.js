@@ -1,7 +1,7 @@
 import {Given} from "cypress-cucumber-preprocessor/steps";
 
 Given(/^I make sure the Metric debt target is (.+), Metric target is (.+) and Accept technical debt (.+)$/, (debt, metric, technicalDebt) => {
-    cy.wait(2000);
+    cy.wait(4000);
     cy.get("table.ui.sortable.table > tbody > tr:nth-child(4) > td.collapsing > i.caret.right").click();
 
     cy.get("table.ui.sortable.table > tbody > tr:nth-child(5)").within(() => {

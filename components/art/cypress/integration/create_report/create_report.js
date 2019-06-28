@@ -6,12 +6,12 @@ When(/^the quality manager creates a new report$/, () => {
 });
 
 When(/^the quality manager adds a new subject$/, () => {
-    cy.wait(2000);  // Only thing that works from things suggested @ https://github.com/cypress-io/cypress/issues/695
+    cy.wait(4000);  // Only thing that works from things suggested @ https://github.com/cypress-io/cypress/issues/695
     cy.contains('button', 'Add subject').click();
 });
 
 When(/^the quality manager adds a new metric$/, () => {
-    cy.wait(2000);
+    cy.wait(4000);
     cy.contains('button', 'Add metric').click();
 });
 
@@ -20,7 +20,7 @@ When(/^the quality manager sets the metric target value to (.+)$/, (metric_targe
 });
 
 Then(/^the metric target is (.+)$/, (expected_metric_target_value) => {
-    cy.wait(2000);
+    cy.wait(4000);
     cy.get("table.ui.sortable.table > tbody > tr:first-child > td:nth-child(6)").should('contain',
         expected_metric_target_value);
 });
