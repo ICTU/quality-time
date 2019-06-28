@@ -5,8 +5,8 @@ export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;
   let { set_value, options, ...otherProps } = props;
   options.sort((a, b) => a.text.localeCompare(b.text));
-  const [value, setValue] = useState(props.value);
-  useEffect(() => { if (props.value !== value) { setValue(props.value) } }, [props.value]);
+  const [choice, setChoice] = useState(props.value);
+  useEffect(() => { if (props.value !== choice) { setChoice(props.value) } }, [props.value]);
   return (
     <Form>
       {props.readOnly ?
@@ -18,13 +18,13 @@ export function SingleChoiceInput(props) {
         <Form.Dropdown
           {...otherProps}
           fluid
-          onChange={(event, { name, value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
+          onChange={(event, { name, new_choice }) => { setChoice(new_choice); if (new_choice !== props.value) { set_value(new_choice) } }}
           options={options}
           search
           selection
           selectOnNavigation={false}
           tabIndex="0"
-          value={value}
+          value={choice}
         />
       }
     </Form>

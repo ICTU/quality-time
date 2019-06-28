@@ -28,8 +28,8 @@ export function MultipleChoiceInput(props) {
           error={required && value.length === 0}
           fluid
           multiple
-          onAddItem={(event, { value }) => { setOptions(options => ([value, ...options])) }}
-          onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
+          onAddItem={(event, { added_value }) => { setOptions(prev_options => ([added_value, ...prev_options])) }}
+          onChange={(event, { new_value }) => { setValue(new_value); if (new_value !== props.value) { set_value(new_value) } }}
           options={sort_options(options)}
           search
           selection

@@ -37,7 +37,7 @@ export function Report(props) {
     const [tags, setTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report
-        setTags(tags => tags.filter(tag => Object.keys(props.report.summary_by_tag).includes(tag)))
+        setTags(prev_tags => prev_tags.filter(tag => Object.keys(props.report.summary_by_tag).includes(tag)))
     }, [props.report.summary_by_tag]);
     if (props.loading) {
         return (
