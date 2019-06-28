@@ -37,6 +37,7 @@ When(/^the quality manager changes debt target to (.+), Metric target to (.+) an
                 .clear()
                 .type(debtChanged);
         });
+        cy.wait(2000);
         cy.get('div:nth-child(1) > form > div > div').within(() => {
             cy.get('> i').click();
             cy.get(`div.visible.menu.transition > div:nth-child(${acceptTdChanged})`).click();

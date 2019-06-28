@@ -9,7 +9,7 @@
     "react-grid-layout": "^0.16.6",
     "react-scripts": "^2.1.8",
     "react-timeago": "^4.4.0",
-    "semantic-ui-calendar-react": "^0.14.4",
+    "semantic-ui-calendar-react": "^0.15.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.86.0",
     "victory": "^32.3.0"
