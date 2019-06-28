@@ -11,8 +11,8 @@ function sort_options(option_list) {
 
 export function MultipleChoiceInput(props) {
   let { allowAdditions, required, set_value, ...otherProps } = props;
-  const [value, setValue] = useState(props.value || []);
-  useEffect(() => { const new_value = props.value || []; if (new_value !== value) { setValue(new_value) } }, [props.value]);
+  const [choices, setChoices] = useState(props.value || []);
+  useEffect(() => { const new_choices = props.value || []; if (new_choices !== choices) { setChoices(new_choices) } }, [props.value]);
   const [options, setOptions] = useState(props.options);
   useEffect(() => { const new_options = props.options; if (new_options !== options) { setOptions(new_options) } }, [props.options]);
   return (
@@ -25,15 +25,15 @@ export function MultipleChoiceInput(props) {
         <Form.Dropdown
           {...otherProps}
           allowAdditions={allowAdditions}
-          error={required && value.length === 0}
+          error={required && choices.length === 0}
           fluid
           multiple
-          onAddItem={(event, { value }) => { setOptions(options => ([value, ...options])) }}
-          onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
+          onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
+          onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
           options={sort_options(options)}
           search
           selection
-          value={value}
+          value={choices}
         />
       }
     </Form>
