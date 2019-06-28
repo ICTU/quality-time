@@ -18,7 +18,7 @@ export function SingleChoiceInput(props) {
         <Form.Dropdown
           {...otherProps}
           fluid
-          onChange={(event, { name, new_choice }) => { setChoice(new_choice); if (new_choice !== props.value) { set_value(new_choice) } }}
+          onChange={(event, { name, value }) => { setChoice(value); if (value !== props.value) { set_value(value) } }}
           options={options}
           search
           selection
