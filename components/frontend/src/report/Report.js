@@ -34,6 +34,11 @@ export function Report(props) {
         document.getElementById(subject_uuid).scrollIntoView();
         window.scrollBy(0, -65);  // Correct for menu bar
     }
+    const [tags, setTags] = useState([]);
+    useEffect(() => {
+        // Make sure we only filter by tags that are actually used in this report
+        setTags(tags => tags.filter(tag => Object.keys(props.report.summary_by_tag).includes(tag)))
+    }, [props.report.summary_by_tag]);
     if (props.loading) {
         return (
             <Segment>
@@ -52,11 +57,6 @@ export function Report(props) {
             </Message>
         )
     }
-    const [tags, setTags] = useState([]);
-    useEffect(() => {
-        // Make sure we only filter by tags that are actually used in this report
-        setTags(tags => tags.filter(tag => Object.keys(props.report.summary_by_tag).includes(tag)))
-    }, [props.report.summary_by_tag]);
     return (
         <>
             <ReportTitle
