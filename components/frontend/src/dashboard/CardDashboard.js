@@ -9,9 +9,9 @@ export function CardDashboard(props) {
         localStorage.setItem(`layout-${props.uuid}`, JSON.stringify(layout))
     }
 
-    if (props.cards.length === 0) { return null }
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
+    if (props.cards.length === 0) { return null }
     const cols = 32;
     const card_width = 4;
     const card_height = 6;
