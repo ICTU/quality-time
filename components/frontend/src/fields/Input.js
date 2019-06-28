@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 export function Input(props) {
   let { required, set_value, ...otherProps } = props;
   const [value, setValue] = useState(props.value || "");
-  useEffect(() => { const new_value = props.value || ""; if (new_value !== value) { setValue(new_value)}}, [props.value]);
+  useEffect(() => setValue(props.value || ''), [props.value]);
   return (
     <Form>
       <Form.Input
