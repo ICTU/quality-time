@@ -46,6 +46,7 @@ When(/^the quality manager changes debt target to (.+), Metric target to (.+) an
 });
 
 Then(/^the metric is marked as (.+)$/, (endTarget) => {
+    cy.wait(2000);
     cy.get("@testLineCoverage").within(() => {
         cy.get('td:nth-child(4) > i')
             .should('have.class', endTarget);
