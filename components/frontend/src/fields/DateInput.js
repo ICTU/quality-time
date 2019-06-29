@@ -5,7 +5,7 @@ import { Input } from './Input';
 
 function EditableDateInput(props) {
     const [date, setDate] = useState(props.value);
-    useEffect(() => { if (props.value !== date) { setDate(props.value) } }, [props.value]);
+    useEffect(() => setDate(props.value), [props.value]);
     return (
         <Form>
             <CalendarDateInput

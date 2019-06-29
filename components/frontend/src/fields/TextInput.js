@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 export function TextInput(props) {
   let { required, set_value, ...otherProps } = props;
   const [text, setText] = useState(props.value || '');
-  useEffect(() => { const new_text = props.value || ''; if (new_text !== text) { setText(new_text) } }, [props.value]);
+  useEffect(() => setText(props.value || ''), [props.value]);
   return (
     <Form onSubmit={() => { if (text !== props.value) { props.set_value(text) } }}>
       <Form.TextArea

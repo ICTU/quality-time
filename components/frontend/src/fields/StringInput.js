@@ -5,9 +5,9 @@ import { Input } from './Input';
 function StringInputWithSuggestions(props) {
   let { required, options, set_value, value, ...otherProps } = props;
   const [string_value, setValue] = useState(value || '');
-  useEffect(() => { const new_value = props.value || ''; if (new_value !== string_value) { setValue(new_value) } }, [props.value]);
+  useEffect(() => setValue(props.value || ''), [props.value]);
   const [string_options, setOptions] = useState(options);
-  useEffect(() => { const new_options = props.options; if (new_options !== string_options) { setOptions(new_options) } }, [props.options]);
+  useEffect(() => setOptions(props.options), [props.options]);
   return (
     <Form>
       <Form.Dropdown

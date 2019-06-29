@@ -12,9 +12,9 @@ function sort_options(option_list) {
 export function MultipleChoiceInput(props) {
   let { allowAdditions, required, set_value, ...otherProps } = props;
   const [choices, setChoices] = useState(props.value || []);
-  useEffect(() => { const new_choices = props.value || []; if (new_choices !== choices) { setChoices(new_choices) } }, [props.value]);
+  useEffect(() => setChoices(props.value || []), [props.value]);
   const [options, setOptions] = useState(props.options);
-  useEffect(() => { const new_options = props.options; if (new_options !== options) { setOptions(new_options) } }, [props.options]);
+  useEffect(() => setOptions(props.options), [props.options]);
   return (
     <Form>
       {props.readOnly ?

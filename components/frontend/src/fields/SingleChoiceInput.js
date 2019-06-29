@@ -6,7 +6,7 @@ export function SingleChoiceInput(props) {
   let { set_value, options, ...otherProps } = props;
   options.sort((a, b) => a.text.localeCompare(b.text));
   const [choice, setChoice] = useState(props.value);
-  useEffect(() => { if (props.value !== choice) { setChoice(props.value) } }, [props.value]);
+  useEffect(() => setChoice(props.value), [props.value]);
   return (
     <Form>
       {props.readOnly ?
