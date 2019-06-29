@@ -1,15 +1,21 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to *Qaulity-time* will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [0.2.3] - [Unreleased]
+
+### Fixed
+
+- Trend graphs would be too tall and overlap with the next metric. Fixes [#420](https://github.com/ICTU/quality-time/issues/420).
 
 ## [0.2.2] - [2019-06-28]
 
 ### Fixed
 
-- Version number was missing in the footer of the frontend. Fixes #410.
+- Version number was missing in the footer of the frontend. Fixes [#410](https://github.com/ICTU/quality-time/issues/420).
 
 ## [0.2.1] - [2019-06-26]
 
@@ -21,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Release Docker containers from Travis CI.
+- Release Docker containers from [Travis CI](https://travis-ci.org/ICTU/quality-time) to [Docker Hub](https://cloud.docker.com/u/ictu/repository/list?name=quality-time&namespace=ictu).
 
 ## [0.1.0] - [2019-06-24]
 

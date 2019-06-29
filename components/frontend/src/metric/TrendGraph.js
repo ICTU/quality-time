@@ -24,7 +24,7 @@ export function TrendGraph(props) {
     <VictoryChart
       height={250}
       scale={{ x: "time", y: "linear" }}
-      style={{ parent: { height: 400, width: "100%", background: "white" } }}
+      style={{ parent: { height: 400, height: "100%", background: "white" } }}
       theme={VictoryTheme.material}
       width={750}
     >
