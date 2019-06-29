@@ -20,7 +20,8 @@ export function Metric(props) {
   const [measurements, setMeasurements] = useState([]);
   useEffect(() => {
     fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement)
-  }, [metric_uuid, props.nr_new_measurements, report_date, set_last_measurement]);
+    // eslint-disable-next-line
+  }, [metric_uuid, props.nr_new_measurements, report_date]);
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_name = metric.name || props.datamodel.metrics[metric.type].name;
   if (search_string && !metric_name.toLowerCase().includes(search_string.toLowerCase())) { return null }
