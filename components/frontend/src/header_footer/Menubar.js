@@ -45,9 +45,17 @@ export function Menubar(props) {
             </Menu.Item>
           }
           <Menu.Item>
-            <DateInput name="report_date_string" value={props.report_date_string}
-              placeholder={today_string} closable={true} initialDate={today}
-              maxDate={today} iconPosition="left" onChange={props.onDate} />
+            <DateInput
+              animation="none"  // Work-around for https://github.com/arfedulov/semantic-ui-calendar-react/issues/152
+              closable={true}
+              iconPosition="left"
+              initialDate={today}
+              maxDate={today}
+              name="report_date_string"
+              onChange={props.onDate}
+              placeholder={today_string}
+              value={props.report_date_string}
+            />
           </Menu.Item>
           <Menu.Item>
             {(props.user !== null) ? <Logout user={props.user} logout={props.logout} /> : <Login login={props.login} error={props.login_error} />}
