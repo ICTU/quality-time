@@ -14,7 +14,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
         {"timestamp": {"$lte": max_iso_timestamp or iso_timestamp()}}, sort=[("timestamp", pymongo.DESCENDING)])
     if datamodel:
         datamodel["_id"] = str(datamodel["_id"])
-    return datamodel
+    return datamodel or dict()
 
 
 def insert_new_datamodel(database: Database, data_model):

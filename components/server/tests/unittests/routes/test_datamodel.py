@@ -19,7 +19,7 @@ class DatamodelTest(unittest.TestCase):
         """Test that the datamodel is None if it's not there."""
         database = Mock()
         database.datamodels.find_one.return_value = None
-        self.assertEqual(None, datamodel.get_datamodel(database))
+        self.assertEqual({}, datamodel.get_datamodel(database))
 
     def test_insert_datamodel_with_id(self):
         """Test that a new datamodel can be inserted."""

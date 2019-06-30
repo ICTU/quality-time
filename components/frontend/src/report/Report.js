@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dimmer, Loader, Message, Segment } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react';
 import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -37,17 +37,8 @@ export function Report(props) {
     const [tags, setTags] = useState([]);
     useEffect(() => {
         // Make sure we only filter by tags that are actually used in this report
-        setTags(prev_tags => prev_tags.filter(tag => Object.keys(props.report.summary_by_tag).includes(tag)))
-    }, [props.report.summary_by_tag]);
-    if (props.loading) {
-        return (
-            <Segment>
-                <Dimmer active>
-                    <Loader />
-                </Dimmer>
-            </Segment>
-        )
-    }
+        setTags(prev_tags => prev_tags.filter(tag => Object.keys(props.report.summary_by_tag || {}).includes(tag)))
+    }, [props.report]);
     if (!props.report) {
         return (
             <Message warning size='huge'>
