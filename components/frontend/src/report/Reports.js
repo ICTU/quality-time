@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Segment } from 'semantic-ui-react';
+import { Button, Icon, Message, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
@@ -29,6 +29,15 @@ function ReportsDashboard(props) {
 }
 
 export function Reports(props) {
+  if (props.reports.length === 0 && props.report_date !== null) {
+    return (
+      <Message warning size='huge'>
+        <Message.Header>
+          {`Sorry, no reports existed at ${props.report_date}`}
+        </Message.Header>
+      </Message>
+    )
+  }
   return (
     <>
       <ReportsTitle title={props.reports_overview.title} subtitle={props.reports_overview.subtitle} readOnly={props.readOnly} reload={props.reload} />

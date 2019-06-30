@@ -40,11 +40,13 @@ class App extends Component {
 
   reload() {
     const report_date = this.report_date() || new Date(3000, 1, 1);
-    const current_date = new Date()
+    const current_date = new Date();
     let self = this;
     get_datamodel(report_date)
-      .then(function (json) {
+      .then(function(json) {
         self.setState({ datamodel: json });
+      }).catch(function(error) {
+        console.log(error);
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
       this.setState({loading: true});
@@ -53,7 +55,7 @@ class App extends Component {
         .then(function(json) {
           self.setState(
             {
-              reports: [json],
+              reports: Object.keys(json.subjects).length > 0 ? [json] : [],
               loading: false,
               last_update: current_date
             }
@@ -161,6 +163,7 @@ class App extends Component {
   render() {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
+    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <Menubar
@@ -181,12 +184,12 @@ class App extends Component {
             this.state.report_uuid === "" ?
               <Reports reports={this.state.reports} reload={() => this.reload()} reports_overview={this.state.reports_overview}
                 open_tag_report={(e, t) => this.open_tag_report(e, t)}
-                open_report={(e, r) => this.open_report(e, r)} readOnly={this.state.user === null} />
+                open_report={(e, r) => this.open_report(e, r)} readOnly={readOnly}
+                report_date={report_date} />
               :
               <Report datamodel={this.state.datamodel} report={current_report} go_home={() => this.go_home()}
                 nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-                loading={this.state.loading}
-                search_string={this.state.search_string} report_date={report_date} readOnly={this.state.user === null || this.state.report_uuid.slice(0, 4) === "tag-"} />
+                search_string={this.state.search_string} report_date={report_date} readOnly={readOnly} />
           }
         </Container>
         <Footer last_update={this.state.last_update} report={current_report} />
