@@ -181,7 +181,7 @@ pip install -r requirements-dev.txt
 ci/release.py major|minor|patch
 ```
 
-The `release.py` script will bump the version numbers, commit the changes, push the commit, tag the commit, and push the tag to Github.
+The `release.py` script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to Github.
 
 ## Deployment
 
