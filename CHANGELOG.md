@@ -2,10 +2,14 @@
 
 <!-- markdownlint-disable MD024 -->
 
-All notable changes to *Qaulity-time* will be documented in this file.
+All notable changes to *Quality-time* will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+<!-- The line "## [Unreleased]" is replaced by the ci/release.py script with the new release version and release date. -->
+
+## [Unreleased]
 
 ## [0.2.3] - [2019-07-01]
 
