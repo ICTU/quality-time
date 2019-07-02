@@ -62,3 +62,12 @@ class PerformanceTestRunnerTest(unittest.TestCase):
             response = MetricCollector(metric).get()
         expected_age = days_ago(datetime(2019, 6, 22, 6, 23, 0))
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
+
+    def test_duration(self):
+        """Test that the test duration is returned."""
+        self.mock_response.text = '<html><table class="config"><tr><td class="name">Duration</td>' \
+            '<td id="duration">00:35:00</td></tr></table></html>'
+        metric = dict(type="performancetest_duration", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("35", response["sources"][0]["value"])
