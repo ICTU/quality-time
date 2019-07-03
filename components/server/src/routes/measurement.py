@@ -42,7 +42,7 @@ def set_entity_attribute(metric_uuid: str, source_uuid: str, entity_key: str, at
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
-    """Pack data in Server-Sent Events (SSE) format"""
+    """Pack data in Server-Sent Events (SSE) format."""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
 
@@ -74,9 +74,8 @@ def stream_nr_measurements(report_uuid: str, database: Database) -> Iterator[str
 def get_measurements(metric_uuid: str, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = metric_uuid.split("&")[0]
-    docs = latest_measurements(database, metric_uuid, report_date_time())
     measurements = []
-    for measurement in docs:
+    for measurement in latest_measurements(database, metric_uuid, report_date_time()):
         measurement["_id"] = str(measurement["_id"])
         measurements.append(measurement)
     return dict(measurements=measurements)

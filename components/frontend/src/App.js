@@ -35,6 +35,7 @@ class App extends Component {
   componentDidMount() {
     const pathname = this.history.location.pathname;
     const report_uuid = pathname.slice(1, pathname.length);
+    this.connect_to_nr_measurements_event_source(report_uuid);
     this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") }, () => this.reload());
   }
 
@@ -104,6 +105,10 @@ class App extends Component {
     event.preventDefault();
     this.setState({ report_uuid: report_uuid }, () => this.reload());
     this.history.push(report_uuid);
+    this.connect_to_nr_measurements_event_source(report_uuid);
+  }
+
+  connect_to_nr_measurements_event_source(report_uuid) {
     this.source = new EventSource(`${window.server_url}/nr_measurements/${report_uuid}`);
     let self = this;
     this.source.addEventListener('init', function (e) {
@@ -124,6 +129,9 @@ class App extends Component {
     const report_uuid = `tag-${tag}`
     this.setState({ report_uuid: report_uuid }, () => this.reload());
     this.history.push(report_uuid);
+    if (this.source) {
+      this.source.close()
+    }
   }
 
   report_date() {
