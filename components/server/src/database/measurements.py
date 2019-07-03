@@ -56,7 +56,7 @@ def calculate_measurement_value(sources, addition: str) -> Optional[str]:
             entity for entity in source.get("entity_user_data", {}).values()
             if entity.get("status") in ("fixed", "false_positive", "wont_fix")]
         values.append(int(source["value"]) - len(entities_to_ignore))
-    add = dict(sum=sum, max=max)[addition]
+    add = dict(max=max, min=min, sum=sum)[addition]
     return str(add(values))  # type: ignore
 
 

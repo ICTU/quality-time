@@ -46,3 +46,12 @@ class PerformanceTestRunnerSourceUpToDateness(Collector):
         datetime_parts = [int(part) for part in soup.find(id="start_of_the_test").string.split(".")]
         test_datetime = datetime(*datetime_parts)  # type: ignore
         return str(days_ago(test_datetime))
+
+
+class PerformanceTestRunnerPerformanceTestDuration(Collector):
+    """Collector for the performancetest duration."""
+
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        soup = BeautifulSoup(responses[0].text, "html.parser")
+        hours, minutes, seconds = [int(part) for part in soup.find(id="duration").string.split(":", 2)]
+        return str(60 * hours + minutes + round(seconds / 60.))

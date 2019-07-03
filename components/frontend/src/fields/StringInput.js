@@ -15,8 +15,8 @@ function StringInputWithSuggestions(props) {
         allowAdditions
         error={required && string_value === ""}
         fluid
-        onAddItem={(event, { added_value }) => setOptions(prev_options => [{ text: added_value, value: added_value, key: added_value }, ...prev_options])}
-        onChange={(event, { new_value }) => { setValue(new_value); if (new_value !== props.value) { set_value(new_value) } }}
+        onAddItem={(event, { value }) => setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])}
+        onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
         options={string_options}
         search
         selection

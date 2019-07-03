@@ -39,7 +39,7 @@ class MetricCollector:
             source_response["source_uuid"] = source_uuid
             source_responses.append(source_response)
         values = [source_response["value"] for source_response in source_responses]
-        add = dict(sum=sum, max=max)[self.metric.get("addition", "sum")]
+        add = dict(sum=sum, max=max, min=min)[self.metric.get("addition", "sum")]
         value = add([int(value) for value in values]) if (values and None not in values) else None  # type: ignore
         return dict(sources=source_responses, value=value)
 

@@ -186,6 +186,24 @@
                 "maintainability"
             ]
         },
+        "performancetest_duration": {
+            "name": "Performancetest duration",
+            "description": "Measure the duration of the performancetest in minutes",
+            "unit": "minutes",
+            "addition": "min",
+            "direction": "≧",
+            "target": "30",
+            "near_target": "25",
+            "default_source": "performancetest_runner",
+            "sources": [
+                "hq",
+                "performancetest_runner",
+                "random"
+            ],
+            "tags": [
+                "performance"
+            ]
+        },
         "ready_user_story_points": {
             "name": "Ready user story points",
             "description": "Measure the number of points of user stories that are ready to implement.",
@@ -741,6 +759,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "performancetest_duration",
                         "ready_user_story_points",
                         "security_warnings",
                         "unmerged_branches",
@@ -763,6 +782,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "performancetest_duration",
                         "ready_user_story_points",
                         "security_warnings",
                         "unmerged_branches",
@@ -1511,6 +1531,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
                     ]
@@ -1521,6 +1542,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
                     ]
@@ -1531,6 +1553,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
                     ]
@@ -2401,6 +2424,7 @@
                 "many_parameters",
                 "long_units",
                 "ncloc",
+                "performancetest_duration",
                 "security_warnings",
                 "slow_transactions",
                 "source_up_to_dateness",
@@ -2425,6 +2449,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "performancetest_duration",
                 "source_up_to_dateness",
                 "unused_jobs"
             ]

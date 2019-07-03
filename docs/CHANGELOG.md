@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Metric for performancetest duration. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+
 ## [0.2.3] - [2019-07-01]
 
 ### Fixed
