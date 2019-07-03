@@ -184,6 +184,17 @@
                     ]
                 },
                 {
+                    "type": "performancetest_duration",
+                    "sources": [
+                        {
+                            "type": "performancetest_runner",
+                            "parameters": {
+                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "source_up_to_dateness",
                     "name": "Time since last performance test",
                     "tags": ["performance"],
