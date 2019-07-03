@@ -759,6 +759,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "performancetest_duration",
                         "ready_user_story_points",
                         "security_warnings",
                         "unmerged_branches",
@@ -781,6 +782,7 @@
                         "long_units",
                         "many_parameters",
                         "ncloc",
+                        "performancetest_duration",
                         "ready_user_story_points",
                         "security_warnings",
                         "unmerged_branches",
@@ -2422,6 +2424,7 @@
                 "many_parameters",
                 "long_units",
                 "ncloc",
+                "performancetest_duration",
                 "security_warnings",
                 "slow_transactions",
                 "source_up_to_dateness",
@@ -2446,6 +2449,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "performancetest_duration",
                 "source_up_to_dateness",
                 "unused_jobs"
             ]
