@@ -55,3 +55,12 @@ class PerformanceTestRunnerPerformanceTestDuration(Collector):
         soup = BeautifulSoup(responses[0].text, "html.parser")
         hours, minutes, seconds = [int(part) for part in soup.find(id="duration").string.split(":", 2)]
         return str(60 * hours + minutes + round(seconds / 60.))
+
+
+class PerformanceTestRunnerFailedTests(Collector):
+    """Collector for failed performance test transactions."""
+
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        soup = BeautifulSoup(responses[0].text, "html.parser")
+        statuses_to_count = self.parameters.get("failure_type", []) or ["canceled", "failed"]
+        return str(sum(int(soup.find(id=status).string) for status in statuses_to_count))

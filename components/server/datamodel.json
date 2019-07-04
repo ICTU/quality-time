@@ -87,6 +87,7 @@
                 "jenkins_test_report",
                 "junit",
                 "hq",
+                "performancetest_runner",
                 "random",
                 "robot_framework",
                 "sonarqube"
@@ -1531,6 +1532,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
@@ -1542,6 +1544,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
@@ -1553,9 +1556,23 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
                         "source_up_to_dateness"
+                    ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "canceled",
+                        "failed"
+                    ],
+                    "metrics": [
+                        "failed_tests"
                     ]
                 },
                 "thresholds": {

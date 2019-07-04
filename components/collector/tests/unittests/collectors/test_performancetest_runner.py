@@ -71,3 +71,13 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual("35", response["sources"][0]["value"])
+
+    def test_failed_tests(self):
+        """Test that the number of failed performancetest transactions is returned."""
+        self.mock_response.text = '<html><table class="config">' \
+            '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
+            '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
+        metric = dict(type="failed_tests", sources=self.sources, addition="sum")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("42", response["sources"][0]["value"])
