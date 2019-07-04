@@ -324,6 +324,7 @@
             "sources": [
                 "jenkins_test_report",
                 "junit",
+                "performancetest_runner",
                 "random",
                 "robot_framework",
                 "sonarqube"
@@ -1535,7 +1536,8 @@
                         "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "tests"
                     ]
                 },
                 "username": {
@@ -1547,7 +1549,8 @@
                         "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "tests"
                     ]
                 },
                 "password": {
@@ -1559,7 +1562,8 @@
                         "failed_tests",
                         "performancetest_duration",
                         "slow_transactions",
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "tests"
                     ]
                 },
                 "failure_type": {
