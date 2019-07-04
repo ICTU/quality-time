@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Metric for performancetest duration. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+- Metric for performancetest duration added. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+- Performancetest-runner reports can now be used as metric source for the tests and failed tests metrics. Closes [#402](https://github.com/ICTU/quality-time/issues/402).
 
 ## [0.2.3] - [2019-07-01]
 
