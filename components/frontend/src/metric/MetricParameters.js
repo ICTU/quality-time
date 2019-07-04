@@ -12,6 +12,7 @@ import { DateInput } from '../fields/DateInput';
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_unit = props.metric.unit || metric_type.unit;
+    const max = metric_type.unit === "%" ? "100" : null;
     let tags = new Set();
     Object.values(props.datamodel.metrics).forEach((metric) => {metric.tags.forEach((tag) => tags.add(tag))});
     props.metric.tags.forEach((tag) => tags.add(tag));
@@ -60,6 +61,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <IntegerInput
                             label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
+                            max={max}
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "target", value, props.fetch_measurement_and_reload)}
@@ -70,6 +72,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <IntegerInput
                             label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
+                            max={max}
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
@@ -103,6 +106,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <IntegerInput
                             label="Metric debt target"
+                            max={max}
                             prefix={metric_type.direction}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}

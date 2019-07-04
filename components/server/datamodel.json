@@ -205,6 +205,24 @@
                 "performance"
             ]
         },
+        "performancetest_stability": {
+            "name": "Performancetest stability",
+            "description": "Measure the percentage of the duration of the performancetest at which throughput or error count increases",
+            "unit": "%",
+            "addition": "min",
+            "direction": "≧",
+            "target": "100",
+            "near_target": "90",
+            "default_source": "performancetest_runner",
+            "sources": [
+                "hq",
+                "performancetest_runner",
+                "random"
+            ],
+            "tags": [
+                "performance"
+            ]
+        },
         "ready_user_story_points": {
             "name": "Ready user story points",
             "description": "Measure the number of points of user stories that are ready to implement.",
@@ -1535,6 +1553,7 @@
                     "metrics": [
                         "failed_tests",
                         "performancetest_duration",
+                        "performancetest_stability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
@@ -1548,6 +1567,7 @@
                     "metrics": [
                         "failed_tests",
                         "performancetest_duration",
+                        "performancetest_stability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
@@ -1561,6 +1581,7 @@
                     "metrics": [
                         "failed_tests",
                         "performancetest_duration",
+                        "performancetest_stability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
@@ -2446,6 +2467,7 @@
                 "long_units",
                 "ncloc",
                 "performancetest_duration",
+                "performancetest_stability",
                 "security_warnings",
                 "slow_transactions",
                 "source_up_to_dateness",
