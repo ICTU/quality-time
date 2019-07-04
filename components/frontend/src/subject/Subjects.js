@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Segment } from 'semantic-ui-react';
+import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
 import { add_subject } from '../api/subject';
 
@@ -22,9 +22,11 @@ export function Subjects(props) {
       )}
       {!props.readOnly &&
         <Segment basic>
-          <Button icon primary basic onClick={() => add_subject(props.report.report_uuid, props.reload)}>
-            <Icon name='plus' /> Add subject
-            </Button>
+          <Grid stackable>
+            <Button icon primary basic onClick={() => add_subject(props.report.report_uuid, props.reload)}>
+              <Icon name='plus' /> Add subject
+              </Button>
+          </Grid>
         </Segment>}
     </>
   )

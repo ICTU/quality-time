@@ -27,8 +27,19 @@ export function ReportTitle(props) {
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    {!props.readOnly &&
-                        <Grid.Row>
+                    <Grid.Row columns={2}>
+                        <Grid.Column>
+                            <Button
+                                basic
+                                floated='left'
+                                icon
+                                onClick={() => {console.log("click", window.print()); }}
+                                primary
+                            >
+                                <Icon name='print' /> Print report
+                                </Button>
+                        </Grid.Column>
+                        {!props.readOnly &&
                             <Grid.Column>
                                 <Button
                                     basic
@@ -40,9 +51,8 @@ export function ReportTitle(props) {
                                 >
                                     <Icon name='trash' /> Delete report
                                 </Button>
-                            </Grid.Column>
-                        </Grid.Row>
-                    }
+                            </Grid.Column>}
+                    </Grid.Row>
                 </Grid>
             </Segment>
         </HeaderWithDetails>
