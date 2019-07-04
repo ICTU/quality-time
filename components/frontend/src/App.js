@@ -35,6 +35,9 @@ class App extends Component {
   componentDidMount() {
     const pathname = this.history.location.pathname;
     const report_uuid = pathname.slice(1, pathname.length);
+    if (report_uuid !== "") {
+      this.connect_to_nr_measurements_event_source(report_uuid)
+    }
     this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") }, () => this.reload());
   }
 
@@ -43,16 +46,16 @@ class App extends Component {
     const current_date = new Date();
     let self = this;
     get_datamodel(report_date)
-      .then(function(json) {
+      .then(function (json) {
         self.setState({ datamodel: json });
-      }).catch(function(error) {
+      }).catch(function (error) {
         console.log(error);
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const tag = this.state.report_uuid.slice(4);
       get_tag_report(tag, report_date)
-        .then(function(json) {
+        .then(function (json) {
           self.setState(
             {
               reports: Object.keys(json.subjects).length > 0 ? [json] : [],
@@ -104,6 +107,10 @@ class App extends Component {
     event.preventDefault();
     this.setState({ report_uuid: report_uuid }, () => this.reload());
     this.history.push(report_uuid);
+    this.connect_to_nr_measurements_event_source(report_uuid);
+  }
+
+  connect_to_nr_measurements_event_source(report_uuid) {
     this.source = new EventSource(`${window.server_url}/nr_measurements/${report_uuid}`);
     let self = this;
     this.source.addEventListener('init', function (e) {
@@ -124,6 +131,9 @@ class App extends Component {
     const report_uuid = `tag-${tag}`
     this.setState({ report_uuid: report_uuid }, () => this.reload());
     this.history.push(report_uuid);
+    if (this.source) {
+      this.source.close()
+    }
   }
 
   report_date() {

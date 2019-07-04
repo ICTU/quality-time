@@ -20,4 +20,4 @@ def serve() -> None:  # pragma: nocover
     init_ldap()
     init_database()
     init_bottle()
-    bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True)
+    bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True, log=logging.getLogger())
