@@ -92,3 +92,14 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual("42", response["sources"][0]["value"])
+
+    def test_stability(self):
+        """Test that the percentage of the duration of the performancetest at which the test becomes unstable is
+        returned."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">90</td></tr>
+            </table></html>'''
+        metric = dict(type="performancetest_stability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("90", response["sources"][0]["value"])

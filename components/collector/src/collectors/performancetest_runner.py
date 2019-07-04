@@ -57,6 +57,14 @@ class PerformanceTestRunnerPerformanceTestDuration(Collector):
         return str(60 * hours + minutes + round(seconds / 60.))
 
 
+class PerformanceTestRunnerPerformanceTestStability(Collector):
+    """Collector for the performancetest stability."""
+
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        soup = BeautifulSoup(responses[0].text, "html.parser")
+        return soup.find(id="trendbreak_stability").string
+
+
 class PerformanceTestRunnerTests(Collector):
     """Collector for the number of executed performance test transactions."""
 
