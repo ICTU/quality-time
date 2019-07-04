@@ -55,3 +55,22 @@ class PerformanceTestRunnerPerformanceTestDuration(Collector):
         soup = BeautifulSoup(responses[0].text, "html.parser")
         hours, minutes, seconds = [int(part) for part in soup.find(id="duration").string.split(":", 2)]
         return str(60 * hours + minutes + round(seconds / 60.))
+
+
+class PerformanceTestRunnerTests(Collector):
+    """Collector for the number of executed performance test transactions."""
+
+    def statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
+        """Return the transaction statuses to count."""
+        return ["canceled", "failed", "success"]
+
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        soup = BeautifulSoup(responses[0].text, "html.parser")
+        return str(sum(int(soup.find(id=status).string) for status in self.statuses_to_count()))
+
+
+class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
+    """Collector for the number of failed performance test transactions."""
+
+    def statuses_to_count(self):
+        return self.parameters.get("failure_type", []) or ["canceled", "failed"]
