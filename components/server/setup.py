@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="Quality-time server",
-    version="0.2.3",
+    version="0.3.0",
     description="Quality report data server.",
     author="Frank Niessink",
     author_email="frank.niessink@ictu.nl",
