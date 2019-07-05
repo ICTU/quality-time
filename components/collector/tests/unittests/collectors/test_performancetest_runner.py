@@ -103,3 +103,26 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual("90", response["sources"][0]["value"])
+
+    def test_scalability(self):
+        """Test that the percentage of the max users of the performancetest at which the ramp-up of throughput breaks is
+        returned."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">74</td></tr>
+            </table></html>'''
+        metric = dict(type="scalability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("74", response["sources"][0]["value"])
+
+    def test_scalability_without_breaking_point(self):
+        """Test that if the percentage of the max users of the performancetest at which the ramp-up of throughput breaks
+        is 100%, the metric reports an error (since there is no breaking point)."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">100</td></tr>
+            </table></html>'''
+        metric = dict(type="scalability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual(None, response["sources"][0]["value"])
+        self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

@@ -61,8 +61,7 @@ class PerformanceTestRunnerPerformanceTestStability(Collector):
     """Collector for the performancetest stability."""
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        soup = BeautifulSoup(responses[0].text, "html.parser")
-        return soup.find(id="trendbreak_stability").string
+        return BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_stability").string
 
 
 class PerformanceTestRunnerTests(Collector):
@@ -82,3 +81,13 @@ class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
 
     def statuses_to_count(self):
         return self.parameters.get("failure_type", []) or ["canceled", "failed"]
+
+
+class PerformanceTestRunnerScalability(Collector):
+    """Collector for the scalability metric."""
+
+    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        breaking_point = BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_rampup").string
+        if breaking_point == "100":
+            raise AssertionError("No performance breaking point occurred (breaking point is at 100%, expected < 100%)")
+        return breaking_point
