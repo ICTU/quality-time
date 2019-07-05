@@ -242,6 +242,23 @@
                 "process efficiency"
             ]
         },
+        "scalability": {
+            "name": "Scalability",
+            "description": "Measure the percentage of (max) users at which ramp-up of throughput breaks.",
+            "unit": "%",
+            "addition": "min",
+            "direction": "≧",
+            "target": "75",
+            "near_target": "50",
+            "default_source": "performancetest_runner",
+            "sources": [
+                "performancetest_runner",
+                "random"
+            ],
+            "tags": [
+                "performance"
+            ]
+        },
         "slow_transactions": {
             "name": "Slow transactions",
             "description": "Measure the number of transactions slower than their performance treshhold.",
@@ -1554,6 +1571,7 @@
                         "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
+                        "scalability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
@@ -1568,6 +1586,7 @@
                         "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
+                        "scalability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
@@ -1582,6 +1601,7 @@
                         "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
+                        "scalability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
