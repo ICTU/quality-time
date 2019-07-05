@@ -16,12 +16,10 @@ class App extends Component {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
       nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
     };
-    if (window.location.hostname === "localhost") {
-      window.server_url = "http://localhost:5001"
-    } else {
-      const domain = window.location.hostname.slice("www.".length);
-      window.server_url = `http://server.${domain}:5001`
-    }
+    const hostname = window.location.hostname;
+    const server = hostname.startsWith("www.") ? `server.${hostname.slice("www.".length)}` : hostname;
+    window.server_url = `http://${server}:5001`
+
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
       if (action === "POP") {
