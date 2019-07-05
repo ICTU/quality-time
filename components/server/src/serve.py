@@ -22,6 +22,6 @@ def serve() -> None:  # pragma: nocover
     init_ldap()
     init_database()
     init_bottle()
-    server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:8080"))
+    server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:5001"))
     reload = server.hostname == "localhost"
     bottle.run(server="gevent", host=server.hostname, port=server.port, reloader=reload, log=logging.getLogger())

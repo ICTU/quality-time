@@ -23,10 +23,10 @@ When using docker-compose, add the LDAP environment variables to the server sect
 server:
     image: docker-registry.example.org:5000/ictu/quality-time-server
     ports:
-    - "8080:8080"
+    - "5001:5001"
     environment:
     - FRONTEND_URL=http://www.quality-time.example.org:5000
-    - SERVER_URL=http://server.quality-time.example.org:8080
+    - SERVER_URL=http://server.quality-time.example.org:5001
     - DATABASE_URL=mongodb://root:root@database:27017
     - LDAP_URL=ldap://ldap.example.org:389
     - LDAP_ROOT_DN="dc=example,dc=org"
