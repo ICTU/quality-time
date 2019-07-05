@@ -19,7 +19,7 @@ services:
     - "8080:8080"
     environment:
     - FRONTEND_URL=http://localhost:5000
-    - SERVER_URL=http://localhost:8080
+    - SERVER_URL=http://0.0.0.0:8080
     - DATABASE_URL=mongodb://root:root@database:27017
     - LDAP_URL=ldap://ldap:389
     depends_on:
