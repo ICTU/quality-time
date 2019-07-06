@@ -19,6 +19,5 @@ WORKDIR /work
 ADD . /work
 RUN pip install -r requirements.txt; python setup.py install
 RUN apk del --no-cache .build-deps
-EXPOSE 8080
 
 CMD ["quality-time-server"]

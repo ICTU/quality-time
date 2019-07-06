@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unrelease]
+
+### Changed
+
+- Run server on port 5001 instead of 8080 to reduce chances of interfering with other applications.
+- Allow for deployments where the different components all have the same hostname, e.g. quality-time.example.org, and only the ports differ.
+
 ## [0.3.0] - [2019-07-05]
 
 ### Added

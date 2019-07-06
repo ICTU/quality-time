@@ -23,10 +23,12 @@ def generate_session_id() -> str:
 def set_session_cookie(session_id: str, clear: bool = False) -> None:
     """Set the session cookie on the response."""
     expires_datetime = datetime.min if clear else datetime.now() + timedelta(hours=24)
-    server_url = os.environ.get("SERVER_URL", "http://localhost:8080")
+    options = dict(expires=expires_datetime, path="/", httponly=True)
+    server_url = os.environ.get("SERVER_URL", "http://localhost:5001")
     domain = urllib.parse.urlparse(server_url).netloc.split(":")[0]
-    bottle.response.set_cookie(
-        "session_id", session_id, expires=expires_datetime, domain=domain, path="/", httponly=True)
+    if domain not in ("0.0.0.0", "localhost"):
+        options["domain"] = domain
+    bottle.response.set_cookie("session_id", session_id, **options)
 
 
 @bottle.post("/login")

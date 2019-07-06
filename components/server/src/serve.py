@@ -6,6 +6,8 @@ monkey.patch_all()
 # pylint: disable=wrong-import-order,wrong-import-position
 
 import logging
+import urllib
+import os
 
 import bottle
 
@@ -20,4 +22,6 @@ def serve() -> None:  # pragma: nocover
     init_ldap()
     init_database()
     init_bottle()
-    bottle.run(server="gevent", host='0.0.0.0', port=8080, reloader=True, log=logging.getLogger())
+    server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:5001"))
+    reload = server.hostname == "localhost"
+    bottle.run(server="gevent", host=server.hostname, port=server.port, reloader=reload, log=logging.getLogger())
