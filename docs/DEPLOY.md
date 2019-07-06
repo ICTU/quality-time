@@ -2,6 +2,12 @@
 
 (To be completed)
 
+## Frontend
+
+If the frontend is served from a URL starting with `www`, it assumes the server can be reached at the same URL but with `www` replaced by `server` and port 5001. For example, if the frontend is served from `www.quality-time.example.org:5000`, it assumes the server can be reached at `server.quality-time.example.org:5001`.
+
+If the frontend is served from a URL that doesn't start with `www`, it assumes the server can be reached at the same URL, but with port 5001. For example, if the frontend is served from `quality-time.example.org:5000`, it assumes the server can be reached at `quality-time.example.org:5001`. Similarly, if the frontend is served from `localhost:5000`, it assumes the server can be reached at `localhost:5001`.
+
 ## LDAP
 
 To configure a LDAP server to authenticate users with, set the `LDAP_URL` and `LDAP_ROOT_DN` environment variables. When running locally, this can be done in the shell:

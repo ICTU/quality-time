@@ -1,9 +1,10 @@
 digraph {
-  server -> database [label=measurement]
-  database -> server [label=measurement]
-  collector -> server [label=measurement]
-  server -> collector [label=report_config]
-  source -> collector [label=measurement]
-  server -> frontend [label=report_config]
-  server -> frontend [label=measurement]
+  rankdir=LR
+  server -> database [label=measurements, dir="both"]
+  server -> database [label=metrics, dir="both"]
+  collector -> server [label=measurements]
+  server -> collector [label=metrics]
+  source -> collector [label=measurements]
+  server -> frontend [label=metrics, dir="both"]
+  server -> frontend [label=measurements]
 }
