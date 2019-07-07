@@ -1,9 +1,12 @@
-.coverage
-.venv
-.mypy_cache
-.pylintrc
 __pycache__
-*.egg-info
+.mypy_cache
+.venv
+.vscode
 build/
 ci/
+*.egg-info
 tests/
+.coverage
+.pylintrc
+README.md
+requirements-dev.txt
