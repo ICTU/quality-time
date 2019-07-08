@@ -1,6 +1,6 @@
 {
   "name": "quality-time-app",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "dependencies": {
     "history": "^4.9.0",
