@@ -184,6 +184,28 @@
                     ]
                 },
                 {
+                    "type": "scalability",
+                    "sources": [
+                        {
+                            "type": "performancetest_runner",
+                            "parameters": {
+                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "performancetest_stability",
+                    "sources": [
+                        {
+                            "type": "performancetest_runner",
+                            "parameters": {
+                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "performancetest_duration",
                     "sources": [
                         {
