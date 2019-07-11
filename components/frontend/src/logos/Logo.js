@@ -12,12 +12,13 @@ import Junit from './junit.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPZAP from './owasp_zap.png';
+import Pyupio from './pyupio.png';
 import RobotFramework from './robot_framework.png';
 import Sonarqube from './sonarqube.png';
 import Trello from './trello.png';
 import Wekan from './wekan.png';
 
-function Logo(props) {
+export function Logo(props) {
     const logo = {
         azure_devops: AzureDevops,
         cxsast: Checkmarx,
@@ -30,6 +31,7 @@ function Logo(props) {
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
+        pyupio_safety: Pyupio,
         robot_framework: RobotFramework,
         sonarqube: Sonarqube,
         trello: Trello,
@@ -39,5 +41,3 @@ function Logo(props) {
         logo ? <Image src={logo} alt={`${props.alt} logo`} size="mini" spaced="right" /> : null
     )
 }
-
-export { Logo }
