@@ -323,7 +323,8 @@
                 "random",
                 "openvas",
                 "owasp_dependency_check",
-                "owasp_zap"
+                "owasp_zap",
+                "pyupio_safety"
             ],
             "tags": [
                 "security"
@@ -1653,6 +1654,64 @@
                                 "high": "negative",
                                 "warning": "warning"
                             }
+                        }
+                    ]
+                }
+            }
+        },
+        "pyupio_safety": {
+            "name": "Pyup.io Safety",
+            "description": "Safety checks Python dependencies for known security vulnerabilities.",
+            "url": "https://github.com/pyupio/safety",
+            "parameters": {
+                "url": {
+                    "name": "URL to Safety JSON-report",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Package",
+                            "key": "package"
+                        },
+                        {
+                            "name": "Installed",
+                            "key": "installed"
+                        },
+                        {
+                            "name": "Affected",
+                            "key": "affected"
+                        },
+                        {
+                            "name": "Vulnerability",
+                            "key": "vulnerability"
                         }
                     ]
                 }

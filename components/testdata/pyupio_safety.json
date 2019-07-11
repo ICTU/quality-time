@@ -1,0 +1,37 @@
+[
+    [
+        "ansible",
+        "<1.9.2",
+        "1.8.5",
+        "Ansible before 1.9.2 does not verify that the server hostname matches a domain name in the subject's Common Name (CN) or subjectAltName field of the X.509 certificate, which allows man-in-the-middle attackers to spoof SSL servers via an arbitrary valid certificate.",
+        "25625"
+    ],
+    [
+        "ansible",
+        "<1.9.6",
+        "1.8.5",
+        "The create_script function in the lxc_container module in Ansible before 1.9.6-1 and 2.x before 2.0.2.0 allows local users to write to arbitrary files or gain privileges via a symlink attack on (1) /opt/.lxc-attach-script, (2) the archived container in the archive_path directory, or the (3) lxc-attach-script.log or (4) lxc-attach-script.err files in the temporary directory.",
+        "25626"
+    ],
+    [
+        "ansible",
+        "<2.0.2",
+        "1.8.5",
+        "The create_script function in the lxc_container module in Ansible before 1.9.6-1 and 2.x before 2.0.2.0 allows local users to write to arbitrary files or gain privileges via a symlink attack on (1) /opt/.lxc-attach-script, (2) the archived container in the archive_path directory, or the (3) lxc-attach-script.log or (4) lxc-attach-script.err files in the temporary directory.",
+        "25627"
+    ],
+    [
+        "ansible",
+        "<2.2.1",
+        "1.8.5",
+        "ansible before 2.2.1 is vulnerable to arbitrary code execution. An attacker with control over a client system being managed by Ansible and the ability to send facts back to the Ansible server could use this flaw to execute arbitrary code on the Ansible server as the user and group Ansible is running as.",
+        "33286"
+    ],
+    [
+        "ansible",
+        "<2.3.1",
+        "1.8.5",
+        "ansible before 2.3.1 is vulnerable to CVE-2017-7481 - data for lookup plugins used as variables was not being correctly marked as \"unsafe\".",
+        "34941"
+    ]
+]
