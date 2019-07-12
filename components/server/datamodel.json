@@ -553,6 +553,15 @@
                 }
             }
         },
+        "bandit": {
+            "name": "Bandit",
+            "description": "Bandit is a tool designed to find common security issues in Python code.",
+            "url": "https://github.com/PyCQA/bandit",
+            "parameters": {
+
+            },
+            "entities": {}
+        },
         "calendar": {
             "name": "Calendar date",
             "description": "Warn when the date is too long ago. Can be used to e.g. warn when it's time for the next security test.",
