@@ -116,6 +116,12 @@
                             "parameters": {
                                 "url": "http://testdata:8000/pyupio_safety.json"
                             }
+                        },
+                        {
+                            "type": "bandit",
+                            "parameters": {
+                                "url": "http://testdata:8000/bandit.json"
+                            }
                         }
                     ]
                 },

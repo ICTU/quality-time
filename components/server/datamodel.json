@@ -318,6 +318,7 @@
             "near_target": "5",
             "default_source": "owasp_dependency_check",
             "sources": [
+                "bandit",
                 "cxsast",
                 "hq",
                 "random",
@@ -558,9 +559,94 @@
             "description": "Bandit is a tool designed to find common security issues in Python code.",
             "url": "https://github.com/PyCQA/bandit",
             "parameters": {
-
+                "url": {
+                    "name": "URL to Bandit JSON-report",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "severities": {
+                    "name": "Severities",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "confidence_levels": {
+                    "name": "Confidence levels",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
             },
-            "entities": {}
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Warning",
+                            "key": "issue_text",
+                            "url": "more_info"
+                        },
+                        {
+                            "name": "Location",
+                            "key": "location"
+                        },
+                        {
+                            "name": "Confidence",
+                            "key": "issue_confidence"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "issue_severity",
+                            "color": {
+                                "High": "negative",
+                                "Medium": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
         },
         "calendar": {
             "name": "Calendar date",
