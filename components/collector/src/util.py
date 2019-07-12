@@ -3,9 +3,9 @@
 from datetime import datetime
 import re
 from typing import Tuple
-import xml.etree.cElementTree
-from xml.etree.cElementTree import Element
+from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
+from defusedxml import ElementTree
 import requests
 
 from .type import Namespaces
@@ -13,7 +13,7 @@ from .type import Namespaces
 
 def parse_source_response_xml(response: requests.Response) -> Element:
     """Parse the XML from the source response."""
-    return xml.etree.cElementTree.fromstring(response.text)
+    return ElementTree.fromstring(response.text)
 
 
 def parse_source_response_xml_with_namespace(response: requests.Response) -> Tuple[Element, Namespaces]:

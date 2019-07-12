@@ -31,7 +31,7 @@ class LoginTests(unittest.TestCase):
 
     def test_successful_login_localhost(self):
         """Test successful login on localhost."""
-        with patch("os.environ.get", Mock(return_value="http://0.0.0.0:5001")):
+        with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
             with patch("bottle.request", self.request):
                 self.assertEqual(dict(ok=True), auth.login(self.database, self.ldap_server))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access

@@ -2,8 +2,8 @@
 
 from datetime import datetime
 from typing import List
-import xml.etree.cElementTree
 
+from defusedxml import ElementTree
 import requests
 
 from ..collector import Collector
@@ -18,7 +18,7 @@ class JacocoCoverageBaseClass(Collector):
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        tree = xml.etree.cElementTree.fromstring(responses[0].text)
+        tree = ElementTree.fromstring(responses[0].text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
         return str(counter.get(self.coverage_status))
 
@@ -41,7 +41,7 @@ class JacocoSourceUpToDateness(Collector):
     """Collector to collect the Jacoco report age."""
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        tree = xml.etree.cElementTree.fromstring(responses[0].text)
+        tree = ElementTree.fromstring(responses[0].text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"
         report_datetime = datetime.utcfromtimestamp(int(timestamp) / 1000.)

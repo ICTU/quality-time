@@ -2,10 +2,10 @@
 
 from datetime import datetime
 from typing import cast, List
-import xml.etree.cElementTree
 import urllib3
 
 from dateutil.parser import parse
+from defusedxml import ElementTree
 import cachetools
 import requests
 
@@ -34,7 +34,7 @@ class CxSASTBase(Collector):
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
-        credentials = dict(
+        credentials = dict(  # nosec, The client secret is not really secret, see previous url
             username=cast(str, self.parameters.get("username", "")),
             password=cast(str, self.parameters.get("password", "")),
             grant_type="password", scope="sast_rest_api", client_id="resource_owner_client",
@@ -55,16 +55,14 @@ class CxSASTBase(Collector):
     def api_get(self, api: str, token: str) -> requests.Response:
         """Open the API and return the response."""
         response = requests.get(
-            f"{self.api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"),
-            timeout=self.TIMEOUT, verify=False)
+            f"{self.api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"), timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
     def api_post(self, api: str, data, token: str = None) -> requests.Response:
         """Post to the API and return the response."""
         headers = dict(Authorization=f"Bearer {token}") if token else dict()
-        response = requests.post(
-            f"{self.api_url()}/cxrestapi/{api}", data=data, headers=headers, timeout=self.TIMEOUT, verify=False)
+        response = requests.post(f"{self.api_url()}/cxrestapi/{api}", data=data, headers=headers, timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
@@ -123,7 +121,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     def parse_xml_report(self, xml_string: str) -> Entities:
         """Get the entities from the CxSAST XML report."""
-        root = xml.etree.cElementTree.fromstring(xml_string)
+        root = ElementTree.fromstring(xml_string)
         severities = self.parameters.get("severities") or ["info", "low", "medium", 'high']
         entities: Entities = []
         for query in root.findall(".//Query"):
