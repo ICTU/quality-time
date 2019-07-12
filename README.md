@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/ICTU/quality-time.svg?branch=master)](https://travis-ci.org/ICTU/quality-time)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=alert_status)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=security_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=coverage)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 
 Quality report software for software development and maintenance. *Quality-time* continuously collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.

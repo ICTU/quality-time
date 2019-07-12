@@ -71,3 +71,58 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual("35", response["sources"][0]["value"])
+
+    def test_tests(self):
+        """Test that the number of performancetest transactions is returned."""
+        self.mock_response.text = '<html><table class="config">' \
+            '<tr><td class="name">Success</td><td id="success">670</td></tr>' \
+            '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
+            '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
+        metric = dict(type="tests", sources=self.sources, addition="sum")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("712", response["sources"][0]["value"])
+
+    def test_failed_tests(self):
+        """Test that the number of failed performancetest transactions is returned."""
+        self.mock_response.text = '<html><table class="config">' \
+            '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
+            '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
+        metric = dict(type="failed_tests", sources=self.sources, addition="sum")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("42", response["sources"][0]["value"])
+
+    def test_stability(self):
+        """Test that the percentage of the duration of the performancetest at which the test becomes unstable is
+        returned."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">90</td></tr>
+            </table></html>'''
+        metric = dict(type="performancetest_stability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("90", response["sources"][0]["value"])
+
+    def test_scalability(self):
+        """Test that the percentage of the max users of the performancetest at which the ramp-up of throughput breaks is
+        returned."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">74</td></tr>
+            </table></html>'''
+        metric = dict(type="scalability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual("74", response["sources"][0]["value"])
+
+    def test_scalability_without_breaking_point(self):
+        """Test that if the percentage of the max users of the performancetest at which the ramp-up of throughput breaks
+        is 100%, the metric reports an error (since there is no breaking point)."""
+        self.mock_response.text = '''<html><table class="config">
+            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">100</td></tr>
+            </table></html>'''
+        metric = dict(type="scalability", sources=self.sources, addition="min")
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(metric).get()
+        self.assertEqual(None, response["sources"][0]["value"])
+        self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

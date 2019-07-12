@@ -13,7 +13,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Metric for performancetest duration. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+- Added Pyup.io Safety JSON reports as possible source for the security warnings metric. Closes [#450](https://github.com/ICTU/quality-time/issues/450).
+
+### Fixed
+
+- Add performance test stability and scalability metrics to the example report. Fixes [#447](https://github.com/ICTU/quality-time/issues/447).
+
+## [0.4.1] - [2019-07-08]
+
+### Fixed
+
+- Frontend can't reach server.
+
+## [0.4.0] - [2019-07-07]
+
+### Changed
+
+- Run server on port 5001 instead of 8080 to reduce chances of interfering with other applications.
+- Allow for deployments where the different components all have the same hostname, e.g. quality-time.example.org, and only the ports differ.
+
+## [0.3.0] - [2019-07-05]
+
+### Added
+
+- Metric for performancetest duration added. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+- Metric for performancetest stability added. Closes [#433](https://github.com/ICTU/quality-time/issues/433).
+- Metric for performance scalability added. Closes [#434](https://github.com/ICTU/quality-time/issues/434).
+- [Performancetest-runner](https://github.com/ICTU/performancetest-runner) reports can now be used as metric source for the tests and failed tests metrics. Closes [#402](https://github.com/ICTU/quality-time/issues/402).
 
 ## [0.2.3] - [2019-07-01]
 
