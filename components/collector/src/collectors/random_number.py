@@ -18,6 +18,7 @@ class Random(Collector):
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Return a random number as the response."""
         response = requests.Response()
-        response.raw = io.BytesIO(bytes(str(random.randint(self.min, self.max)), "utf-8"))
+        # Turn off security checks on the next line. The random number is not used for security/cryptography.
+        response.raw = io.BytesIO(bytes(str(random.randint(self.min, self.max)), "utf-8"))  # nosec
         response.status_code = requests.status_codes.codes["OK"]
         return [response]

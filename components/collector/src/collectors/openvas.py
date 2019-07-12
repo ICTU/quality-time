@@ -1,7 +1,7 @@
 """OpenVAS metric collector."""
 
 from typing import List
-from xml.etree.cElementTree import Element
+from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse  # type: ignore
 import requests

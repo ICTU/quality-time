@@ -1,8 +1,8 @@
 """OJAudit metric collector."""
 
 import hashlib
-from xml.etree.cElementTree import Element
 from typing import cast, Dict, List, Optional
+from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 import requests
 
@@ -57,7 +57,7 @@ class OJAuditViolations(Collector):
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
         model = models[location.get("model")]
         component = f"{model}:{line_number}:{column_offset}"
-        key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()
+        key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
         return dict(key=key, severity=severity, message=message, component=component)
 
     @staticmethod

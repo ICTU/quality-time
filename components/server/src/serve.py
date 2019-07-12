@@ -23,4 +23,4 @@ def serve() -> None:  # pragma: nocover
     init_database()
     init_bottle()
     server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:5001"))
-    bottle.run(server="gevent", host="0.0.0.0", port=server.port, reloader=True, log=logging.getLogger())
+    bottle.run(server="gevent", host="localhost", port=server.port, reloader=True, log=logging.getLogger())

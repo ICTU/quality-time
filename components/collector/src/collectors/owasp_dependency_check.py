@@ -2,7 +2,7 @@
 
 import hashlib
 from typing import List, Tuple
-from xml.etree.cElementTree import Element
+from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse  # type: ignore
 import requests
@@ -38,7 +38,7 @@ class OWASPDependencyCheckSecurityWarnings(Collector):
         # We can only generate a entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
-        key = sha1 if sha1 else hashlib.sha1(bytes(file_path, "utf8")).hexdigest()
+        key = sha1 if sha1 else hashlib.sha1(bytes(file_path, "utf8")).hexdigest()  # nosec, Not used for cryptography
         vulnerabilities = self.vulnerabilities(dependency, namespaces)
         severities = set(vulnerability.findtext(".//ns:severity", namespaces=namespaces).lower()
                          for vulnerability in vulnerabilities)

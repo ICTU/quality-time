@@ -26,7 +26,7 @@ def set_session_cookie(session_id: str, clear: bool = False) -> None:
     options = dict(expires=expires_datetime, path="/", httponly=True)
     server_url = os.environ.get("SERVER_URL", "http://localhost:5001")
     domain = urllib.parse.urlparse(server_url).netloc.split(":")[0]
-    if domain not in ("0.0.0.0", "localhost"):
+    if domain != "localhost":
         options["domain"] = domain
     bottle.response.set_cookie("session_id", session_id, **options)
 
