@@ -19,7 +19,7 @@ git clone git@github.com:ICTU/quality-time.git
 Open four terminals. In the first one, run the standard containers with docker-compose:
 
 ```console
-docker-compose up database ldap mongo-express testdata
+docker-compose up database ldap phpldapadmin mongo-express testdata
 ```
 
 Mongo-express is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
