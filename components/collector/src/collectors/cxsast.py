@@ -55,16 +55,14 @@ class CxSASTBase(Collector):
     def api_get(self, api: str, token: str) -> requests.Response:
         """Open the API and return the response."""
         response = requests.get(
-            f"{self.api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"),
-            timeout=self.TIMEOUT, verify=False)
+            f"{self.api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"), timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
     def api_post(self, api: str, data, token: str = None) -> requests.Response:
         """Post to the API and return the response."""
         headers = dict(Authorization=f"Bearer {token}") if token else dict()
-        response = requests.post(
-            f"{self.api_url()}/cxrestapi/{api}", data=data, headers=headers, timeout=self.TIMEOUT, verify=False)
+        response = requests.post(f"{self.api_url()}/cxrestapi/{api}", data=data, headers=headers, timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
