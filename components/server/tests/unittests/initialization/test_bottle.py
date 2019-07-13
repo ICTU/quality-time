@@ -1,11 +1,12 @@
 """Unit tests for the bottle initialization."""
 
 import unittest
+from unittest.mock import Mock
 
 import bottle
 
 from src.initialization.bottle import init_bottle
-from src.route_authentication_plugin import AuthenticationPlugin
+from src.route_plugins import AuthenticationPlugin, InjectionPlugin
 
 
 class BottleInitTest(unittest.TestCase):
@@ -16,6 +17,7 @@ class BottleInitTest(unittest.TestCase):
 
     def test_init(self):
         """Test that bottle has been initialized."""
-        init_bottle()
+        init_bottle(Mock())
         self.assertEqual(1024 * 1024, bottle.BaseRequest.MEMFILE_MAX)
-        self.assertEqual(AuthenticationPlugin, bottle.app().plugins[-1].__class__)
+        self.assertEqual(
+            [InjectionPlugin, AuthenticationPlugin], [plugin.__class__ for plugin in bottle.app().plugins[-2:]])

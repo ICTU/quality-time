@@ -6,7 +6,7 @@ from unittest.mock import patch
 import bottle
 
 from src.initialization.ldap import init_ldap
-from src.route_injection_plugin import InjectionPlugin
+from src.route_plugins import InjectionPlugin
 
 
 class LDAPInitTest(unittest.TestCase):

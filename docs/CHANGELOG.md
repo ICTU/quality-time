@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Work around a limitation of the Travis configuration file. The deploy script doesn't allow sequences, which is surprising since scripts in other parts of the Travis configuration file do allow sequences. See https://github.com/travis-ci/dpl/issues/673.
+- Work around a limitation of the Travis configuration file. The deploy script doesn't allow sequences, which is surprising since scripts in other parts of the Travis configuration file do allow sequences. See [https://github.com/travis-ci/dpl/issues/673](https://github.com/travis-ci/dpl/issues/673).
 
 ## [0.2.0] - [2019-06-26]
 

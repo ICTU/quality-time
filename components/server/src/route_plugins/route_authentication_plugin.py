@@ -4,7 +4,7 @@ import logging
 
 import bottle
 
-from .database import sessions
+from ..database import sessions
 
 
 class AuthenticationPlugin:  # pylint: disable=too-few-public-methods

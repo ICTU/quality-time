@@ -6,7 +6,7 @@ import os
 import bottle
 import ldap  # pylint: disable=wrong-import-order,import-error
 
-from ..route_injection_plugin import InjectionPlugin
+from ..route_plugins import InjectionPlugin
 
 
 def init_ldap() -> None:
