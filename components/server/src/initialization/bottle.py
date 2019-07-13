@@ -1,7 +1,7 @@
 """Initialize bottle."""
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 from ..route_plugins import AuthenticationPlugin, InjectionPlugin
 
