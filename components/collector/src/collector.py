@@ -24,7 +24,8 @@ class MetricCollector:
     def can_collect(self) -> bool:
         """Return whether the user has specified enough information to measure this metric."""
         sources = self.metric.get("sources")
-        return any(source.get("parameters", {}).get("url") or (source["type"] in ("calendar", "random"))
+        return any(source.get("parameters", {}).get("url") or
+                   (source["type"] in ("calendar", "manual_number", "random"))
                    for source in sources.values()) if sources else False
 
     def next_collection(self) -> datetime:
@@ -90,7 +91,7 @@ class Collector:
     def safely_get_source_responses(self, api_url: URL) -> Tuple[List[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
-        logging.info("Retrieving %s", api_url)
+        logging.info("Retrieving %s", api_url or self.__class__.__name__)
         responses: List[requests.Response] = []
         error = None
         try:

@@ -15,7 +15,8 @@ export function Source(props) {
                     <Logo logo={props.source.type} alt={source_type.name} />
                     {source_type.name}
                     <Header.Subheader>
-                        {source_type.description} <a href={source_type.url}><Icon name="external" link /></a>
+                        {source_type.description}
+                        {source_type.url && <a href={source_type.url}><Icon name="external" link /></a>}
                     </Header.Subheader>
                 </Header.Content>
             </Header>
@@ -39,6 +40,7 @@ export function Source(props) {
                     <SourceParameters
                         datamodel={props.datamodel}
                         metric_type={props.metric_type}
+                        metric_unit={props.metric_unit}
                         readOnly={props.readOnly}
                         reload={props.reload}
                         report={props.report}

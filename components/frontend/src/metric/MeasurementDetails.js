@@ -69,6 +69,7 @@ export function MeasurementDetails(props) {
           datamodel={props.datamodel}
           measurement={props.measurement}
           metric_type={metric.type}
+          metric_unit={props.unit}
           metric_uuid={props.metric_uuid}
           readOnly={props.readOnly}
           reload={props.reload}

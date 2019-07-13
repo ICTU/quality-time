@@ -25,6 +25,7 @@ export function Sources(props) {
                     connection_error={source_error(source_uuid, "connection_error")}
                     datamodel={props.datamodel}
                     metric_type={props.metric_type}
+                    metric_unit={props.metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}
                     readOnly={props.readOnly}
                     reload={props.reload}
