@@ -6,7 +6,6 @@ from unittest.mock import Mock, mock_open, patch
 import bottle
 
 from src.initialization.database import init_database
-from src.route_injection_plugin import InjectionPlugin
 
 
 class DatabaseInitTest(unittest.TestCase):
@@ -31,7 +30,6 @@ class DatabaseInitTest(unittest.TestCase):
             with patch("builtins.open", mock_open(read_data=datamodel_json)):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()
-        self.assertEqual(InjectionPlugin, bottle.app().plugins[-1].__class__)
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert.assert_called_once()
 
@@ -46,6 +44,5 @@ class DatabaseInitTest(unittest.TestCase):
             with patch("builtins.open", mock_open(read_data=datamodel_json)):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()
-        self.assertEqual(InjectionPlugin, bottle.app().plugins[-1].__class__)
         self.database.datamodels.insert_one.assert_not_called()
         self.database.reports_overviews.insert.assert_not_called()
