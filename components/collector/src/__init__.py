@@ -3,9 +3,9 @@
 import logging
 from typing import NoReturn
 
+from .metrics_collector import MetricsCollector
 # Make sure subclasses are registered
 from .source_collectors import *  # pylint: disable=unused-wildcard-import,wildcard-import
-from .metrics_collector import MetricsCollector
 
 
 def collect() -> NoReturn:

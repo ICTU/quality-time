@@ -16,7 +16,7 @@ class SourceCollector:
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
-    subclasses: Set[Type["Collector"]] = set()
+    subclasses: Set[Type["SourceCollector"]] = set()
 
     def __init__(self, source) -> None:
         self.source = source
@@ -27,7 +27,7 @@ class SourceCollector:
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_type: str, metric_type: str) -> Type["Collector"]:
+    def get_subclass(cls, source_type: str, metric_type: str) -> Type["SourceCollector"]:
         """Return the subclass registered for the source/metric name. First try to find a match on both source type
         and metric type. If no match is found, return the generic collector for the source type."""
         for class_name in (f"{source_type}{metric_type}", source_type):
