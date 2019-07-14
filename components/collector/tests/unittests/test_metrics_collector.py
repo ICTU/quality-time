@@ -97,7 +97,8 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
                              sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
-        side_effect =[self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response, self.metrics_response]
+        side_effect = [
+            self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response, self.metrics_response]
         with patch("requests.get", side_effect=side_effect):
             with patch("requests.post") as post:
                 metric_collector = MetricsCollector()
