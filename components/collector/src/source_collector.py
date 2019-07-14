@@ -12,7 +12,8 @@ from .util import stable_traceback
 
 
 class SourceCollector:
-    """Base class for source collectors."""
+    """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
+    measurement data for one specific metric from one specific source."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
