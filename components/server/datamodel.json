@@ -2016,7 +2016,7 @@
                 "commented_out_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
-                    "mandatory": true,
+                    "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "abap:S125",
@@ -2065,7 +2065,7 @@
                 "complex_unit_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
-                    "mandatory": true,
+                    "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "csharpsquid:S1541",
@@ -2116,7 +2116,7 @@
                 "many_parameter_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
-                    "mandatory": true,
+                    "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "c:S107",
@@ -2154,7 +2154,7 @@
                 "long_unit_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
-                    "mandatory": true,
+                    "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "abap:S104",
@@ -2251,7 +2251,7 @@
                 "suppression_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",
-                    "mandatory": true,
+                    "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "csharpsquid:S1309",
