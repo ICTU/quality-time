@@ -10,8 +10,9 @@ from .type import Response
 class MetricCollector:
     """Base class for collecting measurements from multiple sources for a metric."""
 
-    def __init__(self, metric) -> None:
+    def __init__(self, metric, datamodel=None) -> None:
         self.metric = metric
+        self.datamodel = datamodel
         self.collectors: Dict[str, SourceCollector] = dict()
         for source_uuid, source in self.metric["sources"].items():
             collector_class = cast(
@@ -19,11 +20,14 @@ class MetricCollector:
             self.collectors[source_uuid] = collector_class(source)
 
     def can_collect(self) -> bool:
-        """Return whether the user has specified enough information to measure this metric."""
+        """Return whether the user has specified all mandatory parameters for all sources."""
         sources = self.metric.get("sources")
-        return any(source.get("parameters", {}).get("url") or
-                   (source["type"] in ("calendar", "manual_number", "random"))
-                   for source in sources.values()) if sources else False
+        for source in sources.values():
+            parameters = self.datamodel.get("sources", {}).get(source["type"], {}).get("parameters", {})
+            for parameter_key, parameter in parameters.items():
+                if parameter.get("mandatory") and not source.get("parameters", {}).get(parameter_key):
+                    return False
+        return bool(sources)
 
     def next_collection(self) -> datetime:
         """Return when the metric can/should be collected again."""

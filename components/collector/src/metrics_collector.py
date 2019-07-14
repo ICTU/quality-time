@@ -46,9 +46,10 @@ class MetricsCollector:
 
     def fetch_measurements(self) -> None:
         """Fetch the metrics and their measurements."""
+        datamodel = get(URL(f"{self.server_url}/datamodel"))
         metrics = get(URL(f"{self.server_url}/metrics"))
         for metric_uuid, metric in metrics.items():
-            collector = MetricCollector(metric)
+            collector = MetricCollector(metric, datamodel)
             if not collector.can_collect():
                 continue
             if self.skip(metric_uuid, metric):
