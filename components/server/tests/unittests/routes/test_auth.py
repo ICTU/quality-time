@@ -24,7 +24,8 @@ class LoginTests(unittest.TestCase):
         """Test successful login."""
         with patch("os.environ.get", Mock(return_value="http://www.quality-time.my-org.org:5001")):
             with patch("bottle.request", self.request):
-                self.assertEqual(dict(ok=True), auth.login(self.database, self.ldap_server))
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=True), auth.login(self.database))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertTrue("domain=" in cookie.lower())
@@ -33,7 +34,8 @@ class LoginTests(unittest.TestCase):
         """Test successful login on localhost."""
         with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
             with patch("bottle.request", self.request):
-                self.assertEqual(dict(ok=True), auth.login(self.database, self.ldap_server))
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=True), auth.login(self.database))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertFalse("domain=" in cookie.lower())
@@ -43,7 +45,8 @@ class LoginTests(unittest.TestCase):
         self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS  # pylint: disable=no-member
         with patch("logging.warning", Mock()):
             with patch("bottle.request", self.request):
-                self.assertEqual(dict(ok=False), auth.login(self.database, self.ldap_server))
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=False), auth.login(self.database))
 
 
 class LogoutTests(unittest.TestCase):
