@@ -27,9 +27,9 @@ function StringInputWithSuggestions(props) {
 }
 
 export function StringInput(props) {
-  const options = props.options || [];
+  const options = [...(props.options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
   return props.readOnly || options.length === 0 ?
     <Input {...props} />
     :
-    <StringInputWithSuggestions {...props} />
+    <StringInputWithSuggestions {...props} options={options} />
 }
