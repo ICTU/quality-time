@@ -1,15 +1,18 @@
 """Report routes."""
 
-from typing import Any, Dict
-
-from pymongo.database import Database
 import bottle
 
-from ..database.reports import latest_reports, latest_report, insert_new_report, latest_reports_overview, \
-    insert_new_reports_overview, summarize_report
-from ..database.datamodels import latest_datamodel, default_subject_attributes, default_metric_attributes, \
-    default_source_parameters
-from ..util import report_date_time, uuid
+from database.datamodels import (
+    latest_datamodel, default_subject_attributes, default_metric_attributes, default_source_parameters
+)
+from database.reports import (
+    latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
+    summarize_report
+)
+from pymongo.database import Database
+from typing import Any, Dict
+from utilities.functions import report_date_time, uuid
+
 from .measurement import latest_measurement, insert_new_measurement
 
 

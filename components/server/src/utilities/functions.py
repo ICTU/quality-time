@@ -1,9 +1,9 @@
 """Utility functions."""
 
-import uuid as _uuid
-from datetime import datetime, timezone
-
 import bottle
+import uuid as _uuid
+
+from datetime import datetime, timezone
 
 
 def iso_timestamp() -> str:

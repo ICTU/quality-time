@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import bottle
 
-from src.route_plugins import AuthenticationPlugin, InjectionPlugin
+from routes.plugins import AuthenticationPlugin, InjectionPlugin
 
 
 class AuthenticationPluginTest(unittest.TestCase):

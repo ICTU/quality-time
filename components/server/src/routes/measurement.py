@@ -1,14 +1,14 @@
 """Measurement routes."""
 
-import time
-from typing import Dict, Iterator
-
-from pymongo.database import Database
 import bottle
+import time
 
-from ..database.measurements import count_measurements, latest_measurement, latest_measurements, \
-    insert_new_measurement, update_measurement_end
-from ..util import report_date_time
+from database.measurements import (
+    count_measurements, latest_measurement, latest_measurements, insert_new_measurement, update_measurement_end
+)
+from pymongo.database import Database
+from typing import Dict, Iterator
+from utilities.functions import report_date_time
 
 
 @bottle.post("/measurements")

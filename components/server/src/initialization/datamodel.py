@@ -3,14 +3,13 @@
 import json
 import logging
 
+from database.datamodels import insert_new_datamodel, latest_datamodel
 from pymongo.database import Database
-
-from ..database.datamodels import insert_new_datamodel, latest_datamodel
 
 
 def import_datamodel(database: Database) -> None:
     """Read the data model and store it in the database."""
-    with open("datamodel.json") as json_datamodel:
+    with open("templates/datamodel.json") as json_datamodel:
         data_model = json.load(json_datamodel)
     latest = latest_datamodel(database)
     if latest:

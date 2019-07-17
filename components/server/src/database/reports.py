@@ -1,12 +1,11 @@
 """Reports collection."""
 
-from typing import Dict
-
 import pymongo
-from pymongo.database import Database
 
-from ..util import iso_timestamp
-from ..type import Summary
+from pymongo.database import Database
+from typing import Dict
+from utilities.functions import iso_timestamp
+from utilities.type import Summary
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
@@ -17,7 +16,7 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
         report = database.reports.find_one(
             filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
             sort=[("timestamp", pymongo.DESCENDING)])
-        if report and not "deleted" in report:
+        if report and "deleted" not in report:
             report["_id"] = str(report["_id"])
             # Include a summary of the current measurement values
             summarize_report(database, report)

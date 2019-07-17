@@ -1,10 +1,10 @@
 """Datamodel routes."""
 
-from pymongo.database import Database
 import bottle
 
-from ..database.datamodels import latest_datamodel
-from ..util import report_date_time
+from database.datamodels import latest_datamodel
+from pymongo.database import Database
+from utilities.functions import report_date_time
 
 
 @bottle.get("/datamodel")

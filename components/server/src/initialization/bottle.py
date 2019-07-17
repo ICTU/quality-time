@@ -1,9 +1,9 @@
 """Initialize bottle."""
 
-from pymongo.database import Database
 import bottle
 
-from ..route_plugins import AuthenticationPlugin, InjectionPlugin
+from pymongo.database import Database
+from routes.plugins import AuthenticationPlugin, InjectionPlugin
 
 
 def init_bottle(database: Database) -> None:

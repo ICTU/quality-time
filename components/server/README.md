@@ -6,7 +6,7 @@ The [`example-reports`](example-reports) are imported when the server is started
 
 ## Data model
 
-The [`datamodel.json`](datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Everytime the server is started, the latest datamodel is imported into the database.
+The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Everytime the server is started, the latest datamodel is imported into the database.
 
 The datamodel consists of three parts:
 

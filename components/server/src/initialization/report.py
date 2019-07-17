@@ -4,12 +4,10 @@ import glob
 import json
 import logging
 
+from database.datamodels import default_subject_attributes, default_metric_attributes, default_source_parameters
+from database.reports import latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview
 from pymongo.database import Database
-
-from ..util import uuid
-from ..database.datamodels import default_subject_attributes, default_metric_attributes, \
-    default_source_parameters
-from ..database.reports import latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview
+from utilities.functions import uuid
 
 
 def initialize_reports_overview(database: Database) -> None:
