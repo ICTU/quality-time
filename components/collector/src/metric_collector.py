@@ -25,7 +25,8 @@ class MetricCollector:
         for source in sources.values():
             parameters = self.datamodel.get("sources", {}).get(source["type"], {}).get("parameters", {})
             for parameter_key, parameter in parameters.items():
-                if parameter.get("mandatory") and not source.get("parameters", {}).get(parameter_key):
+                if parameter.get("mandatory") and self.metric["type"] in parameter.get("metrics") and \
+                        not source.get("parameters", {}).get(parameter_key):
                     return False
         return bool(sources)
 

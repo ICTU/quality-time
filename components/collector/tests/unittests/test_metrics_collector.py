@@ -25,7 +25,7 @@ class CollectorTest(unittest.TestCase):
 
         self.datamodel_response = Mock()
         self.datamodel_response.json.return_value = dict(
-            sources=dict(source=dict(parameters=dict(url=dict(mandatory=True)))))
+            sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_response = Mock()
         logging.getLogger().disabled = True
 
@@ -35,7 +35,7 @@ class CollectorTest(unittest.TestCase):
     def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
         self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", sources=dict()))
+            metric_uuid=dict(report_uuid="report_uuid", type="metric", addition="sum", sources=dict()))
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response]):
             with patch("requests.post") as post:
                 MetricsCollector().fetch_measurements()
