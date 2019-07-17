@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - The Trello parameter "lists to ignore" wasn't being displayed properly. Fixes [#471](https://github.com/ICTU/quality-time/issues/471).
+- The number of issues would not be measured if the source was Jira. Fixes [#475](https://github.com/ICTU/quality-time/issues/475).
 
 ## [0.5.0] - [2019-07-16]
 
