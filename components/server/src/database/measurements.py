@@ -1,12 +1,12 @@
 """Measurements collection."""
 
-import pymongo
-
 from datetime import date
-from pymongo.database import Database
 from typing import Optional
-from utilities.functions import iso_timestamp
 
+import pymongo
+from pymongo.database import Database
+
+from utilities.functions import iso_timestamp
 from .datamodels import latest_datamodel
 from .reports import latest_metric
 

@@ -37,7 +37,7 @@ class PostSubjecrAttributeTest(unittest.TestCase):
         database.reports.insert.assert_called_once_with(report)
 
 
-@patch("src.database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("bottle.request")
 class PostMetricAttributeTest(unittest.TestCase):
     """Unit tests for the post metric attribute route."""
@@ -76,7 +76,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(target="10")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
 
-    @patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
@@ -90,7 +90,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
 
-    @patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", sources=[])

@@ -24,4 +24,3 @@ def serve() -> None:  # pragma: nocover
 
 if __name__ == "__main__":
     serve()
-

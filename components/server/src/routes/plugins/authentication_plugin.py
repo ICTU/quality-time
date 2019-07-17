@@ -1,7 +1,8 @@
 """Route authentication plugin."""
 
-import bottle
 import logging
+
+import bottle
 
 from database import sessions
 

@@ -16,7 +16,7 @@ class GetMeasurementsTest(unittest.TestCase):
         self.assertEqual(dict(measurements=[dict(_id="id")]), get_measurements("metric_uuid", database))
 
 
-@patch("src.database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
 @patch("bottle.request")
 class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""

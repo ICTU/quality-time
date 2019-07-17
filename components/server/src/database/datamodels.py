@@ -1,9 +1,10 @@
 """Datamodels collection."""
 
-import pymongo
-
-from pymongo.database import Database
 from typing import Any, Dict
+
+import pymongo
+from pymongo.database import Database
+
 from utilities.functions import iso_timestamp
 
 

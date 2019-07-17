@@ -3,8 +3,9 @@
 import json
 import logging
 
-from database.datamodels import insert_new_datamodel, latest_datamodel
 from pymongo.database import Database
+
+from database.datamodels import insert_new_datamodel, latest_datamodel
 
 
 def import_datamodel(database: Database) -> None:

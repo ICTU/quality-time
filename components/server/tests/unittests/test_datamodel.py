@@ -8,7 +8,7 @@ class DataModelTest(unittest.TestCase):
     """Unit tests for the data model."""
 
     def setUp(self):
-        with open("../src/data/datamodel.json") as datamodel_json:
+        with open("src/data/datamodel.json") as datamodel_json:
             self.datamodel = json.load(datamodel_json)
 
     def test_top_level_keys(self):
