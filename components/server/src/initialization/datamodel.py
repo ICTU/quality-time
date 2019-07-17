@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 def import_datamodel(database: Database) -> None:
     """Read the data model and store it in the database."""
-    with open("templates/datamodel.json") as json_datamodel:
+    with open("data/datamodel.json") as json_datamodel:
         data_model = json.load(json_datamodel)
     latest = latest_datamodel(database)
     if latest:
