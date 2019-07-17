@@ -17,13 +17,17 @@ export function SourceParameter(props) {
           if (source.type === props.source.type && source.parameters) {
             const value = source.parameters[props.parameter_key];
             if (value) {
-              values.add(value);
+              if (Array.isArray(value)) {
+                value.forEach((item) => values.add(item))
+              } else {
+                values.add(value)
+              }
             }
           }
         })
       })
     });
-    return [...values].sort().map((value) => ({ key: value, value: value, text: value }));
+    return values;
   }
   const label = props.help_url ?
     <label>{props.parameter_name} <a href={props.help_url}><Icon name="help circle" link /></a></label>
@@ -73,7 +77,7 @@ export function SourceParameter(props) {
       <MultipleChoiceInput
         allowAdditions
         label={label}
-        options={props.parameter_values}
+        options={options()}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
         required={props.required}
