@@ -87,7 +87,9 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one.side_effect = set_measurement_id
         request.json = dict(target="10")
         self.assertEqual(
-            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
+            dict(
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None,
+                last=True),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -101,7 +103,9 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one.side_effect = set_measurement_id
         request.json = dict(debt_end_date="2019-06-07")
         self.assertEqual(
-            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
+            dict(
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True, status=None,
+                value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "debt_end_date", self.database))
 
 
