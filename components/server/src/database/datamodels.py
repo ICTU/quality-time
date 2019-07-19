@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pymongo
 from pymongo.database import Database
 
-from ..util import iso_timestamp
+from utilities.functions import iso_timestamp
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):

@@ -1,10 +1,9 @@
 """Unit tests for the CORS module."""
 
+import bottle
 import unittest
 
-import bottle
-
-from src import cors
+from routes import cors
 
 
 class CorsTest(unittest.TestCase):

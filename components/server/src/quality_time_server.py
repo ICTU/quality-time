@@ -5,15 +5,12 @@ monkey.patch_all()
 
 # pylint: disable=wrong-import-order,wrong-import-position
 
+import bottle
 import logging
 import urllib
 import os
 
-import bottle
-
-from . import cors  # pylint: disable=unused-import
-from .routes import report, measurement, datamodel, auth  # pylint: disable=unused-import
-from .initialization import init_bottle, init_database
+from initialization import init_bottle, init_database
 
 
 def serve() -> None:  # pragma: nocover
@@ -23,3 +20,7 @@ def serve() -> None:  # pragma: nocover
     init_bottle(database)
     server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:5001"))
     bottle.run(server="gevent", host="0.0.0.0", port=server.port, reloader=True, log=logging.getLogger())  # nosec
+
+
+if __name__ == "__main__":
+    serve()

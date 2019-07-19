@@ -1,18 +1,18 @@
 """Login/logout."""
 
-from datetime import datetime, timedelta
-from typing import Dict
 import logging
 import os
 import re
 import urllib.parse
+from datetime import datetime, timedelta
+from typing import Dict
 
-from pymongo.database import Database
 import bottle
 import ldap  # pylint: disable=import-error,wrong-import-order
+from pymongo.database import Database
 
-from ..database import sessions
-from ..util import uuid
+from utilities.functions import uuid
+from database import sessions
 
 
 def generate_session_id() -> str:

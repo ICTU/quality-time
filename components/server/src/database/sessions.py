@@ -1,8 +1,7 @@
 """Sessions collection."""
 
 from pymongo.database import Database
-
-from ..util import iso_timestamp
+from utilities.functions import iso_timestamp
 
 
 def upsert(database: Database, username: str, session_id: str) -> None:

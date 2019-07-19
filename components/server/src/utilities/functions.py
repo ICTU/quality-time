@@ -1,7 +1,7 @@
 """Utility functions."""
 
-import uuid as _uuid
 from datetime import datetime, timezone
+import uuid as _uuid
 
 import bottle
 

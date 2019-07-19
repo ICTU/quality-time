@@ -8,12 +8,12 @@ class DataModelTest(unittest.TestCase):
     """Unit tests for the data model."""
 
     def setUp(self):
-        with open("datamodel.json") as datamodel_json:
+        with open("src/data/datamodel.json") as datamodel_json:
             self.datamodel = json.load(datamodel_json)
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
-        self.assertEqual(set(["metrics", "subjects", "sources"]), set(self.datamodel.keys()))
+        self.assertEqual({"metrics", "subjects", "sources"}, set(self.datamodel.keys()))
 
     def test_metrics_have_sources(self):
         """Test that each metric has one or more sources."""
