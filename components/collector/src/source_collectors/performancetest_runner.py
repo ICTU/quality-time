@@ -87,7 +87,8 @@ class PerformanceTestRunnerScalability(SourceCollector):
     """Collector for the scalability metric."""
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        breaking_point = BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_rampup").string
+        breaking_point = BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_scalability").string
         if breaking_point == "100":
-            raise AssertionError("No performance breaking point occurred (breaking point is at 100%, expected < 100%)")
+            raise AssertionError(
+                "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
         return breaking_point
