@@ -108,7 +108,7 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         """Test that the percentage of the max users of the performancetest at which the ramp-up of throughput breaks is
         returned."""
         self.mock_response.text = '''<html><table class="config">
-            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">74</td></tr>
+            <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">74</td></tr>
             </table></html>'''
         metric = dict(type="scalability", sources=self.sources, addition="min")
         with patch("requests.get", return_value=self.mock_response):
@@ -119,7 +119,7 @@ class PerformanceTestRunnerTest(unittest.TestCase):
         """Test that if the percentage of the max users of the performancetest at which the ramp-up of throughput breaks
         is 100%, the metric reports an error (since there is no breaking point)."""
         self.mock_response.text = '''<html><table class="config">
-            <tr><td class="name">Trendbreak 'ramp-up' (%)</td><td id="trendbreak_rampup">100</td></tr>
+            <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>'''
         metric = dict(type="scalability", sources=self.sources, addition="min")
         with patch("requests.get", return_value=self.mock_response):
