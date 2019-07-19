@@ -7,6 +7,8 @@ ci/
 *.egg-info
 tests/
 .coverage
+.dockerignore
 .pylintrc
+Dockerfile
 README.md
 requirements-dev.txt

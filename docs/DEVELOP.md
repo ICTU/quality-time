@@ -28,19 +28,18 @@ In the second terminal, run the server:
 
 ```console
 cd components/server
-python3 -m venv .venv
-. .venv/bin/activate
+python3 -m venv venv
+. venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
-python setup.py develop
-quality-time-server
+python src/quality_time_server.py
 ```
 
 In the third terminal, run the collector:
 
 ```console
 cd components/collector
-python3 -m venv .venv
-. .venv/bin/activate
+python3 -m venv venv
+. venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 python setup.py develop
 quality-time-collector
