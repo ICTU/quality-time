@@ -36,15 +36,16 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
-    from .measurements import latest_measurement  # pylint:disable=cyclic-import
+    from .measurements import last_measurements  # pylint:disable=cyclic-import
     status_color_mapping = dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
     summary = dict(red=0, green=0, yellow=0, grey=0, white=0)
     summary_by_subject: Dict[str, Summary] = dict()
     summary_by_tag: Dict[str, Summary] = dict()
+    last_measurements = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
-            latest = latest_measurement(database, metric_uuid)
+            latest = last_measurements.get(metric_uuid)
             color = status_color_mapping.get(latest["status"], "white") if latest else "white"
             summary[color] += 1
             summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1

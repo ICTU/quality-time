@@ -15,7 +15,8 @@ class MetricsTest(unittest.TestCase):
         database.reports.distinct = Mock(return_value=["report_uuid"])
         database.reports.find_one = Mock(
             return_value=dict(
-                _id="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[]))))))
+                _id="1", report_uuid="report_uuid",
+                subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[]))))))
         database.measurements.find_one = Mock(
             return_value=dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
@@ -26,5 +27,5 @@ class MetricsTest(unittest.TestCase):
         """Test that None is returned for missing metrics."""
         database = Mock()
         database.reports.distinct = Mock(return_value=["report_uuid"])
-        database.reports.find_one = Mock(return_value=dict(_id="report_uuid"))
+        database.reports.find_one = Mock(return_value=dict(_id="1", report_uuid="report_uuid"))
         self.assertEqual(None, latest_metric(database, "report_uuid", "non-existing"))

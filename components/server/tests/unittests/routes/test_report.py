@@ -282,7 +282,7 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        report = dict(_id="report_uuid")
+        report = dict(_id="1", report_uuid="report_uuid")
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
 
