@@ -21,5 +21,4 @@ import './commands'
 
 beforeEach(function () {
     cy.request('POST', 'http://localhost:5001/login', { username: 'admin', password: 'admin' })
-    cy.request('DELETE', 'http://localhost:5001/reports', { title: "New report" })
 });

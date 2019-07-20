@@ -3,7 +3,7 @@
 import unittest
 
 from routes.report import (
-    delete_metric, delete_report, delete_reports, delete_source, delete_subject, get_metrics, get_reports,
+    delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
@@ -281,16 +281,6 @@ class ReportTest(unittest.TestCase):
         report = dict(_id="report_uuid")
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
-
-    @patch("bottle.request")
-    def test_delete_reports(self, request):
-        """Test that reports can be deleted by namr."""
-        request.json = dict(title="Report2")
-        report1 = dict(_id="report1", title="Report1")
-        report2 = dict(_id="report2", title="Report2")
-        self.database.reports.distinct.return_value = ["report1", "report2"]
-        self.database.reports.find_one.side_effect = [report1, report2]
-        self.assertEqual(dict(ok=True), delete_reports(self.database))
 
     @patch("bottle.request")
     def test_post_reports_attribute(self, request):
