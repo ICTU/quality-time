@@ -1,8 +1,9 @@
 """Report loaders."""
 
-import glob
 import json
 import logging
+import os.path
+import pathlib
 
 from pymongo.database import Database
 
@@ -20,7 +21,7 @@ def initialize_reports_overview(database: Database) -> None:
         insert_new_reports_overview(database, dict(title="Reports", subtitle=""))
 
 
-def import_report(database: Database, filename: str) -> None:
+def import_report(database: Database, filename: pathlib.Path) -> None:
     """Read the report and store it in the database."""
     with open(filename) as json_report:
         imported_report = json.load(json_report)
@@ -55,5 +56,7 @@ def import_report(database: Database, filename: str) -> None:
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
-    for filename in glob.glob("example-reports/example-report*.json"):
+    example_reports_path = pathlib.Path(
+        os.path.dirname(os.path.abspath(__file__)), "..", "data", "example-reports").resolve()
+    for filename in example_reports_path.glob("example-report*.json"):
         import_report(database, filename)

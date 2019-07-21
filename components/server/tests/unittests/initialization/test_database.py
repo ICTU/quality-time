@@ -26,7 +26,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.count_documents.return_value = 0
         self.database.measurements.count_documents.return_value = 0
         datamodel_json = '{"change": "yes"}'
-        with patch("glob.glob", new=Mock(return_value=[])):
+        with patch("pathlib.Path.glob", new=Mock(return_value=[])):
             with patch("builtins.open", mock_open(read_data=datamodel_json)):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()
@@ -40,7 +40,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.count_documents.return_value = 10
         self.database.measurements.count_documents.return_value = 20
         datamodel_json = '{}'
-        with patch("glob.glob", new=Mock(return_value=[])):
+        with patch("pathlib.Path.glob", new=Mock(return_value=[])):
             with patch("builtins.open", mock_open(read_data=datamodel_json)):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()

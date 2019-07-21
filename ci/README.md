@@ -3,8 +3,8 @@
 To release *Quality-time*, follow these steps (in the project root folder):
 
 ```console
-python3 -m venv .venv
-. .venv/bin/activate
+python3 -m venv venv
+. venv/bin/activate
 pip install -r requirements-dev.txt
 ci/release.py major|minor|patch
 ```

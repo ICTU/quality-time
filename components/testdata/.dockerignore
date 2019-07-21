@@ -1,5 +1,8 @@
 .DS_Store
+.dockerignore
 .git/
 .gitignore
 .venv/
 .vscode/
+Dockerfile
+venv

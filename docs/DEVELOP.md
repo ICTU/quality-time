@@ -24,6 +24,8 @@ docker-compose up database ldap phpldapadmin mongo-express testdata
 
 Mongo-express is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
+PHP-LDAP-admin is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the LDAP database. Click login, check the "Anonymous" box and click "Authenticate" to login.
+
 In the second terminal, run the server:
 
 ```console
@@ -41,8 +43,7 @@ cd components/collector
 python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
-python setup.py develop
-quality-time-collector
+python src/quality_time_collector.py
 ```
 
 In the fourth temrinal, run the frontend:
@@ -62,7 +63,7 @@ By default, there is one user defined. Use username `admin` and password `admin`
 To run the unit tests and measure unit test coverage, change directory into the component folders, e.g.:
 
 ```console
-cd compontents/server
+cd components/server  # or components/collector
 ci/unittest.sh
 ```
 
