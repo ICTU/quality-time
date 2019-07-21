@@ -2,7 +2,7 @@
 
 import unittest
 
-from src.metric_collector import MetricCollector
+from src.metric_collectors import MetricCollector
 from src.source_collectors import Random
 
 

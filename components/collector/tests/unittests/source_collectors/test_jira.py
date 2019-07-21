@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collector import MetricCollector
+from src.metric_collectors import MetricCollector
 
 
 class JiraIssuesTest(unittest.TestCase):
