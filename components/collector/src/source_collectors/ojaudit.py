@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 import requests
 
-from ..source_collector import SourceCollector
+from ..source_collectors.source_collector import SourceCollector
 from ..utilities.type import Namespaces, Entities, Entity, Value
 from ..utilities.functions import parse_source_response_xml_with_namespace
 

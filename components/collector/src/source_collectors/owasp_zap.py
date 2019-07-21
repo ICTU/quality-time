@@ -7,7 +7,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from dateutil.parser import parse
 import requests
 
-from ..source_collector import SourceCollector
+from ..source_collectors.source_collector import SourceCollector
 from ..utilities.type import Entities, Value
 from ..utilities.functions import days_ago, parse_source_response_xml
 

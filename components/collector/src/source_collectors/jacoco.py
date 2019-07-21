@@ -6,7 +6,7 @@ from typing import List
 from defusedxml import ElementTree
 import requests
 
-from ..source_collector import SourceCollector
+from ..source_collectors.source_collector import SourceCollector
 from ..utilities.type import Value
 from ..utilities.functions import days_ago
 

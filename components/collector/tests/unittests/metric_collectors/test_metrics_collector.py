@@ -7,7 +7,8 @@ from typing import List
 
 import requests
 
-from src import source_collector, collect
+from src import collect
+from src.source_collectors import source_collector
 from src.metric_collectors import MetricsCollector
 from src.utilities.type import Value
 

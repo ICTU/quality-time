@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import cast, Dict, Type
 
-from ..source_collector import SourceCollector
+from ..source_collectors.source_collector import SourceCollector
 from ..utilities.type import Response
 
 

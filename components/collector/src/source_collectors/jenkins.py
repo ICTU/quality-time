@@ -5,7 +5,7 @@ from typing import cast, Iterator, List
 
 import requests
 
-from ..source_collector import SourceCollector
+from ..source_collectors.source_collector import SourceCollector
 from ..utilities.type import Job, Jobs, Entities, URL, Value
 
 
