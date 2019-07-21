@@ -7,8 +7,8 @@ from typing import cast, Dict, List, Optional, Set, Tuple, Type
 
 import requests
 
-from .utilities.type import ErrorMessage, Response, Entities, URL, Value
-from .utilities.functions import stable_traceback
+from utilities.type import ErrorMessage, Response, Entities, URL, Value
+from utilities.functions import stable_traceback
 
 
 class SourceCollector:

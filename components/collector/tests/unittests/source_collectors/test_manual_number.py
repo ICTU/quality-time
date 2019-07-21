@@ -2,7 +2,7 @@
 
 import unittest
 
-from src.metric_collector import MetricCollector
+from metric_collectors import MetricCollector
 
 
 class ManualNumberTest(unittest.TestCase):

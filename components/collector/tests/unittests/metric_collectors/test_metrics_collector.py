@@ -7,9 +7,10 @@ from typing import List
 
 import requests
 
-from src import source_collector, collect
-from src.metrics_collector import MetricsCollector
-from src.utilities.type import Value
+import quality_time_collector
+from source_collectors import source_collector
+from metric_collectors import MetricsCollector
+from utilities.type import Value
 
 
 class CollectorTest(unittest.TestCase):
@@ -73,7 +74,7 @@ class CollectorTest(unittest.TestCase):
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
-                    self.assertRaises(RuntimeError, collect)
+                    self.assertRaises(RuntimeError, quality_time_collector.collect)
         post.assert_called_once_with(
             "http://localhost:5001/measurements",
             json=dict(

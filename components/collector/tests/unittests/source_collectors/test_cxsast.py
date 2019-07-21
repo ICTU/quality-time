@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collector import MetricCollector
-from src.source_collectors.cxsast import CxSASTSecurityWarnings
+from metric_collectors import MetricCollector
+from source_collectors.cxsast import CxSASTSecurityWarnings
 
 
 class CxSASTSourceUpToDatenessTest(unittest.TestCase):

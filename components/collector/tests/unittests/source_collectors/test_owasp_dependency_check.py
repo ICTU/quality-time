@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collector import MetricCollector
+from metric_collectors import MetricCollector
 
 
 class OWASPDependencyCheckTest(unittest.TestCase):

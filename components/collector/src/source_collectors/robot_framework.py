@@ -5,9 +5,9 @@ from typing import List
 from dateutil.parser import parse
 import requests
 
-from ..source_collector import SourceCollector
-from ..utilities.type import Entities, URL, Value
-from ..utilities.functions import days_ago, parse_source_response_xml
+from utilities.type import Entities, URL, Value
+from utilities.functions import days_ago, parse_source_response_xml
+from .source_collector import SourceCollector
 
 
 class RobotFrameworkBaseClass(SourceCollector):

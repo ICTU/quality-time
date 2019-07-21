@@ -14,9 +14,4 @@ setup(
     python_requires=">=3.7",
     install_requires=[],
     packages=find_packages(),
-    entry_points={
-        "console_scripts": [
-            "quality-time-collector=src:collect"
-        ],
-    },
     zip_safe=True)

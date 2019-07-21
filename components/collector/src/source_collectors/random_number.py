@@ -6,8 +6,8 @@ from typing import List
 
 import requests
 
-from ..source_collector import SourceCollector
-from ..utilities.type import URL
+from utilities.type import URL
+from .source_collector import SourceCollector
 
 
 class Random(SourceCollector):

@@ -9,9 +9,9 @@ from defusedxml import ElementTree
 import cachetools
 import requests
 
-from ..source_collector import SourceCollector
-from ..utilities.type import Entities, URL, Value
-from ..utilities.functions import days_ago
+from utilities.type import Entities, URL, Value
+from utilities.functions import days_ago
+from .source_collector import SourceCollector
 
 
 class CxSASTBase(SourceCollector):

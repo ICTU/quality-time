@@ -5,9 +5,9 @@ from typing import Dict, List
 from dateutil.parser import isoparse  # type: ignore
 import requests
 
-from ..source_collector import SourceCollector
-from ..utilities.type import URL, Entities, Entity, Value
-from ..utilities.functions import days_ago
+from utilities.type import URL, Entities, Entity, Value
+from utilities.functions import days_ago
+from .source_collector import SourceCollector
 
 
 class SonarQubeViolations(SourceCollector):
