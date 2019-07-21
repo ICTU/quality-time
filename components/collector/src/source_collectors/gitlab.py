@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Job, Jobs, Entities, URL, Value
+from ..utilities.type import Job, Jobs, Entities, URL, Value
 
 
 class GitlabBase(SourceCollector):

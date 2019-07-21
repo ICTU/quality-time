@@ -8,8 +8,8 @@ from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Namespaces, Entity, Entities, Value
-from ..util import days_ago, parse_source_response_xml_with_namespace
+from ..utilities.type import Namespaces, Entity, Entities, Value
+from ..utilities.functions import days_ago, parse_source_response_xml_with_namespace
 
 
 class OWASPDependencyCheckSecurityWarnings(SourceCollector):

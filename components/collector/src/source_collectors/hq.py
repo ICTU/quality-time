@@ -5,7 +5,7 @@ from typing import List
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import URL, Value
+from ..utilities.type import URL, Value
 
 
 class HQ(SourceCollector):

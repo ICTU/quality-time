@@ -7,8 +7,8 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Namespaces, Entities, Entity, Value
-from ..util import parse_source_response_xml_with_namespace
+from ..utilities.type import Namespaces, Entities, Entity, Value
+from ..utilities.functions import parse_source_response_xml_with_namespace
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping

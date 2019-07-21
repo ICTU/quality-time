@@ -6,8 +6,8 @@ from dateutil.parser import parse
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Entity, Entities, Value
-from ..util import days_ago, parse_source_response_xml
+from ..utilities.type import Entity, Entities, Value
+from ..utilities.functions import days_ago, parse_source_response_xml
 
 
 class JUnitTests(SourceCollector):

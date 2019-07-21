@@ -9,7 +9,7 @@ from typing import Any, Dict, NoReturn
 import requests
 
 from .metric_collector import MetricCollector
-from .type import URL
+from .utilities.type import URL
 
 
 def get(api: URL) -> Dict:
