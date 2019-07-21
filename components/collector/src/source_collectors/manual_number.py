@@ -5,8 +5,8 @@ from typing import List
 
 import requests
 
-from ..source_collectors.source_collector import SourceCollector
-from ..utilities.type import URL
+from utilities.type import URL
+from .source_collector import SourceCollector
 
 
 class ManualNumber(SourceCollector):

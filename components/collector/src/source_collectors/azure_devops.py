@@ -4,8 +4,8 @@ from typing import List
 
 import requests
 
-from ..source_collectors.source_collector import SourceCollector
-from ..utilities.type import Entities, URL, Value
+from utilities.type import Entities, URL, Value
+from .source_collector import SourceCollector
 
 
 class AzureDevopsBase(SourceCollector):

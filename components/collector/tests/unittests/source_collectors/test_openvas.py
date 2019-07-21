@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collectors import MetricCollector
+from metric_collectors import MetricCollector
 
 
 class OpenVASTest(unittest.TestCase):

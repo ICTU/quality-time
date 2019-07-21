@@ -8,8 +8,8 @@ from typing import Any, Dict, NoReturn
 
 import requests
 
+from utilities.type import URL
 from .metric_collector import MetricCollector
-from ..utilities.type import URL
 
 
 def get(api: URL) -> Dict:

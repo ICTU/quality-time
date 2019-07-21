@@ -4,8 +4,8 @@ from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collectors import MetricCollector
-from src.source_collectors.sonarqube import SonarQubeViolations
+from metric_collectors import MetricCollector
+from source_collectors.sonarqube import SonarQubeViolations
 
 
 class SonarQubeTest(unittest.TestCase):

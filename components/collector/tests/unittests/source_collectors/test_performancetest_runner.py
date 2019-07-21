@@ -4,8 +4,8 @@ from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
-from src.metric_collectors import MetricCollector
-from src.utilities.functions import days_ago
+from metric_collectors import MetricCollector
+from utilities.functions import days_ago
 
 
 class PerformanceTestRunnerTest(unittest.TestCase):

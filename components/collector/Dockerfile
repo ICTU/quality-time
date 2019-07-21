@@ -5,6 +5,6 @@ LABEL description="Quality-time collector"
 
 WORKDIR /work
 ADD . /work
-RUN pip install -r requirements.txt; python setup.py install
+RUN pip install --no-cache-dir -r requirements.txt; python setup.py install
 
-CMD ["quality-time-collector"]
+CMD ["python", "src/quality_time_collector.py"]

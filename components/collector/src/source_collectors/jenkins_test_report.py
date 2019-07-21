@@ -5,9 +5,9 @@ from typing import cast, List
 from dateutil.parser import parse
 import requests
 
-from ..source_collectors.source_collector import SourceCollector
-from ..utilities.type import Entity, Entities, URL, Value
-from ..utilities.functions import days_ago
+from utilities.type import Entity, Entities, URL, Value
+from utilities.functions import days_ago
+from .source_collector import SourceCollector
 
 
 class JenkinsTestReportTests(SourceCollector):
