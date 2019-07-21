@@ -9,7 +9,7 @@ import requests
 
 from src import source_collector, collect
 from src.metrics_collector import MetricsCollector
-from src.type import Value
+from src.utilities.type import Value
 
 
 class CollectorTest(unittest.TestCase):

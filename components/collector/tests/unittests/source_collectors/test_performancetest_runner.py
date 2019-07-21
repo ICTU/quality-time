@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from src.metric_collector import MetricCollector
-from src.util import days_ago
+from src.utilities.functions import days_ago
 
 
 class PerformanceTestRunnerTest(unittest.TestCase):

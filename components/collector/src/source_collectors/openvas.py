@@ -7,8 +7,8 @@ from dateutil.parser import isoparse  # type: ignore
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Value, Entities
-from ..util import days_ago, parse_source_response_xml
+from ..utilities.type import Value, Entities
+from ..utilities.functions import days_ago, parse_source_response_xml
 
 
 class OpenVASSecurityWarnings(SourceCollector):

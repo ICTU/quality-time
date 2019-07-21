@@ -6,7 +6,7 @@ from urllib.parse import quote
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Entities, URL, Value
+from ..utilities.type import Entities, URL, Value
 
 
 class JiraBase(SourceCollector):

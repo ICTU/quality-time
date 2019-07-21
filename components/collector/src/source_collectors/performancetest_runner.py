@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup, Tag
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Entities, Entity, Value
-from ..util import days_ago
+from ..utilities.type import Entities, Entity, Value
+from ..utilities.functions import days_ago
 
 
 class PerformanceTestRunnerSlowTransactions(SourceCollector):

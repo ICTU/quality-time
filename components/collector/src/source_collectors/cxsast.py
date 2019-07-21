@@ -10,8 +10,8 @@ import cachetools
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Entities, URL, Value
-from ..util import days_ago
+from ..utilities.type import Entities, URL, Value
+from ..utilities.functions import days_ago
 
 
 class CxSASTBase(SourceCollector):

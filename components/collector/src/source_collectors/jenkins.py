@@ -6,7 +6,7 @@ from typing import cast, Iterator, List
 import requests
 
 from ..source_collector import SourceCollector
-from ..type import Job, Jobs, Entities, URL, Value
+from ..utilities.type import Job, Jobs, Entities, URL, Value
 
 
 class JenkinsJobs(SourceCollector):

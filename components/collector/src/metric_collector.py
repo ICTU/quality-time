@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import cast, Dict, Type
 
 from .source_collector import SourceCollector
-from .type import Response
+from .utilities.type import Response
 
 
 class MetricCollector:
