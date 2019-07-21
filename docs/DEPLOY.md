@@ -15,7 +15,8 @@ To configure a LDAP server to authenticate users with, set the `LDAP_URL` and `L
 ```console
 $ export LDAP_URL="ldap://ldap.example.org:389"
 $ export LDAP_ROOT_DN="dc=example,dc=org"
-$ quality-report-server
+$ cd components/server
+$ python src/quality_report_server.py
 INFO:root:Connected to database: Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quality_time_db')
 INFO:root:Measurements collection has 108 measurements
 INFO:root:Initializing LDAP server at ldap://ldap.example.org:389
