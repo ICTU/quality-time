@@ -45,8 +45,8 @@ def summarize_report(database: Database, report) -> None:
     last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
-            latest = last_measurements_by_metric_uuid.get(metric_uuid)
-            color = status_color_mapping.get(latest["status"], "white") if latest else "white"
+            last_measurement = last_measurements_by_metric_uuid.get(metric_uuid)
+            color = status_color_mapping.get(last_measurement["status"], "white") if last_measurement else "white"
             summary[color] += 1
             summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
             for tag in metric["tags"]:
