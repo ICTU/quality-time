@@ -19,7 +19,7 @@ class MetricsTest(unittest.TestCase):
         database.measurements.find.return_value = [
             dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
-                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")]))
+                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
         self.assertEqual(dict(tags=[]), latest_metric(database, "report_uuid", "metric_uuid"))
 
     def test_no_latest_metrics(self):

@@ -42,10 +42,10 @@ def summarize_report(database: Database, report) -> None:
     summary = dict(red=0, green=0, yellow=0, grey=0, white=0)
     summary_by_subject: Dict[str, Summary] = dict()
     summary_by_tag: Dict[str, Summary] = dict()
-    last_measurements = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
+    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
-            latest = last_measurements.get(metric_uuid)
+            latest = last_measurements_by_metric_uuid.get(metric_uuid)
             color = status_color_mapping.get(latest["status"], "white") if latest else "white"
             summary[color] += 1
             summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
