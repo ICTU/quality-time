@@ -60,14 +60,13 @@ def latest_report(database: Database, report_uuid: str):
     return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
 
 
-def latest_metric(database: Database, metric_uuid: str, max_iso_timestamp: str = ""):
-    """Return the latest metric with the specified uuid."""
-    reports = latest_reports(database, max_iso_timestamp)
-    for report in reports:
-        for subject in report.get("subjects", {}).values():
-            metrics = subject.get("metrics", {})
-            if metric_uuid in metrics:
-                return metrics[metric_uuid]
+def latest_metric(database: Database, report_uuid: str, metric_uuid: str):
+    """Return the latest metric with the specified report and metric uuid."""
+    report = latest_report(database, report_uuid) or dict()
+    for subject in report.get("subjects", {}).values():
+        metrics = subject.get("metrics", {})
+        if metric_uuid in metrics:
+            return metrics[metric_uuid]
     return None
 
 

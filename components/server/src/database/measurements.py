@@ -35,7 +35,8 @@ def insert_new_measurement(database: Database, measurement, metric=None):
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    metric = latest_metric(database, measurement["metric_uuid"]) if metric is None else metric
+    metric = latest_metric(
+        database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
     measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
     measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
     measurement["start"] = measurement["end"] = iso_timestamp()
