@@ -24,7 +24,7 @@ class PostMeasurementTests(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         report = dict(
-            _id="report_uuid",
+            _id="id", report_uuid="report_uuid",
             subjects=dict(
                 other_subject=dict(),
                 subject_uuid=dict(
