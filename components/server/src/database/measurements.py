@@ -34,7 +34,7 @@ def count_measurements(database: Database, report_uuid: str) -> int:
 def update_measurement_end(database: Database, measurement_id: str):
     """Set the end date and time of the measurement to the current date and time."""
     # Setting last to true shouldn't be necessary in the long run because the last flag is set to true when a new
-    # measurement is added. Howerver, setting it here ensures the measurement collection is updated correctly after the
+    # measurement is added. However, setting it here ensures the measurement collection is updated correctly after the
     # release of this code. This (setting last to true) was added in the version immediately after v0.5.1.
     return database.measurements.update_one(
         filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
