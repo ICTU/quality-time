@@ -24,7 +24,7 @@ class PostMeasurementTests(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         report = dict(
-            _id="report_uuid",
+            _id="id", report_uuid="report_uuid",
             subjects=dict(
                 other_subject=dict(),
                 subject_uuid=dict(
@@ -48,7 +48,7 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=[])
         new_measurement = dict(
             _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", sources=[], value=None,
-            status=None, start="2019-01-01", end="2019-01-01")
+            status=None, start="2019-01-01", end="2019-01-01", last=True)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -62,25 +62,25 @@ class PostMeasurementTests(unittest.TestCase):
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
         self.database.measurements.find_one.return_value = dict(
-            _id="id", status="target_met", sources=[dict(value="0", entities=[])])
+            _id="id", status="target_met", last=True, sources=[dict(value="0", entities=[])])
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[])]
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(
             _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="near_target_met",
-            start="2019-01-01", end="2019-01-01", value="1", sources=sources)
+            start="2019-01-01", end="2019-01-01", value="1", last=True, sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities."""
         self.database.measurements.find_one.return_value = dict(
-            _id="id", status="target_met",
+            _id="id", status="target_met", last=True,
             sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))])
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(
             _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="near_target_met",
-            start="2019-01-01", end="2019-01-01", value="1", sources=sources)
+            start="2019-01-01", end="2019-01-01", value="1", last=True, sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -96,7 +96,7 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = dict(metric_uuid="metric_uuid", sources=sources)
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(
-            filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01'}})
+            filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01', 'last': True}})
 
 
 class SetEntityAttributeTest(unittest.TestCase):
@@ -105,8 +105,8 @@ class SetEntityAttributeTest(unittest.TestCase):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
         database.measurements.find_one.return_value = dict(
-                _id="id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="red",
-                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
+            _id="id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="red",
+            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
 
         def insert_one(new_measurement):
             new_measurement["_id"] = "id"

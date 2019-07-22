@@ -6,9 +6,8 @@ from typing import Dict, Iterator
 import bottle
 from pymongo.database import Database
 
-from database.measurements import (
-    count_measurements, latest_measurement, latest_measurements, insert_new_measurement, update_measurement_end
-)
+from database.measurements import count_measurements, latest_measurement, recent_measurements, insert_new_measurement, \
+    update_measurement_end
 from utilities.functions import report_date_time
 
 
@@ -76,7 +75,7 @@ def get_measurements(metric_uuid: str, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = metric_uuid.split("&")[0]
     measurements = []
-    for measurement in latest_measurements(database, metric_uuid, report_date_time()):
+    for measurement in recent_measurements(database, metric_uuid, report_date_time()):
         measurement["_id"] = str(measurement["_id"])
         measurements.append(measurement)
     return dict(measurements=measurements)

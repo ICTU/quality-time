@@ -16,7 +16,7 @@ class PostReportAttributeTest(unittest.TestCase):
     """Unit tests for the post report attribute route."""
     def test_post_report_name(self, request):
         """Test that the report name can be changed."""
-        report = dict(_id="report_uuid")
+        report = dict(_id="id", report_uuid="report_uuid")
         request.json = dict(name="name")
         database = Mock()
         database.reports.find_one.return_value = report
@@ -25,11 +25,11 @@ class PostReportAttributeTest(unittest.TestCase):
 
 
 @patch("bottle.request")
-class PostSubjecrAttributeTest(unittest.TestCase):
-    """Unit tests for the post subjecr report attribute route."""
+class PostSubjectAttributeTest(unittest.TestCase):
+    """Unit tests for the post subject report attribute route."""
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
-        report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict()))
+        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict()))
         request.json = dict(name="name")
         database = Mock()
         database.reports.find_one.return_value = report
@@ -44,7 +44,7 @@ class PostMetricAttributeTest(unittest.TestCase):
 
     def setUp(self):
         self.report = dict(
-            _id="report_uuid",
+            _id="id", report_uuid="report_uuid",
             subjects=dict(
                 other_subject=dict(metrics=dict()),
                 subject_uuid=dict(
@@ -79,7 +79,7 @@ class PostMetricAttributeTest(unittest.TestCase):
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
-        self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
+        self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid="metric_uuid", sources=[])
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
@@ -87,13 +87,15 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one.side_effect = set_measurement_id
         request.json = dict(target="10")
         self.assertEqual(
-            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
+            dict(
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None,
+                metric_uuid="metric_uuid", last=True),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
-        self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
+        self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid="metric_uuid", sources=[])
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
@@ -101,7 +103,9 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.measurements.insert_one.side_effect = set_measurement_id
         request.json = dict(debt_end_date="2019-06-07")
         self.assertEqual(
-            dict(_id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None),
+            dict(
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True, status=None,
+                metric_uuid="metric_uuid", value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "debt_end_date", self.database))
 
 
@@ -207,14 +211,16 @@ class MetricTest(unittest.TestCase):
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""
-        report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[])))))
+        report = dict(
+            _id="id", report_uuid="report_uuid",
+            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[])))))
         database = Mock()
         database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         database.reports.distinct.return_value = ["report_uuid", "deleted_report"]
         database.reports.find_one.side_effect = [report, dict(deleted=True)]
-        database.measurements.find_one.return_value = dict(
+        database.measurements.find.return_value = [dict(
             _id="id", metric_uuid="metric_uuid", status="red",
-            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
+            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
         self.assertEqual(dict(metric_uuid=dict(tags=[])), get_metrics(database))
 
     def test_delete_metric(self):
@@ -258,12 +264,13 @@ class ReportTest(unittest.TestCase):
     def test_get_report(self):
         """Test that a report can be retrieved."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        self.database.measurements.find_one.return_value = dict(
-            _id="id", metric_uuid="metric_uuid", status="red",
-            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
+        self.database.measurements.find.return_value = [
+            dict(
+                _id="id", metric_uuid="metric_uuid", status="red",
+                sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
         self.database.reports.distinct.return_value = ["report_uuid"]
         report = dict(
-            _id="id",
+            _id="id", report_uuid="report_uuid",
             subjects=dict(
                 subject_uuid=dict(
                     metrics=dict(
@@ -278,7 +285,7 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        report = dict(_id="report_uuid")
+        report = dict(_id="1", report_uuid="report_uuid")
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
 
@@ -294,10 +301,10 @@ class ReportTest(unittest.TestCase):
         """Test that a tag report can be retrieved."""
         date_time = request.report_date = iso_timestamp()
         self.database.reports.find_one.return_value = None
-        self.database.measurements.find_one.return_value = None
+        self.database.measurements.find.return_value = []
         self.database.reports.distinct.return_value = ["report_uuid"]
         self.database.reports.find_one.return_value = dict(
-            _id="id",
+            _id="id", report_uuid="report_uuid",
             subjects=dict(
                 subject_without_metrics=dict(metrics=dict()),
                 subject_uuid=dict(
@@ -310,6 +317,6 @@ class ReportTest(unittest.TestCase):
                 summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
                 summary_by_subject=dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1)),
                 title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
-                    timestamp=date_time, subjects=dict(
-                        subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
+                timestamp=date_time, subjects=dict(
+                    subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
             get_tag_report("tag", self.database))

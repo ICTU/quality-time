@@ -16,8 +16,13 @@ def latest_measurement(database: Database, metric_uuid: str):
     return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
 
 
-def latest_measurements(database: Database, metric_uuid: str, max_iso_timestamp: str):
-    """Return the latest measurements."""
+def last_measurements(database: Database, report_uuid: str):
+    """Return the last measurement for each metric."""
+    return database.measurements.find(filter={"report_uuid": report_uuid, "last": True})
+
+
+def recent_measurements(database: Database, metric_uuid: str, max_iso_timestamp: str):
+    """Return the recent measurements."""
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 
@@ -28,7 +33,11 @@ def count_measurements(database: Database, report_uuid: str) -> int:
 
 def update_measurement_end(database: Database, measurement_id: str):
     """Set the end date and time of the measurement to the current date and time."""
-    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
+    # Setting last to true shouldn't be necessary in the long run because the last flag is set to true when a new
+    # measurement is added. However, setting it here ensures the measurement collection is updated correctly after the
+    # release of this code. This (setting last to true) was added in the version immediately after v0.5.1.
+    return database.measurements.update_one(
+        filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
 
 
 def insert_new_measurement(database: Database, measurement, metric=None):
@@ -40,6 +49,11 @@ def insert_new_measurement(database: Database, measurement, metric=None):
     measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
     measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
     measurement["start"] = measurement["end"] = iso_timestamp()
+    # Mark this measurement as the most recent one:
+    measurement["last"] = True
+    # And unset the last flag on the previous measurement(s):
+    database.measurements.update_many(
+        filter={"metric_uuid": measurement["metric_uuid"], "last": True}, update={"$unset": {"last": ""}})
     database.measurements.insert_one(measurement)
     measurement["_id"] = str(measurement["_id"])
     return measurement
