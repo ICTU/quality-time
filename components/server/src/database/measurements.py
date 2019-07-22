@@ -43,14 +43,15 @@ def update_measurement_end(database: Database, measurement_id: str):
 def insert_new_measurement(database: Database, measurement, metric=None):
     """Insert a new measurement."""
     if "_id" in measurement:
-        # Unset the last flag on the previous measurement(s)
         del measurement["_id"]
     metric = latest_metric(
         database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
     measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
     measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
     measurement["start"] = measurement["end"] = iso_timestamp()
-    measurement["last"] = True  # Mark this measurement as the most recent one
+    # Mark this measurement as the most recent one:
+    measurement["last"] = True
+    # And unset the last flag on the previous measurement(s):
     database.measurements.update_many(
         filter={"metric_uuid": measurement["metric_uuid"], "last": True}, update={"$unset": {"last": ""}})
     database.measurements.insert_one(measurement)
