@@ -56,5 +56,5 @@ class JunitSourceUpToDateness(SourceCollector):
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
-        report_datetime = parse(test_suite.get("timestamp"))
+        report_datetime = parse(test_suite.get("timestamp", ""))
         return str(days_ago(report_datetime))

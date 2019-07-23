@@ -26,7 +26,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         stats = tree.findall("statistics/total/stat")[1]
-        return str(sum([int(stats.get(stat_type)) for stat_type in self.stat_types]))
+        return str(sum([int(stats.get(stat_type, "0")) for stat_type in self.stat_types]))
 
 
 class RobotFrameworkFailedTests(RobotFrameworkTests):
@@ -38,7 +38,7 @@ class RobotFrameworkFailedTests(RobotFrameworkTests):
         """Return a list of failed tests."""
         tree = parse_source_response_xml(responses[0])
         failed_tests = tree.findall(".//test/status[@status='FAIL']/..")
-        return [dict(key=test.get("id"), name=test.get("name"), failure_type="fail") for test in failed_tests]
+        return [dict(key=test.get("id", ""), name=test.get("name", ""), failure_type="fail") for test in failed_tests]
 
 
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass):
@@ -46,5 +46,5 @@ class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
-        report_datetime = parse(tree.get("generated"))
+        report_datetime = parse(tree.get("generated", ""))
         return str(days_ago(report_datetime))

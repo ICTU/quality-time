@@ -25,13 +25,14 @@ class OWASPZAPSecurityWarnings(SourceCollector):
         entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
         for alert in self.alerts(responses):
-            alert_key = ":".join([alert.findtext(id_tag) for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
-            name = alert.findtext("name")
-            description = tag_re.sub("", alert.findtext("desc"))
-            risk = alert.findtext("riskdesc")
+            alert_key = ":".join(
+                [alert.findtext(id_tag, default="") for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
+            name = alert.findtext("name", default="")
+            description = tag_re.sub("", alert.findtext("desc", default=""))
+            risk = alert.findtext("riskdesc", default="")
             for alert_instance in alert.findall("./instances/instance"):
-                method = alert_instance.findtext("method")
-                uri = alert_instance.findtext("uri")
+                method = alert_instance.findtext("method", default="")
+                uri = alert_instance.findtext("uri", default="")
                 key = f"{alert_key}:{method}:{uri}"
                 entities.append(
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
@@ -53,5 +54,5 @@ class OWASPZAPSourceUpToDateness(SourceCollector):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
-        report_datetime = parse(tree.get("generated"))
+        report_datetime = parse(tree.get("generated", ""))
         return str(days_ago(report_datetime))
