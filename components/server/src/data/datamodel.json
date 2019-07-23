@@ -1710,6 +1710,11 @@
                         {
                             "name": "Description",
                             "key": "description"
+                        },
+                        {
+                            "name": "Location",
+                            "key": "location",
+                            "url": "uri"
                         }
                     ]
                 }

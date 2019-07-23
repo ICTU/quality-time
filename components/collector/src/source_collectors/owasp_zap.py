@@ -16,16 +16,25 @@ class OWASPZAPSecurityWarnings(SourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        return str(len(self.alerts(responses)))
+        alert_instances = []
+        for alert in self.alerts(responses):
+            alert_instances.extend(alert.findall("./instances/instance"))
+        return str(len(alert_instances))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
         for alert in self.alerts(responses):
-            key = ":".join([alert.findtext(id_tag) for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
-            entities.append(
-                dict(key=key, name=alert.findtext("name"), description=tag_re.sub("", alert.findtext("desc")),
-                     risk=alert.findtext("riskdesc")))
+            alert_key = ":".join([alert.findtext(id_tag) for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
+            name = alert.findtext("name")
+            description = tag_re.sub("", alert.findtext("desc"))
+            risk = alert.findtext("riskdesc")
+            for alert_instance in alert.findall("./instances/instance"):
+                method = alert_instance.findtext("method")
+                uri = alert_instance.findtext("uri")
+                key = f"{alert_key}:{method}:{uri}"
+                entities.append(
+                    dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
         return entities
 
     def alerts(self, responses: List[requests.Response]) -> List[Element]:
