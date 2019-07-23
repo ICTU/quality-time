@@ -108,19 +108,21 @@ class WekanTest(unittest.TestCase):
 class WekanSourceUpToDatenessTest(unittest.TestCase):
     """Unit tests for the Wekan source up-to-dateness collector."""
 
-    def test_age(self):
-        """Test that the number of days since the last activity is returned."""
-        metric = dict(
+    def setUp(self):
+        self.metric = dict(
             type="source_up_to_dateness", addition="max",
             sources=dict(
                 source_id=dict(
                     type="wekan",
                     parameters=dict(
-                        url="http://wekan", board="board1", username="user", password="pass"))))
-        mock_post_response = Mock()
-        mock_post_response.json.return_value = dict(token="token")
-        mock_get_response = Mock()
-        mock_get_response.json.side_effect = [
+                        url="http://wekan", board="board1", username="user", password="pass", lists_to_ignore=[]))))
+        self.mock_post_response = Mock()
+        self.mock_post_response.json.return_value = dict(token="token")
+        self.mock_get_response = Mock()
+
+    def test_age(self):
+        """Test that the number of days since the last activity is returned."""
+        self.mock_get_response.json.side_effect = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(_id="board1", createdAt="2019-01-01"),
@@ -128,7 +130,25 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
-        with patch("requests.post", return_value=mock_post_response):
-            with patch("requests.get", return_value=mock_get_response):
-                response = MetricCollector(metric).get()
+        with patch("requests.post", return_value=self.mock_post_response):
+            with patch("requests.get", return_value=self.mock_get_response):
+                response = MetricCollector(self.metric).get()
+        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
+
+    def test_age_with_ignored_lists(self):
+        """Test that lists can be ignored when measuring the number of days since the last activity."""
+        self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
+        self.mock_get_response.json.side_effect = [
+            dict(_id="user_id"),
+            [dict(_id="board1", title="Board 1")],
+            dict(_id="board1", createdAt="2019-01-01"),
+            [dict(_id="list1", title="List 1", archived=False, createdAt="2019-01-15"),
+             dict(_id="list2", title="List 2", archived=False, createdAt="2019-01-01")],
+            [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
+            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
+            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
+            []]
+        with patch("requests.post", return_value=self.mock_post_response):
+            with patch("requests.get", return_value=self.mock_get_response):
+                response = MetricCollector(self.metric).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

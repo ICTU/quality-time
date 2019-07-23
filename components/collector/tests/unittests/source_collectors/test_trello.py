@@ -110,23 +110,34 @@ class TrelloIssuesTest(unittest.TestCase):
 class TrelloSourceUpToDatenessTest(unittest.TestCase):
     """Unit tests for the Trello source up-to-dateness metric."""
 
-    def test_age(self):
-        """Test that the source up to dateness is the number of days since the most recent change."""
-        metric = dict(
+    def setUp(self):
+        self.metric = dict(
             type="source_up_to_dateness", addition="max",
             sources=dict(
                 source_id=dict(
                     type="trello",
                     parameters=dict(
-                        url="http://trello", board="board1", api_key="abcdef123", token="4533dea"))))
-        mock_get_response = Mock()
-        cards = dict(
+                        url="http://trello", board="board1", api_key="abcdef123", token="4533dea",
+                        lists_to_ignore=[]))))
+        self.cards = dict(
             id="board1", url="http://trello/board1",
             dateLastActivity="2019-02-10",
             cards=[
-                dict(id="card1", name="Card 1", dateLastActivity="2019-03-03"),
-                dict(id="card2", name="Card 2", dateLastActivity="2019-01-01")])
-        mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards]
-        with patch("requests.get", return_value=mock_get_response):
-            response = MetricCollector(metric).get()
-        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
+                dict(id="card1", name="Card 1", idList="list1", dateLastActivity="2019-03-03"),
+                dict(id="card2", name="Card 2", idList="list2", dateLastActivity="2019-01-01")],
+            lists=[dict(id="list1", name="List 1"), dict(id="list2", name="List 2")])
+        self.mock_get_response = Mock()
+        self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], self.cards, self.cards]
+
+    def test_age(self):
+        """Test that the source up to dateness is the number of days since the most recent change."""
+        with patch("requests.get", return_value=self.mock_get_response):
+            response = MetricCollector(self.metric).get()
+        self.assertEqual(str((datetime.now() - datetime(2019, 3, 3)).days), response["sources"][0]["value"])
+
+    def test_age_with_ignored_lists(self):
+        """Test that lists can be ignored when measuring the source up to dateness."""
+        self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
+        with patch("requests.get", return_value=self.mock_get_response):
+            response = MetricCollector(self.metric).get()
+        self.assertEqual(str((datetime.now() - datetime(2019, 2, 10)).days), response["sources"][0]["value"])
