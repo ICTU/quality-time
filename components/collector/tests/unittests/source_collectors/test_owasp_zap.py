@@ -14,7 +14,7 @@ class OWASPZAPTest(unittest.TestCase):
         self.mock_response = Mock()
         self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
 
-    def test_violations(self):
+    def test_warnings(self):
         """Test that the number of security warnings is returned."""
         self.mock_response.text = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
@@ -30,12 +30,12 @@ class OWASPZAPTest(unittest.TestCase):
                         <desc>&lt;p&gt;The Anti-MIME-Sniffing header X-Content-Type-Options was not set to &apos;nosniff&apos;.</desc>
                         <instances>
                             <instance>
-                                <uri>http://www.hackazon.com/products_pictures/Ray_Ban_Aviator_Non_Polarized_Sunglasses_big_78ef2b.jpg</uri>
+                                <uri>http://www.hackazon.com/products_pictures/Ray_Ban.jpg</uri>
                                 <method>GET</method>
                                 <param>X-Content-Type-Options</param>
                             </instance>
                             <instance>
-                                <uri>http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire_big_df6c63.jpg</uri>
+                                <uri>http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg</uri>
                                 <method>GET</method>
                                 <param>X-Content-Type-Options</param>
                             </instance>
@@ -55,11 +55,20 @@ class OWASPZAPTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(metric).get()
         self.assertEqual(
-            [dict(key="10021:16:15:3", name="X-Content-Type-Options Header Missing",
-                  description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
-                  risk="Low (Medium)")],
+            [
+                dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
+                     name="X-Content-Type-Options Header Missing",
+                     description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                     location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
+                     uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
+                dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                     name="X-Content-Type-Options Header Missing",
+                     description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                     location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                     uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                     risk="Low (Medium)")],
             response["sources"][0]["entities"])
-        self.assertEqual("1", response["sources"][0]["value"])
+        self.assertEqual("2", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
