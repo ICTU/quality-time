@@ -3,7 +3,7 @@
 import logging
 import traceback
 from datetime import datetime, timedelta
-from typing import cast, Dict, List, Optional, Set, Tuple, Type
+from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
@@ -21,7 +21,7 @@ class SourceCollector:
 
     def __init__(self, source) -> None:
         self.source = source
-        self.parameters: Dict[str, str] = source.get("parameters", {})
+        self.parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)

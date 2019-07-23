@@ -32,7 +32,7 @@ class OJAuditViolations(SourceCollector):
         """Return the violation count."""
         count = 0
         for severity in severities or ["violation"]:
-            count += int(tree.findtext(f"./ns:{severity}-count", namespaces=namespaces))
+            count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return str(count)
 
     def violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
@@ -49,13 +49,13 @@ class OJAuditViolations(SourceCollector):
         location = violation.find("./ns:location", namespaces)
         if not location:
             raise ValueError(f"OJAudit violation {violation} has no location element")
-        severity = violation.findtext("./ns:values/ns:value", namespaces=namespaces)
+        severity = violation.findtext("./ns:values/ns:value", default="", namespaces=namespaces)
         if severities and severity not in severities:
             return None
-        message = violation.findtext("ns:message", namespaces=namespaces)
+        message = violation.findtext("ns:message", default="", namespaces=namespaces)
         line_number = violation.findtext(".//ns:line-number", namespaces=namespaces)
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
-        model = models[location.get("model")]
+        model = models[location.get("model", "")]
         component = f"{model}:{line_number}:{column_offset}"
         key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
         return dict(key=key, severity=severity, message=message, component=component)
@@ -64,4 +64,5 @@ class OJAuditViolations(SourceCollector):
     def model_file_paths(tree: Element, namespaces: Namespaces) -> ModelFilePaths:
         """Return the model file paths."""
         models = tree.findall(".//ns:model", namespaces)
-        return {model.get("id"): model.findtext("./ns:file/ns:path", namespaces=namespaces) for model in models}
+        return {model.get("id", ""): model.findtext("./ns:file/ns:path", default="", namespaces=namespaces)
+                for model in models}

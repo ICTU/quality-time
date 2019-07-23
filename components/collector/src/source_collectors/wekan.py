@@ -27,18 +27,18 @@ class WekanBase(SourceCollector):
     def board_id(self, token) -> str:
         """Return the id of the board specified by the user."""
         api_url = self.api_url()
-        user_id = self.get_json(f"{api_url}/api/user", token)["_id"]
-        boards = self.get_json(f"{api_url}/api/users/{user_id}/boards", token)
+        user_id = self.get_json(URL(f"{api_url}/api/user"), token)["_id"]
+        boards = self.get_json(URL(f"{api_url}/api/users/{user_id}/boards"), token)
         return [board for board in boards if self.parameters.get("board") in board.values()][0]["_id"]
 
     def lists(self, board_url: str, token: str) -> List:
         """Return the lists on the board."""
-        return [lst for lst in self.get_json(f"{board_url}/lists", token) if not self.ignore_list(lst)]
+        return [lst for lst in self.get_json(URL(f"{board_url}/lists"), token) if not self.ignore_list(lst)]
 
     def cards(self, list_url: str, token: str) -> List:
         """Return the cards on the board."""
-        cards = self.get_json(f"{list_url}/cards", token)
-        full_cards = [self.get_json(f"{list_url}/cards/{card['_id']}", token) for card in cards]
+        cards = self.get_json(URL(f"{list_url}/cards"), token)
+        full_cards = [self.get_json(URL(f"{list_url}/cards/{card['_id']}"), token) for card in cards]
         return [card for card in full_cards if not self.ignore_card(card)]
 
     @cachetools.func.ttl_cache(ttl=60)
@@ -65,7 +65,7 @@ class WekanIssues(WekanBase):
         token = responses[0].json()['token']
         api_url = self.api_url()
         board_url = f"{api_url}/api/boards/{self.board_id(token)}"
-        board_slug = self.get_json(board_url, token)["slug"]
+        board_slug = self.get_json(URL(board_url), token)["slug"]
         entities: Entities = []
         for lst in self.lists(board_url, token):
             for card in self.cards(f"{board_url}/lists/{lst['_id']}", token):
@@ -75,7 +75,7 @@ class WekanIssues(WekanBase):
     def ignore_list(self, card_list) -> bool:
         if super().ignore_list(card_list):
             return True
-        lists_to_ignore = self.parameters.get("lists_to_ignore") or []
+        lists_to_ignore = cast(List[str], self.parameters.get("lists_to_ignore") or [])
         return card_list["_id"] in lists_to_ignore or card_list["title"] in lists_to_ignore
 
     def ignore_card(self, card) -> bool:
@@ -113,7 +113,7 @@ class WekanSourceUpToDateness(WekanBase):
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         token = responses[0].json()['token']
         board_url = f"{self.api_url()}/api/boards/{self.board_id(token)}"
-        board = self.get_json(board_url, token)
+        board = self.get_json(URL(board_url), token)
         dates = [board.get("createdAt"), board.get("modifiedAt")]
         for lst in self.lists(board_url, token):
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])

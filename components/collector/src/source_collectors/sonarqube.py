@@ -2,7 +2,7 @@
 
 from typing import Dict, List
 
-from dateutil.parser import isoparse  # type: ignore
+from dateutil.parser import isoparse
 import requests
 
 from utilities.type import URL, Entities, Entity, Value
