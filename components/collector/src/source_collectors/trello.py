@@ -86,4 +86,4 @@ class TrelloSourceUpToDateness(TrelloBase):
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         json = responses[0].json()
         dates = [json["dateLastActivity"]] + [card["dateLastActivity"] for card in json["cards"]]
-        return str(days_ago(parse(min(dates))))
+        return str(days_ago(parse(max(dates))))

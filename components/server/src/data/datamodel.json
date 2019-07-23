@@ -2638,7 +2638,8 @@
                     "default_value": [],
                     "placeholder": "none",
                     "metrics": [
-                        "issues"
+                        "issues",
+                        "source_up_to_dateness"
                     ]
                 },
                 "cards_to_count": {

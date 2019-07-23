@@ -129,4 +129,4 @@ class TrelloSourceUpToDatenessTest(unittest.TestCase):
         mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards]
         with patch("requests.get", return_value=mock_get_response):
             response = MetricCollector(metric).get()
-        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
+        self.assertEqual(str((datetime.now() - datetime(2019, 3, 3)).days), response["sources"][0]["value"])
