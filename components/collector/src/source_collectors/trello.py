@@ -85,5 +85,13 @@ class TrelloSourceUpToDateness(TrelloBase):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         json = responses[0].json()
-        dates = [json["dateLastActivity"]] + [card["dateLastActivity"] for card in json["cards"]]
+        cards = json["cards"]
+        lists = {lst["id"]: lst["name"] for lst in json["lists"]}
+        dates = [json["dateLastActivity"]] + \
+                [card["dateLastActivity"] for card in cards if not self.ignore_card(card, lists)]
         return str(days_ago(parse(max(dates))))
+
+    def ignore_card(self, card, lists) -> bool:
+        """Return whether the card should be ignored."""
+        lists_to_ignore = self.parameters.get("lists_to_ignore") or []
+        return card["idList"] in lists_to_ignore or lists[card["idList"]] in lists_to_ignore
