@@ -39,7 +39,8 @@ class JiraReadyUserStoryPointsTest(unittest.TestCase):
         self.metric = dict(
             type="ready_user_story_points", addition="sum",
             sources=dict(
-                a=dict(type="jira", parameters=dict(url="http://jira", jql="query", story_points_field="field"))))
+                source_id=dict(
+                    type="jira", parameters=dict(url="http://jira", jql="query", story_points_field="field"))))
         self.mock_response = Mock()
 
     def test_nr_story_points(self):
@@ -51,3 +52,24 @@ class JiraReadyUserStoryPointsTest(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response):
             response = MetricCollector(self.metric).get()
         self.assertEqual("42", response["sources"][0]["value"])
+
+
+class JiraManualTestDurationTest(unittest.TestCase):
+    """Unit tests for the Jira manual test duration collector."""
+    def setUp(self):
+        self.metric = dict(
+            type="manual_test_duration", addition="sum",
+            sources=dict(
+                source_id=dict(
+                    type="jira", parameters=dict(url="http://jira", jql="query", manual_test_duration_field="field"))))
+        self.mock_response = Mock()
+
+    def test_duration(self):
+        """Test that the duration is returned."""
+        self.mock_response.json.return_value = dict(
+            issues=[
+                dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
+                dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(self.metric).get()
+        self.assertEqual("25", response["sources"][0]["value"])

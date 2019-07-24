@@ -1232,7 +1232,7 @@
                 "jql": {
                     "name": "Issue query in JQL (Jira Query Language)",
                     "type": "string",
-                    "mandatory": false,
+                    "mandatory": true,
                     "help_url": "https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html",
                     "default_value": "",
                     "metrics": [

@@ -40,20 +40,37 @@ class JiraIssues(JiraBase):
         return str(responses[0].json()["total"])
 
 
-class JiraReadyUserStoryPoints(JiraBase):
-    """Collector to get ready user story points from Jira."""
+class JiraFieldSumBase(JiraBase):
+    """Base class for collectors that sum a custom Jira field."""
+
+    field_parameter = "subclass responsibility"
+    entity_key = "subclass responsibility"
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        story_points_field = self.parameters["story_points_field"]
-        return str(round(sum(issue["fields"][story_points_field] for issue in responses[0].json()["issues"]
-                             if issue["fields"][story_points_field] is not None)))
+        field = self.parameters[self.field_parameter]
+        return str(round(sum(issue["fields"][field] for issue in responses[0].json()["issues"]
+                             if issue["fields"][field] is not None)))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         entities = super().parse_source_responses_entities(responses)
-        story_points_field = self.parameters["story_points_field"]
+        field = self.parameters[self.field_parameter]
         for index, issue in enumerate(responses[0].json().get("issues", [])):
-            entities[index]["points"] = issue["fields"][story_points_field]
+            entities[index][self.entity_key] = issue["fields"][field]
         return entities
 
     def fields(self) -> str:
-        return super().fields() + "," + cast(str, self.parameters["story_points_field"])
+        return super().fields() + "," + cast(str, self.parameters[self.field_parameter])
+
+
+class JiraReadyUserStoryPoints(JiraFieldSumBase):
+    """Collector to get ready user story points from Jira."""
+
+    field_parameter = "story_points_field"
+    entity_key = "points"
+
+
+class JiraManualTestDuration(JiraFieldSumBase):
+    """Collector to get manual test duration from Jira."""
+
+    field_parameter = "manual_test_duration_field"
+    entity_key = "duration"
