@@ -75,8 +75,8 @@ class CxSASTSecurityWarnings(CxSASTBase):
     CXSAST_SCAN_REPORTS = cachetools.LRUCache(256)  # Mapping of scan ids to scan report ids
     STATS_RESPONSE, XML_REPORT_RESPONSE = range(3, 5)
 
-    def __init__(self, source) -> None:
-        super().__init__(source)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.report_status = "In Process"
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:

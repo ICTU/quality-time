@@ -19,8 +19,9 @@ class SourceCollector:
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     subclasses: Set[Type["SourceCollector"]] = set()
 
-    def __init__(self, source) -> None:
+    def __init__(self, source, datamodel=None) -> None:
         self.source = source
+        self.datamodel = datamodel
         self.parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:

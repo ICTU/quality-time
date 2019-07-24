@@ -17,7 +17,7 @@ class MetricCollector:
         for source_uuid, source in self.metric["sources"].items():
             collector_class = cast(
                 Type[SourceCollector], SourceCollector.get_subclass(source['type'], self.metric['type']))
-            self.collectors[source_uuid] = collector_class(source)
+            self.collectors[source_uuid] = collector_class(source, datamodel)
 
     def can_collect(self) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
