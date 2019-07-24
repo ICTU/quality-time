@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from typing import cast, List
-import urllib3
 
 from dateutil.parser import parse
 from defusedxml import ElementTree
@@ -18,11 +17,6 @@ class CxSASTBase(SourceCollector):
     """Base class for CxSAST collectors."""
 
     TOKEN_RESPONSE, PROJECT_RESPONSE, SCAN_RESPONSE = range(3)
-
-    def __init__(self, source) -> None:
-        super().__init__(source)
-        # We don't verify the ssl certificates, which leads to many warnings. Suppress them:
-        urllib3.disable_warnings()
 
     def landing_url(self, responses: List[requests.Response]) -> URL:
         api_url = self.api_url()
