@@ -159,6 +159,25 @@
                 "maintainability"
             ]
         },
+        "manual_test_duration": {
+            "name": "Manual test duration",
+            "description": "Measure the duration of the manual test in minutes",
+            "unit": "minutes",
+            "addition": "sum",
+            "direction": "≦",
+            "target": "0",
+            "near_target": "60",
+            "default_source": "jira",
+            "sources": [
+                "hq",
+                "jira",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "test quality"
+            ]
+        },
         "many_parameters": {
             "name": "Many parameters",
             "description": "Measure the number of units (functions, methods, procedures) that have too many parameters.",
@@ -171,8 +190,8 @@
             "sources": [
                 "hq",
                 "manual_number",
-                "sonarqube",
-                "random"
+                "random",
+                "sonarqube"
             ],
             "tags": [
                 "maintainability"
@@ -190,8 +209,8 @@
             "sources": [
                 "hq",
                 "manual_number",
-                "sonarqube",
-                "random"
+                "random",
+                "sonarqube"
             ],
             "tags": [
                 "maintainability"
@@ -914,6 +933,7 @@
                         "failed_tests",
                         "issues",
                         "long_units",
+                        "manual_test_duration",
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
@@ -1205,6 +1225,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "manual_test_duration",
                         "ready_user_story_points"
                     ]
                 },
@@ -1216,6 +1237,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "manual_test_duration",
                         "ready_user_story_points"
                     ]
                 },
@@ -1226,6 +1248,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "manual_test_duration",
                         "ready_user_story_points"
                     ]
                 },
@@ -1236,7 +1259,18 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
+                        "manual_test_duration",
                         "ready_user_story_points"
+                    ]
+                },
+                "manual_test_duration_field": {
+                    "name": "Manual test duration field id",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "manual_test_duration"
                     ]
                 },
                 "story_points_field": {
@@ -1259,6 +1293,21 @@
                             "name": "Summary",
                             "key": "summary",
                             "url": "url"
+                        }
+                    ]
+                },
+                "manual_test_duration": {
+                    "name": "test case",
+                    "name_plural": "test cases",
+                    "attributes": [
+                        {
+                            "name": "Summary",
+                            "key": "summary",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Duration (minutes)",
+                            "key": "duration"
                         }
                     ]
                 },
@@ -1377,6 +1426,7 @@
                         "issues",
                         "loc",
                         "long_units",
+                        "manual_test_duration",
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
