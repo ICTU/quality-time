@@ -8,6 +8,18 @@ from metric_collectors import MetricCollector
 from source_collectors.cxsast import CxSASTSecurityWarnings
 
 
+def setUpModule():
+    global datamodel
+    datamodel = dict(
+        sources=dict(
+            cxsast=dict(
+                parameters=dict(
+                    username=dict(),
+                    password=dict(),
+                    project=dict(),
+                    severities=dict(values=["info", "low", "medium", "high"])))))
+
+
 class CxSASTSourceUpToDatenessTest(unittest.TestCase):
     """Unit tests for the source up-to-dateness collector."""
     def setUp(self):
@@ -28,7 +40,7 @@ class CxSASTSourceUpToDatenessTest(unittest.TestCase):
         post_response.json.return_value = dict(access_token="token")
         with patch("requests.post", return_value=post_response):
             with patch("requests.get", return_value=get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
         self.assertEqual(
@@ -37,7 +49,7 @@ class CxSASTSourceUpToDatenessTest(unittest.TestCase):
     def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
         with patch("requests.post", side_effect=RuntimeError):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("http://checkmarx", response["sources"][0]["landing_url"])
 
 
@@ -52,6 +64,7 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
                 parameters=dict(
                     url="http://checkmarx/", username="user", password="pass", project="project")))
         self.metric = dict(type="security_warnings", sources=sources, addition="sum")
+
 
     def test_nr_of_warnings_and_report_is_requested(self):
         """Test that the number of security warnings is returned."""
@@ -69,7 +82,7 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
             dict(reportId=1)]
         with patch("requests.post", return_value=post_response):
             with patch("requests.get", return_value=get_response):
-                collector = MetricCollector(self.metric)
+                collector = MetricCollector(self.metric, datamodel)
                 response = collector.get()
         self.assertEqual("10", response["sources"][0]["value"])
         self.assertEqual([], response["sources"][0]["entities"])
@@ -104,7 +117,7 @@ class CxSASTSecurityWarningsTest(unittest.TestCase):
         post_response.json.return_value = dict(access_token="token")
         with patch("requests.post", return_value=post_response):
             with patch("requests.get", return_value=get_response):
-                collector = MetricCollector(self.metric)
+                collector = MetricCollector(self.metric, datamodel)
                 response = collector.get()
         self.assertEqual("10", response["sources"][0]["value"])
         self.assertEqual(

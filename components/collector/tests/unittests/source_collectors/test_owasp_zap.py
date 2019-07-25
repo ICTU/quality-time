@@ -13,6 +13,9 @@ class OWASPZAPTest(unittest.TestCase):
     def setUp(self):
         self.mock_response = Mock()
         self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
+        self.datamodel = dict(
+            sources=dict(
+                owasp_zap=dict(parameters=dict(risks=dict(values=["informational", "low", "medium", "high"])))))
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""
@@ -53,7 +56,7 @@ class OWASPZAPTest(unittest.TestCase):
         </OWASPZAPReport>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual(
             [
                 dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
@@ -77,6 +80,6 @@ class OWASPZAPTest(unittest.TestCase):
         </OWASPZAPReport>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

@@ -31,7 +31,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     """Collector to get the amount of tests from a Jenkins test report."""
 
     def test_statuses_to_count(self) -> List[str]:
-        return cast(List[str], self.parameters.get("failure_type")) or ["failed", "skipped"]
+        return cast(List[str], self.parameter("failure_type"))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of failed tests."""
@@ -46,8 +46,8 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
             # The Jenkins test report has three counts: passed, skipped, and failed. Individual test cases
             # can be skipped (indicated by the attribute skipped being "true") and/or have a status that can
             # take the values: "failed", "passed", "regression", and "fixed".
-            status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
-            return dict(regression="failed", fixed="passed").get(status, status)
+            test_case_status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
+            return dict(regression="failed", fixed="passed").get(test_case_status, test_case_status)
 
         suites = [suite for suite in responses[0].json().get("suites", [])]
         statuses = self.test_statuses_to_count()

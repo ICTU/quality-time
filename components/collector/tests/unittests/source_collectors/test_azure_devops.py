@@ -6,6 +6,11 @@ from unittest.mock import Mock, patch
 from metric_collectors import MetricCollector
 
 
+def setUpModule():
+    global datamodel
+    datamodel = dict(sources=dict(azure_devops=dict(parameters=dict(wiql=dict()))))
+
+
 class AzureDevopsIssuesTest(unittest.TestCase):
     """Unit tests for the Azure Devops Server issues metric."""
 
@@ -27,7 +32,7 @@ class AzureDevopsIssuesTest(unittest.TestCase):
         self.mock_entity_response.json.return_value = dict(value=[self.work_item, self.work_item])
         with patch("requests.post", return_value=self.mock_response):
             with patch("requests.get", return_value=self.mock_entity_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_no_issues(self):
@@ -35,7 +40,7 @@ class AzureDevopsIssuesTest(unittest.TestCase):
         self.mock_response.json.return_value = dict(workItems=[])
         with patch("requests.post", return_value=self.mock_response):
             with patch("requests.get", return_value=self.mock_entity_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("0", response["sources"][0]["value"])
 
     def test_issues(self):
@@ -44,7 +49,7 @@ class AzureDevopsIssuesTest(unittest.TestCase):
         self.mock_entity_response.json.return_value = dict(value=[self.work_item])
         with patch("requests.post", return_value=self.mock_response):
             with patch("requests.get", return_value=self.mock_entity_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(
             [dict(key="id", project="Project", title="Title", work_item_type="Task", state="New", url="http://url")],
             response["sources"][0]["entities"])
@@ -71,7 +76,7 @@ class AzureDevopsReadyStoryPointsTest(unittest.TestCase):
         self.mock_entity_response.json.return_value = dict(value=[self.work_item, self.work_item])
         with patch("requests.post", return_value=self.mock_response):
             with patch("requests.get", return_value=self.mock_entity_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("4", response["sources"][0]["value"])
 
     def test_story_points_without_stories(self):
@@ -80,5 +85,5 @@ class AzureDevopsReadyStoryPointsTest(unittest.TestCase):
         self.mock_entity_response.json.return_value = dict(value=[])
         with patch("requests.post", return_value=self.mock_response):
             with patch("requests.get", return_value=self.mock_entity_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("0", response["sources"][0]["value"])

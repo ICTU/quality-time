@@ -29,8 +29,8 @@ class CxSASTBase(SourceCollector):
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
-            username=cast(str, self.parameters.get("username", "")),
-            password=cast(str, self.parameters.get("password", "")),
+            username=cast(str, self.parameter("username")),
+            password=cast(str, self.parameter("password")),
             grant_type="password", scope="sast_rest_api", client_id="resource_owner_client",
             client_secret="014DF517-39D1-4453-B7B3-9930C563627C")
         token_response = self.api_post("auth/identity/connect/token", credentials)
@@ -42,7 +42,7 @@ class CxSASTBase(SourceCollector):
 
     def project_id(self, project_response: requests.Response) -> str:
         """Return the project id that belongs to the project parameter."""
-        project_name_or_id = self.parameters.get("project")
+        project_name_or_id = self.parameter("project")
         projects = project_response.json()
         return [project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"]
 
@@ -75,8 +75,8 @@ class CxSASTSecurityWarnings(CxSASTBase):
     CXSAST_SCAN_REPORTS = cachetools.LRUCache(256)  # Mapping of scan ids to scan report ids
     STATS_RESPONSE, XML_REPORT_RESPONSE = range(3, 5)
 
-    def __init__(self, source) -> None:
-        super().__init__(source)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.report_status = "In Process"
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
@@ -101,7 +101,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         stats = responses[self.STATS_RESPONSE].json()
-        severities = self.parameters.get("severities") or ["info", "low", "medium", "high"]
+        severities = self.parameter("severities")
         return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
@@ -116,7 +116,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
     def parse_xml_report(self, xml_string: str) -> Entities:
         """Get the entities from the CxSAST XML report."""
         root = ElementTree.fromstring(xml_string)
-        severities = self.parameters.get("severities") or ["info", "low", "medium", 'high']
+        severities = self.parameter("severities")
         entities: Entities = []
         for query in root.findall(".//Query"):
             for result in query.findall("Result"):

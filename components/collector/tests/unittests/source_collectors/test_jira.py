@@ -6,6 +6,14 @@ from unittest.mock import Mock, patch
 from metric_collectors import MetricCollector
 
 
+def setUpModule():
+    global datamodel
+    datamodel = dict(
+        sources=dict(
+            jira=dict(
+                parameters=dict(jql=dict(), url=dict(), manual_test_duration_field=dict(), story_points_field=dict()))))
+
+
 class JiraIssuesTest(unittest.TestCase):
     """Unit tests for the Jira issue collector."""
 
@@ -18,7 +26,7 @@ class JiraIssuesTest(unittest.TestCase):
         """Test that the number of issues is returned."""
         self.mock_response.json.return_value = dict(total=42)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("42", response["sources"][0]["value"])
 
     def test_issues(self):
@@ -26,7 +34,7 @@ class JiraIssuesTest(unittest.TestCase):
         self.mock_response.json.return_value = dict(
             total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(
             [dict(key="id", summary="Summary", url="http://jira/browse/key")],
             response["sources"][0]["entities"])
@@ -50,7 +58,7 @@ class JiraReadyUserStoryPointsTest(unittest.TestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=32))])
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("42", response["sources"][0]["value"])
 
 
@@ -71,5 +79,5 @@ class JiraManualTestDurationTest(unittest.TestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("25", response["sources"][0]["value"])

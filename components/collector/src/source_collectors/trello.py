@@ -27,13 +27,13 @@ class TrelloBase(SourceCollector):
         """Return the id of the board specified by the user."""
         url = self.url_with_auth("1/members/me/boards?fields=name")
         boards = requests.get(url, timeout=self.TIMEOUT).json()
-        return [board for board in boards if self.parameters.get("board") in board.values()][0]["id"]
+        return [board for board in boards if self.parameter("board") in board.values()][0]["id"]
 
     def url_with_auth(self, api_part: str) -> str:
         """Return the authentication URL parameters."""
         sep = "&" if "?" in api_part else "?"
-        api_key = self.parameters.get("api_key")
-        token = self.parameters.get("token")
+        api_key = self.parameter("api_key")
+        token = self.parameter("token")
         return f"{self.api_url()}/{api_part}{sep}key={api_key}&token={token}"
 
 
@@ -55,17 +55,17 @@ class TrelloIssues(TrelloBase):
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""
             date_last_activity = parse(card["dateLastActivity"])
-            return days_ago(date_last_activity) > int(cast(int, self.parameters.get("inactive_days")))
+            return days_ago(date_last_activity) > int(cast(int, self.parameter("inactive_days")))
 
         def card_is_overdue() -> bool:
             """Return whether the card is overdue."""
             due_date = parse(card["due"]) if card.get("due") else datetime.max
             return due_date < datetime.now(tz=due_date.tzinfo)
 
-        lists_to_ignore = self.parameters.get("lists_to_ignore") or []
+        lists_to_ignore = self.parameter("lists_to_ignore")
         if card["idList"] in lists_to_ignore or lists[card["idList"]] in lists_to_ignore:
             return True
-        cards_to_count = self.parameters.get("cards_to_count") or []
+        cards_to_count = self.parameter("cards_to_count")
         if "overdue" in cards_to_count and card_is_overdue():
             return False
         if "inactive" in cards_to_count and card_is_inactive():
@@ -93,5 +93,5 @@ class TrelloSourceUpToDateness(TrelloBase):
 
     def ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""
-        lists_to_ignore = self.parameters.get("lists_to_ignore") or []
+        lists_to_ignore = self.parameter("lists_to_ignore")
         return card["idList"] in lists_to_ignore or lists[card["idList"]] in lists_to_ignore

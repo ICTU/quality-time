@@ -16,5 +16,5 @@ class HQ(SourceCollector):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         metric = [
-            m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == self.parameters.get("metric_id")][0]
+            m for m in responses[0].json()["metrics"] if m["stable_metric_id"] == self.parameter("metric_id")][0]
         return metric["value"]

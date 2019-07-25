@@ -29,7 +29,7 @@ class PerformanceTestRunnerSlowTransactions(SourceCollector):
 
     def slow_transactions(self, responses: List[requests.Response]) -> List[Tag]:
         """Return the slow transactions in the performancetest report."""
-        thresholds = self.parameters.get("thresholds") or ["high", "warning"]
+        thresholds = self.parameter("thresholds")
         threshold_colors = map(dict(high="red", warning="yellow").get, thresholds)
         soup = BeautifulSoup(responses[0].text, "html.parser")
         slow_transactions: List[Tag] = []
@@ -80,7 +80,7 @@ class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
     """Collector for the number of failed performance test transactions."""
 
     def statuses_to_count(self):
-        return self.parameters.get("failure_type", []) or ["canceled", "failed"]
+        return self.parameter("failure_type")
 
 
 class PerformanceTestRunnerScalability(SourceCollector):

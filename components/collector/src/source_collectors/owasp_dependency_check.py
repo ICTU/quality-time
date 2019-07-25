@@ -52,7 +52,7 @@ class OWASPDependencyCheckSecurityWarnings(SourceCollector):
 
     def vulnerabilities(self, element: Element, namespaces: Namespaces) -> List[Element]:
         """Return the vulnerabilities that have one of the severities specified in the parameters."""
-        severities = self.parameters.get("severities") or ["low", "medium", "high", "critical"]
+        severities = self.parameter("severities")
         vulnerabilities = element.findall(".//ns:vulnerabilities/ns:vulnerability", namespaces)
         return [vulnerability for vulnerability in vulnerabilities if
                 vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower() in severities]

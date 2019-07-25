@@ -15,26 +15,15 @@ class SonarQubeTest(unittest.TestCase):
         """Test fixture."""
         self.mock_response = Mock()
         self.sources = dict(a=dict(type="sonarqube", parameters=dict(url="http://sonar", component="id")))
-
-    def test_violations_api_url(self):
-        """Test that the api url is correct."""
-        self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500",
-            SonarQubeViolations(self.sources["a"]).api_url())
-
-    def test_blocker_violations_api_url(self):
-        """Test that the api url is correct."""
-        self.sources["a"]["parameters"]["severities"] = ["blocker"]
-        self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500&severities=BLOCKER",
-            SonarQubeViolations(self.sources["a"]).api_url())
-
-    def test_code_smell_violations_api_url(self):
-        """Test that the api url is correct."""
-        self.sources["a"]["parameters"]["types"] = ["code_smell"]
-        self.assertEqual(
-            "http://sonar/api/issues/search?componentKeys=id&resolved=false&ps=500&types=CODE_SMELL",
-            SonarQubeViolations(self.sources["a"]).api_url())
+        self.datamodel = dict(
+            sources=dict(
+                sonarqube=dict(
+                    parameters=dict(
+                        component=dict(default_value=""),
+                        severities=dict(values=["info", "minor", "major"]),
+                        types=dict(values=["code_smell", "bug", "vulnerability", "security_hotspot"]),
+                        suppression_rules=dict(values=["rule1", "rule2"]),
+                        long_unit_rules=dict(values=["rule1", "rule2"])))))
 
     def test_violations(self):
         """Test that the number of violations is returned."""
@@ -45,7 +34,7 @@ class SonarQubeTest(unittest.TestCase):
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
         metric = dict(type="violations", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",
@@ -62,7 +51,7 @@ class SonarQubeTest(unittest.TestCase):
             component=dict(measures=[dict(metric="tests", value="88")]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual("88", response["sources"][0]["value"])
 
     def test_uncovered_lines(self):
@@ -71,7 +60,7 @@ class SonarQubeTest(unittest.TestCase):
             component=dict(measures=[dict(metric="uncovered_lines", value="10")]))
         metric = dict(type="uncovered_lines", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual("10", response["sources"][0]["value"])
 
     def test_uncovered_branches(self):
@@ -80,7 +69,7 @@ class SonarQubeTest(unittest.TestCase):
             component=dict(measures=[dict(metric="uncovered_conditions", value="10")]))
         metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual("10", response["sources"][0]["value"])
 
     def test_long_units(self):
@@ -89,7 +78,7 @@ class SonarQubeTest(unittest.TestCase):
         self.mock_response.json.return_value = dict(total="2", issues=[])
         metric = dict(type="long_units", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual("2", response["sources"][0]["value"])
 
     def test_source_up_to_dateness(self):
@@ -99,7 +88,7 @@ class SonarQubeTest(unittest.TestCase):
         tzinfo = timezone(timedelta(hours=1))
         expected_age = (datetime.now(tzinfo) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=tzinfo)).days
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
 
     def test_suppressed_violations(self):
@@ -112,7 +101,7 @@ class SonarQubeTest(unittest.TestCase):
                               resolution="WONTFIX")])]
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, self.datamodel).get()
         self.assertEqual(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",

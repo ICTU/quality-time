@@ -32,15 +32,15 @@ class JUnitFailedTests(JUnitTests):
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
     def test_statuses_to_count(self) -> List[str]:
-        return cast(List[str], self.parameters.get("failure_type", [])) or ["errored", "failed", "skipped"]
+        return cast(List[str], self.parameter("failure_type"))
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of failed tests."""
 
-        def entity(case_node, status: str) -> Entity:
+        def entity(case_node, test_case_status: str) -> Entity:
             """Transform a test case into a test case entity."""
             name = case_node.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=status)
+            return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=test_case_status)
 
         tree = parse_source_response_xml(responses[0])
         entities = []
