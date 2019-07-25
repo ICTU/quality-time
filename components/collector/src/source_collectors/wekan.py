@@ -21,7 +21,7 @@ class WekanBase(SourceCollector):
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Override because we want to do a post request to login."""
-        credentials = dict(username=self.parameters.get("username"), password=self.parameters.get("password"))
+        credentials = dict(username=self.parameter("username"), password=self.parameter("password"))
         return [requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)]
 
     def board_id(self, token) -> str:
@@ -29,7 +29,7 @@ class WekanBase(SourceCollector):
         api_url = self.api_url()
         user_id = self.get_json(URL(f"{api_url}/api/user"), token)["_id"]
         boards = self.get_json(URL(f"{api_url}/api/users/{user_id}/boards"), token)
-        return [board for board in boards if self.parameters.get("board") in board.values()][0]["_id"]
+        return [board for board in boards if self.parameter("board") in board.values()][0]["_id"]
 
     def lists(self, board_url: str, token: str) -> List:
         """Return the lists on the board."""
@@ -50,7 +50,7 @@ class WekanBase(SourceCollector):
         """Return whether the list should be ignored."""
         if card_list.get("archived", False):
             return True
-        lists_to_ignore = cast(List[str], self.parameters.get("lists_to_ignore") or [])
+        lists_to_ignore = cast(List[str], self.parameter("lists_to_ignore"))
         return card_list["_id"] in lists_to_ignore or card_list["title"] in lists_to_ignore
 
     def ignore_card(self, card) -> bool:  # pylint: disable=unused-argument,no-self-use
@@ -80,7 +80,7 @@ class WekanIssues(WekanBase):
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""
             date_last_activity = parse(card["dateLastActivity"])
-            return days_ago(date_last_activity) > int(cast(int, self.parameters.get("inactive_days")))
+            return days_ago(date_last_activity) > int(cast(int, self.parameter("inactive_days")))
 
         def card_is_overdue() -> bool:
             """Return whether the card is overdue."""
@@ -89,7 +89,7 @@ class WekanIssues(WekanBase):
 
         if super().ignore_card(card):
             return True
-        cards_to_count = self.parameters.get("cards_to_count") or []
+        cards_to_count = self.parameter("cards_to_count")
         if "inactive" in cards_to_count and card_is_inactive():
             return False
         if "overdue" in cards_to_count and card_is_overdue():

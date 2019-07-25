@@ -19,19 +19,19 @@ class OJAuditViolations(SourceCollector):
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = cast(List[str], self.parameters.get("severities", []))
+        severities = cast(List[str], self.parameter("severities"))
         return self.violation_count(tree, namespaces, severities)
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = cast(List[str], self.parameters.get("severities", []))
+        severities = cast(List[str], self.parameter("severities"))
         return self.violations(tree, namespaces, severities)
 
     @staticmethod
     def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
         """Return the violation count."""
         count = 0
-        for severity in severities or ["violation"]:
+        for severity in severities:
             count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return str(count)
 

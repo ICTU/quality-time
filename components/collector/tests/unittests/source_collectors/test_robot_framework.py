@@ -27,7 +27,7 @@ class RobotFrameworkTestReportTest(unittest.TestCase):
     </statistics>
 </robot>"""
         with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, dict()).get()
         self.assertEqual("11", response["sources"][0]["value"])
         self.assertEqual("report.html", response["sources"][0]["landing_url"])
 
@@ -54,7 +54,7 @@ class RobotFrameworkTestReportFailedTestsTest(unittest.TestCase):
     </statistics>
 </robot>"""
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, dict()).get()
         self.assertEqual("3", response["sources"][0]["value"])
 
     def test_failed_tests_entities(self):
@@ -95,6 +95,6 @@ class RobotFrameworkSourceUpToDatenessTest(unittest.TestCase):
             sources=dict(source_id=dict(type="robot_framework", parameters=dict(url="output.xml"))),
             addition="max")
         with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, dict()).get()
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])

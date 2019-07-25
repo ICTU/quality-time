@@ -17,11 +17,11 @@ class GitlabBase(SourceCollector):
     def gitlab_api_url(self, api: str) -> URL:
         """Return a Gitlab API url with private token, if present in the parameters."""
         url = super().api_url()
-        project = quote(str(self.parameters.get("project")), safe="")
+        project = quote(cast(str, self.parameter("project")), safe="")
         api_url = f"{url}/api/v4/projects/{project}/{api}"
         sep = "&" if "?" in api_url else "?"
         api_url += f"{sep}per_page=100"
-        private_token = self.parameters.get("private_token")
+        private_token = self.parameter("private_token")
         if private_token:
             api_url += f"&private_token={private_token}"
         return URL(api_url)
@@ -65,15 +65,15 @@ class GitlabSourceUpToDateness(GitlabBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def api_url(self) -> URL:
-        file_path = quote(cast(str, self.parameters.get("file_path", "")), safe="")
-        branch = quote(cast(str, self.parameters.get("branch", "master")), safe="")
+        file_path = quote(cast(str, self.parameter("file_path")), safe="")
+        branch = quote(cast(str, self.parameter("branch")), safe="")
         return self.gitlab_api_url(f"repository/files/{file_path}?ref={branch}")
 
     def landing_url(self, responses: List[requests.Response]) -> URL:
         landing_url = super().landing_url(responses)
-        project = cast(str, self.parameters.get("project", "")).strip("/")
-        file_path = cast(str, self.parameters.get("file_path", "")).strip("/")
-        branch = cast(str, self.parameters.get("branch", "master")).strip("/")
+        project = cast(str, self.parameter("project")).strip("/")
+        file_path = cast(str, self.parameter("file_path")).strip("/")
+        branch = cast(str, self.parameter("branch")).strip("/")
         return URL(f"{landing_url}/{project}/blob/{branch}/{file_path}")
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
@@ -105,7 +105,7 @@ class GitlabUnmergedBranches(GitlabBase):
     def unmerged_branches(self, responses: List[requests.Response]) -> List:
         """Return the unmerged branches."""
         return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
-                self.commit_age(branch).days > int(cast(str, self.parameters.get("inactive_days") or "7"))]
+                self.commit_age(branch).days > int(cast(str, self.parameter("inactive_days")))]
 
     def commit_age(self, branch) -> timedelta:
         """Return the age of the last commit on the branch."""

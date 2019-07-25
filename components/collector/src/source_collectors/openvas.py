@@ -28,7 +28,7 @@ class OpenVASSecurityWarnings(SourceCollector):
 
     def results(self, element: Element) -> List[Element]:
         """Return the results that have one of the severities specified in the parameters."""
-        severities = self.parameters.get("severities") or ["log", "low", "medium", "high"]
+        severities = self.parameter("severities")
         results = element.findall(".//results/result")
         return [result for result in results if result.findtext("threat", default="").lower() in severities]
 

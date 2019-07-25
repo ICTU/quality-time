@@ -10,14 +10,24 @@ class OJAuditTest(unittest.TestCase):
     """Unit tests for the OJAudit metrics."""
 
     def setUp(self):
+        self.datamodel = dict(
+            sources=dict(
+                ojaudit=dict(
+                    parameters=dict(
+                        severities=dict(values=["advisory", "incomplete", "warning", "error", "exception"])))))
         self.metric = dict(type="violations", addition="sum",
                            sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
+        self.mock_response = Mock()
 
     def test_violations(self):
         """Test that the number of violations is returned."""
-        mock_response = Mock()
-        mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
+  <exception-count>1</exception-count>
+  <error-count>0</error-count>
+  <warning-count>1</warning-count>
+  <incomplete-count>0</incomplete-count>
+  <advisory-count>0</advisory-count>
   <models>
     <model id="a">
       <file>
@@ -59,8 +69,8 @@ class OJAuditTest(unittest.TestCase):
     </children>
   </construct>
 </audit>"""
-        with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(self.metric).get()
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(self.metric, self.datamodel).get()
         self.assertEqual(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
@@ -70,8 +80,7 @@ class OJAuditTest(unittest.TestCase):
 
     def test_missing_location(self):
         """Test that an exception is raised if the violation location is missing."""
-        mock_response = Mock()
-        mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
   <models>
     <model id="a">
@@ -94,14 +103,13 @@ class OJAuditTest(unittest.TestCase):
     </violation>
   </construct>
 </audit>"""
-        with patch("requests.get", return_value=mock_response):
-            self.assertTrue(
-                "has no location element" in MetricCollector(self.metric).get()["sources"][0]["parse_error"])
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(self.metric, self.datamodel).get()
+        self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
 
     def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
-        mock_response = Mock()
-        mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>1</violation-count>
   <high-count>0</high-count>
   <medium-count>1</medium-count>
@@ -126,7 +134,7 @@ class OJAuditTest(unittest.TestCase):
   </construct>
 </audit>"""
         self.metric["sources"]["a"]["parameters"]["severities"] = ["high"]
-        with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(self.metric).get()
+        with patch("requests.get", return_value=self.mock_response):
+            response = MetricCollector(self.metric, self.datamodel).get()
         self.assertEqual("0", response["sources"][0]["value"])
         self.assertEqual([], response["sources"][0]["entities"])

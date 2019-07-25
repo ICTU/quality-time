@@ -19,7 +19,7 @@ class PyupioSafetyTest(unittest.TestCase):
             sources=dict(source_id=dict(type="pyupio_safety", parameters=dict(url="safety.json"))),
             addition="sum")
         with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, dict()).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(package="ansible", key="25625", installed="1.8.5", affected="<1.9.2",

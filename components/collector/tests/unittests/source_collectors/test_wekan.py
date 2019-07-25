@@ -7,6 +7,20 @@ from unittest.mock import Mock, patch
 from metric_collectors import MetricCollector
 
 
+def setUpModule():
+    global datamodel
+    datamodel = dict(
+        sources=dict(
+            wekan=dict(
+                parameters=dict(
+                    username=dict(),
+                    password=dict(),
+                    board=dict(),
+                    lists_to_ignore=dict(),
+                    inactive_days=dict(),
+                    cards_to_count=dict(values=["inactive", "overdue"])))))
+
+
 class WekanTest(unittest.TestCase):
     """Unit tests for the Wekan metrics."""
 
@@ -35,7 +49,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
@@ -55,7 +69,7 @@ class WekanTest(unittest.TestCase):
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
@@ -76,7 +90,7 @@ class WekanTest(unittest.TestCase):
                  dueAt="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
@@ -97,7 +111,7 @@ class WekanTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
@@ -132,7 +146,7 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
 
     def test_age_with_ignored_lists(self):
@@ -150,5 +164,5 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             []]
         with patch("requests.post", return_value=self.mock_post_response):
             with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric).get()
+                response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])

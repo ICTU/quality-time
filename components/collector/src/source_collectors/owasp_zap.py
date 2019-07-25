@@ -41,9 +41,8 @@ class OWASPZAPSecurityWarnings(SourceCollector):
     def alerts(self, responses: List[requests.Response]) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         tree = parse_source_response_xml(responses[0])
-        risks = self.parameters.get("risks") or ["informational", "low", "medium", "high"]
         alerts = []
-        for risk in risks:
+        for risk in self.parameter("risks"):
             risk_code = dict(informational=0, low=1, medium=2, high=3)[risk]
             alerts.extend(tree.findall(f".//alertitem[riskcode='{risk_code}']"))
         return alerts

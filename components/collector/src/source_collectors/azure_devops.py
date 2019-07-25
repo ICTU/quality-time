@@ -19,7 +19,7 @@ class AzureDevopsBase(SourceCollector):
         """Override because we need to do a post request and need to separately get the entities."""
         auth = self.basic_auth_credentials()
         response = requests.post(
-            api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self.parameters.get("wiql", "")))
+            api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self.parameter("wiql")))
         ids = ",".join([str(work_item["id"]) for work_item in response.json().get("workItems", [])])
         if not ids:
             return [response]

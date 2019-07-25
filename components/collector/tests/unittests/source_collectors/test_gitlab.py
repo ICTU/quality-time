@@ -7,14 +7,26 @@ from unittest.mock import Mock, patch
 from metric_collectors import MetricCollector
 
 
-class GitLabTest(unittest.TestCase):
-    """Unit tests for the GitLab metrics."""
+def setUpModule():
+    global datamodel
+    datamodel = dict(
+        sources=dict(
+            gitlab=dict(
+                parameters=dict(
+                    project=dict(),
+                    private_token=dict(),
+                    file_path=dict(),
+                    branch=dict(default_value="master"),
+                    inactive_days=dict(default_value="7")))))
+
+
+class GitLabFailedJobsTest(unittest.TestCase):
+    """Unit tests for the GitLab failed jobs metric."""
 
     def setUp(self):
         """Test fixture."""
         self.mock_response = Mock()
-        self.sources = dict(source_id=dict(
-            type="gitlab", parameters=dict(url="http://gitlab/")))
+        self.sources = dict(source_id=dict(type="gitlab", parameters=dict(url="http://gitlab/")))
         self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
 
     def test_nr_of_failed_jobs(self):
@@ -24,7 +36,7 @@ class GitLabTest(unittest.TestCase):
                  web_url="http://gitlab/job", ref="ref")]
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual([dict(key="id", name="ref", url="http://gitlab/job", build_age=build_age,
                                build_date="2019-03-31", build_status="failed")], response["sources"][0]["entities"])
         self.assertEqual("1", response["sources"][0]["value"])
@@ -34,7 +46,7 @@ class GitLabTest(unittest.TestCase):
         self.mock_response.json.return_value = [
             dict(name="job", url="http://job", status="success")]
         with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("0", response["sources"][0]["value"])
 
 
@@ -55,7 +67,7 @@ class GitlabSourceUpToDatenessTest(unittest.TestCase):
         head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
         with patch("requests.head", return_value=head_response):
             with patch("requests.get", return_value=get_response):
-                response = MetricCollector(metric).get()
+                response = MetricCollector(metric, datamodel).get()
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assertEqual(str(expected_age), response["sources"][0]["value"])
         self.assertEqual("http://gitlab/project/blob/branch/file", response["sources"][0]["landing_url"])
@@ -80,9 +92,9 @@ class GitlabUnmergedBranchesTest(unittest.TestCase):
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
             dict(name="merged_branch", merged=True)]
         with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(metric).get()
+            response = MetricCollector(metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
-        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=(timezone.utc))).days)
+        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         self.assertEqual(
             [dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")],
             response["sources"][0]["entities"])

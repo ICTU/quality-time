@@ -17,9 +17,10 @@ class SourceCollector:
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
+    source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 
-    def __init__(self, source, datamodel=None) -> None:
+    def __init__(self, source, datamodel) -> None:
         self.source = source
         self.datamodel = datamodel
         self.parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
@@ -35,6 +36,7 @@ class SourceCollector:
         for class_name in (f"{source_type}{metric_type}", source_type):
             matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == class_name.replace("_", "")]
             if matching_subclasses:
+                matching_subclasses[0].source_type = source_type
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
@@ -55,6 +57,14 @@ class SourceCollector:
     def api_url(self) -> URL:  # pylint: disable=no-self-use
         """Translate the url parameter into the API url."""
         return URL(cast(str, self.parameters.get("url", "")).strip("/"))
+
+    def parameter(self, parameter_key: str) -> Union[str, List[str]]:
+        """Return the parameter value."""
+        parameter_info = self.datamodel["sources"][self.source_type]["parameters"][parameter_key]
+        if "values" in parameter_info:
+            return self.parameters.get(parameter_key) or parameter_info["values"]
+        default_value = parameter_info.get("default_value", "")
+        return self.parameters.get(parameter_key, default_value)
 
     def safely_get_source_responses(self, api_url: URL) -> Tuple[List[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden

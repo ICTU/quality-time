@@ -7,6 +7,20 @@ from unittest.mock import Mock, patch
 from metric_collectors import MetricCollector
 
 
+def setUpModule():
+    global datamodel
+    datamodel = dict(
+        sources=dict(
+            trello=dict(
+                parameters=dict(
+                    board=dict(),
+                    api_key=dict(),
+                    token=dict(),
+                    inactive_days=dict(),
+                    lists_to_ignore=dict(),
+                    cards_to_count=dict(values=["inactive", "overdue"])))))
+
+
 class TrelloIssuesTest(unittest.TestCase):
     """Unit tests for the Trello issue metric."""
 
@@ -32,7 +46,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(
@@ -55,7 +69,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1"), dict(id="list2", name="List 2")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 2",
@@ -77,7 +91,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 1",
@@ -99,7 +113,7 @@ class TrelloIssuesTest(unittest.TestCase):
             lists=[dict(id="list1", name="List 1")])
         self.mock_get_response.json.side_effect = [[dict(id="board1", name="Board1")], cards, cards, cards]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual("1", response["sources"][0]["value"])
         self.assertEqual(
             [dict(key="card2", url="http://trello/card2", title="Card 2", list="List 1", due_date=None,
@@ -132,12 +146,12 @@ class TrelloSourceUpToDatenessTest(unittest.TestCase):
     def test_age(self):
         """Test that the source up to dateness is the number of days since the most recent change."""
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 3, 3)).days), response["sources"][0]["value"])
 
     def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the source up to dateness."""
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         with patch("requests.get", return_value=self.mock_get_response):
-            response = MetricCollector(self.metric).get()
+            response = MetricCollector(self.metric, datamodel).get()
         self.assertEqual(str((datetime.now() - datetime(2019, 2, 10)).days), response["sources"][0]["value"])

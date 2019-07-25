@@ -67,7 +67,7 @@ class JenkinsFailedJobs(JenkinsJobs):
 
     def count_job(self, job: Job) -> bool:
         """Count the job if its build status matches the failure types selected by the user."""
-        return self.build_status(job) in self.parameters.get("failure_type", [])
+        return self.build_status(job) in self.parameter("failure_type")
 
 
 class JenkinsUnusedJobs(JenkinsJobs):
@@ -76,5 +76,5 @@ class JenkinsUnusedJobs(JenkinsJobs):
     def count_job(self, job: Job) -> bool:
         """Count the job if its most recent build is too old."""
         age = self.build_age(job)
-        max_days = int(cast(str, self.parameters.get("inactive_days", "0")))
+        max_days = int(cast(str, self.parameter("inactive_days")))
         return age > timedelta(days=max_days) if age < timedelta.max else False

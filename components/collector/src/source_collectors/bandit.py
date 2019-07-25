@@ -18,8 +18,8 @@ class BanditSecurityWarnings(SourceCollector):
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of warnings."""
-        severities = self.parameters.get("severities") or ["low", "medium", "high"]
-        confidence_levels = self.parameters.get("confidence_levels") or ["low", "medium", "high"]
+        severities = self.parameter("severities")
+        confidence_levels = self.parameter("confidence_levels")
         return [
             dict(
                 key=f'{warning["test_id"]}:{warning["filename"]}:{warning["line_number"]}',
