@@ -1,25 +1,25 @@
 """Unit tests for the OWASP ZAP source."""
 
 from datetime import datetime
-import unittest
 from unittest.mock import Mock, patch
 
-from metric_collectors import MetricCollector
+from .source_collector_test_case import SourceCollectorTestCase
 
 
-class OWASPZAPTest(unittest.TestCase):
+class OWASPZAPTest(SourceCollectorTestCase):
     """Unit tests for the OWASP ZAP metrics."""
 
     def setUp(self):
-        self.mock_response = Mock()
+        super().setUp()
         self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
-        self.datamodel = dict(
-            sources=dict(
-                owasp_zap=dict(parameters=dict(risks=dict(values=["informational", "low", "medium", "high"])))))
+
+    def collect(self, metric, xml=""):
+        with patch("requests.get", return_value=Mock(text=xml)):
+            return super().collect(metric)
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""
-        self.mock_response.text = """<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
             <site name="http://www.hackazon.com" host="www.hackazon.com" port="80" ssl="false">
                 <alerts>
@@ -55,9 +55,8 @@ class OWASPZAPTest(unittest.TestCase):
             </site>
         </OWASPZAPReport>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric, self.datamodel).get()
-        self.assertEqual(
+        response = self.collect(metric, xml)
+        self.assert_entities(
             [
                 dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
                      name="X-Content-Type-Options Header Missing",
@@ -70,16 +69,15 @@ class OWASPZAPTest(unittest.TestCase):
                      location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
                      uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
                      risk="Low (Medium)")],
-            response["sources"][0]["entities"])
-        self.assertEqual("2", response["sources"][0]["value"])
+            response)
+        self.assert_value("2", response)
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        self.mock_response.text = """<?xml version="1.0"?>
+        xml = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
         </OWASPZAPReport>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(metric, self.datamodel).get()
+        response = self.collect(metric, xml)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
-        self.assertEqual(str(expected_age), response["sources"][0]["value"])
+        self.assert_value(str(expected_age), response)

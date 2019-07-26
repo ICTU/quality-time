@@ -1,45 +1,43 @@
 """Unit tests for the Wekan metric source."""
 
 from datetime import datetime
-import unittest
 from unittest.mock import Mock, patch
 
-from metric_collectors import MetricCollector
+from .source_collector_test_case import SourceCollectorTestCase
 
 
-def setUpModule():
-    global datamodel
-    datamodel = dict(
-        sources=dict(
-            wekan=dict(
-                parameters=dict(
-                    username=dict(),
-                    password=dict(),
-                    board=dict(),
-                    lists_to_ignore=dict(),
-                    inactive_days=dict(),
-                    cards_to_count=dict(values=["inactive", "overdue"])))))
-
-
-class WekanTest(unittest.TestCase):
-    """Unit tests for the Wekan metrics."""
+class WekanTestCase(SourceCollectorTestCase):
+    """Base class for testing Wekan collectors."""
 
     def setUp(self):
-        self.metric = dict(
-            type="issues", addition="sum",
-            sources=dict(
-                source_id=dict(
-                    type="wekan",
-                    parameters=dict(
-                        url="http://wekan", board="board1", username="user", password="pass",
-                        inactive_days="90", lists_to_ignore=[]))))
-        self.mock_post_response = Mock()
-        self.mock_post_response.json.return_value = dict(token="token")
-        self.mock_get_response = Mock()
+        super().setUp()
+        self.sources = dict(
+            source_id=dict(
+                type="wekan",
+                parameters=dict(
+                    url="http://wekan", board="board1", username="user", password="pass",
+                    inactive_days="90", lists_to_ignore=[])))
+
+    def collect(self, metric, json=None):
+        post_response = Mock()
+        post_response.json.return_value = dict(token="token")
+        get_response = Mock()
+        get_response.json.side_effect = json
+        with patch("requests.post", return_value=post_response):
+            with patch("requests.get", return_value=get_response):
+                return super().collect(metric)
+
+
+class WekanIssuesTest(WekanTestCase):
+    """Unit tests for the Wekan issues collector."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="issues", addition="sum", sources=self.sources)
 
     def test_issues(self):
         """Test that the number of issues and the individual issues are returned and that archived cards are ignored."""
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
@@ -47,18 +45,16 @@ class WekanTest(unittest.TestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual("1", response["sources"][0]["value"])
-        self.assertEqual(
+        response = self.collect(self.metric, json)
+        self.assert_value("1", response)
+        self.assert_entities(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
                   due_date="", date_last_activity="2019-01-01")],
-            response["sources"][0]["entities"])
+            response)
 
     def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
@@ -67,19 +63,17 @@ class WekanTest(unittest.TestCase):
             [dict(_id="card1", title="Card 1")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual("1", response["sources"][0]["value"])
-        self.assertEqual(
+        response = self.collect(self.metric, json)
+        self.assert_value("1", response)
+        self.assert_entities(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
                   due_date="", date_last_activity="2019-01-01")],
-            response["sources"][0]["entities"])
+            response)
 
     def test_overdue_issues(self):
         """Test overdue issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["overdue"]
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
@@ -88,19 +82,17 @@ class WekanTest(unittest.TestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01",
                  dueAt="2019-01-01")]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual("1", response["sources"][0]["value"])
-        self.assertEqual(
+        response = self.collect(self.metric, json)
+        self.assert_value("1", response)
+        self.assert_entities(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
                   due_date="2019-01-01", date_last_activity="2019-01-01")],
-            response["sources"][0]["entities"])
+            response)
 
     def test_inactive_issues(self):
         """Test inactive issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["inactive"]
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(slug="board-slug"),
@@ -109,34 +101,24 @@ class WekanTest(unittest.TestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1",
                  dateLastActivity=datetime.now().isoformat()),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual("1", response["sources"][0]["value"])
-        self.assertEqual(
+        response = self.collect(self.metric, json)
+        self.assert_value("1", response)
+        self.assert_entities(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
                   date_last_activity="2000-01-01")],
-            response["sources"][0]["entities"])
+            response)
 
 
-class WekanSourceUpToDatenessTest(unittest.TestCase):
+class WekanSourceUpToDatenessTest(WekanTestCase):
     """Unit tests for the Wekan source up-to-dateness collector."""
 
     def setUp(self):
-        self.metric = dict(
-            type="source_up_to_dateness", addition="max",
-            sources=dict(
-                source_id=dict(
-                    type="wekan",
-                    parameters=dict(
-                        url="http://wekan", board="board1", username="user", password="pass", lists_to_ignore=[]))))
-        self.mock_post_response = Mock()
-        self.mock_post_response.json.return_value = dict(token="token")
-        self.mock_get_response = Mock()
+        super().setUp()
+        self.metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
 
     def test_age(self):
         """Test that the number of days since the last activity is returned."""
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(_id="board1", createdAt="2019-01-01"),
@@ -144,15 +126,13 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
+        response = self.collect(self.metric, json)
+        self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)
 
     def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the number of days since the last activity."""
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        self.mock_get_response.json.side_effect = [
+        json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
             dict(_id="board1", createdAt="2019-01-01"),
@@ -162,7 +142,5 @@ class WekanSourceUpToDatenessTest(unittest.TestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             []]
-        with patch("requests.post", return_value=self.mock_post_response):
-            with patch("requests.get", return_value=self.mock_get_response):
-                response = MetricCollector(self.metric, datamodel).get()
-        self.assertEqual(str((datetime.now() - datetime(2019, 1, 1)).days), response["sources"][0]["value"])
+        response = self.collect(self.metric, json)
+        self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)

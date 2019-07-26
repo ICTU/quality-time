@@ -1,12 +1,11 @@
 """Unit tests for the Pyup.io Safety source."""
 
-import unittest
 from unittest.mock import Mock, patch
 
-from metric_collectors import MetricCollector
+from .source_collector_test_case import SourceCollectorTestCase
 
 
-class PyupioSafetyTest(unittest.TestCase):
+class PyupioSafetyTest(SourceCollectorTestCase):
     """Unit tests for the security warning metric."""
 
     def test_warnings(self):
@@ -15,13 +14,12 @@ class PyupioSafetyTest(unittest.TestCase):
         mock_response.json = Mock(
             return_value=[["ansible", "<1.9.2", "1.8.5", "Ansible before 1.9.2 does not ...", "25625"]])
         metric = dict(
-            type="security_warnings",
-            sources=dict(source_id=dict(type="pyupio_safety", parameters=dict(url="safety.json"))),
-            addition="sum")
+            type="security_warnings", addition="sum",
+            sources=dict(source_id=dict(type="pyupio_safety", parameters=dict(url="safety.json"))))
         with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(metric, dict()).get()
-        self.assertEqual("1", response["sources"][0]["value"])
-        self.assertEqual(
+            response = self.collect(metric)
+        self.assert_value("1", response)
+        self.assert_entities(
             [dict(package="ansible", key="25625", installed="1.8.5", affected="<1.9.2",
                   vulnerability="Ansible before 1.9.2 does not ...")],
-            response["sources"][0]["entities"])
+            response)
