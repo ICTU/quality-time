@@ -1,7 +1,6 @@
 """Unit tests for the Performancetest-runner source."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
 
 from utilities.functions import days_ago
 from .source_collector_test_case import SourceCollectorTestCase
@@ -14,10 +13,6 @@ class PerformanceTestRunnerTestCase(SourceCollectorTestCase):
         super().setUp()
         self.sources = dict(source_id=dict(type="performancetest_runner", parameters=dict(url="report.html")))
 
-    def collect(self, metric, html=""):
-        with patch("requests.get", return_value=Mock(text=html)):
-            return super().collect(metric)
-
 
 class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
     """Unit tests for the performancetest-runner slow transaction collector."""
@@ -29,21 +24,21 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
     def test_no_transactions(self):
         """Test that the number of slow transactions is 0 if there are no transactions in the details table."""
         html = '<html><table class="details"><tr></tr></table></html>'
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_value("0", response)
 
     def test_one_slow_transaction(self):
         """Test that the number of slow transactions is 1 if there is 1 slow transactions in the details table."""
         html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
             '</tr></table></html>'
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_value("1", response)
 
     def test_ignore_fast_transactions(self):
         """Test that fast transactions are not counted."""
         html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
             '</tr><tr class="transaction"><td class="green evaluated"/></tr></table></html>'
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_value("1", response)
 
     def test_warning_only(self):
@@ -52,7 +47,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '</tr><tr class="transaction"><td class="name">Name</td><td class="yellow evaluated"/></tr>' \
             '<tr class="transaction"><td class="green evaluated"/></tr></table></html>'
         self.sources["source_id"]["parameters"]["thresholds"] = ["warning"]
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_entities([dict(key="Name", name="Name", threshold="warning")], response)
         self.assert_value("1", response)
 
@@ -65,7 +60,7 @@ class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase)
         html = '<html><table class="config"><tr><td class="name">Start of the test</td>' \
             '<td id="start_of_the_test">2019.06.22.06.23.00</td></tr></table></html>'
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
-        response = self.collect(metric, html)
+        response = self.collect(metric, get_request_text=html)
         expected_age = days_ago(datetime(2019, 6, 22, 6, 23, 0))
         self.assert_value(str(expected_age), response)
 
@@ -78,7 +73,7 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
         html = '<html><table class="config"><tr><td class="name">Duration</td>' \
             '<td id="duration">00:35:00</td></tr></table></html>'
         metric = dict(type="performancetest_duration", sources=self.sources, addition="min")
-        response = self.collect(metric, html)
+        response = self.collect(metric, get_request_text=html)
         self.assert_value("35", response)
 
 
@@ -92,7 +87,7 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
             '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
             '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
         metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = self.collect(metric, html)
+        response = self.collect(metric, get_request_text=html)
         self.assert_value("712", response)
 
 
@@ -105,7 +100,7 @@ class PerformanceTestRunnerFailedTestsTest(PerformanceTestRunnerTestCase):
             '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
             '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
         metric = dict(type="failed_tests", sources=self.sources, addition="sum")
-        response = self.collect(metric, html)
+        response = self.collect(metric, get_request_text=html)
         self.assert_value("42", response)
 
 
@@ -119,7 +114,7 @@ class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
             <tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">90</td></tr>
             </table></html>'''
         metric = dict(type="performancetest_stability", sources=self.sources, addition="min")
-        response = self.collect(metric, html)
+        response = self.collect(metric, get_request_text=html)
         self.assert_value("90", response)
 
 
@@ -136,7 +131,7 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
         html = '''<html><table class="config">
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">74</td></tr>
             </table></html>'''
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_value("74", response)
 
     def test_scalability_without_breaking_point(self):
@@ -145,6 +140,6 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
         html = '''<html><table class="config">
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>'''
-        response = self.collect(self.metric, html)
+        response = self.collect(self.metric, get_request_text=html)
         self.assert_value(None, response)
         self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

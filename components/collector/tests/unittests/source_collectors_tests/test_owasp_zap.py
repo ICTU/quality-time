@@ -1,7 +1,6 @@
 """Unit tests for the OWASP ZAP source."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -12,10 +11,6 @@ class OWASPZAPTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
-
-    def collect(self, metric, xml=""):
-        with patch("requests.get", return_value=Mock(text=xml)):
-            return super().collect(metric)
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""
@@ -55,7 +50,7 @@ class OWASPZAPTest(SourceCollectorTestCase):
             </site>
         </OWASPZAPReport>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         self.assert_entities(
             [
                 dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
@@ -78,6 +73,6 @@ class OWASPZAPTest(SourceCollectorTestCase):
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
         </OWASPZAPReport>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assert_value(str(expected_age), response)

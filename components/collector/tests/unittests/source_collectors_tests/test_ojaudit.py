@@ -1,7 +1,5 @@
 """Unit tests for the OJAudit source."""
 
-from unittest.mock import Mock, patch
-
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -12,10 +10,6 @@ class OJAuditTest(SourceCollectorTestCase):
         self.metric = dict(
             type="violations", addition="sum",
             sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
-
-    def collect(self, metric, ojaudit_xml: str = ""):
-        with patch("requests.get", return_value=Mock(text=ojaudit_xml)):
-            return super().collect(metric)
 
     def test_violations(self):
         """Test that the number of violations is returned."""
@@ -67,7 +61,7 @@ class OJAuditTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = self.collect(self.metric, ojaudit_xml)
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_entities(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
@@ -100,7 +94,7 @@ class OJAuditTest(SourceCollectorTestCase):
     </violation>
   </construct>
 </audit>"""
-        response = self.collect(self.metric, ojaudit_xml)
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
 
     def test_filter_violations(self):
@@ -130,6 +124,6 @@ class OJAuditTest(SourceCollectorTestCase):
   </construct>
 </audit>"""
         self.metric["sources"]["source_id"]["parameters"]["severities"] = ["high"]
-        response = self.collect(self.metric, ojaudit_xml)
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_value("0", response)
         self.assert_entities([], response)

@@ -1,7 +1,6 @@
 """Unit tests for the OpenVAS source."""
 
 from datetime import datetime, timezone
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -12,10 +11,6 @@ class OpenVASTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(source_id=dict(type="openvas", parameters=dict(url="http://openvas.xml")))
-
-    def collect(self, metric, openvas_xml: str = ""):
-        with patch("requests.get", return_value=Mock(text=openvas_xml)):
-            return super().collect(metric)
 
     def test_warnings(self):
         """Test that the number of warnings is returned."""
@@ -32,7 +27,7 @@ class OpenVASTest(SourceCollectorTestCase):
     </results>
 </report>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, openvas_xml)
+        response = self.collect(metric, get_request_text=openvas_xml)
         self.assert_entities(
             [dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")],
             response)
@@ -47,6 +42,6 @@ class OpenVASTest(SourceCollectorTestCase):
     <modification_time>2019-04-09T18:05:40Z</modification_time>
 </report>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, openvas_xml)
+        response = self.collect(metric, get_request_text=openvas_xml)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 4, 9, 17, 56, 14, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)

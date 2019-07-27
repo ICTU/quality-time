@@ -1,7 +1,6 @@
 """Unit tests for the Bandit source."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -12,13 +11,6 @@ class BanditTestCase(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(source_id=dict(type="bandit", parameters=dict(url="bandit.json")))
-
-    def collect(self, metric, bandit_json=None):
-        """Collect the metric."""
-        bandit_response = Mock()
-        bandit_response.json.return_value = bandit_json
-        with patch("requests.get", return_value=bandit_response):
-            return super().collect(metric)
 
 
 class BanditSecurityWarningsTest(BanditTestCase):
@@ -41,7 +33,7 @@ class BanditSecurityWarningsTest(BanditTestCase):
 
     def test_warnings(self):
         """Test the number of security warnings."""
-        response = self.collect(self.metric, self.bandit_json)
+        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_value("1", response)
         self.assert_entities(
             [dict(
@@ -54,14 +46,14 @@ class BanditSecurityWarningsTest(BanditTestCase):
     def test_warnings_with_high_severity(self):
         """Test the number of high severity security warnings."""
         self.sources["source_id"]["parameters"]["severities"] = ["high"]
-        response = self.collect(self.metric, self.bandit_json)
+        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_value("0", response)
         self.assert_entities([], response)
 
     def test_warnings_with_high_confidence(self):
         """Test the number of high confidence security warnings."""
         self.sources["source_id"]["parameters"]["confidence_levels"] = ["high"]
-        response = self.collect(self.metric, self.bandit_json)
+        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_value("0", response)
         self.assert_entities([], response)
 
@@ -73,6 +65,6 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
         """Test that the source age in days is returned."""
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         bandit_json = dict(generated_at="2019-07-12T07:38:47Z")
-        response = self.collect(metric, bandit_json)
+        response = self.collect(metric, get_request_json_return_value=bandit_json)
         expected_age = (datetime.now() - datetime(2019, 7, 12, 7, 38, 47)).days
         self.assert_value(str(expected_age), response)

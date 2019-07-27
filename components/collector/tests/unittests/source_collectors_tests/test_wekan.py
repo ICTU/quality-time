@@ -1,7 +1,6 @@
 """Unit tests for the Wekan metric source."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -17,15 +16,6 @@ class WekanTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="http://wekan", board="board1", username="user", password="pass",
                     inactive_days="90", lists_to_ignore=[])))
-
-    def collect(self, metric, json=None):
-        post_response = Mock()
-        post_response.json.return_value = dict(token="token")
-        get_response = Mock()
-        get_response.json.side_effect = json
-        with patch("requests.post", return_value=post_response):
-            with patch("requests.get", return_value=get_response):
-                return super().collect(metric)
 
 
 class WekanIssuesTest(WekanTestCase):
@@ -45,7 +35,8 @@ class WekanIssuesTest(WekanTestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
@@ -63,7 +54,8 @@ class WekanIssuesTest(WekanTestCase):
             [dict(_id="card1", title="Card 1")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
             [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
@@ -82,7 +74,8 @@ class WekanIssuesTest(WekanTestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01",
                  dueAt="2019-01-01")]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
@@ -101,7 +94,8 @@ class WekanIssuesTest(WekanTestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1",
                  dateLastActivity=datetime.now().isoformat()),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
             [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
@@ -126,7 +120,8 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
             [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)
 
     def test_age_with_ignored_lists(self):
@@ -142,5 +137,6 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
             dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
             []]
-        response = self.collect(self.metric, json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)

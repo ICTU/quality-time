@@ -1,7 +1,6 @@
 """Unit tests for the OWASP Dependency Check source."""
 
 from datetime import datetime, timedelta, timezone
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -13,10 +12,6 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         super().setUp()
         self.sources = dict(
             sourceid=dict(type="owasp_dependency_check", parameters=dict(url="http://owasp_dependency_check.xml")))
-
-    def collect(self, metric, xml=""):
-        with patch("requests.get", return_value=Mock(text=xml)):
-            return super().collect(metric)
 
     def test_warnings(self):
         """Test that the number of warnings is returned."""
@@ -41,7 +36,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
             </dependency>
         </analysis>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         self.assert_entities(
             [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Medium", nr_vulnerabilities=2,
@@ -67,7 +62,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
             </dependency>
         </analysis>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         self.assert_entities(
             [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
                   highest_severity="Low", nr_vulnerabilities=1,
@@ -84,7 +79,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
             </projectInfo>
         </analysis>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         tzinfo = timezone(timedelta(hours=2))
         expected_age = (datetime.now(tzinfo) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=tzinfo)).days
         self.assert_value(str(expected_age), response)

@@ -1,7 +1,5 @@
 """Unit tests for the Jira metric source."""
 
-from unittest.mock import Mock, patch
-
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -16,12 +14,6 @@ class JiraTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="http://jira", jql="query", story_points_field="field", manual_test_duration_field="field")))
 
-    def collect(self, metric, get_json=None):
-        jira_response = Mock()
-        jira_response.json.return_value = get_json
-        with patch("requests.get", return_value=jira_response):
-            return super().collect(metric)
-
 
 class JiraIssuesTest(JiraTestCase):
     """Unit tests for the Jira issue collector."""
@@ -32,13 +24,13 @@ class JiraIssuesTest(JiraTestCase):
 
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = self.collect(self.metric, dict(total=42))
+        response = self.collect(self.metric, get_request_json_return_value=dict(total=42))
         self.assert_value("42", response)
 
     def test_issues(self):
         """Test that the issues are returned."""
         jira_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
-        response = self.collect(self.metric, jira_json)
+        response = self.collect(self.metric, get_request_json_return_value=jira_json)
         self.assert_entities([dict(key="id", summary="Summary", url="http://jira/browse/key")], response)
 
 
@@ -52,7 +44,7 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
             issues=[
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=32))])
-        response = self.collect(metric, jira_json)
+        response = self.collect(metric, get_request_json_return_value=jira_json)
         self.assert_value("42", response)
 
 
@@ -66,5 +58,5 @@ class JiraManualTestDurationTest(JiraTestCase):
             issues=[
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
-        response = self.collect(metric, jira_json)
+        response = self.collect(metric, get_request_json_return_value=jira_json)
         self.assert_value("25", response)

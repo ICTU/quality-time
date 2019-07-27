@@ -1,7 +1,6 @@
 """Unit tests for the Checkmarx CxSAST source."""
 
 from datetime import datetime, timezone
-from unittest.mock import Mock, patch
 
 from source_collectors.cxsast import CxSASTSecurityWarnings
 from .source_collector_test_case import SourceCollectorTestCase
@@ -17,16 +16,6 @@ class CxSASTTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="http://checkmarx/", username="user", password="pass", project="project")))
 
-    def collect(self, metric, get_json=None, post_json=None, get_text=""):
-        get_response = Mock()
-        get_response.json.side_effect = get_json
-        get_response.text = get_text
-        post_response = Mock()
-        post_response.json.side_effect = post_json or [dict(access_token="token")] * 2
-        with patch("requests.post", return_value=post_response):
-            with patch("requests.get", return_value=get_response):
-                return super().collect(metric)
-
 
 class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
     """Unit tests for the source up-to-dateness collector."""
@@ -39,15 +28,16 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
         get_json = [
             [dict(name="project", id="id")], [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))],
             [dict(name="project", id="id")]]
-        response = self.collect(self.metric, get_json)
+        post_json = [dict(access_token="token")] * 2
+        response = self.collect(
+            self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)
         self.assert_landing_url("http://checkmarx/CxWebClient/projectscans.aspx?id=id", response)
 
     def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
-        with patch("requests.post", side_effect=RuntimeError):
-            response = self.collect(self.metric)
+        response = self.collect(self.metric, post_request_side_effect=RuntimeError)
         self.assert_landing_url("http://checkmarx", response)
 
 
@@ -68,7 +58,8 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
             [dict(name="project", id="id")]]
         post_json = [dict(access_token="token")] * 2 + [dict(reportId=1)]
-        response = self.collect(self.metric, get_json, post_json)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
         self.assert_value("10", response)
         self.assert_entities([], response)
         self.assertEqual(1, CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS[1000])
@@ -86,6 +77,7 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(id=1000)],
             dict(status=dict(value="Created")),
             [dict(name="project", id="id")]]
+        post_json = [dict(access_token="token")] * 2
         get_text = """
 <CxXMLResults>
     <Query name='Name'>
@@ -97,7 +89,9 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
         </Result>
     </Query>
 </CxXMLResults>"""
-        response = self.collect(self.metric, get_json, get_text=get_text)
+        response = self.collect(
+            self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json,
+            get_request_text=get_text)
         self.assert_value("10", response)
         self.assert_entities(
             [dict(key="1", location="file:42:2", name="Name", severity="High", url="http://deeplink")],

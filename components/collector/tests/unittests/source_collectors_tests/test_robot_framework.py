@@ -1,7 +1,6 @@
 """Unit tests for the Robot Framework XML test report source."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -12,10 +11,6 @@ class RobotFrameworkTestCase(SourceCollectorTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.sources = dict(source_id=dict(type="robot_framework", parameters=dict(url="output.xml")))
-
-    def collect(self, metric, xml=""):
-        with patch("requests.get", return_value=Mock(text=xml)):
-            return super().collect(metric)
 
 
 class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
@@ -33,7 +28,7 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         </total>
     </statistics>
 </robot>"""
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         self.assert_value("11", response)
         self.assert_landing_url("report.html", response)
 
@@ -56,7 +51,7 @@ class RobotFrameworkTestReportFailedTestsTest(RobotFrameworkTestCase):
         </total>
     </statistics>
 </robot>"""
-        response = self.collect(self.metric, xml)
+        response = self.collect(self.metric, get_request_text=xml)
         self.assert_value("3", response)
 
     def test_failed_tests_entities(self):
@@ -78,7 +73,7 @@ class RobotFrameworkTestReportFailedTestsTest(RobotFrameworkTestCase):
         </total>
     </statistics>
 </robot>"""
-        response = self.collect(self.metric, xml)
+        response = self.collect(self.metric, get_request_text=xml)
         self.assert_entities([dict(key="s1-t1", name="Test 1", failure_type="fail")], response)
 
 
@@ -89,6 +84,6 @@ class RobotFrameworkSourceUpToDatenessTest(RobotFrameworkTestCase):
         """Test that the source age in days is returned."""
         xml = """<?xml version="1.0"?><robot generated="2009-12-19T17:58:59"/>"""
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
-        response = self.collect(metric, xml)
+        response = self.collect(metric, get_request_text=xml)
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
         self.assert_value(str(expected_age), response)
