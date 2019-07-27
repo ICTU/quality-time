@@ -1,96 +1,75 @@
 """Unit tests for the Collector class."""
 
-import unittest
 from unittest.mock import patch, Mock
 
 from metric_collectors import MetricCollector
+from .source_collector_test_case import SourceCollectorTestCase
 
 
-class CollectorTest(unittest.TestCase):
+class CollectorTest(SourceCollectorTestCase):
     """Unit tests for the Collector class."""
 
     def setUp(self):
-        mock_response = Mock()
-        mock_response.text = "<testsuite tests='2'></testsuite>"
-        datamodel = dict(
-            sources=dict(junit=dict(parameters=dict(failure_type=dict(values=["errored", "failed", "skipped"])))))
         metric = dict(
             type="tests", addition="sum", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
-        with patch("requests.get", return_value=mock_response):
-            self.response = MetricCollector(metric, datamodel).get()
+        self.response = self.collect(metric, get_request_text="<testsuite tests='2'></testsuite>")
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
-        self.assertEqual("http://url", self.response["sources"][0]["api_url"])
+        self.assert_api_url("http://url", self.response)
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url", self.response["sources"][0]["landing_url"])
+        self.assert_landing_url("http://url", self.response)
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["sources"][0]["value"])
+        self.assert_value("2", self.response)
 
 
-class CollectorWithMultipleSourcesTest(unittest.TestCase):
+class CollectorWithMultipleSourcesTest(SourceCollectorTestCase):
     """Unit tests for the collector with multiple sources."""
 
     def setUp(self):
-        mock_response = Mock()
-        mock_response.text = "<testsuite tests='2'></testsuite>"
-        datamodel = dict(
-            sources=dict(junit=dict(parameters=dict(failure_type=dict(values=["errored", "failed", "skipped"])))))
         metric = dict(
             type="tests", addition="sum",
             sources=dict(
                 a=dict(type="junit", parameters=dict(url="http://url")),
                 b=dict(type="junit", parameters=dict(url="http://url2"))))
-        with patch("requests.get", return_value=mock_response):
-            self.response = MetricCollector(metric, datamodel).get()
+        self.response = self.collect(metric, get_request_text="<testsuite tests='2'></testsuite>")
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
-        self.assertEqual("http://url2", self.response["sources"][1]["api_url"])
+        self.assert_api_url("http://url2", self.response, source_index=1)
 
     def test_source_response_landing_url(self):
         """Test that the landing url for the source is returned."""
-        self.assertEqual("http://url2", self.response["sources"][1]["landing_url"])
+        self.assert_landing_url("http://url2", self.response, source_index=1)
 
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assertEqual("2", self.response["sources"][1]["value"])
+        self.assert_value("2", self.response, source_index=1)
 
 
-class CollectorWithMultipleSourceTypesTest(unittest.TestCase):
+class CollectorWithMultipleSourceTypesTest(SourceCollectorTestCase):
     """Unit tests for collecting measurements from different source types."""
 
-    def setUp(self):
-        mock_response = Mock()
-        mock_response.json.return_value = dict(
+    def test_source_response_measurement(self):
+        """Test that the measurement for the source is returned."""
+        json = dict(
             jobs=[dict(name="job", url="http://job", buildable=True, color="red",
                        builds=[dict(result="red", timestamp="1552686540953")])])
-        datamodel = dict(
-            sources=dict(
-                jenkins=dict(
-                    parameters=dict(
-                        failure_type=dict(values=["Aborted", "Failure", "Not built", "Unstable"]),
-                        inactive_days=dict(default_value="90")))))
         metric = dict(
             type="failed_jobs", addition="sum",
             sources=dict(
                 a=dict(type="jenkins", parameters=dict(url="http://jenkins", failure_type=["Red"])),
                 b=dict(type="random")))
-        with patch("requests.get", return_value=mock_response):
-            self.response = MetricCollector(metric, datamodel).get()
-
-    def test_source_response_measurement(self):
-        """Test that the measurement for the source is returned."""
-        sources = self.response["sources"]
-        self.assertEqual("1", sources[0]["value"])
-        self.assertTrue(sources[1]["value"])
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("1", response)
+        self.assertTrue(response["sources"][1]["value"])
 
 
-class CollectorErrorTest(unittest.TestCase):
+class CollectorErrorTest(SourceCollectorTestCase):
     """Unit tests for error handling."""
 
     def setUp(self):
@@ -107,6 +86,5 @@ class CollectorErrorTest(unittest.TestCase):
         """Test that an error retrieving the data is handled."""
         mock_response = Mock()
         mock_response.text = "1"
-        with patch("requests.get", return_value=mock_response):
-            response = MetricCollector(self.metric, dict()).get()
+        response = self.collect(self.metric, get_request_text="1")
         self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

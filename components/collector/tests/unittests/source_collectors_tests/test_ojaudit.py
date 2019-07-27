@@ -1,27 +1,19 @@
 """Unit tests for the OJAudit source."""
 
-import unittest
-from unittest.mock import Mock, patch
-
-from metric_collectors import MetricCollector
+from .source_collector_test_case import SourceCollectorTestCase
 
 
-class OJAuditTest(unittest.TestCase):
+class OJAuditTest(SourceCollectorTestCase):
     """Unit tests for the OJAudit metrics."""
 
     def setUp(self):
-        self.datamodel = dict(
-            sources=dict(
-                ojaudit=dict(
-                    parameters=dict(
-                        severities=dict(values=["advisory", "incomplete", "warning", "error", "exception"])))))
-        self.metric = dict(type="violations", addition="sum",
-                           sources=dict(a=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
-        self.mock_response = Mock()
+        self.metric = dict(
+            type="violations", addition="sum",
+            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
 
     def test_violations(self):
         """Test that the number of violations is returned."""
-        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
   <exception-count>1</exception-count>
   <error-count>0</error-count>
@@ -69,18 +61,17 @@ class OJAuditTest(unittest.TestCase):
     </children>
   </construct>
 </audit>"""
-        with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric, self.datamodel).get()
-        self.assertEqual(
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        self.assert_entities(
             [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
                   severity="exception")],
-            response["sources"][0]["entities"])
-        self.assertEqual("2", response["sources"][0]["value"])
+            response)
+        self.assert_value("2", response)
 
     def test_missing_location(self):
         """Test that an exception is raised if the violation location is missing."""
-        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
   <models>
     <model id="a">
@@ -103,13 +94,12 @@ class OJAuditTest(unittest.TestCase):
     </violation>
   </construct>
 </audit>"""
-        with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric, self.datamodel).get()
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
 
     def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
-        self.mock_response.text = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+        ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>1</violation-count>
   <high-count>0</high-count>
   <medium-count>1</medium-count>
@@ -133,8 +123,7 @@ class OJAuditTest(unittest.TestCase):
     </violation>
   </construct>
 </audit>"""
-        self.metric["sources"]["a"]["parameters"]["severities"] = ["high"]
-        with patch("requests.get", return_value=self.mock_response):
-            response = MetricCollector(self.metric, self.datamodel).get()
-        self.assertEqual("0", response["sources"][0]["value"])
-        self.assertEqual([], response["sources"][0]["entities"])
+        self.metric["sources"]["source_id"]["parameters"]["severities"] = ["high"]
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        self.assert_value("0", response)
+        self.assert_entities([], response)
