@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
+import { SemanticToastContainer, toast } from 'react-semantic-toasts';
+import 'react-semantic-toasts/styles/react-semantic-alert.css';
+
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
@@ -42,6 +45,14 @@ class App extends Component {
   reload(json) {
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
+      toast(
+        {
+            title: 'Your session expired',
+            type: 'warning',
+            icon: 'user x',
+            time: 30000,
+            description: <p>Please log in to renew your session</p>
+        });
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date();
@@ -187,6 +198,7 @@ class App extends Component {
           searchable={current_report !== null}
           user={this.state.user}
         />
+        <SemanticToastContainer />
         <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
           {this.state.loading ?
             <Segment basic placeholder loading size="massive" />

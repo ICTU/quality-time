@@ -8,6 +8,7 @@
     "react-dom": "^16.8.6",
     "react-grid-layout": "^0.16.6",
     "react-scripts": "3.0.1",
+    "react-semantic-toasts": "^0.5.4",
     "react-timeago": "^4.4.0",
     "semantic-ui-calendar-react": "^0.15.0",
     "semantic-ui-css": "^2.4.1",
