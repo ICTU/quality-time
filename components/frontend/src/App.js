@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
+import { SemanticToastContainer, toast } from 'react-semantic-toasts';
+import 'react-semantic-toasts/styles/react-semantic-alert.css';
+
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
@@ -39,7 +42,18 @@ class App extends Component {
     this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") }, () => this.reload());
   }
 
-  reload() {
+  reload(json) {
+    if (json && json.ok === false && json.reason === "invalid_session") {
+      this.logout();
+      toast(
+        {
+            title: 'Your session expired',
+            type: 'warning',
+            icon: 'user x',
+            time: 30000,
+            description: <p>Please log in to renew your session</p>
+        });
+    }
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date();
     let self = this;
@@ -159,12 +173,11 @@ class App extends Component {
       });
   }
 
-  logout(event) {
-    event.preventDefault();
+  logout() {
     let self = this;
     logout().then(() => {
       self.setState({ user: null });
-      localStorage.setItem("user", null);
+      localStorage.removeItem("user");
     })
   }
 
@@ -185,19 +198,32 @@ class App extends Component {
           searchable={current_report !== null}
           user={this.state.user}
         />
+        <SemanticToastContainer />
         <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
           {this.state.loading ?
             <Segment basic placeholder loading size="massive" />
             :
             this.state.report_uuid === "" ?
-              <Reports reports={this.state.reports} reload={() => this.reload()} reports_overview={this.state.reports_overview}
+              <Reports
+                open_report={(e, r) => this.open_report(e, r)}
                 open_tag_report={(e, t) => this.open_tag_report(e, t)}
-                open_report={(e, r) => this.open_report(e, r)} readOnly={readOnly}
-                report_date={report_date} />
+                readOnly={readOnly}
+                reload={(json) => this.reload(json)}
+                report_date={report_date}
+                reports={this.state.reports}
+                reports_overview={this.state.reports_overview}
+              />
               :
-              <Report datamodel={this.state.datamodel} report={current_report} go_home={() => this.go_home()}
-                nr_new_measurements={this.state.nr_new_measurements} reload={() => this.reload()}
-                search_string={this.state.search_string} report_date={report_date} readOnly={readOnly} />
+              <Report
+                datamodel={this.state.datamodel}
+                go_home={() => this.go_home()}
+                nr_new_measurements={this.state.nr_new_measurements}
+                readOnly={readOnly}
+                reload={(json) => this.reload(json)}
+                report={current_report}
+                report_date={report_date}
+                search_string={this.state.search_string}
+              />
           }
         </Container>
         <Footer last_update={this.state.last_update} report={current_report} />

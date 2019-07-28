@@ -1,5 +1,6 @@
 """Unit tests for the route authentication plugin."""
 
+from datetime import datetime
 import unittest
 from unittest.mock import Mock, patch
 
@@ -19,24 +20,36 @@ class AuthenticationPluginTest(unittest.TestCase):
         """Route handler with database parameter."""
         return "route called"
 
-    def test_apply_valid_session(self):
+    def test_valid_session(self):
         """Test that session ids are authenticated."""
-        bottle.install(InjectionPlugin(Mock(), "database"))
+        mock_database = Mock()
+        mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.max)
+        bottle.install(InjectionPlugin(mock_database, "database"))
         bottle.install(AuthenticationPlugin())
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertEqual("route called", route.call())
 
-    def test_apply_invalid_session(self):
-        """Test that session ids are authenticated."""
+    def test_expired_session(self):
+        """Test that the session is invalid when it's experied."""
+        mock_database = Mock()
+        mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.min)
+        bottle.install(InjectionPlugin(mock_database, "database"))
+        bottle.install(AuthenticationPlugin())
+        route = bottle.Route(bottle.app(), "/", "POST", self.route)
+        with patch("logging.warning", Mock()):  # Suppress logging
+            self.assertEqual(dict(ok=False, reason="invalid_session"), route.call())
+
+    def test_missing_session(self):
+        """Test that the session is invalid when it's missing."""
         database_mock = Mock()
         database_mock.sessions.find_one.return_value = None
         bottle.install(InjectionPlugin(database_mock, "database"))
         bottle.install(AuthenticationPlugin())
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         with patch("logging.warning", Mock()):  # Suppress logging
-            self.assertEqual(dict(ok=False), route.call())
+            self.assertEqual(dict(ok=False, reason="invalid_session"), route.call())
 
-    def test_apply_to_get_route(self):
+    def test_http_get_routes(self):
         """Test that session ids are not authenticated with non-post routes."""
         database_mock = Mock()
         database_mock.sessions.find_one.return_value = None

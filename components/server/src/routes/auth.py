@@ -5,7 +5,7 @@ import os
 import re
 import urllib.parse
 from datetime import datetime, timedelta
-from typing import Dict
+from typing import Dict, Tuple
 
 import bottle
 import ldap  # pylint: disable=import-error,wrong-import-order
@@ -15,14 +15,13 @@ from utilities.functions import uuid
 from database import sessions
 
 
-def generate_session_id() -> str:
-    """Generate a new random, secret and unique session id."""
-    return uuid()
+def generate_session() -> Tuple[str, datetime]:
+    """Generate a new random, secret and unique session id and a session expiration datetime."""
+    return uuid(), datetime.now() + timedelta(hours=24)
 
 
-def set_session_cookie(session_id: str, clear: bool = False) -> None:
-    """Set the session cookie on the response."""
-    expires_datetime = datetime.min if clear else datetime.now() + timedelta(hours=24)
+def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
+    """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     options = dict(expires=expires_datetime, path="/", httponly=True)
     server_url = os.environ.get("SERVER_URL", "http://localhost:5001")
     domain = urllib.parse.urlparse(server_url).netloc.split(":")[0]
@@ -47,9 +46,9 @@ def login(database: Database) -> Dict[str, bool]:
         return dict(ok=False)
     finally:
         ldap_server.unbind_s()
-    session_id = generate_session_id()
-    sessions.upsert(database, username, session_id)
-    set_session_cookie(session_id)
+    session_id, session_expiration_datetime = generate_session()
+    sessions.upsert(database, username, session_id, session_expiration_datetime)
+    set_session_cookie(session_id, session_expiration_datetime)
     return dict(ok=True)
 
 
@@ -58,5 +57,5 @@ def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
     session_id = str(bottle.request.get_cookie("session_id"))
     sessions.delete(database, session_id)
-    set_session_cookie(session_id, clear=True)
+    set_session_cookie(session_id, datetime.min)
     return dict(ok=True)
