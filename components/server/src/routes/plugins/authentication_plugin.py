@@ -27,10 +27,10 @@ class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
             session_id = str(bottle.request.get_cookie("session_id"))
             if sessions.valid(kwargs["database"], session_id):
                 return callback(*args, **kwargs)
-            logging.warning("Post attemped to %s with invalid session id %s", context.rule, session_id)
-            # This doesn't work in Bottle 0.12.16, see https://github.com/bottlepy/bottle/issues/1125:
+            logging.warning("Post attempted to %s with invalid session id %s", context.rule, session_id)
+            # This doesn't work in Bottle 0.12.17, see https://github.com/bottlepy/bottle/issues/1125:
             # bottle.abort(401, "Access denied")
-            return dict(ok=False)
+            return dict(ok=False, reason="invalid_session")
 
         # Replace the route callback with the wrapped one.
         return wrapper
