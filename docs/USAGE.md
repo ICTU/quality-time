@@ -22,7 +22,7 @@ After hitting "Submit" you should be logged in. The menubar shows your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
-Clicking "Logout" logs you out from *Quality-time*.
+Clicking "Logout" logs you out from *Quality-time*. Your user session expires after 24 hours and you need to log in again to be able to edit reports.
 
 ## Configuring quality reports
 
