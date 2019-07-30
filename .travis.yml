@@ -20,6 +20,16 @@ jobs:
       - ci/unittest.sh
       - ci/quality.sh
 
+    - name: "Receiver unit tests"
+      language: python
+      python: 3.7
+      install:
+        - cd components/receiver
+        - pip install -r requirements.txt -r requirements-dev.txt
+      script:
+        - ci/unittest.sh
+        - ci/quality.sh
+
     - name: "Server unit tests"
       language: python
       python: 3.7
@@ -48,6 +58,8 @@ jobs:
       install:
       - cd components/collector
       - pip install -r requirements.txt -r requirements-dev.txt
+      - cd ../../components/receiver
+      - pip install -r requirements.txt -r requirements-dev.txt
       - cd ../../components/server
       - pip install -r requirements.txt -r requirements-dev.txt
       - cd ../../components/frontend
@@ -55,6 +67,10 @@ jobs:
       - cd ../..
       script:
       - cd components/collector
+      - mkdir build
+      - ci/unittest.sh
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
+      - cd ../../components/receiver
       - mkdir build
       - ci/unittest.sh
       - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
@@ -66,10 +82,12 @@ jobs:
       - npm test
       - cd ../..
       - touch components/__init__.py
-      - touch components/server/__init__.py
-      - touch components/server/src/__init__.py
       - touch components/collector/__init__.py
       - touch components/collector/src/__init__.py
+      - touch components/receiver/__init__.py
+      - touch components/receiver/src/__init__.py
+      - touch components/server/__init__.py
+      - touch components/server/src/__init__.py
       - sonar-scanner
 
     - stage: deploy
@@ -89,8 +107,10 @@ jobs:
         script: >-
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
           docker tag quality-time_collector ictu/quality-time_collector:$TRAVIS_TAG &&
+          docker tag quality-time_receiver ictu/quality-time_receiver:$TRAVIS_TAG &&
           docker tag quality-time_server ictu/quality-time_server:$TRAVIS_TAG &&
           docker tag quality-time_frontend ictu/quality-time_frontend:$TRAVIS_TAG &&
           docker push ictu/quality-time_collector:$TRAVIS_TAG &&
+          docker push ictu/quality-time_receiver:$TRAVIS_TAG &&
           docker push ictu/quality-time_server:$TRAVIS_TAG &&
           docker push ictu/quality-time_frontend:$TRAVIS_TAG  # https://github.com/travis-ci/dpl/issues/673

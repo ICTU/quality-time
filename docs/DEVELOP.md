@@ -17,7 +17,7 @@ Clone this repository:
 git clone git@github.com:ICTU/quality-time.git
 ```
 
-Open four terminals. In the first one, run the standard containers with docker-compose:
+Open five terminals. In the first one, run the standard containers with docker-compose:
 
 ```console
 docker-compose up database ldap phpldapadmin mongo-express testdata
@@ -37,7 +37,17 @@ pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_server.py
 ```
 
-In the third terminal, run the collector:
+In the third terminal, run the receiver:
+
+```console
+cd components/receiver
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+python src/quality_time_receiver.py
+```
+
+In the fourth terminal, run the collector:
 
 ```console
 cd components/collector
@@ -47,7 +57,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
 
-In the fourth temrinal, run the frontend:
+In the fifth temrinal, run the frontend:
 
 ```console
 cd components/frontend
@@ -64,7 +74,7 @@ By default, there is one user defined. Use username `admin` and password `admin`
 To run the unit tests and measure unit test coverage, change directory into the component folders, e.g.:
 
 ```console
-cd components/server  # or components/collector
+cd components/server  # or components/collector, or components/receiver
 ci/unittest.sh
 ```
 
@@ -99,9 +109,10 @@ See [Release README](../ci/README.md).
 
 For more information about the custom components, see:
 
+- [Collector](../components/collector/README.md)
+- [Receiver](../components/receiver/README.md)
 - [Server](../components/server/README.md)
 - [Frontend](../components/frontend/README.md)
-- [Collector](../components/collector/README.md)
 
 For testing purposes there are also:
 - [Test data](../components/testdata/README.md)

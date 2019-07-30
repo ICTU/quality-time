@@ -13,6 +13,18 @@ jobs:
            ci/unittest.sh
            ci/quality.sh
 
+  unittest_receiver:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            cd components/receiver
+            sudo pip install -r requirements.txt -r requirements-dev.txt
+            ci/unittest.sh
+            ci/quality.sh
+
   unittest_server:
     docker:
       - image: circleci/python:3.7
@@ -67,6 +79,8 @@ workflows:
     jobs:
       - unittest_collector:
           context: QualityTime
+      - unittest_receiver:
+          context: QualityTime
       - unittest_server:
           context: QualityTime
       - unittest_frontend:
@@ -75,5 +89,6 @@ workflows:
           context: QualityTime
           requires:
             - unittest_collector
+            - unittest_receiver
             - unittest_server
             - unittest_frontend

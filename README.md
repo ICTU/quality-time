@@ -8,11 +8,11 @@
 
 Quality report software for software development and maintenance. *Quality-time* continuously collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
-*Quality-time* is **Beta-stage** currently. We hope to release a version 1.0 before the end of 2019.
+*Quality-time* is **Beta-stage** currently. We hope to release a version 1.0 before the end of 2019. One of its purposes is to become a successor of [HQ](https://github.com/ICTU/quality-report).
 
-Technically, *Quality-time* consists of a Mongo database server, an LDAP server, a API-server written in Python, a metrics data collector also written in Python, and a React frontend. One of its purposes is to become a successor of [HQ](https://github.com/ICTU/quality-report).
+Technically, *Quality-time* consists of a Mongo database server, three backend components written in Python, and a React frontend. *Quality-time* integrates with LDAP for authentication.
 
-Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured lmetric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
+Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector backend component collects metrics data from the configured metric sources. It posts the measurements to the receiver backend component which in turn stores them in the database. The frontend calls the server backend component to get the reports and the measurements and presents them to the user.
 
 ## Table of contents
 

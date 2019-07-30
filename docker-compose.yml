@@ -10,9 +10,17 @@ services:
   collector:
     build: components/collector
     environment:
-    - SERVER_URL=http://server:5001
+    - RECEIVER_URL=http://receiver:5002
     depends_on:
-    - server
+    - receiver
+  receiver:
+    build: components/receiver
+    ports:
+    - "5002:5002"
+    environment:
+    - DATABASE_URL=mongodb://root:root@database:27017
+    depends_on:
+    - database
   server:
     build: components/server
     ports:

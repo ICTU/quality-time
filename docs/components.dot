@@ -1,10 +1,12 @@
 digraph {
   rankdir=LR
-  server -> database [label=measurements, dir="both"]
-  server -> database [label=metrics, dir="both"]
-  collector -> server [label=measurements]
-  server -> collector [label=metrics]
   source -> collector [label=measurements]
-  server -> frontend [label=metrics, dir="both"]
+  collector -> receiver [label=measurements]
+  receiver -> database [label=measurements]
+  database -> server [label=measurements]
   server -> frontend [label=measurements]
+  database -> receiver [label=metrics]
+  receiver -> collector [label=metrics]
+  server -> database [label=metrics, dir="both"]
+  server -> frontend [label=metrics, dir="both"]
 }
