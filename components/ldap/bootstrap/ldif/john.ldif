@@ -1,0 +1,15 @@
+dn: cn=john doe,dc=example,dc=org
+changetype: add
+uid: jodoe
+cn: john doe
+sn: 3
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+loginShell: /bin/bash
+homeDirectory: /home/jodoe
+uidNumber: 14583102
+gidNumber: 14564100
+userPassword: {SSHA}CIa/0T/K5jws0gCxfdtndFit8aMhttPB
+mail: johndoe@example.org
+gecos: John User
