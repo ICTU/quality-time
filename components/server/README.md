@@ -2,11 +2,11 @@
 
 ## Example reports
 
-The [`example-reports`](example-reports) are imported when the server is started and the database doesn't contain any sample reports yet.
+The [`example-reports`](example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. The server [`data` package](src/data/example-reports) contains the example reports.
 
 ## Data model
 
-The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Everytime the server is started, the latest datamodel is imported into the database.
+The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Every time the server is started, the latest datamodel is imported into the database. The server [`data` package](src/data/datamodel.json) contains the `datamodel.json`.
 
 The datamodel consists of three parts:
 
@@ -149,3 +149,10 @@ The `subjects` part of the datamodel is an object where the keys are the subject
 ```
 
 The `name` is the default name of the subject. The `description` describes the subject type. The list of `metrics` contains the metrics that make the most sense for the subject type, but that information isn't used at the moment.
+
+## Database collections
+
+*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`. 
+The server component is the only component that directly interacts with the database. The server [`database` package](src/database) contains the code for interacting with the collections. 
+
+Datamodels, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the datamodel is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time. 
