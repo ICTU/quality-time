@@ -19,7 +19,7 @@ class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
     def apply(callback, context):
         """Apply the plugin to the route."""
 
-        if context.method != "POST" or context.rule in ("/login", "/measurements"):
+        if context.method != "POST" or context.rule == "/login":
             return callback
 
         def wrapper(*args, **kwargs):

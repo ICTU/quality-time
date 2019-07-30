@@ -19,8 +19,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
 
 def insert_new_datamodel(database: Database, data_model):
     """Insert a new datamodel in the datamodels collection."""
-    if "_id" in data_model:
-        del data_model["_id"]
+    data_model.pop("_id", None)
     data_model["timestamp"] = iso_timestamp()
     return database.datamodels.insert_one(data_model)
 

@@ -1,7 +1,5 @@
 """Report routes."""
 
-from typing import Any, Dict
-
 import bottle
 from pymongo.database import Database
 
@@ -65,17 +63,6 @@ def delete_subject(report_uuid: str, subject_uuid: str, database: Database):
     report = latest_report(database, report_uuid)
     del report["subjects"][subject_uuid]
     return insert_new_report(database, report)
-
-
-@bottle.get("/metrics")
-def get_metrics(database: Database):
-    """Get all metrics."""
-    metrics: Dict[str, Any] = {}
-    reports = get_reports(database)
-    for report in reports["reports"]:
-        for subject in report["subjects"].values():
-            metrics.update(subject["metrics"])
-    return metrics
 
 
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")

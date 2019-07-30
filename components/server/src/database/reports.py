@@ -73,8 +73,7 @@ def latest_metric(database: Database, report_uuid: str, metric_uuid: str):
 
 def insert_new_report(database: Database, report):
     """Insert a new report in the reports collection."""
-    if "_id" in report:
-        del report["_id"]
+    report.pop("_id", None)
     report["timestamp"] = iso_timestamp()
     database.reports.insert(report)
     return dict(ok=True)
@@ -82,8 +81,7 @@ def insert_new_report(database: Database, report):
 
 def insert_new_reports_overview(database: Database, reports_overview):
     """Insert a new reports overview in the reports overview collection."""
-    if "_id" in reports_overview:
-        del reports_overview["_id"]
+    reports_overview.pop("_id", None)
     reports_overview["timestamp"] = iso_timestamp()
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)

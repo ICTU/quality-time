@@ -3,7 +3,7 @@
 import unittest
 
 from routes.report import (
-    delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
+    delete_metric, delete_report, delete_source, delete_subject, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
@@ -209,20 +209,6 @@ class MetricTest(unittest.TestCase):
                     addition="sum", direction="≦", target="0", near_target="1", tags=[])))
         self.assertEqual(dict(ok=True), post_metric_new("report_uuid", "subject_uuid", database))
 
-    def test_get_metrics(self):
-        """Test that the metrics can be retrieved and deleted reports are skipped."""
-        report = dict(
-            _id="id", report_uuid="report_uuid",
-            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[])))))
-        database = Mock()
-        database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
-        database.reports.distinct.return_value = ["report_uuid", "deleted_report"]
-        database.reports.find_one.side_effect = [report, dict(deleted=True)]
-        database.measurements.find.return_value = [dict(
-            _id="id", metric_uuid="metric_uuid", status="red",
-            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
-        self.assertEqual(dict(metric_uuid=dict(tags=[])), get_metrics(database))
-
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
         report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict()))))
@@ -262,13 +248,13 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_report_new(self.database))
 
     def test_get_report(self):
-        """Test that a report can be retrieved."""
+        """Test that a report can be retrieved and deleted reports are ignored."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.measurements.find.return_value = [
             dict(
                 _id="id", metric_uuid="metric_uuid", status="red",
                 sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
-        self.database.reports.distinct.return_value = ["report_uuid"]
+        self.database.reports.distinct.return_value = ["report_uuid", "deleted_report"]
         report = dict(
             _id="id", report_uuid="report_uuid",
             subjects=dict(
@@ -277,7 +263,9 @@ class ReportTest(unittest.TestCase):
                         metric_uuid=dict(
                             type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
                             addition="sum", tags=["a"])))))
-        self.database.reports.find_one.return_value = report
+        deleted_report = dict(deleted=True)
+        self.database.reports.find_one.side_effect = \
+            lambda **kwargs: report if kwargs["filter"]["report_uuid"] == "report_uuid" else deleted_report
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1))
         report["summary_by_tag"] = {}
