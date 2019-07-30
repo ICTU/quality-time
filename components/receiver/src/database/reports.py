@@ -3,17 +3,13 @@
 import pymongo
 from pymongo.database import Database
 
-from utilities.functions import iso_timestamp
 
-
-def latest_reports(database: Database, max_iso_timestamp: str = ""):
+def latest_reports(database: Database):
     """Return all latest reports in the reports collection."""
     report_uuids = database.reports.distinct("report_uuid")
     reports = []
     for report_uuid in report_uuids:
-        report = database.reports.find_one(
-            filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
-            sort=[("timestamp", pymongo.DESCENDING)])
+        report = latest_report(database, report_uuid)
         if report and "deleted" not in report:
             report["_id"] = str(report["_id"])
             reports.append(report)
