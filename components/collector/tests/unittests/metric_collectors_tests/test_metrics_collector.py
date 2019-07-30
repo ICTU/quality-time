@@ -59,7 +59,7 @@ class CollectorTest(unittest.TestCase):
             with patch("requests.post", side_effect=RuntimeError) as post:
                 MetricsCollector().fetch_measurements()
         post.assert_called_once_with(
-            "http://localhost:5001/measurements",
+            "http://localhost:5002/measurements",
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
@@ -76,7 +76,7 @@ class CollectorTest(unittest.TestCase):
                 with patch("time.sleep", side_effect=[RuntimeError]):
                     self.assertRaises(RuntimeError, quality_time_collector.collect)
         post.assert_called_once_with(
-            "http://localhost:5001/measurements",
+            "http://localhost:5002/measurements",
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
@@ -106,7 +106,7 @@ class CollectorTest(unittest.TestCase):
                 metric_collector.fetch_measurements()
                 metric_collector.fetch_measurements()
         post.assert_called_once_with(
-            "http://localhost:5001/measurements",
+            "http://localhost:5002/measurements",
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
