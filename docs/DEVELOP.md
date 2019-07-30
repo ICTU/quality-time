@@ -5,6 +5,7 @@
 - [Develop](#develop)
 - [Test](#test)
 - [Release](#release)
+- [Software components](#software-components)
 
 ## Develop
 
@@ -93,3 +94,15 @@ Cypress stores screenshots (if a test fails) and video in `components/art/cypres
 ## Release
 
 See [Release README](../ci/README.md).
+
+## Software components
+
+For more information about the custom components, see:
+
+- [Server](../components/server/README.md)
+- [Frontend](../components/frontend/README.md)
+- [Collector](../components/collector/README.md)
+
+For testing purposes there are also:
+- [Test data](../components/testdata/README.md)
+- Automated regression test (ART) (README.md not available yet)
