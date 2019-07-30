@@ -22,6 +22,8 @@ services:
     - SERVER_URL=http://localhost:5001
     - DATABASE_URL=mongodb://root:root@database:27017
     - LDAP_URL=ldap://ldap:389
+    - LDAP_LOOKUP_USER=admin
+    - LDAP_LOOKUP_USER_PASSWORD=admin
     depends_on:
     - database
     - ldap
@@ -50,8 +52,8 @@ services:
     depends_on:
     - database
   ldap:
-    image: osixia/openldap:1.2.4
-    command: --dont-touch-etc-hosts
+    build:
+      context: components/ldap
     ports:
     - "389:389"
     - "636:636"
