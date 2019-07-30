@@ -27,7 +27,7 @@ class SonarQubeViolations(SourceCollector):
         severities = ",".join([severity.upper() for severity in self.parameter("severities")])
         types = ",".join([violation_type.upper() for violation_type in self.parameter("types")])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
-        # the number of "entities" sent to the server anyway (that limit is 100 currently).
+        # the number of "entities" sent to the receiver anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
               f"severities={severities}&types={types}"
         return URL(api + self.rules_url_parameter())

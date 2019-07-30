@@ -16,7 +16,7 @@ class SourceCollector:
     measurement data for one specific metric from one specific source."""
 
     TIMEOUT = 10  # Default timeout of 10 seconds
-    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
+    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the measurement receiver
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 

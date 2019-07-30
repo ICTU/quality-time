@@ -32,7 +32,7 @@ def post(api: URL, data) -> None:
 class MetricsCollector:
     """Collect measurements for all metrics."""
     def __init__(self) -> None:
-        self.server_url = URL(os.environ.get("SERVER_URL", "http://localhost:5001"))
+        self.receiver_url = URL(os.environ.get("RECEIVER_URL", "http://localhost:5002"))
         self.next_fetch: Dict[str, datetime] = dict()
         self.last_parameters: Dict[str, Any] = dict()
 
@@ -46,8 +46,8 @@ class MetricsCollector:
 
     def fetch_measurements(self) -> None:
         """Fetch the metrics and their measurements."""
-        datamodel = get(URL(f"{self.server_url}/datamodel"))
-        metrics = get(URL(f"{self.server_url}/metrics"))
+        datamodel = get(URL(f"{self.receiver_url}/datamodel"))
+        metrics = get(URL(f"{self.receiver_url}/metrics"))
         for metric_uuid, metric in metrics.items():
             collector = MetricCollector(metric, datamodel)
             if not collector.can_collect():
@@ -59,7 +59,7 @@ class MetricsCollector:
             self.next_fetch[metric_uuid] = collector.next_collection()
             measurement["metric_uuid"] = metric_uuid
             measurement["report_uuid"] = metric["report_uuid"]
-            post(URL(f"{self.server_url}/measurements"), measurement)
+            post(URL(f"{self.receiver_url}/measurements"), measurement)
 
     def skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""
