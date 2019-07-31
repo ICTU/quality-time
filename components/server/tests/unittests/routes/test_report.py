@@ -53,6 +53,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                             name="name", type="old_type", addition="sum", target="0", near_target="10",
                             debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict()))))))
         self.database = Mock()
+        self.database.datamodels.find_one.return_value = {"_id": "id"}
         self.database.reports.find_one.return_value = self.report
 
     def test_post_metric_name(self, request):
