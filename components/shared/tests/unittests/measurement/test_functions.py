@@ -94,3 +94,7 @@ class DetermineMeasurementStatusTest(unittest.TestCase):
         metric = dict(type="metric_type", target="20", near_target="15", debt_target=None, accept_debt=False)
         self.assertEqual(
             "target_met", determine_measurement_status(self.datamodel, metric, "17"))
+
+    def test_missing_measurement_value(self):
+        """Test the status is none if the measurement value is none."""
+        self.assertEqual(None, determine_measurement_status(self.datamodel, "metric doesn't matter", None))
