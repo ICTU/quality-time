@@ -91,6 +91,8 @@ workflows:
   version: 2
   build_test:
     jobs:
+      - unittest_shared:
+          context: QualityTime
       - unittest_collector:
           context: QualityTime
       - unittest_receiver:
