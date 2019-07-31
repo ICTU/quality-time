@@ -1,6 +1,18 @@
 version: 2
 
 jobs:
+  unittest_shared:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          command: |
+            cd components/shared
+            sudo pip install -r requirements.txt -r requirements-dev.txt
+            ci/unittest.sh
+            ci/quality.sh
+
   unittest_collector:
     docker:
       - image: circleci/python:3.7
@@ -22,6 +34,7 @@ jobs:
           command: |
             cd components/receiver
             sudo pip install -r requirements.txt -r requirements-dev.txt
+            sudo pip install ../shared
             ci/unittest.sh
             ci/quality.sh
 
@@ -35,6 +48,7 @@ jobs:
             sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
             cd components/server
             sudo pip install -r requirements.txt -r requirements-dev.txt
+            sudo pip install ../shared
             ci/unittest.sh
             ci/quality.sh
 
@@ -81,8 +95,12 @@ workflows:
           context: QualityTime
       - unittest_receiver:
           context: QualityTime
+          requires:
+            - unittest_shared
       - unittest_server:
           context: QualityTime
+          requires:
+            - unittest_shared
       - unittest_frontend:
           context: QualityTime
       - ui_tests:

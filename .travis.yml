@@ -10,7 +10,17 @@ addons:
 jobs:
   include:
     - stage: test
-      name: "Collector unit tests"
+    - name: "Shared unit tests"
+      language: python
+      python: 3.7
+      install:
+        - cd components/shared
+        - pip install -r requirements.txt -r requirements-dev.txt
+      script:
+        - ci/unittest.sh
+        - ci/quality.sh
+
+    - name: "Collector unit tests"
       language: python
       python: 3.7
       install:
@@ -26,6 +36,7 @@ jobs:
       install:
         - cd components/receiver
         - pip install -r requirements.txt -r requirements-dev.txt
+        - pip install ../shared
       script:
         - ci/unittest.sh
         - ci/quality.sh
@@ -36,6 +47,7 @@ jobs:
       install:
       - cd components/server
       - pip install -r requirements.txt -r requirements-dev.txt
+      - pip install ../shared
       script:
       - ci/unittest.sh
       - ci/quality.sh
