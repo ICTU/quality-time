@@ -23,21 +23,9 @@ def serve() -> None:  # pragma: nocover
     database = init_database()
     init_bottle(database)
     server = urllib.parse.urlparse(os.environ.get("SERVER_URL", "http://localhost:5001"))
-
-    if not DEBUG:
-        bottle.run(
-            server="gevent",
-            host="0.0.0.0",
-            port=server.port,
-            reloader=True,
-            log=logging.getLogger()
-        )  # nosec
-    else:
-        bottle.run(
-            host="0.0.0.0",
-            port=server.port,
-            debug=True
-        )  # nosec
+    bottle.run(  # nosec
+        server="wsgiref" if DEBUG else "gevent", host="0.0.0.0", port=server.port, reloader=not DEBUG,
+        log=None if DEBUG else logging.getLogger())
 
 
 if __name__ == "__main__":
