@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import unittest
 from unittest.mock import patch
 
-from utilities.functions import iso_timestamp
+from shared.utilities.functions import iso_timestamp
 
 
 class UtilTests(unittest.TestCase):
@@ -13,6 +13,6 @@ class UtilTests(unittest.TestCase):
     def test_iso_timestamp(self):
         """Test that the iso timestamp has the correct format."""
         now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
-        with patch("utilities.functions.datetime") as date_time:
+        with patch("shared.utilities.functions.datetime") as date_time:
             date_time.now.return_value = now
             self.assertEqual("2019-03-03T10:04:05+00:00", iso_timestamp())
