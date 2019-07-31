@@ -2,7 +2,7 @@
 
 import unittest
 
-from measurement.functions import calculate_measurement_value, determine_measurement_status
+from shared.measurement.functions import calculate_measurement_value, determine_measurement_status
 
 
 class CalculateMeasurementValueTest(unittest.TestCase):
