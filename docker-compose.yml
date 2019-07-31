@@ -3,6 +3,7 @@ services:
   shared:
     build:
       context: components/shared
+    image: quality-time_shared
   frontend:
     build:
       context: components/frontend
