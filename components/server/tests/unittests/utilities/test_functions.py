@@ -4,18 +4,11 @@ import unittest
 
 from datetime import datetime, timezone
 from unittest.mock import patch
-from utilities.functions import iso_timestamp, report_date_time, uuid
+from utilities.functions import report_date_time, uuid
 
 
 class UtilTests(unittest.TestCase):
     """Unit tests for the util methods."""
-
-    def test_iso_timestamp(self):
-        """Test that the iso timestamp has the correct format."""
-        now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
-        with patch("utilities.functions.datetime") as date_time:
-            date_time.now.return_value = now
-            self.assertEqual("2019-03-03T10:04:05+00:00", iso_timestamp())
 
     def test_report_date_time(self):
         """Test that the report datetime can be parsed from the HTTP request."""
@@ -28,7 +21,7 @@ class UtilTests(unittest.TestCase):
         now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
         with patch("utilities.functions.bottle.request") as request:
             request.query = dict()
-            with patch("utilities.functions.datetime") as date_time:
+            with patch("shared.utilities.functions.datetime") as date_time:
                 date_time.now.return_value = now
                 self.assertEqual("2019-03-03T10:04:05+00:00", report_date_time())
 

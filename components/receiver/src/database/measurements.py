@@ -5,8 +5,8 @@ from typing import Optional
 
 import pymongo
 from pymongo.database import Database
+from shared.utilities.functions import iso_timestamp
 
-from utilities.functions import iso_timestamp
 from .datamodels import latest_datamodel
 from .reports import latest_metric
 

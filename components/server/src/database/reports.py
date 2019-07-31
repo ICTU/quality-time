@@ -4,8 +4,8 @@ from typing import Dict
 
 import pymongo
 from pymongo.database import Database
+from shared.utilities.functions import iso_timestamp
 
-from utilities.functions import iso_timestamp
 from utilities.type import Summary
 
 

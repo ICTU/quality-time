@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM quality-time_shared
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time receiver"

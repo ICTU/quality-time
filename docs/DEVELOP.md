@@ -34,6 +34,7 @@ cd components/server
 python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
+pip install -e ../shared
 python src/quality_time_server.py
 ```
 
@@ -44,6 +45,7 @@ cd components/receiver
 python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
+pip install -e ../shared
 python src/quality_time_receiver.py
 ```
 
@@ -57,7 +59,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
 
-In the fifth temrinal, run the frontend:
+In the fifth terminal, run the frontend:
 
 ```console
 cd components/frontend
