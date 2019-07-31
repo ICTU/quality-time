@@ -38,6 +38,7 @@ services:
       - DATABASE_URL=mongodb://root:root@database:27017
       - LDAP_URL=ldap://ldap:389
     depends_on:
+      - shared
       - database
       - ldap
   testdata:
