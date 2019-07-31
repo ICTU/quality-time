@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-from src.database.reports import latest_metric
+from shared.database.reports import latest_metric
 
 
 class MetricsTest(unittest.TestCase):
@@ -22,10 +22,19 @@ class MetricsTest(unittest.TestCase):
                 sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
         self.assertEqual(dict(tags=[]), latest_metric(database, "report_uuid", "metric_uuid"))
 
-    def test_no_latest_metrics(self):
-        """Test that None is returned for missing metrics."""
+    def test_no_subject(self):
+        """Test that None is returned if the subject is missing."""
         database = Mock()
         database.reports.distinct.return_value = ["report_uuid"]
         database.reports.find_one.return_value = dict(_id="1", report_uuid="report_uuid")
+        database.measurements.find.return_value = []
+        self.assertEqual(None, latest_metric(database, "report_uuid", "non-existing"))
+
+    def test_no_metric(self):
+        """Test that None is returned if the metric is missing."""
+        database = Mock()
+        database.reports.distinct.return_value = ["report_uuid"]
+        database.reports.find_one.return_value = dict(
+            _id="1", report_uuid="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(other_uuid=dict()))))
         database.measurements.find.return_value = []
         self.assertEqual(None, latest_metric(database, "report_uuid", "non-existing"))

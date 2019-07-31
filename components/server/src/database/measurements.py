@@ -2,11 +2,11 @@
 
 import pymongo
 from pymongo.database import Database
+from shared.database.reports import latest_metric
 from shared.utilities.functions import iso_timestamp
 from shared.measurement.functions import calculate_measurement_value, determine_measurement_status
 
 from .datamodels import latest_datamodel
-from .reports import latest_metric
 
 
 def latest_measurement(database: Database, metric_uuid: str):

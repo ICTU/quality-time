@@ -6,9 +6,10 @@ import os.path
 import pathlib
 
 from pymongo.database import Database
+from shared.database.reports import latest_report
 
 from database.datamodels import default_subject_attributes, default_metric_attributes, default_source_parameters
-from database.reports import latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview
+from database.reports import insert_new_report, latest_reports_overview, insert_new_reports_overview
 from utilities.functions import uuid
 
 
