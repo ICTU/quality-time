@@ -47,7 +47,7 @@ def post_report_attribute(report_uuid: str, report_attribute: str, database: Dat
     """Set a report attribute."""
     report = latest_report(database, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
-    old_value = report.get(report_attribute, "")
+    old_value = report.get(report_attribute) or ""
     report[report_attribute] = value
     report["delta"] = \
         f"{sessions.user(database)} changed the report {report_attribute} from '{old_value}' to '{value}'."
@@ -60,7 +60,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
     value = dict(bottle.request.json)[subject_attribute]
     report = latest_report(database, report_uuid)
     subject = report["subjects"][subject_uuid]
-    old_value = subject[subject_attribute]
+    old_value = subject.get(subject_attribute) or ""
     subject[subject_attribute] = value
     report["delta"] = \
         f"{sessions.user(database)} changed the {subject_attribute} of subject {subject['name']} " \
@@ -81,7 +81,8 @@ def post_new_subject(report_uuid: str, database: Database):
 def delete_subject(report_uuid: str, subject_uuid: str, database: Database):
     """Delete the subject."""
     report = latest_report(database, report_uuid)
-    name = report["subjects"][subject_uuid]["name"]
+    subject = report["subjects"][subject_uuid]
+    name = subject.get("name") or latest_datamodel(database)["subjects"][subject["type"]]["name"]
     del report["subjects"][subject_uuid]
     report["delta"] = f"{sessions.user(database)} deleted the subject {name}."
     return insert_new_report(database, report)
@@ -104,9 +105,13 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     value = dict(bottle.request.json)[metric_attribute]
     report = latest_report(database, report_uuid)
     metric = get_metric(report, metric_uuid)
+    old_value = metric.get(metric_attribute) or ""
+    name = metric.get("name") or latest_datamodel(database)["metrics"][metric["type"]]["name"]
     metric[metric_attribute] = value
     if metric_attribute == "type":
         metric.update(default_metric_attributes(database, report_uuid, value))
+    report["delta"] = \
+        f"{sessions.user(database)} changed the {metric_attribute} of metric {name} from '{old_value}' to '{value}'."
     insert_new_report(database, report)
     if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
@@ -120,7 +125,9 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
     """Add a new metric."""
     report = latest_report(database, report_uuid)
     subject = report["subjects"][subject_uuid]
+    name = subject.get("name") or latest_datamodel(database)["subjects"][subject["type"]]["name"]
     subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
+    report["delta"] = f"{sessions.user(database)} added a metric to subject {name}."
     return insert_new_report(database, report)
 
 
@@ -129,6 +136,10 @@ def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
     """Delete a metric."""
     report = latest_report(database, report_uuid)
     subject = get_subject(report, metric_uuid)
+    metric = subject["metrics"][metric_uuid]
+    subject_name = subject.get("name") or latest_datamodel(database)["subjects"][subject["type"]]["name"]
+    metric_name = metric.get("name") or latest_datamodel(database)["metrics"][metric["type"]]["name"]
+    report["delta"] = f"{sessions.user(database)} deleted metric {metric_name} from subject {subject_name}."
     del subject["metrics"][metric_uuid]
     return insert_new_report(database, report)
 
@@ -142,7 +153,9 @@ def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     datamodel = latest_datamodel(database)
     source_type = datamodel["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
+    name = metric.get("name") or latest_datamodel(database)["metrics"][metric["type"]]["name"]
     metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
+    report["delta"] = f"{sessions.user(database)} added a new source to metric {name}."
     return insert_new_report(database, report)
 
 
@@ -150,7 +163,12 @@ def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
 def delete_source(report_uuid: str, source_uuid: str, database: Database):
     """Delete a source."""
     report = latest_report(database, report_uuid)
+    datamodel = latest_datamodel(database)
     metric = get_metric_by_source_uuid(report, source_uuid)
+    source = metric["sources"][source_uuid]
+    source_name = source.get("name") or datamodel["sources"][source["type"]]["name"]
+    metric_name = metric.get("name") or datamodel["metrics"][metric["type"]]["name"]
+    report["delta"] = f"{sessions.user(database)} deleted the source {source_name} from metric {metric_name}."
     del metric["sources"][source_uuid]
     return insert_new_report(database, report)
 
@@ -162,7 +180,11 @@ def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: 
     report = latest_report(database, report_uuid)
     metric = get_metric_by_source_uuid(report, source_uuid)
     source = metric["sources"][source_uuid]
+    name = source.get("name") or latest_datamodel(database)["sources"][source["type"]]["name"]
+    old_value = source.get(source_attribute) or ""
     source[source_attribute] = value
+    report["delta"] = \
+        f"{sessions.user(database)} changed the {source_attribute} of source {name} from '{old_value}' to '{value}'."
     if source_attribute == "type":
         source["parameters"] = default_source_parameters(database, metric["type"], value)
     return insert_new_report(database, report)
@@ -174,7 +196,13 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     parameter_value = dict(bottle.request.json)[parameter_key]
     report = latest_report(database, report_uuid)
     metric = get_metric_by_source_uuid(report, source_uuid)
-    metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
+    source = metric["sources"][source_uuid]
+    old_value = source["parameters"].get(parameter_key) or ""
+    name = source.get("name") or latest_datamodel(database)["sources"][source["type"]]["name"]
+    source["parameters"][parameter_key] = parameter_value
+    report["delta"] = \
+        f"{sessions.user(database)} changed the {parameter_key} of source {name} from '{old_value}' to " \
+        f"'{parameter_value}'."
     return insert_new_report(database, report)
 
 
