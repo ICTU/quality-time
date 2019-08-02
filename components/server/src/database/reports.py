@@ -87,3 +87,10 @@ def insert_new_reports_overview(database: Database, reports_overview):
     reports_overview["timestamp"] = iso_timestamp()
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
+
+
+def changelog(database: Database, report_uuid: str, nr_changes: int):
+    """Return the changelog for the report."""
+    return database.reports.find(
+        filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)], limit=nr_changes,
+        projection=["delta", "timestamp"])

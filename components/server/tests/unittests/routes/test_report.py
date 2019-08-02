@@ -3,7 +3,7 @@
 import unittest
 
 from routes.report import (
-    delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
+    delete_metric, delete_report, delete_source, delete_subject, get_changelog, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
@@ -20,8 +20,10 @@ class PostReportAttributeTest(unittest.TestCase):
         request.json = dict(name="name")
         database = Mock()
         database.reports.find_one.return_value = report
+        database.sessions.find_one.return_value = dict(user="John")
         self.assertEqual(dict(ok=True), post_report_attribute("report_uuid", "name", database))
         database.reports.insert.assert_called_once_with(report)
+        self.assertEqual("John changed the report name from '' to 'name'.", report["delta"])
 
 
 @patch("bottle.request")
@@ -29,12 +31,14 @@ class PostSubjectAttributeTest(unittest.TestCase):
     """Unit tests for the post subject report attribute route."""
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
-        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict()))
-        request.json = dict(name="name")
+        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict(name="")))
+        request.json = dict(name="ABC")
         database = Mock()
         database.reports.find_one.return_value = report
+        database.sessions.find_one.return_value = dict(user="John")
         self.assertEqual(dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "name", database))
         database.reports.insert.assert_called_once_with(report)
+        self.assertEqual("John changed the name of subject ABC from '' to 'ABC'.", report["delta"])
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -235,20 +239,23 @@ class MetricTest(unittest.TestCase):
 class SubjectTest(unittest.TestCase):
     """Unit tests for adding and deleting subjects."""
 
+    def setUp(self):
+        self.database = Mock()
+        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.report = dict(subjects=dict(subject_uuid=dict(name="ABC")))
+        self.database.reports.find_one.return_value = self.report
+
     def test_add_subject(self):
         """Test that a subject can be added."""
-        report = dict(_id="report_uuid", subjects=dict())
-        database = Mock()
-        database.reports.find_one.return_value = report
-        database.datamodels.find_one.return_value = dict(
+        self.database.datamodels.find_one.return_value = dict(
             _id="", subjects=dict(subject_type=dict(name="Subject", description="")))
-        self.assertEqual(dict(ok=True), post_new_subject("report_uuid", database))
+        self.assertEqual(dict(ok=True), post_new_subject("report_uuid", self.database))
+        self.assertEqual("Jenny created a new subject.", self.report["delta"])
 
     def test_delete_subject(self):
         """Test that a subject can be deleted."""
-        database = Mock()
-        database.reports.find_one.return_value = dict(subjects=dict(subject_uuid=dict()))
-        self.assertEqual(dict(ok=True), delete_subject("report_uuid", "subject_uuid", database))
+        self.assertEqual(dict(ok=True), delete_subject("report_uuid", "subject_uuid", self.database))
+        self.assertEqual("Jenny deleted the subject ABC.", self.report["delta"])
 
 
 class ReportTest(unittest.TestCase):
@@ -256,10 +263,14 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
+        self.database.sessions.find_one.return_value = dict(user="Jenny")
 
     def test_add_report(self):
         """Test that a report can be added."""
         self.assertEqual(dict(ok=True), post_report_new(self.database))
+        args, kwargs = self.database.reports.insert.call_args
+        report = args[0]
+        self.assertEqual("Jenny created a new report.", report["delta"])
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
@@ -285,9 +296,10 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        report = dict(_id="1", report_uuid="report_uuid")
+        report = dict(_id="1", report_uuid="report_uuid", title="Foo")
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
+        self.assertEqual("Jenny deleted the report Foo.", report["delta"])
 
     @patch("bottle.request")
     def test_post_reports_attribute(self, request):
@@ -320,3 +332,10 @@ class ReportTest(unittest.TestCase):
                 timestamp=date_time, subjects=dict(
                     subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
             get_tag_report("tag", self.database))
+
+    def test_get_changelog(self):
+        """Test that the changelog is returned."""
+        report1 = dict(timestamp="1", delta="delta1")
+        report2 = dict(timestamp="2", delta="delta2")
+        self.database.reports.find.return_value = [report1, report2]
+        self.assertEqual(dict(changelog=[report1, report2]), get_changelog("report_uuid", "10", self.database))

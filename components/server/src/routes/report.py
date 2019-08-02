@@ -9,9 +9,10 @@ from database.datamodels import (
     latest_datamodel, default_subject_attributes, default_metric_attributes, default_source_parameters
 )
 from database.reports import (
-    latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
+    changelog, latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
 )
+from database import sessions
 from utilities.functions import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
@@ -33,12 +34,23 @@ def get_metric_by_source_uuid(report, source_uuid: str):
             if source_uuid in metric["sources"]][0]
 
 
+@bottle.get("/report/<report_uuid>/changelog/<nr_changes>")
+def get_changelog(report_uuid: str, nr_changes: str, database:Database):
+    """Return the recent most _nr_changes changes from the changelog."""
+    return dict(
+        changelog=[dict(timestamp=change["timestamp"], delta=change["delta"])
+                   for change in changelog(database, report_uuid, int(nr_changes)) if "delta" in change])
+
+
 @bottle.post("/report/<report_uuid>/<report_attribute>")
 def post_report_attribute(report_uuid: str, report_attribute: str, database: Database):
     """Set a report attribute."""
-    value = dict(bottle.request.json)[report_attribute]
     report = latest_report(database, report_uuid)
+    value = dict(bottle.request.json)[report_attribute]
+    old_value = report.get(report_attribute, "")
     report[report_attribute] = value
+    report["delta"] = \
+        f"{sessions.user(database)} changed the report {report_attribute} from '{old_value}' to '{value}'."
     return insert_new_report(database, report)
 
 
@@ -47,7 +59,12 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]
     report = latest_report(database, report_uuid)
-    report["subjects"][subject_uuid][subject_attribute] = value
+    subject = report["subjects"][subject_uuid]
+    old_value = subject[subject_attribute]
+    subject[subject_attribute] = value
+    report["delta"] = \
+        f"{sessions.user(database)} changed the {subject_attribute} of subject {subject['name']} " \
+        f"from '{old_value}' to '{value}'."
     return insert_new_report(database, report)
 
 
@@ -56,6 +73,7 @@ def post_new_subject(report_uuid: str, database: Database):
     """Create a new subject."""
     report = latest_report(database, report_uuid)
     report["subjects"][uuid()] = default_subject_attributes(database)
+    report["delta"] = f"{sessions.user(database)} created a new subject."
     return insert_new_report(database, report)
 
 
@@ -63,7 +81,9 @@ def post_new_subject(report_uuid: str, database: Database):
 def delete_subject(report_uuid: str, subject_uuid: str, database: Database):
     """Delete the subject."""
     report = latest_report(database, report_uuid)
+    name = report["subjects"][subject_uuid]["name"]
     del report["subjects"][subject_uuid]
+    report["delta"] = f"{sessions.user(database)} deleted the subject {name}."
     return insert_new_report(database, report)
 
 
@@ -179,7 +199,8 @@ def post_reports_attribute(reports_attribute: str, database: Database):
 @bottle.post("/report/new")
 def post_report_new(database: Database):
     """Add a new report."""
-    report = dict(report_uuid=uuid(), title="New report", subjects={})
+    report = dict(
+        report_uuid=uuid(), title="New report", subjects={}, delta=f"{sessions.user(database)} created a new report.")
     return insert_new_report(database, report)
 
 
@@ -188,6 +209,7 @@ def delete_report(report_uuid: str, database: Database):
     """Delete a report."""
     report = latest_report(database, report_uuid)
     report["deleted"] = "true"
+    report["delta"] = f"{sessions.user(database)} deleted the report {report['title']}."
     return insert_new_report(database, report)
 
 
@@ -209,3 +231,4 @@ def get_tag_report(tag: str, database: Database):
         timestamp=date_time, subjects=subjects)
     summarize_report(database, tag_report)
     return tag_report
+
