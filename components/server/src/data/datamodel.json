@@ -547,7 +547,7 @@
             "entities": {
                 "issues": {
                     "name": "issue",
-                    "name_plular": "issues",
+                    "name_plural": "issues",
                     "attributes": [
                         {
                             "name": "Project",
@@ -570,7 +570,7 @@
                 },
                 "ready_user_story_points": {
                     "name": "user story",
-                    "name_plular": "user stories",
+                    "name_plural": "user stories",
                     "attributes": [
                         {
                             "name": "Project",
@@ -868,7 +868,7 @@
             "entities": {
                 "failed_jobs": {
                     "name": "job",
-                    "name_plular": "jobs",
+                    "name_plural": "jobs",
                     "attributes": [
                         {
                             "name": "Job name",
