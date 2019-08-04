@@ -37,10 +37,13 @@ def set_entity_attribute(metric_uuid: str, source_uuid: str, entity_key: str, at
     """Set a entity attribute."""
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
+    entity = [e for e in source["entities"] if e["key"] == entity_key][0]
+    entity_description = "/".join([entity[key] for key in entity.keys() if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
-    measurement["delta"] = f"{sessions.user(database)} changed the entity {attribute} from '{old_value}' to '{value}'."
+    measurement["delta"] = \
+        f"{sessions.user(database)} changed the {attribute} of '{entity_description}' from '{old_value}' to '{value}'."
     return insert_new_measurement(database, measurement)
 
 
