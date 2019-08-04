@@ -3,7 +3,7 @@
 import unittest
 
 from routes.report import (
-    delete_metric, delete_report, delete_source, delete_subject, get_changelog, get_metrics, get_reports,
+    delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
@@ -359,10 +359,3 @@ class ReportTest(unittest.TestCase):
                 timestamp=date_time, subjects=dict(
                     subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
             get_tag_report("tag", self.database))
-
-    def test_get_changelog(self):
-        """Test that the changelog is returned."""
-        report1 = dict(timestamp="1", delta="delta1")
-        report2 = dict(timestamp="2", delta="delta2")
-        self.database.reports.find.return_value = [report1, report2]
-        self.assertEqual(dict(changelog=[report1, report2]), get_changelog("report_uuid", "10", self.database))

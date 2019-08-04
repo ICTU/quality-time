@@ -9,7 +9,7 @@ from database.datamodels import (
     latest_datamodel, default_subject_attributes, default_metric_attributes, default_source_parameters
 )
 from database.reports import (
-    changelog, latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
+    latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
 )
 from database import sessions
@@ -47,14 +47,6 @@ def get_metric_name(metric, database: Database):
 def get_source_name(source, database: Database):
     """Return the source name."""
     return source.get("name") or latest_datamodel(database)["sources"][source["type"]]["name"]
-
-
-@bottle.get("/report/<report_uuid>/changelog/<nr_changes>")
-def get_changelog(report_uuid: str, nr_changes: str, database: Database):
-    """Return the recent most _nr_changes changes from the changelog."""
-    return dict(
-        changelog=[dict(timestamp=change["timestamp"], delta=change["delta"])
-                   for change in changelog(database, report_uuid, int(nr_changes)) if "delta" in change])
 
 
 @bottle.post("/report/<report_uuid>/<report_attribute>")

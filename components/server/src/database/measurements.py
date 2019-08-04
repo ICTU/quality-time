@@ -96,3 +96,10 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     else:
         status = "target_not_met"
     return status
+
+
+def changelog(database: Database, report_uuid: str, nr_changes: int):
+    """Return the changelog for the measurements in the report."""
+    return database.measurements.find(
+        filter={"report_uuid": report_uuid, "delta": {"$exists": True}}, sort=[("start", pymongo.DESCENDING)],
+        limit=nr_changes, projection=["delta", "start"])

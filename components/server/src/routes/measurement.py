@@ -8,6 +8,7 @@ from pymongo.database import Database
 
 from database.measurements import count_measurements, latest_measurement, recent_measurements, insert_new_measurement, \
     update_measurement_end
+from database import sessions
 from utilities.functions import report_date_time
 
 
@@ -36,8 +37,10 @@ def set_entity_attribute(metric_uuid: str, source_uuid: str, entity_key: str, at
     """Set a entity attribute."""
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
+    old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     value = dict(bottle.request.json)[attribute]
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
+    measurement["delta"] = f"{sessions.user(database)} changed the entity {attribute} from '{old_value}' to '{value}'."
     return insert_new_measurement(database, measurement)
 
 
