@@ -31,14 +31,14 @@ class PostSubjectAttributeTest(unittest.TestCase):
     """Unit tests for the post subject report attribute route."""
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
-        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict(name="")))
-        request.json = dict(name="ABC")
+        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict(name="old name")))
+        request.json = dict(name="new name")
         database = Mock()
         database.reports.find_one.return_value = report
         database.sessions.find_one.return_value = dict(user="John")
         self.assertEqual(dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "name", database))
         database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("John changed the name of subject ABC from '' to 'ABC'.", report["delta"])
+        self.assertEqual("John changed the name of subject old name from 'old name' to 'new name'.", report["delta"])
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
