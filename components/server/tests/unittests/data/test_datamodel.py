@@ -65,3 +65,10 @@ class DataModelTest(unittest.TestCase):
         """Test that each metric has a default source, and that the default source is listed as possible source."""
         for metric in self.datamodel["metrics"].values():
             self.assertTrue(metric["default_source"] in metric["sources"])
+
+    def test_entity_attributes(self):
+        """Test that entities have the required attributes."""
+        for source_id, source in self.datamodel["sources"].items():
+            for entity_key, entity_value in source["entities"].items():
+                self.assertTrue("name" in entity_value.keys())
+                self.assertTrue("name_plural" in entity_value.keys(), f"No 'name_plural' in {source_id}.{entity_key}")
