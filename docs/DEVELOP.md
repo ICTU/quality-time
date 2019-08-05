@@ -84,6 +84,8 @@ npm run test
 To run the frontend UI tests (automated regression test):
 
 ```console
+docker-compose build
+docker-compose up -d
 cd components/art
 npm install --save-dev
 npx cypress run

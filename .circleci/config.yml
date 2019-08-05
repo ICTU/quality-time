@@ -44,6 +44,7 @@ jobs:
       - checkout
       # build the application image
       - run: |
+          export ENV=circleci
           docker-compose build && docker-compose up -d
           docker images
           docker ps -a

@@ -18,7 +18,3 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-beforeEach(function () {
-    cy.request('POST', 'http://localhost:5001/login', { username: 'admin', password: 'admin' })
-});
