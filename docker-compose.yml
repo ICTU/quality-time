@@ -10,7 +10,7 @@ services:
   collector:
     build: components/collector
     env_file:
-    - docker-config/${ENV:-production}.env
+    - docker-config/${ENV:-test}.env
     depends_on:
     - server
   server:
@@ -18,7 +18,7 @@ services:
     ports:
     - "5001:5001"
     env_file:
-    - docker-config/${ENV:-production}.env
+    - docker-config/${ENV:-test}.env
     depends_on:
     - database
     - ldap
@@ -30,7 +30,7 @@ services:
     image: mongo
     restart: always
     env_file:
-      - docker-config/${ENV:-production}.env
+      - docker-config/${ENV:-test}.env
     ports:
     - "27017:27017"
     volumes:
@@ -40,7 +40,7 @@ services:
     ports:
     - "8081:8081"
     env_file:
-    - docker-config/${ENV:-production}.env
+    - docker-config/${ENV:-test}.env
     depends_on:
     - database
   ldap:
@@ -52,7 +52,7 @@ services:
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     env_file:
-    - docker-config/${ENV:-production}.env
+    - docker-config/${ENV:-test}.env
     ports:
     - "3890:80"
     depends_on:

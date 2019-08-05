@@ -2,7 +2,7 @@
 
 import os
 
-DEBUG = os.environ.get("DEBUG", True)
+DEBUG = os.environ.get("DEBUG", "").lower() == "true"
 
 if not DEBUG:
     from gevent import monkey  # pylint: disable=import-error
