@@ -77,6 +77,7 @@ jobs:
       language: node_js
       node_js: 10
       install:
+      - export ENV=travis
       - docker-compose build && docker-compose up -d  # Start immediately so metric data is collected before tests run
       - docker images
       - docker ps --all
