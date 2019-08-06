@@ -25,7 +25,7 @@ function set_reports_attribute(attribute, value, reload) {
 }
 
 function get_changelog(report_uuid, nr_changes) {
-  return fetch_server_api('get', `report/${report_uuid}/changelog/${nr_changes}`)
+  return fetch_server_api('get', `changelog/report/${report_uuid}/${nr_changes}`)
 }
 
 export { add_report, delete_report, get_reports, get_tag_report, set_report_attribute, set_reports_attribute, get_changelog }

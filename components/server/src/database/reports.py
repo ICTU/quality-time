@@ -93,4 +93,4 @@ def changelog(database: Database, report_uuid: str, nr_changes: int):
     """Return the changelog for the report."""
     return database.reports.find(
         filter={"report_uuid": report_uuid, "delta": {"$exists":  True}}, sort=[("timestamp", pymongo.DESCENDING)],
-        limit=nr_changes, projection=["delta", "timestamp"])
+        limit=nr_changes, projection={"delta.description": True, "timestamp": True})

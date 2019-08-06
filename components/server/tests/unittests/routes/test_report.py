@@ -21,9 +21,12 @@ class PostReportAttributeTest(unittest.TestCase):
         database = Mock()
         database.reports.find_one.return_value = report
         database.sessions.find_one.return_value = dict(user="John")
+        database.datamodels.find_one.return_value = dict()
         self.assertEqual(dict(ok=True), post_report_attribute("report_uuid", "name", database))
         database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("John changed the report name from '' to 'name'.", report["delta"])
+        self.assertEqual(
+            dict(description="John changed the name of report '' from '' to 'name'.", report_uuid="report_uuid"),
+            report["delta"])
 
 
 @patch("bottle.request")
@@ -31,14 +34,21 @@ class PostSubjectAttributeTest(unittest.TestCase):
     """Unit tests for the post subject report attribute route."""
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
-        report = dict(_id="id", report_uuid="report_uuid", subjects=dict(subject_uuid=dict(name="old name")))
+        report = dict(
+            _id="id", report_uuid="report_uuid", title="Report", subjects=dict(subject_uuid=dict(name="old name")))
         request.json = dict(name="new name")
         database = Mock()
         database.reports.find_one.return_value = report
         database.sessions.find_one.return_value = dict(user="John")
+        database.datamodels.find_one.return_value = dict()
         self.assertEqual(dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "name", database))
         database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("John changed the name of subject old name from 'old name' to 'new name'.", report["delta"])
+        self.assertEqual(
+            dict(
+                description="John changed the name of subject 'old name' in report 'Report' from 'old name' to "
+                            "'new name'.",
+                report_uuid="report_uuid", subject_uuid="subject_uuid"),
+            report["delta"])
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -48,10 +58,11 @@ class PostMetricAttributeTest(unittest.TestCase):
 
     def setUp(self):
         self.report = dict(
-            _id="id", report_uuid="report_uuid",
+            _id="id", report_uuid="report_uuid", title="Report",
             subjects=dict(
                 other_subject=dict(metrics=dict()),
                 subject_uuid=dict(
+                    name='Subject',
                     metrics=dict(
                         metric_uuid=dict(
                             name="name", type="old_type", addition="sum", target="0", near_target="10",
@@ -59,26 +70,33 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database = Mock()
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="John")
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            metrics=dict(
+                old_type=dict(name="Old type"),
+                new_type=dict(addition="sum", target="0", near_target="1", tags=[], sources=["source_type"])))
 
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
         request.json = dict(name="ABC")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("John changed the name of metric name from 'name' to 'ABC'.", self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the name of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from 'name' to 'ABC'."),
+            self.report["delta"])
 
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed."""
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            metrics=dict(
-                old_type=dict(name="Old type"),
-                new_type=dict(addition="sum", target="0", near_target="1", tags=[], sources=["source_type"])))
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            "John changed the type of metric name from 'old_type' to 'new_type'.", self.report["delta"])
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the type of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from 'old_type' to 'new_type'."),
+            self.report["delta"])
 
     def test_post_metric_target_without_measurements(self, request):
         """Test that changing the metric target doesnt't add a new measurement if none exist."""
@@ -86,7 +104,10 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(target="10")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
         self.assertEqual(
-            "John changed the target of metric name from '0' to '10'.", self.report["delta"])
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the target of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from '0' to '10'."),
+            self.report["delta"])
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
@@ -104,7 +125,10 @@ class PostMetricAttributeTest(unittest.TestCase):
                 metric_uuid="metric_uuid", last=True),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
         self.assertEqual(
-            "John changed the target of metric name from '0' to '10'.", self.report["delta"])
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the target of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from '0' to '10'."),
+            self.report["delta"])
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
@@ -122,7 +146,10 @@ class PostMetricAttributeTest(unittest.TestCase):
                 metric_uuid="metric_uuid", value=None),
             post_metric_attribute("report_uuid", "metric_uuid", "debt_end_date", self.database))
         self.assertEqual(
-            "John changed the debt_end_date of metric name from '' to '2019-06-07'.", self.report["delta"])
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the debt_end_date of metric 'name' of subject 'Subject' in report "
+                             "'Report' from '' to '2019-06-07'."),
+            self.report["delta"])
 
 
 @patch("bottle.request")
@@ -131,10 +158,13 @@ class PostSourceAttributeTest(unittest.TestCase):
 
     def setUp(self):
         self.report = dict(
-            _id="report_uuid",
+            _id="report_uuid", title="Report",
             subjects=dict(
                 subject_uuid=dict(
-                    metrics=dict(metric_uuid=dict(type="type", sources=dict(source_uuid=dict(type="type")))))))
+                    name="Subject",
+                    metrics=dict(
+                        metric_uuid=dict(
+                            name="Metric", type="type", sources=dict(source_uuid=dict(name="Source", type="type")))))))
         self.database = Mock()
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="Jenny")
@@ -143,17 +173,27 @@ class PostSourceAttributeTest(unittest.TestCase):
 
     def test_name(self, request):
         """Test that the source name can be changed."""
-        request.json = dict(name="name")
+        request.json = dict(name="New source name")
         self.assertEqual(dict(ok=True), post_source_attribute("report_uuid", "source_uuid", "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("Jenny changed the name of source Type from '' to 'name'.", self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 source_uuid="source_uuid",
+                 description="Jenny changed the name of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                             "report 'Report' from 'Source' to 'New source name'."),
+            self.report["delta"])
 
     def test_post_source_type(self, request):
         """Test that the source type can be changed."""
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_source_attribute("report_uuid", "source_uuid", "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("Jenny changed the type of source Type from 'type' to 'new_type'.", self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 source_uuid="source_uuid",
+                 description="Jenny changed the type of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                             "report 'Report' from 'type' to 'new_type'."),
+            self.report["delta"])
 
 
 @patch("bottle.request")
@@ -164,19 +204,26 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that the source url can be changed."""
         request.json = dict(url="http://url")
         report = dict(
-            _id="report_uuid",
+            _id="report_uuid", title="Report",
             subjects=dict(
                 subject_uuid=dict(
+                    name="Subject",
                     metrics=dict(
                         metric_uuid=dict(
-                            type="type",
-                            sources=dict(source_uuid=dict(name="name", type="type", parameters=dict())))))))
+                            name="Metric", type="type",
+                            sources=dict(source_uuid=dict(name="Source", type="type", parameters=dict())))))))
         database = Mock()
         database.sessions.find_one.return_value = dict(user="Jenny")
         database.reports.find_one.return_value = report
+        database.datamodels.find_one.return_value = dict()
         self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "url", database))
         database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("Jenny changed the url of source name from '' to 'http://url'.", report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 source_uuid="source_uuid",
+                 description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                             "report 'Report' from '' to 'http://url'."),
+            report["delta"])
 
 
 class SourceTest(unittest.TestCase):
@@ -187,15 +234,16 @@ class SourceTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
             _id="",
-            metrics=dict(metric_type=dict(name="metric type", direction="≦", default_source="source_type")),
+            metrics=dict(metric_type=dict(name="Metric Type", direction="≦", default_source="source_type")),
             sources=dict(source_type=dict(parameters=dict())))
 
     def test_add_source(self):
         """Test that a new source is added."""
         report = dict(
-            _id="report_uuid",
+            _id="report_uuid", title="Report",
             subjects=dict(
                 subject_uuid=dict(
+                    name="Subject",
                     metrics=dict(
                         metric_uuid=dict(
                             name=None, type="metric_type", addition="sum", target="0", near_target="10",
@@ -203,21 +251,30 @@ class SourceTest(unittest.TestCase):
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_source_new("report_uuid", "metric_uuid", self.database))
         self.database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("Jenny added a new source to metric metric type.", report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="Jenny added a new source to metric 'Metric Type' of subject 'Subject' in report "
+                             "'Report'."),
+            report["delta"])
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
         report = dict(
-            _id="report_uuid",
+            _id="report_uuid", title="Report",
             subjects=dict(
                 subject_uuid=dict(
+                    name="Subject",
                     metrics=dict(
                         metric_uuid=dict(
                             type="type", name="Metric", sources=dict(source_uuid=dict(name="Source")))))))
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_source("report_uuid", "source_uuid", self.database))
         self.database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("Jenny deleted the source Source from metric Metric.", report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in report "
+                             "'Report'."),
+            report["delta"])
 
 
 class MetricTest(unittest.TestCase):
@@ -226,18 +283,22 @@ class MetricTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
-
-    def test_add_metric(self):
-        """Test that a metric can be added."""
-        report = dict(_id="report_uuid", subjects=dict(subject_uuid=dict(name="Subject", metrics=dict())))
-        self.database.reports.find_one.return_value = report
         self.database.datamodels.find_one.return_value = dict(
             _id="",
             metrics=dict(
                 metric_type=dict(
                     addition="sum", direction="≦", target="0", near_target="1", tags=[])))
+
+    def test_add_metric(self):
+        """Test that a metric can be added."""
+        report = dict(
+            _id="report_uuid", title="Report", subjects=dict(subject_uuid=dict(name="Subject", metrics=dict())))
+        self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_metric_new("report_uuid", "subject_uuid", self.database))
-        self.assertEqual("Jenny added a metric to subject Subject.", report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid",
+                 description="Jenny added a new metric to subject 'Subject' in report 'Report'."),
+            report["delta"])
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""
@@ -255,12 +316,15 @@ class MetricTest(unittest.TestCase):
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
         report = dict(
-            _id="report_uuid",
+            _id="report_uuid", title="Report",
             subjects=dict(subject_uuid=dict(name="Subject", metrics=dict(metric_uuid=dict(name="Metric")))))
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_metric("report_uuid", "metric_uuid", self.database))
         self.database.reports.insert.assert_called_once_with(report)
-        self.assertEqual("Jenny deleted metric Metric from subject Subject.", report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid",
+                 description=f"Jenny deleted metric 'Metric' from subject 'Subject' in report 'Report'."),
+            report["delta"])
 
 
 class SubjectTest(unittest.TestCase):
@@ -269,20 +333,25 @@ class SubjectTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.report = dict(subjects=dict(subject_uuid=dict(name="ABC")))
+        self.report = dict(title="Report", subjects=dict(subject_uuid=dict(name="ABC")))
         self.database.reports.find_one.return_value = self.report
+        self.database.datamodels.find_one.return_value = dict()
 
     def test_add_subject(self):
         """Test that a subject can be added."""
         self.database.datamodels.find_one.return_value = dict(
             _id="", subjects=dict(subject_type=dict(name="Subject", description="")))
         self.assertEqual(dict(ok=True), post_new_subject("report_uuid", self.database))
-        self.assertEqual("Jenny created a new subject.", self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", description="Jenny created a new subject in report 'Report'."),
+            self.report["delta"])
 
     def test_delete_subject(self):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject("report_uuid", "subject_uuid", self.database))
-        self.assertEqual("Jenny deleted the subject ABC.", self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid="report_uuid", description="Jenny deleted the subject 'ABC' from report 'Report'."),
+            self.report["delta"])
 
 
 class ReportTest(unittest.TestCase):
@@ -295,9 +364,6 @@ class ReportTest(unittest.TestCase):
     def test_add_report(self):
         """Test that a report can be added."""
         self.assertEqual(dict(ok=True), post_report_new(self.database))
-        args, kwargs = self.database.reports.insert.call_args
-        report = args[0]
-        self.assertEqual("Jenny created a new report.", report["delta"])
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
@@ -323,10 +389,9 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        report = dict(_id="1", report_uuid="report_uuid", title="Foo")
+        report = dict(_id="1", report_uuid="report_uuid", title="Report")
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_report("report_uuid", self.database))
-        self.assertEqual("Jenny deleted the report Foo.", report["delta"])
 
     @patch("bottle.request")
     def test_post_reports_attribute(self, request):
