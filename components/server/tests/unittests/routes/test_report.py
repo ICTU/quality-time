@@ -200,10 +200,8 @@ class PostSourceAttributeTest(unittest.TestCase):
 class PostSourceParameterTest(unittest.TestCase):
     """Unit tests for the post source parameter route."""
 
-    def test_url(self, request):
-        """Test that the source url can be changed."""
-        request.json = dict(url="http://url")
-        report = dict(
+    def setUp(self):
+        self.report = dict(
             _id="report_uuid", title="Report",
             subjects=dict(
                 subject_uuid=dict(
@@ -212,18 +210,35 @@ class PostSourceParameterTest(unittest.TestCase):
                         metric_uuid=dict(
                             name="Metric", type="type",
                             sources=dict(source_uuid=dict(name="Source", type="type", parameters=dict())))))))
-        database = Mock()
-        database.sessions.find_one.return_value = dict(user="Jenny")
-        database.reports.find_one.return_value = report
-        database.datamodels.find_one.return_value = dict()
-        self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "url", database))
-        database.reports.insert.assert_called_once_with(report)
+        self.database = Mock()
+        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.database.reports.find_one.return_value = self.report
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id", sources=dict(type=dict(parameters=dict(url=dict(type="string"), password=dict(type="password")))))
+
+    def test_url(self, request):
+        """Test that the source url can be changed."""
+        request.json = dict(url="http://url")
+        self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "url", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
                  source_uuid="source_uuid",
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              "report 'Report' from '' to 'http://url'."),
-            report["delta"])
+            self.report["delta"])
+
+    def test_password(self, request):
+        """Test that the password can be changed and is not logged."""
+        request.json = dict(password="secret")
+        self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "password", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 source_uuid="source_uuid",
+                 description="Jenny changed the password of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                             "report 'Report' from '' to '******'."),
+            self.report["delta"])
 
 
 class SourceTest(unittest.TestCase):
