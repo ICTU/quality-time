@@ -6,6 +6,7 @@ import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { delete_metric } from '../api/metric';
+import { ChangeLog } from '../changelog/ChangeLog';
 
 export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
@@ -58,6 +59,7 @@ export function MeasurementDetails(props) {
           reload={props.reload}
           report_uuid={props.report.report_uuid}
         />
+        <ChangeLog report={props.report} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     }
   );

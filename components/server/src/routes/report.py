@@ -31,7 +31,7 @@ def get_metric_uuid(report, source_uuid: str):
 
 
 def get_data(database: Database, report_uuid: str, subject_uuid: str = None, metric_uuid: str = None,
-             source_uuid: str = None) -> namedtuple:
+             source_uuid: str = None):
     """Return applicable report, subject, metric, source, and their uuids and names."""
     data = namedtuple(
         "data",

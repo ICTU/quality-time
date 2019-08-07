@@ -2,8 +2,8 @@ import React from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_report, set_report_attribute} from '../api/report';
-import {ChangeLog} from './ChangeLog';
 
 export function ReportTitle(props) {
     return (

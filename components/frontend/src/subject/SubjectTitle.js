@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 
 export function SubjectTitle(props) {
@@ -24,7 +25,7 @@ export function SubjectTitle(props) {
                             <SubjectType
                                 datamodel={props.datamodel}
                                 readOnly={props.readOnly}
-                                set_value={(value) => set_subject_attribute(props.report_uuid, props.subject_uuid, "type", value, props.reload)}
+                                set_value={(value) => set_subject_attribute(props.report.report_uuid, props.subject_uuid, "type", value, props.reload)}
                                 subject_type={props.subject.type}
                             />
                         </Grid.Column>
@@ -33,9 +34,14 @@ export function SubjectTitle(props) {
                                 label="Subject name"
                                 placeholder={current_subject_type.name}
                                 readOnly={props.readOnly}
-                                set_value={(value) => set_subject_attribute(props.report_uuid, props.subject_uuid, "name", value, props.reload)}
+                                set_value={(value) => set_subject_attribute(props.report.report_uuid, props.subject_uuid, "name", value, props.reload)}
                                 value={props.subject.name}
                             />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <ChangeLog report={props.report} subject_uuid={props.subject_uuid} />
                         </Grid.Column>
                     </Grid.Row>
                     {!props.readOnly &&
@@ -46,7 +52,7 @@ export function SubjectTitle(props) {
                                     floated='right'
                                     negative
                                     icon
-                                    onClick={() => delete_subject(props.report_uuid, props.subject_uuid, props.reload)}
+                                    onClick={() => delete_subject(props.report.report_uuid, props.subject_uuid, props.reload)}
                                     primary
                                 >
                                     <Icon name='trash' /> Delete subject
