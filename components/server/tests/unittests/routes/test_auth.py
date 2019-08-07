@@ -12,8 +12,6 @@ from src.routes import auth
 class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
-        self.request = Mock()
-        self.request.json = dict(username="admin", password="admin")
         self.database = Mock()
         self.ldap_server = Mock()
         self.ldap_server.search_s.return_value = [
@@ -64,8 +62,11 @@ class LoginTests(unittest.TestCase):
     def test_failed_login(self):
         """Test failed login."""
         self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS  # pylint: disable=no-member
+
+        resp1 = Mock(json=dict(username="admin", password="admin"))
+        
         with patch("logging.warning", Mock()):
-            with patch("bottle.request", self.request):
+            with patch("bottle.request", return_value=resp1):
                 with patch("ldap.initialize", return_value=self.ldap_server):
                     self.assertEqual(dict(ok=False), auth.login(self.database))
 
