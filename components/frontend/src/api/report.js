@@ -24,4 +24,19 @@ function set_reports_attribute(attribute, value, reload) {
   return fetch_server_api('post', `reports/${attribute}`, { [attribute]: value }).then(reload)
 }
 
-export { add_report, delete_report, get_reports, get_tag_report, set_report_attribute, set_reports_attribute }
+function get_changelog(nr_changes, uuids) {
+  if (Object.keys(uuids).includes("source_uuid")) {
+    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/source/${uuids.source_uuid}/${nr_changes}`)
+  }
+  if (Object.keys(uuids).includes("metric_uuid")) {
+    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/metric/${uuids.metric_uuid}/${nr_changes}`)
+  }
+  if (Object.keys(uuids).includes("subject_uuid")) {
+    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/subject/${uuids.subject_uuid}/${nr_changes}`)
+  }
+  return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/${nr_changes}`)
+}
+
+export {
+  add_report, delete_report, get_reports, get_tag_report, set_report_attribute, set_reports_attribute,
+  get_changelog }

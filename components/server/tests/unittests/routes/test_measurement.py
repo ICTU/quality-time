@@ -104,9 +104,13 @@ class SetEntityAttributeTest(unittest.TestCase):
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
+        database.sessions.find_one.return_value = dict(user="John")
         database.measurements.find_one.return_value = dict(
             _id="id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="red",
-            sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])
+            sources=[
+                dict(
+                    source_uuid="source_uuid", parse_error=None, connection_error=None, value="42",
+                    entities=[dict(key="entity_key", title="entity title")])])
 
         def insert_one(new_measurement):
             new_measurement["_id"] = "id"
@@ -128,6 +132,7 @@ class SetEntityAttributeTest(unittest.TestCase):
             measurement = set_entity_attribute("metric_uuid", "source_uuid", "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
+        self.assertEqual("John changed the attribute of 'entity title' from '' to 'value'.", measurement["delta"])
 
 
 class StreamNrMeasurementsTest(unittest.TestCase):

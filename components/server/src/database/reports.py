@@ -87,3 +87,16 @@ def insert_new_reports_overview(database: Database, reports_overview):
     reports_overview["timestamp"] = iso_timestamp()
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
+
+
+def changelog(database: Database, nr_changes: int, **uuids):
+    """Return the changelog for the report, narrowed to a single subject, metric, or source if so required.
+    The uuids keyword arguments should contain report_uuid="report_uuid" and optionally subject_uuid="subject_uuid",
+    metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
+    # Build a filter for finding the right "delta" subdocuments using the passed uuid's
+    delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
+    # Find the "nr_changes" most recent "delta" subdocuments with the required uuid's and return (using the projection)
+    # the description and the timestamp of the report:
+    return database.reports.find(
+        filter=delta_filter, sort=[("timestamp", pymongo.DESCENDING)], limit=nr_changes,
+        projection={"delta.description": True, "timestamp": True})

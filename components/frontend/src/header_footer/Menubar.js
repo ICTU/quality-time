@@ -9,10 +9,11 @@ function Login(props) {
     <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny'>
       <Header content='Login' />
       <Modal.Content>
-        <Form error={props.error} onSubmit={() => props.login(username, password)}>
+        <Form error={props.error} warning={!props.error} onSubmit={() => props.login(username, password)}>
           <Form.Input autoFocus label='Username' name='username' onChange={(event, { name, value }) => setUsername(value)} />
           <Form.Input type='password' label='Password' name='password' onChange={(event, { name, value }) => setPassword(value)} />
           <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
+          <Message warning header='Heads up' content='Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged.' />
           <Form.Button>Submit</Form.Button>
         </Form>
       </Modal.Content>

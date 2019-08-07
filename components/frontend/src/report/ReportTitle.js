@@ -2,7 +2,8 @@ import React from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { delete_report, set_report_attribute } from '../api/report';
+import { ChangeLog } from '../changelog/ChangeLog';
+import { delete_report, set_report_attribute} from '../api/report';
 
 export function ReportTitle(props) {
     return (
@@ -25,6 +26,11 @@ export function ReportTitle(props) {
                                 set_value={(value) => set_report_attribute(props.report.report_uuid, "subtitle", value, props.reload)}
                                 value={props.report.subtitle}
                             />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <ChangeLog report={props.report} />
                         </Grid.Column>
                     </Grid.Row>
                     {!props.readOnly &&

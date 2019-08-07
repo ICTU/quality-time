@@ -4,6 +4,7 @@ import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
+import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_source, set_source_attribute } from '../api/source';
 
 export function Source(props) {
@@ -64,6 +65,11 @@ export function Source(props) {
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}
+                <Grid.Row>
+                    <Grid.Column>
+                        <ChangeLog report={props.report} source_uuid={props.source_uuid} />
+                    </Grid.Column>
+                </Grid.Row>
                 {!props.readOnly &&
                     <Grid.Row columns={1}>
                         <Grid.Column>

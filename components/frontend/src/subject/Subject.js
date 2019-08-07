@@ -97,7 +97,7 @@ export function Subject(props) {
         datamodel={props.datamodel}
         readOnly={props.readOnly}
         reload={props.reload}
-        report_uuid={props.report.report_uuid}
+        report={props.report}
         subject={subject}
         subject_uuid={props.subject_uuid}
       />

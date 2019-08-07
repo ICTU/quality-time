@@ -1,5 +1,6 @@
 """Report routes."""
 
+from collections import namedtuple
 from typing import Any, Dict
 
 import bottle
@@ -12,59 +13,101 @@ from database.reports import (
     latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
 )
+from database import sessions
 from utilities.functions import report_date_time, uuid
 from .measurement import latest_measurement, insert_new_measurement
 
 
-def get_subject(report, metric_uuid: str):
-    """Return the subject that has the metric with the specified uuid."""
-    return [subject for subject in report["subjects"].values() if metric_uuid in subject["metrics"]][0]
+def get_subject_uuid(report, metric_uuid: str):
+    """Return the uuid of the subject that has the metric with the specified uuid."""
+    subjects = report["subjects"]
+    return [subject_uuid for subject_uuid in subjects if metric_uuid in subjects[subject_uuid]["metrics"]][0]
 
 
-def get_metric(report, metric_uuid: str):
-    """Return the metric with the specified uuid."""
-    return [subject["metrics"][metric_uuid] for subject in report["subjects"].values()
-            if metric_uuid in subject["metrics"]][0]
+def get_metric_uuid(report, source_uuid: str):
+    """Return the uuid of the metric that has a source with the specified uuid."""
+    return [metric_uuid for subject in report["subjects"].values() for metric_uuid in subject["metrics"]
+            if source_uuid in subject["metrics"][metric_uuid]["sources"]][0]
 
 
-def get_metric_by_source_uuid(report, source_uuid: str):
-    """Return the metric that has a source with the specified uuid."""
-    return [metric for subject in report["subjects"].values() for metric in subject["metrics"].values()
-            if source_uuid in metric["sources"]][0]
+def get_data(database: Database, report_uuid: str, subject_uuid: str = None, metric_uuid: str = None,
+             source_uuid: str = None):
+    """Return applicable report, subject, metric, source, and their uuids and names."""
+    data = namedtuple(
+        "data",
+        "report, report_uuid, report_name, subject, subject_uuid, subject_name, "
+        "metric, metric_uuid, metric_name, source, source_uuid, source_name")
+    data.report_uuid = report_uuid
+    data.report = latest_report(database, report_uuid)
+    data.report_name = data.report.get("title") or ""
+    data.source_uuid = source_uuid
+    data.metric_uuid = get_metric_uuid(data.report, data.source_uuid) if data.source_uuid else metric_uuid
+    data.subject_uuid = get_subject_uuid(data.report, data.metric_uuid) if data.metric_uuid else subject_uuid
+    datamodel = latest_datamodel(database)
+
+    if data.subject_uuid:
+        data.subject = data.report["subjects"][data.subject_uuid]
+        data.subject_name = data.subject.get("name") or datamodel["subjects"][data.subject["type"]]["name"]
+
+    if data.metric_uuid:
+        data.metric = data.subject["metrics"][data.metric_uuid]
+        data.metric_name = data.metric.get("name") or datamodel["metrics"][data.metric["type"]]["name"]
+
+    if data.source_uuid:
+        data.source = data.metric["sources"][data.source_uuid]
+        data.source_name = data.source.get("name") or datamodel["sources"][data.source["type"]]["name"]
+    return data
 
 
 @bottle.post("/report/<report_uuid>/<report_attribute>")
 def post_report_attribute(report_uuid: str, report_attribute: str, database: Database):
     """Set a report attribute."""
+    data = get_data(database, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
-    report = latest_report(database, report_uuid)
-    report[report_attribute] = value
-    return insert_new_report(database, report)
+    old_value = data.report.get(report_attribute) or ""
+    data.report[report_attribute] = value
+    data.report["delta"] = dict(
+        report_uuid=report_uuid,
+        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}' from "
+                    f"'{old_value}' to '{value}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")
 def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]
-    report = latest_report(database, report_uuid)
-    report["subjects"][subject_uuid][subject_attribute] = value
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid, subject_uuid)
+    old_value = data.subject.get(subject_attribute) or ""
+    data.subject[subject_attribute] = value
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=subject_uuid,
+        description=f"{sessions.user(database)} changed the {subject_attribute} of subject '{data.subject_name}' in "
+                    f"report '{data.report_name}' from '{old_value}' to '{value}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/report/<report_uuid>/subject/new")
 def post_new_subject(report_uuid: str, database: Database):
     """Create a new subject."""
-    report = latest_report(database, report_uuid)
-    report["subjects"][uuid()] = default_subject_attributes(database)
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid)
+    data.report["subjects"][uuid()] = default_subject_attributes(database)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid,
+        description=f"{sessions.user(database)} created a new subject in report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.delete("/report/<report_uuid>/subject/<subject_uuid>")
 def delete_subject(report_uuid: str, subject_uuid: str, database: Database):
     """Delete the subject."""
-    report = latest_report(database, report_uuid)
-    del report["subjects"][subject_uuid]
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid, subject_uuid)
+    del data.report["subjects"][subject_uuid]
+    data.report["delta"] = dict(
+        report_uuid=report_uuid,
+        description=f"{sessions.user(database)} deleted the subject '{data.subject_name}' from report "
+                    f"'{data.report_name}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.get("/metrics")
@@ -82,80 +125,105 @@ def get_metrics(database: Database):
 def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
-    report = latest_report(database, report_uuid)
-    metric = get_metric(report, metric_uuid)
-    metric[metric_attribute] = value
+    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    old_value = data.metric.get(metric_attribute) or ""
+    data.metric[metric_attribute] = value
     if metric_attribute == "type":
-        metric.update(default_metric_attributes(database, report_uuid, value))
-    insert_new_report(database, report)
+        data.metric.update(default_metric_attributes(database, report_uuid, value))
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        description=f"{sessions.user(database)} changed the {metric_attribute} of metric '{data.metric_name}' of "
+                    f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
+    insert_new_report(database, data.report)
     if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
         if latest:
-            return insert_new_measurement(database, latest, metric)
+            return insert_new_measurement(database, latest, data.metric)
     return dict(ok=True)
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric/new")
 def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
     """Add a new metric."""
-    report = latest_report(database, report_uuid)
-    subject = report["subjects"][subject_uuid]
-    subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid, subject_uuid)
+    data.subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
+                    f"'{data.report_name}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.delete("/report/<report_uuid>/metric/<metric_uuid>")
 def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
     """Delete a metric."""
-    report = latest_report(database, report_uuid)
-    subject = get_subject(report, metric_uuid)
-    del subject["metrics"][metric_uuid]
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        description=f"{sessions.user(database)} deleted metric '{data.metric_name}' from subject '{data.subject_name}' "
+                    f"in report '{data.report_name}'.")
+    del data.subject["metrics"][metric_uuid]
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/source/new")
 def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     """Add a new source."""
-    report = latest_report(database, report_uuid)
-    metric = get_metric(report, metric_uuid)
-    metric_type = metric["type"]
+    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
     datamodel = latest_datamodel(database)
+    metric_type = data.metric["type"]
     source_type = datamodel["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
-    metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
-    return insert_new_report(database, report)
+    data.metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        description=f"{sessions.user(database)} added a new source to metric '{data.metric_name}' of subject "
+                    f"'{data.subject_name}' in report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.delete("/report/<report_uuid>/source/<source_uuid>")
 def delete_source(report_uuid: str, source_uuid: str, database: Database):
     """Delete a source."""
-    report = latest_report(database, report_uuid)
-    metric = get_metric_by_source_uuid(report, source_uuid)
-    del metric["sources"][source_uuid]
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        description=f"{sessions.user(database)} deleted the source '{data.source_name}' from metric "
+                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
+    del data.metric["sources"][source_uuid]
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/<source_attribute>")
 def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: str, database: Database):
     """Set a source attribute."""
+    data = get_data(database, report_uuid, source_uuid=source_uuid)
     value = dict(bottle.request.json)[source_attribute]
-    report = latest_report(database, report_uuid)
-    metric = get_metric_by_source_uuid(report, source_uuid)
-    source = metric["sources"][source_uuid]
-    source[source_attribute] = value
+    old_value = data.source.get(source_attribute) or ""
+    data.source[source_attribute] = value
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
+        description=f"{sessions.user(database)} changed the {source_attribute} of source '{data.source_name}' of "
+                    f"metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
+                    f"from '{old_value}' to '{value}'.")
     if source_attribute == "type":
-        source["parameters"] = default_source_parameters(database, metric["type"], value)
-    return insert_new_report(database, report)
+        data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str, database: Database):
     """Set the source parameter."""
+    data = get_data(database, report_uuid, source_uuid=source_uuid)
     parameter_value = dict(bottle.request.json)[parameter_key]
-    report = latest_report(database, report_uuid)
-    metric = get_metric_by_source_uuid(report, source_uuid)
-    metric["sources"][source_uuid]["parameters"][parameter_key] = parameter_value
-    return insert_new_report(database, report)
+    old_value = data.source["parameters"].get(parameter_key) or ""
+    data.source["parameters"][parameter_key] = parameter_value
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
+        description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
+                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' from "
+                    f"'{old_value}' to '{parameter_value}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.get("/reports")
