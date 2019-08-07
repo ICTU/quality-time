@@ -35,7 +35,7 @@ def get_data(database: Database, report_uuid: str, subject_uuid: str = None, met
     """Return applicable report, subject, metric, source, and their uuids and names."""
     data = namedtuple(
         "data",
-        "report, report_uuid, report_name, subject, subject_uuid, subject_name, "
+        "datamodel, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
     data.report_uuid = report_uuid
     data.report = latest_report(database, report_uuid)
@@ -43,19 +43,16 @@ def get_data(database: Database, report_uuid: str, subject_uuid: str = None, met
     data.source_uuid = source_uuid
     data.metric_uuid = get_metric_uuid(data.report, data.source_uuid) if data.source_uuid else metric_uuid
     data.subject_uuid = get_subject_uuid(data.report, data.metric_uuid) if data.metric_uuid else subject_uuid
-    datamodel = latest_datamodel(database)
-
+    data.datamodel = latest_datamodel(database)
     if data.subject_uuid:
         data.subject = data.report["subjects"][data.subject_uuid]
-        data.subject_name = data.subject.get("name") or datamodel["subjects"][data.subject["type"]]["name"]
-
+        data.subject_name = data.subject.get("name") or data.datamodel["subjects"][data.subject["type"]]["name"]
     if data.metric_uuid:
         data.metric = data.subject["metrics"][data.metric_uuid]
-        data.metric_name = data.metric.get("name") or datamodel["metrics"][data.metric["type"]]["name"]
-
+        data.metric_name = data.metric.get("name") or data.datamodel["metrics"][data.metric["type"]]["name"]
     if data.source_uuid:
         data.source = data.metric["sources"][data.source_uuid]
-        data.source_name = data.source.get("name") or datamodel["sources"][data.source["type"]]["name"]
+        data.source_name = data.source.get("name") or data.datamodel["sources"][data.source["type"]]["name"]
     return data
 
 
@@ -218,11 +215,14 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     parameter_value = dict(bottle.request.json)[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
     data.source["parameters"][parameter_key] = parameter_value
+    new_value = "*" * len(parameter_value) \
+        if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password" \
+        else parameter_value
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' from "
-                    f"'{old_value}' to '{parameter_value}'.")
+                    f"'{old_value}' to '{new_value}'.")
     return insert_new_report(database, data.report)
 
 
