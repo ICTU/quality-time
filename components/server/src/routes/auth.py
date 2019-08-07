@@ -53,6 +53,8 @@ def login(database: Database) -> Dict[str, bool]:
         )
         if result:
             username = LDAPUserObject(result[0]).cn
+        else:
+            raise ldap.INVALID_CREDENTIALS
     except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX, ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
         logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
