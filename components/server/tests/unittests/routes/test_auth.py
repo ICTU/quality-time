@@ -13,9 +13,12 @@ class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
         self.request = Mock()
-        self.request.json = dict(username="user", password="pass")
+        self.request.json = dict(username="admin", password="admin")
         self.database = Mock()
         self.ldap_server = Mock()
+        self.ldap_server.search_s.return_value = [
+            ('cn=John Doe,ou=users,dc=example,dc=org', {'cn': [b'John Doe'], 'uid': [b'jodoe']})
+        ]
 
     def tearDown(self):
         bottle.response._cookies = None  # pylint: disable=protected-access
@@ -30,10 +33,22 @@ class LoginTests(unittest.TestCase):
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertTrue("domain=" in cookie.lower())
 
-    def test_successful_login_localhost(self):
+    def test_successful_login_localhost_uid(self):
+        """Test successful login on localhost."""
+        with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
+            self.request.json = dict(username="jodoe", password="secret")
+            with patch("bottle.request", self.request):
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=True), auth.login(self.database))
+        cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
+        self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
+        self.assertFalse("domain=" in cookie.lower())
+
+    def test_successful_login_localhost_cn(self):
         """Test successful login on localhost."""
         with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
             with patch("bottle.request", self.request):
+                self.request.json = dict(username="John Doe", password="secret")
                 with patch("ldap.initialize", return_value=self.ldap_server):
                     self.assertEqual(dict(ok=True), auth.login(self.database))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
