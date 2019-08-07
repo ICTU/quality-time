@@ -77,7 +77,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.report_status = "In Process"
+        self.report_status = "InProcess"
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         responses = super().get_source_responses(api_url)
@@ -111,7 +111,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
     def next_collection(self) -> datetime:
         """If the CxSAST report is in process, try again as soon as possible, otherwise return the regular next
         collection datetime."""
-        return datetime.min if self.report_status == "In Process" else super().next_collection()
+        return datetime.min if self.report_status == "InProcess" else super().next_collection()
 
     def parse_xml_report(self, xml_string: str) -> Entities:
         """Get the entities from the CxSAST XML report."""

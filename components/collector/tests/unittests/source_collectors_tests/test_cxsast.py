@@ -54,7 +54,7 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
         get_json = [
             [dict(name="project", id="id")],
             [dict(id=1000)],
-            dict(status=dict(value="In Process")),
+            dict(status=dict(value="InProcess")),
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
             [dict(name="project", id="id")]]
         post_json = [dict(access_token="token")] * 2 + [dict(reportId=1)]
