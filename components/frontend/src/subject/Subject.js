@@ -168,7 +168,10 @@ export function Subject(props) {
                   basic
                   floated='left'
                   icon
-                  onClick={() => add_metric(props.report.report_uuid, props.subject_uuid, props.reload)}
+                  onClick={() => {
+                    setSortColumn(null);
+                    add_metric(props.report.report_uuid, props.subject_uuid, props.reload);
+                  }}
                   primary
                 >
                   <Icon name='plus' /> Add metric
