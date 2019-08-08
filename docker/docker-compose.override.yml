@@ -1,0 +1,37 @@
+# Extra services and overridden parameters for development
+version: "3"
+services:
+  frontend:
+    build: ../components/frontend
+  collector:
+    build: ../components/collector
+  server:
+    build: ../components/server
+    depends_on:
+      - ldap
+  testdata:
+    build: ../components/testdata
+    ports:
+      - "8000:8000"
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    env_file:
+      - ${ENV:-test}.env
+    depends_on:
+      - database
+  ldap:
+    image: osixia/openldap:1.2.4
+    command: --dont-touch-etc-hosts
+    ports:
+      - "389:389"
+      - "636:636"
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    env_file:
+      - ${ENV:-test}.env
+    ports:
+      - "3890:80"
+    depends_on:
+      - ldap
