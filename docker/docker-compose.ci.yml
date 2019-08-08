@@ -9,8 +9,6 @@ services:
     build: ../components/collector
     env_file:
       - ${ENV:-ci}.env
-    depends_on:
-      - testdata
   server:
     build: ../components/server
     env_file:
