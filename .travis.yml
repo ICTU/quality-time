@@ -77,7 +77,8 @@ jobs:
       language: node_js
       node_js: 10
       install:
-      - export ENV=travis
+      - export ENV=ci
+      - export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
       - docker-compose build && docker-compose up -d  # Start immediately so metric data is collected before tests run
       - docker images
       - docker ps --all
@@ -91,9 +92,6 @@ jobs:
           tags: true
         script: >-
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
-          docker tag quality-time_collector ictu/quality-time_collector:$TRAVIS_TAG &&
-          docker tag quality-time_server ictu/quality-time_server:$TRAVIS_TAG &&
-          docker tag quality-time_frontend ictu/quality-time_frontend:$TRAVIS_TAG &&
           docker push ictu/quality-time_collector:$TRAVIS_TAG &&
           docker push ictu/quality-time_server:$TRAVIS_TAG &&
           docker push ictu/quality-time_frontend:$TRAVIS_TAG  # https://github.com/travis-ci/dpl/issues/673

@@ -42,18 +42,16 @@ jobs:
     parallelism: 1
     steps:
       - checkout
-      # build the application image
       - run: |
-          export ENV=circleci
+          export ENV=ci
+          export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
           docker images
           docker ps -a
-      #run ui_tests
       - run: "cd components/art && npm install --save-dev"
       - run: "cd /home/circleci/project"
-
       - run:
-          name: Running E2E tests with Single reporter
+          name: UI tests
           command: "cd components/art && npx cypress run"
       - store_test_results:
           path: multiple-results
