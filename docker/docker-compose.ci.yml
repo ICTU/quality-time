@@ -17,10 +17,6 @@ services:
       - ${ENV:-ci}.env
     depends_on:
       - ldap
-  testdata:
-    build: ../components/testdata
-    ports:
-      - "8000:8000"
   ldap:
     image: osixia/openldap:1.2.4
     command: --dont-touch-etc-hosts
