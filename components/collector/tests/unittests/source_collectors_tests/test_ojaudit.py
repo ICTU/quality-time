@@ -63,9 +63,10 @@ class OJAuditTest(SourceCollectorTestCase):
 </audit>"""
         response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_entities(
-            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning"),
+            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
+                  count="1"),
              dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
-                  severity="exception")],
+                  severity="exception", count="1")],
             response)
         self.assert_value("2", response)
 
@@ -127,3 +128,55 @@ class OJAuditTest(SourceCollectorTestCase):
         response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_value("0", response)
         self.assert_entities([], response)
+
+    def test_ignore_duplication_violations(self):
+        """Test that violations with the same model, message, location, etc. are ignored."""
+        ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
+  <violation-count>2</violation-count>
+  <exception-count>1</exception-count>
+  <error-count>0</error-count>
+  <warning-count>1</warning-count>
+  <incomplete-count>0</incomplete-count>
+  <advisory-count>0</advisory-count>
+  <models>
+    <model id="a">
+      <file>
+        <path>a</path>
+      </file>
+    </model>
+  </models>
+  <construct>
+    <children>
+      <construct>
+        <children>
+          <violation>
+            <message>a</message>
+            <location model="a">
+              <line-number>20</line-number>
+              <column-offset>4</column-offset>
+            </location>
+            <values>
+              <value>warning</value>
+            </values>
+          </violation>
+          <violation>
+            <message>a</message>
+            <location model="a">
+              <line-number>20</line-number>
+              <column-offset>4</column-offset>
+            </location>
+            <values>
+              <value>warning</value>
+            </values>
+          </violation>
+        </children>
+      </construct>
+    </children>
+  </construct>
+</audit>"""
+        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        self.assert_entities(
+            [dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
+                  count="2")],
+            response)
+        self.assert_value("2", response)
