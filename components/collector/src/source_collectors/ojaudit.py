@@ -17,6 +17,10 @@ ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 class OJAuditViolations(SourceCollector):
     """Collector to get violations from OJAudit."""
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
+
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         severities = cast(List[str], self.parameter("severities"))
@@ -40,10 +44,11 @@ class OJAuditViolations(SourceCollector):
         models = self.model_file_paths(tree, namespaces)
         violation_elements = tree.findall(f".//ns:violation", namespaces)
         violations = [self.violation(element, namespaces, models, severities) for element in violation_elements]
-        return [violation for violation in violations if violation is not None]
+        # Discard duplicated violations (where self.violation() returned None) and add the duplication count
+        return [{**violation, "count": str(self.violation_counts[str(violation["key"])])}
+                for violation in violations if violation is not None]
 
-    @staticmethod
-    def violation(violation: Element, namespaces: Namespaces, models: ModelFilePaths,
+    def violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
                   severities: List[str]) -> Optional[Entity]:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
@@ -58,6 +63,10 @@ class OJAuditViolations(SourceCollector):
         model = models[location.get("model", "")]
         component = f"{model}:{line_number}:{column_offset}"
         key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+        if key in self.violation_counts:
+            self.violation_counts[key] += 1
+            return None  # Ignore duplicate violation
+        self.violation_counts[key] = 1
         return dict(key=key, severity=severity, message=message, component=component)
 
     @staticmethod
