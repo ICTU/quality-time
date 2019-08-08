@@ -20,5 +20,6 @@ def init_database() -> Database:
     logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
     import_datamodel(database)
     initialize_reports_overview(database)
-    import_example_reports(database)
+    if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
+        import_example_reports(database)
     return database
