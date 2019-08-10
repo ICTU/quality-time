@@ -1,6 +1,6 @@
 """Unit tests for the Jenkins test report source."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -39,3 +39,14 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
             metric, get_request_json_return_value=dict(suites=[dict(timestamp="2019-04-02T08:52:50")]))
         expected_age = (datetime.now() - datetime(2019, 4, 2, 8, 52, 50)).days
         self.assert_value(str(expected_age), response)
+
+    def test_source_up_to_dateness_without_timestamps(self):
+        """Test that the job age in days is returned if the test report doesn't contain timestamps."""
+        metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
+        response = self.collect(
+            metric,
+            get_request_json_side_effect=[
+                dict(suites=[dict(timestamp=None)]), dict(timestamp="1565284457173")])
+        expected_age = (datetime.now(timezone.utc) - datetime(2019, 8, 8, 17, 14, 17, 173, tzinfo=timezone.utc)).days
+        self.assert_value(str(expected_age), response)
+

@@ -88,7 +88,7 @@ class SourceCollector:
         """Return the basic authentication credentials, if any."""
         token = cast(str, self.parameters.get("private_token", ""))
         if token:
-            return (token, "")
+            return token, ""
         username = cast(str, self.parameters.get("username", ""))
         password = cast(str, self.parameters.get("password", ""))
         return (username, password) if username and password else None
