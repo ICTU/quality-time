@@ -1,5 +1,6 @@
 """Jenkins test report metric collector."""
 
+from datetime import datetime
 from typing import cast, List
 
 from dateutil.parser import parse
@@ -57,10 +58,16 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    def api_url(self) -> URL:
-        return URL(f"{super().api_url()}/lastSuccessfulBuild/testReport/api/json")
+    def get_source_responses(self, api_url: URL) -> List[requests.Response]:
+        api_url = self.api_url()
+        test_report_url = URL(f"{api_url}/lastSuccessfulBuild/testReport/api/json")
+        job_url = URL(f"{api_url}/lastSuccessfulBuild/api/json")
+        return [requests.get(url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials())
+                for url in (test_report_url, job_url)]
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
                       if suite.get("timestamp")]
-        return str(days_ago(parse(max(timestamps))))
+        report_datetime = parse(max(timestamps)) if timestamps else \
+            datetime.fromtimestamp(float(responses[1].json()["timestamp"]) / 1000.)
+        return str(days_ago(report_datetime))
