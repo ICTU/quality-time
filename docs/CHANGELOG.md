@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Allow for using (a safe subset of) HTML and URL's in metric comment fields. Closes[#511](https://github.com/ICTU/quality-time/issues/511).
+
 ## [0.6.0] - [2019-08-11]
 
 ### Added

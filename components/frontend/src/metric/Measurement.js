@@ -81,7 +81,7 @@ export function Measurement(props) {
           metric={metric} source={source} datamodel={props.datamodel} />])}
       </Table.Cell>
       <Table.Cell>
-        {metric.comment}
+        <div dangerouslySetInnerHTML={{__html: metric.comment}}/>
       </Table.Cell>
       <Table.Cell>
         {metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}

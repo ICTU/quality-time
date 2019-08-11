@@ -14,7 +14,7 @@ from database.reports import (
     summarize_report
 )
 from database import sessions
-from utilities.functions import report_date_time, uuid
+from utilities.functions import report_date_time, uuid, sanitize_html
 from .measurement import latest_measurement, insert_new_measurement
 
 
@@ -124,6 +124,8 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     value = dict(bottle.request.json)[metric_attribute]
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
     old_value = data.metric.get(metric_attribute) or ""
+    if metric_attribute == "comment" and value:
+        value = sanitize_html(value)
     data.metric[metric_attribute] = value
     if metric_attribute == "type":
         data.metric.update(default_metric_attributes(database, report_uuid, value))

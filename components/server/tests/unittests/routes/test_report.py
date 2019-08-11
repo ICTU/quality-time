@@ -151,6 +151,28 @@ class PostMetricAttributeTest(unittest.TestCase):
                              "'Report' from '' to '2019-06-07'."),
             self.report["delta"])
 
+    def test_post_unsafe_comment(self, request):
+        """Test that comments are sanitized, since they are displayed as inner HTML in the frontend."""
+        request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "comment", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the comment of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from '' to 'Comment with script'."),
+            self.report["delta"])
+
+    def test_post_comment_with_link(self, request):
+        """Test that urls in comments are transformed into anchors."""
+        request.json = dict(comment='Comment with url http://google.com')
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "comment", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="""John changed the comment of metric 'name' of subject 'Subject' in report 'Report' \
+from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a></p>'."""),
+            self.report["delta"])
+
 
 @patch("bottle.request")
 class PostSourceAttributeTest(unittest.TestCase):
