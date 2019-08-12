@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Allow for using (a safe subset of) HTML and URL's in metric comment fields. Closes[#511](https://github.com/ICTU/quality-time/issues/511).
 
+### Fixed
+
+- Don't try to retrieve more work items from Azure DevOps than allowed. Fixes [#532](https://github.com/ICTU/quality-time/issues/532).
+
 ## [0.6.0] - [2019-08-11]
 
 ### Added
