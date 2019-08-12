@@ -53,7 +53,7 @@ export function Source(props) {
                     <Grid.Column>
                         <Message negative>
                             <Message.Header>Connection error</Message.Header>
-                            <pre style={{ whiteSpace: 'pre-wrap' }}>{props.connection_error}</pre>
+                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{props.connection_error}</pre>
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}
@@ -61,7 +61,7 @@ export function Source(props) {
                     <Grid.Column>
                         <Message negative>
                             <Message.Header>Parse error</Message.Header>
-                            <pre style={{ whiteSpace: 'pre-wrap' }}>{props.parse_error}</pre>
+                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{props.parse_error}</pre>
                         </Message>
                     </Grid.Column>
                 </Grid.Row>}
