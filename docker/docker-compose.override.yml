@@ -25,8 +25,7 @@ services:
     depends_on:
       - database
   ldap:
-    image: osixia/openldap:1.2.4
-    command: --dont-touch-etc-hosts
+    build: ../components/ldap
     ports:
       - "389:389"
       - "636:636"
