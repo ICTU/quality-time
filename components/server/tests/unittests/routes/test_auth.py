@@ -21,6 +21,19 @@ class LoginTests(unittest.TestCase):
     def tearDown(self):
         bottle.response._cookies = None  # pylint: disable=protected-access
 
+    def test_successful_login(self):
+        """Test successful login."""
+        resp1 = Mock(json=dict(username="admin", password="admin"))
+        resp2 = Mock(json=dict(username="jodoe", password="secret"))
+
+        with patch("os.environ.get", Mock(return_value="http://www.quality-time.my-org.org:5001")):
+            with patch("bottle.request", return_value=[resp1, resp2]):
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=True), auth.login(self.database))
+        cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
+        self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
+        self.assertTrue("domain=" in cookie.lower())
+
     def test_successful_login_localhost_uid(self):
         """Test successful login on localhost."""
         resp1 = Mock(json=dict(username="admin", password="admin"))
@@ -47,8 +60,21 @@ class LoginTests(unittest.TestCase):
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertFalse("domain=" in cookie.lower())
 
-    def test_unsuccessful_login_localhost_cn(self):
-        """Test successful login on localhost."""
+    def test_lookupuser_simple_bind_s_failure(self):
+        resp1 = Mock(json=dict(username="wrong", password="wrong"))
+        resp2 = Mock(json=dict(username="John Doe", password="secret"))
+
+        self.ldap_server.simple_bind_s.side_effect = [
+            ldap.INVALID_CREDENTIALS,
+            None
+        ]
+
+        with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
+            with patch("bottle.request", return_value=[resp1, resp2]):
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=False), auth.login(self.database))
+
+    def test_simple_search_s_failure(self):
         resp1 = Mock(json=dict(username="admin", password="admin"))
         resp2 = Mock(json=dict(username="wrong", password="wrong"))
 
@@ -59,12 +85,27 @@ class LoginTests(unittest.TestCase):
                 with patch("ldap.initialize", return_value=self.ldap_server):
                     self.assertEqual(dict(ok=False), auth.login(self.database))
 
+    def test_unsuccessful_login_localhost_cn(self):
+        """Test successful login on localhost."""
+        resp1 = Mock(json=dict(username="admin", password="admin"))
+        resp2 = Mock(json=dict(username="wrong", password="wrong"))
+
+        self.ldap_server.simple_bind_s.side_effect = [
+            None,
+            ldap.INVALID_CREDENTIALS
+        ]
+
+        with patch("os.environ.get", Mock(return_value="http://localhost:5001")):
+            with patch("bottle.request", return_value=[resp1, resp2]):
+                with patch("ldap.initialize", return_value=self.ldap_server):
+                    self.assertEqual(dict(ok=False), auth.login(self.database))
+
     def test_failed_login(self):
         """Test failed login."""
-        self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS  # pylint: disable=no-member
+        self.ldap_server.search_s.return_value = []
 
         resp1 = Mock(json=dict(username="admin", password="admin"))
-        
+
         with patch("logging.warning", Mock()):
             with patch("bottle.request", return_value=resp1):
                 with patch("ldap.initialize", return_value=self.ldap_server):

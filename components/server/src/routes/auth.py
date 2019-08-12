@@ -48,6 +48,11 @@ def login(database: Database) -> Dict[str, bool]:
 
     try:
         ldap_server.simple_bind_s(f"cn={ldap_lookup_user},{ldap_root_dn}", ldap_lookup_user_password)
+    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX, ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
+        logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
+        return dict(ok=False)
+
+    try:
         result = ldap_server.search_s(
             ldap_root_dn, ldap.SCOPE_SUBTREE, f"(|(uid={username})(cn={username}))", ['dn', 'uid', 'cn']
         )
