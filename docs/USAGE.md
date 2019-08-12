@@ -16,7 +16,7 @@ Enter your LDAP-credentials in the dialog:
 
 ![Login dialog screenshot](screenshots/login_dialog.png)
 
-> Currently, you can only use your "Canonical LDAP name" as username and not your LDAP userid. Please contact your system administrator if you don't know your canonical LDAP name.
+> You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
 
 After hitting "Submit" you should be logged in. The menubar shows your username.
 

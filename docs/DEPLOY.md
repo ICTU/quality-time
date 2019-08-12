@@ -10,11 +10,13 @@ If the frontend is served from a URL that doesn't start with `www`, it assumes t
 
 ## LDAP
 
-To configure a LDAP server to authenticate users with, set the `LDAP_URL` and `LDAP_ROOT_DN` environment variables. When running locally, this can be done in the shell:
+To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER`, and `LDAP_LOOKUP_USER_PASSWORD` environment variables. When running locally, this can be done in the shell:
 
 ```console
 $ export LDAP_URL="ldap://ldap.example.org:389"
 $ export LDAP_ROOT_DN="dc=example,dc=org"
+$ export LDAP_LOOKUP_USER=lookup_user
+$ export LDAP_LOOKUP_USER_PASSWORD=secret
 $ cd components/server
 $ python src/quality_report_server.py
 INFO:root:Connected to database: Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quality_time_db')
@@ -23,20 +25,18 @@ INFO:root:Initializing LDAP server at ldap://ldap.example.org:389
 ...
 ```
 
-When using docker-compose, add the LDAP environment variables to the server section:
+When using docker-compose, add the LDAP environment variables to the relevant env file in the docker folder:
 
 ```yaml
 ...
-server:
-    image: docker-registry.example.org:5000/ictu/quality-time-server
-    ports:
-    - "5001:5001"
-    environment:
-    - FRONTEND_URL=http://www.quality-time.example.org:5000
-    - SERVER_URL=http://server.quality-time.example.org:5001
-    - DATABASE_URL=mongodb://root:root@database:27017
-    - LDAP_URL=ldap://ldap.example.org:389
-    - LDAP_ROOT_DN="dc=example,dc=org"
+# Server
+FRONTEND_URL=http://localhost:5000
+SERVER_URL_EXTERNAL=http://localhost:5001
+DATABASE_URL=mongodb://root:root@database:27017
+LDAP_URL=ldap://ldap.example.org:389
+LDAP_LOOKUP_USER=lookup
+LDAP_LOOKUP_USER_PASSWORD=secret
+...
 ```
 
-Users can only use their canonical name (`cn`) to login at the moment.
+Users can use either their LDAP canonical name (`cn`) or their LDAP user id to login.
