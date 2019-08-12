@@ -11,6 +11,9 @@ from .source_collector import SourceCollector
 class AzureDevopsBase(SourceCollector):
     """Base class for Azure DevOps collectors."""
 
+    MAX_IDS_PER_WORKITEMS_API_CALL = 200  # See
+    # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
+
     def api_url(self) -> URL:
         url = super().api_url()
         return URL(f"{url}/_apis/wit/wiql?api-version=4.1")
@@ -18,12 +21,12 @@ class AzureDevopsBase(SourceCollector):
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Override because we need to do a post request and need to separately get the entities."""
         auth = self.basic_auth_credentials()
-        response = requests.post(
-            api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self.parameter("wiql")))
-        ids = ",".join([str(work_item["id"]) for work_item in response.json().get("workItems", [])])
+        response = requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self.parameter("wiql")))
+        ids = [str(work_item["id"]) for work_item in response.json().get("workItems", [])]
         if not ids:
             return [response]
-        work_items_url = URL(f"{super().api_url()}/_apis/wit/workitems?ids={ids}&api-version=4.1")
+        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORKITEMS_API_CALL, self.MAX_ENTITIES)])
+        work_items_url = URL(f"{super().api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
