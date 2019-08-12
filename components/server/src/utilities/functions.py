@@ -5,7 +5,7 @@ import re
 import uuid as _uuid
 
 import bottle
-# Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML # attacks",
+# Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # nosec, pylint: disable=no-name-in-module
 
