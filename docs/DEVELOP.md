@@ -47,7 +47,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
 
-In the fourth temrinal, run the frontend:
+In the fourth terminal, run the frontend:
 
 ```console
 cd components/frontend
@@ -57,7 +57,10 @@ npm run start
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
 
-By default, there is one user defined. Use username `admin` and password `admin` to log in.
+By default, there are three users defined in the LDAP database:
+- User `admin` has password `admin`.
+- User `Jane Doe` has user id `jadoe` and password `secret`.
+- User `John Doe` has user id `jodoe` and password `secret`.
 
 ## Test
 
