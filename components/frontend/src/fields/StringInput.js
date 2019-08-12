@@ -4,23 +4,24 @@ import { Input } from './Input';
 
 function StringInputWithSuggestions(props) {
   let { required, options, set_value, value, ...otherProps } = props;
-  const [string_value, setValue] = useState(value || '');
-  useEffect(() => setValue(props.value || ''), [props.value]);
   const [string_options, setOptions] = useState(options);
   useEffect(() => setOptions(props.options), [props.options]);
+  const [search_query, setSearchQuery] = useState(value || '');
+  useEffect(() => setSearchQuery(props.value || ''), [props.value]);
   return (
     <Form>
       <Form.Dropdown
         {...otherProps}
         allowAdditions
-        error={required && string_value === ""}
+        error={required && search_query === ""}
         fluid
-        onAddItem={(event, { value }) => setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])}
-        onChange={(event, { value }) => { setValue(value); if (value !== props.value) { set_value(value) } }}
+        onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])} }
+        onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}
+        onSearchChange={(event, { searchQuery} ) => { setSearchQuery(searchQuery)}}
         options={string_options}
         search
+        searchQuery={search_query}
         selection
-        value={string_value}
       />
     </Form>
   )
