@@ -127,6 +127,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <TextInput
                             label="Comment"
+                            placeholder="Enter comments here (HTML allowed; URL's are transformed into links)"
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "comment", value, props.reload)}
                             value={props.metric.comment}

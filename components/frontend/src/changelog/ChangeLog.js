@@ -40,7 +40,7 @@ export function ChangeLog(props) {
     let rows = [];
     changes.forEach((change) => rows.push(<Table.Row key={change.timestamp + change.delta}>
         <Table.Cell>
-            <TimeAgo date={change.timestamp} />, {(new Date(change.timestamp)).toLocaleString()}, {change.delta}
+            <TimeAgo date={change.timestamp} />, {(new Date(change.timestamp)).toLocaleString()}, <span dangerouslySetInnerHTML={{__html: change.delta}}/>
         </Table.Cell>
     </Table.Row>))
     return (
