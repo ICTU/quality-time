@@ -15,8 +15,10 @@ from .source_collector import SourceCollector
 class OWASPDependencyCheckSecurityWarnings(SourceCollector):
     """Collector to get security warnings from OWASP Dependency Check."""
 
+    allowed_root_tags = ["{https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd}analysis"]
+
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         return str(len(self.vulnerable_dependencies(tree, namespaces)))
 
     def vulnerable_dependencies(self, tree: Element, namespaces: Namespaces) -> List[Tuple[int, Element]]:
@@ -25,7 +27,7 @@ class OWASPDependencyCheckSecurityWarnings(SourceCollector):
                 if self.vulnerabilities(dependency, namespaces)]
 
     def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         landing_url = self.landing_url(responses)
         return [self.parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
                 in self.vulnerable_dependencies(tree, namespaces)]
@@ -61,7 +63,9 @@ class OWASPDependencyCheckSecurityWarnings(SourceCollector):
 class OWASPDependencyCheckSourceUpToDateness(SourceCollector):
     """Collector to collect the OWASP Dependency Check report age."""
 
+    allowed_root_tags = ["{https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd}analysis"]
+
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
+        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         report_datetime = isoparse(tree.findtext(".//ns:reportDate", default="", namespaces=namespaces))
         return str(days_ago(report_datetime))
