@@ -14,6 +14,7 @@ from .junit import *
 from .manual_number import *
 from .openvas import *
 from .owasp_dependency_check import *
+from .owasp_dependency_check_jenkins_plugin import *
 from .owasp_zap import *
 from .ojaudit import *
 from .performancetest_runner import *
