@@ -1,6 +1,6 @@
 """Unit tests for the Bandit source."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -66,5 +66,5 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         bandit_json = dict(generated_at="2019-07-12T07:38:47Z")
         response = self.collect(metric, get_request_json_return_value=bandit_json)
-        expected_age = (datetime.now() - datetime(2019, 7, 12, 7, 38, 47)).days
+        expected_age = (datetime.now(tz=timezone.utc) - datetime(2019, 7, 12, 7, 38, 47, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)
