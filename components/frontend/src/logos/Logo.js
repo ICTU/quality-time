@@ -12,6 +12,7 @@ import Jira from './jira.png';
 import Junit from './junit.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
+import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
 import OWASPZAP from './owasp_zap.png';
 import Pyupio from './pyupio.png';
 import RobotFramework from './robot_framework.png';
@@ -32,6 +33,7 @@ export function Logo(props) {
         junit: Junit,
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
+        owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,
         owasp_zap: OWASPZAP,
         pyupio_safety: Pyupio,
         robot_framework: RobotFramework,

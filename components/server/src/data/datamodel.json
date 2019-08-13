@@ -1734,7 +1734,7 @@
                     "default_value": "",
                     "values": [
                         "low",
-                        "medium",
+                        "normal",
                         "high",
                         "critical"
                     ],
@@ -1750,8 +1750,7 @@
                     "attributes": [
                         {
                             "name": "File path",
-                            "key": "file_path",
-                            "url": "url"
+                            "key": "file_path"
                         },
                         {
                             "name": "Highest severity",
