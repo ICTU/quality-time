@@ -3,12 +3,13 @@
 from datetime import datetime
 import re
 from typing import Collection, Tuple
+import urllib
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
 import requests
 
-from .type import Namespaces
+from .type import Namespaces, URL
 
 
 def parse_source_response_xml(response: requests.Response, allowed_root_tags: Collection[str] = None) -> Element:
@@ -43,3 +44,15 @@ def stable_traceback(traceback: str) -> str:
 def days_ago(date_time: datetime) -> int:
     """Return the days since the date/time."""
     return (datetime.now(tz=date_time.tzinfo) - date_time).days
+
+
+HASH_RE = re.compile(r"(?i)[a-f0-9]{20,}")
+
+
+def hashless(url: URL) -> URL:
+    """Strip hashes from the url so that it can be used as part of a issue key."""
+    scheme, netloc, path, query, fragment = urllib.parse.urlsplit(str(url))
+    path = re.sub(HASH_RE, "hashremoved", path)
+    query = re.sub(HASH_RE, "hashremoved", query)
+    fragment = re.sub(HASH_RE, "hashremoved", fragment)
+    return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
