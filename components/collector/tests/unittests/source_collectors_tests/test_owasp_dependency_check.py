@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
+from source_collectors.owasp_dependency_check import OWASPDependencyCheckBase
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -73,17 +74,16 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
     def test_invalid_xml(self):
         """Test that the number of warnings is returned."""
         xml = """<?xml version="1.0"?>
-        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.1.xsd">
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
         </analysis>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         self.assert_entities([], response)
         self.assert_value(None, response)
-        self.maxDiff = None
-        self.assert_parse_error_contains("""
+        self.assert_parse_error_contains(f"""
 AssertionError: The XML root element should be one of \
-"['{https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd}analysis']" but is \
-"{https://jeremylong.github.io/DependencyCheck/dependency-check.2.1.xsd}analysis"
+"{OWASPDependencyCheckBase.allowed_root_tags}" but is \
+"{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"
 """, response)
 
     def test_source_up_to_dateness(self):
