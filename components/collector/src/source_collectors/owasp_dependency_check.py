@@ -12,10 +12,15 @@ from utilities.functions import days_ago, parse_source_response_xml_with_namespa
 from .source_collector import SourceCollector
 
 
-class OWASPDependencyCheckSecurityWarnings(SourceCollector):
-    """Collector to get security warnings from OWASP Dependency Check."""
+class OWASPDependencyCheckBase(SourceCollector):
+    """Base class for OWASP Dependency Check collectors."""
 
-    allowed_root_tags = ["{https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd}analysis"]
+    allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
+                         for version in ("2.0", "2.1", "2.2")]
+
+
+class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
+    """Collector to get security warnings from OWASP Dependency Check."""
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
@@ -60,10 +65,8 @@ class OWASPDependencyCheckSecurityWarnings(SourceCollector):
                 vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower() in severities]
 
 
-class OWASPDependencyCheckSourceUpToDateness(SourceCollector):
+class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase):
     """Collector to collect the OWASP Dependency Check report age."""
-
-    allowed_root_tags = ["{https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd}analysis"]
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
