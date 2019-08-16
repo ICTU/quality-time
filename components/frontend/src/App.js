@@ -58,8 +58,8 @@ class App extends Component {
     const current_date = new Date();
     let self = this;
     get_datamodel(report_date)
-      .then(function (json) {
-        self.setState({ datamodel: json });
+      .then(function (datamodel_json) {
+        self.setState({ datamodel: datamodel_json });
       }).catch(function (error) {
         console.log(error);
       });
@@ -67,10 +67,10 @@ class App extends Component {
       this.setState({ loading: true });
       const tag = this.state.report_uuid.slice(4);
       get_tag_report(tag, report_date)
-        .then(function (json) {
+        .then(function (tagreport_json) {
           self.setState(
             {
-              reports: Object.keys(json.subjects).length > 0 ? [json] : [],
+              reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
               loading: false,
               last_update: current_date
             }
@@ -78,12 +78,12 @@ class App extends Component {
         })
     } else {
       get_reports(report_date)
-        .then(function (json) {
+        .then(function (report_overview_json) {
           const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
           self.setState(
             {
-              reports: json.reports,
-              reports_overview: { title: json.title, subtitle: json.subtitle },
+              reports: report_overview_json.reports,
+              reports_overview: { title: report_overview_json.title, subtitle: report_overview_json.subtitle },
               nr_measurements: nr_measurements,
               nr_new_measurements: 0,
               loading: false,
