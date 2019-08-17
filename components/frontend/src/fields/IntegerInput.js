@@ -6,7 +6,7 @@ export function IntegerInput(props) {
     const [value, setValue] = useState(props.value || 0)
     useEffect(() => setValue(props.value || 0), [props.value]);
     return (
-        <Form onSubmit={() => { if (value !== props.value) { props.set_value(value) } }}>
+        <Form onSubmit={() => { if (value !== (props.value || 0)) { props.set_value(value) } }}>
             <Form.Group style={{ marginBottom: '0px' }}>
                 <Form.Input
                     {...otherProps}
@@ -14,10 +14,10 @@ export function IntegerInput(props) {
                     focus
                     labelPosition="right"
                     min="0"
-                    onBlur={() => { if (value !== props.value) { props.set_value(value) } }}
+                    onBlur={() => { if (value !== (props.value || 0)) { props.set_value(value) } }}
                     onChange={(event) => setValue(event.target.value || 0)}
                     onKeyDown={(event) => { if (event.key === "Escape") { setValue(props.value || 0) } }}
-                    onSubmit={() => { if (value !== props.value) { props.set_value(value) } }}
+                    onSubmit={() => { if (value !== (props.value || 0)) { props.set_value(value) } }}
                     type="number"
                     value={value}
                     width={16}
