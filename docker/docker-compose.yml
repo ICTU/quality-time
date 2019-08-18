@@ -3,19 +3,19 @@
 version: '3'
 services:
   frontend:
-    image: ictu/quality-time_frontend:v0.7.0
+    image: ictu/quality-time_frontend:v0.7.1
     depends_on:
     - server
     ports:
     - "5000:5000"
   collector:
-    image: ictu/quality-time_collector:v0.7.0
+    image: ictu/quality-time_collector:v0.7.1
     env_file:
     - ${ENV:-dev}.env
     depends_on:
     - server
   server:
-    image: ictu/quality-time_server:v0.7.0
+    image: ictu/quality-time_server:v0.7.1
     ports:
     - "5001:5001"
     env_file:
