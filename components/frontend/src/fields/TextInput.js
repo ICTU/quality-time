@@ -6,14 +6,23 @@ export function TextInput(props) {
   const [text, setText] = useState(props.value || '');
   useEffect(() => setText(props.value || ''), [props.value]);
   return (
-    <Form onSubmit={() => { if (text !== props.value) { props.set_value(text) } }}>
+    <Form onSubmit={() => { if (text !== (props.value || '')) { props.set_value(text) } }}>
       <Form.TextArea
         {...otherProps}
         error={required && text === ""}
-        onBlur={() => props.set_value(text)}
+        onBlur={() => {
+          if (text !== (props.value || '')) { props.set_value(text) }
+        }}
         onChange={(event) => setText(event.target.value)}
-        onKeyDown={(event) => { if (event.key === "Escape") { setText(props.value || '') } }}
-        onKeyPress={(event) => { if (event.key === "Enter" && event.shiftKey) { props.set_value(text) } }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") { setText(props.value || '') }
+        }}
+        onKeyPress={(event) => {
+          if (event.key === "Enter" && event.shiftKey && text !== (props.value || '')) {
+            event.preventDefault();
+            props.set_value(text);
+          }
+        }}
         value={text}
       />
     </Form>

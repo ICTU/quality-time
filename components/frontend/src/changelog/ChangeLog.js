@@ -12,15 +12,15 @@ function fetch_changelog(uuids, nrChanges, setChanges) {
 }
 
 export function ChangeLog(props) {
-    let scope = "All changes in this report";
+    let scope = "Changes in this report";
     if (props.subject_uuid) {
-        scope = "All changes to this subject";
+        scope = "Changes to this subject";
     }
     if (props.metric_uuid) {
-        scope = "All changes to this metric and its sources";
+        scope = "Changes to this metric and its sources";
     }
     if (props.source_uuid) {
-        scope = "All changes to this source";
+        scope = "Changes to this source";
     }
     const [nrChanges, setNrChanges] = useState(10);
     const [changes, setChanges] = useState([]);
