@@ -45,15 +45,19 @@ For each metric, *Quality-time* displays the key data:
 
 ### Metric details
 
-Users can expand the metrics to see and configure the metric details and manage false positives:
+Users can expand the metrics to see and configure the metric details:
 
 ![Screenshot](docs/screenshots/metric_details.png)
+
+And to manage false positives:
+
+![Screenshot](docs/screenshots/metric_entities.png)
 
 ## Features
 
 Implemented features so far include:
 
-- Rubost data collection (the collector should never fail, even in the face of misconfigured or unavailable sources).
+- Robust data collection (the collector should never fail, even in the face of misconfigured or unavailable sources).
 - Measurement history is kept in a database, allowing for time travel.
 - Easy report configuration via the UI.
 - Multiple reports in one *Quality-time* instance.
