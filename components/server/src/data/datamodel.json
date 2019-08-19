@@ -214,6 +214,22 @@
                 "maintainability"
             ]
         },
+        "metrics": {
+            "name": "Metrics",
+            "description": "Number of metrics with specific states and/or tags.",
+            "unit": "metrics",
+            "addition": "sum",
+            "direction": "≦",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "hq",
+            "sources": [
+                "hq",
+                "manual_number",
+                "random"
+            ],
+            "tags": []
+        },
         "ncloc": {
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
@@ -1018,6 +1034,7 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
+                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "ready_user_story_points",
@@ -1041,6 +1058,7 @@
                         "issues",
                         "long_units",
                         "many_parameters",
+                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "ready_user_story_points",
@@ -1511,6 +1529,7 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
+                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -2913,6 +2932,32 @@
         }
     },
     "subjects": {
+        "ci": {
+            "name": "CI-environment",
+            "description": "A continuous integration environment.",
+            "metrics": [
+                "failed_jobs",
+                "performancetest_duration",
+                "source_up_to_dateness",
+                "unused_jobs"
+            ]
+        },
+        "process": {
+            "name": "Process",
+            "description": "A software development and/or maintenance process.",
+            "metrics": [
+                "issues",
+                "ready_user_story_points",
+                "source_up_to_dateness"
+            ]
+        },
+        "report": {
+            "name": "Quality report",
+            "description": "A software quality report.",
+            "metrics": [
+                "metrics"
+            ]
+        },
         "software": {
             "name": "Software",
             "description": "A custom software application or component.",
@@ -2934,25 +2979,6 @@
                 "uncovered_branches",
                 "uncovered_lines",
                 "violations"
-            ]
-        },
-        "process": {
-            "name": "Process",
-            "description": "A software development and/or maintenance process.",
-            "metrics": [
-                "issues",
-                "ready_user_story_points",
-                "source_up_to_dateness"
-            ]
-        },
-        "ci": {
-            "name": "CI-environment",
-            "description": "A continuous integration environment.",
-            "metrics": [
-                "failed_jobs",
-                "performancetest_duration",
-                "source_up_to_dateness",
-                "unused_jobs"
             ]
         }
     }
