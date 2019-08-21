@@ -216,13 +216,13 @@
         },
         "metrics": {
             "name": "Metrics",
-            "description": "Number of metrics with specific states and/or tags.",
+            "description": "Number of metrics from one more quality reports, with specific states and/or tags.",
             "unit": "metrics",
             "addition": "sum",
             "direction": "≦",
             "target": "0",
             "near_target": "5",
-            "default_source": "hq",
+            "default_source": "quality_time",
             "sources": [
                 "hq",
                 "manual_number",
@@ -2128,9 +2128,9 @@
                         "metrics"
                     ]
                 },
-                "report": {
-                    "name": "Report name or id",
-                    "type": "string",
+                "reports": {
+                    "name": "Report names or identifiers",
+                    "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [

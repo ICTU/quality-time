@@ -25,10 +25,10 @@ class QualityTimeMetrics(SourceCollector):
 
     def get_metric_uuids(self, response: requests.Response) -> Iterator[str]:
         """Get the relevant metric uuids from the reports response."""
-        report_title_or_id = self.parameter("report")
+        report_titles_or_ids = set(self.parameter("reports"))
         tags_to_count = set(self.parameter("tags"))
         for report in response.json()["reports"]:
-            if report_title_or_id and report_title_or_id not in (report["title"], report["report_uuid"]):
+            if report_titles_or_ids and (report_titles_or_ids & {report["title"], report["report_uuid"]} == set()):
                 continue
             for subject in report.get("subjects", {}).values():
                 for metric_uuid, metric in subject.get("metrics", {}).items():

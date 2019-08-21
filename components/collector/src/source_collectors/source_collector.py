@@ -104,7 +104,6 @@ class SourceCollector:
                 entities = self.parse_source_responses_entities(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
-                print(error)
         return value, entities[:self.MAX_ENTITIES], error
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
