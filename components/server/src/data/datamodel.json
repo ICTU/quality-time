@@ -226,6 +226,7 @@
             "sources": [
                 "hq",
                 "manual_number",
+                "quality_time",
                 "random"
             ],
             "tags": []
@@ -2112,6 +2113,57 @@
                     ]
                 }
             }
+        },
+        "quality_time": {
+            "name": "Quality-time",
+            "description": "Quality report software for software development and maintenance.",
+            "url": "https://github.com/ICTU/quality-time",
+            "parameters": {
+                "url": {
+                    "name": "Quality-time URL",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "metrics"
+                    ]
+                },
+                "report": {
+                    "name": "Report name or id",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "metrics"
+                    ]
+                },
+                "status": {
+                    "name": "Metric status",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "target_met",
+                        "near_target_met",
+                        "target_not_met",
+                        "debt_target_met",
+                        "unknown"
+                    ],
+                    "metrics": [
+                        "metrics"
+                    ]
+                },
+                "tags": {
+                    "name": "Tags",
+                    "type": "multiple_choice_with_addition",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "metrics"
+                    ]
+                }
+            },
+            "entities": {}
         },
         "random": {
             "name": "Random",

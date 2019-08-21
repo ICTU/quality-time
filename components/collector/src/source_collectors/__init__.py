@@ -20,6 +20,7 @@ from .owasp_zap import *
 from .ojaudit import *
 from .performancetest_runner import *
 from .pyupio_safety import *
+from .quality_time import *
 from .random_number import *
 from .robot_framework import *
 from .sonarqube import *
