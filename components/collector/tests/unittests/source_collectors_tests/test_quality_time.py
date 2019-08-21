@@ -23,5 +23,5 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                 dict(
                     title="R2", report_uuid="r2")])
         measurements = dict(measurements=[dict(metric_uuid="m1", status="green"), dict(metric_uuid="m2", status="red")])
-        response = self.collect(self.metric, get_request_json_side_effect=[reports, reports, measurements, measurements])
+        response = self.collect(self.metric, get_request_json_side_effect=[reports, measurements, reports])
         self.assert_value("1", response)

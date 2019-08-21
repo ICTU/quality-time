@@ -1,6 +1,6 @@
 """Collector for Quality-time."""
 
-from typing import List
+from typing import Iterator, List
 import urllib
 
 import requests
@@ -19,33 +19,34 @@ class QualityTimeMetrics(SourceCollector):
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
         responses = super().get_source_responses(f"{api_url}/reports")
+        for metric_uuid in self.get_metric_uuids(responses[0]):
+            responses.extend(super().get_source_responses(f"{api_url}/measurements/{metric_uuid}"))
+        return responses
+
+    def get_metric_uuids(self, response: requests.Response) -> Iterator[str]:
+        """Get the relevant metric uuids from the reports response."""
         report_title_or_id = self.parameter("report")
-        for report in responses[0].json()["reports"]:
+        tags_to_count = set(self.parameter("tags"))
+        for report in response.json()["reports"]:
             if report_title_or_id and report_title_or_id not in (report["title"], report["report_uuid"]):
                 continue
             for subject in report.get("subjects", {}).values():
-                for metric_uuid in subject.get("metrics", {}):
-                    responses.extend(super().get_source_responses(f"{api_url}/measurements/{metric_uuid}"))
-        return responses
+                for metric_uuid, metric in subject.get("metrics", {}).items():
+                    if tags_to_count and (tags_to_count & set(metric.get("tags", {})) == set()):
+                        continue
+                    yield metric_uuid
 
     def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        reports = responses[0].json()["reports"]
         measurements_by_metric_uuid = dict()
         for response in responses[1:]:
             measurements = response.json()["measurements"]
             if measurements:
                 last = measurements[-1]
                 measurements_by_metric_uuid[last["metric_uuid"]] = last
-        print(measurements_by_metric_uuid)
-        report_title_or_id = self.parameter("report")
         status_to_count = self.parameter("status")
         count = 0
-        for report in reports:
-            if report_title_or_id and report_title_or_id not in (report["title"], report["report_uuid"]):
-                continue
-            for subject in report.get("subjects", {}).values():
-                for metric_uuid, metric in subject.get("metrics", {}).items():
-                    status = measurements_by_metric_uuid[metric_uuid]["status"] if measurements_by_metric_uuid[metric_uuid] else None
-                    if status in status_to_count or (status is None and "unknown" in status_to_count):
-                        count += 1
+        for metric_uuid in self.get_metric_uuids(responses[0]):
+            status = measurements_by_metric_uuid.get(metric_uuid, {}).get("status")
+            if status in status_to_count or (status is None and "unknown" in status_to_count):
+                count += 1
         return str(count)
