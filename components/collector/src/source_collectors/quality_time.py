@@ -5,7 +5,7 @@ import urllib
 
 import requests
 
-from utilities.type import Value, URL
+from utilities.type import URL, Value
 from .source_collector import SourceCollector
 
 
@@ -18,9 +18,9 @@ class QualityTimeMetrics(SourceCollector):
         return URL(urllib.parse.urlunsplit((parts.scheme, netloc, "", "", "")))
 
     def get_source_responses(self, api_url: URL) -> List[requests.Response]:
-        responses = super().get_source_responses(f"{api_url}/reports")
+        responses = super().get_source_responses(URL(f"{api_url}/reports"))
         for metric_uuid in self.get_metric_uuids(responses[0]):
-            responses.extend(super().get_source_responses(f"{api_url}/measurements/{metric_uuid}"))
+            responses.extend(super().get_source_responses(URL(f"{api_url}/measurements/{metric_uuid}")))
         return responses
 
     def get_metric_uuids(self, response: requests.Response) -> Iterator[str]:

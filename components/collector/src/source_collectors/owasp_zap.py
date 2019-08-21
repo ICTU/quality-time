@@ -7,7 +7,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Entities, Value
+from utilities.type import Entities, URL, Value
 from utilities.functions import days_ago, hashless, parse_source_response_xml
 from .source_collector import SourceCollector
 
@@ -32,7 +32,7 @@ class OWASPZAPSecurityWarnings(SourceCollector):
             risk = alert.findtext("riskdesc", default="")
             for alert_instance in alert.findall("./instances/instance"):
                 method = alert_instance.findtext("method", default="")
-                uri = hashless(alert_instance.findtext("uri", default=""))
+                uri = hashless(URL(alert_instance.findtext("uri", default="")))
                 key = f"{alert_key}:{method}:{uri}"
                 entities.append(
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
