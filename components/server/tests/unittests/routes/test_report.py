@@ -271,7 +271,7 @@ class SourceTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
             _id="",
-            metrics=dict(metric_type=dict(name="Metric Type", direction="≦", default_source="source_type")),
+            metrics=dict(metric_type=dict(name="Metric Type", direction="<", default_source="source_type")),
             sources=dict(source_type=dict(parameters=dict())))
 
     def test_add_source(self):
@@ -324,7 +324,7 @@ class MetricTest(unittest.TestCase):
             _id="",
             metrics=dict(
                 metric_type=dict(
-                    addition="sum", direction="≦", target="0", near_target="1", tags=[])))
+                    addition="sum", direction="<", target="0", near_target="1", tags=[])))
 
     def test_add_metric(self):
         """Test that a metric can be added."""

@@ -22,7 +22,7 @@ export function IntegerInput(props) {
                     value={value}
                     width={16}
                 >
-                    {prefix ? <Label basic>{prefix}</Label> : null}
+                    {prefix ? <Label basic>{prefix === '>' ? '≧' : '≦'}</Label> : null}
                     <input />
                     <Label basic>{unit}</Label>
                 </Form.Input>

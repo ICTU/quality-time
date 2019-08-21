@@ -34,7 +34,7 @@ class PostMeasurementTests(unittest.TestCase):
                             debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict()))))))
         self.database.reports.find_one.return_value = report
         self.database.reports.distinct.return_value = ["report_uuid"]
-        self.database.datamodels.find_one.return_value = dict(_id="", metrics=dict(metric_type=dict(direction="≦")))
+        self.database.datamodels.find_one.return_value = dict(_id="", metrics=dict(metric_type=dict(direction="<")))
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
@@ -127,7 +127,7 @@ class SetEntityAttributeTest(unittest.TestCase):
                             type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
                             addition="sum", tags=[])))))
         database.datamodels = Mock()
-        database.datamodels.find_one.return_value = dict(_id=123, metrics=dict(metric_type=dict(direction="≦")))
+        database.datamodels.find_one.return_value = dict(_id=123, metrics=dict(metric_type=dict(direction="<")))
         with patch("bottle.request", Mock(json=dict(attribute="value"))):
             measurement = set_entity_attribute("metric_uuid", "source_uuid", "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
