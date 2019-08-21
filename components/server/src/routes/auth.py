@@ -1,18 +1,18 @@
 """Login/logout."""
 
+from datetime import datetime, timedelta
 import logging
 import os
 import re
-import urllib.parse
-from datetime import datetime, timedelta
 from typing import Dict, Tuple
+import urllib.parse
 
 import bottle
 import ldap  # pylint: disable=import-error,wrong-import-order
 from pymongo.database import Database
 
-from utilities.functions import uuid
 from database import sessions
+from utilities.functions import uuid
 from utilities.ldap import LDAPUserObject
 
 
@@ -34,6 +34,8 @@ def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
 @bottle.post("/login")
 def login(database: Database) -> Dict[str, bool]:
     """Log the user in."""
+    # Pylint can't find the ldap.* constants for some reason, turn off the error message:
+    # pylint: disable=no-member
     credentials = dict(bottle.request.json)
     unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
@@ -53,7 +55,7 @@ def login(database: Database) -> Dict[str, bool]:
             raise ldap.INVALID_CREDENTIALS
         ldap_server.simple_bind_s(f"cn={username},{ldap_root_dn}", credentials.get("password"))
     except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX,
-            ldap.SERVER_DOWN) as reason:  # pylint: disable=no-member
+            ldap.SERVER_DOWN) as reason:
         logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
     finally:
