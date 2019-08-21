@@ -12,7 +12,7 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
             source_id=dict(
                 type="quality_time",
                 parameters=dict(
-                    url="http://quality-time/", reports=["r1"], status=["target_not_met"], tags=["security"])))
+                    url="http://quality-time/", reports=["r1"], status=["target not met (red)"], tags=["security"])))
         metric = dict(type="metrics", sources=sources, addition="sum")
         reports = dict(
             reports=[

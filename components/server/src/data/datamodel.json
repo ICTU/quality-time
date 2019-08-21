@@ -2143,11 +2143,11 @@
                     "mandatory": false,
                     "default_value": "",
                     "values": [
-                        "target_met",
-                        "near_target_met",
-                        "target_not_met",
-                        "debt_target_met",
-                        "unknown"
+                        "target met (green)",
+                        "near target met (yellow)",
+                        "target not met (red)",
+                        "technical debt target met (grey)",
+                        "unknown (white)"
                     ],
                     "metrics": [
                         "metrics"
