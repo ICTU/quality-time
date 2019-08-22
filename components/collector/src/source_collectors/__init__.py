@@ -1,6 +1,6 @@
 """Metric collectors per source."""
 
-from .axecsv import *
+from .axe_csv import *
 from .azure_devops import *
 from .bandit import *
 from .calendar import *

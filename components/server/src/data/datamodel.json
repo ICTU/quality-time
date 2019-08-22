@@ -2,19 +2,21 @@
     "metrics": {
         "accessibility": {
             "name": "Accessibility violations",
-            "description": "Measure how many accessibility violations there are on the web user interface of the software. This metric gives an indication of the quality of the user interface.",
+            "description": "Measure the number of accessibility violations in the web user interface of the software.",
             "unit": "violations",
             "addition": "sum",
             "direction": "≦",
             "target": "0",
-            "near_target": "1",
+            "near_target": "10",
             "default_source": "axecsv",
             "sources": [
+                "axecsv",
                 "hq",
-                "axecsv"
+                "manual_number",
+                "random"
             ],
             "tags": [
-                "maintainability"
+                "accessibility"
             ]
         },
         "commented_out_code": {
@@ -544,11 +546,11 @@
     "sources": {
         "axecsv": {
             "name": "Axe CSV",
-            "description": "An CSV formatted report of Axe accessibility analysis.",
+            "description": "An Axe accessibility report in CSV format.",
             "url": "https://github.com/ICTU/axe-reports",
             "parameters": {
                 "url": {
-                    "name": "CSV Axe report",
+                    "name": "URL to an Axe report in CSV format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",

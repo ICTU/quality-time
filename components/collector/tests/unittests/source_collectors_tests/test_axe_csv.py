@@ -1,13 +1,14 @@
-"""Unit tests for the Azure Devops Server (formerly Team Foundation Server) source."""
+"""Unit tests for the Axe accessibility analysis report."""
 
 from .source_collector_test_case import SourceCollectorTestCase
 
-class AxeCSVIssuesTest(SourceCollectorTestCase):
-    """Unit tests for the Azure Devops Server issues metric."""
+
+class AxeCSVAccessibility(SourceCollectorTestCase):
+    """Unit tests for the Axe CSV collector for accessibility violations."""
 
     def setUp(self):
         super().setUp()
-        self.metric = dict(type="issues", sources=dict(
+        self.metric = dict(type="accessibility", sources=dict(
              source_id=dict(type="axecsv", parameters=dict(url="http://axecsv", private_token="xxx"))), addition="sum")
 
     def test_nr_of_issues(self):
