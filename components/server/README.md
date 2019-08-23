@@ -26,7 +26,7 @@ The `metrics` part of the datamodel is an object where the keys are the metric t
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
             "unit": "complex units",
             "addition": "sum",
-            "direction": "≦",
+            "direction": "<",
             "target": "0",
             "near_target": "10",
             "sources": [
