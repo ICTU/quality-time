@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+- Nothing yet.
+
+## [0.8.0] - [2019-08-23]
+
 ### Added
 
 - Add meta metrics and the ability to add *Quality-time* itself as source for the meta metrics. Closes [#337](https://github.com/ICTU/quality-time/issues/337). 
@@ -18,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Unicode character problem got gte and lte solved. Fixes [#558](https://github.com/ICTU/quality-time/issues/558).
+- Don't use the unicode characters for <= and >= in the source code; it caused problems on Windows. Fixes [#558](https://github.com/ICTU/quality-time/issues/558).
 
 ## [0.7.1] - [2019-08-18]
 
