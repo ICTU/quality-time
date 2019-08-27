@@ -54,4 +54,4 @@ def default_subject_attributes(database: Database, subject_type: str = "") -> Di
     if not subject_type:
         subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
-    return dict(type=subject_type, name=defaults["name"], description=defaults["description"], metrics=dict())
+    return dict(type=subject_type, name=None, description=defaults["description"], metrics=dict())
