@@ -32,7 +32,7 @@ export function Measurement(props) {
   }[status];
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const target = metric.accept_debt ? metric.debt_target : metric.target;
-  const metric_direction = props.datamodel.metrics[metric.type].direction;
+  const metric_direction = {"<": "≦", ">": "≧", "=": "="}[props.datamodel.metrics[metric.type].direction];
   const positive = status === "target_met";
   const active = status === "debt_target_met";
   const negative = status === "target_not_met";
