@@ -216,10 +216,9 @@ def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str
     data = get_data(database, report_uuid, source_uuid=source_uuid)
     parameter_value = dict(bottle.request.json)[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
-    data.source["parameters"][parameter_key] = parameter_value
-    new_value = "*" * len(parameter_value) \
-        if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password" \
-        else parameter_value
+    new_value = data.source["parameters"][parameter_key] = parameter_value
+    if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
+        new_value, old_value = "*" * len(parameter_value), "*" * len(old_value)
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
