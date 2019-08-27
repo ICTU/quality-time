@@ -32,7 +32,7 @@ jobs:
 
     - name: "Frontend unit tests"
       language: node_js
-      node_js: 10
+      node_js: "10"
       install:
       - cd components/frontend
       - npm install
@@ -73,18 +73,14 @@ jobs:
       - sonar-scanner
 
     - stage: deploy
-      name: "Integration tests and optionally deploy"  # Combined stage so we don't have to build containers twice
-      language: node_js
-      node_js: 10
+      name: "Build containers and optionally deploy"
+      language: minimal
       install:
       - export ENV=ci
       - export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-      - docker-compose build && docker-compose up -d  # Start immediately so metric data is collected before tests run
+      - docker-compose build
       - docker images
       - docker ps --all
-      - cd components/art && npm install --save-dev
-      script:
-      - npx cypress run -c video=false
       deploy:
       - provider: script
         skip_cleanup: true
