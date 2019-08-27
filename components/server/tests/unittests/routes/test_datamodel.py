@@ -44,12 +44,12 @@ class DatamodelTest(unittest.TestCase):
                     parameter=dict(default_value="name", metrics=["metric_type"])))))
         self.assertEqual(dict(parameter="name"), default_source_parameters(database, "metric_type", "source_type"))
 
-    def test_default_subject_attribures(self):
+    def test_default_subject_attributes(self):
         """Test that the default subject attributes can be retrieved from the datamodel."""
         database = Mock()
         database.datamodels.find_one.return_value = dict(
             _id=123,
             subjects=dict(subject_type=dict(name="name", description="description")))
         self.assertEqual(
-            dict(name="name", description="description", type="subject_type", metrics={}),
+            dict(name=None, description="description", type="subject_type", metrics={}),
             default_subject_attributes(database, "subject_type"))

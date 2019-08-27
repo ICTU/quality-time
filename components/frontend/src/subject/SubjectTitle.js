@@ -8,8 +8,9 @@ import { delete_subject, set_subject_attribute } from '../api/subject';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
+    const subject_name = props.subject.name || current_subject_type.name;
     return (
-        <HeaderWithDetails level="h2" header={props.subject.name} style={{ marginTop: 50 }}>
+        <HeaderWithDetails level="h2" header={subject_name} style={{ marginTop: 50 }}>
             <Segment>
                 <Header>
                     <Header.Content>
