@@ -4,7 +4,7 @@ import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';
 import { IntegerInput } from '../fields/IntegerInput';
-import { Input } from '../fields/Input';
+import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
 
 export function SourceParameter(props) {
@@ -48,13 +48,12 @@ export function SourceParameter(props) {
   }
   if (props.parameter_type === "password") {
     return (
-      <Input
+      <PasswordInput
         label={label}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        type="password"
         value={props.parameter_value}
       />
     )
