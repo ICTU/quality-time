@@ -6,6 +6,9 @@ import datetime
 import argparse
 import os
 import subprocess
+import sys
+
+import git
 
 
 def parse_arguments():
@@ -19,6 +22,8 @@ def parse_arguments():
 
 def main():
     """Create the release."""
+    if git.Repo(".").active_branch.name != "master":
+        sys.exit("Please release Quality-time from the master branch.")
     os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump2version to update CHANGELOG.md
     subprocess.run(("bump2version", parse_arguments().version), check=True)
     subprocess.run(("git", "push", "--follow-tags"), check=True)
