@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add meta metrics and the ability to add *Quality-time* itself as source for the meta metrics. Closes [#337](https://github.com/ICTU/quality-time/issues/337). 
-- Accessibility metric for axe report source added. Closes [#338](https://github.com/ICTU/quality-time/issues/338).
+- Accessibility metric for Axe report source added. Closes [#338](https://github.com/ICTU/quality-time/issues/338).
 
 ### Fixed
 
