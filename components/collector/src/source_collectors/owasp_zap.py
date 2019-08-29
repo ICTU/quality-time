@@ -15,16 +15,16 @@ from .source_collector import SourceCollector
 class OWASPZAPSecurityWarnings(SourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         alert_instances = []
-        for alert in self.alerts(responses):
+        for alert in self.__alerts(responses):
             alert_instances.extend(alert.findall("./instances/instance"))
         return str(len(alert_instances))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
-        for alert in self.alerts(responses):
+        for alert in self.__alerts(responses):
             alert_key = ":".join(
                 [alert.findtext(id_tag, default="") for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
             name = alert.findtext("name", default="")
@@ -38,11 +38,11 @@ class OWASPZAPSecurityWarnings(SourceCollector):
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
         return entities
 
-    def alerts(self, responses: List[requests.Response]) -> List[Element]:
+    def __alerts(self, responses: List[requests.Response]) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         tree = parse_source_response_xml(responses[0])
         alerts = []
-        for risk in self.parameter("risks"):
+        for risk in self._parameter("risks"):
             risk_code = dict(informational=0, low=1, medium=2, high=3)[risk]
             alerts.extend(tree.findall(f".//alertitem[riskcode='{risk_code}']"))
         return alerts
@@ -51,7 +51,7 @@ class OWASPZAPSecurityWarnings(SourceCollector):
 class OWASPZAPSourceUpToDateness(SourceCollector):
     """Collector to collect the OWASP ZAP report age."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         report_datetime = parse(tree.get("generated", ""))
         return str(days_ago(report_datetime))

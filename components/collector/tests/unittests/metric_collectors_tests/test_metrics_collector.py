@@ -20,7 +20,7 @@ class CollectorTest(unittest.TestCase):
         class SourceMetric(source_collector.SourceCollector):  # pylint: disable=unused-variable
             """Fake collector."""
 
-            def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
+            def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
                 """Return the answer."""
                 return "42"
 

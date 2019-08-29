@@ -15,45 +15,45 @@ class SonarQubeViolations(SourceCollector):
 
     rules_parameter = "Subclass responsibility"
 
-    def landing_url(self, responses: List[requests.Response]) -> URL:
-        url = super().landing_url(responses)
-        component = self.parameter("component")
+    def _landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super()._landing_url(responses)
+        component = self._parameter("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
-        return URL(landing_url + self.rules_url_parameter())
+        return URL(landing_url + self.__rules_url_parameter())
 
-    def api_url(self) -> URL:
-        url = super().api_url()
-        component = self.parameter("component")
-        severities = ",".join([severity.upper() for severity in self.parameter("severities")])
-        types = ",".join([violation_type.upper() for violation_type in self.parameter("types")])
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        component = self._parameter("component")
+        severities = ",".join([severity.upper() for severity in self._parameter("severities")])
+        types = ",".join([violation_type.upper() for violation_type in self._parameter("types")])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
               f"severities={severities}&types={types}"
-        return URL(api + self.rules_url_parameter())
+        return URL(api + self.__rules_url_parameter())
 
-    def rules_url_parameter(self) -> str:
+    def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = self.parameter(self.rules_parameter) if self.rules_parameter != "Subclass responsibility" else []
+        rules = self._parameter(self.rules_parameter) if self.rules_parameter != "Subclass responsibility" else []
         return f"&rules={','.join(rules)}" if rules else ""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         return str(sum(int(response.json()["total"]) for response in responses))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
-        return [self.entity(issue, response) for response in responses for issue in response.json()["issues"]]
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+        return [self._entity(issue, response) for response in responses for issue in response.json()["issues"]]
 
-    def issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
+    def __issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
         """Generate a landing url for the issue."""
-        url = super().landing_url([response])
-        component = self.parameter("component")
+        url = super()._landing_url([response])
+        component = self._parameter("component")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
 
-    def entity(self, issue, response: requests.Response) -> Entity:
+    def _entity(self, issue, response: requests.Response) -> Entity:
         """Create an entity from an issue."""
         return dict(
             key=issue["key"],
-            url=self.issue_landing_url(issue["key"], response),
+            url=self.__issue_landing_url(issue["key"], response),
             message=issue["message"],
             severity=issue["severity"].lower(),
             type=issue["type"].lower(),
@@ -89,18 +89,18 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    def get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Next to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube."""
-        responses = super().get_source_responses(api_url)
-        url = SourceCollector.api_url(self)
-        component = self.parameter("component")
+        responses = super()._get_source_responses(api_url)
+        url = SourceCollector._api_url(self)  # pylint: disable=protected-access
+        component = self._parameter("component")
         api_url = URL(f"{url}/api/issues/search?componentKeys={component}&status=RESOLVED&"
                       "resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
-        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self.basic_auth_credentials())]
+        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
-    def entity(self, issue, response: requests.Response) -> Entity:
+    def _entity(self, issue, response: requests.Response) -> Entity:
         """Also add the resolution to the entity."""
-        entity = super().entity(issue, response)
+        entity = super()._entity(issue, response)
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
         return entity
@@ -111,21 +111,21 @@ class SonarQubeMetricsBaseClass(SourceCollector):
 
     metricKeys = "Subclass responsibility"
 
-    def landing_url(self, responses: List[requests.Response]) -> URL:
-        url = super().landing_url(responses)
-        component = self.parameter("component")
+    def _landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super()._landing_url(responses)
+        component = self._parameter("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
 
-    def api_url(self) -> URL:
-        url = super().api_url()
-        component = self.parameter("component")
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        component = self._parameter("component")
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        return str(self._get_metrics(responses)[self.metricKeys])
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        return str(self.__get_metrics(responses)[self.metricKeys])
 
     @staticmethod
-    def _get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
+    def __get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
         measures = [measure for measure in responses[0].json()["component"]["measures"]]
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
@@ -176,14 +176,14 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
 class SonarQubeSourceUpToDateness(SourceCollector):
     """SonarQube source up-to-dateness."""
 
-    def api_url(self) -> URL:
-        url = super().api_url()
-        return URL(f"{url}/api/project_analyses/search?project={self.parameter('component')}")
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        return URL(f"{url}/api/project_analyses/search?project={self._parameter('component')}")
 
-    def landing_url(self, responses: List[requests.Response]) -> URL:
-        url = super().landing_url(responses)
-        return URL(f"{url}/project/activity?id={self.parameter('component')}")
+    def _landing_url(self, responses: List[requests.Response]) -> URL:
+        url = super()._landing_url(responses)
+        return URL(f"{url}/project/activity?id={self._parameter('component')}")
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])
         return str(days_ago(analysis_datetime))

@@ -21,35 +21,35 @@ class OJAuditViolations(SourceCollector):
         super().__init__(*args, **kwargs)
         self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = cast(List[str], self.parameter("severities"))
-        return self.violation_count(tree, namespaces, severities)
+        severities = cast(List[str], self._parameter("severities"))
+        return self.__violation_count(tree, namespaces, severities)
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
-        severities = cast(List[str], self.parameter("severities"))
-        return self.violations(tree, namespaces, severities)
+        severities = cast(List[str], self._parameter("severities"))
+        return self.__violations(tree, namespaces, severities)
 
     @staticmethod
-    def violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
+    def __violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
         """Return the violation count."""
         count = 0
         for severity in severities:
             count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return str(count)
 
-    def violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
+    def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""
-        models = self.model_file_paths(tree, namespaces)
+        models = self.__model_file_paths(tree, namespaces)
         violation_elements = tree.findall(f".//ns:violation", namespaces)
-        violations = [self.violation(element, namespaces, models, severities) for element in violation_elements]
-        # Discard duplicated violations (where self.violation() returned None) and add the duplication count
+        violations = [self.__violation(element, namespaces, models, severities) for element in violation_elements]
+        # Discard duplicated violations (where self.__violation() returned None) and add the duplication count
         return [{**violation, "count": str(self.violation_counts[str(violation["key"])])}
                 for violation in violations if violation is not None]
 
-    def violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
-                  severities: List[str]) -> Optional[Entity]:
+    def __violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
+                    severities: List[str]) -> Optional[Entity]:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
         if not location:
@@ -70,7 +70,7 @@ class OJAuditViolations(SourceCollector):
         return dict(key=key, severity=severity, message=message, component=component)
 
     @staticmethod
-    def model_file_paths(tree: Element, namespaces: Namespaces) -> ModelFilePaths:
+    def __model_file_paths(tree: Element, namespaces: Namespaces) -> ModelFilePaths:
         """Return the model file paths."""
         models = tree.findall(".//ns:model", namespaces)
         return {model.get("id", ""): model.findtext("./ns:file/ns:path", default="", namespaces=namespaces)

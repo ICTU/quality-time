@@ -12,10 +12,10 @@ class PyupioSafetySecurityWarnings(SourceCollector):
     """Pyup.io Safety collector for security warnings."""
     PACKAGE, AFFECTED, INSTALLED, VULNERABILITY, KEY = range(5)
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         return str(len(responses[0].json()))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of warnings."""
         return [
             dict(key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
