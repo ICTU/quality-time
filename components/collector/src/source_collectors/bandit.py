@@ -13,13 +13,13 @@ from .source_collector import SourceCollector
 class BanditSecurityWarnings(SourceCollector):
     """Bandit collector for security warnings."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        return str(len(self.parse_source_responses_entities(responses)))
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        return str(len(self._parse_source_responses_entities(responses)))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of warnings."""
-        severities = self.parameter("severities")
-        confidence_levels = self.parameter("confidence_levels")
+        severities = self._parameter("severities")
+        confidence_levels = self._parameter("confidence_levels")
         return [
             dict(
                 key=f'{warning["test_id"]}:{warning["filename"]}:{warning["line_number"]}',
@@ -35,5 +35,5 @@ class BanditSecurityWarnings(SourceCollector):
 class BanditSourceUpToDateness(SourceCollector):
     """Bandit collector for source up-to-dateness."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         return str(days_ago(parse(responses[0].json()["generated_at"])))

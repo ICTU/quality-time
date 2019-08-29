@@ -14,21 +14,21 @@ from .source_collector import SourceCollector
 class OpenVASSecurityWarnings(SourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
-        return str(len(self.results(tree)))
+        return str(len(self.__results(tree)))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         tree = parse_source_response_xml(responses[0])
         return [dict(key=result.attrib["id"], name=result.findtext("name", default=""),
                      description=result.findtext("description", default=""),
                      host=result.findtext("host", default=""), port=result.findtext("port", default=""),
                      severity=result.findtext("threat", default=""))
-                for result in self.results(tree)]
+                for result in self.__results(tree)]
 
-    def results(self, element: Element) -> List[Element]:
+    def __results(self, element: Element) -> List[Element]:
         """Return the results that have one of the severities specified in the parameters."""
-        severities = self.parameter("severities")
+        severities = self._parameter("severities")
         results = element.findall(".//results/result")
         return [result for result in results if result.findtext("threat", default="").lower() in severities]
 
@@ -36,7 +36,7 @@ class OpenVASSecurityWarnings(SourceCollector):
 class OpenVASSourceUpToDateness(SourceCollector):
     """Collector to collect the OpenVAS report age."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         report_datetime = isoparse(tree.findtext("creation_time", default=""))
         return str(days_ago(report_datetime))

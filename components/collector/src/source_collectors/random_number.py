@@ -15,7 +15,7 @@ class Random(SourceCollector):
     min = 1
     max = 99
 
-    def get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
         """Return a random number as the response."""
         response = requests.Response()
         # Turn off security checks on the next line. The random number is not used for security/cryptography.

@@ -52,7 +52,7 @@ class MetricsCollector:
             collector = MetricCollector(metric, datamodel)
             if not collector.can_collect():
                 continue
-            if self.skip(metric_uuid, metric):
+            if self.__skip(metric_uuid, metric):
                 continue
             measurement = collector.get()
             self.last_parameters[metric_uuid] = metric
@@ -61,7 +61,7 @@ class MetricsCollector:
             measurement["report_uuid"] = metric["report_uuid"]
             post(URL(f"{self.server_url}/measurements"), measurement)
 
-    def skip(self, metric_uuid: str, metric) -> bool:
+    def __skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""
         if self.last_parameters.get(metric_uuid) != metric:
             return False  # Don't skip if metric parameters changed

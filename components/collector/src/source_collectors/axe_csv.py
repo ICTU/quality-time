@@ -15,11 +15,11 @@ from .source_collector import SourceCollector
 class AxeCSVAccessibility(SourceCollector):
     """Collector class to get accessibility violations."""
 
-    def parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         """Simply count the rows in the csv file."""
         return str(len(list(self.__parse_csv(responses[0]))))
 
-    def parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Convert csv rows of the Axe report into entities, in this case accessibility violations."""
         return [
             dict(
