@@ -1190,9 +1190,9 @@
                             "name": "Status of most recent build",
                             "key": "build_status",
                             "color": {
-                                "Success": "success",
+                                "Success": "positive",
                                 "Failed": "negative",
-                                "Aborted": "selected",
+                                "Aborted": "active",
                                 "Unstable": "warning"
                             }
                         },
@@ -2094,6 +2094,20 @@
                     ],
                     "metrics": [
                         "failed_tests"
+                    ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "canceled",
+                        "failed",
+                        "success"
+                    ],
+                    "metrics": [
+                        "tests"
                     ]
                 },
                 "thresholds": {
