@@ -1289,6 +1289,20 @@
                     "metrics": [
                         "failed_tests"
                     ]
+                },
+                 "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "failed",
+                        "passed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -1307,6 +1321,29 @@
                         {
                             "name": "Failure type",
                             "key": "failure_type",
+                            "color": {
+                                "failed": "negative",
+                                "passed": "positive",
+                                "skipped": "warning"
+                            }
+                        }
+                    ]
+                },
+                "tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Class name",
+                            "key": "class_name"
+                        },
+                        {
+                            "name": "Test case",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Test result",
+                            "key": "test_result",
                             "color": {
                                 "failed": "negative",
                                 "passed": "positive",

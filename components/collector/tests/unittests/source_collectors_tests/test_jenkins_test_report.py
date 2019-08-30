@@ -14,9 +14,31 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
 
     def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
+        jenkins_json = dict(
+            failCount=1, passCount=1, suites=[dict(
+                cases=[dict(status="FAILED", name="tc1", className="c1"),
+                       dict(status="PASSED", name="tc2", className="c2")])])
         metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=dict(passCount=4, failCount=2))
-        self.assert_value("6", response)
+        response = self.collect(metric, get_request_json_return_value=jenkins_json)
+        self.assert_value("2", response)
+        self.assert_entities(
+            [dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
+             dict(class_name="c2", key="tc2", name="tc2", test_result="passed")],
+            response)
+
+    def test_nr_of_passed_tests(self):
+        """Test that the number of passed tests is returned."""
+        jenkins_json = dict(
+            failCount=1, passCount=1, suites=[dict(
+                cases=[dict(status="FAILED", name="tc1", className="c1"),
+                       dict(status="PASSED", name="tc2", className="c2")])])
+        sources = dict(
+            source_id=dict(
+                type="jenkins_test_report", parameters=dict(url="http://jenkins/job", test_result=["passed"])))
+        metric = dict(type="tests", addition="sum", sources=sources)
+        response = self.collect(metric, get_request_json_return_value=jenkins_json)
+        self.assert_value("1", response)
+        self.assert_entities([dict(class_name="c2", key="tc2", name="tc2", test_result="passed")], response)
 
     def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
