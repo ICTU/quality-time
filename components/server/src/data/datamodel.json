@@ -2250,6 +2250,19 @@
                         "source_up_to_dateness",
                         "tests"
                     ]
+                },
+                "test_result": {
+                   "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "fail",
+                        "pass"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -2264,6 +2277,24 @@
                         {
                             "name": "Failure type",
                             "key": "failure_type",
+                            "color": {
+                                "fail": "negative",
+                                "pass": "positive"
+                            }
+                        }
+                    ]
+                },
+                "tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Test name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Test result",
+                            "key": "test_result",
                             "color": {
                                 "fail": "negative",
                                 "pass": "positive"
