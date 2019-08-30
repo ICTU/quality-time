@@ -49,4 +49,3 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                 dict(suites=[dict(timestamp=None)]), dict(timestamp="1565284457173")])
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 8, 8, 17, 14, 17, 173, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)
-
