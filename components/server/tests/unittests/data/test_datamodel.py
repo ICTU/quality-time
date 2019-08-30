@@ -36,7 +36,7 @@ class DataModelTest(unittest.TestCase):
                     parameter_metrics.extend(parameter["metrics"])
             self.assertTrue(metric_id in parameter_metrics)
 
-    def test_multiple_choice_paramters(self):
+    def test_multiple_choice_parameters(self):
         """Test that multiple choice parameters have both a default value and a list of options."""
         for source in self.datamodel["sources"].values():
             for parameter in source["parameters"].values():
@@ -72,3 +72,13 @@ class DataModelTest(unittest.TestCase):
             for entity_key, entity_value in source["entities"].items():
                 self.assertTrue("name" in entity_value.keys())
                 self.assertTrue("name_plural" in entity_value.keys(), f"No 'name_plural' in {source_id}.{entity_key}")
+
+    def test_colors(self):
+        """Test that the color values are correct."""
+        for source_id, source in self.datamodel["sources"].items():
+            for entity_key, entity_value in source["entities"].items():
+                for attribute in entity_value["attributes"]:
+                    for color_value in attribute.get("color", {}).values():
+                        self.assertTrue(
+                            color_value in ("active", "error", "negative", "positive", "warning"),
+                            f"Color {color_value} of {source_id}.{entity_key} is not correct")
