@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Use a consistent style for labels of input fields. Fixed [#579](https://github.com/ICTU/quality-time/issues/579).
 - Added Quality-time logo to the Quality-time source. Fixes [#580](https://github.com/ICTU/quality-time/issues/580).
 
 ## [0.8.2] - [2019-08-28]

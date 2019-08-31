@@ -6,6 +6,7 @@ export function Input(props) {
   const [value, setValue] = useState(props.value || "");
   useEffect(() => setValue(props.value || ''), [props.value]);
   return (
+    <Form>
       <Form.Input
         {...otherProps}
         error={required && value === ""}
@@ -19,5 +20,6 @@ export function Input(props) {
         }}
         value={value}
       />
+    </Form>
   )
 }
