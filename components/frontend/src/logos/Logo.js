@@ -15,6 +15,7 @@ import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
 import OWASPZAP from './owasp_zap.png';
 import Pyupio from './pyupio.png';
+import QualityTime from './quality_time.png';
 import RobotFramework from './robot_framework.png';
 import Sonarqube from './sonarqube.png';
 import Trello from './trello.png';
@@ -36,6 +37,7 @@ export function Logo(props) {
         owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,
         owasp_zap: OWASPZAP,
         pyupio_safety: Pyupio,
+        quality_time: QualityTime,
         robot_framework: RobotFramework,
         sonarqube: Sonarqube,
         trello: Trello,
