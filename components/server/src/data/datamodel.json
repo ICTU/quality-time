@@ -98,8 +98,8 @@
             ]
         },
         "failed_tests": {
-            "name": "Failed tests",
-            "description": "Measure the number of tests that fail.",
+            "name": "Failed tests (deprecated)",
+            "description": "Measure the number of tests that fail. This metric is deprecated. Please use the 'Tests' metric.",
             "unit": "failed tests",
             "addition": "sum",
             "direction": "<",
