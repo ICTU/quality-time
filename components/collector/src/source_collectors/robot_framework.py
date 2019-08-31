@@ -21,18 +21,30 @@ class RobotFrameworkBaseClass(SourceCollector):
 class RobotFrameworkTests(RobotFrameworkBaseClass):
     """Collector for Robot Framework tests."""
 
-    stat_types = ["pass", "fail"]
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        tree = parse_source_response_xml(responses[0])
+        stats = tree.findall("statistics/total/stat")[1]
+        return str(sum([int(stats.get(stat_type, "0")) for stat_type in self._parameter("test_result")]))
+
+    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+        """Return a list of failed tests."""
+        tree = parse_source_response_xml(responses[0])
+        tests = []
+        for test_result in self._parameter("test_result"):
+            tests.extend(
+                [(test_result, test) for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/..")])
+        return [
+            dict(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result)
+            for (test_result, test) in tests]
+
+
+class RobotFrameworkFailedTests(RobotFrameworkBaseClass):
+    """Collector to get the number of failed tests from Robot Framework XML reports."""
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         tree = parse_source_response_xml(responses[0])
         stats = tree.findall("statistics/total/stat")[1]
-        return str(sum([int(stats.get(stat_type, "0")) for stat_type in self.stat_types]))
-
-
-class RobotFrameworkFailedTests(RobotFrameworkTests):
-    """Collector to get the number of failed tests from Robot Framework XML reports."""
-
-    stat_types = ["fail"]
+        return str(int(stats.get("fail", "0")))
 
     def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         """Return a list of failed tests."""

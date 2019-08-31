@@ -65,22 +65,19 @@ class PerformanceTestRunnerPerformanceTestStability(SourceCollector):
 
 
 class PerformanceTestRunnerTests(SourceCollector):
-    """Collector for the number of executed performance test transactions."""
+    """Collector for the number of performance test transactions."""
 
-    def _statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
-        """Return the transaction statuses to count."""
-        return ["canceled", "failed", "success"]
+    status_parameter = "test_result"
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         soup = BeautifulSoup(responses[0].text, "html.parser")
-        return str(sum(int(soup.find(id=status).string) for status in self._statuses_to_count()))
+        return str(sum(int(soup.find(id=status).string) for status in self._parameter(self.status_parameter)))
 
 
 class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
     """Collector for the number of failed performance test transactions."""
 
-    def _statuses_to_count(self):
-        return self._parameter("failure_type")
+    status_parameter = "failure_type"
 
 
 class PerformanceTestRunnerScalability(SourceCollector):

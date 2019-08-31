@@ -98,8 +98,8 @@
             ]
         },
         "failed_tests": {
-            "name": "Failed tests",
-            "description": "Measure the number of tests that fail.",
+            "name": "Failed tests (deprecated)",
+            "description": "Measure the number of tests that fail. This metric is deprecated. Please use the 'Tests' metric.",
             "unit": "failed tests",
             "addition": "sum",
             "direction": "<",
@@ -426,7 +426,7 @@
         },
         "tests": {
             "name": "Tests",
-            "description": "Measure the size of the test suite.",
+            "description": "Measure the number of test.",
             "unit": "tests",
             "addition": "sum",
             "direction": ">",
@@ -1190,9 +1190,9 @@
                             "name": "Status of most recent build",
                             "key": "build_status",
                             "color": {
-                                "Success": "success",
+                                "Success": "positive",
                                 "Failed": "negative",
-                                "Aborted": "selected",
+                                "Aborted": "active",
                                 "Unstable": "warning"
                             }
                         },
@@ -1289,6 +1289,20 @@
                     "metrics": [
                         "failed_tests"
                     ]
+                },
+                 "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "failed",
+                        "passed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -1307,6 +1321,29 @@
                         {
                             "name": "Failure type",
                             "key": "failure_type",
+                            "color": {
+                                "failed": "negative",
+                                "passed": "positive",
+                                "skipped": "warning"
+                            }
+                        }
+                    ]
+                },
+                "tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Class name",
+                            "key": "class_name"
+                        },
+                        {
+                            "name": "Test case",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Test result",
+                            "key": "test_result",
                             "color": {
                                 "failed": "negative",
                                 "passed": "positive",
@@ -1483,6 +1520,21 @@
                     "metrics": [
                         "failed_tests"
                     ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "errored",
+                        "failed",
+                        "passed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -1501,6 +1553,30 @@
                         {
                             "name": "Failure type",
                             "key": "failure_type",
+                            "color": {
+                                "errored": "negative",
+                                "failed": "negative",
+                                "passed": "positive",
+                                "skipped": "warning"
+                            }
+                        }
+                    ]
+                },
+                "tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Class name",
+                            "key": "class_name"
+                        },
+                        {
+                            "name": "Test case",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Test result",
+                            "key": "test_result",
                             "color": {
                                 "errored": "negative",
                                 "failed": "negative",
@@ -2020,6 +2096,20 @@
                         "failed_tests"
                     ]
                 },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "canceled",
+                        "failed",
+                        "success"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
+                },
                 "thresholds": {
                     "name": "Thresholds",
                     "type": "multiple_choice",
@@ -2211,6 +2301,19 @@
                         "source_up_to_dateness",
                         "tests"
                     ]
+                },
+                "test_result": {
+                   "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "fail",
+                        "pass"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -2225,6 +2328,24 @@
                         {
                             "name": "Failure type",
                             "key": "failure_type",
+                            "color": {
+                                "fail": "negative",
+                                "pass": "positive"
+                            }
+                        }
+                    ]
+                },
+                "tests": {
+                    "name": "test",
+                    "name_plural": "tests",
+                    "attributes": [
+                        {
+                            "name": "Test name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Test result",
+                            "key": "test_result",
                             "color": {
                                 "fail": "negative",
                                 "pass": "positive"

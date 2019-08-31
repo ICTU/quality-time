@@ -12,7 +12,7 @@ class CollectorTest(SourceCollectorTestCase):
     def setUp(self):
         metric = dict(
             type="tests", addition="sum", sources=dict(a=dict(type="junit", parameters=dict(url="http://url"))))
-        self.response = self.collect(metric, get_request_text="<testsuite tests='2'></testsuite>")
+        self.response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""
@@ -36,7 +36,7 @@ class CollectorWithMultipleSourcesTest(SourceCollectorTestCase):
             sources=dict(
                 a=dict(type="junit", parameters=dict(url="http://url")),
                 b=dict(type="junit", parameters=dict(url="http://url2"))))
-        self.response = self.collect(metric, get_request_text="<testsuite tests='2'></testsuite>")
+        self.response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
 
     def test_source_response_api_url(self):
         """Test that the api url used for contacting the source is returned."""

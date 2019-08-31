@@ -80,13 +80,13 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     if measurement_value is None:
         return None
     datamodel = latest_datamodel(database)
-    direction = datamodel["metrics"][metric["type"]]["direction"]
+    direction = metric.get("direction") or datamodel["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric["target"])
     near_target = int(metric["near_target"])
     debt_target = int(metric["debt_target"] or target)
     debt_end_date = metric.get("debt_end_date", date.max.isoformat())
-    better_or_equal = {">": int.__ge__, "<": int.__le__, "=": int.__eq__}[direction]
+    better_or_equal = {">": int.__ge__, "<": int.__le__}[direction]
     if better_or_equal(value, target):
         status = "target_met"
     elif metric["accept_debt"] and date.today().isoformat() <= debt_end_date and better_or_equal(value, debt_target):
