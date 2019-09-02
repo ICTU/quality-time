@@ -18,7 +18,10 @@ def latest_measurement(database: Database, metric_uuid: str):
 
 def last_measurements(database: Database, report_uuid: str):
     """Return the last measurement for each metric."""
-    return database.measurements.find(filter={"report_uuid": report_uuid, "last": True})
+    measurement_filter = dict(last=True)
+    if not report_uuid.startswith("tag-"):
+        measurement_filter["report_uuid"] = report_uuid
+    return database.measurements.find(filter=measurement_filter)
 
 
 def recent_measurements(database: Database, metric_uuid: str, max_iso_timestamp: str):
