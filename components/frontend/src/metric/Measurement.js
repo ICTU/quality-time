@@ -45,6 +45,8 @@ export function Measurement(props) {
   const details = <MeasurementDetails
     datamodel={props.datamodel}
     fetch_measurement_and_reload={props.fetch_measurement_and_reload}
+    first_metric={props.first_metric}
+    last_metric={props.last_metric}
     measurement={latest_measurement}
     measurements={props.measurements}
     metric_name={metric_name}
@@ -52,6 +54,7 @@ export function Measurement(props) {
     readOnly={props.readOnly}
     reload={props.reload}
     report={props.report}
+    stop_sort={props.stop_sort}
     subject_uuid={props.subject_uuid}
     unit={metric_unit}
   />

@@ -66,7 +66,8 @@ class PostMetricAttributeTest(unittest.TestCase):
                     metrics=dict(
                         metric_uuid=dict(
                             name="name", type="old_type", addition="sum", target="0", near_target="10",
-                            debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict()))))))
+                            debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict())),
+                        metric_uuid2=dict(name="name2")))))
         self.database = Mock()
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="John")
@@ -172,6 +173,74 @@ class PostMetricAttributeTest(unittest.TestCase):
                  description="""John changed the comment of metric 'name' of subject 'Subject' in report 'Report' \
 from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a></p>'."""),
             self.report["delta"])
+
+    def test_post_position_first(self, request):
+        """Test that a metric can be moved to the top of the list."""
+        request.json = dict(position="first")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid2", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            ["metric_uuid2", "metric_uuid"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid2",
+                 description="John changed the position of metric 'name2' of subject 'Subject' in report "
+                             "'Report' from '1' to '0'."),
+            self.report["delta"])
+
+    def test_post_position_last(self, request):
+        """Test that a metric can be moved to the bottom of the list."""
+        request.json = dict(position="last")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            ["metric_uuid2", "metric_uuid"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the position of metric 'name' of subject 'Subject' in report "
+                             "'Report' from '0' to '1'."),
+            self.report["delta"])
+
+    def test_post_position_previous(self, request):
+        """Test that a metric can be moved up."""
+        request.json = dict(position="previous")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid2", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            ["metric_uuid2", "metric_uuid"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid2",
+                 description="John changed the position of metric 'name2' of subject 'Subject' in report "
+                             "'Report' from '1' to '0'."),
+            self.report["delta"])
+
+    def test_post_position_next(self, request):
+        """Test that a metric can be moved down."""
+        request.json = dict(position="next")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            ["metric_uuid2", "metric_uuid"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
+                 description="John changed the position of metric 'name' of subject 'Subject' in report "
+                             "'Report' from '0' to '1'."),
+            self.report["delta"])
+
+    def test_post_position_first_previous(self, request):
+        """Test that moving the first metric up does nothing."""
+        request.json = dict(position="previous")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "position", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(
+            ["metric_uuid", "metric_uuid2"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
+
+    def test_post_position_last_next(self, request):
+        """Test that moving the last metric down does nothing."""
+        request.json = dict(position="next")
+        self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid2", "position", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(
+            ["metric_uuid", "metric_uuid2"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
 
 
 @patch("bottle.request")

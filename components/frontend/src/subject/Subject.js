@@ -7,6 +7,9 @@ import { add_metric } from '../api/metric';
 export function Subject(props) {
   function handleSort(column) {
     if (sortColumn === column) {
+      if (sortDirection === 'descending') {
+        setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+      }
       setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
     } else {
       setSortColumn(column)
@@ -18,15 +21,18 @@ export function Subject(props) {
   const [lastMeasurements, setLastMeasurements] = useState({});
 
   const subject = props.report.subjects[props.subject_uuid];
+  const last_index = Object.entries(subject.metrics).length - 1;
   let metric_components = [];
-  Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+  Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
     const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid].status) || '';
     if (hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
     if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
     metric_components.push(
       <Metric
         datamodel={props.datamodel}
+        first_metric={index === 0}
         key={metric_uuid}
+        last_metric={index === last_index}
         metric_uuid={metric_uuid}
         metric={metric}
         nr_new_measurements={props.nr_new_measurements}
@@ -36,6 +42,7 @@ export function Subject(props) {
         report_date={props.report_date}
         search_string={props.search_string}
         set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}
+        stop_sort={() => setSortColumn(null)}
         subject_uuid={props.subject_uuid}
       />)
   });

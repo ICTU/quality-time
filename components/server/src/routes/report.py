@@ -1,7 +1,7 @@
 """Report routes."""
 
 from collections import namedtuple
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import bottle
 from pymongo.database import Database
@@ -126,7 +126,12 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
     old_value = data.metric.get(metric_attribute) or ""
     if metric_attribute == "comment" and value:
         value = sanitize_html(value)
-    data.metric[metric_attribute] = value
+    if metric_attribute == "position":
+        old_value, value = move_metric(data, value)
+    else:
+        data.metric[metric_attribute] = value
+    if old_value == value:
+        return dict(ok=True)  # Nothing to do
     if metric_attribute == "type":
         data.metric.update(default_metric_attributes(database, report_uuid, value))
     data.report["delta"] = dict(
@@ -139,6 +144,28 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
         if latest:
             return insert_new_measurement(database, latest, data.metric)
     return dict(ok=True)
+
+
+def move_metric(data, new_position: str) -> Tuple[int, int]:
+    """Change the metric position."""
+    metrics = data.subject["metrics"]
+    nr_metrics = len(metrics)
+    old_index = list(metrics.keys()).index(data.metric_uuid)
+    new_index = dict(
+        first=0, last=nr_metrics - 1, previous=max(0, old_index - 1),
+        next=min(nr_metrics - 1, old_index + 1))[new_position]
+    # Dicts are guaranteed to be ordered starting in Python 3.7, but there's no API to change the order so
+    # we construct a new metrics dict in the right order and insert that in the report.
+    reordered_metrics = dict()
+    del metrics[data.metric_uuid]
+    for metric_uuid, metric in metrics.items():
+        if len(reordered_metrics) == new_index:
+            reordered_metrics[data.metric_uuid] = data.metric
+        reordered_metrics[metric_uuid] = metric
+    if len(reordered_metrics) == new_index:
+        reordered_metrics[data.metric_uuid] = data.metric
+    data.subject["metrics"] = reordered_metrics
+    return old_index, new_index
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric/new")

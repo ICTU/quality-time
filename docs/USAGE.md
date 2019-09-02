@@ -18,7 +18,7 @@ Enter your LDAP-credentials in the dialog:
 
 > You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
 
-After hitting "Submit" you should be logged in. The menubar shows your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
@@ -26,7 +26,7 @@ Clicking "Logout" logs you out from *Quality-time*. Your user session expires af
 
 ## Configuring quality reports
 
-Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application or the number of ready user story points for a Scrumteam. To collect the measurement data, each metric has one ore more sources that *Quality-time* will use to measure the metric.
+Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application or the number of ready user story points for a Scrum team. To collect the measurement data, each metric has one ore more sources that *Quality-time* will use to measure the metric.
 
 > You need to be logged in to be able to edit quality reports.
 
@@ -78,7 +78,7 @@ To add a metric to a subject, hit the "Add metric" button.
 
 After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab. The first parameter is the metric type. By default the name of the metric is equal to its type, in the example below "Commented out code", but you can change the metric name using the "Metric name" field. The same goes for the default metric unit that you can rename using the "Metric unit" field.
 
-The metric target determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The *near target* determines when the measurement value is sufficiently close to the target to no longer require immediate action.
+The metric direction determines whether smaller measurement values are better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. The metric target determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The *near target* determines when the measurement value is sufficiently close to the target to no longer require immediate action.
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
@@ -86,11 +86,15 @@ Each metric type has default tags, but you can also add your own tags. For each 
 
 ![Dashboard tags](screenshots/dashboard_tags.png)
 
-If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. The rationale for accepting techn§ical debt can be entered in the "Comment" field.
+If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
+
+### Reordering metrics
+
+To reorder metrics, expand the metric in the metric table and use the buttons on the lower left hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by e.g. name or status.
 
 ### Deleting metrics
 
-To delete a metric expand the metric in the metric table, select the "Metric" tab and click the "Delete metric" button. The metric and its sources are deleted.
+To delete a metric, expand the metric in the metric table and click the "Delete metric" button. The metric and its sources are deleted.
 
 > Be careful, there's no way to undo your action via the user interface.
 
@@ -104,7 +108,7 @@ If you add multiple sources for one metric the measurement values of each source
 
 ### Editing sources
 
-After you've added a source, you can change the source type using the "Source type" dropdown menu. The available source types depend on the metric type. E.g. SonarQube supports the commented out code metric type, but GitLab does not so GitLab is not shown.
+After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. SonarQube supports the commented out code metric type, but GitLab does not so GitLab is not shown.
 
 By default, the name of the source equals the source type but this can overridden using the "Source name" field.
 
