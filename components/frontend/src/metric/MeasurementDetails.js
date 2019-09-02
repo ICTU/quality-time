@@ -8,6 +8,28 @@ import { FocusableTab } from '../widgets/FocusableTab';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
+function MoveMetricButton(props) {
+  const label = `Move metric to the ${props.direction} row`;
+  const icon = {"first": "double up", "last": "double down", "previous": "up", "next": "down"}[props.direction];
+  const disabled = (props.first_metric && (props.direction === "first" || props.direction === "previous")) ||
+                   (props.last_metric && (props.direction === "last" || props.direction === "next"));
+  return (
+    <Popup content={label} trigger={
+      <Button
+        aria-label={label}
+        basic
+        disabled={disabled}
+        icon={`angle ${icon}`}
+        onClick={() => {
+          props.stop_sort();
+          set_metric_attribute(props.report.report_uuid, props.metric_uuid, "position", props.direction, props.reload)}
+        }
+        primary
+      />}
+    />
+  )
+}
+
 export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
@@ -88,58 +110,10 @@ export function MeasurementDetails(props) {
       {!props.readOnly &&
         <>
           <Button.Group style={{ marginTop: "10px" }}>
-            <Popup content='Move metric to the first row' trigger={
-              <Button
-                aria-label="Move metric to the first row"
-                basic
-                disabled={props.first_metric}
-                icon="angle double up"
-                onClick={() => {
-                  props.stop_sort();
-                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "first", props.reload)}
-                }
-                primary
-              />}
-            />
-            <Popup content='Move metric one row up' trigger={
-              <Button
-                aria-label="Move metric one row up"
-                basic
-                disabled={props.first_metric}
-                icon="angle up"
-                onClick={() => {
-                  props.stop_sort();
-                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "up", props.reload)}
-                }
-                primary
-              />}
-            />
-            <Popup content='Move metric one row down' trigger={
-              <Button
-                aria-label="Move metric one row down"
-                basic
-                disabled={props.last_metric}
-                icon="angle down"
-                onClick={() => {
-                  props.stop_sort();
-                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "down", props.reload)}
-                }
-                primary
-              />}
-            />
-            <Popup content={`Move metric to the last row ${props.last_metric}`} trigger={
-              <Button
-                aria-label="Move metric to the last row"
-                basic
-                disabled={props.last_metric}
-                icon="angle double down"
-                onClick={() => {
-                  props.stop_sort();
-                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "last", props.reload)}
-                }
-                primary
-              />}
-            />
+            <MoveMetricButton {...props} direction="first" />
+            <MoveMetricButton {...props} direction="previous" />
+            <MoveMetricButton {...props} direction="next" />
+            <MoveMetricButton {...props} direction="last" />
           </Button.Group>
           <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
             onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}>

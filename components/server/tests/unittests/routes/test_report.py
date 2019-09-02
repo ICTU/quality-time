@@ -200,9 +200,9 @@ from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a
                              "'Report' from '0' to '1'."),
             self.report["delta"])
 
-    def test_post_position_up(self, request):
+    def test_post_position_previous(self, request):
         """Test that a metric can be moved up."""
-        request.json = dict(position="up")
+        request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid2", "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
@@ -213,9 +213,9 @@ from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a
                              "'Report' from '1' to '0'."),
             self.report["delta"])
 
-    def test_post_position_down(self, request):
+    def test_post_position_next(self, request):
         """Test that a metric can be moved down."""
-        request.json = dict(position="down")
+        request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
@@ -226,17 +226,17 @@ from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a
                              "'Report' from '0' to '1'."),
             self.report["delta"])
 
-    def test_post_position_first_up(self, request):
+    def test_post_position_first_previous(self, request):
         """Test that moving the first metric up does nothing."""
-        request.json = dict(position="up")
+        request.json = dict(position="previous")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "position", self.database))
         self.database.reports.insert.assert_not_called()
         self.assertEqual(
             ["metric_uuid", "metric_uuid2"], list(self.report["subjects"]["subject_uuid"]["metrics"].keys()))
 
-    def test_post_position_last_down(self, request):
+    def test_post_position_last_next(self, request):
         """Test that moving the last metric down does nothing."""
-        request.json = dict(position="down")
+        request.json = dict(position="next")
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid2", "position", self.database))
         self.database.reports.insert.assert_not_called()
         self.assertEqual(
