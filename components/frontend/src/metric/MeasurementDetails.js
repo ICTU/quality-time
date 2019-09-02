@@ -94,7 +94,10 @@ export function MeasurementDetails(props) {
                 basic
                 disabled={props.first_metric}
                 icon="angle double up"
-                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "first", props.reload)}
+                onClick={() => {
+                  props.stop_sort();
+                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "first", props.reload)}
+                }
                 primary
               />}
             />
@@ -104,7 +107,10 @@ export function MeasurementDetails(props) {
                 basic
                 disabled={props.first_metric}
                 icon="angle up"
-                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "up", props.reload)}
+                onClick={() => {
+                  props.stop_sort();
+                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "up", props.reload)}
+                }
                 primary
               />}
             />
@@ -114,7 +120,10 @@ export function MeasurementDetails(props) {
                 basic
                 disabled={props.last_metric}
                 icon="angle down"
-                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "down", props.reload)}
+                onClick={() => {
+                  props.stop_sort();
+                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "down", props.reload)}
+                }
                 primary
               />}
             />
@@ -124,7 +133,10 @@ export function MeasurementDetails(props) {
                 basic
                 disabled={props.last_metric}
                 icon="angle double down"
-                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "last", props.reload)}
+                onClick={() => {
+                  props.stop_sort();
+                  set_metric_attribute(report_uuid, props.metric_uuid, "position", "last", props.reload)}
+                }
                 primary
               />}
             />

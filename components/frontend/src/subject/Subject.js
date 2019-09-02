@@ -42,6 +42,7 @@ export function Subject(props) {
         report_date={props.report_date}
         search_string={props.search_string}
         set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}
+        stop_sort={() => setSortColumn(null)}
         subject_uuid={props.subject_uuid}
       />)
   });

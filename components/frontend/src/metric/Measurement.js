@@ -54,6 +54,7 @@ export function Measurement(props) {
     readOnly={props.readOnly}
     reload={props.reload}
     report={props.report}
+    stop_sort={props.stop_sort}
     subject_uuid={props.subject_uuid}
     unit={metric_unit}
   />

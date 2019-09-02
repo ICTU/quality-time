@@ -40,6 +40,7 @@ export function Metric(props) {
       }}
       report={props.report}
       readOnly={props.readOnly}
+      stop_sort={props.stop_sort}
       subject_uuid={props.subject_uuid}
     />
   )
