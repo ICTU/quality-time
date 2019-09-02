@@ -28,6 +28,8 @@ export function Metric(props) {
   return (
     <Measurement
       datamodel={props.datamodel}
+      first_metric={props.first_metric}
+      last_metric={props.last_metric}
       measurements={measurements}
       metric_uuid={props.metric_uuid}
       nr_new_measurements={props.nr_new_measurements}

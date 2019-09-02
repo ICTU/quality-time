@@ -1,15 +1,16 @@
 import React from 'react';
-import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
+import { Button, Icon, Popup, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { delete_metric } from '../api/metric';
+import { delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
 export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
+  const report_uuid = props.report.report_uuid;
   const panes = [];
   if (props.measurement) {
     props.measurement.sources.forEach((source) => {
@@ -28,7 +29,7 @@ export function MeasurementDetails(props) {
             metric={metric}
             metric_uuid={props.metric_uuid}
             readOnly={props.readOnly}
-            report_uuid={props.report.report_uuid}
+            report_uuid={report_uuid}
             source={source}
           />
         </Tab.Pane>
@@ -57,7 +58,7 @@ export function MeasurementDetails(props) {
           metric_uuid={props.metric_uuid}
           readOnly={props.readOnly}
           reload={props.reload}
-          report_uuid={props.report.report_uuid}
+          report_uuid={report_uuid}
         />
         <ChangeLog report={props.report} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
@@ -85,10 +86,54 @@ export function MeasurementDetails(props) {
     <>
       <Tab panes={panes} />
       {!props.readOnly &&
-        <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
-          onClick={() => delete_metric(props.report.report_uuid, props.metric_uuid, props.reload)}>
-          <Icon name='trash' /> Delete metric
+        <>
+          <Button.Group style={{ marginTop: "10px" }}>
+            <Popup content='Move metric to the first row' trigger={
+              <Button
+                aria-label="Move metric to the first row"
+                basic
+                disabled={props.first_metric}
+                icon="angle double up"
+                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "first", props.reload)}
+                primary
+              />}
+            />
+            <Popup content='Move metric one row up' trigger={
+              <Button
+                aria-label="Move metric one row up"
+                basic
+                disabled={props.first_metric}
+                icon="angle up"
+                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "up", props.reload)}
+                primary
+              />}
+            />
+            <Popup content='Move metric one row down' trigger={
+              <Button
+                aria-label="Move metric one row down"
+                basic
+                disabled={props.last_metric}
+                icon="angle down"
+                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "down", props.reload)}
+                primary
+              />}
+            />
+            <Popup content={`Move metric to the last row ${props.last_metric}`} trigger={
+              <Button
+                aria-label="Move metric to the last row"
+                basic
+                disabled={props.last_metric}
+                icon="angle double down"
+                onClick={() => set_metric_attribute(report_uuid, props.metric_uuid, "position", "last", props.reload)}
+                primary
+              />}
+            />
+          </Button.Group>
+          <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
+            onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}>
+            <Icon name='trash' /> Delete metric
           </Button>
+        </>
       }
     </>
   )
