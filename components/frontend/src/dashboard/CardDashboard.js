@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
+const useStateWithLocalJSONStorage = key => {
+    const [value, setValue] = useState(
+        JSON.parse(localStorage.getItem(key) || '[]')
+    );
+    useEffect(() => {
+        localStorage.setItem(key, JSON.stringify(value));
+    }, [key, value]);
+    return [value, setValue];
+}
+
 export function CardDashboard(props) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
+    const [layout, setLayout] = useStateWithLocalJSONStorage(`layout-${props.uuid}`);
     if (props.cards.length === 0) { return null }
     function onLayoutChange(new_layout) {
-        localStorage.setItem(`layout-${props.uuid}`, JSON.stringify(new_layout))
+        setLayout(new_layout);
     }
     function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
         setDragging(true);
@@ -50,7 +61,6 @@ export function CardDashboard(props) {
                 {card}
             </div>)
     )
-    const layout = JSON.parse(localStorage.getItem(`layout-${props.uuid}`) || '[]');
     return (
         <Segment>
             <ReactGridLayout
