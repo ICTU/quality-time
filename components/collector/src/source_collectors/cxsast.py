@@ -97,6 +97,10 @@ class CxSASTSecurityWarnings(CxSASTBase):
         # Finally, if the report is ready, get it.
         if self.report_status == "Created":
             responses.append(self._api_get(f"reports/sastScan/{report_id}", token))
+            headers = dict(Authorization=f"Bearer {token}") if token else dict()
+            responseX = requests.delete(f"{self._api_url()}/sast/scans/{report_id}", headers=headers,
+                                     timeout=self.TIMEOUT)
+            print(responseX)
         return responses
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
