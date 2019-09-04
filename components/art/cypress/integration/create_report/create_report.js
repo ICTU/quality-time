@@ -16,6 +16,7 @@ When(/^the quality manager adds a new metric$/, () => {
 });
 
 When(/^the quality manager sets the metric target value to (.+)$/, (metric_target_value) => {
+    cy.wait(4000);
     cy.get('input[type=number]').first().type("{selectall}").type(metric_target_value).blur();
 });
 
