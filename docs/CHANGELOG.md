@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Use a consistent style for labels of input fields. Fixes [#579](https://github.com/ICTU/quality-time/issues/579).
 - Added Quality-time logo to the Quality-time source. Fixes [#580](https://github.com/ICTU/quality-time/issues/580).
+- When adding HQ as source for the accessibility metric, show the URL and metric id parameters. Fixes [#587](https://github.com/ICTU/quality-time/issues/587).
 - The layout of the reports overview dashboard would be reset after visiting a tag report. Fixes [#588](https://github.com/ICTU/quality-time/issues/588).
 - Tag report donut charts were always white. Fixes [#589](https://github.com/ICTU/quality-time/issues/589).
 
