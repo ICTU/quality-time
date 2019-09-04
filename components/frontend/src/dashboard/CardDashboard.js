@@ -1,26 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-const useStateWithLocalJSONStorage = key => {
-    const [value, setValue] = useState(
-        JSON.parse(localStorage.getItem(key) || '[]')
-    );
-    useEffect(() => {
-        localStorage.setItem(key, JSON.stringify(value));
-    }, [key, value]);
-    return [value, setValue];
-}
-
-export function CardDashboard(props) {
+export function CardDashboard({ uuid, cards }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
-    const [layout, setLayout] = useStateWithLocalJSONStorage(`layout-${props.uuid}`);
-    if (props.cards.length === 0) { return null }
-    function onLayoutChange(new_layout) {
-        setLayout(new_layout);
+    const [layout, setLayout] = useState(JSON.parse(localStorage.getItem(`layout-${uuid}`) || '[]'));
+    if (cards.length === 0) { return null }
+    function onLayoutChange(layout) {
+        setLayout(layout);
+        localStorage.setItem(`layout-${uuid}`, JSON.stringify(layout))
     }
     function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
         setDragging(true);
@@ -42,7 +33,7 @@ export function CardDashboard(props) {
     const card_width = 4;
     const card_height = 6;
     let divs = [];
-    props.cards.forEach(
+    cards.forEach(
         (card, index) => divs.push(
             <div
                 onClickCapture={(e) => { if (dragging) { e.stopPropagation() } }}

@@ -28,7 +28,7 @@ class App extends Component {
       if (action === "POP") {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        this.setState({ report_uuid: report_uuid }, () => this.reload());
+        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
       }
     });
   }
@@ -39,10 +39,11 @@ class App extends Component {
     if (report_uuid !== "") {
       this.connect_to_nr_measurements_event_source(report_uuid)
     }
-    this.setState({ report_uuid: report_uuid, user: localStorage.getItem("user") }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true, user: localStorage.getItem("user") }, () => this.reload());
   }
 
   reload(json) {
+    this.setState({ loading: true });
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
       toast(
@@ -64,7 +65,6 @@ class App extends Component {
         console.log(error);
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      this.setState({ loading: true });
       const tag = this.state.report_uuid.slice(4);
       get_tag_report(tag, report_date)
         .then(function (tagreport_json) {
@@ -102,13 +102,13 @@ class App extends Component {
     const today = new Date();
     const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
     const new_report_date_string = value === today_string ? '' : value;
-    this.setState({ [name]: new_report_date_string }, () => this.reload())
+    this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
   }
 
   go_home() {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "" }, () => this.reload());
+      this.setState({ report_uuid: "", loading: true }, () => this.reload());
       if (this.source) {
         this.source.close()
       }
@@ -117,7 +117,7 @@ class App extends Component {
 
   open_report(event, report_uuid) {
     event.preventDefault();
-    this.setState({ report_uuid: report_uuid }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
     this.connect_to_nr_measurements_event_source(report_uuid);
   }
@@ -141,7 +141,7 @@ class App extends Component {
   open_tag_report(event, tag) {
     event.preventDefault();
     const report_uuid = `tag-${tag}`
-    this.setState({ report_uuid: report_uuid }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
     if (this.source) {
       this.source.close()
