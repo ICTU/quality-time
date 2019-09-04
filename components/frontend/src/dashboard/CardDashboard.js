@@ -9,9 +9,9 @@ export function CardDashboard({ uuid, cards }) {
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(JSON.parse(localStorage.getItem(`layout-${uuid}`) || '[]'));
     if (cards.length === 0) { return null }
-    function onLayoutChange(layout) {
-        setLayout(layout);
-        localStorage.setItem(`layout-${uuid}`, JSON.stringify(layout))
+    function onLayoutChange(new_layout) {
+        setLayout(new_layout);
+        localStorage.setItem(`layout-${uuid}`, JSON.stringify(new_layout))
     }
     function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
         setDragging(true);
