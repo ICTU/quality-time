@@ -30,11 +30,15 @@ class DataModelTest(unittest.TestCase):
     def test_metric_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.datamodel["metrics"].items():
-            parameter_metrics = []
             for source in metric["sources"]:
-                for parameter in self.datamodel["sources"][source]["parameters"].values():
+                parameters = self.datamodel["sources"][source]["parameters"]
+                if not parameters:
+                    continue
+                parameter_metrics = []
+                for parameter in parameters.values():
                     parameter_metrics.extend(parameter["metrics"])
-            self.assertTrue(metric_id in parameter_metrics)
+                self.assertTrue(
+                    metric_id in parameter_metrics, f"No parameters for metric '{metric_id}' in source '{source}'")
 
     def test_multiple_choice_parameters(self):
         """Test that multiple choice parameters have both a default value and a list of options."""
