@@ -117,3 +117,10 @@ class DataModelTest(unittest.TestCase):
         for metric_uuid, metric in self.datamodel["metrics"].items():
             direction = metric["direction"]
             self.assertTrue(direction in ("<", ">"), f"Metric {metric_uuid} has an invalid direction: {direction}")
+
+    def test_scale(self):
+        """Test that all metrics have one or more allowed scales."""
+        for metric in self.datamodel["metrics"].values():
+            self.assertTrue(len(metric.get("scales", [])) > 0, f"Metric {metric} has no scales")
+            for scale in metric["scales"]:
+                self.assertTrue(scale in ["count", "percentage"])
