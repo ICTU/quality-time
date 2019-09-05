@@ -448,7 +448,7 @@
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
-            "description": "Measure the nuber of code branches not covered by tests. This is an indication of the quality of the test suite.",
+            "description": "Measure the number of code branches not covered by tests. This is an indication of the quality of the test suite.",
             "unit": "uncovered branches",
             "addition": "sum",
             "direction": "<",
@@ -3130,8 +3130,10 @@
             "description": "A software development and/or maintenance process.",
             "metrics": [
                 "issues",
+                "manual_test_duration",
                 "ready_user_story_points",
-                "source_up_to_dateness"
+                "source_up_to_dateness",
+                "unmerged_branches"
             ]
         },
         "report": {
@@ -3145,6 +3147,8 @@
             "name": "Software",
             "description": "A custom software application or component.",
             "metrics": [
+                "accessibility",
+                "commented_out_code",
                 "complex_units",
                 "duplicated_lines",
                 "failed_tests",
@@ -3152,11 +3156,10 @@
                 "many_parameters",
                 "long_units",
                 "ncloc",
-                "performancetest_duration",
                 "performancetest_stability",
+                "scalability",
                 "security_warnings",
                 "slow_transactions",
-                "source_up_to_dateness",
                 "suppressed_violations",
                 "tests",
                 "uncovered_branches",

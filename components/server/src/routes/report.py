@@ -154,9 +154,9 @@ def move_metric(data, new_position: str) -> Tuple[int, int]:
     new_index = dict(
         first=0, last=nr_metrics - 1, previous=max(0, old_index - 1),
         next=min(nr_metrics - 1, old_index + 1))[new_position]
-    # Dicts are guaranteed to be ordered starting in Python 3.7, but there's no API to change the order so
+    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
     # we construct a new metrics dict in the right order and insert that in the report.
-    reordered_metrics = dict()
+    reordered_metrics: Dict[str, Dict] = dict()
     del metrics[data.metric_uuid]
     for metric_uuid, metric in metrics.items():
         if len(reordered_metrics) == new_index:
