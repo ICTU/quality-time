@@ -13,7 +13,6 @@ export function IntegerInput(props) {
                     fluid
                     focus
                     labelPosition="right"
-                    min="0"
                     onBlur={() => { if (value !== (props.value || 0)) { props.set_value(value) } }}
                     onChange={(event) => setValue(event.target.value || 0)}
                     onKeyDown={(event) => { if (event.key === "Escape") { setValue(props.value || 0) } }}

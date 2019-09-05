@@ -13,6 +13,8 @@ export function SourceParameters(props) {
                 <SourceParameter
                     help_url={all_parameters[parameter_key].help_url}
                     parameter_key={parameter_key}
+                    parameter_max={all_parameters[parameter_key].max_value || null}
+                    parameter_min={all_parameters[parameter_key].min_value || null}
                     parameter_name={all_parameters[parameter_key].name}
                     parameter_type={all_parameters[parameter_key].type}
                     parameter_values={all_parameters[parameter_key].values || []}

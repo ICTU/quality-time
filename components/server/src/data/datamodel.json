@@ -961,6 +961,7 @@
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
+                    "min_value": "1",
                     "default_value": "7",
                     "metrics": [
                         "unmerged_branches"
@@ -1168,6 +1169,7 @@
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
+                    "min_value": "1",
                     "default_value": "90",
                     "metrics": [
                         "unused_jobs"
@@ -1609,6 +1611,7 @@
                     "name": "Number",
                     "type": "integer",
                     "mandatory": true,
+                    "min_value": "0",
                     "default_value": "0",
                     "metrics": [
                         "accessibility",
@@ -2976,6 +2979,7 @@
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
+                    "min_value": "1",
                     "default_value": "30",
                     "metrics": [
                         "issues"
@@ -3085,6 +3089,7 @@
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
+                    "min_value": "0",
                     "default_value": "30",
                     "metrics": [
                         "issues"

@@ -62,6 +62,8 @@ export function SourceParameter(props) {
     return (
       <IntegerInput
         label={label}
+        max={props.parameter_max}
+        min={props.parameter_min}
         placeholder={props.placeholder}
         readOnly={props.readOnly}
         required={props.required}
