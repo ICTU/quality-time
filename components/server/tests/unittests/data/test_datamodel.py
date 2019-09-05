@@ -86,3 +86,12 @@ class DataModelTest(unittest.TestCase):
                         self.assertTrue(
                             color_value in ("active", "error", "negative", "positive", "warning"),
                             f"Color {color_value} of {source_id}.{entity_key} is not correct")
+
+    def test_metrics_belong_to_at_least_one_subject(self):
+        """Test that each metric belongs to at least one subject."""
+        for metric in self.datamodel["metrics"]:
+            for subject in self.datamodel["subjects"].values():
+                if metric in subject["metrics"]:
+                    break
+            else:  # pragma: nocover
+                self.fail(f"Metric {metric} not listed in any subject.")

@@ -1,7 +1,7 @@
 """Measurements collection."""
 
 from datetime import date
-from typing import Optional
+from typing import Dict, Optional, Union
 
 import pymongo
 from pymongo.database import Database
@@ -18,7 +18,7 @@ def latest_measurement(database: Database, metric_uuid: str):
 
 def last_measurements(database: Database, report_uuid: str):
     """Return the last measurement for each metric."""
-    measurement_filter = dict(last=True)
+    measurement_filter: Dict[str, Union[bool, str]] = dict(last=True)
     if not report_uuid.startswith("tag-"):
         measurement_filter["report_uuid"] = report_uuid
     return database.measurements.find(filter=measurement_filter)
