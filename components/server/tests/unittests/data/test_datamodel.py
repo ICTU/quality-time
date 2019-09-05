@@ -13,7 +13,7 @@ class DataModelTest(unittest.TestCase):
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
-        self.assertEqual({"metrics", "subjects", "sources"}, set(self.datamodel.keys()))
+        self.assertEqual({"metrics", "subjects", "sources", "scales"}, set(self.datamodel.keys()))
 
     def test_metrics_have_sources(self):
         """Test that each metric has one or more sources."""
@@ -120,7 +120,8 @@ class DataModelTest(unittest.TestCase):
 
     def test_scale(self):
         """Test that all metrics have one or more allowed scales."""
+        scales = self.datamodel["scales"].keys()
         for metric in self.datamodel["metrics"].values():
             self.assertTrue(len(metric.get("scales", [])) > 0, f"Metric {metric} has no scales")
             for scale in metric["scales"]:
-                self.assertTrue(scale in ["count", "percentage"])
+                self.assertTrue(scale in scales)

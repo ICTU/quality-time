@@ -1,4 +1,10 @@
 {
+   "scales": {
+        "count": {
+            "name": "count",
+            "description": "Counts of objects (lines of code, violations, branches, etc.)"
+        }
+    },
     "metrics": {
         "accessibility": {
             "name": "Accessibility violations",
@@ -315,7 +321,7 @@
             "name": "Performancetest stability",
             "description": "Measure the percentage of the duration of the performancetest at which throughput or error count increases",
             "scales": [
-                "percentage"
+                "count"
             ],
             "unit": "%",
             "addition": "min",
@@ -360,7 +366,7 @@
             "name": "Scalability",
             "description": "Measure the percentage of (max) users at which ramp-up of throughput breaks.",
             "scales": [
-                "percentage"
+                "count"
             ],
             "unit": "%",
             "addition": "min",
