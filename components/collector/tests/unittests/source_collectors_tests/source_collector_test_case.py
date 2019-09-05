@@ -41,8 +41,9 @@ class SourceCollectorTestCase(unittest.TestCase):
             mock_post_request.json.return_value = post_request_json_return_value
         with patch("requests.post", return_value=mock_post_request, side_effect=post_request_side_effect):
             with patch("requests.get", return_value=mock_get_request):
-                self.collector = MetricCollector(metric, self.data_model)
-                return self.collector.get()
+                with patch("requests.delete", return_value=None):
+                    self.collector = MetricCollector(metric, self.data_model)
+                    return self.collector.get()
 
     def assert_value(self, expected_value: Value, response: Response, source_index: int = 0) -> None:
         """Assert that the measurement response has the expected value."""
