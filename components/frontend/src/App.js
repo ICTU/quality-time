@@ -43,7 +43,6 @@ class App extends Component {
   }
 
   reload(json) {
-    this.setState({ loading: true });
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
       toast(
