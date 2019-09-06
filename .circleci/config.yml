@@ -28,7 +28,7 @@ jobs:
 
   unittest_frontend:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     steps:
       - checkout
       - run:
@@ -64,15 +64,11 @@ workflows:
   version: 2
   build_test:
     jobs:
+      - ui_tests:
+          context: QualityTime
       - unittest_collector:
           context: QualityTime
       - unittest_server:
           context: QualityTime
       - unittest_frontend:
           context: QualityTime
-      - ui_tests:
-          context: QualityTime
-          requires:
-            - unittest_collector
-            - unittest_server
-            - unittest_frontend
