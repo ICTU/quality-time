@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Checkmarx internal server error solved. Fixes [#468](https://github.com/ICTU/quality-time/issues/468).
 - Use a consistent style for labels of input fields. Fixes [#579](https://github.com/ICTU/quality-time/issues/579).
 - Added Quality-time logo to the Quality-time source. Fixes [#580](https://github.com/ICTU/quality-time/issues/580).
 - When adding HQ as source for the accessibility metric, show the URL and metric id parameters. Fixes [#587](https://github.com/ICTU/quality-time/issues/587).
