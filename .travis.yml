@@ -72,8 +72,8 @@ jobs:
       - sonar-scanner
 
     - stage: deploy
-      if: branch = master AND tag IS present
       name: "Build containers and deploy"
+      if: branch = master AND tag IS present
       language: minimal
       install:
       - export ENV=ci
