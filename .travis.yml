@@ -1,12 +1,7 @@
 dist: xenial
 services:
   - docker
-addons:
-  sonarcloud:
-    organization: "ictu"
-  apt:
-    packages:
-      - libgconf-2-4  # For Cypress
+
 jobs:
   include:
     - stage: test
@@ -42,9 +37,13 @@ jobs:
     - name: "SonarQube"
       language: python
       python: 3.7
+      git:
+        depth: false
+      addons:
+        sonarcloud:
+          organization: "ictu"
       before_install:
       - nvm install 10
-      - git fetch --unshallow
       install:
       - cd components/collector
       - pip install -r requirements.txt -r requirements-dev.txt
@@ -73,19 +72,17 @@ jobs:
       - sonar-scanner
 
     - stage: deploy
-      name: "Build containers and optionally deploy"
+      if: branch = master AND tag IS present
+      name: "Build containers and deploy"
       language: minimal
       install:
       - export ENV=ci
       - export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
       - docker-compose build
       - docker images
-      - docker ps --all
       deploy:
       - provider: script
         skip_cleanup: true
-        on:
-          tags: true
         script: >-
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
           docker push ictu/quality-time_collector:$TRAVIS_TAG &&
