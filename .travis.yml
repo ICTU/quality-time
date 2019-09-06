@@ -73,8 +73,8 @@ jobs:
 
     - stage: deploy
       name: "Build containers and deploy"
-      if: branch = master AND tag IS present
       language: minimal
+      if: tag IS present
       install:
       - export ENV=ci
       - export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
@@ -83,6 +83,8 @@ jobs:
       deploy:
       - provider: script
         skip_cleanup: true
+        on:
+          tags: true
         script: >-
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
           docker push ictu/quality-time_collector:$TRAVIS_TAG &&
