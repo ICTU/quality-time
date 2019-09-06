@@ -76,6 +76,7 @@ export function MetricParameters(props) {
                         <IntegerInput
                             label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
                             max={max}
+                            min="0"
                             prefix={metric_direction_prefix}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "target", value, props.fetch_measurement_and_reload)}
@@ -87,6 +88,7 @@ export function MetricParameters(props) {
                         <IntegerInput
                             label={'Metric near target' + (metric_type.near_target === props.metric.near_target ? '' : ` (default: ${metric_type.near_target} ${metric_unit})`)}
                             max={max}
+                            min="0"
                             prefix={metric_direction_prefix}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
@@ -123,6 +125,7 @@ export function MetricParameters(props) {
                         <IntegerInput
                             label="Metric debt target"
                             max={max}
+                            min="0"
                             prefix={metric_direction_prefix}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}
