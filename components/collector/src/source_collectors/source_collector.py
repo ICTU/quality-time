@@ -3,12 +3,13 @@
 import logging
 import traceback
 from datetime import datetime, timedelta
+from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
-from utilities.type import ErrorMessage, Response, Entities, URL, Value
 from utilities.functions import stable_traceback
+from utilities.type import ErrorMessage, Response, Entities, URL, Value
 
 
 class SourceCollector:
@@ -21,9 +22,9 @@ class SourceCollector:
     subclasses: Set[Type["SourceCollector"]] = set()
 
     def __init__(self, source, datamodel) -> None:
-        self.source = source
-        self.datamodel = datamodel
-        self.parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
+        self._datamodel = datamodel
+        self.__parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
+        self.__has_invalid_credentials = False
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
@@ -51,20 +52,20 @@ class SourceCollector:
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Translate the url parameter into the landing url."""
-        url = cast(str, self.parameters.get("url", "")).strip("/")
+        url = cast(str, self.__parameters.get("url", "")).strip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
     def _api_url(self) -> URL:  # pylint: disable=no-self-use
         """Translate the url parameter into the API url."""
-        return URL(cast(str, self.parameters.get("url", "")).strip("/"))
+        return URL(cast(str, self.__parameters.get("url", "")).strip("/"))
 
     def _parameter(self, parameter_key: str) -> Union[str, List[str]]:
         """Return the parameter value."""
-        parameter_info = self.datamodel["sources"][self.source_type]["parameters"][parameter_key]
+        parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info:
-            return self.parameters.get(parameter_key) or parameter_info["values"]
+            return self.__parameters.get(parameter_key) or parameter_info["values"]
         default_value = parameter_info.get("default_value", "")
-        return self.parameters.get(parameter_key, default_value)
+        return self.__parameters.get(parameter_key, default_value)
 
     def __safely_get_source_responses(self, api_url: URL) -> Tuple[List[requests.Response], ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
@@ -75,6 +76,7 @@ class SourceCollector:
         try:
             responses = self._get_source_responses(api_url)
             for response in responses:
+                self.__has_invalid_credentials = response.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN)
                 response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
@@ -86,11 +88,11 @@ class SourceCollector:
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
-        token = cast(str, self.parameters.get("private_token", ""))
+        token = cast(str, self.__parameters.get("private_token", ""))
         if token:
             return token, ""
-        username = cast(str, self.parameters.get("username", ""))
-        password = cast(str, self.parameters.get("password", ""))
+        username = cast(str, self.__parameters.get("username", ""))
+        password = cast(str, self.__parameters.get("password", ""))
         return (username, password) if username and password else None
 
     def __safely_parse_source_responses(
@@ -122,3 +124,7 @@ class SourceCollector:
     def next_collection(self) -> datetime:  # pylint: disable=no-self-use
         """Return when this source should be connected again for measurement data."""
         return datetime.now() + timedelta(seconds=15 * 60)
+
+    def has_invalid_credentials(self) -> bool:
+        """Return whether this collector has been given invalid credentials."""
+        return self.__has_invalid_credentials

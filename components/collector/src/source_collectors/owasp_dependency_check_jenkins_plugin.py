@@ -41,7 +41,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
 
     def __highest_severity(self, severity1: str, severity2: str) -> str:
         """Return the highest of the two severities."""
-        severities = self.datamodel["sources"][self.source_type]["parameters"]["severities"]["values"]
+        severities = self._datamodel["sources"][self.source_type]["parameters"]["severities"]["values"]
         return severity1 if severities.index(severity1) >= severities.index(severity2) else severity2
 
 
