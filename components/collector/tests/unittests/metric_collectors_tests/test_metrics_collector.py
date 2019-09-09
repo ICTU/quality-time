@@ -1,15 +1,16 @@
 """Unit tests for the collector main script."""
 
+import datetime
 import logging
 import unittest
-from unittest.mock import patch, Mock
 from typing import List
+from unittest.mock import call, patch, Mock
 
 import requests
 
 import quality_time_collector
-from source_collectors import source_collector
 from metric_collectors import MetricsCollector
+from source_collectors import source_collector
 from utilities.type import Value
 
 
@@ -17,13 +18,19 @@ class CollectorTest(unittest.TestCase):
     """Unit tests for the collection methods."""
 
     def setUp(self):
-        class SourceMetric(source_collector.SourceCollector):  # pylint: disable=unused-variable
+        class SourceMetric(source_collector.SourceCollector):
             """Fake collector."""
+
+            next_collection_datetime = None
 
             def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
                 """Return the answer."""
                 return "42"
 
+            def next_collection(self) -> datetime:
+                return self.next_collection_datetime if self.next_collection_datetime else super().next_collection()
+
+        self.source_metric_class = SourceMetric
         self.datamodel_response = Mock()
         self.datamodel_response.json.return_value = dict(
             sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
@@ -100,6 +107,50 @@ class CollectorTest(unittest.TestCase):
                              sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
         side_effect = [
             self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response, self.metrics_response]
+        with patch("requests.get", side_effect=side_effect):
+            with patch("requests.post") as post:
+                metric_collector = MetricsCollector()
+                metric_collector.fetch_measurements()
+                metric_collector.fetch_measurements()
+        post.assert_called_once_with(
+            "http://localhost:5001/measurements",
+            json=dict(
+                sources=[
+                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
+                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
+                report_uuid="report_uuid"))
+
+    def test_fetch_twice_no_skip(self):
+        """Test that the metric is not skipped on the second fetch if it wants to be collected as soon as possible."""
+        self.source_metric_class.next_collection_datetime = datetime.datetime.min
+        self.metrics_response.json.return_value = dict(
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+        side_effect = [self.datamodel_response, self.metrics_response, Mock()] * 2
+        with patch("requests.get", side_effect=side_effect):
+            with patch("requests.post") as post:
+                metric_collector = MetricsCollector()
+                metric_collector.fetch_measurements()
+                metric_collector.fetch_measurements()
+        post_call = call(
+            "http://localhost:5001/measurements",
+            json=dict(
+                sources=[
+                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
+                value=42, metric_uuid="metric_uuid", report_uuid="report_uuid")),
+        post.assert_has_calls(post_call, post_call)
+
+    def test_fetch_twice_with_invalid_credentials(self):
+        """Test that the metric is skipped on the second fetch if the credentials are invalid."""
+        self.metrics_response.json.return_value = dict(
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+        unauthorized = Mock()
+        unauthorized.status_code = 401
+        side_effect = [
+            self.datamodel_response, self.metrics_response, unauthorized, self.datamodel_response,
+            self.metrics_response]
         with patch("requests.get", side_effect=side_effect):
             with patch("requests.post") as post:
                 metric_collector = MetricsCollector()
