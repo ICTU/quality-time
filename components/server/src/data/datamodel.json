@@ -1,9 +1,13 @@
 {
    "scales": {
-        "count": {
-            "name": "count",
-            "description": "Counts of objects (lines of code, violations, branches, etc.)"
-        }
+       "count": {
+           "name": "Count",
+           "description": "Counts of objects (e.g. lines of code, violations, branches)."
+       },
+       "percentage": {
+           "name": "Percentage",
+           "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of major violations, percentage of unmerged branches)."
+       }
     },
     "metrics": {
         "accessibility": {
@@ -12,6 +16,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "violations",
             "addition": "sum",
             "direction": "<",
@@ -34,6 +39,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -56,6 +62,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "complex units",
             "addition": "sum",
             "direction": "<",
@@ -79,6 +86,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -100,6 +108,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "CI-jobs",
             "addition": "sum",
             "direction": "<",
@@ -123,6 +132,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "failed tests",
             "addition": "sum",
             "direction": "<",
@@ -149,6 +159,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "issues",
             "addition": "sum",
             "direction": "<",
@@ -172,6 +183,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -195,6 +207,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "addition": "sum",
             "direction": "<",
             "target": "0",
@@ -216,6 +229,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "minutes",
             "addition": "sum",
             "direction": "<",
@@ -238,6 +252,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "units with too many parameters",
             "addition": "sum",
             "direction": "<",
@@ -256,10 +271,12 @@
         },
         "metrics": {
             "name": "Metrics",
-            "description": "Number of metrics from one more quality reports, with specific states and/or tags.",
+            "description": "The amount of metrics from one more quality reports, with specific states and/or tags.",
             "scales": [
-                "count"
+                "count",
+                "percentage"
             ],
+            "default_scale": "count",
             "unit": "metrics",
             "addition": "sum",
             "direction": "<",
@@ -279,6 +296,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "non-commented lines",
             "addition": "sum",
             "direction": "<",
@@ -301,6 +319,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "minutes",
             "addition": "min",
             "direction": ">",
@@ -323,6 +342,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "%",
             "addition": "min",
             "direction": ">",
@@ -345,6 +365,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "user story points",
             "addition": "sum",
             "direction": ">",
@@ -368,6 +389,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "%",
             "addition": "min",
             "direction": ">",
@@ -389,6 +411,7 @@
             "scales": [
                "count"
             ],
+            "default_scale": "count",
             "unit": "transactions",
             "addition": "sum",
             "direction": "<",
@@ -411,6 +434,7 @@
             "scales": [
                "count"
             ],
+            "default_scale": "count",
             "unit": "days",
             "addition": "max",
             "direction": "<",
@@ -447,6 +471,7 @@
             "scales": [
                "count"
             ],
+            "default_scale": "count",
             "unit": "security warnings",
             "addition": "sum",
             "direction": "<",
@@ -475,6 +500,7 @@
             "scales": [
                "count"
             ],
+            "default_scale": "count",
             "unit": "suppressed violations",
             "addition": "sum",
             "direction": "<",
@@ -497,6 +523,7 @@
             "scales": [
                "count"
             ],
+            "default_scale": "count",
             "unit": "tests",
             "addition": "sum",
             "direction": ">",
@@ -522,6 +549,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "uncovered branches",
             "addition": "sum",
             "direction": "<",
@@ -544,6 +572,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "uncovered lines",
             "addition": "sum",
             "direction": "<",
@@ -566,6 +595,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "branches",
             "addition": "sum",
             "direction": "<",
@@ -588,6 +618,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "CI-jobs",
             "addition": "sum",
             "direction": "<",
@@ -610,6 +641,7 @@
             "scales": [
                 "count"
             ],
+            "default_scale": "count",
             "unit": "violations",
             "addition": "sum",
             "direction": "<",

@@ -19,6 +19,13 @@ export function MetricParameters(props) {
     let tags = new Set();
     Object.values(props.datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
     props.metric.tags.forEach((tag) => tags.add(tag));
+    let scale_options = [];
+    metric_type.scales.forEach((scale) => scale_options.push(
+        {
+            content: <Header as="h4" content={props.datamodel.scales[scale].name} subheader={props.datamodel.scales[scale].description} />,
+            key: scale,
+            text: props.datamodel.scales[scale].name,
+            value: scale}));
     return (
         <>
             <Header>
@@ -51,17 +58,28 @@ export function MetricParameters(props) {
                         />
                     </Grid.Column>
                     <Grid.Column>
-                        <StringInput
-                            label="Metric unit"
-                            placeholder={metric_type.unit}
+                        <MultipleChoiceInput
+                            allowAdditions
+                            label="Tags"
+                            options={[...tags]}
                             readOnly={props.readOnly}
-                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "unit", value, props.reload)}
-                            value={props.metric.unit}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "tags", value, props.reload)}
+                            value={props.metric.tags}
                         />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={3}>
                     <Grid.Column>
+                        <SingleChoiceInput
+                            label="Metric scale"
+                            options={scale_options}
+                            placeholder={metric_type.default_scale}
+                            readOnly={props.readOnly}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "scale", value, props.reload)}
+                            value={props.metric.scale || metric_type.default_scale}
+                        />
+                    </Grid.Column>
+                   <Grid.Column>
                         <SingleChoiceInput
                             label="Metric direction"
                             options={[
@@ -72,6 +90,17 @@ export function MetricParameters(props) {
                             value={metric_direction}
                         />
                     </Grid.Column>
+                    <Grid.Column>
+                        <StringInput
+                            label="Metric unit"
+                            placeholder={metric_type.unit}
+                            readOnly={props.readOnly}
+                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "unit", value, props.reload)}
+                            value={props.metric.unit}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={3}>
                     <Grid.Column>
                         <IntegerInput
                             label={'Metric target' + (metric_type.target === props.metric.target ? '' : ` (default: ${metric_type.target} ${metric_unit})`)}
@@ -94,18 +123,6 @@ export function MetricParameters(props) {
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.near_target}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <MultipleChoiceInput
-                            allowAdditions
-                            label="Tags"
-                            options={[...tags]}
-                            readOnly={props.readOnly}
-                            set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "tags", value, props.reload)}
-                            value={props.metric.tags}
                         />
                     </Grid.Column>
                 </Grid.Row>
