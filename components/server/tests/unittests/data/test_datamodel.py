@@ -100,3 +100,9 @@ class DataModelTest(unittest.TestCase):
         """Test that the HQ parameters URL and metric id support the same metrics."""
         hq_parameters = self.datamodel["sources"]["hq"]["parameters"]
         self.assertEqual(hq_parameters["url"]["metrics"], hq_parameters["metric_id"]["metrics"])
+
+    def test_metric_direction(self):
+        """Test that all metrics have a valid direction."""
+        for metric_uuid, metric in self.datamodel["metrics"].items():
+            direction = metric["direction"]
+            self.assertTrue(direction in ("<", ">"), f"Metric {metric_uuid} has an invalid direction: {direction}")
