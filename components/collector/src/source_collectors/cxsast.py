@@ -77,7 +77,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.report_status = "InProcess"
+        self.__report_status = "InProcess"
 
     def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
         responses = super()._get_source_responses(api_url)
@@ -85,7 +85,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         scan_id = responses[self.SCAN_RESPONSE].json()[0]["id"]
         # Get the statistics of the last scan; this is a single API call:
         responses.append(self._api_get(f"sast/scans/{scan_id}/resultsStatistics", token))
-        # We want to get the security warning details. For that, we need to have Checkmarx create an XML report.
+        # We also want to get the security warning details. For that, we need to have Checkmarx create an XML report.
         # First, check if we've requested a report in a previous run. If so, we have a report id. If not, request it.
         report_id = self.CXSAST_SCAN_REPORTS.get(scan_id)
         if not report_id:
@@ -93,12 +93,15 @@ class CxSASTSecurityWarnings(CxSASTBase):
             report_id = self.CXSAST_SCAN_REPORTS[scan_id] = response.json()["reportId"]
         # Next, get the report status
         response = self._api_get(f"reports/sastScan/{report_id}/status", token)
-        self.report_status = response.json()["status"]["value"]
+        self.__report_status = response.json()["status"]["value"]
         # Finally, if the report is ready, get it.
-        if self.report_status == "Created":
-            responses.append(self._api_get(f"reports/sastScan/{report_id}", token))
-            headers = dict(Authorization=f"Bearer {token}") if token else dict()
-            requests.delete(f"{self._api_url()}/cxrestapi/sast/scans/{scan_id}", headers=headers, timeout=self.TIMEOUT)
+        if self.__report_status == "Created":
+            # Reports may be deleted after a while. If something goes wrong, assume we need to request a new report
+            try:
+                responses.append(self._api_get(f"reports/sastScan/{report_id}", token))
+            except requests.exceptions.RequestException:
+                self.__report_status = "Deleted"
+                del self.CXSAST_SCAN_REPORTS[scan_id]
         return responses
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
@@ -113,7 +116,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
     def next_collection(self) -> datetime:
         """If the CxSAST report is in process, try again as soon as possible, otherwise return the regular next
         collection datetime."""
-        return datetime.min if self.report_status == "InProcess" else super().next_collection()
+        return datetime.min if self.__report_status == "InProcess" else super().next_collection()
 
     def __parse_xml_report(self, xml_string: str) -> Entities:
         """Get the entities from the CxSAST XML report."""
