@@ -2,6 +2,8 @@
 
 from datetime import datetime, timezone
 
+from requests import HTTPError
+
 from source_collectors.cxsast import CxSASTSecurityWarnings
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -97,3 +99,24 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(key="1", location="file:42:2", name="Name", severity="High", url="http://deeplink")],
             response)
         self.assertNotEqual(datetime.min, self.collector.next_collection())
+
+    def test_report_deleted(self):
+        """Test that a new report will be requested when a previously created report was deleted on the Checkmarx
+        server."""
+        CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS[1000] = 1
+        get_json = [
+            [dict(name="project", id="id")],
+            [dict(id=1000)],
+            dict(status=dict(value="Created")),
+            dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
+            [dict(name="project", id="id")],
+            [dict(id=1000)],
+            dict(status=dict(value="Created"))]
+        http_errors = [None, None, None, None, HTTPError(500)]
+        post_json = [dict(access_token="token")] * 2
+        response = self.collect(
+            self.metric, get_request_json_side_effect=get_json, get_request_raise_for_status_side_effect=http_errors,
+            post_request_json_side_effect=post_json)
+        self.assert_value("10", response)
+        self.assert_entities([], response)
+        self.assertFalse(1000 in CxSASTSecurityWarnings.CXSAST_SCAN_REPORTS)
