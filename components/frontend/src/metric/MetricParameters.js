@@ -26,6 +26,7 @@ export function MetricParameters(props) {
             key: scale,
             text: props.datamodel.scales[scale].name,
             value: scale}));
+    console.log(metric_type.scales, metric_type.default_scale, props.metric.scale);
     return (
         <>
             <Header>

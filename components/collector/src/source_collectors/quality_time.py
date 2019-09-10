@@ -1,7 +1,7 @@
 """Collector for Quality-time."""
 
 from typing import Iterator, List, Union
-import urllib
+from urllib import parse
 
 import requests
 
@@ -13,9 +13,9 @@ class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
 
     def _api_url(self) -> URL:
-        parts = urllib.parse.urlsplit(super()._api_url())
+        parts = parse.urlsplit(super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}:5001"
-        return URL(urllib.parse.urlunsplit((parts.scheme, netloc, "", "", "")))
+        return URL(parse.urlunsplit((parts.scheme, netloc, "", "", "")))
 
     def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
         responses = super()._get_source_responses(URL(f"{api_url}/reports"))
@@ -50,6 +50,9 @@ class QualityTimeMetrics(SourceCollector):
             if status in status_to_count or (status is None and "unknown" in status_to_count):
                 count += 1
         return str(count)
+
+    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+        return str(len(list(self.__get_metric_uuids(responses[0]))))
 
     metric_status_map = {
         "target met (green)": "target_met", "target not met (red)": "target_not_met",

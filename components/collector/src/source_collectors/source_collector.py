@@ -45,9 +45,9 @@ class SourceCollector:
         """Return the measurement response for one source."""
         api_url = self._api_url()
         responses, connection_error = self.__safely_get_source_responses(api_url)
-        value, entities, parse_error = self.__safely_parse_source_responses(responses)
+        value, total, entities, parse_error = self.__safely_parse_source_responses(responses)
         landing_url = self._landing_url(responses)
-        return dict(api_url=api_url, landing_url=landing_url, value=value, entities=entities,
+        return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:  # pylint: disable=no-self-use,unused-argument
@@ -100,24 +100,32 @@ class SourceCollector:
         return (username, password) if username and password else None
 
     def __safely_parse_source_responses(
-            self, responses: List[requests.Response]) -> Tuple[Value, Entities, ErrorMessage]:
+            self, responses: List[requests.Response]) -> Tuple[Value, Value, Entities, ErrorMessage]:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
         entities: Entities = []
-        value, error = None, None
+        value, total, error = None, None, None
         if responses:
             try:
                 value = self._parse_source_responses_value(responses)
+                total = self._parse_source_responses_total(responses)
                 entities = self._parse_source_responses_entities(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
-        return value, entities[:self.MAX_ENTITIES], error
+        return value, total, entities[:self.MAX_ENTITIES], error
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        # pylint: disable=no-self-use,unused-argument
+        # pylint: disable=no-self-use
         """Parse the responses to get the measurement for the metric. This method can be overridden by collectors
         to parse the retrieved sources data."""
         return str(responses[0].text)
+
+    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+        # pylint: disable=no-self-use,unused-argument
+        """Parse the responses to get the total for the metric. The total is the denominator for percentage
+        scale metrics, i.e. measurement = (value / total) * 100%. This method can be overridden by collectors to
+        parse the retrieved sources data."""
+        return None
 
     def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         # pylint: disable=no-self-use,unused-argument

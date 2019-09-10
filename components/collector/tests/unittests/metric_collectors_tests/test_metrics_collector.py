@@ -27,6 +27,10 @@ class CollectorTest(unittest.TestCase):
                 """Return the answer."""
                 return "42"
 
+            def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
+                """Return the answer."""
+                return "84"
+
             def next_collection(self) -> datetime:
                 return self.next_collection_datetime if self.next_collection_datetime else super().next_collection()
 
@@ -69,8 +73,8 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
@@ -86,7 +90,25 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
+                metric_uuid="metric_uuid", report_uuid="report_uuid"))
+
+    def test_collect_percentage(self):
+        """Test the collect method with a metric with percentage scale."""
+        self.source_metric_class.total = "84"
+        self.metrics_response.json.return_value = dict(
+            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric", scale="percentage",
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
+            with patch("requests.post") as post:
+                with patch("time.sleep", side_effect=[RuntimeError]):
+                    self.assertRaises(RuntimeError, quality_time_collector.collect)
+        post.assert_called_once_with(
+            "http://localhost:5001/measurements",
+            json=dict(
+                sources=[
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -116,7 +138,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -136,7 +158,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid")),
         post.assert_has_calls(post_call, post_call)
@@ -160,7 +182,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 

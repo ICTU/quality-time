@@ -2,11 +2,11 @@
    "scales": {
        "count": {
            "name": "Count",
-           "description": "Counts of objects (e.g. lines of code, violations, branches)."
+           "description": "Counts of objects (e.g. lines of code, violations, complex units)."
        },
        "percentage": {
            "name": "Percentage",
-           "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of major violations, percentage of unmerged branches)."
+           "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
        }
     },
     "metrics": {
