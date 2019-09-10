@@ -221,7 +221,7 @@
             "description": "Number of metrics from one more quality reports, with specific states and/or tags.",
             "unit": "metrics",
             "addition": "sum",
-            "direction": "≦",
+            "direction": "<",
             "target": "0",
             "near_target": "5",
             "default_source": "quality_time",
