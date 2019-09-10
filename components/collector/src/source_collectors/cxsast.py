@@ -114,9 +114,9 @@ class CxSASTSecurityWarnings(CxSASTBase):
             if len(responses) > self.XML_REPORT_RESPONSE else []
 
     def next_collection(self) -> datetime:
-        """If the CxSAST report is in process, try again as soon as possible, otherwise return the regular next
-        collection datetime."""
-        return datetime.min if self.__report_status == "InProcess" else super().next_collection()
+        """If the CxSAST report is deleted or in process, try again as soon as possible, otherwise return the regular
+        next collection datetime."""
+        return datetime.min if self.__report_status in ("Deleted", "InProcess") else super().next_collection()
 
     def __parse_xml_report(self, xml_string: str) -> Entities:
         """Get the entities from the CxSAST XML report."""
