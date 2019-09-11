@@ -30,8 +30,9 @@ class PostMeasurementTests(unittest.TestCase):
                 subject_uuid=dict(
                     metrics=dict(
                         metric_uuid=dict(
-                            name="name", type="metric_type", addition="sum", target="0", near_target="10",
-                            debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict()))))))
+                            name="name", type="metric_type", scale="count", addition="sum", direction="<", target="0",
+                            near_target="10", debt_target=None, accept_debt=False, tags=[],
+                            sources=dict(source_uuid=dict()))))))
         self.database.reports.find_one.return_value = report
         self.database.reports.distinct.return_value = ["report_uuid"]
         self.database.datamodels.find_one.return_value = dict(_id="", metrics=dict(metric_type=dict(direction="<")))
@@ -63,7 +64,7 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a changed measurement for a metric."""
         self.database.measurements.find_one.return_value = dict(
             _id="id", status="target_met", last=True, sources=[dict(value="0", entities=[])])
-        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[])]
+        sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[])]
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(
             _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="near_target_met",
@@ -76,7 +77,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.find_one.return_value = dict(
             _id="id", status="target_met", last=True,
             sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))])
-        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="b")])]
+        sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(
             _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="near_target_met",
@@ -109,7 +110,7 @@ class SetEntityAttributeTest(unittest.TestCase):
             _id="id", report_uuid="report_uuid", metric_uuid="metric_uuid", status="red",
             sources=[
                 dict(
-                    source_uuid="source_uuid", parse_error=None, connection_error=None, value="42",
+                    source_uuid="source_uuid", parse_error=None, connection_error=None, value="42", total=None,
                     entities=[dict(key="entity_key", title="entity title")])])
 
         def insert_one(new_measurement):
@@ -125,7 +126,7 @@ class SetEntityAttributeTest(unittest.TestCase):
                     metrics=dict(
                         metric_uuid=dict(
                             type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
-                            addition="sum", tags=[])))))
+                            scale="count", addition="sum", direction="<", tags=[])))))
         database.datamodels = Mock()
         database.datamodels.find_one.return_value = dict(_id=123, metrics=dict(metric_type=dict(direction="<")))
         with patch("bottle.request", Mock(json=dict(attribute="value"))):

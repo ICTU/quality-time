@@ -1,6 +1,7 @@
 """Measurements collection."""
 
 from datetime import date
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Dict, Optional, Union
 
 import pymongo
@@ -49,7 +50,8 @@ def insert_new_measurement(database: Database, measurement, metric=None):
         del measurement["_id"]
     metric = latest_metric(
         database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
-    measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"])
+    measurement["value"] = calculate_measurement_value(
+        measurement["sources"], metric["addition"], metric["scale"], metric["direction"])
     measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
     measurement["start"] = measurement["end"] = iso_timestamp()
     # Mark this measurement as the most recent one:
@@ -62,7 +64,7 @@ def insert_new_measurement(database: Database, measurement, metric=None):
     return measurement
 
 
-def calculate_measurement_value(sources, addition: str) -> Optional[str]:
+def calculate_measurement_value(sources, addition: str, scale: str, direction: str) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
     if not sources:
         return None
@@ -74,6 +76,11 @@ def calculate_measurement_value(sources, addition: str) -> Optional[str]:
             entity for entity in source.get("entity_user_data", {}).values()
             if entity.get("status") in ("fixed", "false_positive", "wont_fix")]
         values.append(int(source["value"]) - len(entities_to_ignore))
+    if scale == "percentage":
+        total = sum(0 if source["total"] is None else int(source["total"]) for source in sources)
+        if total == 0:
+            return "0" if direction == "<" else "100"
+        return str(int((100 * Decimal(sum(values)) / Decimal(total)).to_integral_value(ROUND_HALF_UP)))
     add = dict(max=max, min=min, sum=sum)[addition]
     return str(add(values))  # type: ignore
 

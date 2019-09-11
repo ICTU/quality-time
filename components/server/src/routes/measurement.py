@@ -24,7 +24,7 @@ def post_measurement(database: Database) -> Dict:
             for entity_key, attributes in latest_source.get("entity_user_data", {}).items():
                 if entity_key in new_entity_keys:
                     new_source.setdefault("entity_user_data", {})[entity_key] = attributes
-        if latest["value"] == measurement["value"] and latest["sources"] == measurement["sources"]:
+        if latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
