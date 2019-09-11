@@ -71,7 +71,7 @@ class CollectorTest(unittest.TestCase):
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
                          parse_error=None, source_uuid="source_id")],
-                value=42, metric_uuid="metric_uuid", report_uuid="report_uuid"))
+                metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
         """Test the collect method."""
@@ -87,8 +87,8 @@ class CollectorTest(unittest.TestCase):
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
-                report_uuid="report_uuid"))
+                         parse_error=None, source_uuid="source_id")],
+                metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_missing_collector(self):
         """Test that an exception is thrown if there's no collector for the source and metric type."""
@@ -117,8 +117,8 @@ class CollectorTest(unittest.TestCase):
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
-                report_uuid="report_uuid"))
+                         parse_error=None, source_uuid="source_id")],
+                metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_fetch_twice_no_skip(self):
         """Test that the metric is not skipped on the second fetch if it wants to be collected as soon as possible."""
@@ -138,7 +138,7 @@ class CollectorTest(unittest.TestCase):
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
-                value=42, metric_uuid="metric_uuid", report_uuid="report_uuid")),
+                metric_uuid="metric_uuid", report_uuid="report_uuid")),
         post.assert_has_calls(post_call, post_call)
 
     def test_fetch_twice_with_invalid_credentials(self):
@@ -161,8 +161,8 @@ class CollectorTest(unittest.TestCase):
             json=dict(
                 sources=[
                     dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")], value=42, metric_uuid="metric_uuid",
-                report_uuid="report_uuid"))
+                         parse_error=None, source_uuid="source_id")],
+                metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
