@@ -108,7 +108,7 @@ class SourceCollector:
         if responses:
             try:
                 value = self._parse_source_responses_value(responses)
-                total = self._parse_source_responses_total(responses)
+                total = self._parse_source_responses_total(responses)  # pylint: disable=assignment-from-none
                 entities = self._parse_source_responses_entities(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
