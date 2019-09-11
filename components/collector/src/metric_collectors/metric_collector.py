@@ -37,13 +37,5 @@ class MetricCollector:
         return min([collector.next_collection() for collector in self.collectors.values()], default=datetime.min)
 
     def get(self) -> Response:
-        """Connect to the sources to get and parse the measurement for the metric."""
-        source_responses = []
-        for source_uuid in self.metric["sources"]:
-            source_response = self.collectors[source_uuid].get()
-            source_response["source_uuid"] = source_uuid
-            source_responses.append(source_response)
-        values = [source_response["value"] for source_response in source_responses]
-        add = dict(sum=sum, max=max, min=min)[self.metric.get("addition", "sum")]
-        value = add([int(value) for value in values]) if (values and None not in values) else None  # type: ignore
-        return dict(sources=source_responses, value=value)
+        """Connect to the sources to get and parse the measurements for the metric."""
+        return dict(sources=[{**self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
