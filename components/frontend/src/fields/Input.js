@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'semantic-ui-react';
+import { Form, Label } from 'semantic-ui-react';
 
 export function Input(props) {
-  let { required, set_value, ...otherProps } = props;
+  let { prefix, required, set_value, ...otherProps } = props;
   const [value, setValue] = useState(props.value || "");
   useEffect(() => setValue(props.value || ''), [props.value]);
   return (
@@ -12,6 +12,7 @@ export function Input(props) {
         error={required && value === ""}
         fluid
         focus
+        labelPosition="left"
         onBlur={() => { if (value !== (props.value || "")) { set_value(value) } }}
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={(event) => {
@@ -19,7 +20,10 @@ export function Input(props) {
           if (event.key === "Enter" && value !== (props.value || "")) { set_value(value) }
         }}
         value={value}
-      />
+      >
+        {prefix ? <Label basic>{prefix}</Label> : null}
+        <input />
+      </Form.Input>
     </Form>
   )
 }

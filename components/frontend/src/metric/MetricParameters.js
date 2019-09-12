@@ -11,11 +11,14 @@ import { DateInput } from '../fields/DateInput';
 
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
-    const metric_unit = props.metric.unit || metric_type.unit;
+    const metric_scale = props.metric.scale || metric_type.default_scale;
+    const metric_unit = `${metric_scale === "percentage" ? "% ": ""}${props.metric.unit || metric_type.unit}`;
+    const fewer = metric_scale === "percentage" ? "A lower" : "Fewer";
+    const more = metric_scale === "percentage" ? "A higher" : "More";
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
     const metric_direction = {"≦": "<", "≧": ">", "<": "<", ">": ">"}[props.metric.direction || metric_type.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧"}[metric_direction];
-    const max = metric_type.unit === "%" ? "100" : null;
+    const max = metric_scale === "percentage" ? "100" : null;
     let tags = new Set();
     Object.values(props.datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
     props.metric.tags.forEach((tag) => tags.add(tag));
@@ -26,7 +29,6 @@ export function MetricParameters(props) {
             key: scale,
             text: props.datamodel.scales[scale].name,
             value: scale}));
-    console.log(metric_type.scales, metric_type.default_scale, props.metric.scale);
     return (
         <>
             <Header>
@@ -77,15 +79,15 @@ export function MetricParameters(props) {
                             placeholder={metric_type.default_scale}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "scale", value, props.reload)}
-                            value={props.metric.scale || metric_type.default_scale}
+                            value={metric_scale}
                         />
                     </Grid.Column>
                    <Grid.Column>
                         <SingleChoiceInput
                             label="Metric direction"
                             options={[
-                                { key: "0", text: `Fewer ${metric_unit} is better (≦)`, value: "<" },
-                                { key: "1", text: `More ${metric_unit} is better (≧)`, value: ">" }]}
+                                { key: "0", text: `${fewer} ${metric_unit} is better (≦)`, value: "<" },
+                                { key: "1", text: `${more} ${metric_unit} is better (≧)`, value: ">" }]}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
                             value={metric_direction}
@@ -95,6 +97,7 @@ export function MetricParameters(props) {
                         <StringInput
                             label="Metric unit"
                             placeholder={metric_type.unit}
+                            prefix={metric_scale === "percentage" ? "%" : ""}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "unit", value, props.reload)}
                             value={props.metric.unit}

@@ -37,7 +37,8 @@ export function Measurement(props) {
   const active = status === "debt_target_met";
   const negative = status === "target_not_met";
   const warning = status === "near_target_met";
-  const metric_unit = metric.unit || props.datamodel.metrics[metric.type].unit;
+  const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
+  const metric_unit = `${metric_unit_prefix}${metric.unit || props.datamodel.metrics[metric.type].unit}`;
   const metric_name = metric.name || props.datamodel.metrics[metric.type].name;
   let week_ago = new Date();
   week_ago.setDate(week_ago.getDate() - 7)
@@ -71,13 +72,13 @@ export function Measurement(props) {
       </Table.Cell>
       <Table.Cell>
         <Popup
-          trigger={<span>{(value === null ? '?' : value) + ' ' + metric_unit}</span>}
+          trigger={<span>{(value === null ? '?' : value) + metric_unit}</span>}
           flowing hoverable>
           Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
           </Popup>
       </Table.Cell>
       <Table.Cell>
-        {metric_direction} {target} {metric_unit} {metric.accept_debt ? "(debt)" : ""}
+        {metric_direction} {target}{metric_unit} {metric.accept_debt ? "(debt)" : ""}
       </Table.Cell>
       <Table.Cell>
         {sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
