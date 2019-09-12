@@ -13,8 +13,8 @@ export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_scale = props.metric.scale || metric_type.default_scale;
     const metric_unit = `${metric_scale === "percentage" ? "% ": ""}${props.metric.unit || metric_type.unit}`;
-    const fewer = metric_scale === "percentage" ? "A lower" : "Fewer";
-    const more = metric_scale === "percentage" ? "A higher" : "More";
+    const fewer = metric_scale === "percentage" ? `A lower percentage of ${props.metric.unit || metric_type.unit}` : `Fewer ${metric_unit}`;
+    const more = metric_scale === "percentage" ? `A higher percentage of ${props.metric.unit || metric_type.unit}` : `More ${metric_unit}`;
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
     const metric_direction = {"≦": "<", "≧": ">", "<": "<", ">": ">"}[props.metric.direction || metric_type.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧"}[metric_direction];
@@ -86,8 +86,8 @@ export function MetricParameters(props) {
                         <SingleChoiceInput
                             label="Metric direction"
                             options={[
-                                { key: "0", text: `${fewer} ${metric_unit} is better (≦)`, value: "<" },
-                                { key: "1", text: `${more} ${metric_unit} is better (≧)`, value: ">" }]}
+                                { key: "0", text: `${fewer} is better (≦)`, value: "<" },
+                                { key: "1", text: `${more} is better (≧)`, value: ">" }]}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
                             value={metric_direction}
