@@ -52,6 +52,9 @@ class SourceCollector:
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Translate the url parameter into the landing url."""
+        display_url = cast(str, self.__parameters.get("landing_url", "")).strip("/")
+        if display_url:
+            return URL(display_url)
         url = cast(str, self.__parameters.get("url", "")).strip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
