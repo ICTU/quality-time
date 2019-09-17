@@ -18,7 +18,9 @@ class QualityTimeMetrics(SourceCollector):
         return URL(parse.urlunsplit((parts.scheme, netloc, "", "", "")))
 
     def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+        # First, get the report(s):
         responses = super()._get_source_responses(URL(f"{api_url}/reports"))
+        # Then, add the measurements for each of the applicable metrics:
         for metric_uuid in self.__get_metric_uuids(responses[0]):
             responses.extend(super()._get_source_responses(URL(f"{api_url}/measurements/{metric_uuid}")))
         return responses
@@ -60,6 +62,6 @@ class QualityTimeMetrics(SourceCollector):
         "unknown (white)": "unknown"}
 
     def _parameter(self, parameter_key: str) -> Union[str, List[str]]:
-        """Override to map the human-readable status indicators to the values used internally."""
+        # Override to map the human-readable status indicators to the values used internally
         values = super()._parameter(parameter_key)
         return [self.metric_status_map[value] for value in list(values)] if parameter_key == "status" else values

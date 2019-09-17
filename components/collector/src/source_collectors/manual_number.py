@@ -1,21 +1,20 @@
 """Metric collector that returns a mnaually entered number."""
 
-import io
 from typing import List
 
 import requests
 
-from utilities.type import URL
-from .source_collector import SourceCollector
+from utilities.type import Value
+from .source_collector import LocalSourceCollector
 
 
-class ManualNumber(SourceCollector):
+class ManualNumber(LocalSourceCollector):
     """Manual number metric collector."""
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
-        """Return a manually entered number as the response."""
-        response = requests.Response()
-        number = str(self._parameter("number"))
-        response.raw = io.BytesIO(bytes(number, "utf-8"))
-        response.status_code = requests.status_codes.codes["OK"]
-        return [response]
+    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        return str(self._parameter("number"))
+
+    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+        # When the metric using the manual number as source has a percentage scale, make the metric interpret the
+        # user supplied value as percentage by returning a total of 100.
+        return "100"

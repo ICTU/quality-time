@@ -140,3 +140,13 @@ class SourceCollector:
     def has_invalid_credentials(self) -> bool:
         """Return whether this collector has been given invalid credentials."""
         return self.__has_invalid_credentials
+
+
+class LocalSourceCollector(SourceCollector):
+    """Base class for source collectors that do not need to access the network but return static or user-supplied
+    data."""
+
+    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+        fake_response = requests.Response()  # Return a fake response so that the parse methods will be called
+        fake_response.status_code = HTTPStatus.OK
+        return [fake_response]
