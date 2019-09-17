@@ -11,24 +11,31 @@ import { DateInput } from '../fields/DateInput';
 
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
-    const metric_scale = props.metric.scale || metric_type.default_scale;
-    const metric_unit = `${metric_scale === "percentage" ? "% ": ""}${props.metric.unit || metric_type.unit}`;
-    const fewer = metric_scale === "percentage" ? `A lower percentage of ${props.metric.unit || metric_type.unit}` : `Fewer ${metric_unit}`;
-    const more = metric_scale === "percentage" ? `A higher percentage of ${props.metric.unit || metric_type.unit}` : `More ${metric_unit}`;
+    const metric_scale = props.metric.scale || metric_type.default_scale || "count";
+    const metric_scales = metric_type.sclaes || ["count"];
+    const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
+    const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
+    const fewer = metric_scale === "percentage" ? `A lower percentage of ${metric_unit_without_percentage}` : `Fewer ${metric_unit}`;
+    const more = metric_scale === "percentage" ? `A higher percentage of ${metric_unit_without_percentage}` : `More ${metric_unit}`;
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    const metric_direction = {"≦": "<", "≧": ">", "<": "<", ">": ">"}[props.metric.direction || metric_type.direction];
-    const metric_direction_prefix = { "<": "≦", ">": "≧"}[metric_direction];
+    const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
+    const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
     const max = metric_scale === "percentage" ? "100" : null;
     let tags = new Set();
     Object.values(props.datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
     props.metric.tags.forEach((tag) => tags.add(tag));
     let scale_options = [];
-    metric_type.scales.forEach((scale) => scale_options.push(
-        {
-            content: <Header as="h4" content={props.datamodel.scales[scale].name} subheader={props.datamodel.scales[scale].description} />,
-            key: scale,
-            text: props.datamodel.scales[scale].name,
-            value: scale}));
+    metric_scales.forEach((scale) => {
+        let scale_name = props.datamodel.scales ? props.datamodel.scales[scale].name : "Count";
+        let scale_description = props.datamodel.scales ? props.datamodel.scales[scale].description : "";
+        scale_options.push(
+            {
+                content: <Header as="h4" content={scale_name} subheader={scale_description} />,
+                key: scale,
+                text: scale_name,
+                value: scale
+            })
+    });
     return (
         <>
             <Header>
@@ -82,7 +89,7 @@ export function MetricParameters(props) {
                             value={metric_scale}
                         />
                     </Grid.Column>
-                   <Grid.Column>
+                    <Grid.Column>
                         <SingleChoiceInput
                             label="Metric direction"
                             options={[
