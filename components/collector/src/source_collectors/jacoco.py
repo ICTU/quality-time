@@ -14,26 +14,29 @@ from .source_collector import SourceCollector
 class JacocoCoverageBaseClass(SourceCollector):
     """Base class for Jacoco coverage collectors."""
 
-    coverage_status = "Subclass responsibility (Jacoco has: covered or missed)"
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+        return str(self.__parse_source_responses(responses, "missed"))
+
+    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+        return str(sum(self.__parse_source_responses(responses, status) for status in ("missed", "covered")))
+
+    def __parse_source_responses(self, responses: List[requests.Response], coverage_status: str) -> int:
         tree = ElementTree.fromstring(responses[0].text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
-        return str(counter.get(self.coverage_status))
+        return int(counter.get(coverage_status))
 
 
 class JacocoUncoveredLines(JacocoCoverageBaseClass):
     """Source class to get the number of uncovered lines from Jacoco XML reports."""
 
-    coverage_status = "missed"
     coverage_type = "line"
 
 
 class JacocoUncoveredBranches(JacocoCoverageBaseClass):
     """Source class to get the number of uncovered lines from Jacoco XML reports."""
 
-    coverage_status = "missed"
     coverage_type = "branch"
 
 

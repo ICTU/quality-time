@@ -12,7 +12,7 @@ import { DateInput } from '../fields/DateInput';
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
-    const metric_scales = metric_type.sclaes || ["count"];
+    const metric_scales = metric_type.scales || ["count"];
     const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = metric_scale === "percentage" ? `A lower percentage of ${metric_unit_without_percentage}` : `Fewer ${metric_unit}`;

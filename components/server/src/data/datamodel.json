@@ -545,9 +545,10 @@
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
-            "description": "Measure the number of code branches not covered by tests. This is an indication of the quality of the test suite.",
+            "description": "Measure the amount of code branches not covered by tests. This is an indication of the quality of the test suite.",
             "scales": [
-                "count"
+                "count",
+                "percentage"
             ],
             "default_scale": "count",
             "unit": "uncovered branches",
@@ -568,9 +569,10 @@
         },
         "uncovered_lines": {
             "name": "Test line coverage",
-            "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
+            "description": "Measure the amount of lines of code not covered by tests. This is an indication of the quality of the test suite.",
             "scales": [
-                "count"
+                "count",
+                "percentage"
             ],
             "default_scale": "count",
             "unit": "uncovered lines",
