@@ -84,7 +84,8 @@
             "name": "Duplicated lines",
             "description": "Measure the number of lines that are duplicated.",
             "scales": [
-                "count"
+                "count",
+                "percentage"
             ],
             "default_scale": "count",
             "unit": "lines",

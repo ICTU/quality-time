@@ -59,6 +59,17 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_value("10", response)
         self.assert_total("200", response)
 
+    def test_duplicated_lines(self):
+        """Test that the number of duplicated lines and the total number of lines are returned."""
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="duplicated_lines", value="10"), dict(metric="lines", value="100")]))
+        metric = dict(type="duplicated_lines", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("10", response)
+        self.assert_total("100", response)
+
     def test_long_units(self):
         """Test that the number of long units is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]

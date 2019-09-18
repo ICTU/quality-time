@@ -139,7 +139,7 @@ class SonarQubeMetricsBaseClass(SourceCollector):
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     """SonarQube duplicated lines collector."""
 
-    metricKeys = "duplicated_lines"
+    metricKeys = "duplicated_lines,lines"
 
 
 class SonarQubeTests(SonarQubeMetricsBaseClass):

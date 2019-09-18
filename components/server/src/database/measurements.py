@@ -77,7 +77,7 @@ def calculate_measurement_value(sources, addition: str, scale: str, direction: s
             if entity.get("status") in ("fixed", "false_positive", "wont_fix")]
         values.append(int(source["value"]) - len(entities_to_ignore))
     if scale == "percentage":
-        total = sum(0 if source["total"] is None else int(source["total"]) for source in sources)
+        total = sum(0 if source.get("total") is None else int(source["total"]) for source in sources)
         if total == 0:
             return "0" if direction == "<" else "100"
         return str(int((100 * Decimal(sum(values)) / Decimal(total)).to_integral_value(ROUND_HALF_UP)))
