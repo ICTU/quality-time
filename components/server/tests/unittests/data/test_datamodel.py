@@ -23,9 +23,12 @@ class DataModelTest(unittest.TestCase):
     def test_source_parameter_metrics(self):
         """Test that the metrics listed for source parameters are metrics supported by the source."""
         for source_id, source in self.datamodel["sources"].items():
-            for parameter in source["parameters"].values():
-                for metric in parameter["metrics"]:
-                    self.assertTrue(source_id in self.datamodel["metrics"][metric]["sources"])
+            for parameter_key, parameter_value in source["parameters"].items():
+                for metric in parameter_value["metrics"]:
+                    self.assertTrue(
+                        source_id in self.datamodel["metrics"][metric]["sources"],
+                        f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
+                        f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
 
     def test_metric_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
@@ -105,8 +108,9 @@ class DataModelTest(unittest.TestCase):
         """Test that the the sources with landing url also have url."""
         for source in self.datamodel["sources"]:
             if "landing_url" in self.datamodel["sources"][source]["parameters"]:
-                self.assertTrue("url" in self.datamodel["sources"][source]["parameters"],
-                                 f"Source >{source}< has a landing url parameter, but not url.")
+                self.assertTrue(
+                    "url" in self.datamodel["sources"][source]["parameters"],
+                    f"Source '{source}' has the 'landing_url' parameter, but not the 'url' parameter.")
 
     def test_metric_direction(self):
         """Test that all metrics have a valid direction."""
