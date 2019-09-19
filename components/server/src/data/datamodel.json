@@ -68,7 +68,6 @@
             "near_target": "10",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "sonarqube",
                 "random"
@@ -226,7 +225,6 @@
             "near_target": "5",
             "default_source": "quality_time",
             "sources": [
-                "hq",
                 "manual_number",
                 "quality_time",
                 "random"
@@ -1041,7 +1039,6 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
-                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -1049,7 +1046,6 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
-                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -1072,7 +1068,6 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
-                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -1080,7 +1075,6 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
-                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
