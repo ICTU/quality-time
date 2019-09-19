@@ -165,13 +165,13 @@ class PostMetricAttributeTest(unittest.TestCase):
 
     def test_post_comment_with_link(self, request):
         """Test that urls in comments are transformed into anchors."""
-        request.json = dict(comment='Comment with url http://google.com')
+        request.json = dict(comment='Comment with url https://google.com')
         self.assertEqual(dict(ok=True), post_metric_attribute("report_uuid", "metric_uuid", "comment", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
                  description="""John changed the comment of metric 'name' of subject 'Subject' in report 'Report' \
-from '' to '<p>Comment with url <a href="http://google.com">http://google.com</a></p>'."""),
+from '' to '<p>Comment with url <a href="https://google.com">https://google.com</a></p>'."""),
             self.report["delta"])
 
     def test_post_position_first(self, request):
@@ -309,14 +309,14 @@ class PostSourceParameterTest(unittest.TestCase):
 
     def test_url(self, request):
         """Test that the source url can be changed."""
-        request.json = dict(url="http://url")
+        request.json = dict(url="https://url")
         self.assertEqual(dict(ok=True), post_source_parameter("report_uuid", "source_uuid", "url", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
                  source_uuid="source_uuid",
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from '' to 'http://url'."),
+                             "report 'Report' from '' to 'https://url'."),
             self.report["delta"])
 
     def test_password(self, request):
