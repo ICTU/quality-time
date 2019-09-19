@@ -26,6 +26,19 @@ class CollectorTest(SourceCollectorTestCase):
         """Test that the measurement for the source is returned."""
         self.assert_value("2", self.response)
 
+class CollectorTestLandingUrl(SourceCollectorTestCase):
+    """Unit tests for the Collector class, when landing url initialized."""
+
+    def setUp(self):
+        self.metric = dict(
+            type="tests", addition="sum", sources=dict(a=dict(
+                type="junit", parameters=dict(url="http://url", landing_url='http://landing'))))
+        self.response = self.collect(self.metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
+
+    def test_source_response_landing_url_different(self):
+        """Test that the landing url for the source is returned."""
+        self.assert_landing_url("http://landing", self.response)
+
 
 class CollectorWithMultipleSourcesTest(SourceCollectorTestCase):
     """Unit tests for the collector with multiple sources."""

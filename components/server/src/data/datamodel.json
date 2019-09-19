@@ -558,6 +558,15 @@
                         "accessibility"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to an Axe report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility"
+                    ]
+                },
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
@@ -1054,6 +1063,37 @@
                         "violations"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to a HQ report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility",
+                        "commented_out_code",
+                        "complex_units",
+                        "duplicated_lines",
+                        "failed_jobs",
+                        "failed_tests",
+                        "issues",
+                        "loc",
+                        "long_units",
+                        "manual_test_duration",
+                        "many_parameters",
+                        "metrics",
+                        "ncloc",
+                        "performancetest_duration",
+                        "performancetest_stability",
+                        "ready_user_story_points",
+                        "security_warnings",
+                        "slow_transactions",
+                        "source_up_to_dateness",
+                        "suppressed_violations",
+                        "unmerged_branches",
+                        "unused_jobs",
+                        "violations"
+                    ]
+                },
                 "metric_id": {
                     "name": "Stable metric ID",
                     "type": "string",
@@ -1097,6 +1137,17 @@
                     "name": "URL",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_lines",
+                        "uncovered_branches"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a JaCoCo report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness",
@@ -1500,6 +1551,17 @@
                         "tests"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to a JUnit report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
@@ -1654,6 +1716,15 @@
                     "name": "URL to XML report",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a OJAudit report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "violations"
@@ -1824,6 +1895,16 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "landing_url": {
+                    "name": "URL to a OWASP Dependency Check report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
                 "username": {
                     "name": "Username for basic authentication",
                     "type": "string",
@@ -1974,6 +2055,16 @@
                     "name": "URL to XML report",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a OWASP ZAP report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -2290,6 +2381,17 @@
                     "name": "URL to Robot Framework output.xml",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_tests",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a Robot Framework report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "failed_tests",

@@ -101,6 +101,13 @@ class DataModelTest(unittest.TestCase):
         hq_parameters = self.datamodel["sources"]["hq"]["parameters"]
         self.assertEqual(hq_parameters["url"]["metrics"], hq_parameters["metric_id"]["metrics"])
 
+    def test_sources_with_landing_url(self):
+        """Test that the the sources with landing url also have url."""
+        for source in self.datamodel["sources"]:
+            if "landing_url" in self.datamodel["sources"][source]["parameters"]:
+                self.assertTrue("url" in self.datamodel["sources"][source]["parameters"],
+                                 f"Source >{source}< has a landing url parameter, but not url.")
+
     def test_metric_direction(self):
         """Test that all metrics have a valid direction."""
         for metric_uuid, metric in self.datamodel["metrics"].items():
