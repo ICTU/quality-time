@@ -68,7 +68,6 @@
             "near_target": "10",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "sonarqube",
                 "random"
@@ -226,7 +225,6 @@
             "near_target": "5",
             "default_source": "quality_time",
             "sources": [
-                "hq",
                 "manual_number",
                 "quality_time",
                 "random"
@@ -550,7 +548,7 @@
             "url": "https://github.com/ICTU/axe-reports",
             "parameters": {
                 "url": {
-                    "name": "URL to an Axe report in CSV format",
+                    "name": "URL to Axe report in CSV format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -559,7 +557,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to an Axe report in a human readable format",
+                    "name": "URL to Axe report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1033,7 +1031,7 @@
             "url": "https://github.com/ICTU/quality-report",
             "parameters": {
                 "url": {
-                    "name": "URL to HQ-report",
+                    "name": "URL to HQ report in JSON format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1041,7 +1039,6 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
-                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -1049,7 +1046,6 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
-                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -1064,7 +1060,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a HQ report in a human readable format",
+                    "name": "URL to HQ report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1072,7 +1068,6 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
-                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -1080,7 +1075,6 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
-                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -1103,7 +1097,6 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
-                        "duplicated_lines",
                         "failed_jobs",
                         "failed_tests",
                         "issues",
@@ -1111,7 +1104,6 @@
                         "long_units",
                         "manual_test_duration",
                         "many_parameters",
-                        "metrics",
                         "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -1134,7 +1126,7 @@
             "url": "https://www.eclemma.org/jacoco/",
             "parameters": {
                 "url": {
-                    "name": "URL",
+                    "name": "URL to JaCoCo report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1145,7 +1137,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a JaCoCo report in a human readable format",
+                    "name": "URL to JaCoCo report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1541,7 +1533,7 @@
             "url": "https://junit.org",
             "parameters": {
                 "url": {
-                    "name": "URL",
+                    "name": "URL to JUnit report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1552,7 +1544,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a JUnit report in a human readable format",
+                    "name": "URL to JUnit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1713,7 +1705,7 @@
             "url": "https://www.oracle.com/technetwork/developer-tools/jdev",
             "parameters": {
                 "url": {
-                    "name": "URL to XML report",
+                    "name": "URL to OJAudit report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1722,7 +1714,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a OJAudit report in a human readable format",
+                    "name": "URL to OJAudit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1886,7 +1878,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Dependency_Check",
             "parameters": {
                 "url": {
-                    "name": "URL to XML report",
+                    "name": "URL to OWASP Dependency Check report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1896,7 +1888,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a OWASP Dependency Check report in a human readable format",
+                    "name": "URL to OWASP Dependency Check report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2052,7 +2044,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
-                    "name": "URL to XML report",
+                    "name": "URL to OWASP ZAP report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2062,7 +2054,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a OWASP ZAP report in a human readable format",
+                    "name": "URL to OWASP ZAP report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2378,7 +2370,7 @@
             "url": "https://robotframework.org",
             "parameters": {
                 "url": {
-                    "name": "URL to Robot Framework output.xml",
+                    "name": "URL to Robot Framework report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2389,7 +2381,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a Robot Framework report in a human readable format",
+                    "name": "URL to Robot Framework report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
