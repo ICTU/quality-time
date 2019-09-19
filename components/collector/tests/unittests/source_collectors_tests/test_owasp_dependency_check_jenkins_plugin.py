@@ -12,7 +12,7 @@ class OWASPDependencyCheckJenkinsPluginTest(SourceCollectorTestCase):
         self.sources = dict(
             sourceid=dict(
                 type="owasp_dependency_check_jenkins_plugin",
-                parameters=dict(url="http://jenkins/job", severities=["critical", "high", "normal"])))
+                parameters=dict(url="https://jenkins/job", severities=["critical", "high", "normal"])))
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""

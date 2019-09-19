@@ -9,7 +9,7 @@ class AxeCSVAccessibility(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.metric = dict(type="accessibility", sources=dict(
-             source_id=dict(type="axecsv", parameters=dict(url="http://axecsv", private_token="xxx"))), addition="sum")
+             source_id=dict(type="axecsv", parameters=dict(url="https://axecsv", private_token="xxx"))), addition="sum")
 
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
@@ -27,8 +27,8 @@ class AxeCSVAccessibility(SourceCollectorTestCase):
         """Test that the issues are returned."""
         response = self.collect(
             self.metric, get_request_text=
-            "URL,Violation Type,Impact,Help,HTML Element,Messages,DOM Element\nhttp://axe/1,2,3,4,5,6,7")
+            "URL,Violation Type,Impact,Help,HTML Element,Messages,DOM Element\nhttps://axe/1,2,3,4,5,6,7")
         self.assert_entities(
             [{'description': '6', 'element': '7', 'help': '4', 'impact': '3',
-              'key': 'c671448c770b9a5acb84322122f3fbec', 'page': '/1', 'url': 'http://axe/1', 'violation_type': '2'}],
+              'key': '9162f40b7aa7d8b21143b0542d526e44', 'page': '/1', 'url': 'https://axe/1', 'violation_type': '2'}],
             response)

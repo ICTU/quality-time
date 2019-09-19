@@ -10,7 +10,7 @@ class OpenVASTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="openvas", parameters=dict(url="http://openvas.xml")))
+        self.sources = dict(source_id=dict(type="openvas", parameters=dict(url="https://openvas.xml")))
 
     def test_warnings(self):
         """Test that the number of warnings is returned."""

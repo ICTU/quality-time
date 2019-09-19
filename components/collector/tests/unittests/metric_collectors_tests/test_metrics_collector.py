@@ -60,7 +60,7 @@ class CollectorTest(unittest.TestCase):
         """Test fetching measurement when posting fails."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
 
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
             with patch("requests.post", side_effect=RuntimeError) as post:
@@ -69,7 +69,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
+                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[], connection_error=None,
                          parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -77,7 +77,7 @@ class CollectorTest(unittest.TestCase):
         """Test the collect method."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
@@ -86,8 +86,8 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")],
+                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_missing_collector(self):
@@ -95,7 +95,7 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid",
-                sources=dict(missing=dict(type="unknown_source", parameters=dict(url="http://url")))))
+                sources=dict(missing=dict(type="unknown_source", parameters=dict(url="https://url")))))
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response]):
             self.assertRaises(
                 LookupError, MetricsCollector().fetch_measurements)
@@ -104,7 +104,7 @@ class CollectorTest(unittest.TestCase):
         """Test that the metric is skipped on the second fetch."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         side_effect = [
             self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response, self.metrics_response]
         with patch("requests.get", side_effect=side_effect):
@@ -116,8 +116,8 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")],
+                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_fetch_twice_no_skip(self):
@@ -125,7 +125,7 @@ class CollectorTest(unittest.TestCase):
         self.source_metric_class.next_collection_datetime = datetime.datetime.min
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         side_effect = [self.datamodel_response, self.metrics_response, Mock()] * 2
         with patch("requests.get", side_effect=side_effect):
             with patch("requests.post") as post:
@@ -136,7 +136,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid")),
         post.assert_has_calls(post_call, post_call)
@@ -145,7 +145,7 @@ class CollectorTest(unittest.TestCase):
         """Test that the metric is skipped on the second fetch if the credentials are invalid."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         unauthorized = Mock()
         unauthorized.status_code = 401
         side_effect = [
@@ -160,8 +160,8 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="http://url", landing_url="http://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")],
+                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_missing_mandatory_parameter(self):

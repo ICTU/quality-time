@@ -22,13 +22,13 @@ class StableTracebackTest(unittest.TestCase):
     def test_no_tokens(self):
         """Test that tokens are redacted from tracebacks."""
         self.assertEqual(
-            "http://example.com?id=5&token=<redacted>&page=0",
-            stable_traceback("http://example.com?id=5&token=abcdef45321a&page=0"))
+            "https://example.com?id=5&token=<redacted>&page=0",
+            stable_traceback("https://example.com?id=5&token=abcdef45321a&page=0"))
 
     def test_no_keys(self):
         """Test that keys are redacted from tracebacks."""
         self.assertEqual(
-            "http://example.com?key=<redacted>&id=5", stable_traceback("http://example.com?key=abcdef45321a&id=5"))
+            "https://example.com?key=<redacted>&id=5", stable_traceback("https://example.com?key=abcdef45321a&id=5"))
 
 
 class DaysAgoTest(unittest.TestCase):
@@ -47,28 +47,28 @@ class StripHashTest(unittest.TestCase):
 
     def test_no_hash(self):
         """Test that an url without hash is returned unchanged."""
-        expected_url = url = "http://www.google.com/"
+        expected_url = url = "https://www.google.com/"
         self.assertEqual(expected_url, hashless(url))
 
     def test_hash(self):
         """Test that an url with hash is returned without the hash."""
-        url = "http://test.app.example.org:1234/main.58064cb8d36474bd79f9.js"
-        expected_url = "http://test.app.example.org:1234/main.hashremoved.js"
+        url = "https://test.app.example.org:1234/main.58064cb8d36474bd79f9.js"
+        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
         self.assertEqual(expected_url, hashless(url))
 
     def test_uppercase_hash(self):
         """Test that an url with uppercase hash is returned without the hash."""
-        url = "http://test.app.example.org:1234/main.58064CB8D36474BD79F9.js"
-        expected_url = "http://test.app.example.org:1234/main.hashremoved.js"
+        url = "https://test.app.example.org:1234/main.58064CB8D36474BD79F9.js"
+        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
         self.assertEqual(expected_url, hashless(url))
 
     def test_long_hash(self):
         """Test that an url with a long hash is returned without the hash."""
-        url = "http://test.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js"
-        expected_url = "http://test.app.example.org:1234/main.hashremoved.js"
+        url = "https://test.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js"
+        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
         self.assertEqual(expected_url, hashless(url))
 
     def test_hash_in_host(self):
         """Test that an url with a host name that matches the hash regular expression is returned unchanged."""
-        expected_url = url = "http://test.app58064cb8d36474bd79f9.example.org:1234/main.js"
+        expected_url = url = "https://test.app58064cb8d36474bd79f9.example.org:1234/main.js"
         self.assertEqual(expected_url, hashless(url))

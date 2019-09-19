@@ -9,7 +9,7 @@ class OJAuditTest(SourceCollectorTestCase):
     def setUp(self):
         self.metric = dict(
             type="violations", addition="sum",
-            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="http://ojaudit.xml"))))
+            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="https://ojaudit.xml"))))
 
     def test_violations(self):
         """Test that the number of violations is returned."""

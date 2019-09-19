@@ -12,7 +12,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(
-            sourceid=dict(type="owasp_dependency_check", parameters=dict(url="http://owasp_dependency_check.xml")))
+            sourceid=dict(type="owasp_dependency_check", parameters=dict(url="https://owasp_dependency_check.xml")))
 
     def test_warnings(self):
         """Test that the number of warnings is returned."""
@@ -39,7 +39,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         self.assert_entities(
-            [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
+            [dict(key="12345", url="https://owasp_dependency_check.html#l1_12345",
                   highest_severity="Medium", nr_vulnerabilities=2,
                   file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
             response)
@@ -65,7 +65,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         self.assert_entities(
-            [dict(key="12345", url="http://owasp_dependency_check.html#l1_12345",
+            [dict(key="12345", url="https://owasp_dependency_check.html#l1_12345",
                   highest_severity="Low", nr_vulnerabilities=1,
                   file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")],
             response)
