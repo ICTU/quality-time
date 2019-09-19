@@ -10,7 +10,7 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="jenkins_test_report", parameters=dict(url="http://jenkins/job")))
+        self.sources = dict(source_id=dict(type="jenkins_test_report", parameters=dict(url="https://jenkins/job")))
 
     def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
@@ -34,7 +34,7 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                        dict(status="PASSED", name="tc2", className="c2")])])
         sources = dict(
             source_id=dict(
-                type="jenkins_test_report", parameters=dict(url="http://jenkins/job", test_result=["passed"])))
+                type="jenkins_test_report", parameters=dict(url="https://jenkins/job", test_result=["passed"])))
         metric = dict(type="tests", addition="sum", sources=sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
         self.assert_value("1", response)

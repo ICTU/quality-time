@@ -16,7 +16,7 @@ class CxSASTTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="cxsast",
                 parameters=dict(
-                    url="http://checkmarx/", username="user", password="pass", project="project")))
+                    url="https://checkmarx/", username="user", password="pass", project="project")))
 
 
 class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
@@ -35,12 +35,12 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
             self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)
-        self.assert_landing_url("http://checkmarx/CxWebClient/projectscans.aspx?id=id", response)
+        self.assert_landing_url("https://checkmarx/CxWebClient/projectscans.aspx?id=id", response)
 
     def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
         response = self.collect(self.metric, post_request_side_effect=RuntimeError)
-        self.assert_landing_url("http://checkmarx", response)
+        self.assert_landing_url("https://checkmarx", response)
 
 
 class CxSASTSecurityWarningsTest(CxSASTTestCase):
@@ -84,10 +84,10 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
 <CxXMLResults>
     <Query name='Name'>
         <Result NodeId='1' Severity='High' FalsePositive='False' FileName='file' Line='42' Column='2'
-                DeepLink='http://deeplink'>
+                DeepLink='https://deeplink'>
         </Result>
         <Result NodeId='2' Severity='High' FalsePositive='True' FileName='file' Line='44' Column='9'
-                DeepLink='http://deeplink'>
+                DeepLink='https://deeplink'>
         </Result>
     </Query>
 </CxXMLResults>"""
@@ -96,7 +96,7 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             get_request_text=get_text)
         self.assert_value("10", response)
         self.assert_entities(
-            [dict(key="1", location="file:42:2", name="Name", severity="High", url="http://deeplink")],
+            [dict(key="1", location="file:42:2", name="Name", severity="High", url="https://deeplink")],
             response)
         self.assertNotEqual(datetime.min, self.collector.next_collection())
 

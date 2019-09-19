@@ -14,7 +14,7 @@ class GitLabTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="gitlab",
                 parameters=dict(
-                    url="http://gitlab/", project="project", file_path="file", branch="branch", inactive_days="7")))
+                    url="https://gitlab/", project="project", file_path="file", branch="branch", inactive_days="7")))
 
 
 class GitLabFailedJobsTest(GitLabTestCase):
@@ -28,18 +28,18 @@ class GitLabFailedJobsTest(GitLabTestCase):
         """Test that the number of failed jobs is returned."""
         gitlab_json = [
             dict(id="id", status="failed", created_at="2019-03-31T19:50:39.927Z",
-                 web_url="http://gitlab/job", ref="ref")]
+                 web_url="https://gitlab/job", ref="ref")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         self.assert_entities(
-            [dict(key="id", name="ref", url="http://gitlab/job", build_age=build_age, build_date="2019-03-31",
+            [dict(key="id", name="ref", url="https://gitlab/job", build_age=build_age, build_date="2019-03-31",
                   build_status="failed")],
             response)
         self.assert_value("1", response)
 
     def test_nr_of_failed_jobs_without_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
-        gitlab_json = [dict(name="job", url="http://job", status="success")]
+        gitlab_json = [dict(name="job", url="https://job", status="success")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
         self.assert_value("0", response)
 
@@ -47,7 +47,7 @@ class GitLabFailedJobsTest(GitLabTestCase):
         """Test that the private token is used."""
         self.sources["source_id"]["parameters"]["private_token"] = "token"
         response = self.collect(self.metric)
-        self.assert_api_url("http://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token", response)
+        self.assert_api_url("https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token", response)
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
@@ -63,7 +63,7 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
             response = self.collect(metric, get_request_json_return_value=gitlab_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assert_value(str(expected_age), response)
-        self.assert_landing_url("http://gitlab/project/blob/branch/file", response)
+        self.assert_landing_url("https://gitlab/project/blob/branch/file", response)
 
 
 class GitlabUnmergedBranchesTest(GitLabTestCase):

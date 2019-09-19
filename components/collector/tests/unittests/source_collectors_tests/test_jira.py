@@ -12,7 +12,7 @@ class JiraTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="jira",
                 parameters=dict(
-                    url="http://jira", jql="query", story_points_field="field", manual_test_duration_field="field")))
+                    url="https://jira", jql="query", story_points_field="field", manual_test_duration_field="field")))
 
 
 class JiraIssuesTest(JiraTestCase):
@@ -31,7 +31,7 @@ class JiraIssuesTest(JiraTestCase):
         """Test that the issues are returned."""
         jira_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
         response = self.collect(self.metric, get_request_json_return_value=jira_json)
-        self.assert_entities([dict(key="id", summary="Summary", url="http://jira/browse/key")], response)
+        self.assert_entities([dict(key="id", summary="Summary", url="https://jira/browse/key")], response)
 
 
 class JiraReadyUserStoryPointsTest(JiraTestCase):

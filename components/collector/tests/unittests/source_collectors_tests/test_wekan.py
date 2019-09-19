@@ -14,7 +14,7 @@ class WekanTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="wekan",
                 parameters=dict(
-                    url="http://wekan", board="board1", username="user", password="pass",
+                    url="https://wekan", board="board1", username="user", password="pass",
                     inactive_days="90", lists_to_ignore=[])))
 
 
@@ -39,7 +39,7 @@ class WekanIssuesTest(WekanTestCase):
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
-            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
+            [dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
                   due_date="", date_last_activity="2019-01-01")],
             response)
 
@@ -58,7 +58,7 @@ class WekanIssuesTest(WekanTestCase):
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
-            [dict(key="card1", url="http://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
+            [dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
                   due_date="", date_last_activity="2019-01-01")],
             response)
 
@@ -78,7 +78,7 @@ class WekanIssuesTest(WekanTestCase):
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
-            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
+            [dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
                   due_date="2019-01-01", date_last_activity="2019-01-01")],
             response)
 
@@ -98,7 +98,7 @@ class WekanIssuesTest(WekanTestCase):
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
         self.assert_value("1", response)
         self.assert_entities(
-            [dict(key="card2", url="http://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
+            [dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
                   date_last_activity="2000-01-01")],
             response)
 

@@ -10,7 +10,7 @@ class OWASPZAPTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="http://owasp_zap.xml")))
+        self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="https://owasp_zap.xml")))
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""

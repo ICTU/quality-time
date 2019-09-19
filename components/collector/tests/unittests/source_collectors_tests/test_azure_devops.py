@@ -8,9 +8,9 @@ class AzureDevopsTestCase(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(
-            source_id=dict(type="azure_devops", parameters=dict(url="http://azure_devops", private_token="xxx")))
+            source_id=dict(type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
         self.work_item = dict(
-            id="id", url="http://url",
+            id="id", url="https://url",
             fields={"System.TeamProject": "Project", "System.Title": "Title", "System.WorkItemType": "Task",
                     "System.State": "New", "Microsoft.VSTS.Scheduling.StoryPoints": 2.0})
 
@@ -40,7 +40,7 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
             self.metric, post_request_json_return_value=dict(workItems=[dict(id="id")]),
             get_request_json_return_value=dict(value=[self.work_item]))
         self.assert_entities(
-            [dict(key="id", project="Project", title="Title", work_item_type="Task", state="New", url="http://url")],
+            [dict(key="id", project="Project", title="Title", work_item_type="Task", state="New", url="https://url")],
             response)
 
 

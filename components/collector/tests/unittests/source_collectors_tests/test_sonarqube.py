@@ -10,7 +10,7 @@ class SonarQubeTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="sonarqube", parameters=dict(url="http://sonar", component="id")))
+        self.sources = dict(source_id=dict(type="sonarqube", parameters=dict(url="https://sonar", component="id")))
 
     def test_violations(self):
         """Test that the number of violations is returned."""
@@ -24,9 +24,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_entities(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",
-                     url="http://sonar/project/issues?id=id&issues=a&open=a"),
+                     url="https://sonar/project/issues?id=id&issues=a&open=a"),
                 dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                     url="http://sonar/project/issues?id=id&issues=b&open=b")
+                     url="https://sonar/project/issues?id=id&issues=b&open=b")
             ],
             response)
         self.assert_value("2", response)
@@ -82,9 +82,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_entities(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",
-                     resolution="", url="http://sonar/project/issues?id=id&issues=a&open=a"),
+                     resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a"),
                 dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                     resolution="won't fix", url="http://sonar/project/issues?id=id&issues=b&open=b")
+                     resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b")
             ],
             response)
         self.assert_value("2", response)

@@ -10,7 +10,7 @@ class JaCoCoTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="http://jacoco/")))
+        self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="https://jacoco/")))
 
     def test_uncovered_lines(self):
         """Test that the number of uncovered lines is returned."""
