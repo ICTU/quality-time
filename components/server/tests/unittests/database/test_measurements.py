@@ -113,3 +113,15 @@ class CalculateMeasurementValueTest(unittest.TestCase):
         """Test that the percentage is 100 when the total is zero and the direction is 'more is better'."""
         sources = [dict(parse_error=None, connection_error=None, value="0", total="0")]
         self.assertEqual("100", calculate_measurement_value(sources, "sum", "percentage", ">"))
+
+    def test_min_of_percentages(self):
+        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", total="70"),
+                   dict(parse_error=None, connection_error=None, value="20", total="50")]
+        self.assertEqual("14", calculate_measurement_value(sources, "min", "percentage", "<"))
+
+    def test_min_of_percentages_with_zero_denominator(self):
+        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", total="70"),
+                   dict(parse_error=None, connection_error=None, value="0", total="0")]
+        self.assertEqual("0", calculate_measurement_value(sources, "min", "percentage", "<"))

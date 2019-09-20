@@ -125,7 +125,7 @@ class SourceCollector:
         """Parse the responses to get the total for the metric. The total is the denominator for percentage
         scale metrics, i.e. measurement = (value / total) * 100%. This method can be overridden by collectors to
         parse the retrieved source data."""
-        return None
+        return "100"  # Return 100 by default so sources that already return a percentage simply work
 
     def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
         # pylint: disable=no-self-use,unused-argument

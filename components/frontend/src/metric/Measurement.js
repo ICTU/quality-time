@@ -37,7 +37,8 @@ export function Measurement(props) {
   const active = status === "debt_target_met";
   const negative = status === "target_not_met";
   const warning = status === "near_target_met";
-  const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
+  const metric_scale = metric.scale || props.datamodel.metrics[metric.type].default_scale;
+  const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
   const metric_unit = `${metric_unit_prefix}${metric.unit || props.datamodel.metrics[metric.type].unit}`;
   const metric_name = metric.name || props.datamodel.metrics[metric.type].name;
   let week_ago = new Date();

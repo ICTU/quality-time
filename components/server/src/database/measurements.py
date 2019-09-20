@@ -50,8 +50,11 @@ def insert_new_measurement(database: Database, measurement, metric=None):
         del measurement["_id"]
     metric = latest_metric(
         database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
-    measurement["value"] = calculate_measurement_value(
-        measurement["sources"], metric["addition"], metric["scale"], metric["direction"])
+    datamodel = latest_datamodel(database)
+    metric_type = datamodel["metrics"][metric["type"]]
+    scale = metric.get("scale") or metric_type["default_scale"]
+    direction = metric.get("direction") or metric_type["direction"]
+    measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
     measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
     measurement["start"] = measurement["end"] = iso_timestamp()
     # Mark this measurement as the most recent one:
@@ -66,22 +69,27 @@ def insert_new_measurement(database: Database, measurement, metric=None):
 
 def calculate_measurement_value(sources, addition: str, scale: str, direction: str) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
-    if not sources:
+
+    def percentage(numerator: int, denominator: int) -> int:
+        """Return the rounded percentage: numerator / denominator * 100%."""
+        if denominator == 0:
+            return 0 if direction == "<" else 100
+        return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
+
+    def nr_entities_to_ignore(source) -> int:
+        """Return the number of entities marked as fixed, false positive or won't fix."""
+        entities = source.get("entity_user_data", {}).values()
+        return len([entity for entity in entities if entity.get("status") in ("fixed", "false_positive", "wont_fix")])
+
+    if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
-    values = []
-    for source in sources:
-        if source["parse_error"] or source["connection_error"]:
-            return None
-        entities_to_ignore = [
-            entity for entity in source.get("entity_user_data", {}).values()
-            if entity.get("status") in ("fixed", "false_positive", "wont_fix")]
-        values.append(int(source["value"]) - len(entities_to_ignore))
-    if scale == "percentage":
-        total = sum(0 if source.get("total") is None else int(source["total"]) for source in sources)
-        if total == 0:
-            return "0" if direction == "<" else "100"
-        return str(int((100 * Decimal(sum(values)) / Decimal(total)).to_integral_value(ROUND_HALF_UP)))
+    values = [int(source["value"]) - nr_entities_to_ignore(source) for source in sources]
     add = dict(max=max, min=min, sum=sum)[addition]
+    if scale == "percentage":
+        totals = [int(source["total"]) for source in sources]
+        if addition == "sum":
+            values, totals = [sum(values)], [sum(totals)]
+        values = [percentage(value, total) for value, total in zip(values, totals)]
     return str(add(values))  # type: ignore
 
 

@@ -339,19 +339,18 @@
         },
         "performancetest_stability": {
             "name": "Performancetest stability",
-            "description": "Measure the percentage of the duration of the performancetest at which throughput or error count increases",
+            "description": "Measure the duration of the performancetest at which throughput or error count increases",
             "scales": [
-                "count"
+                "percentage"
             ],
-            "default_scale": "count",
-            "unit": "%",
+            "default_scale": "percentage",
+            "unit": "minutes",
             "addition": "min",
             "direction": ">",
             "target": "100",
             "near_target": "90",
             "default_source": "performancetest_runner",
             "sources": [
-                "hq",
                 "manual_number",
                 "performancetest_runner",
                 "random"
@@ -388,10 +387,10 @@
             "name": "Scalability",
             "description": "Measure the percentage of (max) users at which ramp-up of throughput breaks.",
             "scales": [
-                "count"
+                "percentage"
             ],
-            "default_scale": "count",
-            "unit": "%",
+            "default_scale": "percentage",
+            "unit": "users",
             "addition": "min",
             "direction": ">",
             "target": "75",
@@ -1170,7 +1169,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",
@@ -1199,7 +1197,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",
@@ -1228,7 +1225,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",

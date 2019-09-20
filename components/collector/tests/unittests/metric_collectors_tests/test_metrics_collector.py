@@ -99,7 +99,7 @@ class CollectorTest(unittest.TestCase):
         self.source_metric_class.total = "84"
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric", scale="percentage",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="http://url")))))
+                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):

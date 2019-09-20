@@ -93,8 +93,8 @@ export function MetricParameters(props) {
                         <SingleChoiceInput
                             label="Metric direction"
                             options={[
-                                { key: "0", text: `${fewer} is better (≦)`, value: "<" },
-                                { key: "1", text: `${more} is better (≧)`, value: ">" }]}
+                                { key: "0", text: `${fewer} is better`, value: "<" },
+                                { key: "1", text: `${more} is better`, value: ">" }]}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
                             value={metric_direction}
