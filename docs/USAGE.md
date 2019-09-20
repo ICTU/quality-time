@@ -85,7 +85,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 
   ![Dashboard tags](screenshots/dashboard_tags.png)
 
-* The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support the "Count" scale and some also the "Percentage" scale. In the case of the duplicated lines metric, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is measured instead of the count of duplicated lines.
+* The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is measured instead of the count of duplicated lines.
 * The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. 
 * The "Metric unit" derives its default value from the metric type. Override as needed.
 * The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
