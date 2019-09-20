@@ -408,7 +408,7 @@
         },
         "slow_transactions": {
             "name": "Slow transactions",
-            "description": "Measure the number of transactions slower than their performance treshhold.",
+            "description": "Measure the number of transactions slower than their performance threshold.",
             "scales": [
                "count"
             ],
