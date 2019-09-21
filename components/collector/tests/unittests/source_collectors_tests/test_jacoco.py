@@ -13,16 +13,20 @@ class JaCoCoTest(SourceCollectorTestCase):
         self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="https://jacoco/")))
 
     def test_uncovered_lines(self):
-        """Test that the number of uncovered lines is returned."""
+        """Test that the number of uncovered lines and the total number of lines are returned."""
         metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
-        response = self.collect(metric, get_request_text="<report><counter type='LINE' missed='2' /></report>")
+        response = self.collect(
+            metric, get_request_text="<report><counter type='LINE' missed='2' covered='4'/></report>")
         self.assert_value("2", response)
+        self.assert_total("6", response)
 
     def test_uncovered_branches(self):
         """Test that the number of uncovered branches is returned."""
         metric = dict(type="uncovered_branches", sources=self.sources, addition="sum")
-        response = self.collect(metric, get_request_text="<report><counter type='BRANCH' missed='4' /></report>")
+        response = self.collect(
+            metric, get_request_text="<report><counter type='BRANCH' missed='4' covered='6'/></report>")
         self.assert_value("4", response)
+        self.assert_total("10", response)
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

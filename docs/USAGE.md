@@ -76,17 +76,20 @@ To add a metric to a subject, hit the "Add metric" button.
 
 ### Editing metrics
 
-After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab. The first parameter is the metric type. By default the name of the metric is equal to its type, in the example below "Commented out code", but you can change the metric name using the "Metric name" field. The same goes for the default metric unit that you can rename using the "Metric unit" field.
-
-The metric direction determines whether smaller measurement values are better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. The metric target determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The *near target* determines when the measurement value is sufficiently close to the target to no longer require immediate action.
+After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab. 
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-Each metric type has default tags, but you can also add your own tags. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag.
+* The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field. 
+* Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
-![Dashboard tags](screenshots/dashboard_tags.png)
+  ![Dashboard tags](screenshots/dashboard_tags.png)
 
-If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
+* The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is measured instead of the count of duplicated lines.
+* The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. 
+* The "Metric unit" derives its default value from the metric type. Override as needed.
+* The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
+* If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
 
 ### Reordering metrics
 

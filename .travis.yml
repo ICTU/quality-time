@@ -62,7 +62,7 @@ jobs:
       - ci/unittest.sh
       - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
       - cd ../../components/frontend
-      - npm test
+      - npm test -- --coverage
       - cd ../..
       - touch components/__init__.py
       - touch components/server/__init__.py

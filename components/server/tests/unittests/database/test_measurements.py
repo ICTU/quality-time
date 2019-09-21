@@ -70,30 +70,58 @@ class CalculateMeasurementValueTest(unittest.TestCase):
 
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""
-        self.assertEqual(None, calculate_measurement_value([], "sum"))
+        self.assertEqual(None, calculate_measurement_value([], "sum", "count", "<"))
 
     def test_error(self):
         """Test that the measurement value is None if a source has an erro."""
         sources = [dict(parse_error="error")]
-        self.assertEqual(None, calculate_measurement_value(sources, "sum"))
+        self.assertEqual(None, calculate_measurement_value(sources, "sum", "count", "<"))
 
     def test_add_two_sources(self):
         """Test that the values of two sources are added."""
-        sources = [dict(parse_error=None, connection_error=None, value="10"),
-                   dict(parse_error=None, connection_error=None, value="20")]
-        self.assertEqual("30", calculate_measurement_value(sources, "sum"))
+        sources = [dict(parse_error=None, connection_error=None, value="10", total=None),
+                   dict(parse_error=None, connection_error=None, value="20", total=None)]
+        self.assertEqual("30", calculate_measurement_value(sources, "sum", "count", "<"))
 
     def test_max_two_sources(self):
         """Test that the max value of two sources is returned."""
-        sources = [dict(parse_error=None, connection_error=None, value="10"),
-                   dict(parse_error=None, connection_error=None, value="20")]
-        self.assertEqual("20", calculate_measurement_value(sources, "max"))
+        sources = [dict(parse_error=None, connection_error=None, value="10", total=None),
+                   dict(parse_error=None, connection_error=None, value="20", total=None)]
+        self.assertEqual("20", calculate_measurement_value(sources, "max", "count", "<"))
 
     def test_ignored_entities(self):
         """Test that the number of ignored entities is subtracted."""
         sources = [
-            dict(parse_error=None, connection_error=None, value="10",
+            dict(parse_error=None, connection_error=None, value="10", total=None,
                  entity_user_data=dict(
                      entity1=dict(status="fixed"), entity2=dict(status="wont_fix"),
                      entity3=dict(status="false_positive")))]
-        self.assertEqual("7", calculate_measurement_value(sources, "sum"))
+        self.assertEqual("7", calculate_measurement_value(sources, "sum", "count", "<"))
+
+    def test_percentage(self):
+        """Test a non-zero percentage."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", total="70"),
+                   dict(parse_error=None, connection_error=None, value="20", total="50")]
+        self.assertEqual("25", calculate_measurement_value(sources, "sum", "percentage", "<"))
+
+    def test_percentage_is_zero(self):
+        """Test that the percentage is zero when the total is zero and the direction is 'fewer is better'."""
+        sources = [dict(parse_error=None, connection_error=None, value="0", total="0")]
+        self.assertEqual("0", calculate_measurement_value(sources, "sum", "percentage", "<"))
+
+    def test_percentage_is_100(self):
+        """Test that the percentage is 100 when the total is zero and the direction is 'more is better'."""
+        sources = [dict(parse_error=None, connection_error=None, value="0", total="0")]
+        self.assertEqual("100", calculate_measurement_value(sources, "sum", "percentage", ">"))
+
+    def test_min_of_percentages(self):
+        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", total="70"),
+                   dict(parse_error=None, connection_error=None, value="20", total="50")]
+        self.assertEqual("14", calculate_measurement_value(sources, "min", "percentage", "<"))
+
+    def test_min_of_percentages_with_zero_denominator(self):
+        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
+        sources = [dict(parse_error=None, connection_error=None, value="10", total="70"),
+                   dict(parse_error=None, connection_error=None, value="0", total="0")]
+        self.assertEqual("0", calculate_measurement_value(sources, "min", "percentage", "<"))

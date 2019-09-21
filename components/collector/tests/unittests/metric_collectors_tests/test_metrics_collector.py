@@ -27,6 +27,10 @@ class CollectorTest(unittest.TestCase):
                 """Return the answer."""
                 return "42"
 
+            def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
+                """Return the answer."""
+                return "84"
+
             def next_collection(self) -> datetime:
                 return self.next_collection_datetime if self.next_collection_datetime else super().next_collection()
 
@@ -69,8 +73,8 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[], connection_error=None,
-                         parse_error=None, source_uuid="source_id")],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                         connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
@@ -86,7 +90,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -116,7 +120,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -136,7 +140,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid")),
         post.assert_has_calls(post_call, post_call)
@@ -160,7 +164,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", entities=[],
+                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 

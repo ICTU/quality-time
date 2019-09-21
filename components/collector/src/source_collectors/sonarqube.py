@@ -109,6 +109,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 class SonarQubeMetricsBaseClass(SourceCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
+    # Metric keys is a string containing one or two metric keys separated by a comma. The first metric key is used for
+    # the metric value, the second for the total value (used for calculating a percentage).
     metricKeys = "Subclass responsibility"
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:
@@ -122,7 +124,10 @@ class SonarQubeMetricsBaseClass(SourceCollector):
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        return str(self.__get_metrics(responses)[self.metricKeys])
+        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[0]])
+
+    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[1]])
 
     @staticmethod
     def __get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
@@ -134,7 +139,7 @@ class SonarQubeMetricsBaseClass(SourceCollector):
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     """SonarQube duplicated lines collector."""
 
-    metricKeys = "duplicated_lines"
+    metricKeys = "duplicated_lines,lines"
 
 
 class SonarQubeTests(SonarQubeMetricsBaseClass):
@@ -164,13 +169,13 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
     """SonarQube uncovered lines of code."""
 
-    metricKeys = "uncovered_lines"
+    metricKeys = "uncovered_lines,lines_to_cover"
 
 
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
-    metricKeys = "uncovered_conditions"
+    metricKeys = "uncovered_conditions,conditions_to_cover"
 
 
 class SonarQubeSourceUpToDateness(SourceCollector):

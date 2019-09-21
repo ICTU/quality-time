@@ -39,18 +39,36 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_value("88", response)
 
     def test_uncovered_lines(self):
-        """Test that the number of uncovered lines is returned."""
-        json = dict(component=dict(measures=[dict(metric="uncovered_lines", value="10")]))
+        """Test that the number of uncovered lines and the number of lines to cover are returned."""
+        json = dict(
+            component=dict(
+                measures=[dict(metric="uncovered_lines", value="100"), dict(metric="lines_to_cover", value="1000")]))
         metric = dict(type="uncovered_lines", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_value("10", response)
+        self.assert_value("100", response)
+        self.assert_total("1000", response)
 
     def test_uncovered_branches(self):
-        """Test that the number of uncovered branches is returned."""
-        json = dict(component=dict(measures=[dict(metric="uncovered_conditions", value="10")]))
+        """Test that the number of uncovered branches and the number of branches to cover are returned."""
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="uncovered_conditions", value="10"), dict(metric="conditions_to_cover", value="200")]))
         metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_value("10", response)
+        self.assert_total("200", response)
+
+    def test_duplicated_lines(self):
+        """Test that the number of duplicated lines and the total number of lines are returned."""
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="duplicated_lines", value="10"), dict(metric="lines", value="100")]))
+        metric = dict(type="duplicated_lines", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("10", response)
+        self.assert_total("100", response)
 
     def test_long_units(self):
         """Test that the number of long units is returned."""

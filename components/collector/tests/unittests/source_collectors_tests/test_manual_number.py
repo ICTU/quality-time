@@ -13,3 +13,12 @@ class ManualNumberTest(SourceCollectorTestCase):
             sources=dict(source_id=dict(type="manual_number", parameters=dict(number="42"))))
         response = self.collect(metric)
         self.assert_value("42", response)
+
+    def test_percentage(self):
+        """Test that the manual source can also be a metric source for metrics with a percentage scale."""
+        metric = dict(
+            type="violations", addition="sum", scale="percentage",
+            sources=dict(source_id=dict(type="manual_number", parameters=dict(number="42"))))
+        response = self.collect(metric)
+        self.assert_total("100", response)
+        self.assert_value("42", response)

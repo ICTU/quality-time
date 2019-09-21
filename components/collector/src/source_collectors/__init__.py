@@ -1,28 +1,37 @@
 """Metric collectors per source."""
 
-from .axe_csv import *
-from .azure_devops import *
-from .bandit import *
-from .calendar import *
-from .cxsast import *
-from .gitlab import *
-from .hq import *
-from .jacoco import *
-from .jenkins import *
-from .jenkins_test_report import *
-from .jira import *
-from .junit import *
-from .manual_number import *
-from .openvas import *
-from .owasp_dependency_check import *
-from .owasp_dependency_check_jenkins_plugin import *
-from .owasp_zap import *
-from .ojaudit import *
-from .performancetest_runner import *
-from .pyupio_safety import *
-from .quality_time import *
-from .random_number import *
-from .robot_framework import *
-from .sonarqube import *
-from .trello import *
-from .wekan import *
+from .axe_csv import AxeCSVAccessibility
+from .azure_devops import AzureDevopsIssues, AzureDevopsReadyUserStoryPoints
+from .bandit import BanditSecurityWarnings, BanditSourceUpToDateness
+from .calendar import CalendarSourceUpToDateness
+from .cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
+from .gitlab import GitlabFailedJobs, GitlabSourceUpToDateness, GitlabUnmergedBranches
+from .hq import HQ
+from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
+from .jenkins import JenkinsFailedJobs, JenkinsJobs
+from .jenkins_test_report import (
+    JenkinsTestReportSourceUpToDateness, JenkinsTestReportFailedTests, JenkinsTestReportTests)
+from .jira import JiraIssues, JiraManualTestDuration, JiraReadyUserStoryPoints
+from .junit import JUnitFailedTests, JunitSourceUpToDateness, JUnitTests
+from .manual_number import ManualNumber
+from .ojaudit import OJAuditViolations
+from .openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
+from .owasp_dependency_check import OWASPDependencyCheckSecurityWarnings, OWASPDependencyCheckSourceUpToDateness
+from .owasp_dependency_check_jenkins_plugin import (
+    OWASPDependencyCheckJenkinsPluginSecurityWarnings, OWASPDependencyCheckJenkinsPluginSourceUpToDateness)
+from .owasp_zap import OWASPZAPSecurityWarnings, OWASPZAPSourceUpToDateness
+from .performancetest_runner import (
+    PerformanceTestRunnerFailedTests, PerformanceTestRunnerPerformanceTestDuration,
+    PerformanceTestRunnerPerformanceTestStability, PerformanceTestRunnerScalability,
+    PerformanceTestRunnerSlowTransactions, PerformanceTestRunnerSourceUpToDateness, PerformanceTestRunnerTests)
+from .pyupio_safety import PyupioSafetySecurityWarnings
+from .quality_time import QualityTimeMetrics
+from .random_number import Random
+from .robot_framework import RobotFrameworkTests, RobotFrameworkSourceUpToDateness, RobotFrameworkFailedTests
+from .sonarqube import (
+    SonarQubeDuplicatedLines, SonarQubeComplexUnits, SonarQubeCommentedOutCode, SonarQubeFailedTests, SonarQubeLOC,
+    SonarQubeLongUnits, SonarQubeManyParameters, SonarQubeNCLOC, SonarQubeSourceUpToDateness,
+    SonarQubeSuppressedViolations, SonarQubeTests, SonarQubeUncoveredBranches, SonarQubeUncoveredLines,
+    SonarQubeViolations)
+from .trello import TrelloIssues, TrelloSourceUpToDateness
+from .wekan import WekanIssues, WekanSourceUpToDateness

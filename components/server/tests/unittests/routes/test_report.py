@@ -65,8 +65,9 @@ class PostMetricAttributeTest(unittest.TestCase):
                     name='Subject',
                     metrics=dict(
                         metric_uuid=dict(
-                            name="name", type="old_type", addition="sum", target="0", near_target="10",
-                            debt_target=None, accept_debt=False, tags=[], sources=dict(source_uuid=dict())),
+                            name="name", type="old_type", scale="count", addition="sum", direction="<", target="0",
+                            near_target="10", debt_target=None, accept_debt=False, tags=[],
+                            sources=dict(source_uuid=dict())),
                         metric_uuid2=dict(name="name2")))))
         self.database = Mock()
         self.database.reports.find_one.return_value = self.report
@@ -75,7 +76,9 @@ class PostMetricAttributeTest(unittest.TestCase):
             _id="id",
             metrics=dict(
                 old_type=dict(name="Old type"),
-                new_type=dict(addition="sum", target="0", near_target="1", tags=[], sources=["source_type"])))
+                new_type=dict(
+                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[],
+                    sources=["source_type"])))
 
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
@@ -393,7 +396,7 @@ class MetricTest(unittest.TestCase):
             _id="",
             metrics=dict(
                 metric_type=dict(
-                    addition="sum", direction="<", target="0", near_target="1", tags=[])))
+                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])))
 
     def test_add_metric(self):
         """Test that a metric can be added."""

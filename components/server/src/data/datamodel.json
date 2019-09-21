@@ -1,8 +1,22 @@
 {
+   "scales": {
+       "count": {
+           "name": "Count",
+           "description": "Counts of objects (e.g. lines of code, violations, complex units)."
+       },
+       "percentage": {
+           "name": "Percentage",
+           "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
+       }
+    },
     "metrics": {
         "accessibility": {
             "name": "Accessibility violations",
             "description": "Measure the number of accessibility violations in the web user interface of the software.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "violations",
             "addition": "sum",
             "direction": "<",
@@ -22,6 +36,10 @@
         "commented_out_code": {
             "name": "Commented out code",
             "description": "Measure the number of lines of code commented out.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -41,6 +59,10 @@
         "complex_units": {
             "name": "Complex units",
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "complex units",
             "addition": "sum",
             "direction": "<",
@@ -61,6 +83,11 @@
         "duplicated_lines": {
             "name": "Duplicated lines",
             "description": "Measure the number of lines that are duplicated.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -79,6 +106,10 @@
         "failed_jobs": {
             "name": "Failed CI-jobs",
             "description": "Measure the number of continuous jobs that have failed. This metric is an indication of the quality of the CI-system.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "CI-jobs",
             "addition": "sum",
             "direction": "<",
@@ -99,6 +130,10 @@
         "failed_tests": {
             "name": "Failed tests (deprecated)",
             "description": "Measure the number of tests that fail. This metric is deprecated. Please use the 'Tests' metric.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "failed tests",
             "addition": "sum",
             "direction": "<",
@@ -122,6 +157,10 @@
         "issues": {
             "name": "Issues",
             "description": "Measure the number of issues.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "issues",
             "addition": "sum",
             "direction": "<",
@@ -142,6 +181,10 @@
         "loc": {
             "name": "Size (LOC)",
             "description": "Measure the size of the software in lines of code.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
@@ -162,6 +205,10 @@
             "name": "Long units",
             "description": "Measure the number of units (functions, methods, files) that are too long.",
             "unit": "long units",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "addition": "sum",
             "direction": "<",
             "target": "0",
@@ -180,6 +227,10 @@
         "manual_test_duration": {
             "name": "Manual test duration",
             "description": "Measure the duration of the manual test in minutes",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "minutes",
             "addition": "sum",
             "direction": "<",
@@ -199,6 +250,10 @@
         "many_parameters": {
             "name": "Many parameters",
             "description": "Measure the number of units (functions, methods, procedures) that have too many parameters.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "units with too many parameters",
             "addition": "sum",
             "direction": "<",
@@ -217,7 +272,12 @@
         },
         "metrics": {
             "name": "Metrics",
-            "description": "Number of metrics from one more quality reports, with specific states and/or tags.",
+            "description": "The amount of metrics from one more quality reports, with specific states and/or tags.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
             "unit": "metrics",
             "addition": "sum",
             "direction": "<",
@@ -234,6 +294,10 @@
         "ncloc": {
             "name": "Size (non-commented LOC)",
             "description": "Measure the size of the software in lines of code, excluding comments.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "non-commented lines",
             "addition": "sum",
             "direction": "<",
@@ -253,6 +317,10 @@
         "performancetest_duration": {
             "name": "Performancetest duration",
             "description": "Measure the duration of the performancetest in minutes",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "minutes",
             "addition": "min",
             "direction": ">",
@@ -271,15 +339,18 @@
         },
         "performancetest_stability": {
             "name": "Performancetest stability",
-            "description": "Measure the percentage of the duration of the performancetest at which throughput or error count increases",
-            "unit": "%",
+            "description": "Measure the duration of the performancetest at which throughput or error count increases",
+            "scales": [
+                "percentage"
+            ],
+            "default_scale": "percentage",
+            "unit": "minutes",
             "addition": "min",
             "direction": ">",
             "target": "100",
             "near_target": "90",
             "default_source": "performancetest_runner",
             "sources": [
-                "hq",
                 "manual_number",
                 "performancetest_runner",
                 "random"
@@ -291,6 +362,10 @@
         "ready_user_story_points": {
             "name": "Ready user story points",
             "description": "Measure the number of points of user stories that are ready to implement.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "user story points",
             "addition": "sum",
             "direction": ">",
@@ -311,7 +386,11 @@
         "scalability": {
             "name": "Scalability",
             "description": "Measure the percentage of (max) users at which ramp-up of throughput breaks.",
-            "unit": "%",
+            "scales": [
+                "percentage"
+            ],
+            "default_scale": "percentage",
+            "unit": "users",
             "addition": "min",
             "direction": ">",
             "target": "75",
@@ -328,7 +407,11 @@
         },
         "slow_transactions": {
             "name": "Slow transactions",
-            "description": "Measure the number of transactions slower than their performance treshhold.",
+            "description": "Measure the number of transactions slower than their performance threshold.",
+            "scales": [
+               "count"
+            ],
+            "default_scale": "count",
             "unit": "transactions",
             "addition": "sum",
             "direction": "<",
@@ -348,6 +431,10 @@
         "source_up_to_dateness": {
             "name": "Source up-to-dateness",
             "description": "Measure the number of days since the source was last updated.",
+            "scales": [
+               "count"
+            ],
+            "default_scale": "count",
             "unit": "days",
             "addition": "max",
             "direction": "<",
@@ -381,6 +468,10 @@
         "security_warnings": {
             "name": "Security warnings",
             "description": "Measure how many security flaws the code contains. This metric gives an indication of the security of the source code.",
+            "scales": [
+               "count"
+            ],
+            "default_scale": "count",
             "unit": "security warnings",
             "addition": "sum",
             "direction": "<",
@@ -406,6 +497,10 @@
         "suppressed_violations": {
             "name": "Suppressed violations",
             "description": "Measure the number of violations suppressed in the source.",
+            "scales": [
+               "count"
+            ],
+            "default_scale": "count",
             "unit": "suppressed violations",
             "addition": "sum",
             "direction": "<",
@@ -425,6 +520,10 @@
         "tests": {
             "name": "Tests",
             "description": "Measure the number of test.",
+            "scales": [
+               "count"
+            ],
+            "default_scale": "count",
             "unit": "tests",
             "addition": "sum",
             "direction": ">",
@@ -446,7 +545,12 @@
         },
         "uncovered_branches": {
             "name": "Test branch coverage",
-            "description": "Measure the number of code branches not covered by tests. This is an indication of the quality of the test suite.",
+            "description": "Measure the amount of code branches not covered by tests. This is an indication of the quality of the test suite.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
             "unit": "uncovered branches",
             "addition": "sum",
             "direction": "<",
@@ -465,7 +569,12 @@
         },
         "uncovered_lines": {
             "name": "Test line coverage",
-            "description": "Measure the number of lines of code not covered by tests. This is an indication of the quality of the test suite.",
+            "description": "Measure the amount of lines of code not covered by tests. This is an indication of the quality of the test suite.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
             "unit": "uncovered lines",
             "addition": "sum",
             "direction": "<",
@@ -485,6 +594,10 @@
         "unmerged_branches": {
             "name": "Unmerged branches",
             "description": "Measure the number of branches that have not been merged to master.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "branches",
             "addition": "sum",
             "direction": "<",
@@ -504,6 +617,10 @@
         "unused_jobs": {
             "name": "Unused CI-jobs",
             "description": "Measure the number of continuous jobs that are unused. This metric is an indication of the quality of the CI-system.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "CI-jobs",
             "addition": "sum",
             "direction": "<",
@@ -523,6 +640,10 @@
         "violations": {
             "name": "Violations",
             "description": "Measure how many violations of programming rules the software contains. This metric gives an indication of the quality of the source code.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
             "unit": "violations",
             "addition": "sum",
             "direction": "<",
@@ -1048,7 +1169,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",
@@ -1077,7 +1197,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",
@@ -1106,7 +1225,6 @@
                         "many_parameters",
                         "ncloc",
                         "performancetest_duration",
-                        "performancetest_stability",
                         "ready_user_story_points",
                         "security_warnings",
                         "slow_transactions",

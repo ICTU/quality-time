@@ -52,6 +52,10 @@ class SourceCollectorTestCase(unittest.TestCase):
         """Assert that the measurement response has the expected value."""
         self.assertEqual(expected_value, response["sources"][source_index]["value"])
 
+    def assert_total(self, expected_total: Value, response: Response, source_index: int = 0) -> None:
+        """Assert that the measurement response has the expected total."""
+        self.assertEqual(expected_total, response["sources"][source_index]["total"])
+
     def assert_entities(self, expected_entities: Entities, response: Response, source_index: int = 0) -> None:
         """Assert that the measurement response has the expected entities."""
         self.assertEqual(expected_entities, response["sources"][source_index]["entities"])

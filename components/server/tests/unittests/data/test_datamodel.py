@@ -13,7 +13,7 @@ class DataModelTest(unittest.TestCase):
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
-        self.assertEqual({"metrics", "subjects", "sources"}, set(self.datamodel.keys()))
+        self.assertEqual({"metrics", "subjects", "sources", "scales"}, set(self.datamodel.keys()))
 
     def test_metrics_have_sources(self):
         """Test that each metric has one or more sources."""
@@ -117,3 +117,25 @@ class DataModelTest(unittest.TestCase):
         for metric_uuid, metric in self.datamodel["metrics"].items():
             direction = metric["direction"]
             self.assertTrue(direction in ("<", ">"), f"Metric {metric_uuid} has an invalid direction: {direction}")
+
+    def test_metrics_have_scales(self):
+        """Test that all metrics have one or more allowed scales and a default scale that's in the allowed scales."""
+        scales = self.datamodel["scales"].keys()
+        for metric_id, metric in self.datamodel["metrics"].items():
+            allowed_scales = metric.get("scales", [])
+            self.assertTrue(len(allowed_scales) > 0, f"Metric {metric} has no scales")
+            for scale in allowed_scales:
+                self.assertTrue(scale in scales, f"Metric scale {scale} not in collection of all scales")
+            default_scale = metric["default_scale"]
+            self.assertTrue(
+                default_scale in allowed_scales,
+                f"Default scale {default_scale} of metric {metric_id} not in allowed scales: {allowed_scales}")
+
+    def test_all_scales_are_used(self):
+        """Test that all scales are used at least once."""
+        for scale in self.datamodel["scales"].keys():
+            for metric in self.datamodel["metrics"].values():
+                if scale in metric.get("scales", []):
+                    break
+            else:  # pragma: nocover
+                self.fail(f"Scale {scale} not used for any metric.")

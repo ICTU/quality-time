@@ -17,7 +17,8 @@ class ReportInitTest(unittest.TestCase):
         database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="name", description="")),
-            metrics=dict(metric_type=dict(addition="sum", target="0", near_target="0", tags=[])),
+            metrics=dict(
+                metric_type=dict(default_scale="count", addition="sum", target="0", near_target="0", tags=[])),
             sources=dict(
                 source_type=dict(
                     parameters=dict(

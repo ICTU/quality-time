@@ -29,7 +29,9 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         measurements2 = dict(measurements=[dict(metric_uuid="m2", status="target_not_met")])
         measurements3 = dict(measurements=[])
         response = self.collect(
-            metric, get_request_json_side_effect=[reports, measurements1, measurements2, measurements3, reports])
+            metric,
+            get_request_json_side_effect=[reports, measurements1, measurements2, measurements3, reports, reports])
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # and tag "security". Only m2 matches those criteria.
         self.assert_value("1", response)
+        self.assert_total("3", response)
