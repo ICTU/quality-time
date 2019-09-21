@@ -31,16 +31,17 @@ export function Measurement(props) {
     target_not_met: 'x', null: 'question'
   }[status];
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
+  const metric_type = props.datamodel.metrics[metric.type];
   const target = metric.accept_debt ? metric.debt_target : metric.target;
-  const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || props.datamodel.metrics[metric.type].direction];
+  const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
   const positive = status === "target_met";
   const active = status === "debt_target_met";
   const negative = status === "target_not_met";
   const warning = status === "near_target_met";
-  const metric_scale = metric.scale || props.datamodel.metrics[metric.type].default_scale;
+  const metric_scale = metric.scale || metric_type.default_scale || "count";
   const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
-  const metric_unit = `${metric_unit_prefix}${metric.unit || props.datamodel.metrics[metric.type].unit}`;
-  const metric_name = metric.name || props.datamodel.metrics[metric.type].name;
+  const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
+  const metric_name = metric.name || metric_type.name;
   let week_ago = new Date();
   week_ago.setDate(week_ago.getDate() - 7)
   const week_ago_string = week_ago.toISOString();

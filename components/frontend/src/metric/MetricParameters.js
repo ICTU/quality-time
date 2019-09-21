@@ -83,7 +83,7 @@ export function MetricParameters(props) {
                         <SingleChoiceInput
                             label="Metric scale"
                             options={scale_options}
-                            placeholder={metric_type.default_scale}
+                            placeholder={metric_type.default_scale || "Count"}
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "scale", value, props.reload)}
                             value={metric_scale}
