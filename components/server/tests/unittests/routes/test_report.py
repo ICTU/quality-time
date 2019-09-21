@@ -77,7 +77,7 @@ class PostMetricAttributeTest(unittest.TestCase):
             metrics=dict(
                 old_type=dict(name="Old type"),
                 new_type=dict(
-                    scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[],
+                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[],
                     sources=["source_type"])))
 
     def test_post_metric_name(self, request):
@@ -396,7 +396,7 @@ class MetricTest(unittest.TestCase):
             _id="",
             metrics=dict(
                 metric_type=dict(
-                    scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])))
+                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])))
 
     def test_add_metric(self):
         """Test that a metric can be added."""
