@@ -23,7 +23,7 @@ function EditableDateInput(props) {
 
 export function DateInput(props) {
     return props.readOnly ?
-        <Input {...props} icon='calendar' />
+        <Input {...props} />
         :
         <EditableDateInput {...props} />
 }
