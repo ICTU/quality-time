@@ -1,5 +1,6 @@
 """Collectors for the Checkmarx CxSAST product."""
 
+from abc import ABC
 from datetime import datetime
 from typing import cast, List
 
@@ -13,7 +14,7 @@ from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
-class CxSASTBase(SourceCollector):
+class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for CxSAST collectors."""
 
     TOKEN_RESPONSE, PROJECT_RESPONSE, SCAN_RESPONSE = range(3)

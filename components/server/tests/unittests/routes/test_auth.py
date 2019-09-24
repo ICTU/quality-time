@@ -1,5 +1,6 @@
 """Unit tests for the authorization routes."""
 
+import logging
 import unittest
 from unittest.mock import Mock, patch
 
@@ -12,6 +13,7 @@ from src.routes import auth
 class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
+        logging.disable()
         self.database = Mock()
         self.ldap_server = Mock()
         self.ldap_server.search_s.return_value = [
@@ -21,11 +23,9 @@ class LoginTests(unittest.TestCase):
         self.valid_creds_uid_json = Mock(json=dict(username="jodoe", password="secret"))
         self.valid_creds_cn_json = Mock(json=dict(username="John Doe", password="secret"))
 
-        self.login_uid_json = Mock(json=dict(username="jodoe", password="secret"))
-        self.login_cn_json = Mock(json=dict(username="John Doe", password="secret"))
-
     def tearDown(self):
         bottle.response._cookies = None  # pylint: disable=protected-access
+        logging.disable(logging.NOTSET)
 
     def test_successful_login(self):
         """Test successful login."""
@@ -57,33 +57,29 @@ class LoginTests(unittest.TestCase):
 
     def test_lookup_user_simple_bind_s_failure(self):
         self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS
-        with patch("logging.warning", Mock()):
-            with patch("bottle.request", return_value=self.valid_creds_uid_json):
-                with patch("ldap.initialize", return_value=self.ldap_server):
-                    self.assertEqual(dict(ok=False), auth.login(self.database))
+        with patch("bottle.request", return_value=self.valid_creds_uid_json):
+            with patch("ldap.initialize", return_value=self.ldap_server):
+                self.assertEqual(dict(ok=False), auth.login(self.database))
 
     def test_simple_search_s_failure(self):
         self.ldap_server.search_s.side_effect = ldap.INVALID_CREDENTIALS
-        with patch("logging.warning", Mock()):
-            with patch("bottle.request", return_value=self.invalid_creds_json):
-                with patch("ldap.initialize", return_value=self.ldap_server):
-                    self.assertEqual(dict(ok=False), auth.login(self.database))
+        with patch("bottle.request", return_value=self.invalid_creds_json):
+            with patch("ldap.initialize", return_value=self.ldap_server):
+                self.assertEqual(dict(ok=False), auth.login(self.database))
 
     def test_unsuccessful_login_localhost_cn(self):
         """Test unsuccessful login on localhost."""
         self.ldap_server.simple_bind_s.side_effect = [None, ldap.INVALID_CREDENTIALS]
-        with patch("logging.warning", Mock()):
-            with patch("bottle.request", return_value=self.invalid_creds_json):
-                with patch("ldap.initialize", return_value=self.ldap_server):
-                    self.assertEqual(dict(ok=False), auth.login(self.database))
+        with patch("bottle.request", return_value=self.invalid_creds_json):
+            with patch("ldap.initialize", return_value=self.ldap_server):
+                self.assertEqual(dict(ok=False), auth.login(self.database))
 
     def test_failed_login(self):
         """Test failed login."""
         self.ldap_server.search_s.return_value = []
-        with patch("logging.warning", Mock()):
-            with patch("bottle.request", return_value=self.lookup_json):
-                with patch("ldap.initialize", return_value=self.ldap_server):
-                    self.assertEqual(dict(ok=False), auth.login(self.database))
+        with patch("bottle.request", return_value=self.lookup_json):
+            with patch("ldap.initialize", return_value=self.ldap_server):
+                self.assertEqual(dict(ok=False), auth.login(self.database))
 
 
 class LogoutTests(unittest.TestCase):

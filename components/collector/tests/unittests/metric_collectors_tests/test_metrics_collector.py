@@ -39,10 +39,10 @@ class CollectorTest(unittest.TestCase):
         self.datamodel_response.json.return_value = dict(
             sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_response = Mock()
-        logging.getLogger().disabled = True
+        logging.disable()
 
     def tearDown(self):
-        logging.getLogger().disabled = False
+        logging.disable(logging.NOTSET)
 
     def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""

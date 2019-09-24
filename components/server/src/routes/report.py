@@ -35,9 +35,8 @@ def get_data(database: Database, report_uuid: str, subject_uuid: str = None, met
     """Return applicable report, subject, metric, source, and their uuids and names."""
     data = namedtuple(
         "data",
-        "datamodel, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
+        "datamodel, report, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
-    data.report_uuid = report_uuid
     data.report = latest_report(database, report_uuid)
     data.report_name = data.report.get("title") or ""
     data.source_uuid = source_uuid

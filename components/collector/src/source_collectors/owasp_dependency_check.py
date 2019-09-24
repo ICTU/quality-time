@@ -1,6 +1,7 @@
 """OWASP Dependency Check metric collector."""
 
 import hashlib
+from abc import ABC
 from typing import List, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
@@ -12,7 +13,7 @@ from utilities.functions import days_ago, parse_source_response_xml_with_namespa
 from .source_collector import SourceCollector
 
 
-class OWASPDependencyCheckBase(SourceCollector):
+class OWASPDependencyCheckBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for OWASP Dependency Check collectors."""
 
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"

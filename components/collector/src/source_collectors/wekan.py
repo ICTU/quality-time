@@ -1,5 +1,6 @@
 """Wekan metric collector."""
 
+from abc import ABC
 from datetime import datetime
 from typing import cast, List
 
@@ -12,7 +13,7 @@ from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
-class WekanBase(SourceCollector):
+class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Wekan collectors."""
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:

@@ -1,6 +1,6 @@
 """Quality-time specific types."""
 
-from typing import Any, Dict, List, NewType, Optional, Sequence, Union
+from typing import Any, Dict, List, NewType, Optional, Union
 
 
 Entity = Dict[str, Union[int, str]]  # pylint: disable=invalid-name
@@ -11,7 +11,4 @@ Jobs = List[Job]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
 Response = Dict[str, Any]
 URL = NewType("URL", str)
-Subject = Dict[str, Union[str, Sequence[URL]]]
-Report = Dict[str, Sequence[Subject]]
 Value = Optional[str]
-Parameter = Union[str, List[str]]

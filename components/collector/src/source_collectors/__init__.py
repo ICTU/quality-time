@@ -12,7 +12,7 @@ from .jenkins import JenkinsFailedJobs, JenkinsJobs
 from .jenkins_test_report import (
     JenkinsTestReportSourceUpToDateness, JenkinsTestReportFailedTests, JenkinsTestReportTests)
 from .jira import JiraIssues, JiraManualTestDuration, JiraReadyUserStoryPoints
-from .junit import JUnitFailedTests, JunitSourceUpToDateness, JUnitTests
+from .junit import JUnitFailedTests, JUnitSourceUpToDateness, JUnitTests
 from .manual_number import ManualNumber
 from .ojaudit import OJAuditViolations
 from .openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness

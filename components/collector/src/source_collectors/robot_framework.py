@@ -1,5 +1,6 @@
 """Robot Framework metric collector."""
 
+from abc import ABC
 from typing import List
 
 from dateutil.parser import parse
@@ -10,7 +11,7 @@ from utilities.functions import days_ago, parse_source_response_xml
 from .source_collector import SourceCollector
 
 
-class RobotFrameworkBaseClass(SourceCollector):
+class RobotFrameworkBaseClass(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Robot Framework collectors."""
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:

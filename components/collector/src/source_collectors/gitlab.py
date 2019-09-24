@@ -1,5 +1,6 @@
 """Gitlab metric source."""
 
+from abc import ABC
 from datetime import datetime, timedelta, timezone
 from typing import cast, List, Optional, Tuple
 from urllib.parse import quote
@@ -11,7 +12,7 @@ from utilities.type import Job, Jobs, Entities, URL, Value
 from .source_collector import SourceCollector
 
 
-class GitlabBase(SourceCollector):
+class GitlabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Baseclass for Gitlab collectors."""
 
     def _gitlab_api_url(self, api: str) -> URL:

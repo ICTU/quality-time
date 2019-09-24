@@ -55,7 +55,7 @@ class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
 
 
 class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
-    """Unit test for the source up-to-dateness metric."""
+    """Unit tests for the source up-to-dateness metric."""
 
     def setUp(self):
         super().setUp()

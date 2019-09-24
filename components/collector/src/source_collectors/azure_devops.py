@@ -1,5 +1,6 @@
 """Azure Devops Server metric collector."""
 
+from abc import ABC
 from typing import List
 
 import requests
@@ -8,7 +9,7 @@ from utilities.type import Entities, URL, Value
 from .source_collector import SourceCollector
 
 
-class AzureDevopsBase(SourceCollector):
+class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Azure DevOps collectors."""
 
     MAX_IDS_PER_WORKITEMS_API_CALL = 200  # See

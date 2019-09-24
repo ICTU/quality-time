@@ -23,7 +23,7 @@ def initialize_reports_overview(database: Database) -> None:
 
 def import_report(database: Database, filename: pathlib.Path) -> None:
     """Read the report and store it in the database."""
-    with open(filename) as json_report:
+    with open(str(filename)) as json_report:
         imported_report = json.load(json_report)
     stored_report = latest_report(database, imported_report["report_uuid"])
     if stored_report:

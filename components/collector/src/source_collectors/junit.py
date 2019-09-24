@@ -13,7 +13,6 @@ from .source_collector import SourceCollector
 class JUnitTests(SourceCollector):
     """Collector for JUnit tests."""
 
-    junit_test_report_counts = dict(errored="errors", failed="failures", passed="tests", skipped="skipped")
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
@@ -66,7 +65,7 @@ class JUnitFailedTests(JUnitTests):
         return entities
 
 
-class JunitSourceUpToDateness(SourceCollector):
+class JUnitSourceUpToDateness(SourceCollector):
     """Collector to collect the Junit report age."""
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:

@@ -6,7 +6,7 @@ from pymongo.database import Database
 from database import measurements, reports
 
 
-def get_changelog(database: Database, nr_changes: str, **uuids):
+def get_changelog(database: Database, nr_changes: str, **uuids: str):
     """Return the recent most nr_changes changes from the changelog."""
     limit = int(nr_changes)
     changes = [dict(delta=change["delta"], timestamp=change["start"])

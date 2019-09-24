@@ -1,5 +1,6 @@
 """Jira metric collector."""
 
+from abc import ABC
 from typing import cast, List
 from urllib.parse import quote
 
@@ -9,7 +10,7 @@ from utilities.type import Entities, URL, Value
 from .source_collector import SourceCollector
 
 
-class JiraBase(SourceCollector):
+class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Jira collectors."""
 
     def _api_url(self) -> URL:
