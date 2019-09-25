@@ -2,6 +2,7 @@
 
 import logging
 import traceback
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
@@ -12,7 +13,7 @@ from utilities.functions import stable_traceback
 from utilities.type import ErrorMessage, Response, Entities, URL, Value
 
 
-class SourceCollector:
+class SourceCollector(ABC):
     """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
     measurement data for one specific metric from one specific source."""
 
@@ -114,11 +115,12 @@ class SourceCollector:
                 error = stable_traceback(traceback.format_exc())
         return value, total, entities[:self.MAX_ENTITIES], error
 
+    @abstractmethod
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
         # pylint: disable=no-self-use
-        """Parse the responses to get the measurement for the metric. This method can be overridden by collectors
+        """Parse the responses to get the measurement for the metric. This method must be overridden by collectors
         to parse the retrieved sources data."""
-        return str(responses[0].text)
+        return None  # pragma: nocover
 
     def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
         # pylint: disable=no-self-use,unused-argument
@@ -142,7 +144,7 @@ class SourceCollector:
         return self.__has_invalid_credentials
 
 
-class LocalSourceCollector(SourceCollector):
+class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 

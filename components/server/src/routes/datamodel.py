@@ -1,4 +1,4 @@
-"""Datamodel routes."""
+"""Data model routes."""
 
 import bottle
 from pymongo.database import Database

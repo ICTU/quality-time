@@ -1,0 +1,8 @@
+enable_cors_generic_route  # unused function (src/routes/cors.py:8)
+api  # unused variable (src/routes/plugins/authentication_plugin.py:13)
+_.name  # unused attribute (src/routes/plugins/authentication_plugin.py:16)
+apply  # unused function (src/routes/plugins/authentication_plugin.py:18)
+api  # unused variable (src/routes/plugins/injection_plugin.py:10)
+_.name  # unused attribute (src/routes/plugins/injection_plugin.py:15)
+setup  # unused function (src/routes/plugins/injection_plugin.py:17)
+apply  # unused function (src/routes/plugins/injection_plugin.py:25)

@@ -4,16 +4,11 @@
 class LDAPObject:  # pylint: disable=too-few-public-methods
     """Class helper that unpacks a python-ldap search result."""
 
-    def __init__(self, t) -> None:
-        # pylint: disable=invalid-name
-        self.dn, attrs = t
-        for key, value in attrs.items():
-            setattr(self, key, [i.decode('utf-8') for i in value] if len(value) > 1 else value[0].decode('utf-8'))
+    def __init__(self, entry) -> None:
+        for key, values in entry.items():
+            string_values = [value.decode('utf-8') for value in values]
+            setattr(self, key, string_values if len(string_values) > 1 else string_values[0])
 
-
-class LDAPUserObject(LDAPObject):  # pylint: disable=too-few-public-methods
-    """Class helper that represents a LDAP user object."""
-    # pylint: disable=invalid-name
-    dn: str = ""
-    cn: str = ""
-    uid: str = ""
+    def __getattr__(self, key: str) -> str:
+        # Return a default value for non-existing keys
+        return ""  # pragma: nocover

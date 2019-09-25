@@ -1,5 +1,6 @@
 """Trello metric collector."""
 
+from abc import ABC
 from datetime import datetime
 from typing import cast, List
 
@@ -11,7 +12,7 @@ from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
-class TrelloBase(SourceCollector):
+class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Trello collectors."""
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:

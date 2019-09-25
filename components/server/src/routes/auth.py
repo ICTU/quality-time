@@ -13,7 +13,7 @@ from pymongo.database import Database
 
 from database import sessions
 from utilities.functions import uuid
-from utilities.ldap import LDAPUserObject
+from utilities.ldap import LDAPObject
 
 
 def generate_session() -> Tuple[str, datetime]:
@@ -50,7 +50,7 @@ def login(database: Database) -> Dict[str, bool]:
             ldap_root_dn, ldap.SCOPE_SUBTREE, f"(|(uid={username})(cn={username}))", ['dn', 'uid', 'cn'])
         if result:
             logging.info("LDAP search result: %s", result)
-            username = LDAPUserObject(result[0]).cn
+            username = LDAPObject(result[0][1]).cn
         else:
             raise ldap.INVALID_CREDENTIALS
         ldap_server.simple_bind_s(f"cn={username},{ldap_root_dn}", credentials.get("password"))
