@@ -127,7 +127,8 @@ class SonarQubeMetricsBaseClass(SourceCollector):
         return str(self.__get_metrics(responses)[self.metricKeys.split(",")[0]])
 
     def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
-        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[1]])
+        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[1]]) \
+            if "," in self.metricKeys else super()._parse_source_responses_total(responses)
 
     @staticmethod
     def __get_metrics(responses: List[requests.Response]) -> Dict[str, int]:

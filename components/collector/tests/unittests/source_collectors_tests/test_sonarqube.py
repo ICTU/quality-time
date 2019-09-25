@@ -106,3 +106,36 @@ class SonarQubeTest(SourceCollectorTestCase):
             ],
             response)
         self.assert_value("2", response)
+
+    def test_loc(self):
+        """Test that the number of lines of code is returned."""
+        json = dict(component=dict(measures=[dict(metric="lines", value="1234")]))
+        metric = dict(type="loc", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("1234", response)
+        self.assert_total("100", response)
+
+    def test_ncloc(self):
+        """Test that the number of non-commented lines of code is returned."""
+        json = dict(component=dict(measures=[dict(metric="ncloc", value="999")]))
+        metric = dict(type="ncloc", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("999", response)
+        self.assert_total("100", response)
+
+    def test_nr_of_tests(self):
+        """Test that the number of tests is returned."""
+        json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
+        metric = dict(type="tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("123", response)
+        self.assert_total("100", response)
+
+    def test_failed_tests(self):
+        """Test that the number of failed tests is returned."""
+        json = dict(component=dict(measures=[dict(metric="test_failures", value="13")]))
+        metric = dict(type="failed_tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("13", response)
+        self.assert_total("100", response)
+
