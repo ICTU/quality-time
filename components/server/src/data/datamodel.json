@@ -660,7 +660,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to Axe report in CSV format",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
