@@ -8,8 +8,8 @@ from typing import Dict, Tuple
 import urllib.parse
 
 from pymongo.database import Database
-import bottle
 import ldap
+import bottle
 
 from database import sessions
 from utilities.functions import uuid
