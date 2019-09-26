@@ -13,7 +13,7 @@ function StringInputWithSuggestions(props) {
       <Form.Dropdown
         {...otherProps}
         allowAdditions
-        error={required && search_query === ""}
+        error={(required && search_query === "") || props.warning}
         fluid
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])} }
         onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}

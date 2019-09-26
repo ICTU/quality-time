@@ -58,22 +58,23 @@ class App extends Component {
   }
 
   reload(json) {
-    console.log("----json--->json>>", json)
-    if (json && json.availability && json.availability.status_code != 200) {
-      toast({
-        title: 'URL connection error!',
-        type: 'warning',
-        //icon: 'user x',
-        time: 30000,
-        description: <p>{ 'HTTP code '+ json.availability.status_code + ': ' + json.availability.reason}</p>
-      });
-    } else if (json && json.ok) {
-      toast({
-          title: 'URL connection OK!',
-          type: 'success',
-          //icon: 'user x',
-          time: 30000
-      });
+    this.changed_filed = null
+    if ( json && json.availability) {
+      if (json.availability.status_code !== 200) {
+        this.changed_filed = json.availability
+        toast({
+          title: 'URL connection error!',
+          type: 'warning',
+          time: 30000,
+          description: <p>{ 'HTTP code '+ json.availability.status_code + ': ' + json.availability.reason}</p>
+        });
+      } else if (json.availability.status_code === 200) {
+        toast({
+            title: 'URL connection OK!',
+            type: 'success',
+            time: 30000
+        });
+      }
     }
 
     if (json && json.ok === false && json.reason === "invalid_session") {
@@ -250,6 +251,7 @@ class App extends Component {
                 report={current_report}
                 report_date={report_date}
                 search_string={this.state.search_string}
+                changed_filed={this.changed_filed}
               />
           }
         </Container>

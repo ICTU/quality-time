@@ -44,6 +44,7 @@ export function Subject(props) {
         set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}
         stop_sort={() => setSortColumn(null)}
         subject_uuid={props.subject_uuid}
+        changed_filed={props.changed_filed}
       />)
   });
   if (sortColumn !== null) {

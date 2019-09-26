@@ -2608,7 +2608,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [

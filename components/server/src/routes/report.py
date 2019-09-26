@@ -277,6 +277,7 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
 
     if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "url":
         ret_val['availability'] = _check_url_availability(parameter_value, data.source["parameters"])
+        ret_val['availability']['parameter_key'] = parameter_key
 
     return ret_val
 

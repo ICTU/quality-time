@@ -47,6 +47,7 @@ export function Source(props) {
                         report={props.report}
                         source={props.source}
                         source_uuid={props.source_uuid}
+                        changed_filed={props.changed_filed}
                     />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>
