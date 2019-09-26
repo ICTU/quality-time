@@ -133,7 +133,7 @@ class SonarQubeMetricsBaseClass(SourceCollector):
     @staticmethod
     def __get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
-        measures = [measure for measure in responses[0].json()["component"]["measures"]]
+        measures = responses[0].json()["component"]["measures"]
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
 
 
