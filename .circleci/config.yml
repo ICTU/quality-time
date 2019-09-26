@@ -20,7 +20,7 @@ jobs:
       - checkout
       - run:
           command: |
-            sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+            sudo apt-get install libsasl2-dev libldap2-dev libssl-dev
             cd components/server
             sudo pip install -r requirements.txt -r requirements-dev.txt
             ci/unittest.sh

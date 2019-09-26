@@ -3,8 +3,8 @@
 import time
 from typing import Dict, Iterator
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 from database.measurements import count_measurements, latest_measurement, recent_measurements, insert_new_measurement, \
     update_measurement_end

@@ -1,7 +1,7 @@
 """Changelog routes."""
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 from database import measurements, reports
 

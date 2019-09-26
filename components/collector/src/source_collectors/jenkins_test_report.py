@@ -43,7 +43,7 @@ class JenkinsTestReportTests(SourceCollector):
             test_case_status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
             return dict(regression="failed", fixed="passed").get(test_case_status, test_case_status)
 
-        suites = [suite for suite in responses[0].json().get("suites", [])]
+        suites = responses[0].json().get("suites", [])
         statuses = self._test_statuses_to_count()
         return [entity(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 
@@ -70,7 +70,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
             test_case_status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
             return dict(regression="failed", fixed="passed").get(test_case_status, test_case_status)
 
-        suites = [suite for suite in responses[0].json().get("suites", [])]
+        suites = responses[0].json().get("suites", [])
         statuses = self._test_statuses_to_count()
         return [entity(case) for suite in suites for case in suite.get("cases", []) if status(case) in statuses]
 

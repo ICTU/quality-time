@@ -2,8 +2,8 @@
 
 from datetime import datetime
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 
 def upsert(database: Database, username: str, session_id: str, session_expiration_datetime: datetime) -> None:

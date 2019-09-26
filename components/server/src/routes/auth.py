@@ -7,9 +7,9 @@ import re
 from typing import Dict, Tuple
 import urllib.parse
 
-import bottle
-import ldap  # pylint: disable=import-error,wrong-import-order
 from pymongo.database import Database
+import ldap
+import bottle
 
 from database import sessions
 from utilities.functions import uuid
