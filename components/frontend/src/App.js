@@ -58,6 +58,24 @@ class App extends Component {
   }
 
   reload(json) {
+    console.log("----json--->json>>", json)
+    if (json && json.availability && json.availability.status_code != 200) {
+      toast({
+        title: 'URL connection error!',
+        type: 'warning',
+        //icon: 'user x',
+        time: 30000,
+        description: <p>{ 'HTTP code '+ json.availability.status_code + ': ' + json.availability.reason}</p>
+      });
+    } else if (json && json.ok) {
+      toast({
+          title: 'URL connection OK!',
+          type: 'success',
+          //icon: 'user x',
+          time: 30000
+      });
+    }
+
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
       show_message("Your session expired", "Please log in to renew your session", "warning", "user x");

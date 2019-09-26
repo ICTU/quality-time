@@ -15,7 +15,6 @@ export function SourceParameter(props) {
     Object.values(props.report.subjects).forEach((subject) => {
       Object.values(subject.metrics).forEach((metric) => {
         Object.values(metric.sources).forEach((source) => {
-          console.log("1>source.parameters>>", source.parameters)
           if (source.type === props.source.type && source.parameters) {
             const value = source.parameters[props.parameter_key];
             if (value) {
