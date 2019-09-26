@@ -512,7 +512,7 @@ class ReportTest(unittest.TestCase):
     @patch("bottle.request")
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
-        date_time = iso_timestamp()
+        date_time = request.report_date = iso_timestamp()
         self.database.reports.find_one.return_value = None
         self.database.measurements.find.return_value = []
         self.database.reports.distinct.return_value = ["report_uuid"]
