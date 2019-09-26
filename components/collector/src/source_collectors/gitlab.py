@@ -66,26 +66,54 @@ class GitlabSourceUpToDateness(GitlabBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def _api_url(self) -> URL:
-        file_path = quote(cast(str, self._parameter("file_path")), safe="")
-        branch = quote(cast(str, self._parameter("branch")), safe="")
-        return self._gitlab_api_url(f"repository/files/{file_path}?ref={branch}")
+        return self._gitlab_api_url("")
 
     def _landing_url(self, responses: List[requests.Response]) -> URL:
-        landing_url = super()._landing_url(responses)
-        project = cast(str, self._parameter("project")).strip("/")
-        file_path = cast(str, self._parameter("file_path")).strip("/")
-        branch = cast(str, self._parameter("branch")).strip("/")
-        return URL(f"{landing_url}/{project}/blob/{branch}/{file_path}")
+        return URL(
+            f"{responses[0].json()['web_url']}/blob/{self.__quoted_parameter('branch')}/"
+            f"{self.__quoted_parameter('file_path')}") if responses else super()._landing_url(responses)
 
     def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
-        """Override because we want to do a head request and get the last commit metadata."""
-        response = requests.head(api_url, timeout=self.TIMEOUT)
+        """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
+        recursively."""
+
+        def get_commits_recursively(file_path: str, first_call: bool = True) -> List[requests.Response]:
+            """Get the commits of files recursively."""
+            tree_api = self._gitlab_api_url(f"repository/tree?path={file_path}&ref={self.__quoted_parameter('branch')}")
+            tree_response = super(GitlabSourceUpToDateness, self)._get_source_responses(tree_api)[0]
+            tree_response.raise_for_status()
+            tree = tree_response.json()
+            file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
+            folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
+            if not tree and first_call:
+                file_paths = [file_path]
+            commit_responses = [self.__last_commit(file_path) for file_path in file_paths]
+            for folder_path in folder_paths:
+                commit_responses.extend(get_commits_recursively(folder_path, first_call=False))
+            return commit_responses
+
+        # First, get the project info so we can use the web url as landing url
+        responses = super()._get_source_responses(api_url)
+        responses[0].raise_for_status()
+        # Then, collect the commits
+        responses.extend(get_commits_recursively(str(self.__quoted_parameter("file_path"))))
+        return responses
+
+    def __last_commit(self, file_path: str) -> requests.Response:
+        files_api_url = self._gitlab_api_url(f"repository/files/{file_path}?ref={self.__quoted_parameter('branch')}")
+        response = requests.head(files_api_url)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = self._gitlab_api_url(f"repository/commits/{last_commit_id}")
-        return [requests.get(commit_api_url, timeout=self.TIMEOUT)]
+        return requests.get(commit_api_url, timeout=self.TIMEOUT)
 
     def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
-        return str((datetime.now(timezone.utc) - parse(responses[0].json()["committed_date"])).days)
+        commit_responses = responses[1:]
+        return str(min((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days
+                       for response in commit_responses))
+
+    def __quoted_parameter(self, parameter_key: str) -> str:
+        """Return a quoted version of the parameter value that is safe to use in URLs."""
+        return quote(cast(str, self._parameter(parameter_key)), safe="")
 
 
 class GitlabUnmergedBranches(GitlabBase):

@@ -53,17 +53,34 @@ class GitLabFailedJobsTest(GitLabTestCase):
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
-    def test_source_up_to_dateness(self):
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
+        self.commit_json = dict(committed_date="2019-01-01T09:06:12+00:00")
+        self.expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
+        self.head_response = Mock()
+        self.head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
+
+    def test_source_up_to_dateness_file(self):
         """Test that the age of a file in a repo can be measured."""
-        metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
-        gitlab_json = dict(committed_date="2019-01-01T09:06:12+00:00")
-        head_response = Mock()
-        head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
-        with patch("requests.head", return_value=head_response):
-            response = self.collect(metric, get_request_json_return_value=gitlab_json)
-        expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
-        self.assert_value(str(expected_age), response)
-        self.assert_landing_url("https://gitlab/project/blob/branch/file", response)
+        with patch("requests.head", return_value=self.head_response):
+            response = self.collect(
+                self.metric,
+                get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")])
+        self.assert_value(str(self.expected_age), response)
+        self.assert_landing_url("https://gitlab.com/project/blob/branch/file", response)
+
+    def test_source_up_to_dateness_folder(self):
+        """Test that the age of a folder in a repo can be measured."""
+        with patch("requests.head", side_effect=[self.head_response, self.head_response]):
+            response = self.collect(
+                self.metric,
+                get_request_json_side_effect=[
+                    [dict(type="blob", path="file.txt"), dict(type="tree", path="folder")],
+                    [dict(type="blob", path="file.txt")], self.commit_json, self.commit_json,
+                    dict(web_url="https://gitlab.com/project")])
+        self.assert_value(str(self.expected_age), response)
+        self.assert_landing_url("https://gitlab.com/project/blob/branch/file", response)
 
 
 class GitlabUnmergedBranchesTest(GitLabTestCase):
