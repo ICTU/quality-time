@@ -1,7 +1,7 @@
 """Data model routes."""
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 from database.datamodels import latest_datamodel
 from utilities.functions import report_date_time

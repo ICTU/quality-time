@@ -3,8 +3,8 @@
 from collections import namedtuple
 from typing import Any, Dict, Tuple
 
-import bottle
 from pymongo.database import Database
+import bottle
 
 from database.datamodels import (
     latest_datamodel, default_subject_attributes, default_metric_attributes, default_source_parameters

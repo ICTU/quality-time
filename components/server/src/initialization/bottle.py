@@ -1,8 +1,7 @@
 """Initialize bottle."""
 
-import bottle
-
 from pymongo.database import Database
+import bottle
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
 from routes import cors, changelog, report, measurement, datamodel, auth  # pylint: disable=unused-import
 
