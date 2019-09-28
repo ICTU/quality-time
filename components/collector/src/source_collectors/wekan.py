@@ -8,7 +8,7 @@ import cachetools.func
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Entity, Entities, URL, Value
+from utilities.type import Entity, Entities, Responses, URL, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -16,11 +16,11 @@ from .source_collector import SourceCollector
 class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Wekan collectors."""
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
         return URL(f"{api_url}/b/{self._board_id(responses[0].json()['token'])}") if responses else api_url
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
         return [requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)]
@@ -62,10 +62,10 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses_entities(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         token = responses[0].json()['token']
         api_url = self._api_url()
         board_url = f"{api_url}/api/boards/{self._board_id(token)}"
@@ -108,7 +108,7 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         token = responses[0].json()['token']
         board_url = f"{self._api_url()}/api/boards/{self._board_id(token)}"
         board = self._get_json(URL(board_url), token)

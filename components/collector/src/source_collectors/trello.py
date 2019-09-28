@@ -2,12 +2,12 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import cast
 
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Entity, Entities, URL, Value
+from utilities.type import Entity, Entities, Responses, URL, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -15,10 +15,10 @@ from .source_collector import SourceCollector
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Trello collectors."""
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         return URL(responses[0].json()["url"] if responses else "https://trello.com")
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
@@ -41,10 +41,10 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses_entities(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         json = responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
@@ -84,7 +84,7 @@ class TrelloIssues(TrelloBase):
 class TrelloSourceUpToDateness(TrelloBase):
     """Collector to measure how up-to-date a Trello board is."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         json = responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}

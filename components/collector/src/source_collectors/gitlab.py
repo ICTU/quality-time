@@ -8,7 +8,7 @@ from urllib.parse import quote
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Job, Jobs, Entities, URL, Value
+from utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -37,10 +37,10 @@ class GitlabFailedJobs(GitlabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("jobs")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self.__failed_jobs(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],
@@ -57,7 +57,7 @@ class GitlabFailedJobs(GitlabBase):
         return parse(job["created_at"])
 
     @staticmethod
-    def __failed_jobs(responses: List[requests.Response]) -> Jobs:
+    def __failed_jobs(responses: Responses) -> Jobs:
         """Return the failed jobs."""
         return [job for response in responses for job in response.json() if job["status"] == "failed"]
 
@@ -68,16 +68,16 @@ class GitlabSourceUpToDateness(GitlabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("")
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         return URL(
             f"{responses[0].json()['web_url']}/blob/{self.__quoted_parameter('branch')}/"
             f"{self.__quoted_parameter('file_path')}") if responses else super()._landing_url(responses)
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
         recursively."""
 
-        def get_commits_recursively(file_path: str, first_call: bool = True) -> List[requests.Response]:
+        def get_commits_recursively(file_path: str, first_call: bool = True) -> Responses:
             """Get the commits of files recursively."""
             tree_api = self._gitlab_api_url(f"repository/tree?path={file_path}&ref={self.__quoted_parameter('branch')}")
             tree_response = super(GitlabSourceUpToDateness, self)._get_source_responses(tree_api)[0]
@@ -106,7 +106,7 @@ class GitlabSourceUpToDateness(GitlabBase):
         commit_api_url = self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return requests.get(commit_api_url, timeout=self.TIMEOUT)
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         commit_responses = responses[1:]
         return str(min((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days
                        for response in commit_responses))
@@ -122,16 +122,16 @@ class GitlabUnmergedBranches(GitlabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("repository/branches")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self.__unmerged_branches(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [
             dict(key=branch["name"], name=branch["name"], commit_age=str(self.__commit_age(branch).days),
                  commit_date=str(self.__commit_datetime(branch).date()))
             for branch in self.__unmerged_branches(responses)]
 
-    def __unmerged_branches(self, responses: List[requests.Response]) -> List:
+    def __unmerged_branches(self, responses: Responses) -> List:
         """Return the unmerged branches."""
         return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
                 self.__commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]

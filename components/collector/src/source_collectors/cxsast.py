@@ -2,14 +2,14 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import cast
 
 from dateutil.parser import parse
 from defusedxml import ElementTree
 import cachetools
 import requests
 
-from utilities.type import Entities, URL, Value
+from utilities.type import Entities, Responses, URL, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -19,14 +19,14 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     TOKEN_RESPONSE, PROJECT_RESPONSE, SCAN_RESPONSE = range(3)
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
         if len(responses) > self.PROJECT_RESPONSE:
             project_id = self.__project_id(responses[self.PROJECT_RESPONSE])
             return URL(f"{api_url}/CxWebClient/projectscans.aspx?id={project_id}")
         return api_url
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
@@ -65,7 +65,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         scan = responses[self.SCAN_RESPONSE].json()[0]
         return str(days_ago(parse(scan["dateAndTime"]["finishedOn"])))
 
@@ -80,7 +80,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         super().__init__(*args, **kwargs)
         self.__report_status = "InProcess"
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         responses = super()._get_source_responses(api_url)
         token = responses[self.TOKEN_RESPONSE].json()["access_token"]
         scan_id = responses[self.SCAN_RESPONSE].json()[0]["id"]
@@ -105,12 +105,12 @@ class CxSASTSecurityWarnings(CxSASTBase):
                 del self.CXSAST_SCAN_REPORTS[scan_id]
         return responses
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         stats = responses[self.STATS_RESPONSE].json()
         severities = self._parameter("severities")
         return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return self.__parse_xml_report(responses[self.XML_REPORT_RESPONSE].text) \
             if len(responses) > self.XML_REPORT_RESPONSE else []
 

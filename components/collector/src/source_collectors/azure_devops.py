@@ -1,11 +1,10 @@
 """Azure Devops Server metric collector."""
 
 from abc import ABC
-from typing import List
 
 import requests
 
-from utilities.type import Entities, URL, Value
+from utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -19,7 +18,7 @@ class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         url = super()._api_url()
         return URL(f"{url}/_apis/wit/wiql?api-version=4.1")
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
         auth = self._basic_auth_credentials()
         response = requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self._parameter("wiql")))
@@ -30,7 +29,7 @@ class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         if len(responses) < 2:
             return []  # We didn't get a response with work items, so assume there are none
         return [
@@ -44,19 +43,19 @@ class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class AzureDevopsIssues(AzureDevopsBase):
     """Collector to get issues from Azure Devops Server."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(responses[0].json()["workItems"]))
 
 
 class AzureDevopsReadyUserStoryPoints(AzureDevopsBase):
     """Collector to get ready user story points from Azure Devops Server."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(round(sum(
             [work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints", 0)
              for work_item in responses[1].json()["value"]]))) if len(responses) > 1 else "0"
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         entities = super()._parse_source_responses_entities(responses)
         # Add story points to the entities:
         if len(responses) > 1:

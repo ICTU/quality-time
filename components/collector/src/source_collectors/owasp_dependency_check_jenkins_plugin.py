@@ -1,12 +1,10 @@
 """OWASP Dependency Check Jenkins plugin metric collector."""
 
 from datetime import datetime
-from typing import Dict, List
-
-import requests
+from typing import Dict
 
 from utilities.functions import days_ago
-from utilities.type import Entities, Entity, Value, URL
+from utilities.type import Entities, Entity, Responses, Value, URL
 from .source_collector import SourceCollector
 
 
@@ -16,13 +14,13 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses_entities(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         json = responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]
@@ -51,6 +49,6 @@ class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/api/json")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         job_datetime = datetime.fromtimestamp(float(responses[0].json()["timestamp"]) / 1000.)
         return str(days_ago(job_datetime))
