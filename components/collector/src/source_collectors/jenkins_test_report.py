@@ -6,7 +6,7 @@ from typing import cast, List
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Entity, Entities, URL, Value
+from utilities.type import Entity, Entities, Responses, URL, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -19,7 +19,7 @@ class JenkinsTestReportTests(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         statuses = [self.jenkins_test_report_counts[status] for status in self._test_statuses_to_count()]
         return str(sum(int(responses[0].json().get(status, 0)) for status in statuses))
 
@@ -27,7 +27,7 @@ class JenkinsTestReportTests(SourceCollector):
         """Return the test statuses to count."""
         return cast(List[str], self._parameter("test_result"))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Return a list of tests."""
 
         def entity(case) -> Entity:
@@ -54,7 +54,7 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
     def _test_statuses_to_count(self) -> List[str]:
         return cast(List[str], self._parameter("failure_type"))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Return a list of failed tests."""
 
         def entity(case) -> Entity:
@@ -78,14 +78,14 @@ class JenkinsTestReportFailedTests(JenkinsTestReportTests):
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         api_url = self._api_url()
         test_report_url = URL(f"{api_url}/lastSuccessfulBuild/testReport/api/json")
         job_url = URL(f"{api_url}/lastSuccessfulBuild/api/json")
         return [requests.get(url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
                 for url in (test_report_url, job_url)]
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
                       if suite.get("timestamp")]
         report_datetime = parse(max(timestamps)) if timestamps else \

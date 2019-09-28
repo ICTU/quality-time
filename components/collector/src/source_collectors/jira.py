@@ -1,12 +1,10 @@
 """Jira metric collector."""
 
 from abc import ABC
-from typing import cast, List
+from typing import cast
 from urllib.parse import quote
 
-import requests
-
-from utilities.type import Entities, URL, Value
+from utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -19,12 +17,12 @@ class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         fields = self._fields()
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         jql = quote(str(self._parameter("jql")))
         return URL(f"{url}/issues?jql={jql}")
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         url = self._parameter("url")
         return [dict(key=issue["id"], summary=issue["fields"]["summary"], url=f"{url}/browse/{issue['key']}")
                 for issue in responses[0].json().get("issues", [])]
@@ -37,7 +35,7 @@ class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class JiraIssues(JiraBase):
     """Collector to get issues from Jira."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(responses[0].json()["total"])
 
 
@@ -47,12 +45,12 @@ class JiraFieldSumBase(JiraBase):
     field_parameter = "subclass responsibility"
     entity_key = "subclass responsibility"
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         field = self._parameter(self.field_parameter)
         return str(round(sum(issue["fields"][field] for issue in responses[0].json()["issues"]
                              if issue["fields"][field] is not None)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         entities = super()._parse_source_responses_entities(responses)
         field = self._parameter(self.field_parameter)
         for index, issue in enumerate(responses[0].json().get("issues", [])):

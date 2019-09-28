@@ -1,12 +1,10 @@
 """Jacoco coverage report collector."""
 
 from datetime import datetime
-from typing import List
 
 from defusedxml import ElementTree
-import requests
 
-from utilities.type import Value
+from utilities.type import Responses, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -16,13 +14,13 @@ class JacocoCoverageBaseClass(SourceCollector):
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(self.__parse_source_responses(responses, "missed"))
 
-    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
         return str(sum(self.__parse_source_responses(responses, status) for status in ("missed", "covered")))
 
-    def __parse_source_responses(self, responses: List[requests.Response], coverage_status: str) -> int:
+    def __parse_source_responses(self, responses: Responses, coverage_status: str) -> int:
         tree = ElementTree.fromstring(responses[0].text)
         counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
         return int(counter.get(coverage_status))
@@ -43,7 +41,7 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
 class JacocoSourceUpToDateness(SourceCollector):
     """Collector to collect the Jacoco report age."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         tree = ElementTree.fromstring(responses[0].text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"

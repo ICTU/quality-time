@@ -4,22 +4,21 @@ import csv
 import hashlib
 from io import StringIO
 import re
-from typing import List
 
 import requests
 
-from utilities.type import Value, Entities
+from utilities.type import Responses, Value, Entities
 from .source_collector import SourceCollector
 
 
 class AxeCSVAccessibility(SourceCollector):
     """Collector class to get accessibility violations."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         """Simply count the rows in the csv file."""
         return str(len(list(self.__parse_csv(responses[0]))))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Convert csv rows of the Axe report into entities, in this case accessibility violations."""
         return [
             dict(

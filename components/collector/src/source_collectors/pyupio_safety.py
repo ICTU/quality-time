@@ -1,10 +1,6 @@
 """Pyup.io Safety metrics collector."""
 
-from typing import List
-
-import requests
-
-from utilities.type import Entities, Value
+from utilities.type import Entities, Responses, Value
 from .source_collector import SourceCollector
 
 
@@ -12,10 +8,10 @@ class PyupioSafetySecurityWarnings(SourceCollector):
     """Pyup.io Safety collector for security warnings."""
     PACKAGE, AFFECTED, INSTALLED, VULNERABILITY, KEY = range(5)
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(responses[0].json()))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Return a list of warnings."""
         return [
             dict(key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],

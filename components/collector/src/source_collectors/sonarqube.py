@@ -1,11 +1,11 @@
 """Collectors for SonarQube."""
 
-from typing import Dict, List
+from typing import Dict
 
 from dateutil.parser import isoparse
 import requests
 
-from utilities.type import URL, Entities, Entity, Value
+from utilities.type import URL, Entities, Entity, Responses, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -15,7 +15,7 @@ class SonarQubeViolations(SourceCollector):
 
     rules_parameter = "Subclass responsibility"
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
         landing_url = f"{url}/project/issues?id={component}&resolved=false"
@@ -37,10 +37,10 @@ class SonarQubeViolations(SourceCollector):
         rules = self._parameter(self.rules_parameter) if self.rules_parameter != "Subclass responsibility" else []
         return f"&rules={','.join(rules)}" if rules else ""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(sum(int(response.json()["total"]) for response in responses))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [self._entity(issue, response) for response in responses for issue in response.json()["issues"]]
 
     def __issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
@@ -89,7 +89,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Next to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube."""
         responses = super()._get_source_responses(api_url)
         url = SourceCollector._api_url(self)  # pylint: disable=protected-access
@@ -113,7 +113,7 @@ class SonarQubeMetricsBaseClass(SourceCollector):
     # the metric value, the second for the total value (used for calculating a percentage).
     metricKeys = "Subclass responsibility"
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
         return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
@@ -123,15 +123,15 @@ class SonarQubeMetricsBaseClass(SourceCollector):
         component = self._parameter("component")
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(self.__get_metrics(responses)[self.metricKeys.split(",")[0]])
 
-    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
         return str(self.__get_metrics(responses)[self.metricKeys.split(",")[1]]) \
             if "," in self.metricKeys else super()._parse_source_responses_total(responses)
 
     @staticmethod
-    def __get_metrics(responses: List[requests.Response]) -> Dict[str, int]:
+    def __get_metrics(responses: Responses) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
         measures = responses[0].json()["component"]["measures"]
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
@@ -186,10 +186,10 @@ class SonarQubeSourceUpToDateness(SourceCollector):
         url = super()._api_url()
         return URL(f"{url}/api/project_analyses/search?project={self._parameter('component')}")
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:
+    def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         return URL(f"{url}/project/activity?id={self._parameter('component')}")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])
         return str(days_ago(analysis_datetime))

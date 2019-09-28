@@ -1,11 +1,9 @@
 """Jenkins metric collector."""
 
 from datetime import datetime, timedelta
-from typing import cast, Iterator, List
+from typing import cast, Iterator
 
-import requests
-
-from utilities.type import Job, Jobs, Entities, URL, Value
+from utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -17,10 +15,10 @@ class JenkinsJobs(SourceCollector):
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(list(self.__jobs(responses[0].json()["jobs"]))))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),

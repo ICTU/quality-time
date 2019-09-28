@@ -10,7 +10,7 @@ from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 import requests
 
 from utilities.functions import stable_traceback
-from utilities.type import ErrorMessage, Response, Entities, URL, Value
+from utilities.type import ErrorMessage, Entities, Measurement, Responses, URL, Value
 
 
 class SourceCollector(ABC):
@@ -42,8 +42,8 @@ class SourceCollector(ABC):
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    def get(self) -> Response:
-        """Return the measurement response for one source."""
+    def get(self) -> Measurement:
+        """Return the measurement from this source."""
         api_url = self._api_url()
         responses, connection_error = self.__safely_get_source_responses(api_url)
         value, total, entities, parse_error = self.__safely_parse_source_responses(responses)
@@ -51,7 +51,7 @@ class SourceCollector(ABC):
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def _landing_url(self, responses: List[requests.Response]) -> URL:  # pylint: disable=no-self-use,unused-argument
+    def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
         landing_url = cast(str, self.__parameters.get("landing_url", "")).strip("/")
@@ -72,11 +72,11 @@ class SourceCollector(ABC):
         default_value = parameter_info.get("default_value", "")
         return self.__parameters.get(parameter_key, default_value)
 
-    def __safely_get_source_responses(self, api_url: URL) -> Tuple[List[requests.Response], ErrorMessage]:
+    def __safely_get_source_responses(self, api_url: URL) -> Tuple[Responses, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
         logging.info("Retrieving %s", api_url or self.__class__.__name__)
-        responses: List[requests.Response] = []
+        responses: Responses = []
         error = None
         try:
             responses = self._get_source_responses(api_url)
@@ -87,7 +87,7 @@ class SourceCollector(ABC):
             error = stable_traceback(traceback.format_exc())
         return responses, error
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
         return [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
@@ -101,7 +101,7 @@ class SourceCollector(ABC):
         return (username, password) if username and password else None
 
     def __safely_parse_source_responses(
-            self, responses: List[requests.Response]) -> Tuple[Value, Value, Entities, ErrorMessage]:
+            self, responses: Responses) -> Tuple[Value, Value, Entities, ErrorMessage]:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
         entities: Entities = []
@@ -116,20 +116,20 @@ class SourceCollector(ABC):
         return value, total, entities[:self.MAX_ENTITIES], error
 
     @abstractmethod
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         # pylint: disable=no-self-use
         """Parse the responses to get the measurement for the metric. This method must be overridden by collectors
         to parse the retrieved sources data."""
         return None  # pragma: nocover
 
-    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
         # pylint: disable=no-self-use,unused-argument
         """Parse the responses to get the total for the metric. The total is the denominator for percentage
         scale metrics, i.e. measurement = (value / total) * 100%. This method can be overridden by collectors to
         parse the retrieved source data."""
         return "100"  # Return 100 by default so sources that already return a percentage simply work
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         # pylint: disable=no-self-use,unused-argument
         """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
         This method can to be overridden by collectors when a source can provide the measured entities."""
@@ -148,7 +148,7 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         fake_response = requests.Response()  # Return a fake response so that the parse methods will be called
         fake_response.status_code = HTTPStatus.OK
         return [fake_response]

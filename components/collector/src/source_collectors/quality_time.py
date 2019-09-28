@@ -5,7 +5,7 @@ from urllib import parse
 
 import requests
 
-from utilities.type import URL, Value
+from utilities.type import Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -17,7 +17,7 @@ class QualityTimeMetrics(SourceCollector):
         netloc = f"{parts.netloc.split(':')[0]}:5001"
         return URL(parse.urlunsplit((parts.scheme, netloc, "", "", "")))
 
-    def _get_source_responses(self, api_url: URL) -> List[requests.Response]:
+    def _get_source_responses(self, api_url: URL) -> Responses:
         # First, get the report(s):
         responses = super()._get_source_responses(URL(f"{api_url}/reports"))
         # Then, add the measurements for each of the applicable metrics:
@@ -38,7 +38,7 @@ class QualityTimeMetrics(SourceCollector):
                         continue
                     yield metric_uuid
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         measurements_by_metric_uuid = dict()
         for response in responses[1:]:
             measurements = response.json()["measurements"]
@@ -53,7 +53,7 @@ class QualityTimeMetrics(SourceCollector):
                 count += 1
         return str(count)
 
-    def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
         return str(len(list(self.__get_metric_uuids(responses[0]))))
 
     metric_status_map = {

@@ -6,9 +6,8 @@ from typing import List, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse
-import requests
 
-from utilities.type import Namespaces, Entity, Entities, Value
+from utilities.type import Namespaces, Entity, Entities, Responses, Value
 from utilities.functions import days_ago, parse_source_response_xml_with_namespace
 from .source_collector import SourceCollector
 
@@ -23,7 +22,7 @@ class OWASPDependencyCheckBase(SourceCollector, ABC):  # pylint: disable=abstrac
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
     """Collector to get security warnings from OWASP Dependency Check."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         return str(len(self.__vulnerable_dependencies(tree, namespaces)))
 
@@ -32,7 +31,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
         return [(index, dependency) for (index, dependency) in enumerate(tree.findall(".//ns:dependency", namespaces))
                 if self.__vulnerabilities(dependency, namespaces)]
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         landing_url = self._landing_url(responses)
         return [self.__parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
@@ -69,7 +68,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
 class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase):
     """Collector to collect the OWASP Dependency Check report age."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         report_datetime = isoparse(tree.findtext(".//ns:reportDate", default="", namespaces=namespaces))
         return str(days_ago(report_datetime))

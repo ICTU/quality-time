@@ -4,9 +4,7 @@ import hashlib
 from typing import cast, Dict, List, Optional
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-import requests
-
-from utilities.type import Namespaces, Entities, Entity, Value
+from utilities.type import Namespaces, Entities, Entity, Responses, Value
 from utilities.functions import parse_source_response_xml_with_namespace
 from .source_collector import SourceCollector
 
@@ -21,12 +19,12 @@ class OJAuditViolations(SourceCollector):
         super().__init__(*args, **kwargs)
         self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         severities = cast(List[str], self._parameter("severities"))
         return self.__violation_count(tree, namespaces, severities)
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         severities = cast(List[str], self._parameter("severities"))
         return self.__violations(tree, namespaces, severities)

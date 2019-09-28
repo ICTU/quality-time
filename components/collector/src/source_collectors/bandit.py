@@ -1,11 +1,8 @@
 """Bandit metrics collector."""
 
-from typing import List
-
 from dateutil.parser import parse
-import requests
 
-from utilities.type import Entities, Value
+from utilities.type import Entities, Responses, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -13,10 +10,10 @@ from .source_collector import SourceCollector
 class BanditSecurityWarnings(SourceCollector):
     """Bandit collector for security warnings."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses_entities(responses)))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Return a list of warnings."""
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
@@ -35,5 +32,5 @@ class BanditSecurityWarnings(SourceCollector):
 class BanditSourceUpToDateness(SourceCollector):
     """Bandit collector for source up-to-dateness."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(days_ago(parse(responses[0].json()["generated_at"])))

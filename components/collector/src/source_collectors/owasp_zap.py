@@ -5,9 +5,8 @@ from typing import List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import parse
-import requests
 
-from utilities.type import Entities, URL, Value
+from utilities.type import Entities, Responses, URL, Value
 from utilities.functions import days_ago, hashless, parse_source_response_xml
 from .source_collector import SourceCollector
 
@@ -15,13 +14,13 @@ from .source_collector import SourceCollector
 class OWASPZAPSecurityWarnings(SourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         alert_instances = []
         for alert in self.__alerts(responses):
             alert_instances.extend(alert.findall("./instances/instance"))
         return str(len(alert_instances))
 
-    def _parse_source_responses_entities(self, responses: List[requests.Response]) -> Entities:
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
         for alert in self.__alerts(responses):
@@ -38,7 +37,7 @@ class OWASPZAPSecurityWarnings(SourceCollector):
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
         return entities
 
-    def __alerts(self, responses: List[requests.Response]) -> List[Element]:
+    def __alerts(self, responses: Responses) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         tree = parse_source_response_xml(responses[0])
         alerts = []
@@ -51,7 +50,7 @@ class OWASPZAPSecurityWarnings(SourceCollector):
 class OWASPZAPSourceUpToDateness(SourceCollector):
     """Collector to collect the OWASP ZAP report age."""
 
-    def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
         tree = parse_source_response_xml(responses[0])
         report_datetime = parse(tree.get("generated", ""))
         return str(days_ago(report_datetime))

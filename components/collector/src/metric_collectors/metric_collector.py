@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import cast, Dict, Type
 
 from source_collectors.source_collector import SourceCollector
-from utilities.type import Response
+from utilities.type import Measurement
 
 
 class MetricCollector:
@@ -36,6 +36,6 @@ class MetricCollector:
             return datetime.max  # Don't try to collect this metric again, except when its configuration changes
         return min([collector.next_collection() for collector in self.collectors.values()], default=datetime.min)
 
-    def get(self) -> Response:
+    def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
         return dict(sources=[{**self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
