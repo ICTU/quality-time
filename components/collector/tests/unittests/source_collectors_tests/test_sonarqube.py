@@ -129,7 +129,26 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_value("123", response)
-        self.assert_total("100", response)
+        self.assert_total("123", response)
+
+    def test_nr_of_skipped_tests(self):
+        """Test that the number of skipped tests is returned."""
+        json = dict(
+            component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")]))
+        self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
+        metric = dict(type="tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("4", response)
+        self.assert_total("123", response)
+
+    def test_nr_of_tests_without_tests(self):
+        """Test that the collector throws an exception if there are no tests."""
+        json = dict(component=dict(measures=[]))
+        metric = dict(type="tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value(None, response)
+        self.assert_total(None, response)
+        self.assert_parse_error_contains("KeyError", response)
 
     def test_failed_tests(self):
         """Test that the number of failed tests is returned."""

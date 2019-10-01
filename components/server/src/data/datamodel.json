@@ -2656,6 +2656,21 @@
                         "violations"
                     ]
                 },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "errored",
+                        "failed",
+                        "passed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
+                },
                 "commented_out_rules": {
                     "name": "Rules",
                     "type": "multiple_choice_with_addition",

@@ -143,12 +143,6 @@ class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     metricKeys = "duplicated_lines,lines"
 
 
-class SonarQubeTests(SonarQubeMetricsBaseClass):
-    """SonarQube tests collector."""
-
-    metricKeys = "tests"
-
-
 class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
     """SonarQube failed tests collector."""
 
@@ -177,6 +171,41 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
     metricKeys = "uncovered_conditions,conditions_to_cover"
+
+
+class SonarQubeTests(SourceCollector):
+    """SonarQube collector for the tests metric."""
+
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        component = self._parameter("component")
+        metric_keys = "tests,test_errors,test_failures,skipped_tests"
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric_keys}")
+
+    def _landing_url(self, responses: Responses) -> URL:
+        url = super()._landing_url(responses)
+        component = self._parameter("component")
+        return URL(f"{url}/component_measures?id={component}&metric=tests")
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        tests = self.__nr_of_tests(responses)
+        return str(sum(tests[test_result] for test_result in self._parameter("test_result")))
+
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
+        tests = self.__nr_of_tests(responses)
+        test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
+        return str(sum(tests[test_result] for test_result in test_results))
+
+    @staticmethod
+    def __nr_of_tests(responses: Responses) -> Dict[str, int]:
+        """Return the number of tests by test result."""
+        measures = dict(
+            (measure["metric"], int(measure["value"])) for measure in responses[0].json()["component"]["measures"])
+        errored = measures.get("test_errors", 0)
+        failed = measures.get("test_failures", 0)
+        skipped = measures.get("skipped_tests", 0)
+        passed = measures["tests"] - errored - failed - skipped  # Throw an exception (KeyError) if there are no tests
+        return dict(errored=errored, failed=failed, skipped=skipped, passed=passed)
 
 
 class SonarQubeSourceUpToDateness(SourceCollector):
