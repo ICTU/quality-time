@@ -1,0 +1,3334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <meta charset="utf-8">
+    <meta content="chrome=1" http-equiv="X-UA-Compatible">
+    <title>NCover Coverage HTML</title>
+
+    <style type="text/css">/*------------------------------------- global styles ----------------------------------------*/
+html, body {
+    width: 775px;
+    margin: 10px auto;
+    min-height: 800px;
+    font-family: Helvetica,Arial,sans-serif !important;
+    position: relative;
+}
+#ncover-report div.document_section{
+    clear:both;
+}
+#ncover-report div.header {
+    color: rgb(245,245,245);
+    font-size: 22px;
+    float: left;
+    margin-bottom: 1px;
+}
+
+
+#ncover-report div.fineprint {
+    clear: both;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(10, 10, 10, .7);
+    background-color: white;
+}
+
+#ncover-report div.header .ncoverball {
+    width: 38px;
+    height: 36.5px;
+    margin-top: 3px;
+    margin-left: 7px;
+    float: left;
+    background-size: 100%;
+}
+
+#ncover-report div.header .title {
+    float: left;
+    line-height: 43px;
+    padding-left: 10px;
+    padding-right: 5px;
+    width: 200px;
+}
+
+#ncover-report div.header .chevron {
+    width: 12px;
+    height: 43px;
+    float: left;
+    margin-right: 10px;
+}
+#ncover-report div.header .raised {
+    height: 43px;
+    float: left;
+    background-color: #1D2737;
+}
+#ncover-report div.header .depressed {
+    background-color: #2f3f58;
+    height: 43px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 5px;
+    float: left;
+    padding-right: 20px;
+    padding-left: 0;
+    width: 487px;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 18px;
+    line-height: 48px;
+}
+
+#ncover-report div.header .title.depressed {
+    max-width: 440px;
+}
+
+#ncover-report div.header .vbar {
+    width: 2px;
+    height: 43px;
+    float: left;
+}
+#ncover-report div.icon.executions {
+    width: 18px;
+    height: 18px;
+}
+
+#ncover-report div.execution {
+    float: left;
+    font-size: 12px;
+    margin-bottom: 7px;
+    background: rgba(235, 235, 244, 0.5);
+    line-height: 20px;
+    border: 1px solid rgba(100,100,100,0.5);
+    clear: left;
+    height: 524px;
+    cursor: pointer;
+}
+#ncover-report div.execution .section {
+    width: 100%;
+    clear: both;
+    padding-top: 3px;
+    background: rgba(135, 135, 144, 0.3);
+    text-align: center;
+    font-weight: bold;
+    font-size: larger;
+    color: rgba(10, 10, 10, 0.7);
+}
+#ncover-report div.execution .label {
+    float: left;
+    width: 105px;
+    clear: left;
+    text-align: right;
+    margin: 0 3px;
+    color: rgba(10, 10, 10, 0.8);
+}
+#ncover-report div.execution .label.key {
+    float: left;
+    width: 30px;
+    height: 2px;
+    clear: left;
+    margin: 10px 0 0 7px;
+}
+#ncover-report div.execution .label.key.blue{
+    background-color: rgba(0,0,140,0.7);
+}
+#ncover-report div.execution .label.key.green{
+    background-color: rgba(0,80,0,0.7);
+}
+#ncover-report div.execution .label.key.red{
+    background-color: rgba(140,0,0,0.7);
+}
+
+#ncover-report div.execution .value {
+    width: 150px;
+    float: left;
+    clear: right;
+    margin: 0 5px;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+#ncover-report div.execution .value.baseline {
+    width: 220px;
+}
+#ncover-report div.execution .value.baseline.date {
+    width: 210px;
+    clear: both;
+    font-size: 10px;
+    line-height: 13px;
+    margin-left: 44px;
+    margin-top: -3px;
+    margin-bottom: 3px;
+}
+#ncover-report div.execution .value .partial{
+    float: left;
+    clear: none;
+    margin
+}
+#ncover-report div.execution .value .partial.larger{
+    font-size: 15px;
+    font-weight: bold;
+}
+#ncover-report div.execution .value .partial.smaller{
+    font-size: smaller;
+    margin-left: 3px;
+}
+#ncover-report div.execution.trends{
+    float: left;
+    clear: right;
+    width: 490px;
+    line-height: 0;
+    margin-left:  5px;
+    margin-bottom: 0px;
+    border: none;
+    background: white;
+}
+#ncover-report .hidden {
+    display: none;
+}
+
+#ncover-report div.thinbar {
+    float: left;
+    margin-top: -3px;
+    height: 4px;
+}
+
+#ncover-report div.thinbar.covered {
+    border-top: 1px solid #a6d34c;
+    background-color: #9dc54c;
+    clear: left;
+}
+#ncover-report div.thinbar.uncovered {
+    border-top: 1px solid #E14618;
+    background-color: #E14618;
+    float: right;
+    clear: right;
+}
+
+#ncover-report table.details{
+    width: 769px;
+    border: 1px solid rgba(100,100,100,0.5);
+    font-size: 12px;
+    border-collapse: collapse;
+}
+#ncover-report .details thead tr{
+    background: rgba(135, 135, 144, 0.3);
+    text-align: center;
+    font-weight: bold;
+    height: 45px;
+    line-height: 15px;
+}
+#ncover-report .details thead tr .label{
+    color: rgba(10, 10, 10, 0.8);
+    text-align: center;
+    font-weight: bold;
+}
+#ncover-report .details tbody tr{
+    line-height: 20px;
+    height: 32px;
+    cursor: pointer;
+}
+    #ncover-report .details tbody tr.expanded {
+        background-color: #ACC4E2;
+        opacity: 1;
+    }
+    #ncover-report .details tbody tr.module.blur {
+        background-color: #CACACA;
+        opacity: 0.6;
+    }
+    #ncover-report .details tbody tr.class.blur {
+        background-color: #DFDFDF;
+        opacity: 0.6;
+    }
+    #ncover-report .details tbody tr .caption {
+        max-width: 400px;
+    }
+
+#ncover-report .details tbody td{
+    border-bottom: 1px solid rgba(100,100,100,0.5);
+    border-right: 1px solid rgba(100,100,100,0.5);
+    position: relative;
+}
+#ncover-report .details thead th{
+    border-bottom: 1px solid rgba(100,100,100,0.5);
+}
+
+#ncover-report .details tbody td div.stat_cell {
+    position: absolute;
+    bottom: 2px;
+    width: 100%;
+    line-height: 0;
+}
+#ncover-report .details tbody td div.stat_cell div.thinbar {
+    position: absolute;
+    bottom: 0;
+}
+#ncover-report .details tbody td div.larger {
+    font-size: 14px;
+    height: 15px;
+    line-height: 21px;
+    font-weight: bold;
+    display: inline-block;
+    padding-left: 3px;
+}
+#ncover-report .details tbody td div.smaller {
+    margin-left: 2px;
+    font-size: 10px;
+    line-height: 13px;
+    height: 12px;
+    white-space: nowrap;
+    display: inline-block;
+    margin-bottom: 5px;
+    padding-right: 3px;
+}
+
+#ncover-report .details tbody td.assembly{
+    text-align: left;
+    padding-left: 3px;
+}
+    #ncover-report .details tbody td.assembly .caption {
+        margin-left: 40px;
+        padding-right: 4px;
+        overflow-wrap: break-word;
+    }
+#ncover-report .details tbody td.class{
+    text-align: left;
+    padding-left: 10px;
+}
+    #ncover-report .details tbody td.class .caption {
+        margin-left: 40px;
+        padding-right: 4px;
+        overflow-wrap: break-word;
+    }
+#ncover-report .details tbody td.method{
+    text-align: left;
+    padding-left: 20px;
+}
+    #ncover-report .details tbody td.method .caption {
+        margin-left: 22px;
+        padding-right: 4px;
+        overflow-wrap: break-word;
+    }
+
+#ncover-report .details tbody td.stat{
+    text-align: center;
+    vertical-align: bottom;
+    padding-bottom: 4px;
+}
+#ncover-report .details tbody tr.stats:nth-child(event){
+    background-color: rgba(100,120,120,0.7);
+}
+
+#ncover-report div.trend_chart {
+    border: 1px solid rgba(100, 100, 100, 0.5);
+    position: relative;
+    height: 124px;
+    margin-bottom: 7px;
+    overflow: hidden;
+}
+#ncover-report div.trend_chart .section{
+    line-height: 18px;
+}
+#ncover-report div.trend_chart div.y-axis{
+    text-align: right;
+    vertical-align: top;
+    border-right: none;
+    height: 18px;
+    line-height: 15px;
+    font-size: 8px;
+    border-right: 1px solid darkGray;
+    float: left;
+    clear: left;
+    width: 25px;
+    padding: 0 3px;
+}
+#ncover-report div.trend_chart div.y-tick{
+    float: right;
+    width: 5px;
+    border-bottom: 1px solid black;
+    margin-right: -3px;
+    margin-top: 16px;
+}
+
+#ncover-report div.trend_chart div.bars{
+    position: absolute;
+    top: 25px;
+    left: 33px;
+}
+#ncover-report div.trend_chart div.threshold{
+    border-bottom: 1px dashed navy;
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    width: 100%;
+}
+#ncover-report div.trend_chart div.baseline-1 {
+    border-bottom: 2px solid rgba(0, 0, 140, 0.7);
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    width: 100%;
+}
+#ncover-report div.trend_chart div.baseline-2 {
+    border-bottom: 2px solid rgba(0, 80, 0, 0.7);
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    width: 100%;
+}
+#ncover-report div.trend_chart div.baseline-3 {
+    border-bottom: 2px solid rgba(140, 0, 0, 0.7);
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    width: 100%;
+}
+#ncover-report div.trend_chart div.bar{
+    height: 94px;
+    width: 13px;
+    position: relative;
+    margin: 1px 2.5px;
+    float: left;
+}
+#ncover-report div.trend_chart div.bar .good{
+    border-top: 2px solid #789F04;
+    border-left: 2px solid #789F04;
+    background-color: #789F04;   
+    width: inherit;
+    float: left;
+}
+#ncover-report div.trend_chart div.bar .bad{
+    border-top: 2px solid #E14618;
+    border-left: 2px solid #E14618;
+    background-color: #E14618;
+    width: inherit;
+    float: left;
+}
+#ncover-report div.trend_chart div.bar .neutral{
+    border-top: 2px solid #428AD2;
+    border-left: 2px solid #428AD2;
+    background-color: #428AD2;
+    width: inherit;
+    float: left;
+}
+#ncover-report div.trend_chart div.bar .none{
+    border-bottom: 1px solid gainsboro;
+    width: inherit;
+    float: left;
+    height: 100%;
+}
+    </style>
+
+    <script type="text/javascript">// lib/handlebars/base.js
+var Handlebars = {};
+
+Handlebars.VERSION = "1.0.beta.6";
+
+Handlebars.helpers  = {};
+Handlebars.partials = {};
+
+Handlebars.registerHelper = function(name, fn, inverse) {
+  if(inverse) { fn.not = inverse; }
+  this.helpers[name] = fn;
+};
+
+Handlebars.registerPartial = function(name, str) {
+  this.partials[name] = str;
+};
+
+Handlebars.registerHelper('helperMissing', function(arg) {
+  if(arguments.length === 2) {
+    return undefined;
+  } else {
+    throw new Error("Could not find property '" + arg + "'");
+  }
+});
+
+var toString = Object.prototype.toString, functionType = "[object Function]";
+
+Handlebars.registerHelper('blockHelperMissing', function(context, options) {
+  var inverse = options.inverse || function() {}, fn = options.fn;
+
+
+  var ret = "";
+  var type = toString.call(context);
+
+  if(type === functionType) { context = context.call(this); }
+
+  if(context === true) {
+    return fn(this);
+  } else if(context === false || context == null) {
+    return inverse(this);
+  } else if(type === "[object Array]") {
+    if(context.length > 0) {
+      for(var i=0, j=context.length; i<j; i++) {
+        ret = ret + fn(context[i]);
+      }
+    } else {
+      ret = inverse(this);
+    }
+    return ret;
+  } else {
+    return fn(context);
+  }
+});
+
+Handlebars.registerHelper('each', function(context, options) {
+  var fn = options.fn, inverse = options.inverse;
+  var ret = "";
+
+  if(context && context.length > 0) {
+    for(var i=0, j=context.length; i<j; i++) {
+      ret = ret + fn(context[i]);
+    }
+  } else {
+    ret = inverse(this);
+  }
+  return ret;
+});
+
+Handlebars.registerHelper('if', function(context, options) {
+  var type = toString.call(context);
+  if(type === functionType) { context = context.call(this); }
+
+  if(!context || Handlebars.Utils.isEmpty(context)) {
+    return options.inverse(this);
+  } else {
+    return options.fn(this);
+  }
+});
+
+Handlebars.registerHelper('unless', function(context, options) {
+  var fn = options.fn, inverse = options.inverse;
+  options.fn = inverse;
+  options.inverse = fn;
+
+  return Handlebars.helpers['if'].call(this, context, options);
+});
+
+Handlebars.registerHelper('with', function(context, options) {
+  return options.fn(context);
+});
+
+Handlebars.registerHelper('log', function(context) {
+  Handlebars.log(context);
+});
+;
+// lib/handlebars/utils.js
+Handlebars.Exception = function(message) {
+  var tmp = Error.prototype.constructor.apply(this, arguments);
+
+  for (var p in tmp) {
+    if (tmp.hasOwnProperty(p)) { this[p] = tmp[p]; }
+  }
+
+  this.message = tmp.message;
+};
+Handlebars.Exception.prototype = new Error;
+
+// Build out our basic SafeString type
+Handlebars.SafeString = function(string) {
+  this.string = string;
+};
+Handlebars.SafeString.prototype.toString = function() {
+  return this.string.toString();
+};
+
+(function() {
+  var escape = {
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "`": "&#x60;"
+  };
+
+  var badChars = /&(?!\w+;)|[<>"'`]/g;
+  var possible = /[&<>"'`]/;
+
+  var escapeChar = function(chr) {
+    return escape[chr] || "&amp;";
+  };
+
+  Handlebars.Utils = {
+    escapeExpression: function(string) {
+      // don't escape SafeStrings, since they're already safe
+      if (string instanceof Handlebars.SafeString) {
+        return string.toString();
+      } else if (string == null || string === false) {
+        return "";
+      }
+
+      if(!possible.test(string)) { return string; }
+      return string.replace(badChars, escapeChar);
+    },
+
+    isEmpty: function(value) {
+      if (typeof value === "undefined") {
+        return true;
+      } else if (value === null) {
+        return true;
+      } else if (value === false) {
+        return true;
+      } else if(Object.prototype.toString.call(value) === "[object Array]" && value.length === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+})();;
+// lib/handlebars/runtime.js
+Handlebars.VM = {
+  template: function(templateSpec) {
+    // Just add water
+    var container = {
+      escapeExpression: Handlebars.Utils.escapeExpression,
+      invokePartial: Handlebars.VM.invokePartial,
+      programs: [],
+      program: function(i, fn, data) {
+        var programWrapper = this.programs[i];
+        if(data) {
+          return Handlebars.VM.program(fn, data);
+        } else if(programWrapper) {
+          return programWrapper;
+        } else {
+          programWrapper = this.programs[i] = Handlebars.VM.program(fn);
+          return programWrapper;
+        }
+      },
+      programWithDepth: Handlebars.VM.programWithDepth,
+      noop: Handlebars.VM.noop
+    };
+
+    return function(context, options) {
+      options = options || {};
+      return templateSpec.call(container, Handlebars, context, options.helpers, options.partials, options.data);
+    };
+  },
+
+  programWithDepth: function(fn, data, $depth) {
+    var args = Array.prototype.slice.call(arguments, 2);
+
+    return function(context, options) {
+      options = options || {};
+
+      return fn.apply(this, [context, options.data || data].concat(args));
+    };
+  },
+  program: function(fn, data) {
+    return function(context, options) {
+      options = options || {};
+
+      return fn(context, options.data || data);
+    };
+  },
+  noop: function() { return ""; },
+  invokePartial: function(partial, name, context, helpers, partials, data) {
+    options = { helpers: helpers, partials: partials, data: data };
+
+    if(partial === undefined) {
+      throw new Handlebars.Exception("The partial " + name + " could not be found");
+    } else if(partial instanceof Function) {
+      return partial(context, options);
+    } else if (!Handlebars.compile) {
+      throw new Handlebars.Exception("The partial " + name + " could not be compiled when running in runtime-only mode");
+    } else {
+      partials[name] = Handlebars.compile(partial);
+      return partials[name](context, options);
+    }
+  }
+};
+
+Handlebars.template = Handlebars.VM.template;
+;
+
+    </script>
+
+    <script type="text/javascript">﻿// block helper to get route of selected project
+Handlebars.registerHelper('projectsDropdownSelection',
+    function (selectedId, projects, options) {
+        if (projects) {
+            var proj;
+            $(projects).each(function () {
+                if (this.id == selectedId) {
+                    proj = this;
+                    return;
+                }
+            });
+            if (proj)
+                return options.fn(proj);
+        }
+        return options.inverse();
+    });
+Handlebars.registerHelper('isEqual',
+    function (val1, val2, options) {
+        if (val1 == val2)
+            return options.fn(this);
+        return options.inverse(this);
+    });
+Handlebars.registerHelper('renderMarkdown',
+    function (text) {
+        var converter = new Attacklab.showdown.converter();
+        return new Handlebars.SafeString(converter.makeHtml(text));
+    });
+Handlebars.registerHelper('highlightCodeSnippet',
+    function (request, source) {
+        return new Handlebars.SafeString(CodeRender.render(request, source, { includeMethodMarkers: false }));
+    });
+Handlebars.registerHelper('highlightCode',
+    function (request, source, options) {
+        return new Handlebars.SafeString(CodeRender.render(request, source, { includeMethodMarkers: true }));
+    });
+Handlebars.registerHelper('length',
+    function (array) {
+        if (array) {
+            return array.length.toString();
+        }
+        return '0';
+    });
+Handlebars.registerHelper('debug',
+    function (context) {
+        console.log('--- CONTEXT ---');
+        console.log(context);
+        console.log('--- STACK ---');
+        console.log(this.__stack__);
+        console.log('-------------');
+    });
+Handlebars.registerHelper('isExe',
+    function (type, options) {
+        if (type == 'Exe')
+            return options.fn(this);
+        else
+            return options.inverse(this);
+    });
+Handlebars.registerHelper('isNotExe',
+    function (type, options) {
+        if (type != 'Exe')
+            return options.fn();
+        else
+            return options.inverse();
+    });
+Handlebars.registerHelper('selectDropdownId',
+    function (Id, ddArray, options) {
+        if (Id == 'current' && ddArray.length > 0) {
+            return options.fn(ddArray[0]);
+        }
+        for (var item in ddArray) {
+            if (ddArray[item].id == Id)
+                return options.fn(ddArray[item]);
+        }
+        return options.inverse();
+    });
+Handlebars.registerHelper('getSelectedExecution',
+    function (projectId, execId, executions, options) {
+        if (execId == 'current' && executions.length > 0) {
+            return options.fn(executions[0]);
+        }
+
+        for (var item in executions) {
+            if (executions[item].id == execId)
+                return options.fn(executions[item]);
+        }
+
+        var execFromAPI = null;
+        requestHelper.syncGetExecutionRef(projectId, execId, function (data) {
+            execFromAPI = data.execution;
+        }, function () { });  // silent error handler
+
+        if (execFromAPI)
+            return options.fn(execFromAPI);
+        else
+            return options.inverse(this);
+    });
+Handlebars.registerHelper('getNodeIconClass',
+    function (codeNode) {
+        switch (codeNode.codeNodeType) {
+            case 'Module': return ('module_icon');
+            case 'Namespace': return ('namespace_icon');
+            case 'Class': return ('class_icon');
+            case 'Method': return ('method_icon');
+            case 'Property': return ('property_icon');
+        }
+        return '';
+    });
+Handlebars.registerHelper('nodeTypeNotModule',
+    function () {
+        if (this != null) {
+            if (this.codeNodeType != 'Module')
+                return true;
+        }
+        return false;
+    });
+Handlebars.registerHelper('navDelimiter',
+    function (codeNode) {
+        if (codeNode != null) {
+            switch (codeNode.codeNodeType) {
+                case 'Zip':
+                case 'Folder':
+                    return new Handlebars.SafeString('\\');
+            }
+        }
+        return new Handlebars.SafeString('.');
+    });
+Handlebars.registerHelper('nodeOrDocType',
+    function () {
+        var codeNode = this;
+        switch (codeNode.codeNodeType) {
+            case 'Zip':
+            case 'Folder':
+                return new Handlebars.SafeString(ncover.nodeTypes.documents);
+                break;
+            default:
+                return new Handlebars.SafeString(ncover.nodeTypes.nodes);
+                break;
+        }
+    });
+Handlebars.registerHelper('countReceiving',
+    function (projects) {
+        if (!projects || projects.length == 0)
+            return 0;
+        else {
+            var receivingCt = 0;
+            $(projects).each(function () {
+                if (this.enabled == true && this.status == ncover.projectStatus.receiving)
+                    receivingCt++;
+            });
+            return receivingCt;
+        }
+    });
+Handlebars.registerHelper('countMonitoring',
+    function (projects) {
+        if (!projects || projects.length == 0)
+            return 0;
+        else {
+            var monitorCt = 0;
+            $(projects).each(function () {
+                if (this.enabled == true && this.config.enabledOnCC != false && this.status != ncover.projectStatus.collecting)
+                    monitorCt++;
+            });
+            return monitorCt;
+        }
+    });
+
+Handlebars.registerHelper('countCollecting',
+    function (projects) {
+        if (!projects || projects.length == 0)
+            return 0;
+        else {
+            var ct = 0;
+            $(projects).each(function () {
+                if (this.enabled == true && this.status == ncover.projectStatus.collecting)
+                    ct++;
+            });
+            return ct;
+        }
+    });
+Handlebars.registerHelper('elapsedHours',
+    function (timeStart, timeEnd) {
+        if (!timeStart || !timeEnd)
+            return 0;
+        var msPerHour = 1000.0 * 60.0 * 60.0;
+        var end = new Date();
+        end.setTime(timeEnd)
+        var start = new Date();
+        start.setTime(timeStart);
+        var diff = end - start;
+        diff = Math.round(diff * 100 / msPerHour) / 100; // round to 2 decimals
+        return diff < 0.01 ? 0.01 : diff; // don't return anything less than 0.01
+    });
+Handlebars.registerHelper('utcToLocal',
+    function (ms) {
+        if (!ms)
+            return 'No date provided';
+        var newDate = new Date(ms);
+        if (newDate == 'Invalid Date') {
+            return ms;
+        } else {
+            return newDate.toDateString() + ' ' + newDate.toLocaleTimeString();
+        }
+    });
+Handlebars.registerHelper('artifactDateString',
+    function (ms) {
+        if (!ms)
+            return 'No date provided';
+        var newDate = new Date();
+        newDate.setTime(ms);
+        return newDate.toDateString() + ' ' + newDate.toLocaleTimeString();
+    });
+Handlebars.registerHelper('shortDateString',
+    function (date) {
+        if (!date)
+            return 'No data provided';
+        var newDate = ncover.getLocalDateTimeShort(date);
+        return newDate;
+    });
+Handlebars.registerHelper('longDateString',
+    function (date) {
+        if (!date)
+            return 'No data provided';
+        return ncover.getLocalDateTimeLong(date);
+    });
+Handlebars.registerHelper('projectEnableClass',
+    function (enabled) {
+        if (enabled)
+            return 'enabled';
+        else
+            return 'disabled';
+    });
+Handlebars.registerHelper('projectIsCollectingOrSending',
+    function (project, options) {
+        if (project.status == ncover.projectStatus.collecting || project.collectingCaptureCt > 0) {
+            return options.fn(this);
+        }
+        return options.inverse(this);
+    });
+Handlebars.registerHelper('divide',
+    function (val1, val2) {
+        return val1 / val2;
+    });
+Handlebars.registerHelper('divide_int',
+    function (val1, val2) {
+        return Math.floor(val1 / val2);
+    });
+Handlebars.registerHelper('multiply',
+    function (val1, val2) {
+        return val1 * val2;
+    });
+Handlebars.registerHelper('multiply_int',
+    function (val1, val2) {
+        return Math.floor(val1 * val2);
+    });
+Handlebars.registerHelper('floor',
+    function (val1) {
+        return Math.floor(val1);
+    });
+Handlebars.registerHelper('subtract',
+    function (val1, val2) {
+        return val1 - val2;
+    });
+
+Handlebars.registerHelper('hasValue',
+    function (val, options) {
+        if (val === undefined || val === null)
+            return options.inverse(this);
+        return options.fn(this);
+    });
+
+Handlebars.registerHelper('isDefined',
+    function (val, options) {
+        if (val === undefined)
+            return options.inverse(this);
+        return options.fn(this);
+    });
+Handlebars.registerHelper('isGreaterThanZero',
+    function (val, options) {
+        if (val > 0)
+            return options.fn(this);
+        return options.inverse(this);
+    });
+Handlebars.registerHelper('isGreaterThan',
+    function (val1, val2, options) {
+        if (val1 > val2)
+            return options.fn(this);
+        return options.inverse(this);
+    });
+Handlebars.registerHelper('showContentsPane',
+    function (metadata, options) {
+        if (metadata.hideContentsPane === undefined || metadata.hideContentsPane === false)
+            return options.fn(this);
+        return options.inverse(this);
+    });
+Handlebars.registerHelper('isMatch',
+    function (val1, val2, options) {
+        return val1 == val2 ? options.fn(this) : options.inverse(this);
+    });
+
+Handlebars.registerHelper('isNotNa',
+    function (val1, options) {
+        return val1 != 'n/a' ? options.fn(this) : options.inverse(this);
+    });
+Handlebars.registerHelper('getScrollParam',
+    function (scrollId) {
+        if (scrollId) {
+            var curLoc = ncover.getLocation();
+            var newLoc = requestHelper.setQueryParam(curLoc, 'scrollId', scrollId);
+            var qryString = requestHelper.getQueryParamsString(newLoc);
+            return new Handlebars.SafeString(qryString);
+        } else {
+            return "";
+        }
+    });
+Handlebars.registerHelper('currentParams',
+    function () {
+        var paramStr = requestHelper.currentParams();
+        return new Handlebars.SafeString(paramStr);
+    });
+Handlebars.registerHelper('isMergedExecution',
+    function () {
+        return this.mergeMode === 'Merge';
+    });
+Handlebars.registerHelper('getBcExecutionIcon',
+    function (execution) {
+        if (execution.mergeMode === 'Merge')
+            return "merge_icon white";
+        else
+            return "executions_icon";
+    });
+Handlebars.registerHelper('resultIcon',
+    function (category) {
+        return ncSearch.resultIcons[category];
+    });
+Handlebars.registerHelper('headerIconClass',
+    function (codeNodeType) {
+        switch (codeNodeType) {
+            case ncover.codeNodeTypes.Module:
+                return 'statIcon sprite module_icon';
+            case ncover.codeNodeTypes.Namespace:
+                return 'statIcon sprite namespace_icon';
+            case ncover.codeNodeTypes.Class:
+                return 'statIcon sprite class_icon';
+            case ncover.codeNodeTypes.Property:
+                return 'statIcon sprite property_icon';
+            case ncover.codeNodeTypes.Method:
+                return 'statIcon sprite method_icon';
+            case ncover.codeNodeTypes.Zip:
+                return 'statIcon sprite document_icon light';
+            case ncover.codeNodeTypes.Folder:
+                return 'statIcon sprite file_icon light';
+            case "execution":
+                return 'statIcon sprite executions_icon';
+            case "project":
+                return 'statIcon sprite projects_icon';
+        }
+        return "";
+    });
+Handlebars.registerHelper('captureOrExecutionNav',
+    function (projectId, executionId, captureId, codeNode) {
+        // folders are stored within static captures so execution is used for navigation
+        if (codeNode != null && codeNode.codeNodeType == 'Folder') {
+            if (executionId && executionId != 'current') {
+                return 'executions/' + executionId + '/';
+            } else if (captureId && captureId != 'current') {
+                requestHelper.syncGetExecutionRefByCapture(projectId, captureId, function (ref) {
+                    return 'executions/' + ref.execution.id + '/';
+                });
+            }
+        }
+        // if capture provded return the capture nav
+        if (captureId && captureId != 'current') {
+            return 'captures/' + captureId + '/';
+        }
+        return '';
+    });
+Handlebars.registerHelper('executionNav',
+    function (executionId) {
+        if (executionId == null)
+            return '';
+        if (executionId == 'current')
+            return '';
+        return 'executions/' + executionId + '/';
+    });
+Handlebars.registerHelper('captureNav',
+    function (captureId) {
+        if (captureId == 'current') return '';
+        return 'captures/' + captureId + '/';
+    });
+
+Handlebars.registerHelper('documentNav',
+    function (captureId) {
+        if (captureId == 'current') return '/document';
+        return '';
+    });
+Handlebars.registerHelper('moduleNav',
+    function (captureId, executionId, moduleId) {
+        if (executionId == 'current') return 'nodes/' + moduleId;
+        return 'captures/' + captureId + '/nodes';
+    });
+Handlebars.registerHelper('isCollectingLocally',
+    function () {
+        requestHelper.requestSyncServerAbout(
+            function (data) {
+                if (data.disableLocalCollection)
+                    return false;
+                return true;
+            },
+            function () {
+                return true;
+            }
+        );
+    });
+Handlebars.registerHelper('isDesktop',
+    function () {
+        return ncover.isDesktop ? true : false;
+    });
+Handlebars.registerHelper('isCollector',
+    function () {
+        return ncover.isCollector ? true : false;
+    });
+Handlebars.registerHelper('isDesktopOrCollector',
+    function () {
+        return ncover.isDesktop || ncover.isCollector ? true : false;
+    });
+Handlebars.registerHelper('isCodeCentral',
+    function () {
+        return ncover.isCodeCentral ? true : false;
+    });
+Handlebars.registerHelper('userIsCCAdmin',
+    function () {
+        return ncover.isAdmin();
+    });
+Handlebars.registerHelper('userCanManageProjects',
+    function () {
+        return !ncover.isCodeCentral || ncover.isAdmin();
+    });
+Handlebars.registerHelper('userCanUpdateSoftware',
+    function () {
+        if (ncover.isDesktop || ncover.isCollector)
+            return true;
+
+        if (ncover.isCodeCentral && ncover.isAdmin())
+            return true;
+
+        return false;
+    });
+Handlebars.registerHelper('ccDisabled',
+    function (config, options) {
+        if (config && config.isCodeCentralProject && !config.enabledOnCC)
+            return options.fn(this)
+        return options.inverse == null ? '' : options.inverse(this);
+    });
+Handlebars.registerHelper('alt',
+  function () {
+      var b = ncLayout.alt;
+      ncLayout.alt = !ncLayout.alt;
+      if (b)
+          return true;
+      return false;
+  });
+Handlebars.registerHelper('valueOrNa',
+  function (val) {
+      if (val === null || val === undefined)
+          return 'n/a';
+      return val;
+  });
+Handlebars.registerHelper('collectorDownload',
+  function () {
+      return requestHelper.syncGetCollectorDownload()
+  });
+Handlebars.registerHelper('showSaveToCCButton',
+  function (config, options) {
+      if (ncover.isDesktop && config && !config.isCodeCentralProject && ncover.isAdmin())
+          return options.fn(this)
+      return options.inverse == null ? '' : options.inverse(this);
+  });
+Handlebars.registerHelper('connectedToCC',
+  function () {
+      return requestHelper.syncIsCCServerConnected();
+  });
+Handlebars.registerHelper('hasCCConnection',
+  function () {
+      if(ncover.isCodeCentral)
+        return false;
+      return requestHelper.syncHasCCConnection();
+  });
+Handlebars.registerHelper('percentOf',
+    function (val1, val2) {
+        return (val1 / val2) * 100;
+    });
+Handlebars.registerHelper('inversePercentOf',
+    function (val1, val2) {
+        return 100 - ((val1 / val2) * 100);
+    });
+
+Handlebars.registerHelper('percent',
+  function (percentage) {
+      return Math.floor(percentage * 100);
+  });
+Handlebars.registerHelper('inversePercent',
+  function (percentage) {
+      return Math.floor(100 - (percentage * 100));
+  });
+
+
+
+
+
+    </script>
+
+    <script type="text/javascript">// create a global object to scope all data and functions
+if (typeof ncover === 'undefined')
+    ncover = {};
+
+// initialze the page to show execution summary
+ncover.executionSummaryHTML = function () {
+    var html = Handlebars.templates["execution_summary"](ncover);
+    document.body.innerHTML = html;
+
+    var table = document.getElementById("modules_table");
+    var tbody = table.getElementsByTagName("TBODY")[0];
+    for (var id in ncover.modules) {
+        var module = ncover.modules[id];
+        var rowHTML = Handlebars.templates['module_summary'](module);
+        tbody.insertAdjacentHTML('beforeend', rowHTML);
+    }
+};
+
+ncover.executionDetailHTML = function () {
+    var html = Handlebars.templates["execution_detail"](ncover);
+    document.body.innerHTML = html;
+    var table = document.getElementById("modules_table");
+    var tbody = table.getElementsByTagName("TBODY")[0];
+    for(var id in ncover.modules){
+        var module = ncover.modules[id];
+        var rowHTML = Handlebars.templates['module_detail'](module);
+        tbody.insertAdjacentHTML('beforeend', rowHTML);
+    }
+};
+
+ncover.executionDiffHTML = function () {
+    var html = Handlebars.templates["execution_diff"](ncover);
+    document.body.innerHTML = html;
+};
+
+
+
+
+
+    </script>
+
+    <script type="text/javascript">// create a global object to scope all data and functions
+if (typeof ncover === 'undefined')
+    ncover = {};
+
+// initialze the page to show execution summary
+ncover.removeRowElements = function (classType) {
+    var tbody = document.getElementById('coverage-detail-body');
+    var doRemove = function (elements) {
+        for (var i = 0; i < elements.length; i++)
+            tbody.removeChild(elements[i]);
+    };
+
+    var repeatRemove = function (className) {
+        var els = document.getElementsByClassName(className);
+        while (els.length) {
+            doRemove(els);
+            els = document.getElementsByClassName(className);
+        }
+    };
+
+    repeatRemove(classType + ' stats');
+    repeatRemove(classType + ' stats blur');
+    repeatRemove(classType + ' stats expanded');
+};
+
+
+ncover.showChildClasses = function (el) {
+    if (!el || !el.nextElementSibling)
+        return;
+
+    var displayElement = el.nextElementSibling;
+    // until we find another module
+    while (displayElement && !displayElement.classList.contains('module')) {
+        // skip methods
+        if (displayElement.classList.contains('class')) {
+            displayElement.classList.remove('hidden');
+            displayElement.classList.remove('blur');
+            ncover.displayChildThinBars(displayElement);
+        }
+        displayElement = displayElement.nextElementSibling;
+    }
+}
+
+ncover.hideStatCellThinBars = function () {
+    var cells = document.getElementsByClassName('stat_cell');
+    for (var i = 0; i < cells.length; i++) {
+        for (var j = 0; j < cells[i].children.length; j++) {
+            var child = cells[i].children[j];
+            if (child.classList && child.classList.contains('thinbar'))
+                child.classList.add('hidden')
+        }
+    }
+};
+
+ncover.displayChildThinBars = function (target) {
+    var doDisplay = function (el) {
+        if (!el.children) return;
+        for (var i = 0; i < el.children.length; i++) {
+            var child = el.children[i];
+            if (child.tagName == "DIV" && child.classList && child.classList.contains('stat_cell'))
+                ncover.displayStatCellThinBars(child);
+            else if (child.children)
+                doDisplay(child);
+        }
+    };
+
+    if (target.length) {
+        // process all elements in array
+        for (var i = 0; i < target.length; i++)
+            doDisplay(target[i]);
+    } else {
+        doDisplay(target);
+    }
+}
+
+ncover.displayStatCellThinBars = function (el) {
+    if (!el.children) return;
+
+    for (var i = 0; i < el.children.length; i++) {
+        var child = el.children[i];
+        if (child.classList && child.classList.contains('thinbar'))
+            child.classList.remove('hidden');
+    }
+};
+
+ncover.showChildMethods = function (el) {
+    if (!el || !el.nextElementSibling)
+        return;
+    var displayElement = el.nextElementSibling;
+    // until we find another class
+    while (displayElement && displayElement.classList && displayElement.classList.contains('method')) {
+        displayElement.classList.remove('hidden');
+        displayElement.classList.remove('blur');
+        ncover.displayChildThinBars(displayElement);
+        displayElement = displayElement.nextElementSibling;
+    }
+}
+
+
+ncover.toggleModuleExpand = function (el) {
+    ncover.removeRowElements('class');
+    ncover.removeRowElements('method');
+    ncover.hideStatCellThinBars();
+
+    var expanding = !el.classList.contains('expanded');
+    var setClasses = function (modules) {
+        for (var i = 0; i < modules.length; i++) {
+            modules[i].classList.remove('expanded');
+            if (expanding)
+                modules[i].classList.add('blur');
+            else
+                modules[i].classList.remove('blur');
+        }
+    };
+    setClasses(document.getElementsByClassName('module stats'));
+
+
+    if (expanding) {
+        var moduleid = el.dataset.moduleid;
+        var classes = ncover.modules[moduleid].classes;
+        var targetEl = el;
+        for (var id in classes) {
+            var cls = classes[id];
+            cls.moduleid = moduleid;
+            cls.key = id;
+            var rowHTML = Handlebars.templates['class_detail'](cls);
+            targetEl.insertAdjacentHTML('afterend', rowHTML);
+            targetEl = targetEl.nextElementSibling;
+        }
+
+        el.classList.add('expanded');
+        el.classList.remove('blur');
+        ncover.displayChildThinBars(el);
+        ncover.showChildClasses(el);
+    } else {
+        ncover.displayChildThinBars(document.getElementsByClassName('module stats'));
+    }
+};
+
+
+ncover.toggleClassExpand = function (el) {
+    ncover.removeRowElements('method');
+    ncover.hideStatCellThinBars();
+    var expanding = !el.classList.contains('expanded');
+    var setClasses = function (classes) {
+        for (var i = 0; i < classes.length; i++) {
+            classes[i].classList.remove('expanded');
+            if (expanding)
+                classes[i].classList.add('blur');
+            else
+                classes[i].classList.remove('blur');
+        }
+    };
+    setClasses(document.getElementsByClassName('class stats'));
+    setClasses(document.getElementsByClassName('class stats expanded'));
+
+    if (expanding) {
+        var moduleid = el.dataset.moduleid;
+        var classid = el.dataset.classid;
+        var methods = ncover.modules[moduleid].classes[classid].methods;
+        var targetEl = el;
+        for (var id in methods) {
+            var mth = methods[id];
+            var rowHTML = Handlebars.templates['method_detail_report'](mth);
+            targetEl.insertAdjacentHTML('afterend', rowHTML);
+            targetEl = targetEl.nextElementSibling;
+        }
+
+        el.classList.add('expanded');
+        el.classList.remove('blur');
+        ncover.displayChildThinBars(el);
+        ncover.showChildMethods(el);
+    } else {
+        ncover.displayChildThinBars(document.getElementsByClassName('class stats'));
+    }
+    ncover.displayChildThinBars(document.getElementsByClassName('module stats expanded'));
+};
+
+
+
+
+
+    </script>
+    <style type="text/css">
+        div.header .ncoverball { background-image:url(data:image/png;base64,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); }
+    </style>
+    <style type="text/css">
+        div.header .chevron { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAqCAYAAACHgLrMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZlJREFUeNqM1ctKAlEcx/GDRLWJ3AQhaeP9Pk2UWDu37Vq2S9q20AcIRqEHyBcIe4N2LRNaVFhk4/0+WUjQxmhTrTr/QBmG0fn9QZnNZ87hfB2H2f3xzMFxJn16fmVlwMzxj1y8uWbrHj+BjBmw0Nfvzzd76TQPkRUs4wuleCvwbSVh8PU5Yg3lKQUDmnb1WeKrJGAwHKjsTe2mYEDTqZX3+SoCDJrlEvt4H8owoBl0W8lpIQ2BUryjU0vDgEJ265UUDGhqpQerUcipgEJWHu9lGND0W3VBH3ImoJC9RlWGwf8R99oJbUhToA9pQZ6BdlWZhIQArTIOCQFtSAjQvPY7FDIBA7vTMzo52itAYH5hkbmDkRy8JX9UYkvL1jMYeMNinm9nBAG6+8qqLQuHc7i8BX53FQI2h8BcgXAW/vE5fUGVjhIC/FRYZCuehR+gkLRNofIQ0IaCgBjbmYSCgMPtm4QyBfpQpsATil5qQ80EFGpNcOfgv3tveKOkDzUVUKiAuJmDX1libFc1CmUIKBR/T18gz8afAAMAy5edsv3IGjYAAAAASUVORK5CYII=); }
+    </style>
+    <style type="text/css">
+        div.icon.executions { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOhJREFUeNpiYMADHrpJGIAwNjlGAhr/I3EXAHGj/K4XD0AcJgbiQQIQn4e5gAnJdAcQRlPsCMULoHwBIN4PVKfABNUEMm0/VDABSSNIjAHovEQglYikuZ4JqnA+kuL5aJoZoJoXINkcwISmCa4Zhz83wmxlgfoB5OF+qCDISReQFMdD/X4AiD/ABJmATjgAxBPQnAXTCFKsAMT2UNofKv6BESlU14PcDjXVEUkzPDGAogMWp4w4JECaG6E2MkANzIeGKEjOkBHN1AQ8AQMzMBDkPSYsQW4IxBuwaALLgTQRTGP4EjlAgAEArxlSiRBJ5CkAAAAASUVORK5CYII=); }
+    </style>
+</head>
+<body id="ncover-report">
+<div class="header">
+    <div class="header raised">
+        <div class="ncoverball"></div>
+        <div class="title">Coverage Summary</div>
+    </div>
+    <div class="header depressed">
+        <div class="chevron"></div>
+
+        <div class="title depressed">Foo</div>
+
+    </div>
+    <div class="fineprint">Coverage artifact created: Tue Oct 01 2019 07:02:13</div>
+</div>
+
+<div class="document_section">
+    <div class="execution" id="execution_summary"
+         onclick="window.open('http://127.0.0.1:11235/#/projects/ABC/executions/DEF/modules')">
+        <div class="section">Collection</div>
+        <div class="label">Collection Date:</div>
+        <div class="value">Tue Oct 01 2019 03:04:10</div>
+        <div class="label">Duration:</div>
+        <div class="value">0.01 hrs</div>
+        <div class="label">Caption:</div>
+        <div class="value">ABC (Merged)</div>
+        <div class="label">Build Id:</div>
+        <div class="value">DEF</div>
+        <div class="label">Module Count:</div>
+        <div class="value">21</div>
+
+
+        <div class="section">Coverage</div>
+        <div class="label">Branches:</div>
+        <div class="value">
+
+            <div class="partial larger">81.2%</div>
+
+
+            <div class="partial smaller">(9769 of 12034)</div>
+            <div class="thinbar covered" style="width: 81%"></div>
+            <div class="thinbar uncovered" style="width: 18%"></div>
+
+
+        </div>
+
+        <div class="label">Sequence Points:</div>
+        <div class="value">
+
+            <div class="partial larger">82.0%</div>
+
+
+            <div class="partial smaller">(14068 of 17151)</div>
+            <div class="thinbar covered" style="width: 82%"></div>
+            <div class="thinbar uncovered" style="width: 17%"></div>
+
+
+        </div>
+        <div class="label">Conditions:</div>
+        <div class="value">
+
+            <div class="partial larger">63.2%</div>
+
+
+            <div class="partial smaller">(5420 of 8573)</div>
+            <div class="thinbar covered" style="width: 63%"></div>
+            <div class="thinbar uncovered" style="width: 36%"></div>
+
+
+        </div>
+
+        <div class="label">Max. CRAP Score</div>
+        <div class="value">19</div>
+        <div class="label">CRAPpy Methods</div>
+        <div class="value">0 (0.0%)</div>
+
+        <div class="section">Codebase</div>
+        <div class="label">Max Complexity</div>
+        <div class="value">19</div>
+        <div class="label">Zips</div>
+        <div class="value">964</div>
+        <div class="label">Lines</div>
+        <div class="value">19500</div>
+        <div class="label">Namespace Count</div>
+        <div class="value">231</div>
+        <div class="label">Type Count</div>
+        <div class="value">1243</div>
+        <div class="label">Method Count</div>
+        <div class="value">5777</div>
+
+
+        <div class="section">Baselines</div>
+        <div class="label key blue"></div>
+        <div class="value baseline">Not set</div>
+        <div class="value baseline date"></div>
+        <div class="label key green"></div>
+        <div class="value baseline">Not set</div>
+        <div class="value baseline date"></div>
+        <div class="label key red"></div>
+        <div class="value baseline">Not set</div>
+        <div class="value baseline date"></div>
+
+
+    </div>
+
+    <div class="execution trends" id="execution_trends"
+         onclick="window.open('http://127.0.0.1:11235/#/projects/ABC/executions/DEF/modules')">
+        ﻿
+        <div class="trend_chart">
+            <div class="section">Branch Coverage Trend</div>
+
+            <div class="y-axis">
+                100
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                80
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                60
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                40
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                20
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis"></div>
+            <div class="bars">
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 19.569552933355496%"></div>
+                    <div class="good" style="height: 80.4304470666445%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 19.577862722286866%"></div>
+                    <div class="good" style="height: 80.42213727771313%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.838291507395724%"></div>
+                    <div class="good" style="height: 81.16170849260428%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.721954462356663%"></div>
+                    <div class="good" style="height: 81.27804553764334%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.721954462356663%"></div>
+                    <div class="good" style="height: 81.27804553764334%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 60.739503454559255%"></div>
+                    <div class="bad" style="height: 39.260496545440745%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.838291507395724%"></div>
+                    <div class="good" style="height: 81.16170849260428%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.721954462356663%"></div>
+                    <div class="good" style="height: 81.27804553764334%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.838291507395724%"></div>
+                    <div class="good" style="height: 81.16170849260428%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.821671929532997%"></div>
+                    <div class="good" style="height: 81.178328070467%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+
+                <div class="threshold" style="height:30%"></div>
+
+
+            </div>
+        </div>
+
+        ﻿
+        <div class="trend_chart">
+            <div class="section">Sequence Point Coverage Trend</div>
+
+            <div class="y-axis">
+                100
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                80
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                60
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                40
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                20
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis"></div>
+            <div class="bars">
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.6636347734826%"></div>
+                    <div class="good" style="height: 81.3363652265174%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 18.675295901113643%"></div>
+                    <div class="good" style="height: 81.32470409888636%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.975628243251123%"></div>
+                    <div class="good" style="height: 82.02437175674888%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.84735583930967%"></div>
+                    <div class="good" style="height: 82.15264416069033%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.84735583930967%"></div>
+                    <div class="good" style="height: 82.15264416069033%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 59.6275943018727%"></div>
+                    <div class="bad" style="height: 40.3724056981273%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.975628243251123%"></div>
+                    <div class="good" style="height: 82.02437175674888%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.84735583930967%"></div>
+                    <div class="good" style="height: 82.15264416069033%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.975628243251123%"></div>
+                    <div class="good" style="height: 82.02437175674888%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 17.975628243251123%"></div>
+                    <div class="good" style="height: 82.02437175674888%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+
+                <div class="threshold" style="height:25%"></div>
+
+
+            </div>
+        </div>
+
+        ﻿
+        <div class="trend_chart">
+            <div class="section">Condition Coverage Trend</div>
+
+            <div class="y-axis">
+                100
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                80
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                60
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                40
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                20
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis"></div>
+            <div class="bars">
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 37.65309693222909%"></div>
+                    <div class="good" style="height: 62.34690306777091%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 37.65309693222909%"></div>
+                    <div class="good" style="height: 62.34690306777091%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.82491543217077%"></div>
+                    <div class="good" style="height: 63.17508456782923%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.67327656596291%"></div>
+                    <div class="good" style="height: 63.32672343403709%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.68494109413274%"></div>
+                    <div class="good" style="height: 63.31505890586726%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 72.13434452871073%"></div>
+                    <div class="bad" style="height: 27.865655471289273%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.82491543217077%"></div>
+                    <div class="good" style="height: 63.17508456782923%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.68494109413274%"></div>
+                    <div class="good" style="height: 63.31505890586726%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.82491543217077%"></div>
+                    <div class="good" style="height: 63.17508456782923%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 36.77825731949142%"></div>
+                    <div class="good" style="height: 63.22174268050858%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+
+                <div class="threshold" style="height:40%"></div>
+
+
+            </div>
+        </div>
+
+        ﻿
+        <div class="trend_chart">
+            <div class="section">CRAPpy Method Count Trend</div>
+
+            <div class="y-axis">
+                10
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                8
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                6
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                4
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis">
+                2
+                <div class="y-tick"></div>
+            </div>
+
+            <div class="y-axis"></div>
+            <div class="bars">
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="empty" style="height: 100%"></div>
+                    <div class="neutral" style="height: 0%">
+                    </div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+                <div class="bar">
+
+                    <div class="none"></div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="document_section">
+    <table class="details" id="modules_table">
+        <thead>
+        <tr class="label">
+            <th class="label" style="min-width: 150px">Assembly</th>
+            <th class="label" width="140px">Branch Coverage</th>
+            <th class="label" width="140px">Sequence Point Coverage</th>
+            <th class="label" width="140px">Condition Coverage</th>
+            <th class="label" width="60px">Max Complex.</th>
+            <th class="label" width="60px">Max CRAP Score</th>
+            <th class="label">CRAPpy Methods</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td class="assembly">Foo.Backend.Api.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>76.8%</b></big><small>&nbsp;(1404 of 1827)</small></div>
+
+                <div class="thinbar covered" style="width: 76%"></div>
+                <div class="thinbar uncovered" style="width: 23%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>76.9%</b></big><small>&nbsp;(2231 of 2901)</small></div>
+
+                <div class="thinbar covered" style="width: 76%"></div>
+                <div class="thinbar uncovered" style="width: 23%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>56.7%</b></big><small>&nbsp;(863 of 1523)</small></div>
+
+                <div class="thinbar covered" style="width: 56%"></div>
+                <div class="thinbar uncovered" style="width: 43%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                12
+            </td>
+            <td class="stat">
+                14
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Database.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>88.2%</b></big><small>&nbsp;(262 of 297)</small></div>
+
+                <div class="thinbar covered" style="width: 88%"></div>
+                <div class="thinbar uncovered" style="width: 11%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>87.5%</b></big><small>&nbsp;(405 of 463)</small></div>
+
+                <div class="thinbar covered" style="width: 87%"></div>
+                <div class="thinbar uncovered" style="width: 12%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>76.4%</b></big><small>&nbsp;(155 of 203)</small></div>
+
+                <div class="thinbar covered" style="width: 76%"></div>
+                <div class="thinbar uncovered" style="width: 23%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                13
+            </td>
+            <td class="stat">
+                13
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Bar.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>84.9%</b></big><small>&nbsp;(1851 of 2181)</small></div>
+
+                <div class="thinbar covered" style="width: 84%"></div>
+                <div class="thinbar uncovered" style="width: 15%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>87.0%</b></big><small>&nbsp;(2530 of 2907)</small></div>
+
+                <div class="thinbar covered" style="width: 87%"></div>
+                <div class="thinbar uncovered" style="width: 12%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>67.6%</b></big><small>&nbsp;(715 of 1058)</small></div>
+
+                <div class="thinbar covered" style="width: 67%"></div>
+                <div class="thinbar uncovered" style="width: 32%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                8
+            </td>
+            <td class="stat">
+                8
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Shared.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>86.8%</b></big><small>&nbsp;(132 of 152)</small></div>
+
+                <div class="thinbar covered" style="width: 86%"></div>
+                <div class="thinbar uncovered" style="width: 13%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>80.7%</b></big><small>&nbsp;(167 of 207)</small></div>
+
+                <div class="thinbar covered" style="width: 80%"></div>
+                <div class="thinbar uncovered" style="width: 19%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>69.9%</b></big><small>&nbsp;(72 of 103)</small></div>
+
+                <div class="thinbar covered" style="width: 69%"></div>
+                <div class="thinbar uncovered" style="width: 30%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                11
+            </td>
+            <td class="stat">
+                11
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.BarServices.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>87.3%</b></big><small>&nbsp;(2295 of 2630)</small></div>
+
+                <div class="thinbar covered" style="width: 87%"></div>
+                <div class="thinbar uncovered" style="width: 12%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>86.2%</b></big><small>&nbsp;(3377 of 3918)</small></div>
+
+                <div class="thinbar covered" style="width: 86%"></div>
+                <div class="thinbar uncovered" style="width: 13%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>68.1%</b></big><small>&nbsp;(1782 of 2618)</small></div>
+
+                <div class="thinbar covered" style="width: 68%"></div>
+                <div class="thinbar uncovered" style="width: 31%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                10
+            </td>
+            <td class="stat">
+                10
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Database.Interfaces.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>80.6%</b></big><small>&nbsp;(58 of 72)</small></div>
+
+                <div class="thinbar covered" style="width: 80%"></div>
+                <div class="thinbar uncovered" style="width: 19%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>100.0%</b></big><small>&nbsp;(136 of 136)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>n/a</b></big><small></small></div>
+
+
+            </td>
+
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Api.Models.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>87.8%</b></big><small>&nbsp;(412 of 469)</small></div>
+
+                <div class="thinbar covered" style="width: 87%"></div>
+                <div class="thinbar uncovered" style="width: 12%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>91.4%</b></big><small>&nbsp;(425 of 465)</small></div>
+
+                <div class="thinbar covered" style="width: 91%"></div>
+                <div class="thinbar uncovered" style="width: 8%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>58.6%</b></big><small>&nbsp;(17 of 29)</small></div>
+
+                <div class="thinbar covered" style="width: 58%"></div>
+                <div class="thinbar uncovered" style="width: 41%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                4
+            </td>
+            <td class="stat">
+                7
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.Foo.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>100.0%</b></big><small>&nbsp;(36 of 36)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>100.0%</b></big><small>&nbsp;(134 of 134)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>n/a</b></big><small></small></div>
+
+
+            </td>
+
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Communication.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>100.0%</b></big><small>&nbsp;(2 of 2)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>100.0%</b></big><small>&nbsp;(4 of 4)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>n/a</b></big><small></small></div>
+
+
+            </td>
+
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.BarService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>58.3%</b></big><small>&nbsp;(84 of 144)</small></div>
+
+                <div class="thinbar covered" style="width: 58%"></div>
+                <div class="thinbar uncovered" style="width: 41%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>59.8%</b></big><small>&nbsp;(205 of 343)</small></div>
+
+                <div class="thinbar covered" style="width: 59%"></div>
+                <div class="thinbar uncovered" style="width: 40%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>50.0%</b></big><small>&nbsp;(6 of 12)</small></div>
+
+                <div class="thinbar covered" style="width: 50%"></div>
+                <div class="thinbar uncovered" style="width: 50%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Backend.BarServices.Interfaces.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>73.0%</b></big><small>&nbsp;(100 of 137)</small></div>
+
+                <div class="thinbar covered" style="width: 72%"></div>
+                <div class="thinbar uncovered" style="width: 27%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>54.5%</b></big><small>&nbsp;(121 of 222)</small></div>
+
+                <div class="thinbar covered" style="width: 54%"></div>
+                <div class="thinbar uncovered" style="width: 45%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>n/a</b></big><small></small></div>
+
+
+            </td>
+
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                1
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.Zoo.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>77.8%</b></big><small>&nbsp;(14 of 18)</small></div>
+
+                <div class="thinbar covered" style="width: 77%"></div>
+                <div class="thinbar uncovered" style="width: 22%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>74.5%</b></big><small>&nbsp;(35 of 47)</small></div>
+
+                <div class="thinbar covered" style="width: 74%"></div>
+                <div class="thinbar uncovered" style="width: 25%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>60.0%</b></big><small>&nbsp;(9 of 15)</small></div>
+
+                <div class="thinbar covered" style="width: 60%"></div>
+                <div class="thinbar uncovered" style="width: 40%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.ZongService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>81.9%</b></big><small>&nbsp;(59 of 72)</small></div>
+
+                <div class="thinbar covered" style="width: 81%"></div>
+                <div class="thinbar uncovered" style="width: 18%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>77.1%</b></big><small>&nbsp;(131 of 170)</small></div>
+
+                <div class="thinbar covered" style="width: 77%"></div>
+                <div class="thinbar uncovered" style="width: 22%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>93.8%</b></big><small>&nbsp;(15 of 16)</small></div>
+
+                <div class="thinbar covered" style="width: 93%"></div>
+                <div class="thinbar uncovered" style="width: 6%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                5
+            </td>
+            <td class="stat">
+                5
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.ZingService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>71.6%</b></big><small>&nbsp;(706 of 986)</small></div>
+
+                <div class="thinbar covered" style="width: 71%"></div>
+                <div class="thinbar uncovered" style="width: 28%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>83.0%</b></big><small>&nbsp;(1037 of 1249)</small></div>
+
+                <div class="thinbar covered" style="width: 83%"></div>
+                <div class="thinbar uncovered" style="width: 16%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>54.3%</b></big><small>&nbsp;(350 of 645)</small></div>
+
+                <div class="thinbar covered" style="width: 54%"></div>
+                <div class="thinbar uncovered" style="width: 45%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                12
+            </td>
+            <td class="stat">
+                12
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.FlaService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>67.9%</b></big><small>&nbsp;(530 of 781)</small></div>
+
+                <div class="thinbar covered" style="width: 67%"></div>
+                <div class="thinbar uncovered" style="width: 32%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>71.9%</b></big><small>&nbsp;(997 of 1386)</small></div>
+
+                <div class="thinbar covered" style="width: 71%"></div>
+                <div class="thinbar uncovered" style="width: 28%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>49.9%</b></big><small>&nbsp;(278 of 557)</small></div>
+
+                <div class="thinbar covered" style="width: 49%"></div>
+                <div class="thinbar uncovered" style="width: 50%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                7
+            </td>
+            <td class="stat">
+                7
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.ZooService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>90.0%</b></big><small>&nbsp;(9 of 10)</small></div>
+
+                <div class="thinbar covered" style="width: 90%"></div>
+                <div class="thinbar uncovered" style="width: 10%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>92.0%</b></big><small>&nbsp;(23 of 25)</small></div>
+
+                <div class="thinbar covered" style="width: 92%"></div>
+                <div class="thinbar uncovered" style="width: 8%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>60.0%</b></big><small>&nbsp;(3 of 5)</small></div>
+
+                <div class="thinbar covered" style="width: 60%"></div>
+                <div class="thinbar uncovered" style="width: 40%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.FooBarService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>65.2%</b></big><small>&nbsp;(58 of 89)</small></div>
+
+                <div class="thinbar covered" style="width: 65%"></div>
+                <div class="thinbar uncovered" style="width: 34%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>58.1%</b></big><small>&nbsp;(50 of 86)</small></div>
+
+                <div class="thinbar covered" style="width: 58%"></div>
+                <div class="thinbar uncovered" style="width: 41%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>60.4%</b></big><small>&nbsp;(32 of 53)</small></div>
+
+                <div class="thinbar covered" style="width: 60%"></div>
+                <div class="thinbar uncovered" style="width: 39%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                6
+            </td>
+            <td class="stat">
+                6
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.External.Services.ZapService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>87.5%</b></big><small>&nbsp;(7 of 8)</small></div>
+
+                <div class="thinbar covered" style="width: 87%"></div>
+                <div class="thinbar uncovered" style="width: 12%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>81.0%</b></big><small>&nbsp;(17 of 21)</small></div>
+
+                <div class="thinbar covered" style="width: 80%"></div>
+                <div class="thinbar uncovered" style="width: 19%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>83.3%</b></big><small>&nbsp;(5 of 6)</small></div>
+
+                <div class="thinbar covered" style="width: 83%"></div>
+                <div class="thinbar uncovered" style="width: 16%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                2
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Services.ZipService.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>86.7%</b></big><small>&nbsp;(1208 of 1394)</small></div>
+
+                <div class="thinbar covered" style="width: 86%"></div>
+                <div class="thinbar uncovered" style="width: 13%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>89.8%</b></big><small>&nbsp;(1195 of 1331)</small></div>
+
+                <div class="thinbar covered" style="width: 89%"></div>
+                <div class="thinbar uncovered" style="width: 10%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>68.8%</b></big><small>&nbsp;(795 of 1156)</small></div>
+
+                <div class="thinbar covered" style="width: 68%"></div>
+                <div class="thinbar uncovered" style="width: 31%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                19
+            </td>
+            <td class="stat">
+                19
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Receiver.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>69.3%</b></big><small>&nbsp;(212 of 306)</small></div>
+
+                <div class="thinbar covered" style="width: 69%"></div>
+                <div class="thinbar uncovered" style="width: 30%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>71.5%</b></big><small>&nbsp;(284 of 397)</small></div>
+
+                <div class="thinbar covered" style="width: 71%"></div>
+                <div class="thinbar uncovered" style="width: 28%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>55.7%</b></big><small>&nbsp;(160 of 287)</small></div>
+
+                <div class="thinbar covered" style="width: 55%"></div>
+                <div class="thinbar uncovered" style="width: 44%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                7
+            </td>
+            <td class="stat">
+                12
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        <tr>
+            <td class="assembly">Foo.Shared.dll</td>
+
+            <td class="stat">
+
+                <div><big><b>78.0%</b></big><small>&nbsp;(330 of 423)</small></div>
+
+                <div class="thinbar covered" style="width: 78%"></div>
+                <div class="thinbar uncovered" style="width: 21%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>76.3%</b></big><small>&nbsp;(564 of 739)</small></div>
+
+                <div class="thinbar covered" style="width: 76%"></div>
+                <div class="thinbar uncovered" style="width: 23%"></div>
+
+
+            </td>
+            <td class="stat">
+
+                <div><big><b>56.8%</b></big><small>&nbsp;(163 of 287)</small></div>
+
+                <div class="thinbar covered" style="width: 56%"></div>
+                <div class="thinbar uncovered" style="width: 43%"></div>
+
+
+            </td>
+
+            <td class="stat">
+                8
+            </td>
+            <td class="stat">
+                8
+            </td>
+            <td class="stat">
+                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
+
+                <div class="thinbar covered" style="width: 100%"></div>
+                <div class="thinbar uncovered" style="width: 0%"></div>
+
+            </td>
+
+
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

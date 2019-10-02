@@ -14,6 +14,7 @@ from .jenkins_test_report import (
 from .jira import JiraIssues, JiraManualTestDuration, JiraReadyUserStoryPoints
 from .junit import JUnitFailedTests, JUnitSourceUpToDateness, JUnitTests
 from .manual_number import ManualNumber
+from .ncover import NCoverSourceUpToDateness
 from .ojaudit import OJAuditViolations
 from .openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
 from .owasp_dependency_check import OWASPDependencyCheckSecurityWarnings, OWASPDependencyCheckSourceUpToDateness

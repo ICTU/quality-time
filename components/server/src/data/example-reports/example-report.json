@@ -65,6 +65,13 @@
                             "parameters": {
                                 "url": "http://testdata:8000/jacoco-report.xml"
                             }
+                        },
+                        {
+                            "type": "ncover",
+                            "parameters": {
+                                "url": "http://testdata:8000/ncover-report.html"
+                            }
+
                         }
                     ]
                 },
@@ -76,6 +83,12 @@
                             "parameters": {
                                 "url": "http://testdata:8000/jacoco-report.xml"
                             }
+                        },
+                        {
+                            "type": "ncover",
+                            "parameters": {
+                                "url": "http://testdata:8000/ncover-report.html"
+                            }
                         }
                     ]
                 },
@@ -86,6 +99,12 @@
                             "type": "jacoco",
                             "parameters": {
                                 "url": "http://testdata:8000/jacoco-report.xml"
+                            }
+                        },
+                        {
+                            "type": "ncover",
+                            "parameters": {
+                                "url": "http://testdata:8000/ncover-report.html"
                             }
                         }
                     ]

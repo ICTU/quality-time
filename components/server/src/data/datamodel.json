@@ -450,6 +450,7 @@
                 "jacoco",
                 "jenkins_test_report",
                 "junit",
+                "ncover",
                 "random",
                 "robot_framework",
                 "openvas",
@@ -560,6 +561,7 @@
             "sources": [
                 "jacoco",
                 "manual_number",
+                "ncover",
                 "sonarqube",
                 "random"
             ],
@@ -584,6 +586,7 @@
             "sources": [
                 "jacoco",
                 "manual_number",
+                "ncover",
                 "sonarqube",
                 "random"
             ],
@@ -1812,6 +1815,47 @@
                         "unmerged_branches",
                         "unused_jobs",
                         "violations"
+                    ]
+                }
+            },
+            "entities": {}
+        },
+        "ncover": {
+            "name": "NCover",
+            "description": "A .NET code coverage solution",
+            "url": "https://www.ncover.com/",
+            "parameters": {
+                "url": {
+                    "name": "URL to NCover report in HTML format",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "uncovered_lines",
+                        "uncovered_branches",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "uncovered_lines",
+                        "uncovered_branches",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "uncovered_lines",
+                        "uncovered_branches",
+                        "source_up_to_dateness"
                     ]
                 }
             },
