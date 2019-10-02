@@ -52,10 +52,11 @@ def insert_new_measurement(database: Database, measurement, metric=None):
         database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
     datamodel = latest_datamodel(database)
     metric_type = datamodel["metrics"][metric["type"]]
-    scale = metric.get("scale") or metric_type["default_scale"]
     direction = metric.get("direction") or metric_type["direction"]
-    measurement["value"] = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
-    measurement["status"] = determine_measurement_status(database, metric, measurement["value"])
+    for scale in metric_type["scales"]:
+        value = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
+        status = determine_measurement_status(database, metric, value)
+        measurement[scale] = dict(value=value, status=status)
     measurement["start"] = measurement["end"] = iso_timestamp()
     # Mark this measurement as the most recent one:
     measurement["last"] = True

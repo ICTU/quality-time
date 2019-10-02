@@ -75,10 +75,10 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             metrics=dict(
-                old_type=dict(name="Old type"),
+                old_type=dict(name="Old type", scales=["count"]),
                 new_type=dict(
-                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[],
-                    sources=["source_type"])))
+                    scales=["count"], default_scale="count", addition="sum", direction="<", target="0", near_target="1",
+                    tags=[], sources=["source_type"])))
 
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
@@ -125,8 +125,8 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(target="10")
         self.assertEqual(
             dict(
-                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", status=None, value=None,
-                metric_uuid="metric_uuid", last=True),
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01",
+                count=dict(status=None, value=None), metric_uuid="metric_uuid", last=True),
             post_metric_attribute("report_uuid", "metric_uuid", "target", self.database))
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
@@ -146,8 +146,8 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(debt_end_date="2019-06-07")
         self.assertEqual(
             dict(
-                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True, status=None,
-                metric_uuid="metric_uuid", value=None),
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True,
+                metric_uuid="metric_uuid", count=dict(value=None, status=None)),
             post_metric_attribute("report_uuid", "metric_uuid", "debt_end_date", self.database))
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
@@ -413,14 +413,14 @@ class MetricTest(unittest.TestCase):
         """Test that the metrics can be retrieved and deleted reports are skipped."""
         report = dict(
             _id="id", report_uuid="report_uuid",
-            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(tags=[])))))
+            subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(type="metric_type", tags=[])))))
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.reports.distinct.return_value = ["report_uuid", "deleted_report"]
         self.database.reports.find_one.side_effect = [report, dict(deleted=True)]
         self.database.measurements.find.return_value = [dict(
             _id="id", metric_uuid="metric_uuid", status="red",
             sources=[dict(source_uuid="source_uuid", parse_error=None, connection_error=None, value="42")])]
-        self.assertEqual(dict(metric_uuid=dict(tags=[])), get_metrics(self.database))
+        self.assertEqual(dict(metric_uuid=dict(type="metric_type", tags=[])), get_metrics(self.database))
 
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
@@ -476,6 +476,8 @@ class ReportTest(unittest.TestCase):
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id", metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.measurements.find.return_value = [
             dict(
@@ -513,6 +515,8 @@ class ReportTest(unittest.TestCase):
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
         date_time = request.report_date = iso_timestamp()
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id", metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = None
         self.database.measurements.find.return_value = []
         self.database.reports.distinct.return_value = ["report_uuid"]
@@ -522,8 +526,8 @@ class ReportTest(unittest.TestCase):
                 subject_without_metrics=dict(metrics=dict()),
                 subject_uuid=dict(
                     metrics=dict(
-                        metric_with_tag=dict(tags=["tag"]),
-                        metric_without_tag=dict(tags=["other tag"])))))
+                        metric_with_tag=dict(type="metric_type", tags=["tag"]),
+                        metric_without_tag=dict(type="metric_type", tags=["other tag"])))))
         self.assertEqual(
             dict(
                 summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
@@ -531,5 +535,5 @@ class ReportTest(unittest.TestCase):
                 summary_by_subject=dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1)),
                 title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
                 timestamp=date_time, subjects=dict(
-                    subject_uuid=dict(metrics=dict(metric_with_tag=dict(tags=["tag"]))))),
+                    subject_uuid=dict(metrics=dict(metric_with_tag=dict(type="metric_type", tags=["tag"]))))),
             get_tag_report("tag", self.database))
