@@ -10,6 +10,6 @@ it('renders without crashing', () => {
 
 it('renders measurements without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<TrendGraph measurements={[{value: "1", start: "2019-09-29", end: "2019-09-30"}]} />, div);
+  ReactDOM.render(<TrendGraph measurements={[{count: {value: "1"}, start: "2019-09-29", end: "2019-09-30"}]} scale="count" />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
