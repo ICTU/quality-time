@@ -12,12 +12,13 @@ export function TrendGraph(props) {
   let max_y = 10;
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
-    const m = measurement.value !== null ? Number(measurement.value) : null;
-    if (m !== null && m > max_y) { max_y = m }
+    const value = measurement[props.scale].value || null;
+    const y = value !== null ? Number(value) : null;
+    if (y !== null && y > max_y) { max_y = y }
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
-    measurements.push({ y: m, x: x1 });
-    measurements.push({ y: m, x: x2 });
+    measurements.push({ y: y, x: x1 });
+    measurements.push({ y: y, x: x2 });
   }
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
   return (

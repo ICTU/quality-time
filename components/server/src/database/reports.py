@@ -6,7 +6,7 @@ import pymongo
 from pymongo.database import Database
 
 from utilities.functions import iso_timestamp
-from utilities.type import Summary
+from .datamodels import latest_datamodel
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
@@ -39,21 +39,22 @@ def summarize_report(database: Database, report) -> None:
     from .measurements import last_measurements  # pylint:disable=cyclic-import
     status_color_mapping = dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
-    summary = dict(red=0, green=0, yellow=0, grey=0, white=0)
-    summary_by_subject: Dict[str, Summary] = dict()
-    summary_by_tag: Dict[str, Summary] = dict()
+    report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
+    report["summary_by_subject"] = dict()
+    report["summary_by_tag"] = dict()
     last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
+    datamodel = latest_datamodel(database)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
-            last_measurement = last_measurements_by_metric_uuid.get(metric_uuid)
-            color = status_color_mapping.get(last_measurement["status"], "white") if last_measurement else "white"
-            summary[color] += 1
-            summary_by_subject.setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+            last_measurement = last_measurements_by_metric_uuid.get(metric_uuid, dict())
+            scale = metric.get("scale") or datamodel["metrics"][metric["type"]].get("default_scale", "count")
+            status = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
+            color = status_color_mapping.get(status, "white")
+            report["summary"][color] += 1
+            report["summary_by_subject"].setdefault(
+                subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
             for tag in metric["tags"]:
-                summary_by_tag.setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-    report["summary"] = summary
-    report["summary_by_subject"] = summary_by_subject
-    report["summary_by_tag"] = summary_by_tag
+                report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 
 
 def latest_report(database: Database, report_uuid: str):

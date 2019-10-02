@@ -138,8 +138,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
         description=f"{sessions.user(database)} changed the {metric_attribute} of metric '{data.metric_name}' of "
                     f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     insert_new_report(database, data.report)
-    if metric_attribute in (
-            "accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "scale", "target"):
+    if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target"):
         latest = latest_measurement(database, metric_uuid)
         if latest:
             return insert_new_measurement(database, latest, data.metric)
