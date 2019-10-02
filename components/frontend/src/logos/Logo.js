@@ -10,6 +10,7 @@ import JaCoCo from './jacoco.png';
 import Jenkins from './jenkins.png';
 import Jira from './jira.png';
 import Junit from './junit.png';
+import NCover from './ncover.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
@@ -32,6 +33,7 @@ export function Logo(props) {
         jenkins: Jenkins,
         jira: Jira,
         junit: Junit,
+        ncover: NCover,
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,
