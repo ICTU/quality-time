@@ -31,6 +31,23 @@ class SonarQubeTest(SourceCollectorTestCase):
             response)
         self.assert_value("2", response)
 
+    def test_commented_out_code(self):
+        """Test that the number of lines with commented out code is returned."""
+        json = dict(total="2")
+        metric = dict(type="commented_out_code", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_value("2", response)
+        self.assert_total("100", response)
+
+    def test_complex_units(self):
+        """Test that the number of lines with commented out code is returned."""
+        complex_units_json = dict(total="2")
+        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
+        metric = dict(type="complex_units", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_side_effect=[complex_units_json, functions_json] * 3)
+        self.assert_value("2", response)
+        self.assert_total("4", response)
+
     def test_tests(self):
         """Test that the number of tests is returned."""
         json = dict(component=dict(measures=[dict(metric="tests", value="88")]))
@@ -70,13 +87,25 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_value("10", response)
         self.assert_total("100", response)
 
+    def test_many_parameters(self):
+        """Test that the number of functions with too many parameters is returned."""
+        self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
+        many_parameters_json = dict(total="2", issues=[])
+        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
+        metric = dict(type="many_parameters", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_side_effect=[many_parameters_json, functions_json] * 3)
+        self.assert_value("2", response)
+        self.assert_total("4", response)
+
     def test_long_units(self):
         """Test that the number of long units is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
-        json = dict(total="2", issues=[])
+        long_units_json = dict(total="2", issues=[])
+        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="long_units", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = self.collect(metric, get_request_json_side_effect=[long_units_json, functions_json] * 3)
         self.assert_value("2", response)
+        self.assert_total("4", response)
 
     def test_source_up_to_dateness(self):
         """Test that the number of days since the last analysis is returned."""
@@ -89,14 +118,18 @@ class SonarQubeTest(SourceCollectorTestCase):
 
     def test_suppressed_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
-        json = 2 * [
-            dict(total="1",
-                 issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG")]),
-            dict(total="1",
-                 issues=[dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL",
-                              resolution="WONTFIX")])]
+        violations_json = dict(
+            total="1", issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG")])
+        wont_fix_json = dict(
+            total="1",
+            issues=[
+                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL", resolution="WONTFIX")])
+        total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=json)
+        response = self.collect(
+            metric, get_request_json_side_effect=[violations_json, wont_fix_json, total_violations_json] * 3)
+        self.assert_value("2", response)
+        self.assert_total("4", response)
         self.assert_entities(
             [
                 dict(component="a", key="a", message="a", severity="info", type="bug",
@@ -105,7 +138,6 @@ class SonarQubeTest(SourceCollectorTestCase):
                      resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b")
             ],
             response)
-        self.assert_value("2", response)
 
     def test_loc(self):
         """Test that the number of lines of code is returned."""

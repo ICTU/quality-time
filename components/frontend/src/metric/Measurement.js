@@ -23,8 +23,8 @@ export function Measurement(props) {
   } else {
     latest_measurement = props.measurements[props.measurements.length - 1];
     sources = latest_measurement.sources;
-    value = latest_measurement[metric_scale].value || "?";
-    status = latest_measurement[metric_scale].status || null;
+    value = (latest_measurement[metric_scale] && latest_measurement[metric_scale].value) || "?";
+    status = (latest_measurement[metric_scale] && latest_measurement[metric_scale].status) || null;
     start = new Date(latest_measurement.start);
     end = new Date(latest_measurement.end);
     measurement_timestring = latest_measurement.end;

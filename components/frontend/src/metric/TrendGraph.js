@@ -12,7 +12,7 @@ export function TrendGraph(props) {
   let max_y = 10;
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
-    const value = measurement[props.scale].value || null;
+    const value = (measurement[props.scale] && measurement[props.scale].value) || null;
     const y = value !== null ? Number(value) : null;
     if (y !== null && y > max_y) { max_y = y }
     const x1 = new Date(measurement.start);
