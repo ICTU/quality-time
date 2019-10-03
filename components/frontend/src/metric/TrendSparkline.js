@@ -5,7 +5,7 @@ export function TrendSparkline(props) {
   let measurements = [];
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
-    const value = measurement[props.scale].value || null;
+    const value = (measurement[props.scale] && measurement[props.scale].value) || null;
     const y = value !== null ? Number(value) : null;
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);

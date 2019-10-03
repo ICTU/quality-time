@@ -1,6 +1,6 @@
 """Collectors for SonarQube."""
 
-from typing import Dict
+from typing import Dict, List
 
 from dateutil.parser import isoparse
 import requests
@@ -38,10 +38,10 @@ class SonarQubeViolations(SourceCollector):
         return f"&rules={','.join(rules)}" if rules else ""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(sum(int(response.json()["total"]) for response in responses))
+        return str(sum([int(response.json().get("total", 0)) for response in responses]))
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [self._entity(issue, response) for response in responses for issue in response.json()["issues"]]
+        return [self._entity(issue, response) for response in responses for issue in response.json().get("issues", [])]
 
     def __issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
         """Generate a landing url for the issue."""
@@ -63,25 +63,52 @@ class SonarQubeViolations(SourceCollector):
 class SonarQubeCommentedOutCode(SonarQubeViolations):
     """SonarQube commented out code collector."""
 
+    # Unfortunately, the SonarQube API for commented out code doesn't seem to return the number of lines commented out,
+    # so we can't compute a percentage of commented out code. And hence this collector is not a subclass of
+    # SonarQubeViolationsWithPercentageScale.
+
     rules_parameter = "commented_out_rules"
 
 
-class SonarQubeComplexUnits(SonarQubeViolations):
+class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
+    """SonarQube violations collectors that support the percentage scale."""
+
+    total_metric = "Subclass responsibility"
+
+    def _get_source_responses(self, api_url: URL) -> Responses:
+        """Next to the violations, also get the total number of units as basis for the percentage scale."""
+        responses = super()._get_source_responses(api_url)
+        url = SourceCollector._api_url(self)  # pylint: disable=protected-access
+        component = self._parameter("component")
+        api_url = URL(f"{url}/api/measures/component?component={component}&metricKeys={self.total_metric}")
+        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
+
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
+        measures: List[Dict[str, str]] = []
+        for response in responses:
+            measures.extend(response.json().get("component", {}).get("measures", []))
+        return str(sum(int(measure["value"]) for measure in measures))
+
+
+class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube long methods collector."""
 
     rules_parameter = "complex_unit_rules"
+    total_metric = "functions"
 
 
-class SonarQubeLongUnits(SonarQubeViolations):
+class SonarQubeLongUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube long methods collector."""
 
     rules_parameter = "long_unit_rules"
+    total_metric = "functions"
 
 
-class SonarQubeManyParameters(SonarQubeViolations):
+class SonarQubeManyParameters(SonarQubeViolationsWithPercentageScale):
     """SonarQube many parameters collector."""
 
     rules_parameter = "many_parameter_rules"
+    total_metric = "functions"
 
 
 class SonarQubeSuppressedViolations(SonarQubeViolations):
@@ -90,13 +117,25 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
     rules_parameter = "suppression_rules"
 
     def _get_source_responses(self, api_url: URL) -> Responses:
-        """Next to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube."""
+        """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
+        as well as the total number of violations."""
         responses = super()._get_source_responses(api_url)
         url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
-        api_url = URL(f"{url}/api/issues/search?componentKeys={component}&status=RESOLVED&"
-                      "resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
-        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
+        all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}")
+        resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
+        for issues_api_url in (resolved_issues_api_url, all_issues_api_url):
+            responses.append(requests.get(issues_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials()))
+        return responses
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return super()._parse_source_responses_value(responses[:-1])
+
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
+        return str(responses[-1].json()["total"])
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        return super()._parse_source_responses_entities(responses[:-1])
 
     def _entity(self, issue, response: requests.Response) -> Entity:
         """Also add the resolution to the entity."""
