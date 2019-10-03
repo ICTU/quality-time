@@ -238,18 +238,15 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
 
 def _basic_auth_credentials(params) -> Optional[Tuple[str, str]]:
     """Return the basic authentication credentials, if any."""
-    token = params.get("private_token", "")
-    if token:
-        return token, ""
-    username = params.get("username", "")
-    password = params.get("password", "")
-    return (username, password) if username and password else None
+    if 'private_token' in params:
+        return params["private_token"], ""
+    return (params["username"], params["password"]) if 'username' in params and 'password' in params else None
 
-def _check_url_availability(parameter_value: str, params):
+def _check_url_availability(response_json: dict, param_key):
     try:
-        response = requests.get(parameter_value, auth=_basic_auth_credentials(params))
+        response = requests.get(response_json[param_key], auth=_basic_auth_credentials(response_json))
         return dict(status_code=response.status_code, reason=response.reason)
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
@@ -272,18 +269,14 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
     ret_val = insert_new_report(database, data.report)
 
     urls_param_keys = [param_key for param_key in data.datamodel["sources"][data.source["type"]]["parameters"]
-            if data.datamodel["sources"][data.source["type"]]["parameters"][param_key]['type'] == 'url']
+                       if data.datamodel["sources"][data.source["type"]]["parameters"][param_key]['type'] == 'url']
 
     if urls_param_keys:
         ret_val['availability'] = []
         for param_key in urls_param_keys:
-            availability = _check_url_availability(response_json[param_key], data.source["parameters"])
+            availability = _check_url_availability(response_json, param_key)
             availability['parameter_key'] = param_key
             ret_val['availability'].append(availability)
-
-    # if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "url":
-    #     ret_val['availability'] = _check_url_availability(parameter_value, data.source["parameters"])
-    #     ret_val['availability']['parameter_key'] = parameter_key
 
     return ret_val
 

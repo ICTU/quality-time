@@ -347,6 +347,49 @@ class PostSourceParameterTest(unittest.TestCase):
             self.report["delta"])
 
     @patch.object(requests, 'get')
+    def test_url_with_user(self, mock_get, request):
+        """Test that the source url can be changed and that the availability is checked."""
+        database = self.database
+        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
+            type="url"), username=dict(type="string"), password=dict(type="pwd")))))
+        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        request.json = dict(url="https://url", username='un', password='pwd')
+        response = post_source_parameter("report_uuid", "source_uuid", "url", database)
+        self.assertTrue(response['ok'])
+        self.assertEqual(response['availability'],
+                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'}])
+        self.database.reports.insert.assert_called_once_with(self.report)
+        mock_get.assert_called_once_with('https://url', auth=('un', 'pwd'))
+
+    @patch.object(requests, 'get')
+    def test_url_no_url_type(self, mock_get, request):
+        """Test that the source url can be changed and that the availability is checked."""
+        database = self.database
+        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
+            type="string"), username=dict(type="string"), password=dict(type="pwd")))))
+        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        request.json = dict(url="unimportant")
+        response = post_source_parameter("report_uuid", "source_uuid", "url", database)
+        self.assertEqual(response, dict(ok=True))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        mock_get.assert_not_called()
+
+    @patch.object(requests, 'get')
+    def test_url_with_token(self, mock_get, request):
+        """Test that the source url can be changed and that the availability is checked."""
+        database = self.database
+        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
+            type="url"), username=dict(type="string"), private_token=dict(type="pwd")))))
+        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        request.json = dict(url="https://url", private_token='xxx')
+        response = post_source_parameter("report_uuid", "source_uuid", "url", database)
+        self.assertTrue(response['ok'])
+        self.assertEqual(response['availability'],
+                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'}])
+        self.database.reports.insert.assert_called_once_with(self.report)
+        mock_get.assert_called_once_with('https://url', auth=('xxx', ''))
+
+    @patch.object(requests, 'get')
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter is changed."""
         database = self.database
