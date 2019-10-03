@@ -1,11 +1,14 @@
 """Azure Devops Server metric collector."""
 
 from abc import ABC
+from datetime import datetime
+from typing import cast, List
 
+from dateutil.parser import parse
 import requests
 
 from utilities.type import Entities, Responses, URL, Value
-from .source_collector import SourceCollector
+from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
 class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -62,3 +65,20 @@ class AzureDevopsReadyUserStoryPoints(AzureDevopsBase):
             for entity, work_item in zip(entities, responses[1].json()["value"]):
                 entity["story_points"] = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
         return entities
+
+
+class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
+    """Collector for unmerged branches."""
+
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        project = str(url).split("/")[-1]
+        return URL(f"{url}/_apis/git/repositories/{project}/stats/branches?api-version=5.1")
+
+    def _unmerged_branches(self, responses: Responses) -> List:
+        return [branch for branch in responses[0].json()["value"] if branch["name"] != "master" and
+                int(branch["aheadCount"]) > 0 and
+                self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
+
+    def _commit_datetime(self, branch) -> datetime:
+        return parse(branch["commit"]["committer"]["date"])

@@ -1,5 +1,7 @@
 """Unit tests for the Azure Devops Server (formerly Team Foundation Server) source."""
 
+from datetime import datetime, timezone
+
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -64,3 +66,32 @@ class AzureDevopsReadyStoryPointsTest(AzureDevopsTestCase):
             self.metric, post_request_json_return_value=dict(workItems=[]),
             get_request_json_return_value=dict(value=[]))
         self.assert_value("0", response)
+
+
+class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
+    """Unit tests for the Azure DevOps Server unmerged branches."""
+
+    def setUp(self):
+        super().setUp()
+        self.sources = dict(
+            source_id=dict(type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+        self.metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
+
+    def test_no_branches_except_master(self):
+        """Test that the number of unmerged branches is returned."""
+        response = self.collect(self.metric, get_request_json_return_value=dict(value=[dict(name="master")]))
+        self.assert_value("0", response)
+        self.assert_entities([], response)
+
+    def test_unmerged_branches(self):
+        """Test that the number of unmerged branches is returned."""
+        response = self.collect(
+            self.metric,
+            get_request_json_return_value=dict(
+                value=[
+                    dict(name="master"),
+                    dict(name="branch", aheadCount=1, commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))]))
+        self.assert_value("1", response)
+        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
+        self.assert_entities(
+            [dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03")], response)
