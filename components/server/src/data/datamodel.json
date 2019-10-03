@@ -608,6 +608,7 @@
             "near_target": "5",
             "default_source": "gitlab",
             "sources": [
+                "azure_devops",
                 "gitlab",
                 "manual_number",
                 "hq",
@@ -751,7 +752,8 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points"
+                        "ready_user_story_points",
+                        "unmerged_branches"
                     ]
                 },
                 "private_token": {
@@ -762,7 +764,8 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points"
+                        "ready_user_story_points",
+                        "unmerged_branches"
                     ]
                 },
                 "wiql": {
@@ -775,9 +778,38 @@
                         "issues",
                         "ready_user_story_points"
                     ]
+                },
+                "inactive_days": {
+                    "name": "Number of days since last commit after which to consider branches inactive",
+                    "type": "integer",
+                    "mandatory": false,
+                    "unit": "days",
+                    "min_value": "1",
+                    "default_value": "7",
+                    "metrics": [
+                        "unmerged_branches"
+                    ]
                 }
             },
             "entities": {
+                "unmerged_branches": {
+                    "name": "branch",
+                    "name_plural": "branches",
+                    "attributes": [
+                        {
+                            "name": "Branch name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Date of most recent commit",
+                            "key": "commit_date"
+                        },
+                        {
+                            "name": "Age of most recent commit (in days)",
+                            "key": "commit_age"
+                        }
+                    ]
+                },
                 "issues": {
                     "name": "issue",
                     "name_plural": "issues",
