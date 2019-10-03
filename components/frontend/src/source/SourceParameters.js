@@ -28,7 +28,7 @@ export function SourceParameters(props) {
                     required={all_parameters[parameter_key].mandatory}
                     source={props.source}
                     source_uuid={props.source_uuid}
-                    warning={props.changed_filed ? (props.changed_filed.parameter_key === parameter_key) : false}
+                    warning={props.changed_param_key ? (props.changed_param_key === parameter_key) : false}
                 />
             </Grid.Column>
         )

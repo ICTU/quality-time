@@ -8,6 +8,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_source, set_source_attribute } from '../api/source';
 
 export function Source(props) {
+    console.log('~~~', props)
     const source_type = props.datamodel.sources[props.source.type];
     return (
         <>
@@ -47,7 +48,7 @@ export function Source(props) {
                         report={props.report}
                         source={props.source}
                         source_uuid={props.source_uuid}
-                        changed_filed={props.changed_filed}
+                        changed_param_key={(props.changed_filed && props.changed_filed.source_uuid === props.source_uuid) ? props.changed_filed.parameter_key : null}
                     />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>

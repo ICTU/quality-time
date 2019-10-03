@@ -276,6 +276,7 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
         for param_key in urls_param_keys:
             availability = _check_url_availability(response_json, param_key)
             availability['parameter_key'] = param_key
+            availability['source_uuid'] = source_uuid
             ret_val['availability'].append(availability)
 
     return ret_val
