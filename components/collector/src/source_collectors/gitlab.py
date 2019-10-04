@@ -9,7 +9,7 @@ from dateutil.parser import parse
 import requests
 
 from utilities.type import Job, Jobs, Entities, Responses, URL, Value
-from .source_collector import SourceCollector
+from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
 class GitlabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -116,31 +116,15 @@ class GitlabSourceUpToDateness(GitlabBase):
         return quote(cast(str, self._parameter(parameter_key)), safe="")
 
 
-class GitlabUnmergedBranches(GitlabBase):
+class GitlabUnmergedBranches(GitlabBase, UnmergedBranchesSourceCollector):
     """Collector class to measure the number of unmerged branches."""
 
     def _api_url(self) -> URL:
         return self._gitlab_api_url("repository/branches")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self.__unmerged_branches(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [
-            dict(key=branch["name"], name=branch["name"], commit_age=str(self.__commit_age(branch).days),
-                 commit_date=str(self.__commit_datetime(branch).date()))
-            for branch in self.__unmerged_branches(responses)]
-
-    def __unmerged_branches(self, responses: Responses) -> List:
-        """Return the unmerged branches."""
+    def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
-                self.__commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
+                self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
 
-    def __commit_age(self, branch) -> timedelta:
-        """Return the age of the last commit on the branch."""
-        return datetime.now(timezone.utc) - self.__commit_datetime(branch)
-
-    @staticmethod
-    def __commit_datetime(branch) -> datetime:
-        """Return the age of the last commit on the branch."""
+    def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committed_date"])

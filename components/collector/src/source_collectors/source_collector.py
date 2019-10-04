@@ -3,7 +3,7 @@
 import logging
 import traceback
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
@@ -152,3 +152,28 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
         fake_response = requests.Response()  # Return a fake response so that the parse methods will be called
         fake_response.status_code = HTTPStatus.OK
         return [fake_response]
+
+
+class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for unmerged branches source collectors."""
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(self._unmerged_branches(responses)))
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        return [
+            dict(key=branch["name"], name=branch["name"], commit_age=str(self._commit_age(branch).days),
+                 commit_date=str(self._commit_datetime(branch).date()))
+            for branch in self._unmerged_branches(responses)]
+
+    def _commit_age(self, branch) -> timedelta:
+        """Return the age of the last commit on the branch."""
+        return datetime.now(timezone.utc) - self._commit_datetime(branch)
+
+    @abstractmethod
+    def _unmerged_branches(self, responses: Responses) -> List:
+        """Return the list of unmerged branch."""
+
+    @abstractmethod
+    def _commit_datetime(self, branch) -> datetime:
+        """Return the date and time of the last commit on the branch."""
