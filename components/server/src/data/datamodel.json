@@ -442,6 +442,7 @@
             "near_target": "7",
             "default_source": "sonarqube",
             "sources": [
+                "azure_devops",
                 "bandit",
                 "calendar",
                 "cxsast",
@@ -746,13 +747,14 @@
             "url": "https://azure.microsoft.com/en-us/services/devops/server/",
             "parameters": {
                 "url": {
-                    "name": "URL",
+                    "name": "URL including organization and project (e.g. https://dev.azure.com/{organization}/{project}",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
                         "issues",
                         "ready_user_story_points",
+                        "source_up_to_dateness",
                         "unmerged_branches"
                     ]
                 },
@@ -765,6 +767,7 @@
                     "metrics": [
                         "issues",
                         "ready_user_story_points",
+                        "source_up_to_dateness",
                         "unmerged_branches"
                     ]
                 },
@@ -777,6 +780,24 @@
                     "metrics": [
                         "issues",
                         "ready_user_story_points"
+                    ]
+                },
+                "file_path": {
+                    "name": "File or folder path",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "branch": {
+                    "name": "Branch",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "master",
+                    "metrics": [
+                        "source_up_to_dateness"
                     ]
                 },
                 "inactive_days": {
