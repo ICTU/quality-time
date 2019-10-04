@@ -663,6 +663,7 @@
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
+                    "validate_on": "username,password",
                     "metrics": [
                         "accessibility"
                     ]
