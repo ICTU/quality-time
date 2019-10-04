@@ -2,6 +2,7 @@
 
 import logging
 import traceback
+import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
@@ -64,13 +65,20 @@ class SourceCollector(ABC):
         """Translate the url parameter into the API url."""
         return URL(cast(str, self.__parameters.get("url", "")).strip("/"))
 
-    def _parameter(self, parameter_key: str) -> Union[str, List[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         """Return the parameter value."""
+
+        def quote_if_needed(parameter_value):
+            """Quote the string if needed."""
+            return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
+
         parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info:
-            return self.__parameters.get(parameter_key) or parameter_info["values"]
-        default_value = parameter_info.get("default_value", "")
-        return self.__parameters.get(parameter_key, default_value)
+            value = self.__parameters.get(parameter_key) or parameter_info["values"]
+        else:
+            default_value = parameter_info.get("default_value", "")
+            value = self.__parameters.get(parameter_key, default_value)
+        return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(item) for item in value]
 
     def __safely_get_source_responses(self, api_url: URL) -> Tuple[Responses, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden

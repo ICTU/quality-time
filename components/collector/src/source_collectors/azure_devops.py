@@ -7,6 +7,7 @@ from typing import cast, List
 from dateutil.parser import parse
 import requests
 
+from utilities.functions import days_ago
 from utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
@@ -82,3 +83,19 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committer"]["date"])
+
+
+class AzureDevopsSourceUpToDateness(SourceCollector):
+    """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
+
+    def _api_url(self) -> URL:
+        url = super()._api_url()
+        project = str(url).split("/")[-1]
+        path = self._parameter("file_path", quote=True)
+        branch = self._parameter("branch", quote=True)
+        search_criteria = \
+            f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
+        return URL(f"{url}/_apis/git/repositories/{project}/commits?{search_criteria}&api-version=5.1")
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(days_ago(parse(responses[0].json()["value"][0]["committer"]["date"])))

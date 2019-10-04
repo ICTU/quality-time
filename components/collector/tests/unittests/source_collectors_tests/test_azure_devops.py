@@ -95,3 +95,17 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
         self.assert_entities(
             [dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03")], response)
+
+
+class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
+    """Unit tests for the Azure DevOps Server source up-to-dateness."""
+
+    def test_age(self):
+        """Test that the age of the file is returned."""
+        sources = dict(
+            source_id=dict(type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+        metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
+        response = self.collect(
+            metric, get_request_json_return_value=dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))]))
+        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
+        self.assert_value(expected_age, response)

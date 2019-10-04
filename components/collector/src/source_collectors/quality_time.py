@@ -61,7 +61,7 @@ class QualityTimeMetrics(SourceCollector):
         "near target met (yellow)": "near_target_met", "technical debt target met (grey)": "debt_target_met",
         "unknown (white)": "unknown"}
 
-    def _parameter(self, parameter_key: str) -> Union[str, List[str]]:
+    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         # Override to map the human-readable status indicators to the values used internally
-        values = super()._parameter(parameter_key)
+        values = super()._parameter(parameter_key, quote)
         return [self.metric_status_map[value] for value in list(values)] if parameter_key == "status" else values
