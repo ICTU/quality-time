@@ -58,27 +58,27 @@ class App extends Component {
   }
 
   reload(json) {
-    this.changed_filed = null
+    this.changed_fileds = null
     if ( json && json.availability) {
-      this.changed_filed = json.availability[0] //TODO!!!!!!! (all urls have to be red)
+      this.changed_fileds = json.availability.filter((url_key) => url_key.status_code !== 200)
+      console.log('***json.availability>', json.availability, '---this.changed_fileds---', this.changed_fileds)
       json.availability.map((url_key) => {
-        if (url_key.status_code !== 200) {
-          console.log('8***88>', json)
-          toast({
-            title: 'URL connection error!',
-            type: 'warning',
-            time: 30000,
-            description: <p>{ 'HTTP code '+ url_key.status_code + ': ' + url_key.reason}</p>
-          });
-        } else if (url_key.status_code === 200) {
-          toast({
-              title: 'URL connection OK!',
-              type: 'success',
-              time: 30000
-          });
+          if (url_key.status_code !== 200) {
+            toast({
+              title: 'URL connection error!',
+              type: 'warning',
+              time: 30000,
+              description: <p>{ 'HTTP code '+ url_key.status_code + ': ' + url_key.reason}</p>
+            });
+          } else if (url_key.status_code === 200) {
+            toast({
+                title: 'URL connection OK!',
+                type: 'success',
+                time: 30000
+            });
+          }
+          return null
         }
-        return null
-      }
       )
     }
 
@@ -256,7 +256,7 @@ class App extends Component {
                 report={current_report}
                 report_date={report_date}
                 search_string={this.state.search_string}
-                changed_filed={this.changed_filed}
+                changed_fileds={this.changed_fileds}
               />
           }
         </Container>

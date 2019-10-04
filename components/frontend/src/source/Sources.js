@@ -32,7 +32,7 @@ export function Sources(props) {
                     report={props.report}
                     source={props.sources[source_uuid]}
                     source_uuid={source_uuid}
-                    changed_filed={props.changed_filed}
+                    changed_fileds={props.changed_fileds}
                 />
             </Segment>
         )

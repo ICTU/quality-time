@@ -61,7 +61,7 @@ export function Measurement(props) {
     stop_sort={props.stop_sort}
     subject_uuid={props.subject_uuid}
     unit={metric_unit}
-    changed_filed={props.changed_filed}
+    changed_fileds={props.changed_fileds}
   />
   return (
     <TableRowWithDetails show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>

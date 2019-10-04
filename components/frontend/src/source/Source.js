@@ -10,6 +10,27 @@ import { delete_source, set_source_attribute } from '../api/source';
 export function Source(props) {
     console.log('~~~', props)
     const source_type = props.datamodel.sources[props.source.type];
+
+    let a1 = ''
+    let a2 = ''
+
+    if (props.changed_fileds) {
+        console.log('a1~props.source_uuid~', props.source_uuid)
+        a1 = props.changed_fileds.filter((filed) => filed.source_uuid === props.source_uuid)
+        console.log('a1~', a1)
+    } else {
+        console.log('no changed_fileds')
+    }
+
+    if (a1) {
+        a2 = a1.map((filed) => filed.parameter_key)
+        console.log('a2~', a2)
+    } else {
+        console.log('WTF no a1')
+    }
+
+    let xxxa = props.changed_fileds ? props.changed_fileds.filter((filed) => filed.source_uuid === props.source_uuid).map((filed) => filed.parameter_key) : []
+    console.log('xxxa----', xxxa)
     return (
         <>
             <Header>
@@ -48,7 +69,7 @@ export function Source(props) {
                         report={props.report}
                         source={props.source}
                         source_uuid={props.source_uuid}
-                        changed_param_key={(props.changed_filed && props.changed_filed.source_uuid === props.source_uuid) ? props.changed_filed.parameter_key : null}
+                        changed_param_keys={xxxa}
                     />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>

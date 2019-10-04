@@ -43,7 +43,7 @@ export function Metric(props) {
       readOnly={props.readOnly}
       stop_sort={props.stop_sort}
       subject_uuid={props.subject_uuid}
-      changed_filed={props.changed_filed}
+      changed_fileds={props.changed_fileds}
     />
   )
 }

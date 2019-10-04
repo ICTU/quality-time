@@ -18,7 +18,7 @@ export function Subjects(props) {
           search_string={props.search_string}
           subject_uuid={subject_uuid}
           tags={props.tags}
-          changed_filed={props.changed_filed}
+          changed_fileds={props.changed_fileds}
         />
       )}
       {!props.readOnly &&
