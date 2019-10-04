@@ -32,8 +32,6 @@ class MetricCollector:
 
     def next_collection(self) -> datetime:
         """Return when the metric can/should be collected again."""
-        if any([collector.has_invalid_credentials() for collector in self.collectors.values()]):
-            return datetime.max  # Don't try to collect this metric again, except when its configuration changes
         return min([collector.next_collection() for collector in self.collectors.values()], default=datetime.min)
 
     def get(self) -> Measurement:

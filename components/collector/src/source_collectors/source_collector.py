@@ -5,7 +5,6 @@ import traceback
 import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
-from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
@@ -26,7 +25,6 @@ class SourceCollector(ABC):
     def __init__(self, source, datamodel) -> None:
         self._datamodel = datamodel
         self.__parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
-        self.__has_invalid_credentials = False
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
@@ -89,7 +87,6 @@ class SourceCollector(ABC):
         try:
             responses = self._get_source_responses(api_url)
             for response in responses:
-                self.__has_invalid_credentials = response.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN)
                 response.raise_for_status()
         except Exception:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
@@ -147,19 +144,13 @@ class SourceCollector(ABC):
         """Return when this source should be connected again for measurement data."""
         return datetime.now() + timedelta(seconds=15 * 60)
 
-    def has_invalid_credentials(self) -> bool:
-        """Return whether this collector has been given invalid credentials."""
-        return self.__has_invalid_credentials
-
 
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 
     def _get_source_responses(self, api_url: URL) -> Responses:
-        fake_response = requests.Response()  # Return a fake response so that the parse methods will be called
-        fake_response.status_code = HTTPStatus.OK
-        return [fake_response]
+        return [requests.Response()]  # Return a fake response so that the parse methods will be called
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
