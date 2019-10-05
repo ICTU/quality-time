@@ -145,27 +145,6 @@ class CollectorTest(unittest.TestCase):
                 metric_uuid="metric_uuid", report_uuid="report_uuid")),
         post.assert_has_calls(post_call, post_call)
 
-    def test_fetch_twice_with_invalid_credentials(self):
-        """Test that the metric is skipped on the second fetch if the credentials are invalid."""
-        self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
-        side_effect = [
-            self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response,
-            self.metrics_response]
-        with patch("requests.get", side_effect=side_effect):
-            with patch("requests.post") as post:
-                metric_collector = MetricsCollector()
-                metric_collector.fetch_measurements()
-                metric_collector.fetch_measurements()
-        post.assert_called_once_with(
-            "http://localhost:5001/measurements",
-            json=dict(
-                sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
-                         connection_error=None, parse_error=None, source_uuid="source_id")],
-                metric_uuid="metric_uuid", report_uuid="report_uuid"))
-
     def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
         self.metrics_response.json.return_value = dict(
