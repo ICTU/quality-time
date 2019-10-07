@@ -533,6 +533,7 @@
             "near_target": "0",
             "default_source": "jenkins_test_report",
             "sources": [
+                "azure_devops",
                 "jenkins_test_report",
                 "junit",
                 "manual_number",
@@ -755,6 +756,7 @@
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
+                        "tests",
                         "unmerged_branches"
                     ]
                 },
@@ -768,6 +770,7 @@
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
+                        "tests",
                         "unmerged_branches"
                     ]
                 },
@@ -809,6 +812,21 @@
                     "default_value": "7",
                     "metrics": [
                         "unmerged_branches"
+                    ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "incomplete",
+                        "failed",
+                        "not applicable",
+                        "passed"
+                    ],
+                    "metrics": [
+                        "tests"
                     ]
                 }
             },

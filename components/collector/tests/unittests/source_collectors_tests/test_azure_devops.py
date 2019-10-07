@@ -98,7 +98,7 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
 
 
 class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
-    """Unit tests for the Azure DevOps Server source up-to-dateness."""
+    """Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
     def test_age(self):
         """Test that the age of the file is returned."""
@@ -109,3 +109,34 @@ class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
             metric, get_request_json_return_value=dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))]))
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
         self.assert_value(expected_age, response)
+
+
+class AzureDevopsTestsTest(SourceCollectorTestCase):
+    """Unit tests for the Azure DevOps Server tests collector."""
+
+    def test_nr_of_tests(self):
+        """Test that the number of tests is returned."""
+        sources = dict(
+            source_id=dict(
+                type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx", test_result=[])))
+        metric = dict(type="tests", sources=sources, addition="sum")
+        response = self.collect(
+            metric,
+            get_request_json_return_value=dict(
+                value=[
+                    dict(build=dict(id="1"), passedTests=2),
+                    dict(build=dict(id="2"), passedTests=2, notApplicableTests=1),
+                    dict(build=dict(id="1"), passedTests=4),
+                    dict(build=dict(id="2"), passedTests=1)]))
+        self.assert_value("4", response)
+
+    def test_nr_of_failed_tests(self):
+        """Test that the number of failed tests is returned."""
+        sources = dict(
+            source_id=dict(
+                type="azure_devops",
+                parameters=dict(url="https://azure_devops", private_token="xxx", test_result=["failed"])))
+        metric = dict(type="tests", sources=sources, addition="sum")
+        response = self.collect(
+            metric, get_request_json_return_value=dict(value=[dict(build=dict(id="1"), unanalyzedTests=4)]))
+        self.assert_value("4", response)
