@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import re
-from typing import Collection, Tuple
+from typing import cast, Collection, Tuple
 import urllib
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
@@ -14,7 +14,7 @@ from .type import Namespaces, URL
 
 def parse_source_response_xml(response: requests.Response, allowed_root_tags: Collection[str] = None) -> Element:
     """Parse the XML from the source response."""
-    tree = ElementTree.fromstring(response.text)
+    tree = cast(Element, ElementTree.fromstring(response.text))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
         raise AssertionError(f'The XML root element should be one of "{allowed_root_tags}" but is "{tree.tag}"')
     return tree

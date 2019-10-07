@@ -45,7 +45,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = self._parameter("project")
         projects = project_response.json()
-        return [project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"]
+        return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
 
     def _api_get(self, api: str, token: str) -> requests.Response:
         """Open the API and return the response."""

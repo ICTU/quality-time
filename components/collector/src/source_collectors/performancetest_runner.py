@@ -29,10 +29,9 @@ class PerformanceTestRunnerSlowTransactions(SourceCollector):
     def __slow_transactions(self, responses: Responses) -> List[Tag]:
         """Return the slow transactions in the performancetest report."""
         thresholds = self._parameter("thresholds")
-        threshold_colors = map(dict(high="red", warning="yellow").get, thresholds)
         soup = BeautifulSoup(responses[0].text, "html.parser")
         slow_transactions: List[Tag] = []
-        for color in threshold_colors:
+        for color in thresholds:
             slow_transactions.extend(soup.select(f"tr.transaction:has(> td.{color}.evaluated)"))
         return slow_transactions
 
@@ -60,7 +59,7 @@ class PerformanceTestRunnerPerformanceTestStability(SourceCollector):
     """Collector for the performancetest stability."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_stability").string
+        return str(BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_stability").string)
 
 
 class PerformanceTestRunnerTests(SourceCollector):
@@ -83,7 +82,7 @@ class PerformanceTestRunnerScalability(SourceCollector):
     """Collector for the scalability metric."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        breaking_point = BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_scalability").string
+        breaking_point = str(BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_scalability").string)
         if breaking_point == "100":
             raise AssertionError(
                 "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")

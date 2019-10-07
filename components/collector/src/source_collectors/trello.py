@@ -28,7 +28,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         """Return the id of the board specified by the user."""
         url = self.__url_with_auth("1/members/me/boards?fields=name")
         boards = requests.get(url, timeout=self.TIMEOUT).json()
-        return [board for board in boards if self._parameter("board") in board.values()][0]["id"]
+        return str([board for board in boards if self._parameter("board") in board.values()][0]["id"])
 
     def __url_with_auth(self, api_part: str) -> str:
         """Return the authentication URL parameters."""

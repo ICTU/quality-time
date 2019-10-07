@@ -32,7 +32,7 @@ def recent_measurements(database: Database, metric_uuid: str, max_iso_timestamp:
 
 def count_measurements(database: Database, report_uuid: str) -> int:
     """Return the number of measurements."""
-    return database.measurements.count_documents(filter={"report_uuid": report_uuid})
+    return int(database.measurements.count_documents(filter={"report_uuid": report_uuid}))
 
 
 def update_measurement_end(database: Database, measurement_id: str):
@@ -44,7 +44,7 @@ def update_measurement_end(database: Database, measurement_id: str):
         filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
 
 
-def insert_new_measurement(database: Database, measurement, metric=None):
+def insert_new_measurement(database: Database, measurement: Dict, metric=None) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]

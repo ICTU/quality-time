@@ -825,6 +825,12 @@
                         "not applicable",
                         "passed"
                     ],
+                    "api_values": {
+                        "incomplete": "incompleteTests",
+                        "failed": "unanalyzedTests",
+                        "passed": "passedTests",
+                        "not applicable": "notApplicableTests"
+                    },
                     "metrics": [
                         "tests"
                     ]
@@ -2315,6 +2321,12 @@
                         "medium",
                         "high"
                     ],
+                    "api_values": {
+                        "informational": "0",
+                        "low": "1",
+                        "medium": "2",
+                        "high": "3"
+                    },
                     "metrics": [
                         "security_warnings"
                     ]
@@ -2443,6 +2455,10 @@
                         "high",
                         "warning"
                     ],
+                    "api_values": {
+                        "high": "red",
+                        "warning": "yellow"
+                    },
                     "metrics": [
                         "slow_transactions"
                     ]
@@ -2562,6 +2578,13 @@
                         "technical debt target met (grey)",
                         "unknown (white)"
                     ],
+                    "api_values": {
+                       "target met (green)": "target_met",
+                        "near target met (yellow)": "near_target_met",
+                        "target not met (red)": "target_not_met",
+                        "technical debt target met (grey)": "debt_target_met",
+                        "unknown (white)": "unknown"
+                    },
                     "metrics": [
                         "metrics"
                     ]

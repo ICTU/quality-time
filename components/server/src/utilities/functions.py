@@ -18,7 +18,7 @@ def iso_timestamp() -> str:
 def report_date_time() -> str:
     """Return the report date requested as query parameter."""
     report_date_string = dict(bottle.request.query).get("report_date")
-    return report_date_string.replace("Z", "+00:00") if report_date_string else iso_timestamp()
+    return str(report_date_string).replace("Z", "+00:00") if report_date_string else iso_timestamp()
 
 
 def uuid() -> str:
@@ -28,7 +28,7 @@ def uuid() -> str:
 
 def sanitize_html(html_text: str) -> str:
     """Clean dangerous tags from the HTML and convert urls into anchors."""
-    sanitized_html = autolink_html(clean_html(html_text))
+    sanitized_html = str(autolink_html(clean_html(html_text)))
     # The clean_html function creates HTML elements. That means if the user enters a simple text string it gets
     # enclosed in a <p> tag. Remove it to not confuse users that haven't entered any HTML:
     if sanitized_html.count("<") == 2:

@@ -8,11 +8,33 @@ The [`example-reports`](example-reports) are imported when the server is started
 
 The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Every time the server is started, the latest datamodel is imported into the database. The server [`data` package](src/data/datamodel.json) contains the `datamodel.json`.
 
-The datamodel consists of three parts:
+The datamodel consists of four parts:
 
+- Scales
 - Metrics
 - Sources
 - Subjects
+
+### Scales
+
+The `scales` part of the datamodel defines the scales uses. At the time of writing these include an absolute count scale and a percentage scale.
+
+```json
+{
+    "scales": {
+       "count": {
+           "name": "Count",
+           "description": "..."
+       },
+       "percentage": {
+           "name": "Percentage",
+           "description": "..."
+       }
+    }
+}
+```
+
+Each metric defines the scales it supports.
 
 ### Metrics
 
@@ -24,6 +46,11 @@ The `metrics` part of the datamodel is an object where the keys are the metric t
         "complex_units": {
             "name": "Complex units",
             "description": "Measure the number of units (classes, functions, methods, files) that are too complex.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
             "unit": "complex units",
             "addition": "sum",
             "direction": "<",
@@ -43,7 +70,7 @@ The `metrics` part of the datamodel is an object where the keys are the metric t
 }
 ```
 
-The `name` is the default name of metrics of this type. The `description` describes what the metric measures. The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units. The `addition` determines how values from multiple sources are combined: possible values are `max`, `min`, and `sum`. The `direction` specifies whether smaller measurement values are better or worse. The `target` is the default target value for the metric. The `near_target` is when the metric becomes red. Values between `target` and `near_target` are yellow. The list of `sources` contains the keys of source types that support this metric type. Finally, `tags` are simple strings used to group related metrics.
+The `name` is the default name of metrics of this type. The `description` describes what the metric measures. The `scales` list shows which scales the metric supports and the `default_scale` specifies which scale is the default scale. The `unit` is the default unit of the metric, e.g. lines of code, security warnings, or in the above example, complex units. The `addition` determines how values from multiple sources are combined: possible values are `max`, `min`, and `sum`. The `direction` specifies whether smaller measurement values are better or worse. The `target` is the default target value for the metric. The `near_target` is when the metric becomes red. Values between `target` and `near_target` are yellow. The list of `sources` contains the keys of source types that support this metric type. Finally, `tags` are simple strings used to group related metrics.
 
 Users with sufficient rights can override the default name, unit, and target of metrics via the user interface.
 
@@ -84,6 +111,27 @@ The `sources` part of the datamodel is an object where the keys are the source t
                     "metrics": [
                         "issues"
                     ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "incomplete",
+                        "failed",
+                        "not applicable",
+                        "passed"
+                    ],
+                    "api_values": {
+                        "incomplete": "incompleteTests",
+                        "failed": "unanalyzedTests",
+                        "passed": "passedTests",
+                        "not applicable": "notApplicableTests"
+                    },
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {
@@ -123,7 +171,7 @@ The `sources` part of the datamodel is an object where the keys are the source t
 
 The `name` is the default name of sources of this type. The `description` gives some background information on the source type. The `url` links to a landing page describing the source type.
 
-The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`. If the `type` is `integer` the `unit` and `min_value` need to be specified and optionally a `max_value`. If the `type` is `multiple_choice` the possible `values` need to be specified. A `default_value` can also be given. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
+The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`. If the `type` is `integer` the `unit` and `min_value` need to be specified and optionally a `max_value`. If the `type` is `multiple_choice` the possible `values` need to be specified. A `default_value` can also be given. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
 The `entities` object contains a list of columns to be used to display the entities of the metric. Each column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. The only other types supported at the moment are `date` and `datetime`. The column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states).
 

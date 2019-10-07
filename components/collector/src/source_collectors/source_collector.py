@@ -73,6 +73,8 @@ class SourceCollector(ABC):
         parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info:
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
+            if "api_values" in parameter_info:
+                value = [parameter_info["api_values"].get(v, v) for v in value]
         else:
             default_value = parameter_info.get("default_value", "")
             value = self.__parameters.get(parameter_key, default_value)

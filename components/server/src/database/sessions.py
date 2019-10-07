@@ -22,7 +22,7 @@ def delete(database: Database, session_id: str) -> None:
 def valid(database: Database, session_id: str) -> bool:
     """Return whether the session is present in the database and has not expired."""
     session = find_one(database, session_id)
-    return session.get("session_expiration_datetime", datetime.min) > datetime.now() if session else False
+    return bool(session.get("session_expiration_datetime", datetime.min) > datetime.now()) if session else False
 
 
 def find_one(database: Database, session_id: str):

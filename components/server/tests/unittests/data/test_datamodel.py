@@ -139,3 +139,15 @@ class DataModelTest(unittest.TestCase):
                     break
             else:  # pragma: nocover
                 self.fail(f"Scale {scale} not used for any metric.")
+
+    def test_parameter_api_values(self):
+        """Test that the api values are only used for multiple choice parameters and that the keys match with the
+        possible regular values. The api values are the values used in the source."""
+        for source_id, source in self.datamodel["sources"].items():
+            for parameter_key, parameter in source["parameters"].items():
+                if "api_values" not in parameter:
+                    continue
+                self.assertTrue(
+                    "values" in parameter,
+                    f"Parameter {parameter_key} of source {source_id} has api values, but no values.")
+                self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))

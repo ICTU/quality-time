@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import cast, Dict, List
 
 import cachetools.func
 from dateutil.parser import parse
@@ -30,7 +30,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = self._api_url()
         user_id = self._get_json(URL(f"{api_url}/api/user"), token)["_id"]
         boards = self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"), token)
-        return [board for board in boards if self._parameter("board") in board.values()][0]["_id"]
+        return str([board for board in boards if self._parameter("board") in board.values()][0]["_id"])
 
     def _lists(self, board_url: str, token: str) -> List:
         """Return the lists on the board."""
@@ -54,7 +54,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         lists_to_ignore = cast(List[str], self._parameter("lists_to_ignore"))
         return card_list["_id"] in lists_to_ignore or card_list["title"] in lists_to_ignore
 
-    def _ignore_card(self, card) -> bool:  # pylint: disable=unused-argument,no-self-use
+    def _ignore_card(self, card: Dict) -> bool:  # pylint: disable=unused-argument,no-self-use
         """Return whether the card should be ignored."""
         return card.get("archived", False)
 
@@ -76,7 +76,7 @@ class WekanIssues(WekanBase):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
         return entities
 
-    def _ignore_card(self, card) -> bool:
+    def _ignore_card(self, card: Dict) -> bool:
 
         def card_is_inactive() -> bool:
             """Return whether the card is inactive."""

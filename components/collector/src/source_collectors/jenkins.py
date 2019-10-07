@@ -56,7 +56,7 @@ class JenkinsJobs(SourceCollector):
         if builds:
             status = builds[0].get("result")
             if status:
-                return status.capitalize().replace("_", " ")
+                return str(status).capitalize().replace("_", " ")
         return "Not built"
 
 

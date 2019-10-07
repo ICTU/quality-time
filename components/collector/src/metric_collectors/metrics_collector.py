@@ -12,7 +12,7 @@ from utilities.type import URL
 from .metric_collector import MetricCollector
 
 
-def get(api: URL) -> Dict:
+def get(api: URL) -> Any:
     """Get data from the API url."""
     try:
         return requests.get(api).json()
