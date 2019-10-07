@@ -74,7 +74,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
     def _api_url(self) -> URL:
         url = super()._api_url()
         project = str(url).split("/")[-1]
-        return URL(f"{url}/_apis/git/repositories/{project}/stats/branches?api-version=5.1")
+        return URL(f"{url}/_apis/git/repositories/{project}/stats/branches?api-version=4.1")
 
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json()["value"] if branch["name"] != "master" and
@@ -95,7 +95,29 @@ class AzureDevopsSourceUpToDateness(SourceCollector):
         branch = self._parameter("branch", quote=True)
         search_criteria = \
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
-        return URL(f"{url}/_apis/git/repositories/{project}/commits?{search_criteria}&api-version=5.1")
+        return URL(f"{url}/_apis/git/repositories/{project}/commits?{search_criteria}&api-version=4.1")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(days_ago(parse(responses[0].json()["value"][0]["committer"]["date"])))
+
+
+class AzureDevopsTests(SourceCollector):
+    """Collector for the tests metric."""
+
+    def _api_url(self) -> URL:
+        return URL(f"{super()._api_url()}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        test_results = [{"failed": "unanalyzed", "not applicable": "notApplicable"}.get(test_result, test_result)
+                        for test_result in cast(List[str], self._parameter("test_result"))]
+        runs = responses[0].json().get("value", [])
+        test_count, highest_build_nr_seen = 0, 0
+        for run in runs:
+            build_nr = int(run.get("build", {}).get("id", "-1"))
+            if build_nr < highest_build_nr_seen:
+                continue
+            if build_nr > highest_build_nr_seen:
+                highest_build_nr_seen = build_nr
+                test_count = 0
+            test_count += sum(run.get(f"{test_result}Tests", 0) for test_result in test_results)
+        return str(test_count)
