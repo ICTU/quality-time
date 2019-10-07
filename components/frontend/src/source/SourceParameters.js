@@ -31,7 +31,7 @@ export function SourceParameters(props) {
                     required={all_parameters[parameter_key].mandatory}
                     source={props.source}
                     source_uuid={props.source_uuid}
-                    warning={props.changed_param_keys ? (props.changed_param_keys.indexOf(parameter_key) !== -1 ).toString() : "false"}
+                    warning={props.changed_param_keys ? (props.changed_param_keys.indexOf(parameter_key) !== -1) : false}
                 />
             </Grid.Column>
         )

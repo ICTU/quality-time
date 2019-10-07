@@ -61,7 +61,6 @@ class App extends Component {
     this.changed_fileds = null
     if ( json && json.availability) {
       this.changed_fileds = json.availability.filter((url_key) => url_key.status_code !== 200)
-      console.log('***json.availability>', json.availability, '---this.changed_fileds---', this.changed_fileds)
       json.availability.map((url_key) => {
           if (url_key.status_code !== 200) {
             toast({
