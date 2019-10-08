@@ -318,8 +318,8 @@ class PostSourceParameterTest(unittest.TestCase):
         request.json = dict(url="https://url")
         response = post_source_parameter("report_uuid", "source_uuid", "url", self.database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'],
-                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'}])
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+                                                     'source_uuid': 'source_uuid', "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=None)
         self.assertEqual(
@@ -336,8 +336,8 @@ class PostSourceParameterTest(unittest.TestCase):
         request.json = dict(url="https://url")
         response = post_source_parameter("report_uuid", "source_uuid", "url", self.database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'],
-                         [{"status_code": -1, "reason": 'Unknown error', "parameter_key": 'url'}])
+        self.assertEqual(response['availability'], [{"status_code": -1, "reason": 'Unknown error',
+                                                     'source_uuid': 'source_uuid', "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid="report_uuid", subject_uuid="subject_uuid", metric_uuid="metric_uuid",
@@ -352,12 +352,15 @@ class PostSourceParameterTest(unittest.TestCase):
         database = self.database
         database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
             type="url"), username=dict(type="string"), password=dict(type="pwd")))))
+        srcs = database.reports.find_one.return_value['subjects']['subject_uuid']['metrics']['metric_uuid']['sources']
+        srcs['source_uuid']['parameters']['username'] = 'un'
+        srcs['source_uuid']['parameters']['password'] = 'pwd'
         mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
-        request.json = dict(url="https://url", username='un', password='pwd')
+        request.json = dict(url="https://url")
         response = post_source_parameter("report_uuid", "source_uuid", "url", database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'],
-                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'}])
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+                                                     'source_uuid': 'source_uuid', "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=('un', 'pwd'))
 
@@ -381,11 +384,13 @@ class PostSourceParameterTest(unittest.TestCase):
         database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
             type="url"), username=dict(type="string"), private_token=dict(type="pwd")))))
         mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
-        request.json = dict(url="https://url", private_token='xxx')
+        request.json = dict(url="https://url")
+        srcs = database.reports.find_one.return_value['subjects']['subject_uuid']['metrics']['metric_uuid']['sources']
+        srcs['source_uuid']['parameters']['private_token'] = 'xxx'
         response = post_source_parameter("report_uuid", "source_uuid", "url", database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'],
-                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'}])
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+                                                     'source_uuid': 'source_uuid', "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=('xxx', ''))
 
@@ -394,15 +399,15 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that the all urls availability is checked when a parameter is changed."""
         database = self.database
         database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(
-            url=dict(type="url"), landing_url=dict(type="url"), password=dict(type="password")))))
-        mock_get.side_effect = [MagicMock(status_code=123, reason='A good reason'),
-                                MagicMock(status_code=321, reason='Not a good reason')]
-        request.json = dict(url="https://url", landing_url="https://url.html", password="changed")
+            url=dict(type="url", validate_on='password'), landing_url=dict(type="url"), password=dict(type="password")))))
+        mock_get.side_effect = [MagicMock(status_code=123, reason='A good reason')]
+        request.json = dict(password="changed")
+        srcs = database.reports.find_one.return_value['subjects']['subject_uuid']['metrics']['metric_uuid']['sources']
+        srcs['source_uuid']['parameters']['url'] = "https://url"
         response = post_source_parameter("report_uuid", "source_uuid", "password", database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'],
-                         [{"status_code": 123, "reason": 'A good reason', "parameter_key": 'url'},
-                          {"status_code": 321, "reason": 'Not a good reason', "parameter_key": 'landing_url'}])
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+                                                     'source_uuid': 'source_uuid', "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
 
     def test_password(self, request):
