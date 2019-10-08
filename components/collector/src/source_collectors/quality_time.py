@@ -1,6 +1,6 @@
 """Collector for Quality-time."""
 
-from typing import Iterator, List, Union
+from typing import Iterator
 from urllib import parse
 
 import requests
@@ -55,13 +55,3 @@ class QualityTimeMetrics(SourceCollector):
 
     def _parse_source_responses_total(self, responses: Responses) -> Value:
         return str(len(list(self.__get_metric_uuids(responses[0]))))
-
-    metric_status_map = {
-        "target met (green)": "target_met", "target not met (red)": "target_not_met",
-        "near target met (yellow)": "near_target_met", "technical debt target met (grey)": "debt_target_met",
-        "unknown (white)": "unknown"}
-
-    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
-        # Override to map the human-readable status indicators to the values used internally
-        values = super()._parameter(parameter_key, quote)
-        return [self.metric_status_map[value] for value in list(values)] if parameter_key == "status" else values

@@ -1,7 +1,7 @@
 """Collector base class."""
 
 from datetime import datetime
-from typing import cast, Dict, Type
+from typing import Dict
 
 from source_collectors.source_collector import SourceCollector
 from utilities.type import Measurement
@@ -15,8 +15,7 @@ class MetricCollector:
         self.datamodel = datamodel
         self.collectors: Dict[str, SourceCollector] = dict()
         for source_uuid, source in self.metric["sources"].items():
-            collector_class = cast(
-                Type[SourceCollector], SourceCollector.get_subclass(source['type'], self.metric['type']))
+            collector_class = SourceCollector.get_subclass(source['type'], self.metric['type'])
             self.collectors[source_uuid] = collector_class(source, datamodel)
 
     def can_collect(self) -> bool:

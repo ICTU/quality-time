@@ -39,7 +39,8 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
         label_div = execution_summary.find("div", class_="label", string=f"{self.coverage_label}:")
         value_div = label_div.find_next_sibling("div")
         coverage_div = value_div.find("div", string=re.compile(r"\(\d+ of \d+\)"))
-        return coverage_div.string[1:-1].split(" of ")
+        coverage_parts = str(coverage_div.string)[1:-1].split(" of ")
+        return coverage_parts[0], coverage_parts[1]
 
 
 class NCoverUncoveredLines(NCoverCoverageBase):

@@ -108,8 +108,7 @@ class AzureDevopsTests(SourceCollector):
         return URL(f"{super()._api_url()}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        test_results = [{"failed": "unanalyzed", "not applicable": "notApplicable"}.get(test_result, test_result)
-                        for test_result in cast(List[str], self._parameter("test_result"))]
+        test_results = cast(List[str], self._parameter("test_result"))
         runs = responses[0].json().get("value", [])
         test_count, highest_build_nr_seen = 0, 0
         for run in runs:
@@ -119,5 +118,5 @@ class AzureDevopsTests(SourceCollector):
             if build_nr > highest_build_nr_seen:
                 highest_build_nr_seen = build_nr
                 test_count = 0
-            test_count += sum(run.get(f"{test_result}Tests", 0) for test_result in test_results)
+            test_count += sum(run.get(test_result, 0) for test_result in test_results)
         return str(test_count)
