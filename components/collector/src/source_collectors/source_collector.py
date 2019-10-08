@@ -5,6 +5,7 @@ import traceback
 import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
+from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
@@ -152,7 +153,9 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     data."""
 
     def _get_source_responses(self, api_url: URL) -> Responses:
-        return [requests.Response()]  # Return a fake response so that the parse methods will be called
+        fake_response = requests.Response()
+        fake_response.status_code = HTTPStatus.OK
+        return [fake_response]  # Return a fake response so that the parse methods will be called
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
