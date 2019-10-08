@@ -68,6 +68,10 @@ class SourceCollectorTestCase(unittest.TestCase):
         """Assert that the measurement has the expected landing url."""
         self.assertEqual(expected_url, measurement["sources"][source_index]["landing_url"])
 
+    def assert_no_connection_error(self, measurement: Measurement, source_index: int = 0) -> None:
+        """Assert that the measurement has the expected connection error."""
+        self.assertFalse(measurement["sources"][source_index]["connection_error"])
+
     def assert_parse_error_contains(
             self, expected_parse_error: str, measurement: Measurement, source_index: int = 0) -> None:
         """Assert that the measurement has the expected parse error."""

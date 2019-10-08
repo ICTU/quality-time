@@ -13,6 +13,8 @@ class ManualNumberTest(SourceCollectorTestCase):
             sources=dict(source_id=dict(type="manual_number", parameters=dict(number="42"))))
         response = self.collect(metric)
         self.assert_value("42", response)
+        self.assert_no_connection_error(response)
+
 
     def test_percentage(self):
         """Test that the manual source can also be a metric source for metrics with a percentage scale."""
@@ -22,3 +24,5 @@ class ManualNumberTest(SourceCollectorTestCase):
         response = self.collect(metric)
         self.assert_total("100", response)
         self.assert_value("42", response)
+        self.assert_no_connection_error(response)
+
