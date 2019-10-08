@@ -1078,31 +1078,7 @@
                     ]
                 }
             },
-            "entities": {
-                "security_warnings": {
-                    "name": "security warning",
-                    "name_plural": "security warnings",
-                    "attributes": [
-                        {
-                            "name": "Warning",
-                            "key": "name"
-                        },
-                        {
-                            "name": "Location",
-                            "key": "location",
-                            "url": "url"
-                        },
-                        {
-                            "name": "Severity",
-                            "key": "severity",
-                            "color": {
-                                "High": "negative",
-                                "Medium": "warning"
-                            }
-                        }
-                    ]
-                }
-            }
+            "entities": {}
         },
         "gitlab": {
             "name": "GitLab",
