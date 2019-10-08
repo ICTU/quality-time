@@ -24,7 +24,6 @@ class SourceCollectorTestCase(unittest.TestCase):
                 get_request_json_return_value=None,
                 get_request_json_side_effect=None,
                 get_request_text="",
-                get_request_raise_for_status_side_effect=None,
                 post_request_side_effect=None,
                 post_request_json_return_value=None,
                 post_request_json_side_effect=None) -> Measurement:
@@ -35,8 +34,6 @@ class SourceCollectorTestCase(unittest.TestCase):
         else:
             mock_get_request.json.return_value = get_request_json_return_value
         mock_get_request.text = get_request_text
-        if get_request_raise_for_status_side_effect:
-            mock_get_request.raise_for_status.side_effect = get_request_raise_for_status_side_effect
         mock_post_request = Mock()
         if post_request_json_side_effect:
             mock_post_request.json.side_effect = post_request_json_side_effect

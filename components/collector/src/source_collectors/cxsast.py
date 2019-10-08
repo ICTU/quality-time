@@ -1,15 +1,12 @@
 """Collectors for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from datetime import datetime
 from typing import cast
 
 from dateutil.parser import parse
-from defusedxml import ElementTree
-import cachetools
 import requests
 
-from utilities.type import Entities, Responses, URL, Value
+from utilities.type import Responses, URL, Value
 from utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -73,12 +70,7 @@ class CxSASTSourceUpToDateness(CxSASTBase):
 class CxSASTSecurityWarnings(CxSASTBase):
     """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
 
-    CXSAST_SCAN_REPORTS = cachetools.LRUCache(256)  # Mapping of scan ids to scan report ids
-    STATS_RESPONSE, XML_REPORT_RESPONSE = range(3, 5)
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.__report_status = "InProcess"
+    STATS_RESPONSE = 3
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         responses = super()._get_source_responses(api_url)
@@ -86,49 +78,9 @@ class CxSASTSecurityWarnings(CxSASTBase):
         scan_id = responses[self.SCAN_RESPONSE].json()[0]["id"]
         # Get the statistics of the last scan; this is a single API call:
         responses.append(self._api_get(f"sast/scans/{scan_id}/resultsStatistics", token))
-        # We also want to get the security warning details. For that, we need to have Checkmarx create an XML report.
-        # First, check if we've requested a report in a previous run. If so, we have a report id. If not, request it.
-        report_id = self.CXSAST_SCAN_REPORTS.get(scan_id)
-        if not report_id:
-            response = self._api_post("reports/sastScan", dict(reportType="XML", scanId=scan_id), token)
-            report_id = self.CXSAST_SCAN_REPORTS[scan_id] = response.json()["reportId"]
-        # Next, get the report status
-        response = self._api_get(f"reports/sastScan/{report_id}/status", token)
-        self.__report_status = response.json()["status"]["value"]
-        # Finally, if the report is ready, get it.
-        if self.__report_status == "Created":
-            # Reports may be deleted after a while. If something goes wrong, assume we need to request a new report
-            try:
-                responses.append(self._api_get(f"reports/sastScan/{report_id}", token))
-            except requests.exceptions.RequestException:
-                self.__report_status = "Deleted"
-                del self.CXSAST_SCAN_REPORTS[scan_id]
         return responses
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         stats = responses[self.STATS_RESPONSE].json()
         severities = self._parameter("severities")
         return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return self.__parse_xml_report(responses[self.XML_REPORT_RESPONSE].text) \
-            if len(responses) > self.XML_REPORT_RESPONSE else []
-
-    def next_collection(self) -> datetime:
-        """If the CxSAST report is deleted or in process, try again as soon as possible, otherwise return the regular
-        next collection datetime."""
-        return datetime.min if self.__report_status in ("Deleted", "InProcess") else super().next_collection()
-
-    def __parse_xml_report(self, xml_string: str) -> Entities:
-        """Get the entities from the CxSAST XML report."""
-        root = ElementTree.fromstring(xml_string)
-        severities = self._parameter("severities")
-        entities: Entities = []
-        for query in root.findall(".//Query"):
-            for result in query.findall("Result"):
-                severity = result.attrib["Severity"]
-                if result.attrib["FalsePositive"] == 'False' and severity.lower() in severities:
-                    location = f"{result.attrib['FileName']}:{result.attrib['Line']}:{result.attrib['Column']}"
-                    entities.append(dict(key=result.attrib["NodeId"], name=query.attrib["name"],
-                                         location=location, severity=severity, url=result.attrib["DeepLink"]))
-        return entities
