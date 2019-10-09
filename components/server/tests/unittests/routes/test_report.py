@@ -398,8 +398,10 @@ class PostSourceParameterTest(unittest.TestCase):
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter is changed."""
         database = self.database
-        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(
-            url=dict(type="url", validate_on='password'), landing_url=dict(type="url"), password=dict(type="password")))))
+        database.datamodels.find_one.return_value = dict(
+            _id="id", sources=dict(type=dict(parameters=dict(
+                url=dict(type="url", validate_on='password'), landing_url=dict(type="url"),
+                password=dict(type="password")))))
         mock_get.side_effect = [MagicMock(status_code=123, reason='A good reason')]
         request.json = dict(password="changed")
         srcs = database.reports.find_one.return_value['subjects']['subject_uuid']['metrics']['metric_uuid']['sources']

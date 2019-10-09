@@ -19,5 +19,23 @@ it('renders all components, while loading', () => {
   expect(wrapper.find('SemanticToastContainer').exists()).toBe(true);
   expect(wrapper.find('Container').exists()).toBe(true);
   expect(wrapper.find('Container').find('Segment').exists()).toBe(true);
+  expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
+  expect(wrapper.find('Container').find('Report').exists()).toBe(false);
   expect(wrapper.find('Footer').exists()).toBe(true);
+});
+
+it('renders Reports', () => {
+  const wrapper = shallow(<App />);
+  wrapper.setState({ loading: false, report_uuid: '' });
+  expect(wrapper.find('Container').find('Reports').exists()).toBe(true);
+  expect(wrapper.find('Container').find('Report').exists()).toBe(false);
+  expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
+});
+
+it('renders Report', () => {
+  const wrapper = shallow(<App />);
+  wrapper.setState({ loading: false, report_uuid: 'id' });
+  expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
+  expect(wrapper.find('Container').find('Report').exists()).toBe(true);
+  expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
 });
