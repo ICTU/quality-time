@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <meta charset="utf-8">
-    <meta content="chrome=1" http-equiv="X-UA-Compatible">
-    <title>NCover Coverage HTML</title>
+<meta charset='utf-8'/>
+<meta http-equiv='X-UA-Compatible' content='chrome=1'>
+<title>NCover Coverage HTML</title>
 
-    <style type="text/css">/*------------------------------------- global styles ----------------------------------------*/
+<style type='text/css'>/*------------------------------------- global styles ----------------------------------------*/
 html, body {
     width: 775px;
     margin: 10px auto;
@@ -394,7 +393,7 @@ html, body {
 #ncover-report div.trend_chart div.bar .good{
     border-top: 2px solid #789F04;
     border-left: 2px solid #789F04;
-    background-color: #789F04;   
+    background-color: #789F04;
     width: inherit;
     float: left;
 }
@@ -417,10 +416,9 @@ html, body {
     width: inherit;
     float: left;
     height: 100%;
-}
-    </style>
+}</style>
 
-    <script type="text/javascript">// lib/handlebars/base.js
+<script type='text/javascript'>// lib/handlebars/base.js
 var Handlebars = {};
 
 Handlebars.VERSION = "1.0.beta.6";
@@ -643,10 +641,9 @@ Handlebars.VM = {
 
 Handlebars.template = Handlebars.VM.template;
 ;
+</script>
 
-    </script>
-
-    <script type="text/javascript">﻿// block helper to get route of selected project
+<script type='text/javascript'>﻿// block helper to get route of selected project
 Handlebars.registerHelper('projectsDropdownSelection',
     function (selectedId, projects, options) {
         if (projects) {
@@ -765,7 +762,7 @@ Handlebars.registerHelper('navDelimiter',
     function (codeNode) {
         if (codeNode != null) {
             switch (codeNode.codeNodeType) {
-                case 'Zip':
+                case 'Document':
                 case 'Folder':
                     return new Handlebars.SafeString('\\');
             }
@@ -776,7 +773,7 @@ Handlebars.registerHelper('nodeOrDocType',
     function () {
         var codeNode = this;
         switch (codeNode.codeNodeType) {
-            case 'Zip':
+            case 'Document':
             case 'Folder':
                 return new Handlebars.SafeString(ncover.nodeTypes.documents);
                 break;
@@ -993,7 +990,7 @@ Handlebars.registerHelper('headerIconClass',
                 return 'statIcon sprite property_icon';
             case ncover.codeNodeTypes.Method:
                 return 'statIcon sprite method_icon';
-            case ncover.codeNodeTypes.Zip:
+            case ncover.codeNodeTypes.Document:
                 return 'statIcon sprite document_icon light';
             case ncover.codeNodeTypes.Folder:
                 return 'statIcon sprite file_icon light';
@@ -1154,10 +1151,9 @@ Handlebars.registerHelper('inversePercent',
 
 
 
+</script>
 
-    </script>
-
-    <script type="text/javascript">// create a global object to scope all data and functions
+<script type='text/javascript'>// create a global object to scope all data and functions
 if (typeof ncover === 'undefined')
     ncover = {};
 
@@ -1195,10 +1191,9 @@ ncover.executionDiffHTML = function () {
 
 
 
+</script>
 
-    </script>
-
-    <script type="text/javascript">// create a global object to scope all data and functions
+<script type='text/javascript'>// create a global object to scope all data and functions
 if (typeof ncover === 'undefined')
     ncover = {};
 
@@ -1379,1956 +1374,3148 @@ ncover.toggleClassExpand = function (el) {
 
 
 
-
-    </script>
-    <style type="text/css">
-        div.header .ncoverball { background-image:url(data:image/png;base64,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); }
-    </style>
-    <style type="text/css">
-        div.header .chevron { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAqCAYAAACHgLrMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZlJREFUeNqM1ctKAlEcx/GDRLWJ3AQhaeP9Pk2UWDu37Vq2S9q20AcIRqEHyBcIe4N2LRNaVFhk4/0+WUjQxmhTrTr/QBmG0fn9QZnNZ87hfB2H2f3xzMFxJn16fmVlwMzxj1y8uWbrHj+BjBmw0Nfvzzd76TQPkRUs4wuleCvwbSVh8PU5Yg3lKQUDmnb1WeKrJGAwHKjsTe2mYEDTqZX3+SoCDJrlEvt4H8owoBl0W8lpIQ2BUryjU0vDgEJ265UUDGhqpQerUcipgEJWHu9lGND0W3VBH3ImoJC9RlWGwf8R99oJbUhToA9pQZ6BdlWZhIQArTIOCQFtSAjQvPY7FDIBA7vTMzo52itAYH5hkbmDkRy8JX9UYkvL1jMYeMNinm9nBAG6+8qqLQuHc7i8BX53FQI2h8BcgXAW/vE5fUGVjhIC/FRYZCuehR+gkLRNofIQ0IaCgBjbmYSCgMPtm4QyBfpQpsATil5qQ80EFGpNcOfgv3tveKOkDzUVUKiAuJmDX1libFc1CmUIKBR/T18gz8afAAMAy5edsv3IGjYAAAAASUVORK5CYII=); }
-    </style>
-    <style type="text/css">
-        div.icon.executions { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOhJREFUeNpiYMADHrpJGIAwNjlGAhr/I3EXAHGj/K4XD0AcJgbiQQIQn4e5gAnJdAcQRlPsCMULoHwBIN4PVKfABNUEMm0/VDABSSNIjAHovEQglYikuZ4JqnA+kuL5aJoZoJoXINkcwISmCa4Zhz83wmxlgfoB5OF+qCDISReQFMdD/X4AiD/ABJmATjgAxBPQnAXTCFKsAMT2UNofKv6BESlU14PcDjXVEUkzPDGAogMWp4w4JECaG6E2MkANzIeGKEjOkBHN1AQ8AQMzMBDkPSYsQW4IxBuwaALLgTQRTGP4EjlAgAEArxlSiRBJ5CkAAAAASUVORK5CYII=); }
-    </style>
-</head>
-<body id="ncover-report">
-<div class="header">
-    <div class="header raised">
-        <div class="ncoverball"></div>
-        <div class="title">Coverage Summary</div>
-    </div>
-    <div class="header depressed">
-        <div class="chevron"></div>
-
-        <div class="title depressed">Foo</div>
-
-    </div>
-    <div class="fineprint">Coverage artifact created: Tue Oct 01 2019 07:02:13</div>
-</div>
-
-<div class="document_section">
-    <div class="execution" id="execution_summary"
-         onclick="window.open('http://127.0.0.1:11235/#/projects/ABC/executions/DEF/modules')">
-        <div class="section">Collection</div>
-        <div class="label">Collection Date:</div>
-        <div class="value">Tue Oct 01 2019 03:04:10</div>
-        <div class="label">Duration:</div>
-        <div class="value">0.01 hrs</div>
-        <div class="label">Caption:</div>
-        <div class="value">ABC (Merged)</div>
-        <div class="label">Build Id:</div>
-        <div class="value">DEF</div>
-        <div class="label">Module Count:</div>
-        <div class="value">21</div>
-
-
-        <div class="section">Coverage</div>
-        <div class="label">Branches:</div>
-        <div class="value">
-
-            <div class="partial larger">81.2%</div>
-
-
-            <div class="partial smaller">(9769 of 12034)</div>
-            <div class="thinbar covered" style="width: 81%"></div>
-            <div class="thinbar uncovered" style="width: 18%"></div>
-
-
-        </div>
-
-        <div class="label">Sequence Points:</div>
-        <div class="value">
-
-            <div class="partial larger">82.0%</div>
-
-
-            <div class="partial smaller">(14068 of 17151)</div>
-            <div class="thinbar covered" style="width: 82%"></div>
-            <div class="thinbar uncovered" style="width: 17%"></div>
-
-
-        </div>
-        <div class="label">Conditions:</div>
-        <div class="value">
-
-            <div class="partial larger">63.2%</div>
-
-
-            <div class="partial smaller">(5420 of 8573)</div>
-            <div class="thinbar covered" style="width: 63%"></div>
-            <div class="thinbar uncovered" style="width: 36%"></div>
-
-
-        </div>
-
-        <div class="label">Max. CRAP Score</div>
-        <div class="value">19</div>
-        <div class="label">CRAPpy Methods</div>
-        <div class="value">0 (0.0%)</div>
-
-        <div class="section">Codebase</div>
-        <div class="label">Max Complexity</div>
-        <div class="value">19</div>
-        <div class="label">Zips</div>
-        <div class="value">964</div>
-        <div class="label">Lines</div>
-        <div class="value">19500</div>
-        <div class="label">Namespace Count</div>
-        <div class="value">231</div>
-        <div class="label">Type Count</div>
-        <div class="value">1243</div>
-        <div class="label">Method Count</div>
-        <div class="value">5777</div>
-
-
-        <div class="section">Baselines</div>
-        <div class="label key blue"></div>
-        <div class="value baseline">Not set</div>
-        <div class="value baseline date"></div>
-        <div class="label key green"></div>
-        <div class="value baseline">Not set</div>
-        <div class="value baseline date"></div>
-        <div class="label key red"></div>
-        <div class="value baseline">Not set</div>
-        <div class="value baseline date"></div>
-
-
-    </div>
-
-    <div class="execution trends" id="execution_trends"
-         onclick="window.open('http://127.0.0.1:11235/#/projects/ABC/executions/DEF/modules')">
-        ﻿
-        <div class="trend_chart">
-            <div class="section">Branch Coverage Trend</div>
-
-            <div class="y-axis">
-                100
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                80
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                60
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                40
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                20
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis"></div>
-            <div class="bars">
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 19.569552933355496%"></div>
-                    <div class="good" style="height: 80.4304470666445%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 19.577862722286866%"></div>
-                    <div class="good" style="height: 80.42213727771313%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.838291507395724%"></div>
-                    <div class="good" style="height: 81.16170849260428%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.721954462356663%"></div>
-                    <div class="good" style="height: 81.27804553764334%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.721954462356663%"></div>
-                    <div class="good" style="height: 81.27804553764334%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 60.739503454559255%"></div>
-                    <div class="bad" style="height: 39.260496545440745%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.838291507395724%"></div>
-                    <div class="good" style="height: 81.16170849260428%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.721954462356663%"></div>
-                    <div class="good" style="height: 81.27804553764334%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.838291507395724%"></div>
-                    <div class="good" style="height: 81.16170849260428%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.821671929532997%"></div>
-                    <div class="good" style="height: 81.178328070467%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-
-                <div class="threshold" style="height:30%"></div>
-
-
-            </div>
-        </div>
-
-        ﻿
-        <div class="trend_chart">
-            <div class="section">Sequence Point Coverage Trend</div>
-
-            <div class="y-axis">
-                100
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                80
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                60
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                40
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                20
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis"></div>
-            <div class="bars">
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.6636347734826%"></div>
-                    <div class="good" style="height: 81.3363652265174%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 18.675295901113643%"></div>
-                    <div class="good" style="height: 81.32470409888636%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.975628243251123%"></div>
-                    <div class="good" style="height: 82.02437175674888%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.84735583930967%"></div>
-                    <div class="good" style="height: 82.15264416069033%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.84735583930967%"></div>
-                    <div class="good" style="height: 82.15264416069033%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 59.6275943018727%"></div>
-                    <div class="bad" style="height: 40.3724056981273%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.975628243251123%"></div>
-                    <div class="good" style="height: 82.02437175674888%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.84735583930967%"></div>
-                    <div class="good" style="height: 82.15264416069033%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.975628243251123%"></div>
-                    <div class="good" style="height: 82.02437175674888%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 17.975628243251123%"></div>
-                    <div class="good" style="height: 82.02437175674888%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-
-                <div class="threshold" style="height:25%"></div>
-
-
-            </div>
-        </div>
-
-        ﻿
-        <div class="trend_chart">
-            <div class="section">Condition Coverage Trend</div>
-
-            <div class="y-axis">
-                100
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                80
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                60
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                40
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                20
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis"></div>
-            <div class="bars">
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 37.65309693222909%"></div>
-                    <div class="good" style="height: 62.34690306777091%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 37.65309693222909%"></div>
-                    <div class="good" style="height: 62.34690306777091%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.82491543217077%"></div>
-                    <div class="good" style="height: 63.17508456782923%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.67327656596291%"></div>
-                    <div class="good" style="height: 63.32672343403709%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.68494109413274%"></div>
-                    <div class="good" style="height: 63.31505890586726%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 72.13434452871073%"></div>
-                    <div class="bad" style="height: 27.865655471289273%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.82491543217077%"></div>
-                    <div class="good" style="height: 63.17508456782923%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.68494109413274%"></div>
-                    <div class="good" style="height: 63.31505890586726%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.82491543217077%"></div>
-                    <div class="good" style="height: 63.17508456782923%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 36.77825731949142%"></div>
-                    <div class="good" style="height: 63.22174268050858%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-
-                <div class="threshold" style="height:40%"></div>
-
-
-            </div>
-        </div>
-
-        ﻿
-        <div class="trend_chart">
-            <div class="section">CRAPpy Method Count Trend</div>
-
-            <div class="y-axis">
-                10
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                8
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                6
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                4
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis">
-                2
-                <div class="y-tick"></div>
-            </div>
-
-            <div class="y-axis"></div>
-            <div class="bars">
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="empty" style="height: 100%"></div>
-                    <div class="neutral" style="height: 0%">
-                    </div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-                <div class="bar">
-
-                    <div class="none"></div>
-
-                </div>
-
-
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="document_section">
-    <table class="details" id="modules_table">
-        <thead>
-        <tr class="label">
-            <th class="label" style="min-width: 150px">Assembly</th>
-            <th class="label" width="140px">Branch Coverage</th>
-            <th class="label" width="140px">Sequence Point Coverage</th>
-            <th class="label" width="140px">Condition Coverage</th>
-            <th class="label" width="60px">Max Complex.</th>
-            <th class="label" width="60px">Max CRAP Score</th>
-            <th class="label">CRAPpy Methods</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr>
-            <td class="assembly">Foo.Backend.Api.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>76.8%</b></big><small>&nbsp;(1404 of 1827)</small></div>
-
-                <div class="thinbar covered" style="width: 76%"></div>
-                <div class="thinbar uncovered" style="width: 23%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>76.9%</b></big><small>&nbsp;(2231 of 2901)</small></div>
-
-                <div class="thinbar covered" style="width: 76%"></div>
-                <div class="thinbar uncovered" style="width: 23%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>56.7%</b></big><small>&nbsp;(863 of 1523)</small></div>
-
-                <div class="thinbar covered" style="width: 56%"></div>
-                <div class="thinbar uncovered" style="width: 43%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                12
-            </td>
-            <td class="stat">
-                14
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Database.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>88.2%</b></big><small>&nbsp;(262 of 297)</small></div>
-
-                <div class="thinbar covered" style="width: 88%"></div>
-                <div class="thinbar uncovered" style="width: 11%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>87.5%</b></big><small>&nbsp;(405 of 463)</small></div>
-
-                <div class="thinbar covered" style="width: 87%"></div>
-                <div class="thinbar uncovered" style="width: 12%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>76.4%</b></big><small>&nbsp;(155 of 203)</small></div>
-
-                <div class="thinbar covered" style="width: 76%"></div>
-                <div class="thinbar uncovered" style="width: 23%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                13
-            </td>
-            <td class="stat">
-                13
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Bar.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>84.9%</b></big><small>&nbsp;(1851 of 2181)</small></div>
-
-                <div class="thinbar covered" style="width: 84%"></div>
-                <div class="thinbar uncovered" style="width: 15%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>87.0%</b></big><small>&nbsp;(2530 of 2907)</small></div>
-
-                <div class="thinbar covered" style="width: 87%"></div>
-                <div class="thinbar uncovered" style="width: 12%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>67.6%</b></big><small>&nbsp;(715 of 1058)</small></div>
-
-                <div class="thinbar covered" style="width: 67%"></div>
-                <div class="thinbar uncovered" style="width: 32%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                8
-            </td>
-            <td class="stat">
-                8
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Shared.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>86.8%</b></big><small>&nbsp;(132 of 152)</small></div>
-
-                <div class="thinbar covered" style="width: 86%"></div>
-                <div class="thinbar uncovered" style="width: 13%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>80.7%</b></big><small>&nbsp;(167 of 207)</small></div>
-
-                <div class="thinbar covered" style="width: 80%"></div>
-                <div class="thinbar uncovered" style="width: 19%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>69.9%</b></big><small>&nbsp;(72 of 103)</small></div>
-
-                <div class="thinbar covered" style="width: 69%"></div>
-                <div class="thinbar uncovered" style="width: 30%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                11
-            </td>
-            <td class="stat">
-                11
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.BarServices.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>87.3%</b></big><small>&nbsp;(2295 of 2630)</small></div>
-
-                <div class="thinbar covered" style="width: 87%"></div>
-                <div class="thinbar uncovered" style="width: 12%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>86.2%</b></big><small>&nbsp;(3377 of 3918)</small></div>
-
-                <div class="thinbar covered" style="width: 86%"></div>
-                <div class="thinbar uncovered" style="width: 13%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>68.1%</b></big><small>&nbsp;(1782 of 2618)</small></div>
-
-                <div class="thinbar covered" style="width: 68%"></div>
-                <div class="thinbar uncovered" style="width: 31%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                10
-            </td>
-            <td class="stat">
-                10
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Database.Interfaces.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>80.6%</b></big><small>&nbsp;(58 of 72)</small></div>
-
-                <div class="thinbar covered" style="width: 80%"></div>
-                <div class="thinbar uncovered" style="width: 19%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>100.0%</b></big><small>&nbsp;(136 of 136)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>n/a</b></big><small></small></div>
-
-
-            </td>
-
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Api.Models.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>87.8%</b></big><small>&nbsp;(412 of 469)</small></div>
-
-                <div class="thinbar covered" style="width: 87%"></div>
-                <div class="thinbar uncovered" style="width: 12%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>91.4%</b></big><small>&nbsp;(425 of 465)</small></div>
-
-                <div class="thinbar covered" style="width: 91%"></div>
-                <div class="thinbar uncovered" style="width: 8%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>58.6%</b></big><small>&nbsp;(17 of 29)</small></div>
-
-                <div class="thinbar covered" style="width: 58%"></div>
-                <div class="thinbar uncovered" style="width: 41%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                4
-            </td>
-            <td class="stat">
-                7
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.Foo.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>100.0%</b></big><small>&nbsp;(36 of 36)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>100.0%</b></big><small>&nbsp;(134 of 134)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>n/a</b></big><small></small></div>
-
-
-            </td>
-
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Communication.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>100.0%</b></big><small>&nbsp;(2 of 2)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>100.0%</b></big><small>&nbsp;(4 of 4)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>n/a</b></big><small></small></div>
-
-
-            </td>
-
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.BarService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>58.3%</b></big><small>&nbsp;(84 of 144)</small></div>
-
-                <div class="thinbar covered" style="width: 58%"></div>
-                <div class="thinbar uncovered" style="width: 41%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>59.8%</b></big><small>&nbsp;(205 of 343)</small></div>
-
-                <div class="thinbar covered" style="width: 59%"></div>
-                <div class="thinbar uncovered" style="width: 40%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>50.0%</b></big><small>&nbsp;(6 of 12)</small></div>
-
-                <div class="thinbar covered" style="width: 50%"></div>
-                <div class="thinbar uncovered" style="width: 50%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Backend.BarServices.Interfaces.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>73.0%</b></big><small>&nbsp;(100 of 137)</small></div>
-
-                <div class="thinbar covered" style="width: 72%"></div>
-                <div class="thinbar uncovered" style="width: 27%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>54.5%</b></big><small>&nbsp;(121 of 222)</small></div>
-
-                <div class="thinbar covered" style="width: 54%"></div>
-                <div class="thinbar uncovered" style="width: 45%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>n/a</b></big><small></small></div>
-
-
-            </td>
-
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                1
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.Zoo.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>77.8%</b></big><small>&nbsp;(14 of 18)</small></div>
-
-                <div class="thinbar covered" style="width: 77%"></div>
-                <div class="thinbar uncovered" style="width: 22%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>74.5%</b></big><small>&nbsp;(35 of 47)</small></div>
-
-                <div class="thinbar covered" style="width: 74%"></div>
-                <div class="thinbar uncovered" style="width: 25%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>60.0%</b></big><small>&nbsp;(9 of 15)</small></div>
-
-                <div class="thinbar covered" style="width: 60%"></div>
-                <div class="thinbar uncovered" style="width: 40%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.ZongService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>81.9%</b></big><small>&nbsp;(59 of 72)</small></div>
-
-                <div class="thinbar covered" style="width: 81%"></div>
-                <div class="thinbar uncovered" style="width: 18%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>77.1%</b></big><small>&nbsp;(131 of 170)</small></div>
-
-                <div class="thinbar covered" style="width: 77%"></div>
-                <div class="thinbar uncovered" style="width: 22%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>93.8%</b></big><small>&nbsp;(15 of 16)</small></div>
-
-                <div class="thinbar covered" style="width: 93%"></div>
-                <div class="thinbar uncovered" style="width: 6%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                5
-            </td>
-            <td class="stat">
-                5
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.ZingService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>71.6%</b></big><small>&nbsp;(706 of 986)</small></div>
-
-                <div class="thinbar covered" style="width: 71%"></div>
-                <div class="thinbar uncovered" style="width: 28%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>83.0%</b></big><small>&nbsp;(1037 of 1249)</small></div>
-
-                <div class="thinbar covered" style="width: 83%"></div>
-                <div class="thinbar uncovered" style="width: 16%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>54.3%</b></big><small>&nbsp;(350 of 645)</small></div>
-
-                <div class="thinbar covered" style="width: 54%"></div>
-                <div class="thinbar uncovered" style="width: 45%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                12
-            </td>
-            <td class="stat">
-                12
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.FlaService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>67.9%</b></big><small>&nbsp;(530 of 781)</small></div>
-
-                <div class="thinbar covered" style="width: 67%"></div>
-                <div class="thinbar uncovered" style="width: 32%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>71.9%</b></big><small>&nbsp;(997 of 1386)</small></div>
-
-                <div class="thinbar covered" style="width: 71%"></div>
-                <div class="thinbar uncovered" style="width: 28%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>49.9%</b></big><small>&nbsp;(278 of 557)</small></div>
-
-                <div class="thinbar covered" style="width: 49%"></div>
-                <div class="thinbar uncovered" style="width: 50%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                7
-            </td>
-            <td class="stat">
-                7
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.ZooService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>90.0%</b></big><small>&nbsp;(9 of 10)</small></div>
-
-                <div class="thinbar covered" style="width: 90%"></div>
-                <div class="thinbar uncovered" style="width: 10%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>92.0%</b></big><small>&nbsp;(23 of 25)</small></div>
-
-                <div class="thinbar covered" style="width: 92%"></div>
-                <div class="thinbar uncovered" style="width: 8%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>60.0%</b></big><small>&nbsp;(3 of 5)</small></div>
-
-                <div class="thinbar covered" style="width: 60%"></div>
-                <div class="thinbar uncovered" style="width: 40%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.FooBarService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>65.2%</b></big><small>&nbsp;(58 of 89)</small></div>
-
-                <div class="thinbar covered" style="width: 65%"></div>
-                <div class="thinbar uncovered" style="width: 34%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>58.1%</b></big><small>&nbsp;(50 of 86)</small></div>
-
-                <div class="thinbar covered" style="width: 58%"></div>
-                <div class="thinbar uncovered" style="width: 41%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>60.4%</b></big><small>&nbsp;(32 of 53)</small></div>
-
-                <div class="thinbar covered" style="width: 60%"></div>
-                <div class="thinbar uncovered" style="width: 39%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                6
-            </td>
-            <td class="stat">
-                6
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.External.Services.ZapService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>87.5%</b></big><small>&nbsp;(7 of 8)</small></div>
-
-                <div class="thinbar covered" style="width: 87%"></div>
-                <div class="thinbar uncovered" style="width: 12%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>81.0%</b></big><small>&nbsp;(17 of 21)</small></div>
-
-                <div class="thinbar covered" style="width: 80%"></div>
-                <div class="thinbar uncovered" style="width: 19%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>83.3%</b></big><small>&nbsp;(5 of 6)</small></div>
-
-                <div class="thinbar covered" style="width: 83%"></div>
-                <div class="thinbar uncovered" style="width: 16%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                2
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Services.ZipService.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>86.7%</b></big><small>&nbsp;(1208 of 1394)</small></div>
-
-                <div class="thinbar covered" style="width: 86%"></div>
-                <div class="thinbar uncovered" style="width: 13%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>89.8%</b></big><small>&nbsp;(1195 of 1331)</small></div>
-
-                <div class="thinbar covered" style="width: 89%"></div>
-                <div class="thinbar uncovered" style="width: 10%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>68.8%</b></big><small>&nbsp;(795 of 1156)</small></div>
-
-                <div class="thinbar covered" style="width: 68%"></div>
-                <div class="thinbar uncovered" style="width: 31%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                19
-            </td>
-            <td class="stat">
-                19
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Receiver.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>69.3%</b></big><small>&nbsp;(212 of 306)</small></div>
-
-                <div class="thinbar covered" style="width: 69%"></div>
-                <div class="thinbar uncovered" style="width: 30%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>71.5%</b></big><small>&nbsp;(284 of 397)</small></div>
-
-                <div class="thinbar covered" style="width: 71%"></div>
-                <div class="thinbar uncovered" style="width: 28%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>55.7%</b></big><small>&nbsp;(160 of 287)</small></div>
-
-                <div class="thinbar covered" style="width: 55%"></div>
-                <div class="thinbar uncovered" style="width: 44%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                7
-            </td>
-            <td class="stat">
-                12
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        <tr>
-            <td class="assembly">Foo.Shared.dll</td>
-
-            <td class="stat">
-
-                <div><big><b>78.0%</b></big><small>&nbsp;(330 of 423)</small></div>
-
-                <div class="thinbar covered" style="width: 78%"></div>
-                <div class="thinbar uncovered" style="width: 21%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>76.3%</b></big><small>&nbsp;(564 of 739)</small></div>
-
-                <div class="thinbar covered" style="width: 76%"></div>
-                <div class="thinbar uncovered" style="width: 23%"></div>
-
-
-            </td>
-            <td class="stat">
-
-                <div><big><b>56.8%</b></big><small>&nbsp;(163 of 287)</small></div>
-
-                <div class="thinbar covered" style="width: 56%"></div>
-                <div class="thinbar uncovered" style="width: 43%"></div>
-
-
-            </td>
-
-            <td class="stat">
-                8
-            </td>
-            <td class="stat">
-                8
-            </td>
-            <td class="stat">
-                <div><big><b>0</b></big>&nbsp;<small>(0.0%)</small></div>
-
-                <div class="thinbar covered" style="width: 100%"></div>
-                <div class="thinbar uncovered" style="width: 0%"></div>
-
-            </td>
-
-
-        </tr>
-        </tbody>
-    </table>
-
-</div>
-
+</script>
+<style type='text/css'>div.header .ncoverball { background-image:url(data:image/png;base64,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); } </style><style type='text/css'>div.header .chevron { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAqCAYAAACHgLrMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZlJREFUeNqM1ctKAlEcx/GDRLWJ3AQhaeP9Pk2UWDu37Vq2S9q20AcIRqEHyBcIe4N2LRNaVFhk4/0+WUjQxmhTrTr/QBmG0fn9QZnNZ87hfB2H2f3xzMFxJn16fmVlwMzxj1y8uWbrHj+BjBmw0Nfvzzd76TQPkRUs4wuleCvwbSVh8PU5Yg3lKQUDmnb1WeKrJGAwHKjsTe2mYEDTqZX3+SoCDJrlEvt4H8owoBl0W8lpIQ2BUryjU0vDgEJ265UUDGhqpQerUcipgEJWHu9lGND0W3VBH3ImoJC9RlWGwf8R99oJbUhToA9pQZ6BdlWZhIQArTIOCQFtSAjQvPY7FDIBA7vTMzo52itAYH5hkbmDkRy8JX9UYkvL1jMYeMNinm9nBAG6+8qqLQuHc7i8BX53FQI2h8BcgXAW/vE5fUGVjhIC/FRYZCuehR+gkLRNofIQ0IaCgBjbmYSCgMPtm4QyBfpQpsATil5qQ80EFGpNcOfgv3tveKOkDzUVUKiAuJmDX1libFc1CmUIKBR/T18gz8afAAMAy5edsv3IGjYAAAAASUVORK5CYII=); } </style><style type='text/css'>div.icon.executions { background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOhJREFUeNpiYMADHrpJGIAwNjlGAhr/I3EXAHGj/K4XD0AcJgbiQQIQn4e5gAnJdAcQRlPsCMULoHwBIN4PVKfABNUEMm0/VDABSSNIjAHovEQglYikuZ4JqnA+kuL5aJoZoJoXINkcwISmCa4Zhz83wmxlgfoB5OF+qCDISReQFMdD/X4AiD/ABJmATjgAxBPQnAXTCFKsAMT2UNofKv6BESlU14PcDjXVEUkzPDGAogMWp4w4JECaG6E2MkANzIeGKEjOkBHN1AQ8AQMzMBDkPSYsQW4IxBuwaALLgTQRTGP4EjlAgAEArxlSiRBJ5CkAAAAASUVORK5CYII=); } </style></head>
+<body id='ncover-report'>
+<script type='text/javascript'>
+    ncover.serverRoot = 'http://127.0.0.1:11235';
+    ncover.createDateTime = '1570445242684';
+</script>
+<script type='text/javascript'>
+   ncover.project = {
+  "id": "80824F30B12CDF8CCF5F9EB21782562A35E11CA4",
+  "name": "IIS PRKP",
+  "enabled": false,
+  "config": {
+    "branchCvgThreshold": 70.0,
+    "sequencePtCvgThreshold": 75.0,
+    "conditionCvgThreshold": 60.0,
+    "complexityThreshold": 20.0,
+    "satComplexityThreshold": 80.0,
+    "crappyMethodThreshold": 10.0,
+    "crapThreshold": 30.0,
+    "isCodeCentralProject": false,
+    "enabled": false,
+    "aggregateEnabled": true,
+    "mergeMode": "None",
+    "logLevel": "None",
+    "visibility": "Private",
+    "syncWithCC": true,
+    "mergeAppFurs": true,
+    "name": "IIS PRKP",
+    "matchRules": [
+      {
+        "matchData": "w3wp.exe",
+        "type": "Exe"
+      }
+    ],
+    "preCoverageFilter": {
+      "id": "3C889D820BA6EC9972A87EDAFBFA6D8AFEAAD22B",
+      "name": null,
+      "description": null,
+      "serverFilter": false,
+      "filterRules": [
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fiz.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fiz.Foz.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Bir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Bir.Bur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Fur.Bur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Bar.Bir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Lur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Far.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Ber.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Gir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Gir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Bur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Fur.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Lar.dll",
+          "serverRule": false
+        },
+        {
+          "include": false,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Lar.Bar.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Bir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Lir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Sir.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Fir.Bar.dll",
+          "serverRule": false
+        },
+        {
+          "include": true,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Sor.dll",
+          "serverRule": false
+        },
+        {
+          "include": false,
+          "field": "Namespace",
+          "condition": "Matches",
+          "value": "Foo.Bar.Bir.Zoo",
+          "serverRule": false
+        },
+        {
+          "include": false,
+          "field": "Module",
+          "condition": "Matches",
+          "value": "Foo.Lor.Fir.Bur.dll",
+          "serverRule": false
+        },
+        {
+          "include": false,
+          "field": "Class",
+          "condition": "Contains",
+          "value": "Anonymous",
+          "serverRule": false
+        }
+      ]
+    },
+    "postCoverageFilters": []
+  },
+  "status": "",
+  "lifetimeCount": 76
+};
+</script>
+<script type='text/javascript'>
+   ncover.filterName = '';
+</script>
+<script type='text/javascript'>
+   ncover.execution = {
+  "projectId": "80824F30B12CDF8CCF5F9EB21782562A35E11CA4",
+  "id": "55C4C7846367508132D0E1DF7D871B0DBDC14119",
+  "caption": "A34F03D3B68E3D62A9CC6CF0ED74C89E (Merged)",
+  "buildId": "A34F03D3B68E3D62A9CC6CF0ED74C89E",
+  "status": "",
+  "queryable": "queryable",
+  "startTime": "1570410259913",
+  "endTime": "1570410260178",
+  "executionSource": "APP134",
+  "mergeMode": "Merge",
+  "isBaseline": false,
+  "mergeParentId": null,
+  "processParentId": null,
+  "appFur": null,
+  "executableFile": null,
+  "syncedCC": false,
+  "aggregated": true,
+  "moduleCount": 21,
+  "captureErrors": null
+};
+</script>
+<script type='text/javascript'>
+   ncover.execution.stats = {
+  "sequencePointCoverage": {
+    "coveragePoints": 17153,
+    "coveredPoints": 14070,
+    "coverageType": "SP",
+    "coveragePercent": 0.820264676732933,
+    "coveragePercentString": "82.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 12034,
+    "coveredPoints": 9767,
+    "coverageType": "BP",
+    "coveragePercent": 0.8116170849260429,
+    "coveragePercentString": "81.2%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 8573,
+    "coveredPoints": 5416,
+    "coverageType": "CP",
+    "coveragePercent": 0.63175084567829232,
+    "coveragePercentString": "63.2%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 19,
+    "satComplexityCount": 5777,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 964,
+    "lineCount": 19506,
+    "moduleCount": 21,
+    "namespaceCount": 231,
+    "typeCount": 1243,
+    "methodCount": 5777,
+    "maxCrapScore": 19,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+</script>
+<script type='text/javascript'>
+   ncover.execution.baselines = {};
+</script>
+<script type='text/javascript'>
+   ncover.brCoverageTrend = {
+  "yTicks": [
+    100.0,
+    80.0,
+    60.0,
+    40.0,
+    20.0
+  ],
+  "max": 100.0,
+  "trendBars": [
+    {
+      "value": 81.161708492604276
+    },
+    {
+      "value": 81.278045537643337
+    },
+    {
+      "value": 81.161708492604276
+    },
+    {
+      "value": 81.178328070467
+    },
+    {
+      "value": 81.19494764832973
+    },
+    {
+      "value": 81.161708492604276
+    },
+    {
+      "value": 81.294665115506064
+    },
+    {
+      "value": 32.603596559812352
+    },
+    {
+      "value": 81.19494764832973
+    },
+    {
+      "value": 81.161708492604276
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    }
+  ],
+  "title": "Branch Coverage Trend",
+  "threshold": 70.0
+};
+</script>
+<script type='text/javascript'>
+   ncover.spCoverageTrend = {
+  "yTicks": [
+    100.0,
+    80.0,
+    60.0,
+    40.0,
+    20.0
+  ],
+  "max": 100.0,
+  "trendBars": [
+    {
+      "value": 82.024371756748877
+    },
+    {
+      "value": 82.152644160690329
+    },
+    {
+      "value": 82.024371756748877
+    },
+    {
+      "value": 82.024371756748877
+    },
+    {
+      "value": 82.082677394904081
+    },
+    {
+      "value": 82.024371756748877
+    },
+    {
+      "value": 82.154725120970085
+    },
+    {
+      "value": 34.344422700587081
+    },
+    {
+      "value": 82.084766513146377
+    },
+    {
+      "value": 82.0264676732933
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    }
+  ],
+  "title": "Sequence Point Coverage Trend",
+  "threshold": 75.0
+};
+</script>
+<script type='text/javascript'>
+   ncover.cndCoverageTrend = {
+  "yTicks": [
+    100.0,
+    80.0,
+    60.0,
+    40.0,
+    20.0
+  ],
+  "max": 100.0,
+  "trendBars": [
+    {
+      "value": 63.175084567829231
+    },
+    {
+      "value": 63.315058905867261
+    },
+    {
+      "value": 63.175084567829231
+    },
+    {
+      "value": 63.221742680508569
+    },
+    {
+      "value": 63.245071736848246
+    },
+    {
+      "value": 63.175084567829231
+    },
+    {
+      "value": 63.3617170185466
+    },
+    {
+      "value": 22.571506899387735
+    },
+    {
+      "value": 63.245071736848246
+    },
+    {
+      "value": 63.175084567829231
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    }
+  ],
+  "title": "Condition Coverage Trend",
+  "threshold": 60.0
+};
+</script>
+<script type='text/javascript'>
+   ncover.crappyMethodTrend = {
+  "yTicks": [
+    10.0,
+    8.0,
+    6.0,
+    4.0,
+    2.0
+  ],
+  "max": 10.0,
+  "trendBars": [
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": 0.0
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    },
+    {
+      "value": null
+    }
+  ],
+  "title": "CRAPpy Method Count Trend",
+  "threshold": 0.0
+};
+</script>
+<script type='text/javascript'>
+   ncover.modules = {};
+   var modObj = {};
+   var clsObj = {};
+   var mthObj = {};
+   modObj = {};
+   modObj['module'] = {
+  "id": "2E3938668F9ECF094B02EEBE112C1B9D22E4891A",
+  "captureid": "12E10D79C6A067255BEA86A9BB1826BA4EA8DC91",
+  "fullName": null,
+  "caption": "Foo.Bar.Fiz.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 2901,
+    "coveredPoints": 2231,
+    "coverageType": "SP",
+    "coveragePercent": 0.76904515684246821,
+    "coveragePercentString": "76.9%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 1827,
+    "coveredPoints": 1404,
+    "coverageType": "BP",
+    "coveragePercent": 0.768472906403941,
+    "coveragePercentString": "76.8%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 1523,
+    "coveredPoints": 863,
+    "coverageType": "CP",
+    "coveragePercent": 0.56664478003939589,
+    "coveragePercentString": "56.7%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 12,
+    "satComplexityCount": 697,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 130,
+    "lineCount": 3566,
+    "moduleCount": 1,
+    "namespaceCount": 24,
+    "typeCount": 181,
+    "methodCount": 697,
+    "maxCrapScore": 14,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '12E10D79C6A067255BEA86A9BB1826BA4EA8DC91';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "3CCE15D8C6C202FBC0D20AFB4D4B5B606FD51616",
+  "captureid": "21560B55292B5DA81CFA6B9B489D98F64EAAC1BA",
+  "fullName": null,
+  "caption": "Foo.Bar.Fiz.Foz.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 465,
+    "coveredPoints": 425,
+    "coverageType": "SP",
+    "coveragePercent": 0.91397849462365588,
+    "coveragePercentString": "91.4%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 469,
+    "coveredPoints": 412,
+    "coverageType": "BP",
+    "coveragePercent": 0.87846481876332627,
+    "coveragePercentString": "87.8%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 29,
+    "coveredPoints": 17,
+    "coverageType": "CP",
+    "coveragePercent": 0.58620689655172409,
+    "coveragePercentString": "58.6%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 4,
+    "satComplexityCount": 448,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 60,
+    "lineCount": 473,
+    "moduleCount": 1,
+    "namespaceCount": 19,
+    "typeCount": 64,
+    "methodCount": 448,
+    "maxCrapScore": 7,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '21560B55292B5DA81CFA6B9B489D98F64EAAC1BA';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "0A9085ED6292AE59F56E6E33A2199B4B914FF405",
+  "captureid": "B59C9B45B8986BEEB97CBEC4EEDE7589F68CEDDF",
+  "fullName": null,
+  "caption": "Foo.Bar.Ber.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 207,
+    "coveredPoints": 167,
+    "coverageType": "SP",
+    "coveragePercent": 0.80676328502415462,
+    "coveragePercentString": "80.7%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 152,
+    "coveredPoints": 132,
+    "coverageType": "BP",
+    "coveragePercent": 0.868421052631579,
+    "coveragePercentString": "86.8%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 103,
+    "coveredPoints": 72,
+    "coverageType": "CP",
+    "coveragePercent": 0.69902912621359226,
+    "coveragePercentString": "69.9%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 11,
+    "satComplexityCount": 83,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 11,
+    "lineCount": 234,
+    "moduleCount": 1,
+    "namespaceCount": 10,
+    "typeCount": 17,
+    "methodCount": 83,
+    "maxCrapScore": 11,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'B59C9B45B8986BEEB97CBEC4EEDE7589F68CEDDF';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "9ADE3950EF2E610D429D3664BBFD0050F341058C",
+  "captureid": "E5F57174B690DF8F28B1A57FCA24A3A104604495",
+  "fullName": null,
+  "caption": "Foo.Bar.Bir.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 463,
+    "coveredPoints": 405,
+    "coverageType": "SP",
+    "coveragePercent": 0.87473002159827218,
+    "coveragePercentString": "87.5%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 297,
+    "coveredPoints": 262,
+    "coverageType": "BP",
+    "coveragePercent": 0.88215488215488225,
+    "coveragePercentString": "88.2%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 203,
+    "coveredPoints": 155,
+    "coverageType": "CP",
+    "coveragePercent": 0.76354679802955672,
+    "coveragePercentString": "76.4%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 13,
+    "satComplexityCount": 154,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 231,
+    "lineCount": 595,
+    "moduleCount": 1,
+    "namespaceCount": 8,
+    "typeCount": 25,
+    "methodCount": 154,
+    "maxCrapScore": 13,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'E5F57174B690DF8F28B1A57FCA24A3A104604495';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "406AC5C64FE46FF6CE273478D787486494E28AFB",
+  "captureid": "1FB15259657A5E210E1D041C7AC009CE460819F4",
+  "fullName": null,
+  "caption": "Foo.Bar.Bir.Bur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 136,
+    "coveredPoints": 136,
+    "coverageType": "SP",
+    "coveragePercent": 1.0,
+    "coveragePercentString": "100.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 72,
+    "coveredPoints": 58,
+    "coverageType": "BP",
+    "coveragePercent": 0.80555555555555558,
+    "coveragePercentString": "80.6%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 0,
+    "coveredPoints": 0,
+    "coverageType": "CP",
+    "coveragePercent": 0.0,
+    "coveragePercentString": "n/a"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 1,
+    "satComplexityCount": 72,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 8,
+    "lineCount": 146,
+    "moduleCount": 1,
+    "namespaceCount": 5,
+    "typeCount": 32,
+    "methodCount": 72,
+    "maxCrapScore": 1,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '1FB15259657A5E210E1D041C7AC009CE460819F4';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "89D8088B7172FEB2568E811CBC91D43A9E9147BC",
+  "captureid": "8E83BAAA784D1833644FA8BF97DF4F13974A4D51",
+  "fullName": null,
+  "caption": "Foo.Bar.Fur.Bur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 222,
+    "coveredPoints": 121,
+    "coverageType": "SP",
+    "coveragePercent": 0.545045045045045,
+    "coveragePercentString": "54.5%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 137,
+    "coveredPoints": 100,
+    "coverageType": "BP",
+    "coveragePercent": 0.72992700729927007,
+    "coveragePercentString": "73.0%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 0,
+    "coveredPoints": 0,
+    "coverageType": "CP",
+    "coveragePercent": 0.0,
+    "coveragePercentString": "n/a"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 2,
+    "satComplexityCount": 138,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 39,
+    "lineCount": 222,
+    "moduleCount": 1,
+    "namespaceCount": 8,
+    "typeCount": 60,
+    "methodCount": 138,
+    "maxCrapScore": 1,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '8E83BAAA784D1833644FA8BF97DF4F13974A4D51';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "7BAF599375919F5A2807A2747544501EE6A2D359",
+  "captureid": "B0621590CE94F40F3A1E8E2C8827C8A4E98AA732",
+  "fullName": null,
+  "caption": "Foo.Bar.IoC.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 134,
+    "coveredPoints": 134,
+    "coverageType": "SP",
+    "coveragePercent": 1.0,
+    "coveragePercentString": "100.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 36,
+    "coveredPoints": 36,
+    "coverageType": "BP",
+    "coveragePercent": 1.0,
+    "coveragePercentString": "100.0%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 0,
+    "coveredPoints": 0,
+    "coverageType": "CP",
+    "coveragePercent": 0.0,
+    "coveragePercentString": "n/a"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 1,
+    "satComplexityCount": 36,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 8,
+    "lineCount": 134,
+    "moduleCount": 1,
+    "namespaceCount": 3,
+    "typeCount": 2,
+    "methodCount": 36,
+    "maxCrapScore": 1,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'B0621590CE94F40F3A1E8E2C8827C8A4E98AA732';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "47D6F6E806ACB8E3905036CF7119099AA46A46BB",
+  "captureid": "57B9EC17000D0918688B1D9BF7CA56DC058F961C",
+  "fullName": null,
+  "caption": "Foo.Lor.Lur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 4,
+    "coveredPoints": 4,
+    "coverageType": "SP",
+    "coveragePercent": 1.0,
+    "coveragePercentString": "100.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 2,
+    "coveredPoints": 2,
+    "coverageType": "BP",
+    "coveragePercent": 1.0,
+    "coveragePercentString": "100.0%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 0,
+    "coveredPoints": 0,
+    "coverageType": "CP",
+    "coveragePercent": 0.0,
+    "coveragePercentString": "n/a"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 1,
+    "satComplexityCount": 2,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 4,
+    "lineCount": 4,
+    "moduleCount": 1,
+    "namespaceCount": 3,
+    "typeCount": 1,
+    "methodCount": 2,
+    "maxCrapScore": 1,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '57B9EC17000D0918688B1D9BF7CA56DC058F961C';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "7B9AE93D468194E6779619883986F088EB49A677",
+  "captureid": "1662A1BA46E67B61C1DD1C91CA8ACE1216E628BA",
+  "fullName": null,
+  "caption": "Foo.Bar.Fur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 3920,
+    "coveredPoints": 3379,
+    "coverageType": "SP",
+    "coveragePercent": 0.86198979591836744,
+    "coveragePercentString": "86.2%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 2630,
+    "coveredPoints": 2293,
+    "coverageType": "BP",
+    "coveragePercent": 0.87186311787072246,
+    "coveragePercentString": "87.2%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 2618,
+    "coveredPoints": 1778,
+    "coverageType": "CP",
+    "coveragePercent": 0.679144385026738,
+    "coveragePercentString": "67.9%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 10,
+    "satComplexityCount": 641,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 107,
+    "lineCount": 4425,
+    "moduleCount": 1,
+    "namespaceCount": 9,
+    "typeCount": 206,
+    "methodCount": 641,
+    "maxCrapScore": 10,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '1662A1BA46E67B61C1DD1C91CA8ACE1216E628BA';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "9002ECDFA1D400EC6EF8468679ABC7DDDC24A4E5",
+  "captureid": "6410EDB11EBEBE94EA4D4BB3733CC23A1B8B7476",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Far.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 170,
+    "coveredPoints": 131,
+    "coverageType": "SP",
+    "coveragePercent": 0.77058823529411768,
+    "coveragePercentString": "77.1%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 72,
+    "coveredPoints": 59,
+    "coverageType": "BP",
+    "coveragePercent": 0.81944444444444453,
+    "coveragePercentString": "81.9%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 16,
+    "coveredPoints": 15,
+    "coverageType": "CP",
+    "coveragePercent": 0.9375,
+    "coveragePercentString": "93.8%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 5,
+    "satComplexityCount": 60,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 4,
+    "lineCount": 193,
+    "moduleCount": 1,
+    "namespaceCount": 5,
+    "typeCount": 10,
+    "methodCount": 60,
+    "maxCrapScore": 5,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '6410EDB11EBEBE94EA4D4BB3733CC23A1B8B7476';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "F003D7886633807D4D32689BEEB37A0600F5F264",
+  "captureid": "03AFC1CB6D4894F4BC9B451BCF722D984B842920",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Ber.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 343,
+    "coveredPoints": 205,
+    "coverageType": "SP",
+    "coveragePercent": 0.597667638483965,
+    "coveragePercentString": "59.8%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 144,
+    "coveredPoints": 84,
+    "coverageType": "BP",
+    "coveragePercent": 0.58333333333333337,
+    "coveragePercentString": "58.3%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 12,
+    "coveredPoints": 6,
+    "coverageType": "CP",
+    "coveragePercent": 0.5,
+    "coveragePercentString": "50.0%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 2,
+    "satComplexityCount": 134,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 12,
+    "lineCount": 369,
+    "moduleCount": 1,
+    "namespaceCount": 8,
+    "typeCount": 24,
+    "methodCount": 134,
+    "maxCrapScore": 2,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '03AFC1CB6D4894F4BC9B451BCF722D984B842920';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "7020B7FEFE3ABAB09D76AAF4E71FDB3835625020",
+  "captureid": "CBEC4416B029A82BC4308164E74FADFC95E9F875",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.IngIdeal.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 47,
+    "coveredPoints": 35,
+    "coverageType": "SP",
+    "coveragePercent": 0.74468085106382986,
+    "coveragePercentString": "74.5%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 18,
+    "coveredPoints": 14,
+    "coverageType": "BP",
+    "coveragePercent": 0.7777777777777779,
+    "coveragePercentString": "77.8%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 15,
+    "coveredPoints": 9,
+    "coverageType": "CP",
+    "coveragePercent": 0.6,
+    "coveragePercentString": "60.0%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 2,
+    "satComplexityCount": 5,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 2,
+    "lineCount": 47,
+    "moduleCount": 1,
+    "namespaceCount": 4,
+    "typeCount": 1,
+    "methodCount": 5,
+    "maxCrapScore": 2,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'CBEC4416B029A82BC4308164E74FADFC95E9F875';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "029B4D07416A114DF78F49EE567E412354ED60FC",
+  "captureid": "DD2B544B224408448326ADA0769785E53DD09437",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Far.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 86,
+    "coveredPoints": 50,
+    "coverageType": "SP",
+    "coveragePercent": 0.58139534883720934,
+    "coveragePercentString": "58.1%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 89,
+    "coveredPoints": 58,
+    "coverageType": "BP",
+    "coveragePercent": 0.651685393258427,
+    "coveragePercentString": "65.2%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 53,
+    "coveredPoints": 32,
+    "coverageType": "CP",
+    "coveragePercent": 0.60377358490566035,
+    "coveragePercentString": "60.4%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 6,
+    "satComplexityCount": 49,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 4,
+    "lineCount": 90,
+    "moduleCount": 1,
+    "namespaceCount": 4,
+    "typeCount": 4,
+    "methodCount": 49,
+    "maxCrapScore": 6,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'DD2B544B224408448326ADA0769785E53DD09437';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "88403FF58AF989B6FFBD5A480128037F754D2799",
+  "captureid": "6B6C52F9E892E41A02FFA56325780C3F5E49C678",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Gir.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 1386,
+    "coveredPoints": 997,
+    "coverageType": "SP",
+    "coveragePercent": 0.71933621933621938,
+    "coveragePercentString": "71.9%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 781,
+    "coveredPoints": 530,
+    "coverageType": "BP",
+    "coveragePercent": 0.678617157490397,
+    "coveragePercentString": "67.9%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 557,
+    "coveredPoints": 278,
+    "coverageType": "CP",
+    "coveragePercent": 0.49910233393177739,
+    "coveragePercentString": "49.9%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 7,
+    "satComplexityCount": 385,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 33,
+    "lineCount": 1520,
+    "moduleCount": 1,
+    "namespaceCount": 7,
+    "typeCount": 72,
+    "methodCount": 385,
+    "maxCrapScore": 7,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '6B6C52F9E892E41A02FFA56325780C3F5E49C678';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "9C5D4DD2086F6B01A62B9BADC6D3D3DEF3FD68D4",
+  "captureid": "A224F8E3528A3506D169F78A5E91A24CF721FABE",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.For.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 21,
+    "coveredPoints": 17,
+    "coverageType": "SP",
+    "coveragePercent": 0.80952380952380953,
+    "coveragePercentString": "81.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 8,
+    "coveredPoints": 7,
+    "coverageType": "BP",
+    "coveragePercent": 0.875,
+    "coveragePercentString": "87.5%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 6,
+    "coveredPoints": 5,
+    "coverageType": "CP",
+    "coveragePercent": 0.83333333333333337,
+    "coveragePercentString": "83.3%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 2,
+    "satComplexityCount": 3,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 1,
+    "lineCount": 21,
+    "moduleCount": 1,
+    "namespaceCount": 4,
+    "typeCount": 1,
+    "methodCount": 3,
+    "maxCrapScore": 2,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'A224F8E3528A3506D169F78A5E91A24CF721FABE';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "B80CC4D8F57D4E01548F0024324E368FC8C82F38",
+  "captureid": "93AAE862EC2D2699086E3E721437199C3BA8806A",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Bur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 25,
+    "coveredPoints": 23,
+    "coverageType": "SP",
+    "coveragePercent": 0.92,
+    "coveragePercentString": "92.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 10,
+    "coveredPoints": 9,
+    "coverageType": "BP",
+    "coveragePercent": 0.9,
+    "coveragePercentString": "90.0%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 5,
+    "coveredPoints": 3,
+    "coverageType": "CP",
+    "coveragePercent": 0.6,
+    "coveragePercentString": "60.0%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 2,
+    "satComplexityCount": 5,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 3,
+    "lineCount": 40,
+    "moduleCount": 1,
+    "namespaceCount": 5,
+    "typeCount": 2,
+    "methodCount": 5,
+    "maxCrapScore": 2,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '93AAE862EC2D2699086E3E721437199C3BA8806A';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "243106ABF005CFB3149707879E076E3390686F62",
+  "captureid": "C2C666A50B2F178D78BD19EC9007B9EC1322EA2D",
+  "fullName": null,
+  "caption": "Foo.Bar.Fur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 2907,
+    "coveredPoints": 2530,
+    "coverageType": "SP",
+    "coveragePercent": 0.8703130374957001,
+    "coveragePercentString": "87.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 2181,
+    "coveredPoints": 1851,
+    "coverageType": "BP",
+    "coveragePercent": 0.84869325997248979,
+    "coveragePercentString": "84.9%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 1058,
+    "coveredPoints": 715,
+    "coverageType": "CP",
+    "coveragePercent": 0.67580340264650285,
+    "coveragePercentString": "67.6%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 8,
+    "satComplexityCount": 1444,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 152,
+    "lineCount": 3198,
+    "moduleCount": 1,
+    "namespaceCount": 69,
+    "typeCount": 259,
+    "methodCount": 1444,
+    "maxCrapScore": 8,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'C2C666A50B2F178D78BD19EC9007B9EC1322EA2D';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "D2FDB1AB8F4346D1C17810FA0FF6885ECB5188DE",
+  "captureid": "5F4392B477466888283D5F87D51DB6508EEBFF47",
+  "fullName": null,
+  "caption": "Foo.Sur.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 397,
+    "coveredPoints": 284,
+    "coverageType": "SP",
+    "coveragePercent": 0.7153652392947103,
+    "coveragePercentString": "71.5%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 306,
+    "coveredPoints": 212,
+    "coverageType": "BP",
+    "coveragePercent": 0.69281045751633985,
+    "coveragePercentString": "69.3%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 287,
+    "coveredPoints": 160,
+    "coverageType": "CP",
+    "coveragePercent": 0.55749128919860624,
+    "coveragePercentString": "55.7%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 7,
+    "satComplexityCount": 93,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 13,
+    "lineCount": 436,
+    "moduleCount": 1,
+    "namespaceCount": 6,
+    "typeCount": 25,
+    "methodCount": 93,
+    "maxCrapScore": 12,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '5F4392B477466888283D5F87D51DB6508EEBFF47';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "081769D1B107B9A032420955842BA54D2E4F03B3",
+  "captureid": "61B1E5E9C9D55121D0C7589EB153D159207B73CF",
+  "fullName": null,
+  "caption": "Foo.Lor.Fir.Lar.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 1249,
+    "coveredPoints": 1037,
+    "coverageType": "SP",
+    "coveragePercent": 0.83026421136909534,
+    "coveragePercentString": "83.0%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 986,
+    "coveredPoints": 706,
+    "coverageType": "BP",
+    "coveragePercent": 0.71602434077079113,
+    "coveragePercentString": "71.6%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 645,
+    "coveredPoints": 350,
+    "coverageType": "CP",
+    "coveragePercent": 0.54263565891472876,
+    "coveragePercentString": "54.3%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 12,
+    "satComplexityCount": 530,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 43,
+    "lineCount": 1408,
+    "moduleCount": 1,
+    "namespaceCount": 12,
+    "typeCount": 98,
+    "methodCount": 530,
+    "maxCrapScore": 12,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '61B1E5E9C9D55121D0C7589EB153D159207B73CF';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "FCA2ADE55C5301613032F97D237EFE5A409E8F03",
+  "captureid": "9C625803C0D25F100BCD1010F983BAC84DDE355D",
+  "fullName": null,
+  "caption": "Foo.Sir.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 739,
+    "coveredPoints": 564,
+    "coverageType": "SP",
+    "coveragePercent": 0.76319350473613,
+    "coveragePercentString": "76.3%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 423,
+    "coveredPoints": 330,
+    "coverageType": "BP",
+    "coveragePercent": 0.78014184397163122,
+    "coveragePercentString": "78.0%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 287,
+    "coveredPoints": 163,
+    "coverageType": "CP",
+    "coveragePercent": 0.56794425087108025,
+    "coveragePercentString": "56.8%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 8,
+    "satComplexityCount": 212,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 21,
+    "lineCount": 783,
+    "moduleCount": 1,
+    "namespaceCount": 6,
+    "typeCount": 40,
+    "methodCount": 212,
+    "maxCrapScore": 8,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = '9C625803C0D25F100BCD1010F983BAC84DDE355D';
+   ncover.modules[modObj.captureId] = modObj;
+   modObj = {};
+   modObj['module'] = {
+  "id": "6217933460D7066FE28C34365004EADCF0663CE8",
+  "captureid": "C1F2AC8F0EA363F0440CC45F96A0F5A8C23DF822",
+  "fullName": null,
+  "caption": "Foo.Fir.Bar.dll",
+  "nodeType": "Module",
+  "treePath": null
+};
+   modObj['stats'] = {
+  "sequencePointCoverage": {
+    "coveragePoints": 1331,
+    "coveredPoints": 1195,
+    "coverageType": "SP",
+    "coveragePercent": 0.89782118707738545,
+    "coveragePercentString": "89.8%"
+  },
+  "branchCoverage": {
+    "coveragePoints": 1394,
+    "coveredPoints": 1208,
+    "coverageType": "BP",
+    "coveragePercent": 0.866571018651363,
+    "coveragePercentString": "86.7%"
+  },
+  "conditionCoverage": {
+    "coveragePoints": 1156,
+    "coveredPoints": 795,
+    "coverageType": "CP",
+    "coveragePercent": 0.68771626297577859,
+    "coveragePercentString": "68.8%"
+  },
+  "codebase": {
+    "maxCyclomaticComplexity": 19,
+    "satComplexityCount": 586,
+    "complexityPcnt": 1.0,
+    "complexityPctString": "100.0%",
+    "documentCount": 78,
+    "lineCount": 1602,
+    "moduleCount": 1,
+    "namespaceCount": 12,
+    "typeCount": 119,
+    "methodCount": 586,
+    "maxCrapScore": 19,
+    "crappyMethodCount": 0,
+    "crappyMethodPct": 0.0,
+    "crappyMethodPctString": "0.0%"
+  }
+};
+   modObj['captureId'] = 'C1F2AC8F0EA363F0440CC45F96A0F5A8C23DF822';
+   ncover.modules[modObj.captureId] = modObj;
+</script>
+
+<script type='text/javascript'>(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['module_summary'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, stack2, foundHelper, tmp1, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n<td class=\"stat\">\r\n    ";
+  foundHelper = helpers.branchCoverage;
+  stack1 = foundHelper || depth0.branchCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(2, program2, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</td>\r\n<td class=\"stat\">\r\n    ";
+  foundHelper = helpers.sequencePointCoverage;
+  stack1 = foundHelper || depth0.sequencePointCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(9, program9, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</td>\r\n<td class=\"stat\">\r\n    ";
+  foundHelper = helpers.conditionCoverage;
+  stack1 = foundHelper || depth0.conditionCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(16, program16, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</td>\r\n";
+  foundHelper = helpers.codebase;
+  stack1 = foundHelper || depth0.codebase;
+  stack2 = helpers['if'];
+  tmp1 = self.program(23, program23, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
+  return buffer;}
+function program2(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.branchCoverage;
+  stack1 = foundHelper || depth0.branchCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(3, program3, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program3(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div><big><b>";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</b></big><small>";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(4, program4, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</small></div>\r\n    ";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  foundHelper = helpers.isNotNa;
+  stack2 = foundHelper || depth0.isNotNa;
+  tmp1 = self.program(7, program7, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    ";
+  return buffer;}
+function program4(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(5, program5, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program5(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "&nbsp;(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")";
+  return buffer;}
+
+function program7(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    ";
+  return buffer;}
+
+function program9(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.sequencePointCoverage;
+  stack1 = foundHelper || depth0.sequencePointCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(10, program10, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program10(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div><big><b>";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</b></big><small>";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(11, program11, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</small></div>\r\n    ";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  foundHelper = helpers.isNotNa;
+  stack2 = foundHelper || depth0.isNotNa;
+  tmp1 = self.program(14, program14, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    ";
+  return buffer;}
+function program11(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(12, program12, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program12(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "&nbsp;(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")";
+  return buffer;}
+
+function program14(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    ";
+  return buffer;}
+
+function program16(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.conditionCoverage;
+  stack1 = foundHelper || depth0.conditionCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(17, program17, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program17(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div><big><b>";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</b></big><small>";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(18, program18, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</small></div>\r\n    ";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  foundHelper = helpers.isNotNa;
+  stack2 = foundHelper || depth0.isNotNa;
+  tmp1 = self.program(21, program21, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    ";
+  return buffer;}
+function program18(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(19, program19, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program19(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "&nbsp;(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")";
+  return buffer;}
+
+function program21(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    ";
+  return buffer;}
+
+function program23(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.codebase;
+  stack1 = foundHelper || depth0.codebase;
+  stack2 = helpers['with'];
+  tmp1 = self.program(24, program24, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program24(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n<td class=\"stat\">\r\n    ";
+  foundHelper = helpers.maxCyclomaticComplexity;
+  stack1 = foundHelper || depth0.maxCyclomaticComplexity;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "maxCyclomaticComplexity", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "\r\n</td>\r\n<td class=\"stat\">\r\n    ";
+  foundHelper = helpers.maxCrapScore;
+  stack1 = foundHelper || depth0.maxCrapScore;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "maxCrapScore", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "\r\n</td>\r\n<td class=\"stat\">\r\n    <div><big><b>";
+  foundHelper = helpers.crappyMethodCount;
+  stack1 = foundHelper || depth0.crappyMethodCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "crappyMethodCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</b></big>&nbsp;<small>(";
+  foundHelper = helpers.crappyMethodPctString;
+  stack1 = foundHelper || depth0.crappyMethodPctString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "crappyMethodPctString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")</small></div>\r\n    ";
+  foundHelper = helpers.crappyMethodPctString;
+  stack1 = foundHelper || depth0.crappyMethodPctString;
+  foundHelper = helpers.isNotNa;
+  stack2 = foundHelper || depth0.isNotNa;
+  tmp1 = self.program(25, program25, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</td>\r\n";
+  return buffer;}
+function program25(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n    <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.crappyMethodPct;
+  stack1 = foundHelper || depth0.crappyMethodPct;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.crappyMethodPct;
+  stack1 = foundHelper || depth0.crappyMethodPct;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n    ";
+  return buffer;}
+
+  buffer += "<td class=\"assembly\">";
+  foundHelper = helpers.module;
+  stack1 = foundHelper || depth0.module;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.caption);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "module.caption", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</td>\r\n";
+  foundHelper = helpers.stats;
+  stack1 = foundHelper || depth0.stats;
+  stack2 = helpers['with'];
+  tmp1 = self.program(1, program1, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n\r\n";
+  return buffer;});
+})();</script>
+<script type='text/javascript'>
+    Handlebars.registerPartial('module_summary', Handlebars.templates['module_summary']);
+</script>
+
+<script type='text/javascript'>(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['trend_chart'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, stack2, foundHelper, tmp1, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing;
+
+function program1(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "\r\n    <div class=\"y-axis\">\r\n        ";
+  stack1 = depth0;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, ".", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "\r\n        <div class=\"y-tick\"></div>\r\n    </div>\r\n    ";
+  return buffer;}
+
+function program3(depth0,data,depth1) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"bar\">\r\n            ";
+  foundHelper = helpers.value;
+  stack1 = foundHelper || depth0.value;
+  foundHelper = helpers.hasValue;
+  stack2 = foundHelper || depth0.hasValue;
+  tmp1 = self.programWithDepth(program4, data, depth1);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(12, program12, data);
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            </div>\r\n        ";
+  return buffer;}
+function program4(depth0,data,depth2) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n                <div class=\"empty\" style=\"height: ";
+  foundHelper = helpers.max;
+  stack1 = foundHelper || depth2.max;
+  foundHelper = helpers.value;
+  stack2 = foundHelper || depth0.value;
+  foundHelper = helpers.inversePercentOf;
+  stack3 = foundHelper || depth0.inversePercentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "inversePercentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n                <div\r\n                    ";
+  foundHelper = helpers.threshold;
+  stack1 = foundHelper || depth2.threshold;
+  foundHelper = helpers.isGreaterThanZero;
+  stack2 = foundHelper || depth0.isGreaterThanZero;
+  tmp1 = self.programWithDepth(program5, data, depth2);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(10, program10, data);
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    style=\"height: ";
+  foundHelper = helpers.max;
+  stack1 = foundHelper || depth2.max;
+  foundHelper = helpers.value;
+  stack2 = foundHelper || depth0.value;
+  foundHelper = helpers.percentOf;
+  stack3 = foundHelper || depth0.percentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "percentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\">\r\n                </div>\r\n            ";
+  return buffer;}
+function program5(depth0,data,depth3) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n                       ";
+  foundHelper = helpers.value;
+  stack1 = foundHelper || depth0.value;
+  foundHelper = helpers.threshold;
+  stack2 = foundHelper || depth3.threshold;
+  foundHelper = helpers.isGreaterThan;
+  stack3 = foundHelper || depth0.isGreaterThan;
+  tmp1 = self.program(6, program6, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(8, program8, data);
+  if(foundHelper && typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack3, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  return buffer;}
+function program6(depth0,data) {
+
+
+  return "class=\"bad\"";}
+
+function program8(depth0,data) {
+
+
+  return "class=\"good\"";}
+
+function program10(depth0,data) {
+
+
+  return "\r\n                        class=\"neutral\"\r\n                    ";}
+
+function program12(depth0,data) {
+
+
+  return "\r\n                <div class=\"none\"></div>\r\n            ";}
+
+function program14(depth0,data) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n        <div class=\"threshold\" style=\"height:";
+  stack1 = 100;
+  foundHelper = helpers.threshold;
+  stack2 = foundHelper || depth0.threshold;
+  foundHelper = helpers.inversePercentOf;
+  stack3 = foundHelper || depth0.inversePercentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "inversePercentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n        ";
+  return buffer;}
+
+function program16(depth0,data) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n        <div class=\"baseline-1\" style=\"height:";
+  stack1 = 100;
+  foundHelper = helpers.baseline1;
+  stack2 = foundHelper || depth0.baseline1;
+  foundHelper = helpers.inversePercentOf;
+  stack3 = foundHelper || depth0.inversePercentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "inversePercentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n        ";
+  return buffer;}
+
+function program18(depth0,data) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n        <div class=\"baseline-2\" style=\"height:";
+  stack1 = 100;
+  foundHelper = helpers.baseline2;
+  stack2 = foundHelper || depth0.baseline2;
+  foundHelper = helpers.inversePercentOf;
+  stack3 = foundHelper || depth0.inversePercentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "inversePercentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n        ";
+  return buffer;}
+
+function program20(depth0,data) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n        <div class=\"baseline-3\" style=\"height:";
+  stack1 = 100;
+  foundHelper = helpers.baseline3;
+  stack2 = foundHelper || depth0.baseline3;
+  foundHelper = helpers.inversePercentOf;
+  stack3 = foundHelper || depth0.inversePercentOf;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "inversePercentOf", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n        ";
+  return buffer;}
+
+  buffer += "﻿<div class=\"trend_chart\">\r\n    <div class=\"section\">";
+  foundHelper = helpers.title;
+  stack1 = foundHelper || depth0.title;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "title", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n    ";
+  foundHelper = helpers.yTicks;
+  stack1 = foundHelper || depth0.yTicks;
+  stack2 = helpers.each;
+  tmp1 = self.program(1, program1, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    <div class=\"y-axis\"></div>\r\n    <div class=\"bars\">\r\n        ";
+  foundHelper = helpers.trendBars;
+  stack1 = foundHelper || depth0.trendBars;
+  stack2 = helpers.each;
+  tmp1 = self.programWithDepth(program3, data, depth0);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.threshold;
+  stack1 = foundHelper || depth0.threshold;
+  foundHelper = helpers.isGreaterThanZero;
+  stack2 = foundHelper || depth0.isGreaterThanZero;
+  tmp1 = self.program(14, program14, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  if(foundHelper && typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, tmp1); }
+  else { stack1 = blockHelperMissing.call(depth0, stack2, stack1, tmp1); }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.baseline1;
+  stack1 = foundHelper || depth0.baseline1;
+  stack2 = helpers['if'];
+  tmp1 = self.program(16, program16, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.baseline2;
+  stack1 = foundHelper || depth0.baseline2;
+  stack2 = helpers['if'];
+  tmp1 = self.program(18, program18, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.baseline3;
+  stack1 = foundHelper || depth0.baseline3;
+  stack2 = helpers['if'];
+  tmp1 = self.program(20, program20, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </div>\r\n</div>\r\n";
+  return buffer;});
+})();</script>
+<script type='text/javascript'>
+    Handlebars.registerPartial('trend_chart', Handlebars.templates['trend_chart']);
+</script>
+
+<script type='text/javascript'>(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['execution_summary'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers; partials = partials || Handlebars.partials;
+  var buffer = "", stack1, stack2, foundHelper, tmp1, self=this, functionType="function", helperMissing=helpers.helperMissing, undef=void 0, escapeExpression=this.escapeExpression;
+
+function program1(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "\r\n        <div class=\"title depressed\">";
+  foundHelper = helpers.name;
+  stack1 = foundHelper || depth0.name;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "name", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        ";
+  return buffer;}
+
+function program3(depth0,data) {
+
+
+  return "<b>(FILTERED)</b>";}
+
+function program5(depth0,data,depth1) {
+
+  var buffer = "", stack1, stack2, stack3;
+  buffer += "\r\n<div class=\"document_section\">\r\n    <div id=\"execution_summary\" class=\"execution\" onclick=\"window.open('";
+  foundHelper = helpers.serverRoot;
+  stack1 = foundHelper || depth1.serverRoot;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "...serverRoot", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/#/projects/";
+  foundHelper = helpers.project;
+  stack1 = foundHelper || depth1.project;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.id);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "...project.id", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/executions/";
+  foundHelper = helpers.id;
+  stack1 = foundHelper || depth0.id;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "id", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/modules')\">\r\n        <div class=\"section\">Collection</div>\r\n        <div class=\"label\">Collection Date:</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.endTime;
+  stack1 = foundHelper || depth0.endTime;
+  foundHelper = helpers.artifactDateString;
+  stack2 = foundHelper || depth0.artifactDateString;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "artifactDateString", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Duration:</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.endTime;
+  stack1 = foundHelper || depth0.endTime;
+  foundHelper = helpers.startTime;
+  stack2 = foundHelper || depth0.startTime;
+  foundHelper = helpers.elapsedHours;
+  stack3 = foundHelper || depth0.elapsedHours;
+  if(typeof stack3 === functionType) { stack1 = stack3.call(depth0, stack2, stack1, { hash: {} }); }
+  else if(stack3=== undef) { stack1 = helperMissing.call(depth0, "elapsedHours", stack2, stack1, { hash: {} }); }
+  else { stack1 = stack3; }
+  buffer += escapeExpression(stack1) + " hrs</div>\r\n        <div class=\"label\">Caption:</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.caption;
+  stack1 = foundHelper || depth0.caption;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "caption", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Build Id:</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.buildId;
+  stack1 = foundHelper || depth0.buildId;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "buildId", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Module Count:</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.moduleCount;
+  stack1 = foundHelper || depth0.moduleCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "moduleCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        ";
+  foundHelper = helpers.stats;
+  stack1 = foundHelper || depth0.stats;
+  stack2 = helpers['if'];
+  tmp1 = self.program(6, program6, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        \r\n        ";
+  foundHelper = helpers.baselines;
+  stack1 = foundHelper || depth0.baselines;
+  stack2 = helpers['if'];
+  tmp1 = self.program(26, program26, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        \r\n    </div>\r\n\r\n    <div id=\"execution_trends\" class=\"execution trends\" onclick=\"window.open('";
+  foundHelper = helpers.serverRoot;
+  stack1 = foundHelper || depth1.serverRoot;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "...serverRoot", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/#/projects/";
+  foundHelper = helpers.project;
+  stack1 = foundHelper || depth1.project;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.id);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "...project.id", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/executions/";
+  foundHelper = helpers.id;
+  stack1 = foundHelper || depth0.id;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "id", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "/modules')\">\r\n        ";
+  foundHelper = helpers.brCoverageTrend;
+  stack1 = foundHelper || depth1.brCoverageTrend;
+  stack1 = self.invokePartial(partials.trend_chart, 'trend_chart', stack1, helpers, partials);;
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.spCoverageTrend;
+  stack1 = foundHelper || depth1.spCoverageTrend;
+  stack1 = self.invokePartial(partials.trend_chart, 'trend_chart', stack1, helpers, partials);;
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.cndCoverageTrend;
+  stack1 = foundHelper || depth1.cndCoverageTrend;
+  stack1 = self.invokePartial(partials.trend_chart, 'trend_chart', stack1, helpers, partials);;
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  foundHelper = helpers.crappyMethodTrend;
+  stack1 = foundHelper || depth1.crappyMethodTrend;
+  stack1 = self.invokePartial(partials.trend_chart, 'trend_chart', stack1, helpers, partials);;
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </div>\r\n    ";
+  return buffer;}
+function program6(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n        ";
+  foundHelper = helpers.stats;
+  stack1 = foundHelper || depth0.stats;
+  stack2 = helpers['with'];
+  tmp1 = self.program(7, program7, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  return buffer;}
+function program7(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n        <div class=\"section\">Coverage</div>\r\n        <div class=\"label\">Branches:</div>\r\n        <div class=\"value\">\r\n            ";
+  foundHelper = helpers.branchCoverage;
+  stack1 = foundHelper || depth0.branchCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(8, program8, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        </div>\r\n\r\n        <div class=\"label\">Sequence Points:</div>\r\n        <div class=\"value\">\r\n            ";
+  foundHelper = helpers.sequencePointCoverage;
+  stack1 = foundHelper || depth0.sequencePointCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(13, program13, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        </div>\r\n        <div class=\"label\">Conditions:</div>\r\n        <div class=\"value\">\r\n            ";
+  foundHelper = helpers.conditionCoverage;
+  stack1 = foundHelper || depth0.conditionCoverage;
+  stack2 = helpers['if'];
+  tmp1 = self.program(18, program18, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        </div>\r\n        ";
+  foundHelper = helpers.codebase;
+  stack1 = foundHelper || depth0.codebase;
+  stack2 = helpers['if'];
+  tmp1 = self.program(23, program23, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        ";
+  return buffer;}
+function program8(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.branchCoverage;
+  stack1 = foundHelper || depth0.branchCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(9, program9, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program9(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial larger\">";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n            ";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(10, program10, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program10(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(11, program11, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program11(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial smaller\">(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")</div>\r\n            <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            ";
+  return buffer;}
+
+function program13(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.sequencePointCoverage;
+  stack1 = foundHelper || depth0.sequencePointCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(14, program14, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program14(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial larger\">";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n            ";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(15, program15, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program15(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(16, program16, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program16(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial smaller\">(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")</div>\r\n            <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            ";
+  return buffer;}
+
+function program18(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.conditionCoverage;
+  stack1 = foundHelper || depth0.conditionCoverage;
+  stack2 = helpers['with'];
+  tmp1 = self.program(19, program19, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program19(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial larger\">";
+  foundHelper = helpers.coveragePercentString;
+  stack1 = foundHelper || depth0.coveragePercentString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePercentString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n            ";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(20, program20, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program20(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  stack2 = helpers['if'];
+  tmp1 = self.program(21, program21, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n            ";
+  return buffer;}
+function program21(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n            <div class=\"partial smaller\">(";
+  foundHelper = helpers.coveredPoints;
+  stack1 = foundHelper || depth0.coveredPoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveredPoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " of ";
+  foundHelper = helpers.coveragePoints;
+  stack1 = foundHelper || depth0.coveragePoints;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "coveragePoints", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")</div>\r\n            <div class=\"thinbar covered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.percent;
+  stack2 = foundHelper || depth0.percent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "percent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            <div class=\"thinbar uncovered\" style=\"width: ";
+  foundHelper = helpers.coveragePercent;
+  stack1 = foundHelper || depth0.coveragePercent;
+  foundHelper = helpers.inversePercent;
+  stack2 = foundHelper || depth0.inversePercent;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "inversePercent", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + "%\"></div>\r\n            ";
+  return buffer;}
+
+function program23(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.codebase;
+  stack1 = foundHelper || depth0.codebase;
+  stack2 = helpers['with'];
+  tmp1 = self.program(24, program24, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program24(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "\r\n        <div class=\"label\">Max. CRAP Score</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.maxCrapScore;
+  stack1 = foundHelper || depth0.maxCrapScore;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "maxCrapScore", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">CRAPpy Methods</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.crappyMethodCount;
+  stack1 = foundHelper || depth0.crappyMethodCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "crappyMethodCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + " (";
+  foundHelper = helpers.crappyMethodPctString;
+  stack1 = foundHelper || depth0.crappyMethodPctString;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "crappyMethodPctString", { hash: {} }); }
+  buffer += escapeExpression(stack1) + ")</div>\r\n\r\n        <div class=\"section\">Codebase</div>\r\n        <div class=\"label\">Max Complexity</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.maxCyclomaticComplexity;
+  stack1 = foundHelper || depth0.maxCyclomaticComplexity;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "maxCyclomaticComplexity", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Documents</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.documentCount;
+  stack1 = foundHelper || depth0.documentCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "documentCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Lines</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.lineCount;
+  stack1 = foundHelper || depth0.lineCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "lineCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Namespace Count</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.namespaceCount;
+  stack1 = foundHelper || depth0.namespaceCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "namespaceCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Type Count</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.typeCount;
+  stack1 = foundHelper || depth0.typeCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "typeCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        <div class=\"label\">Method Count</div>\r\n        <div class=\"value\">";
+  foundHelper = helpers.methodCount;
+  stack1 = foundHelper || depth0.methodCount;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "methodCount", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</div>\r\n        ";
+  return buffer;}
+
+function program26(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.baselines;
+  stack1 = foundHelper || depth0.baselines;
+  stack2 = helpers['with'];
+  tmp1 = self.program(27, program27, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { return stack1; }
+  else { return ''; }}
+function program27(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n        <div class=\"section\">Baselines</div>\r\n        <div class=\"label key blue\"></div>\r\n        <div class=\"value baseline\">";
+  foundHelper = helpers.baseline1;
+  stack1 = foundHelper || depth0.baseline1;
+  stack2 = helpers['if'];
+  tmp1 = self.program(28, program28, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(30, program30, data);
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        <div class=\"value baseline date\">";
+  foundHelper = helpers.baseline1;
+  stack1 = foundHelper || depth0.baseline1;
+  stack2 = helpers['if'];
+  tmp1 = self.program(32, program32, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        <div class=\"label key green\"></div>\r\n        <div class=\"value baseline\">";
+  foundHelper = helpers.baseline2;
+  stack1 = foundHelper || depth0.baseline2;
+  stack2 = helpers['if'];
+  tmp1 = self.program(34, program34, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(36, program36, data);
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        <div class=\"value baseline date\">";
+  foundHelper = helpers.baseline2;
+  stack1 = foundHelper || depth0.baseline2;
+  stack2 = helpers['if'];
+  tmp1 = self.program(38, program38, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        <div class=\"label key red\"></div>\r\n        <div class=\"value baseline\">";
+  foundHelper = helpers.baseline3;
+  stack1 = foundHelper || depth0.baseline3;
+  stack2 = helpers['if'];
+  tmp1 = self.program(40, program40, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.program(42, program42, data);
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        <div class=\"value baseline date\">";
+  foundHelper = helpers.baseline3;
+  stack1 = foundHelper || depth0.baseline3;
+  stack2 = helpers['if'];
+  tmp1 = self.program(44, program44, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n        ";
+  return buffer;}
+function program28(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "Build id: ";
+  foundHelper = helpers.baseline1;
+  stack1 = foundHelper || depth0.baseline1;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.buildId);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "baseline1.buildId", { hash: {} }); }
+  buffer += escapeExpression(stack1);
+  return buffer;}
+
+function program30(depth0,data) {
+
+
+  return "Not set";}
+
+function program32(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.baseline1;
+  stack1 = foundHelper || depth0.baseline1;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.endTime);
+  foundHelper = helpers.artifactDateString;
+  stack2 = foundHelper || depth0.artifactDateString;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "artifactDateString", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  return escapeExpression(stack1);}
+
+function program34(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "Build id: ";
+  foundHelper = helpers.baseline2;
+  stack1 = foundHelper || depth0.baseline2;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.buildId);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "baseline2.buildId", { hash: {} }); }
+  buffer += escapeExpression(stack1);
+  return buffer;}
+
+function program36(depth0,data) {
+
+
+  return "Not set";}
+
+function program38(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.baseline2;
+  stack1 = foundHelper || depth0.baseline2;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.endTime);
+  foundHelper = helpers.artifactDateString;
+  stack2 = foundHelper || depth0.artifactDateString;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "artifactDateString", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  return escapeExpression(stack1);}
+
+function program40(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "Build id: ";
+  foundHelper = helpers.baseline3;
+  stack1 = foundHelper || depth0.baseline3;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.buildId);
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "baseline3.buildId", { hash: {} }); }
+  buffer += escapeExpression(stack1);
+  return buffer;}
+
+function program42(depth0,data) {
+
+
+  return "Not set";}
+
+function program44(depth0,data) {
+
+  var stack1, stack2;
+  foundHelper = helpers.baseline3;
+  stack1 = foundHelper || depth0.baseline3;
+  stack1 = (stack1 === null || stack1 === undefined || stack1 === false ? stack1 : stack1.endTime);
+  foundHelper = helpers.artifactDateString;
+  stack2 = foundHelper || depth0.artifactDateString;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "artifactDateString", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  return escapeExpression(stack1);}
+
+function program46(depth0,data) {
+
+  var buffer = "", stack1, stack2;
+  buffer += "\r\n<div class=\"document_section\">\r\n    <table class=\"details\" id=\"modules_table\">\r\n        <thead>\r\n            <tr class=\"label\">\r\n                <th class=\"label\" style=\"min-width: 150px\">Assembly</th>\r\n                <th class=\"label\" width=\"140px\">Branch Coverage</th>\r\n                <th class=\"label\" width=\"140px\">Sequence Point Coverage</th>\r\n                <th class=\"label\" width=\"140px\">Condition Coverage</th>\r\n                <th class=\"label\" width=\"60px\">Max Complex.</th>\r\n                <th class=\"label\" width=\"60px\">Max CRAP Score</th>\r\n                <th class=\"label\">CRAPpy Methods</th>\r\n            </tr>\r\n        </thead>\r\n\r\n        <tbody></tbody>\r\n    </table>\r\n    ";
+  foundHelper = helpers.filterName;
+  stack1 = foundHelper || depth0.filterName;
+  stack2 = helpers['if'];
+  tmp1 = self.program(47, program47, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</div>\r\n";
+  return buffer;}
+function program47(depth0,data) {
+
+  var buffer = "", stack1;
+  buffer += "\r\n    <br>\r\n    <div class=\"fineprint\">Filter applied: <b>";
+  foundHelper = helpers.filterName;
+  stack1 = foundHelper || depth0.filterName;
+  if(typeof stack1 === functionType) { stack1 = stack1.call(depth0, { hash: {} }); }
+  else if(stack1=== undef) { stack1 = helperMissing.call(depth0, "filterName", { hash: {} }); }
+  buffer += escapeExpression(stack1) + "</b></div>\r\n    ";
+  return buffer;}
+
+  buffer += "<div class=\"header\">\r\n    <div class=\"header raised\">\r\n        <div class=\"ncoverball\"></div>\r\n        <div class=\"title\">Coverage Summary</div>\r\n    </div>\r\n    <div class=\"header depressed\">\r\n        <div class=\"chevron\"></div>\r\n        ";
+  foundHelper = helpers.project;
+  stack1 = foundHelper || depth0.project;
+  stack2 = helpers['with'];
+  tmp1 = self.program(1, program1, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </div>\r\n    <div class=\"fineprint\">Coverage artifact created: ";
+  foundHelper = helpers.createDateTime;
+  stack1 = foundHelper || depth0.createDateTime;
+  foundHelper = helpers.artifactDateString;
+  stack2 = foundHelper || depth0.artifactDateString;
+  if(typeof stack2 === functionType) { stack1 = stack2.call(depth0, stack1, { hash: {} }); }
+  else if(stack2=== undef) { stack1 = helperMissing.call(depth0, "artifactDateString", stack1, { hash: {} }); }
+  else { stack1 = stack2; }
+  buffer += escapeExpression(stack1) + " ";
+  foundHelper = helpers.filterName;
+  stack1 = foundHelper || depth0.filterName;
+  stack2 = helpers['if'];
+  tmp1 = self.program(3, program3, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n</div>\r\n";
+  foundHelper = helpers.execution;
+  stack1 = foundHelper || depth0.execution;
+  stack2 = helpers['with'];
+  tmp1 = self.programWithDepth(program5, data, depth0);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</div>\r\n\r\n";
+  foundHelper = helpers.modules;
+  stack1 = foundHelper || depth0.modules;
+  stack2 = helpers['if'];
+  tmp1 = self.program(46, program46, data);
+  tmp1.hash = {};
+  tmp1.fn = tmp1;
+  tmp1.inverse = self.noop;
+  stack1 = stack2.call(depth0, stack1, tmp1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " \r\n";
+  return buffer;});
+})();</script>
+<script type='text/javascript'>
+    setTimeout( function(){ ncover.executionSummaryHTML(); }, 1000);
+</script>
 </body>
 </html>
