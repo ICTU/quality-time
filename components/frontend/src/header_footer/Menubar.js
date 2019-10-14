@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
+import './Menubar.css';
 
 function Login(props) {
   const [username, setUsername] = useState('');
@@ -31,7 +32,7 @@ export function Menubar(props) {
   const today = new Date();
   const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
   return (
-    <Menu fixed='top' inverted>
+    <Menu className="Menubar" fixed='top' inverted>
       <Container fluid>
         <Menu.Item header onClick={() => props.go_home()}>
           <Image size='mini' src='/favicon.ico' />

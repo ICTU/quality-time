@@ -1,0 +1,5 @@
+@media print {
+    .Menubar {
+        display: none !important;
+    }
+}
