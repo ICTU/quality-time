@@ -794,6 +794,15 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "repository": {
+                    "name": "Repository (id or name)",
+                    "type": "string",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
                 "branch": {
                     "name": "Branch",
                     "type": "string",
