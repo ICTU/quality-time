@@ -56,5 +56,6 @@ class NCoverTest(SourceCollectorTestCase):
             ncover.serverRoot = 'http://127.0.0.1:11235';
             ncover.createDateTime = '1440425155042';
         </script>""")
-        expected_age = (datetime.utcnow() - datetime.fromtimestamp(1440425155042 / 1000.)).days
+        report_datetime = datetime.fromtimestamp(1440425155042 / 1000.)
+        expected_age = (datetime.now(tz=report_datetime.tzinfo) - report_datetime).days
         self.assert_value(str(expected_age), response)
