@@ -8,7 +8,9 @@ from typing import Dict, Tuple
 import urllib.parse
 
 from pymongo.database import Database
-import ldap
+import ldap3
+from ldap3 import Server, Connection, ALL, NTLM, ObjectDef
+from ldap3.core import exceptions
 import bottle
 
 from database import sessions
@@ -39,27 +41,32 @@ def login(database: Database) -> Dict[str, bool]:
     credentials = dict(bottle.request.json)
     unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
+    password = credentials.get("password", "no password given")
+
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
-    ldap_lookup_user = os.environ.get("LDAP_LOOKUP_USER", "admin")
-    ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
-    ldap_server = ldap.initialize(ldap_url)
+    un_field = 'cn'
+
+    # # these are params for devivmil oc ldap server
+    # ldap_root_dn = "cn=users,cn=accounts,dc=oc,dc=devivmil,dc=ictu-sr,dc=nl"
+    # ldap_url = "10.199.8.1" #"localhost"
+    # un_field = 'uid'
+
+    ldap_server = Server(ldap_url, get_info=ALL)
     try:
-        ldap_server.simple_bind_s(f"cn={ldap_lookup_user},{ldap_root_dn}", ldap_lookup_user_password)
-        result = ldap_server.search_s(
-            ldap_root_dn, ldap.SCOPE_SUBTREE, f"(|(uid={username})(cn={username}))", ['dn', 'uid', 'cn'])
-        if result:
-            logging.info("LDAP search result: %s", result)
-            username = LDAPObject(result[0][1]).cn
-        else:
-            raise ldap.INVALID_CREDENTIALS
-        ldap_server.simple_bind_s(f"cn={username},{ldap_root_dn}", credentials.get("password"))
-    except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM, ldap.INVALID_DN_SYNTAX,
-            ldap.SERVER_DOWN) as reason:
+        with Connection(ldap_server, user=f"{un_field}={username},{ldap_root_dn}", password=password) as conn:
+            if not conn.bind():
+                logging.error("LDAP: bind error occurred: {}".format(conn.result))
+                raise exceptions.LDAPBindError
+
+    except (exceptions.LDAPInvalidCredentialsResult, exceptions.LDAPUnwillingToPerformResult, exceptions.LDAPInvalidDNSyntaxResult,
+            exceptions.LDAPInvalidServerError, exceptions.LDAPServerPoolError, exceptions.LDAPServerPoolExhaustedError) as reason:
         logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, reason)
         return dict(ok=False)
-    finally:
-        ldap_server.unbind_s()
+    except Exception as xreason:
+        logging.warning("Couldn't bind cn=%s,%s: %s", username, ldap_root_dn, xreason)
+        return dict(ok=False)
+
     session_id, session_expiration_datetime = generate_session()
     sessions.upsert(database, username, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
