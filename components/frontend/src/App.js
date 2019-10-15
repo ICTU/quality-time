@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
 import { SemanticToastContainer, toast } from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
+import './App.css';
 
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
@@ -198,7 +199,7 @@ class App extends Component {
           user={this.state.user}
         />
         <SemanticToastContainer />
-        <Container fluid style={{ flex: 1, marginTop: '7em', paddingLeft: '1em', paddingRight: '1em' }}>
+        <Container fluid className="MainContainer">
           {this.state.loading ?
             <Segment basic placeholder loading size="massive" />
             :
