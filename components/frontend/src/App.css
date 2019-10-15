@@ -1,0 +1,12 @@
+.MainContainer {
+    flex: 1;
+    margin-top: 7em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+@media print {
+    .MainContainer {
+        margin-top: 0em;
+    }
+}
