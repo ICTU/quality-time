@@ -41,8 +41,7 @@ class QualityTimeMetrics(SourceCollector):
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         measurements_by_metric_uuid = dict()
         for response in responses[1:]:
-            measurements = response.json()["measurements"]
-            if measurements:
+            if measurements := response.json()["measurements"]:
                 last = measurements[-1]
                 measurements_by_metric_uuid[last["metric_uuid"]] = last
         status_to_count = self._parameter("status")

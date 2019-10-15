@@ -22,8 +22,7 @@ class GitlabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = f"{url}/api/v4/projects/{project}/{api}"
         sep = "&" if "?" in api_url else "?"
         api_url += f"{sep}per_page=100"
-        private_token = self._parameter("private_token")
-        if private_token:
+        if private_token := self._parameter("private_token"):
             api_url += f"&private_token={private_token}"
         return URL(api_url)
 

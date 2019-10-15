@@ -54,8 +54,7 @@ class SourceCollector(ABC):
     def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=no-self-use,unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
-        landing_url = cast(str, self.__parameters.get("landing_url", "")).strip("/")
-        if landing_url:
+        if landing_url := cast(str, self.__parameters.get("landing_url", "")).strip("/"):
             return URL(landing_url)
         url = cast(str, self.__parameters.get("url", "")).strip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
@@ -101,8 +100,7 @@ class SourceCollector(ABC):
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
-        token = cast(str, self.__parameters.get("private_token", ""))
-        if token:
+        if token := cast(str, self.__parameters.get("private_token", "")):
             return token, ""
         username = cast(str, self.__parameters.get("username", ""))
         password = cast(str, self.__parameters.get("password", ""))

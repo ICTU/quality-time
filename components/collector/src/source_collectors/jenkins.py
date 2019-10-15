@@ -52,10 +52,8 @@ class JenkinsJobs(SourceCollector):
     @staticmethod
     def _build_status(job: Job) -> str:
         """Return the build status of the job."""
-        builds = job.get("builds")
-        if builds:
-            status = builds[0].get("result")
-            if status:
+        if builds := job.get("builds"):
+            if status := builds[0].get("result"):
                 return str(status).capitalize().replace("_", " ")
         return "Not built"
 
