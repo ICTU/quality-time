@@ -3,7 +3,7 @@ version: 2
 jobs:
   unittest_collector:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.8.0rc1
     steps:
       - checkout
       - run:
@@ -15,7 +15,7 @@ jobs:
 
   unittest_server:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.8.0rc1
     steps:
       - checkout
       - run:
