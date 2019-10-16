@@ -13,7 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Allow for specifying an Azure DevOps repository by name. Fixes [#683](https://github.com/ICTU/quality-time/issues/683).
 - Remove white space at the top of the page in printouts. Fixes [#685](https://github.com/ICTU/quality-time/issues/685). 
+
+### Changed
+
+- Quality-time now uses Python 3.8 for the collector and server components. Closes [#684](https://github.com/ICTU/quality-time/issues/684). 
 
 ## [0.12.1] - [2019-10-14]
 
