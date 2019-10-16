@@ -23,8 +23,8 @@ class CollectorTestLandingUrl(SourceCollectorTestCase):
     def test_source_response_landing_url_different(self):
         """Test that the landing url for the source is returned."""
         metric = dict(
-            type="tests", addition="sum", sources=dict(a=dict(
-            type="junit", parameters=dict(url="https://url", landing_url='https://landing'))))
+            type="tests", addition="sum",
+            sources=dict(a=dict(type="junit", parameters=dict(url="https://url", landing_url='https://landing'))))
         response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
         self.assert_measurement(response, landing_url="https://landing")
 
@@ -72,11 +72,11 @@ class CollectorErrorTest(SourceCollectorTestCase):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
             response = MetricCollector(self.metric, dict()).get()
-        self.assertTrue(response["sources"][0]["connection_error"].startswith("Traceback"))
+        self.assert_measurement(response, connection_error="Traceback")
 
     def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
         mock_response = Mock()
         mock_response.text = "1"
         response = self.collect(self.metric, get_request_text="1")
-        self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))
+        self.assert_measurement(response, parse_error="Traceback")

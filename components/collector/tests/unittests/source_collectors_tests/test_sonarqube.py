@@ -160,7 +160,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         json = dict(component=dict(measures=[]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(response, value=None, total=None, parse_error_fragment="KeyError")
+        self.assert_measurement(response, value=None, total=None, parse_error="KeyError")
 
     def test_failed_tests(self):
         """Test that the number of failed tests is returned."""
@@ -168,4 +168,3 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="failed_tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="13", total="100")
-

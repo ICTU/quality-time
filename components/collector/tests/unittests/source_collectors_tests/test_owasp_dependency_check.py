@@ -77,7 +77,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         self.assert_measurement(
-            response, value=None, entities=[], parse_error_fragment=f"""
+            response, value=None, entities=[], parse_error=f"""
 AssertionError: The XML root element should be one of \
 "{OWASPDependencyCheckBase.allowed_root_tags}" but is \
 "{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"

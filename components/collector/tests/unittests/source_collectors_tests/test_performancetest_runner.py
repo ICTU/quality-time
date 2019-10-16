@@ -29,15 +29,16 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
 
     def test_one_slow_transaction(self):
         """Test that the number of slow transactions is 1 if there is 1 slow transactions in the details table."""
-        html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
-            '</tr></table></html>'
+        html = '<html><table class="details"><tr class="transaction"><td class="name">Name</td>' \
+               '<td class="red evaluated"/></tr></table></html>'
         response = self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1")
 
     def test_ignore_fast_transactions(self):
         """Test that fast transactions are not counted."""
-        html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
-            '</tr><tr class="transaction"><td class="green evaluated"/></tr></table></html>'
+        html = '<html><table class="details"><tr class="transaction"><td class="name">Name</td>' \
+               '<td class="red evaluated"/></tr><tr class="transaction"><td class="green evaluated"/></tr></table>' \
+               '</html>'
         response = self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1")
 
@@ -140,5 +141,4 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>'''
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_measurement(response, value=None)
-        self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))
+        self.assert_measurement(response, value=None, parse_error="Traceback")

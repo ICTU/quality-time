@@ -47,7 +47,8 @@ class GitLabFailedJobsTest(GitLabTestCase):
         self.sources["source_id"]["parameters"]["private_token"] = "token"
         response = self.collect(self.metric)
         self.assert_measurement(
-            response, api_url="https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token")
+            response, api_url="https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token",
+            parse_error="Traceback")
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):

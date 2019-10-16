@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch, Mock
 
 from metric_collectors import MetricCollector
-from utilities.type import Entities, Measurement, Value
+from utilities.type import Measurement
 
 
 class SourceCollectorTestCase(unittest.TestCase):
@@ -45,21 +45,13 @@ class SourceCollectorTestCase(unittest.TestCase):
                     self.collector = MetricCollector(metric, self.data_model)
                     return self.collector.get()
 
-    def assert_measurement(
-            self, measurement: Measurement, *, value: Value = None, total: Value = None, entities: Entities = None,
-            api_url: str = None, landing_url: str = None, connection_error: bool = False,
-            parse_error_fragment: str = None, source_index: int = 0) -> None:
+    def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
-        if value is not None:
-            self.assertEqual(value, measurement["sources"][source_index]["value"])
-        if total is not None:
-            self.assertEqual(total, measurement["sources"][source_index]["total"])
-        if entities is not None:
-            self.assertEqual(entities, measurement["sources"][source_index]["entities"])
-        if api_url is not None:
-            self.assertEqual(api_url, measurement["sources"][source_index]["api_url"])
-        if landing_url is not None:
-            self.assertEqual(landing_url, measurement["sources"][source_index]["landing_url"])
-        if parse_error_fragment is not None:
-            self.assertIn(parse_error_fragment, measurement["sources"][source_index]["parse_error"])
-        self.assertEqual(connection_error, bool(measurement["sources"][source_index]["connection_error"]))
+        for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
+            if (attribute_value := attributes.get(attribute_key)) is not None:
+                self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
+        for attribute_key in ("connection_error", "parse_error"):
+            if (attribute_value := attributes.get(attribute_key)) is not None:
+                self.assertIn(attribute_value, measurement["sources"][source_index][attribute_key])
+            else:
+                self.assertIsNone(measurement["sources"][source_index][attribute_key])

@@ -27,7 +27,8 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         entities: Dict[str, Entity] = dict()
         for warning in warnings:
             priority = warning["priority"].lower()
-            if (file_path := warning["fileName"]) in entities:
+            file_path = warning["fileName"]
+            if file_path in entities:
                 entities[file_path]["nr_vulnerabilities"] = int(entities[file_path]["nr_vulnerabilities"]) + 1
                 entities[file_path]["highest_severity"] = \
                     self.__highest_severity(str(entities[file_path]["highest_severity"]).lower(), priority).capitalize()

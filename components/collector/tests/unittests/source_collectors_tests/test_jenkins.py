@@ -24,9 +24,14 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
     def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         jenkins_json = dict(
-            jobs=[dict(name="job", url="https://job", buildable=True, color="red", builds=[dict(result="red")],
-                       jobs=[dict(name="child_job", url="https://child_job", buildable=True, color="red",
-                                  builds=[dict(result="red")])])])
+            jobs=[
+                dict(
+                    name="job", url="https://job", buildable=True, color="red",
+                    builds=[dict(result="red", timestamp="1552686540953")],
+                    jobs=[
+                        dict(
+                            name="child_job", url="https://child_job", buildable=True, color="red",
+                            builds=[dict(result="red", timestamp="1552686540953")])])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, value="2")
 

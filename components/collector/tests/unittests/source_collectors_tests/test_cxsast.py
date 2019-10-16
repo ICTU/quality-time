@@ -37,7 +37,7 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
     def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
         response = self.collect(self.metric, post_request_side_effect=RuntimeError)
-        self.assert_measurement(response, landing_url="https://checkmarx", connection_error=True)
+        self.assert_measurement(response, landing_url="https://checkmarx", connection_error="Traceback")
 
 
 class CxSASTSecurityWarningsTest(CxSASTTestCase):

@@ -12,4 +12,3 @@ class RandomNumberTest(SourceCollectorTestCase):
         metric = dict(type="violations", addition="sum", sources=dict(a=dict(type="random")))
         response = self.collect(metric)
         self.assertTrue(Random.min <= int(response["sources"][0]["value"]) <= Random.max)
-        self.assert_measurement(response, connection_error=False)

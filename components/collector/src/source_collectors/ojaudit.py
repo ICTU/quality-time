@@ -49,7 +49,8 @@ class OJAuditViolations(SourceCollector):
     def __violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
                     severities: List[str]) -> Optional[Entity]:
         """Return the violation as entity."""
-        if not (location := violation.find("./ns:location", namespaces)):
+        location = violation.find("./ns:location", namespaces)
+        if not location:
             raise ValueError(f"OJAudit violation {violation} has no location element")
         severity = violation.findtext("./ns:values/ns:value", default="", namespaces=namespaces)
         if severities and severity not in severities:
