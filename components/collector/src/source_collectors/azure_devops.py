@@ -89,7 +89,7 @@ class AzureDevopsSourceUpToDateness(SourceCollector):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def _api_url(self) -> URL:
-        url = super()._api_url()
+        url = str(super()._api_url())
         repository = self._parameter("repository", quote=True)
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
