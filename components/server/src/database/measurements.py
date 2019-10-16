@@ -98,8 +98,7 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     """Determine the measurement status."""
     if measurement_value is None:
         return None
-    datamodel = latest_datamodel(database)
-    direction = metric.get("direction") or datamodel["metrics"][metric["type"]]["direction"]
+    direction = metric.get("direction") or latest_datamodel(database)["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric["target"])
     near_target = int(metric["near_target"])

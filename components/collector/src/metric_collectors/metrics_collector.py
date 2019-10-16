@@ -49,8 +49,7 @@ class MetricsCollector:
         datamodel = get(URL(f"{self.server_url}/datamodel"))
         metrics = get(URL(f"{self.server_url}/metrics"))
         for metric_uuid, metric in metrics.items():
-            collector = MetricCollector(metric, datamodel)
-            if not collector.can_collect():
+            if not (collector := MetricCollector(metric, datamodel)).can_collect():
                 continue
             if self.__skip(metric_uuid, metric):
                 continue

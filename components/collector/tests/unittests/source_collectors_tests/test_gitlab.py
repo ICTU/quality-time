@@ -31,23 +31,24 @@ class GitLabFailedJobsTest(GitLabTestCase):
                  web_url="https://gitlab/job", ref="ref")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
-        self.assert_entities(
-            [dict(key="id", name="ref", url="https://gitlab/job", build_age=build_age, build_date="2019-03-31",
-                  build_status="failed")],
-            response)
-        self.assert_value("1", response)
+        expected_entities = [
+            dict(key="id", name="ref", url="https://gitlab/job", build_age=build_age, build_date="2019-03-31",
+                 build_status="failed")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_nr_of_failed_jobs_without_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         gitlab_json = [dict(name="job", url="https://job", status="success")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
-        self.assert_value("0", response)
+        self.assert_measurement(response, value="0")
 
     def test_private_token(self):
         """Test that the private token is used."""
         self.sources["source_id"]["parameters"]["private_token"] = "token"
         response = self.collect(self.metric)
-        self.assert_api_url("https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token", response)
+        self.assert_measurement(
+            response, api_url="https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token",
+            parse_error="Traceback")
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
@@ -67,8 +68,8 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
             response = self.collect(
                 self.metric,
                 get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")])
-        self.assert_value(str(self.expected_age), response)
-        self.assert_landing_url("https://gitlab.com/project/blob/branch/file", response)
+        self.assert_measurement(
+            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
 
     def test_source_up_to_dateness_folder(self):
         """Test that the age of a folder in a repo can be measured."""
@@ -79,8 +80,8 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
                     [dict(type="blob", path="file.txt"), dict(type="tree", path="folder")],
                     [dict(type="blob", path="file.txt")], self.commit_json, self.commit_json,
                     dict(web_url="https://gitlab.com/project")])
-        self.assert_value(str(self.expected_age), response)
-        self.assert_landing_url("https://gitlab.com/project/blob/branch/file", response)
+        self.assert_measurement(
+            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
 
 
 class GitlabUnmergedBranchesTest(GitLabTestCase):
@@ -96,8 +97,7 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
             dict(name="merged_branch", merged=True)]
         response = self.collect(metric, get_request_json_return_value=gitlab_json)
-        self.assert_value("1", response)
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
-        self.assert_entities(
-            [dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")],
-            response)
+        expected_entities = [
+            dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")]
+        self.assert_measurement(response, value="1", entities=expected_entities)

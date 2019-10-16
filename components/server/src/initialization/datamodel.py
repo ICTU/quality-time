@@ -15,8 +15,7 @@ def import_datamodel(database: Database) -> None:
     data_model_path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)), "..", "data", "datamodel.json")
     with open(data_model_path) as json_data_model:
         data_model = json.load(json_data_model)
-    latest = latest_datamodel(database)
-    if latest:
+    if latest := latest_datamodel(database):
         del latest["timestamp"]
         del latest["_id"]
         if data_model == latest:

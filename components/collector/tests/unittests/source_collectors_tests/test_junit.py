@@ -25,15 +25,12 @@ class JUnitTestReportTest(SourceCollectorTestCase):
     def test_tests(self):
         """Test that the number of tests is returned."""
         response = self.collect(self.metric, get_request_text=self.junit_xml)
-        self.assert_value("4", response)
-        self.assert_entities(
-            [
-                dict(key="tc1", name="tc1", class_name="cn", test_result="passed"),
-                dict(key="tc2", name="tc2", class_name="cn", test_result="passed"),
-                dict(key="tc3", name="tc3", class_name="cn", test_result="failed"),
-                dict(key="tc4", name="tc4", class_name="cn", test_result="errored")
-            ],
-            response)
+        expected_entities = [
+            dict(key="tc1", name="tc1", class_name="cn", test_result="passed"),
+            dict(key="tc2", name="tc2", class_name="cn", test_result="passed"),
+            dict(key="tc3", name="tc3", class_name="cn", test_result="failed"),
+            dict(key="tc4", name="tc4", class_name="cn", test_result="errored")]
+        self.assert_measurement(response, value="4", entities=expected_entities)
 
 
 class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
@@ -50,8 +47,8 @@ class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
             self.metric,
             get_request_text="""<testsuites><testsuite failures="1"><testcase name="tc" classname="cn"><failure/>
             </testcase></testsuite></testsuites>""")
-        self.assert_value("1", response)
-        self.assert_entities([dict(key="tc", name="tc", class_name="cn", failure_type="failed")], response)
+        self.assert_measurement(
+            response, value="1", entities=[dict(key="tc", name="tc", class_name="cn", failure_type="failed")])
 
 
 class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
@@ -67,4 +64,4 @@ class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
         response = self.collect(
             metric, get_request_text='<?xml version="1.0"?><testsuite timestamp="2009-12-19T17:58:59"></testsuite>')
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

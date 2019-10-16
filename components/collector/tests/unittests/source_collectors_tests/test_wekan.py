@@ -37,11 +37,10 @@ class WekanIssuesTest(WekanTestCase):
             dict(_id="card2", title="Card 2", archived=True, boardId="board1", dateLastActivity="2019-01-01")]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
-                  due_date="", date_last_activity="2019-01-01")],
-            response)
+        expected_entities = [
+            dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 1",
+                 due_date="", date_last_activity="2019-01-01")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
@@ -56,11 +55,10 @@ class WekanIssuesTest(WekanTestCase):
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
-                  due_date="", date_last_activity="2019-01-01")],
-            response)
+        expected_entities = [
+            dict(key="card1", url="https://wekan/b/board1/board-slug/card1", title="Card 1", list="List 2",
+                 due_date="", date_last_activity="2019-01-01")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_overdue_issues(self):
         """Test overdue issues."""
@@ -76,11 +74,10 @@ class WekanIssuesTest(WekanTestCase):
                  dueAt="2019-01-01")]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
-                  due_date="2019-01-01", date_last_activity="2019-01-01")],
-            response)
+        expected_entities = [
+            dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1",
+                 due_date="2019-01-01", date_last_activity="2019-01-01")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_inactive_issues(self):
         """Test inactive issues."""
@@ -96,11 +93,10 @@ class WekanIssuesTest(WekanTestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2000-01-01")]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
-                  date_last_activity="2000-01-01")],
-            response)
+        expected_entities = [
+            dict(key="card2", url="https://wekan/b/board1/board-slug/card2", title="Card 2", list="List 1", due_date="",
+                 date_last_activity="2000-01-01")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
 
 class WekanSourceUpToDatenessTest(WekanTestCase):
@@ -122,7 +118,7 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
             dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01")]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)
+        self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 1, 1)).days))
 
     def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the number of days since the last activity."""
@@ -139,4 +135,4 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
             []]
         response = self.collect(
             self.metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
-        self.assert_value(str((datetime.now() - datetime(2019, 1, 1)).days), response)
+        self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 1, 1)).days))

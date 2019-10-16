@@ -16,8 +16,7 @@ from utilities.functions import report_date_time
 def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
-    latest = latest_measurement(database, measurement["metric_uuid"])
-    if latest:
+    if latest := latest_measurement(database, measurement["metric_uuid"]):
         for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
             new_entity_keys = set(entity["key"] for entity in new_source.get("entities", []))
             # Copy the user data of entities that still exist in the new measurement
@@ -69,8 +68,7 @@ def stream_nr_measurements(report_uuid: str, database: Database) -> Iterator[str
     # Now give the client updates as they arrive
     while True:
         time.sleep(10)
-        new_data = count_measurements(database, report_uuid)
-        if new_data > data:
+        if (new_data := count_measurements(database, report_uuid)) > data:
             data = new_data
             event_id += 1
             yield sse_pack(event_id, "delta", data)

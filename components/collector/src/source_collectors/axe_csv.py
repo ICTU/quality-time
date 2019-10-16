@@ -5,8 +5,6 @@ import hashlib
 from io import StringIO
 import re
 
-import requests
-
 from utilities.type import Responses, Value, Entities
 from .source_collector import SourceCollector
 
@@ -16,7 +14,7 @@ class AxeCSVAccessibility(SourceCollector):
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         """Simply count the rows in the csv file."""
-        return str(len(list(self.__parse_csv(responses[0]))))
+        return str(len(list(self.__parse_csv(responses))))
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         """Convert csv rows of the Axe report into entities, in this case accessibility violations."""
@@ -26,9 +24,9 @@ class AxeCSVAccessibility(SourceCollector):
                 violation_type=row["Violation Type"], impact=row["Impact"], url=str(row["URL"]),
                 element=row["DOM Element"], page=re.sub(r'http[s]?://[^/]+', '', row['URL']),
                 description=row["Messages"], help=row["Help"])
-            for row in self.__parse_csv(responses[0])]
+            for row in self.__parse_csv(responses)]
 
     @staticmethod
-    def __parse_csv(response: requests.Response) -> csv.DictReader:
+    def __parse_csv(responses: Responses) -> csv.DictReader:
         """Parse the CSV and return the row iterator."""
-        return csv.DictReader(StringIO(response.text, newline=None))
+        return csv.DictReader(StringIO(responses[0].text, newline=None))

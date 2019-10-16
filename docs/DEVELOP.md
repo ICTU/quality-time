@@ -9,7 +9,7 @@
 
 ## Develop
 
-Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.7 and a recent version of Node.js (we test with the Long Term Support version of Node).
+Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.8 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 

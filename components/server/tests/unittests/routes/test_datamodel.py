@@ -7,34 +7,34 @@ from src.routes import datamodel
 from src.database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 
 
-class DatamodelTest(unittest.TestCase):
-    """Unit tests for the datamodel route."""
+class DataModelTest(unittest.TestCase):
+    """Unit tests for the data model route."""
     def test_get_datamodel(self):
-        """Test that the datamodel can be retrieved."""
+        """Test that the data model can be retrieved."""
         database = Mock()
         database.datamodels.find_one.return_value = dict(_id=123)
         self.assertEqual(dict(_id="123"), datamodel.get_datamodel(database))
 
     def test_get_datamodel_missing(self):
-        """Test that the datamodel is None if it's not there."""
+        """Test that the data model is None if it's not there."""
         database = Mock()
         database.datamodels.find_one.return_value = None
         self.assertEqual({}, datamodel.get_datamodel(database))
 
     def test_insert_datamodel_with_id(self):
-        """Test that a new datamodel can be inserted."""
+        """Test that a new data model can be inserted."""
         database = Mock()
         insert_new_datamodel(database, dict(_id="id"))
         database.datamodels.insert_one.assert_called_once()
 
     def test_insert_datamodel_without_id(self):
-        """Test that a new datamodel can be inserted."""
+        """Test that a new data model can be inserted."""
         database = Mock()
         insert_new_datamodel(database, dict())
         database.datamodels.insert_one.assert_called_once()
 
     def test_default_source_parameters(self):
-        """Test that the default source parameters can be retrieved from the datamodel."""
+        """Test that the default source parameters can be retrieved from the data model."""
         database = Mock()
         database.datamodels.find_one.return_value = dict(
             _id=123,
@@ -45,7 +45,7 @@ class DatamodelTest(unittest.TestCase):
         self.assertEqual(dict(parameter="name"), default_source_parameters(database, "metric_type", "source_type"))
 
     def test_default_subject_attributes(self):
-        """Test that the default subject attributes can be retrieved from the datamodel."""
+        """Test that the default subject attributes can be retrieved from the data model."""
         database = Mock()
         database.datamodels.find_one.return_value = dict(
             _id=123,

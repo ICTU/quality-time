@@ -13,8 +13,7 @@ class PyupioSafetyTest(SourceCollectorTestCase):
             type="security_warnings", addition="sum",
             sources=dict(source_id=dict(type="pyupio_safety", parameters=dict(url="safety.json"))))
         response = self.collect(metric, get_request_json_return_value=pyupio_json)
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(package="ansible", key="25625", installed="1.8.5", affected="<1.9.2",
-                  vulnerability="Ansible before 1.9.2 does not ...")],
-            response)
+        expected_entities = [
+            dict(package="ansible", key="25625", installed="1.8.5", affected="<1.9.2",
+                 vulnerability="Ansible before 1.9.2 does not ...")]
+        self.assert_measurement(response, value="1", entities=expected_entities)

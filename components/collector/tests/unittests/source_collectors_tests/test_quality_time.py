@@ -33,5 +33,4 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
             get_request_json_side_effect=[reports, measurements1, measurements2, measurements3, reports, reports])
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # and tag "security". Only m2 matches those criteria.
-        self.assert_value("1", response)
-        self.assert_total("3", response)
+        self.assert_measurement(response, value="1", total="3")

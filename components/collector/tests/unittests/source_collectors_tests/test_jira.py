@@ -25,13 +25,13 @@ class JiraIssuesTest(JiraTestCase):
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         response = self.collect(self.metric, get_request_json_return_value=dict(total=42))
-        self.assert_value("42", response)
+        self.assert_measurement(response, value="42")
 
     def test_issues(self):
         """Test that the issues are returned."""
         jira_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
         response = self.collect(self.metric, get_request_json_return_value=jira_json)
-        self.assert_entities([dict(key="id", summary="Summary", url="https://jira/browse/key")], response)
+        self.assert_measurement(response, entities=[dict(key="id", summary="Summary", url="https://jira/browse/key")])
 
 
 class JiraReadyUserStoryPointsTest(JiraTestCase):
@@ -45,7 +45,7 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=32))])
         response = self.collect(metric, get_request_json_return_value=jira_json)
-        self.assert_value("42", response)
+        self.assert_measurement(response, value="42")
 
 
 class JiraManualTestDurationTest(JiraTestCase):
@@ -59,4 +59,4 @@ class JiraManualTestDurationTest(JiraTestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
         response = self.collect(metric, get_request_json_return_value=jira_json)
-        self.assert_value("25", response)
+        self.assert_measurement(response, value="25")

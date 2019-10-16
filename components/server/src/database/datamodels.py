@@ -10,11 +10,10 @@ from utilities.functions import iso_timestamp
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     """Return the latest data model."""
-    datamodel = database.datamodels.find_one(
-        {"timestamp": {"$lte": max_iso_timestamp or iso_timestamp()}}, sort=[("timestamp", pymongo.DESCENDING)])
-    if datamodel:
-        datamodel["_id"] = str(datamodel["_id"])
-    return datamodel or dict()
+    timestamp_filter = dict(timestamp={"$lte": max_iso_timestamp or iso_timestamp()})
+    if data_model := database.datamodels.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
+        data_model["_id"] = str(data_model["_id"])
+    return data_model or dict()
 
 
 def insert_new_datamodel(database: Database, data_model):
