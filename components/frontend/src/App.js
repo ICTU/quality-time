@@ -18,7 +18,8 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, nr_new_measurements: 0, loading: true, user: null, last_update: new Date(), login_error: false
+      nr_measurements: 0, nr_new_measurements: 0, loading_report: true, loading_datamodel: true, user: null,
+      last_update: new Date(), login_error: false
     };
     const hostname = window.location.hostname;
     const server = hostname.startsWith("www.") ? `server.${hostname.slice("www.".length)}` : hostname;
@@ -29,7 +30,7 @@ class App extends Component {
       if (action === "POP") {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+        this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
       }
     });
   }
@@ -40,7 +41,9 @@ class App extends Component {
     if (report_uuid !== "") {
       this.connect_to_nr_measurements_event_source(report_uuid)
     }
-    this.setState({ report_uuid: report_uuid, loading: true, user: localStorage.getItem("user") }, () => this.reload());
+    this.setState(
+      { report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user") },
+      () => this.reload());
   }
 
   reload(json) {
@@ -60,7 +63,7 @@ class App extends Component {
     let self = this;
     get_datamodel(report_date)
       .then(function (datamodel_json) {
-        self.setState({ datamodel: datamodel_json });
+        self.setState({ loading_datamodel: false, datamodel: datamodel_json });
       }).catch(function (error) {
         console.log(error);
       });
@@ -71,7 +74,7 @@ class App extends Component {
           self.setState(
             {
               reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
-              loading: false,
+              loading_report: false,
               last_update: current_date
             }
           );
@@ -86,7 +89,7 @@ class App extends Component {
               reports_overview: { title: report_overview_json.title, subtitle: report_overview_json.subtitle },
               nr_measurements: nr_measurements,
               nr_new_measurements: 0,
-              loading: false,
+              loading_report: false,
               last_update: current_date
             }
           );
@@ -102,13 +105,13 @@ class App extends Component {
     const today = new Date();
     const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
     const new_report_date_string = value === today_string ? '' : value;
-    this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
+    this.setState({ [name]: new_report_date_string, loading_datamodel: true, loading_report: true }, () => this.reload())
   }
 
   go_home() {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "", loading: true }, () => this.reload());
+      this.setState({ report_uuid: "", loading_report: true, loading_datamodel: true }, () => this.reload());
       if (this.source) {
         this.source.close()
       }
@@ -117,7 +120,7 @@ class App extends Component {
 
   open_report(event, report_uuid) {
     event.preventDefault();
-    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
     this.history.push(report_uuid);
     this.connect_to_nr_measurements_event_source(report_uuid);
   }
@@ -141,7 +144,7 @@ class App extends Component {
   open_tag_report(event, tag) {
     event.preventDefault();
     const report_uuid = `tag-${tag}`
-    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading_datamodel: true, loading_report: true }, () => this.reload());
     this.history.push(report_uuid);
     if (this.source) {
       this.source.close()
@@ -200,7 +203,7 @@ class App extends Component {
         />
         <SemanticToastContainer />
         <Container fluid className="MainContainer">
-          {this.state.loading ?
+          {this.state.loading_datamodel || this.state.loading_report ?
             <Segment basic placeholder loading size="massive" />
             :
             this.state.report_uuid === "" ?
