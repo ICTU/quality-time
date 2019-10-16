@@ -13,4 +13,4 @@ class HQTest(SourceCollectorTestCase):
             type="violations", sources=dict(a=dict(type="hq", parameters=dict(url="metrics.json", metric_id="id"))),
             addition="sum")
         response = self.collect(metric, get_request_json_return_value=hq_json)
-        self.assert_value("10", response)
+        self.assert_measurement(response, value="10")

@@ -27,9 +27,8 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
     """Return the latest reports overview."""
-    overview = database.reports_overviews.find_one(
-        filter={"timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}}, sort=[("timestamp", pymongo.DESCENDING)])
-    if overview:
+    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp or iso_timestamp()})
+    if overview := database.reports_overviews.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
         overview["_id"] = str(overview["_id"])
     return overview or dict()
 

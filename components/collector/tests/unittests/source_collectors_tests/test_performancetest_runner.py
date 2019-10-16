@@ -25,21 +25,21 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
         """Test that the number of slow transactions is 0 if there are no transactions in the details table."""
         html = '<html><table class="details"><tr></tr></table></html>'
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_value("0", response)
+        self.assert_measurement(response, value="0")
 
     def test_one_slow_transaction(self):
         """Test that the number of slow transactions is 1 if there is 1 slow transactions in the details table."""
         html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
             '</tr></table></html>'
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_value("1", response)
+        self.assert_measurement(response, value="1")
 
     def test_ignore_fast_transactions(self):
         """Test that fast transactions are not counted."""
         html = '<html><table class="details"><tr class="transaction"><td class="red evaluated"/>' \
             '</tr><tr class="transaction"><td class="green evaluated"/></tr></table></html>'
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_value("1", response)
+        self.assert_measurement(response, value="1")
 
     def test_warning_only(self):
         """Test that only transactions that exceed the warning threshold are counted."""
@@ -48,8 +48,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<tr class="transaction"><td class="green evaluated"/></tr></table></html>'
         self.sources["source_id"]["parameters"]["thresholds"] = ["warning"]
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_entities([dict(key="Name", name="Name", threshold="warning")], response)
-        self.assert_value("1", response)
+        self.assert_measurement(response, value="1", entities=[dict(key="Name", name="Name", threshold="warning")])
 
 
 class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase):
@@ -62,7 +61,7 @@ class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase)
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         response = self.collect(metric, get_request_text=html)
         expected_age = days_ago(datetime(2019, 6, 22, 6, 23, 0))
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))
 
 
 class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
@@ -74,7 +73,7 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
             '<td id="duration">00:35:00</td></tr></table></html>'
         metric = dict(type="performancetest_duration", sources=self.sources, addition="min")
         response = self.collect(metric, get_request_text=html)
-        self.assert_value("35", response)
+        self.assert_measurement(response, value="35")
 
 
 class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
@@ -88,7 +87,7 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
             '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = self.collect(metric, get_request_text=html)
-        self.assert_value("712", response)
+        self.assert_measurement(response, value="712")
 
 
 class PerformanceTestRunnerFailedTestsTest(PerformanceTestRunnerTestCase):
@@ -101,7 +100,7 @@ class PerformanceTestRunnerFailedTestsTest(PerformanceTestRunnerTestCase):
             '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
         metric = dict(type="failed_tests", sources=self.sources, addition="sum")
         response = self.collect(metric, get_request_text=html)
-        self.assert_value("42", response)
+        self.assert_measurement(response, value="42")
 
 
 class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
@@ -115,7 +114,7 @@ class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
             </table></html>'''
         metric = dict(type="performancetest_stability", sources=self.sources, addition="min")
         response = self.collect(metric, get_request_text=html)
-        self.assert_value("90", response)
+        self.assert_measurement(response, value="90")
 
 
 class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
@@ -132,7 +131,7 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">74</td></tr>
             </table></html>'''
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_value("74", response)
+        self.assert_measurement(response, value="74")
 
     def test_scalability_without_breaking_point(self):
         """Test that if the percentage of the max users of the performancetest at which the ramp-up of throughput breaks
@@ -141,5 +140,5 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>'''
         response = self.collect(self.metric, get_request_text=html)
-        self.assert_value(None, response)
+        self.assert_measurement(response, value=None)
         self.assertTrue(response["sources"][0]["parse_error"].startswith("Traceback"))

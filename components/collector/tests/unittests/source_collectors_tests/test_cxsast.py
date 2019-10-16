@@ -31,13 +31,13 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
         response = self.collect(
             self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
-        self.assert_value(str(expected_age), response)
-        self.assert_landing_url("https://checkmarx/CxWebClient/projectscans.aspx?id=id", response)
+        self.assert_measurement(
+            response, value=str(expected_age), landing_url="https://checkmarx/CxWebClient/projectscans.aspx?id=id")
 
     def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
         response = self.collect(self.metric, post_request_side_effect=RuntimeError)
-        self.assert_landing_url("https://checkmarx", response)
+        self.assert_measurement(response, landing_url="https://checkmarx", connection_error=True)
 
 
 class CxSASTSecurityWarningsTest(CxSASTTestCase):
@@ -53,5 +53,4 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(name="project", id="id")]]
         post_json = [dict(access_token="token")] * 2 + [dict(reportId="1")]
         response = self.collect(metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
-        self.assert_value("10", response)
-        self.assert_entities([], response)
+        self.assert_measurement(response, value="10", entities=[])

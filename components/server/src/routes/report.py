@@ -139,8 +139,7 @@ def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: 
                     f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     insert_new_report(database, data.report)
     if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target"):
-        latest = latest_measurement(database, metric_uuid)
-        if latest:
+        if latest := latest_measurement(database, metric_uuid):
             return insert_new_measurement(database, latest, data.metric)
     return dict(ok=True)
 
@@ -195,9 +194,9 @@ def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
 def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
     """Add a new source."""
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
-    datamodel = latest_datamodel(database)
+    data_model = latest_datamodel(database)
     metric_type = data.metric["type"]
-    source_type = datamodel["metrics"][metric_type]["default_source"]
+    source_type = data_model["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
     data.metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     data.report["delta"] = dict(

@@ -35,8 +35,8 @@ class CollectorTest(unittest.TestCase):
                 return self.next_collection_datetime if self.next_collection_datetime else super().next_collection()
 
         self.source_metric_class = SourceMetric
-        self.datamodel_response = Mock()
-        self.datamodel_response.json.return_value = dict(
+        self.data_model_response = Mock()
+        self.data_model_response.json.return_value = dict(
             sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_response = Mock()
         logging.disable()
@@ -48,7 +48,7 @@ class CollectorTest(unittest.TestCase):
         """Test fetching measurement for a metric without sources."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", type="metric", addition="sum", sources=dict()))
-        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response]):
+        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response]):
             with patch("requests.post") as post:
                 MetricsCollector().fetch_measurements()
         post.assert_not_called()
@@ -66,7 +66,7 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
                              sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
 
-        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
+        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
             with patch("requests.post", side_effect=RuntimeError) as post:
                 MetricsCollector().fetch_measurements()
         post.assert_called_once_with(
@@ -82,7 +82,7 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
                              sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
-        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response, Mock()]):
+        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
                     self.assertRaises(RuntimeError, quality_time_collector.collect)
@@ -100,7 +100,7 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid",
                 sources=dict(missing=dict(type="unknown_source", parameters=dict(url="https://url")))))
-        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response]):
+        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response]):
             self.assertRaises(
                 LookupError, MetricsCollector().fetch_measurements)
 
@@ -110,7 +110,7 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
                              sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
         side_effect = [
-            self.datamodel_response, self.metrics_response, Mock(), self.datamodel_response, self.metrics_response]
+            self.data_model_response, self.metrics_response, Mock(), self.data_model_response, self.metrics_response]
         with patch("requests.get", side_effect=side_effect):
             with patch("requests.post") as post:
                 metric_collector = MetricsCollector()
@@ -130,7 +130,7 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
                              sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
-        side_effect = [self.datamodel_response, self.metrics_response, Mock()] * 2
+        side_effect = [self.data_model_response, self.metrics_response, Mock()] * 2
         with patch("requests.get", side_effect=side_effect):
             with patch("requests.post") as post:
                 metric_collector = MetricsCollector()
@@ -151,7 +151,7 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid",
                 sources=dict(missing=dict(type="source", parameters=dict(url="")))))
-        with patch("requests.get", side_effect=[self.datamodel_response, self.metrics_response]):
+        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response]):
             with patch("requests.post") as post:
                 MetricsCollector().fetch_measurements()
         post.assert_not_called()

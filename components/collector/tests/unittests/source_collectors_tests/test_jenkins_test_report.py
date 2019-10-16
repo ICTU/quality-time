@@ -20,11 +20,12 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                        dict(status="PASSED", name="tc2", className="c2")])])
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("2", response)
-        self.assert_entities(
-            [dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
-             dict(class_name="c2", key="tc2", name="tc2", test_result="passed")],
-            response)
+        self.assert_measurement(
+            response,
+            value="2",
+            entities=[
+                dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
+                dict(class_name="c2", key="tc2", name="tc2", test_result="passed")])
 
     def test_nr_of_passed_tests(self):
         """Test that the number of passed tests is returned."""
@@ -37,8 +38,8 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                 type="jenkins_test_report", parameters=dict(url="https://jenkins/job", test_result=["passed"])))
         metric = dict(type="tests", addition="sum", sources=sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("1", response)
-        self.assert_entities([dict(class_name="c2", key="tc2", name="tc2", test_result="passed")], response)
+        expected_entities = [dict(class_name="c2", key="tc2", name="tc2", test_result="passed")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
@@ -48,11 +49,10 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                        dict(status="FAILED", name="tc2", className="c2")])])
         metric = dict(type="failed_tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("2", response)
-        self.assert_entities(
-            [dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
-             dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")],
-            response)
+        expected_entities = [
+            dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
+            dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")]
+        self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
@@ -60,7 +60,7 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
         response = self.collect(
             metric, get_request_json_return_value=dict(suites=[dict(timestamp="2019-04-02T08:52:50")]))
         expected_age = (datetime.now() - datetime(2019, 4, 2, 8, 52, 50)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))
 
     def test_source_up_to_dateness_without_timestamps(self):
         """Test that the job age in days is returned if the test report doesn't contain timestamps."""
@@ -70,4 +70,4 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
             get_request_json_side_effect=[
                 dict(suites=[dict(timestamp=None)]), dict(timestamp="1565284457173")])
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 8, 8, 17, 14, 17, 173, tzinfo=timezone.utc)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

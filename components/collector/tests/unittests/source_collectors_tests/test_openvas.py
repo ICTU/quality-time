@@ -28,10 +28,9 @@ class OpenVASTest(SourceCollectorTestCase):
 </report>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=openvas_xml)
-        self.assert_entities(
-            [dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")],
-            response)
-        self.assert_value("1", response)
+        expected_entities = [
+            dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_source_up_to_dateness(self):
         """Test that the report age in days is returned."""
@@ -44,4 +43,4 @@ class OpenVASTest(SourceCollectorTestCase):
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         response = self.collect(metric, get_request_text=openvas_xml)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 4, 9, 17, 56, 14, tzinfo=timezone.utc)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

@@ -17,20 +17,18 @@ class JaCoCoTest(SourceCollectorTestCase):
         metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
         response = self.collect(
             metric, get_request_text="<report><counter type='LINE' missed='2' covered='4'/></report>")
-        self.assert_value("2", response)
-        self.assert_total("6", response)
+        self.assert_measurement(response, value="2", total="6")
 
     def test_uncovered_branches(self):
         """Test that the number of uncovered branches is returned."""
         metric = dict(type="uncovered_branches", sources=self.sources, addition="sum")
         response = self.collect(
             metric, get_request_text="<report><counter type='BRANCH' missed='4' covered='6'/></report>")
-        self.assert_value("4", response)
-        self.assert_total("10", response)
+        self.assert_measurement(response, value="4", total="10")
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
         response = self.collect(metric, get_request_text='<report><sessioninfo dump="1553821197442"/></report>')
         expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

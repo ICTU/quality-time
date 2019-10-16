@@ -27,8 +27,7 @@ class NCoverTest(SourceCollectorTestCase):
                 }
             };
         </script>""")
-        self.assert_value(f"{17153-14070}", response)
-        self.assert_total("17153", response)
+        self.assert_measurement(response, value=f"{17153-14070}", total="17153")
 
     def test_uncovered_branches(self):
         """Test that the number of uncovered branches is returned."""
@@ -45,8 +44,7 @@ class NCoverTest(SourceCollectorTestCase):
                     }
                 };
             </script>""")
-        self.assert_value(f"{12034-9767}", response)
-        self.assert_total("12034", response)
+        self.assert_measurement(response, value=f"{12034-9767}", total="12034")
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
@@ -58,4 +56,4 @@ class NCoverTest(SourceCollectorTestCase):
         </script>""")
         report_datetime = datetime.fromtimestamp(1440425155042 / 1000.)
         expected_age = (datetime.now(tz=report_datetime.tzinfo) - report_datetime).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

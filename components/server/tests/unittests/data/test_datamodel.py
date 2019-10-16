@@ -34,8 +34,7 @@ class DataModelTest(unittest.TestCase):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.datamodel["metrics"].items():
             for source in metric["sources"]:
-                parameters = self.datamodel["sources"][source]["parameters"]
-                if not parameters:
+                if not (parameters := self.datamodel["sources"][source]["parameters"]):
                     continue
                 parameter_metrics = []
                 for parameter in parameters.values():

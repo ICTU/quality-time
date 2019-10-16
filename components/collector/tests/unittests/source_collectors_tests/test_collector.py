@@ -9,60 +9,38 @@ from .source_collector_test_case import SourceCollectorTestCase
 class CollectorTest(SourceCollectorTestCase):
     """Unit tests for the Collector class."""
 
-    def setUp(self):
-        metric = dict(
-            type="tests", addition="sum", sources=dict(a=dict(type="junit", parameters=dict(url="https://url"))))
-        self.response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
-
-    def test_source_response_api_url(self):
-        """Test that the api url used for contacting the source is returned."""
-        self.assert_api_url("https://url", self.response)
-
-    def test_source_response_landing_url(self):
-        """Test that the landing url for the source is returned."""
-        self.assert_landing_url("https://url", self.response)
-
     def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        self.assert_value("2", self.response)
+        metric = dict(
+            type="tests", addition="sum", sources=dict(a=dict(type="junit", parameters=dict(url="https://url"))))
+        response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
+        self.assert_measurement(response, value="2", api_url="https://url", landing_url="https://url")
 
 
 class CollectorTestLandingUrl(SourceCollectorTestCase):
     """Unit tests for the Collector class, when landing url initialized."""
 
-    def setUp(self):
-        self.metric = dict(
-            type="tests", addition="sum", sources=dict(a=dict(
-                type="junit", parameters=dict(url="https://url", landing_url='https://landing'))))
-        self.response = self.collect(self.metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
-
     def test_source_response_landing_url_different(self):
         """Test that the landing url for the source is returned."""
-        self.assert_landing_url("https://landing", self.response)
+        metric = dict(
+            type="tests", addition="sum", sources=dict(a=dict(
+            type="junit", parameters=dict(url="https://url", landing_url='https://landing'))))
+        response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
+        self.assert_measurement(response, landing_url="https://landing")
 
 
 class CollectorWithMultipleSourcesTest(SourceCollectorTestCase):
     """Unit tests for the collector with multiple sources."""
 
-    def setUp(self):
+    def test_source_response_measurement(self):
+        """Test that the measurement for the source is returned."""
         metric = dict(
             type="tests", addition="sum",
             sources=dict(
                 a=dict(type="junit", parameters=dict(url="https://url")),
                 b=dict(type="junit", parameters=dict(url="https://url2"))))
-        self.response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
-
-    def test_source_response_api_url(self):
-        """Test that the api url used for contacting the source is returned."""
-        self.assert_api_url("https://url2", self.response, source_index=1)
-
-    def test_source_response_landing_url(self):
-        """Test that the landing url for the source is returned."""
-        self.assert_landing_url("https://url2", self.response, source_index=1)
-
-    def test_source_response_measurement(self):
-        """Test that the measurement for the source is returned."""
-        self.assert_value("2", self.response, source_index=1)
+        response = self.collect(metric, get_request_text="<testsuite><testcase/><testcase/></testsuite>")
+        self.assert_measurement(response, value="2", api_url="https://url2", landing_url="https://url2", source_index=1)
 
 
 class CollectorWithMultipleSourceTypesTest(SourceCollectorTestCase):
@@ -79,7 +57,7 @@ class CollectorWithMultipleSourceTypesTest(SourceCollectorTestCase):
                 a=dict(type="jenkins", parameters=dict(url="https://jenkins", failure_type=["Red"])),
                 b=dict(type="random")))
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_value("1", response)
+        self.assert_measurement(response, value="1")
         self.assertTrue(response["sources"][1]["value"])
 
 

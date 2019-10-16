@@ -34,28 +34,26 @@ class BanditSecurityWarningsTest(BanditTestCase):
     def test_warnings(self):
         """Test the number of security warnings."""
         response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
-        self.assert_value("1", response)
-        self.assert_entities(
-            [dict(
+        self.assert_measurement(
+            response,
+            value="1",
+            entities=[dict(
                 location="src/collectors/cxsast.py:37", key="B106:src/collectors/cxsast.py:37",
                 issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
                 issue_severity="Low", issue_confidence="Medium",
-                more_info="https://bandit/b106_hardcoded_password_funcarg.html")],
-            response)
+                more_info="https://bandit/b106_hardcoded_password_funcarg.html")])
 
     def test_warnings_with_high_severity(self):
         """Test the number of high severity security warnings."""
         self.sources["source_id"]["parameters"]["severities"] = ["high"]
         response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
-        self.assert_value("0", response)
-        self.assert_entities([], response)
+        self.assert_measurement(response, value="0", entities=[])
 
     def test_warnings_with_high_confidence(self):
         """Test the number of high confidence security warnings."""
         self.sources["source_id"]["parameters"]["confidence_levels"] = ["high"]
         response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
-        self.assert_value("0", response)
-        self.assert_entities([], response)
+        self.assert_measurement(response, value="0", entities=[])
 
 
 class BanditSourceUpToDatenessTest(BanditTestCase):
@@ -67,4 +65,4 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
         bandit_json = dict(generated_at="2019-07-12T07:38:47Z")
         response = self.collect(metric, get_request_json_return_value=bandit_json)
         expected_age = (datetime.now(tz=timezone.utc) - datetime(2019, 7, 12, 7, 38, 47, tzinfo=timezone.utc)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

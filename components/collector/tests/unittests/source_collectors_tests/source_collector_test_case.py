@@ -45,31 +45,21 @@ class SourceCollectorTestCase(unittest.TestCase):
                     self.collector = MetricCollector(metric, self.data_model)
                     return self.collector.get()
 
-    def assert_value(self, expected_value: Value, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected value."""
-        self.assertEqual(expected_value, measurement["sources"][source_index]["value"])
-
-    def assert_total(self, expected_total: Value, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected total."""
-        self.assertEqual(expected_total, measurement["sources"][source_index]["total"])
-
-    def assert_entities(self, expected_entities: Entities, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected entities."""
-        self.assertEqual(expected_entities, measurement["sources"][source_index]["entities"])
-
-    def assert_api_url(self, expected_url: str, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected api url."""
-        self.assertEqual(expected_url, measurement["sources"][source_index]["api_url"])
-
-    def assert_landing_url(self, expected_url: str, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected landing url."""
-        self.assertEqual(expected_url, measurement["sources"][source_index]["landing_url"])
-
-    def assert_no_connection_error(self, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected connection error."""
-        self.assertFalse(measurement["sources"][source_index]["connection_error"])
-
-    def assert_parse_error_contains(
-            self, expected_parse_error: str, measurement: Measurement, source_index: int = 0) -> None:
-        """Assert that the measurement has the expected parse error."""
-        self.assertIn(expected_parse_error, measurement["sources"][source_index]["parse_error"])
+    def assert_measurement(
+            self, measurement: Measurement, *, value: Value = None, total: Value = None, entities: Entities = None,
+            api_url: str = None, landing_url: str = None, connection_error: bool = False,
+            parse_error_fragment: str = None, source_index: int = 0) -> None:
+        """Assert that the measurement has the expected attributes."""
+        if value is not None:
+            self.assertEqual(value, measurement["sources"][source_index]["value"])
+        if total is not None:
+            self.assertEqual(total, measurement["sources"][source_index]["total"])
+        if entities is not None:
+            self.assertEqual(entities, measurement["sources"][source_index]["entities"])
+        if api_url is not None:
+            self.assertEqual(api_url, measurement["sources"][source_index]["api_url"])
+        if landing_url is not None:
+            self.assertEqual(landing_url, measurement["sources"][source_index]["landing_url"])
+        if parse_error_fragment is not None:
+            self.assertIn(parse_error_fragment, measurement["sources"][source_index]["parse_error"])
+        self.assertEqual(connection_error, bool(measurement["sources"][source_index]["connection_error"]))

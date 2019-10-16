@@ -51,21 +51,19 @@ class OWASPZAPTest(SourceCollectorTestCase):
         </OWASPZAPReport>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
-        self.assert_entities(
-            [
-                dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
-                     name="X-Content-Type-Options Header Missing",
-                     description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
-                     location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
-                     uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
-                dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                     name="X-Content-Type-Options Header Missing",
-                     description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
-                     location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                     uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                     risk="Low (Medium)")],
-            response)
-        self.assert_value("2", response)
+        expected_entities = [
+            dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
+                 name="X-Content-Type-Options Header Missing",
+                 description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                 location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
+                 uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
+            dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                 name="X-Content-Type-Options Header Missing",
+                 description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                 location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                 uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                 risk="Low (Medium)")]
+        self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
@@ -75,4 +73,4 @@ class OWASPZAPTest(SourceCollectorTestCase):
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
-        self.assert_value(str(expected_age), response)
+        self.assert_measurement(response, value=str(expected_age))

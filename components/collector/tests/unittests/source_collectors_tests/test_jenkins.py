@@ -28,7 +28,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
                        jobs=[dict(name="child_job", url="https://child_job", buildable=True, color="red",
                                   builds=[dict(result="red")])])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("2", response)
+        self.assert_measurement(response, value="2")
 
     def test_failed_jobs(self):
         """Test that the failed jobs are returned."""
@@ -36,16 +36,16 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             jobs=[dict(name="job", url="https://job", buildable=True, color="red",
                        builds=[dict(result="red", timestamp="1552686540953")])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
-        self.assert_entities(
-            [dict(build_date="2019-03-15", build_age=build_age, build_status="Red",
-                  key="job", name="job", url="https://job")], response)
+        age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
+        expected_entities = [
+            dict(build_date="2019-03-15", build_age=age, build_status="Red", key="job", name="job", url="https://job")]
+        self.assert_measurement(response, entities=expected_entities)
 
     def test_no_builds(self):
         """Test no builds."""
         jenkins_json = dict(jobs=[dict(name="job", url="https://job", buildable=True, color="notbuilt", builds=[])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        self.assert_entities([], response)
+        self.assert_measurement(response, entities=[])
 
 
 class JenkinsUnusedJobsTest(JenkinsTestCase):
@@ -61,10 +61,10 @@ class JenkinsUnusedJobsTest(JenkinsTestCase):
             jobs=[dict(
                 name="job", url="https://job", buildable=True, color="red", builds=[dict(timestamp="1548311610349")])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("1", response)
+        self.assert_measurement(response, value="1")
 
     def test_unbuild_job(self):
         """Test that jobs without builds are ignored."""
         jenkins_json = dict(jobs=[dict(name="job", url="https://job", buildable=True, color="red")])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        self.assert_value("0", response)
+        self.assert_measurement(response, value="0")
