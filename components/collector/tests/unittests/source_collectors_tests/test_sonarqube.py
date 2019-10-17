@@ -135,7 +135,7 @@ class SonarQubeTest(SourceCollectorTestCase):
     def test_loc_all_lines(self):
         """Test that the number of lines of code is returned."""
         self.sources["source_id"]["parameters"]["lines_to_count"] = "all lines"
-        json = dict(component=dict(measures=[dict(metric="loc", value="1234")]))
+        json = dict(component=dict(measures=[dict(metric="lines", value="1234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="1234", total="100")

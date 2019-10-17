@@ -2,6 +2,7 @@
 
 from datetime import datetime, timezone
 
+from utilities.functions import days_ago
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -91,7 +92,7 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
                 value=[
                     dict(name="master"),
                     dict(name="branch", aheadCount=1, commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))]))
-        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
+        expected_age = str(days_ago(datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)))
         self.assert_measurement(
             response,
             value="1",
@@ -112,7 +113,7 @@ class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
         commits = dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))])
         response = self.collect(
             metric, get_request_json_side_effect=[repositories, commits])
-        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
+        expected_age = str(days_ago(datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)))
         self.assert_measurement(response, value=expected_age)
 
 

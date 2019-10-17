@@ -2777,7 +2777,7 @@
                         "lines with code"
                     ],
                     "api_values": {
-                        "all lines": "loc",
+                        "all lines": "lines",
                         "lines with code": "ncloc"
                     },
                     "metrics": [
