@@ -89,15 +89,17 @@ class AzureDevopsSourceUpToDateness(SourceCollector):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def _api_url(self) -> URL:
-        url = str(super()._api_url())
-        repository = self._parameter("repository", quote=True)
+        api_url = str(super()._api_url())
+        repository = self._parameter("repository")
+        repositories_url = f"{api_url}/_apis/git/repositories?api-version=4.1"
+        repositories = requests.get(repositories_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
+        repositories.raise_for_status()
+        repository_id = [r for r in repositories.json()["value"] if repository in (r["name"], r["id"])][0]["id"]
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
-        project = url.split("/")[-1]
         search_criteria = \
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
-        return URL(
-            f"{url}/_apis/git/repositories/{repository}/commits?{search_criteria}&project={project}&api-version=4.1")
+        return URL(f"{api_url}/_apis/git/repositories/{repository_id}/commits?{search_criteria}&api-version=4.1")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(days_ago(parse(responses[0].json()["value"][0]["committer"]["date"])))

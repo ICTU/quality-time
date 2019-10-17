@@ -795,7 +795,7 @@
                     ]
                 },
                 "repository": {
-                    "name": "Repository (id or name)",
+                    "name": "Repository (name or id)",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1042,7 +1042,7 @@
                     ]
                 },
                 "project": {
-                    "name": "Project (id or name)",
+                    "name": "Project (name or id)",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -3277,7 +3277,7 @@
                     ]
                 },
                 "board": {
-                    "name": "Board (id)",
+                    "name": "Board (title or id)",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
