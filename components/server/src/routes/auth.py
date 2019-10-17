@@ -8,13 +8,14 @@ from typing import Dict, Tuple
 import urllib.parse
 
 from pymongo.database import Database
-from ldap3 import Server, Connection, ALL, ALL_ATTRIBUTES, NTLM, ObjectDef
+from ldap3 import Server, Connection, ALL
 from ldap3.core import exceptions
 import bottle
+import hashlib
+import base64
 
 from database import sessions
 from utilities.functions import uuid
-from utilities.ldap import LDAPObject
 
 
 def generate_session() -> Tuple[str, datetime]:
@@ -31,6 +32,19 @@ def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
         options["domain"] = domain
     bottle.response.set_cookie("session_id", session_id, **options)
 
+def check_password(tagged_digest_salt, password):
+    """Checks the OpenLDAP tagged digest against the given password"""
+
+    digest_salt_b64 = tagged_digest_salt[6:]  # strip {SSHA}
+
+    digest_salt = base64.b64decode(digest_salt_b64)
+    digest = digest_salt[:20]
+    salt = digest_salt[20:]
+
+    sha = hashlib.sha1(bytes(password, 'utf-8'))
+    sha.update(salt)
+
+    return digest == sha.digest()
 
 @bottle.post("/login")
 def login(database: Database) -> Dict[str, bool]:
@@ -57,6 +71,10 @@ def login(database: Database) -> Dict[str, bool]:
 
             result = conn.entries[0] # form b'{SSHA}64basedhashed'
 
+            if result.userPassword:
+                password = credentials.get("password", "no password given")
+                if not check_password(result.userPassword.value, password):
+                    return dict(ok=False)
 
     except (exceptions.LDAPInvalidCredentialsResult, exceptions.LDAPUnwillingToPerformResult, exceptions.LDAPInvalidDNSyntaxResult,
             exceptions.LDAPInvalidServerError, exceptions.LDAPServerPoolError, exceptions.LDAPServerPoolExhaustedError) as reason:
