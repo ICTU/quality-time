@@ -71,14 +71,14 @@ class SourceCollector(ABC):
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
         parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
-        if "values" in parameter_info:
+        if "values" in parameter_info and parameter_info["type"].startswith("multiple_choice"):
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
-            if "api_values" in parameter_info:
-                value = [parameter_info["api_values"].get(v, v) for v in value]
         else:
             default_value = parameter_info.get("default_value", "")
             value = self.__parameters.get(parameter_key, default_value)
-        return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(item) for item in value]
+        if api_values := parameter_info.get("api_values"):
+            value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
+        return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     def __safely_get_source_responses(self, api_url: URL) -> Tuple[Responses, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden

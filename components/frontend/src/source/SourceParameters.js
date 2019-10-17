@@ -18,7 +18,7 @@ export function SourceParameters(props) {
                     parameter_name={all_parameters[parameter_key].name}
                     parameter_type={all_parameters[parameter_key].type}
                     parameter_values={all_parameters[parameter_key].values || []}
-                    parameter_value={props.source.parameters ?
+                    parameter_value={props.source.parameters && props.source.parameters[parameter_key] ?
                         props.source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
                     parameter_unit={all_parameters[parameter_key].unit || props.metric_unit}
                     placeholder={all_parameters[parameter_key].placeholder || ""}
