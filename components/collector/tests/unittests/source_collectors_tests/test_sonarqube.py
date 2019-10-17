@@ -125,9 +125,17 @@ class SonarQubeTest(SourceCollectorTestCase):
                  resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b")]
         self.assert_measurement(response, value="2", total="4", entities=expected_entities)
 
-    def test_loc(self):
+    def test_loc_returns_ncloc_by_default(self):
         """Test that the number of lines of code is returned."""
-        json = dict(component=dict(measures=[dict(metric="lines", value="1234")]))
+        json = dict(component=dict(measures=[dict(metric="ncloc", value="1234")]))
+        metric = dict(type="loc", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=json)
+        self.assert_measurement(response, value="1234", total="100")
+
+    def test_loc_all_lines(self):
+        """Test that the number of lines of code is returned."""
+        self.sources["source_id"]["parameters"]["lines_to_count"] = "all lines"
+        json = dict(component=dict(measures=[dict(metric="loc", value="1234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="1234", total="100")

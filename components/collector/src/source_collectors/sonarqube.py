@@ -155,19 +155,23 @@ class SonarQubeMetricsBaseClass(SourceCollector):
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
-        return URL(f"{url}/component_measures?id={component}&metric={self.metricKeys}")
+        return URL(f"{url}/component_measures?id={component}&metric={self._metric_keys()}")
 
     def _api_url(self) -> URL:
         url = super()._api_url()
         component = self._parameter("component")
-        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self.metricKeys}")
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[0]])
+        return str(self.__get_metrics(responses)[self._metric_keys().split(",")[0]])
 
     def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(self.__get_metrics(responses)[self.metricKeys.split(",")[1]]) \
+        return str(self.__get_metrics(responses)[self._metric_keys().split(",")[1]]) \
             if "," in self.metricKeys else super()._parse_source_responses_total(responses)
+
+    def _metric_keys(self) -> str:
+        """Return the SonarQube metric keys to use."""
+        return self.metricKeys
 
     @staticmethod
     def __get_metrics(responses: Responses) -> Dict[str, int]:
@@ -197,7 +201,8 @@ class SonarQubeNCLOC(SonarQubeMetricsBaseClass):
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
-    metricKeys = "lines"
+    def _metric_keys(self) -> str:
+        return str(self._parameter("lines_to_count"))
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):

@@ -6,6 +6,7 @@ import { DateInput } from '../fields/DateInput';
 import { IntegerInput } from '../fields/IntegerInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
+import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function SourceParameter(props) {
   function options() {
@@ -91,6 +92,19 @@ export function SourceParameter(props) {
     return (
       <DateInput
         label={label}
+        readOnly={props.readOnly}
+        required={props.required}
+        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
+        value={props.parameter_value}
+      />
+    )
+  }
+  if (props.parameter_type === "single_choice") {
+    return (
+      <SingleChoiceInput
+        label={label}
+        options={props.parameter_values.map(value => ({key: value, text: value, value: value}))}
+        placeholder={props.placeholder}
         readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}

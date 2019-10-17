@@ -188,8 +188,8 @@
             "unit": "lines",
             "addition": "sum",
             "direction": "<",
-            "target": "40000",
-            "near_target": "50000",
+            "target": "30000",
+            "near_target": "35000",
             "default_source": "sonarqube",
             "sources": [
                 "hq",
@@ -292,8 +292,8 @@
             "tags": []
         },
         "ncloc": {
-            "name": "Size (non-commented LOC)",
-            "description": "The size of the software in lines of code, excluding comments.",
+            "name": "Size (non-commented LOC) (deprecated)",
+            "description": "The size of the software in lines of code, excluding comments. This metric is deprecated. Please use the 'Size (LOC)' metric.",
             "scales": [
                 "count"
             ],
@@ -2765,6 +2765,23 @@
                         "uncovered_branches",
                         "uncovered_lines",
                         "violations"
+                    ]
+                },
+                "lines_to_count": {
+                    "name": "Lines to count",
+                    "type": "single_choice",
+                    "mandatory": false,
+                    "default_value": "lines with code",
+                    "values": [
+                        "all lines",
+                        "lines with code"
+                    ],
+                    "api_values": {
+                        "all lines": "loc",
+                        "lines with code": "ncloc"
+                    },
+                    "metrics": [
+                        "loc"
                     ]
                 },
                 "test_result": {
