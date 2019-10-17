@@ -104,10 +104,14 @@ class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
     def test_age(self):
         """Test that the age of the file is returned."""
         sources = dict(
-            source_id=dict(type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+            source_id=dict(
+                type="azure_devops",
+                parameters=dict(url="https://azure_devops", repository="repo", private_token="xxx")))
         metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
+        repositories = dict(value=[dict(id="id", name="repo")])
+        commits = dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))])
         response = self.collect(
-            metric, get_request_json_return_value=dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))]))
+            metric, get_request_json_side_effect=[repositories, commits])
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)).days)
         self.assert_measurement(response, value=expected_age)
 

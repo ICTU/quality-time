@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [0.12.2] - [2019-10-16]
+## [Unreleased]
 
 ### Fixed
 
 - Allow for specifying an Azure DevOps repository by name. Fixes [#683](https://github.com/ICTU/quality-time/issues/683).
+
+## [0.12.2] - [2019-10-16]
+
+### Fixed
+
 - Remove white space at the top of the page in printouts. Fixes [#685](https://github.com/ICTU/quality-time/issues/685). 
 - Don't crash when the user refreshes a report in the browser. Fixes [#692](https://github.com/ICTU/quality-time/issues/692). 
 
