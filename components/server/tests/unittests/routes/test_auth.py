@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import bottle
 import ldap3
+from datetime import datetime
 from ldap3.core import exceptions
 from database import sessions
 
@@ -183,7 +184,6 @@ class LoginTests(unittest.TestCase):
 
 class LogoutTests(unittest.TestCase):
     """Unit tests for the logout route."""
-
     @patch.object(sessions, 'delete')
     @patch('bottle.request')
     def test_logout(self, request_mock, delete_mock):
@@ -194,5 +194,5 @@ class LogoutTests(unittest.TestCase):
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertTrue(cookie.find("the session id")>0)
-        self.assertTrue(cookie.find("expires=Mon, 01 Jan 0001")>0)
+        self.assertRegex(cookie.upper(), ".+MON,\s*0*1\s*JAN\S*\s*0*1")
 
