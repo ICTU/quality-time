@@ -15,23 +15,24 @@ from database.reports import (
 )
 from database import sessions
 from utilities.functions import report_date_time, uuid, sanitize_html
+from utilities.type import MetricId, ReportId, SourceId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
 
 
-def get_subject_uuid(report, metric_uuid: str):
+def get_subject_uuid(report, metric_uuid: MetricId):
     """Return the uuid of the subject that has the metric with the specified uuid."""
     subjects = report["subjects"]
     return [subject_uuid for subject_uuid in subjects if metric_uuid in subjects[subject_uuid]["metrics"]][0]
 
 
-def get_metric_uuid(report, source_uuid: str):
+def get_metric_uuid(report, source_uuid: SourceId):
     """Return the uuid of the metric that has a source with the specified uuid."""
     return [metric_uuid for subject in report["subjects"].values() for metric_uuid in subject["metrics"]
             if source_uuid in subject["metrics"][metric_uuid]["sources"]][0]
 
 
-def get_data(database: Database, report_uuid: str, subject_uuid: str = None, metric_uuid: str = None,
-             source_uuid: str = None):
+def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId = None, metric_uuid: MetricId = None,
+             source_uuid: SourceId = None):
     """Return applicable report, subject, metric, source, and their uuids and names."""
     data = namedtuple(
         "data",
@@ -56,7 +57,7 @@ def get_data(database: Database, report_uuid: str, subject_uuid: str = None, met
 
 
 @bottle.post("/report/<report_uuid>/<report_attribute>")
-def post_report_attribute(report_uuid: str, report_attribute: str, database: Database):
+def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
     data = get_data(database, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
@@ -70,7 +71,7 @@ def post_report_attribute(report_uuid: str, report_attribute: str, database: Dat
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")
-def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribute: str, database: Database):
+def post_subject_attribute(report_uuid: ReportId, subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]
     data = get_data(database, report_uuid, subject_uuid)
@@ -84,7 +85,7 @@ def post_subject_attribute(report_uuid: str, subject_uuid: str, subject_attribut
 
 
 @bottle.post("/report/<report_uuid>/subject/new")
-def post_new_subject(report_uuid: str, database: Database):
+def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data = get_data(database, report_uuid)
     data.report["subjects"][uuid()] = default_subject_attributes(database)
@@ -95,7 +96,7 @@ def post_new_subject(report_uuid: str, database: Database):
 
 
 @bottle.delete("/report/<report_uuid>/subject/<subject_uuid>")
-def delete_subject(report_uuid: str, subject_uuid: str, database: Database):
+def delete_subject(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data = get_data(database, report_uuid, subject_uuid)
     del data.report["subjects"][subject_uuid]
@@ -118,7 +119,7 @@ def get_metrics(database: Database):
 
 
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")
-def post_metric_attribute(report_uuid: str, metric_uuid: str, metric_attribute: str, database: Database):
+def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
@@ -167,7 +168,7 @@ def move_metric(data, new_position: str) -> Tuple[int, int]:
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric/new")
-def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
+def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data = get_data(database, report_uuid, subject_uuid)
     data.subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
@@ -179,7 +180,7 @@ def post_metric_new(report_uuid: str, subject_uuid: str, database: Database):
 
 
 @bottle.delete("/report/<report_uuid>/metric/<metric_uuid>")
-def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
+def delete_metric(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
     data.report["delta"] = dict(
@@ -191,7 +192,7 @@ def delete_metric(report_uuid: str, metric_uuid: str, database: Database):
 
 
 @bottle.post("/report/<report_uuid>/metric/<metric_uuid>/source/new")
-def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
+def post_source_new(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Add a new source."""
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
     data_model = latest_datamodel(database)
@@ -207,7 +208,7 @@ def post_source_new(report_uuid: str, metric_uuid: str, database: Database):
 
 
 @bottle.delete("/report/<report_uuid>/source/<source_uuid>")
-def delete_source(report_uuid: str, source_uuid: str, database: Database):
+def delete_source(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Delete a source."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
     data.report["delta"] = dict(
@@ -219,7 +220,7 @@ def delete_source(report_uuid: str, source_uuid: str, database: Database):
 
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/<source_attribute>")
-def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: str, database: Database):
+def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
     value = dict(bottle.request.json)[source_attribute]
@@ -236,7 +237,7 @@ def post_source_attribute(report_uuid: str, source_uuid: str, source_attribute: 
 
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
-def post_source_parameter(report_uuid: str, source_uuid: str, parameter_key: str, database: Database):
+def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
     parameter_value = dict(bottle.request.json)[parameter_key]
@@ -278,7 +279,7 @@ def post_report_new(database: Database):
 
 
 @bottle.delete("/report/<report_uuid>")
-def delete_report(report_uuid: str, database: Database):
+def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     report = latest_report(database, report_uuid)
     report["deleted"] = "true"

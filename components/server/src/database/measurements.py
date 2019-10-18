@@ -8,16 +8,17 @@ import pymongo
 from pymongo.database import Database
 
 from utilities.functions import iso_timestamp
+from utilities.type import Addition, Direction, MeasurementId, MetricId, ReportId, Scale, Status
 from .datamodels import latest_datamodel
 from .reports import latest_metric
 
 
-def latest_measurement(database: Database, metric_uuid: str):
+def latest_measurement(database: Database, metric_uuid: MetricId):
     """Return the latest measurement."""
     return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
 
 
-def last_measurements(database: Database, report_uuid: str):
+def last_measurements(database: Database, report_uuid: ReportId):
     """Return the last measurement for each metric."""
     measurement_filter: Dict[str, Union[bool, str]] = dict(last=True)
     if not report_uuid.startswith("tag-"):
@@ -25,17 +26,17 @@ def last_measurements(database: Database, report_uuid: str):
     return database.measurements.find(filter=measurement_filter)
 
 
-def recent_measurements(database: Database, metric_uuid: str, max_iso_timestamp: str):
+def recent_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
     """Return the recent measurements."""
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 
-def count_measurements(database: Database, report_uuid: str) -> int:
+def count_measurements(database: Database, report_uuid: ReportId) -> int:
     """Return the number of measurements."""
     return int(database.measurements.count_documents(filter={"report_uuid": report_uuid}))
 
 
-def update_measurement_end(database: Database, measurement_id: str):
+def update_measurement_end(database: Database, measurement_id: MeasurementId):
     """Set the end date and time of the measurement to the current date and time."""
     # Setting last to true shouldn't be necessary in the long run because the last flag is set to true when a new
     # measurement is added. However, setting it here ensures the measurement collection is updated correctly after the
@@ -68,7 +69,7 @@ def insert_new_measurement(database: Database, measurement: Dict, metric=None) -
     return measurement
 
 
-def calculate_measurement_value(sources, addition: str, scale: str, direction: str) -> Optional[str]:
+def calculate_measurement_value(sources, addition: Addition, scale: Scale, direction: Direction) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
 
     def percentage(numerator: int, denominator: int) -> int:
@@ -94,7 +95,7 @@ def calculate_measurement_value(sources, addition: str, scale: str, direction: s
     return str(add(values))  # type: ignore
 
 
-def determine_measurement_status(database: Database, metric, measurement_value: Optional[str]) -> Optional[str]:
+def determine_measurement_status(database: Database, metric, measurement_value: Optional[str]) -> Optional[Status]:
     """Determine the measurement status."""
     if measurement_value is None:
         return None
@@ -106,7 +107,7 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     debt_end_date = metric.get("debt_end_date", date.max.isoformat())
     better_or_equal = {">": int.__ge__, "<": int.__le__}[direction]
     if better_or_equal(value, target):
-        status = "target_met"
+        status: Status = "target_met"
     elif metric["accept_debt"] and date.today().isoformat() <= debt_end_date and better_or_equal(value, debt_target):
         status = "debt_target_met"
     elif better_or_equal(target, near_target) and better_or_equal(value, near_target):
@@ -116,7 +117,7 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
     return status
 
 
-def changelog(database: Database, report_uuid: str, nr_changes: int):
+def changelog(database: Database, report_uuid: ReportId, nr_changes: int):
     """Return the changelog for the measurements in the report."""
     return database.measurements.find(
         filter={"report_uuid": report_uuid, "delta": {"$exists": True}}, sort=[("start", pymongo.DESCENDING)],

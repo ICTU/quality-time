@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import logging
 import os
 import re
-from typing import Dict, Tuple
+from typing import cast, Dict, Tuple
 import urllib.parse
 
 from pymongo.database import Database
@@ -14,11 +14,12 @@ import bottle
 from database import sessions
 from utilities.functions import uuid
 from utilities.ldap import LDAPObject
+from utilities.type import SessionId
 
 
-def generate_session() -> Tuple[str, datetime]:
+def generate_session() -> Tuple[SessionId, datetime]:
     """Generate a new random, secret and unique session id and a session expiration datetime."""
-    return uuid(), datetime.now() + timedelta(hours=24)
+    return cast(SessionId, uuid()), datetime.now() + timedelta(hours=24)
 
 
 def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
@@ -69,7 +70,7 @@ def login(database: Database) -> Dict[str, bool]:
 @bottle.post("/logout")
 def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
-    session_id = str(bottle.request.get_cookie("session_id"))
+    session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
     sessions.delete(database, session_id)
     set_session_cookie(session_id, datetime.min)
     return dict(ok=True)
