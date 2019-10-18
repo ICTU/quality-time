@@ -4,6 +4,7 @@
 
 - [Logging in and out](#logging-in-and-out)
 - [Configuring quality reports](#configuring-quality-reports)
+- [Notes on specific metrics](#notes-on-specific-metrics)
 - [Customizing quality reports](#customizing-quality-reports)
 
 ## Logging in and out
@@ -85,7 +86,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 
   ![Dashboard tags](screenshots/dashboard_tags.png)
 
-* The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is measured instead of the count of duplicated lines.
+* The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 * The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. 
 * The "Metric unit" derives its default value from the metric type. Override as needed.
 * The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
@@ -107,7 +108,7 @@ To add a source to a metric, expand the metric in the metric table and then clic
 
 ![Adding source screenshot](screenshots/adding_source.png)
 
-If you add multiple sources for one metric the measurement values of each source are combined to get one measurement value for the metric. Usually this means adding up the values, but for some metrics this doesn't make sense and the maximum value of the sources is used as the metric value.
+If you add multiple sources for one metric the measurement values of each source are combined to get one measurement value for the metric. Usually this means adding up the values, but for some metrics this doesn't make sense and the minimum or maximum value of the sources is used as the metric value.
 
 ### Editing sources
 
@@ -124,6 +125,16 @@ The parameters that sources need differ per source type. Most sources need a URL
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
 > Be careful, there's no way to undo your action via the user interface.
+
+## Notes on specific metrics
+
+### Unmerged branches
+
+The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric. 
+
+The "master"-branch is the default branch in both GitLab and Azure DevOps. This means that a branch is considered unmerged if it has not been merged with master. If you want to use a different branch as default branch, you need to configure this in the source, see the documentation for [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/#default-branch) or [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#change-your-default-branch).
+
+To ignore branches that people are actively working on, use the "Number of days since last commit after which to consider branches inactive"-parameter.
 
 ## Customizing quality reports
 

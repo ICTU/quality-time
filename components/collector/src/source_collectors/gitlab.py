@@ -120,7 +120,7 @@ class GitlabUnmergedBranches(GitlabBase, UnmergedBranchesSourceCollector):
         return self._gitlab_api_url("repository/branches")
 
     def _unmerged_branches(self, responses: Responses) -> List:
-        return [branch for branch in responses[0].json() if branch["name"] != "master" and not branch["merged"] and
+        return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and
                 self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
 
     def _commit_datetime(self, branch) -> datetime:
