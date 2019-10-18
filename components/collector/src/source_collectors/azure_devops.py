@@ -77,7 +77,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
         return URL(f"{url}/_apis/git/repositories/{project}/stats/branches?api-version=4.1")
 
     def _unmerged_branches(self, responses: Responses) -> List:
-        return [branch for branch in responses[0].json()["value"] if branch["name"] != "master" and
+        return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
                 self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
 

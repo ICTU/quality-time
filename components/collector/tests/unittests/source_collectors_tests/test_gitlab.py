@@ -91,11 +91,12 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         """Test that the number of unmerged branches can be measured."""
         metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         gitlab_json = [
-            dict(name="master", merged=False),
-            dict(name="unmerged_branch", merged=False, commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
-            dict(name="active_unmerged_branch", merged=False,
+            dict(name="master", default=True, merged=False),
+            dict(name="unmerged_branch", default=False, merged=False,
+                 commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
+            dict(name="active_unmerged_branch", default=False, merged=False,
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
-            dict(name="merged_branch", merged=True)]
+            dict(name="merged_branch", default=False, merged=True)]
         response = self.collect(metric, get_request_json_return_value=gitlab_json)
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         expected_entities = [
