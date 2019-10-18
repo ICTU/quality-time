@@ -6,6 +6,7 @@ import pymongo
 from pymongo.database import Database
 
 from utilities.functions import iso_timestamp
+from utilities.type import Color, MetricId, ReportId, Status
 from .datamodels import latest_datamodel
 
 
@@ -36,7 +37,7 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
     from .measurements import last_measurements  # pylint:disable=cyclic-import
-    status_color_mapping = dict(
+    status_color_mapping: Dict[Status, Color] = dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = dict()
@@ -56,12 +57,12 @@ def summarize_report(database: Database, report) -> None:
                 report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 
 
-def latest_report(database: Database, report_uuid: str):
+def latest_report(database: Database, report_uuid: ReportId):
     """Return the latest report for the specified report uuid."""
     return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
 
 
-def latest_metric(database: Database, report_uuid: str, metric_uuid: str):
+def latest_metric(database: Database, report_uuid: ReportId, metric_uuid: MetricId):
     """Return the latest metric with the specified report and metric uuid."""
     report = latest_report(database, report_uuid) or dict()
     for subject in report.get("subjects", {}).values():

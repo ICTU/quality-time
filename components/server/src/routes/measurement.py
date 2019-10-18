@@ -1,7 +1,7 @@
 """Measurement routes."""
 
 import time
-from typing import Dict, Iterator
+from typing import cast, Dict, Iterator
 
 from pymongo.database import Database
 import bottle
@@ -10,6 +10,7 @@ from database.measurements import count_measurements, latest_measurement, recent
     update_measurement_end
 from database import sessions
 from utilities.functions import report_date_time
+from utilities.type import MetricId, ReportId, SourceId
 
 
 @bottle.post("/measurements")
@@ -31,7 +32,7 @@ def post_measurement(database: Database) -> Dict:
 
 
 @bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
-def set_entity_attribute(metric_uuid: str, source_uuid: str, entity_key: str, attribute: str,
+def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set a entity attribute."""
     measurement = latest_measurement(database, metric_uuid)
@@ -52,7 +53,7 @@ def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
 
 
 @bottle.get("/nr_measurements/<report_uuid>")
-def stream_nr_measurements(report_uuid: str, database: Database) -> Iterator[str]:
+def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterator[str]:
     """Return the number of measurements for the given report as server sent events."""
     # Keep event IDs consistent
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
@@ -75,9 +76,9 @@ def stream_nr_measurements(report_uuid: str, database: Database) -> Iterator[str
 
 
 @bottle.get("/measurements/<metric_uuid>")
-def get_measurements(metric_uuid: str, database: Database) -> Dict:
+def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
-    metric_uuid = metric_uuid.split("&")[0]
+    metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
     measurements = []
     for measurement in recent_measurements(database, metric_uuid, report_date_time()):
         measurement["_id"] = str(measurement["_id"])

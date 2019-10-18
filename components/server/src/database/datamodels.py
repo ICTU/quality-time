@@ -6,6 +6,7 @@ import pymongo
 from pymongo.database import Database
 
 from utilities.functions import iso_timestamp
+from utilities.type import ReportId
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
@@ -34,7 +35,7 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
     return parameters
 
 
-def default_metric_attributes(database: Database, report_uuid: str, metric_type: str = ""):
+def default_metric_attributes(database: Database, report_uuid: ReportId, metric_type: str = ""):
     """Return the metric attributes with their default values for the specified metric type.
     If no metric type is specified, use the first one from the datamodel."""
     metric_types = latest_datamodel(database)["metrics"]
