@@ -1,10 +1,9 @@
 """Unit tests for the collector main script."""
 
-import datetime
 import logging
 import unittest
 from typing import List
-from unittest.mock import call, patch, Mock
+from unittest.mock import patch, Mock
 
 import requests
 
@@ -18,10 +17,8 @@ class CollectorTest(unittest.TestCase):
     """Unit tests for the collection methods."""
 
     def setUp(self):
-        class SourceMetric(source_collector.SourceCollector):
-            """Fake collector."""
-
-            next_collection_datetime = None
+        class SourceMetric(source_collector.SourceCollector):  # pylint: disable=unused-variable
+            """Register a fake collector automatically."""
 
             def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
                 """Return the answer."""
@@ -31,10 +28,6 @@ class CollectorTest(unittest.TestCase):
                 """Return the answer."""
                 return "84"
 
-            def next_collection(self) -> datetime:
-                return self.next_collection_datetime if self.next_collection_datetime else super().next_collection()
-
-        self.source_metric_class = SourceMetric
         self.data_model_response = Mock()
         self.data_model_response.json.return_value = dict(
             sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
@@ -53,7 +46,8 @@ class CollectorTest(unittest.TestCase):
                 MetricsCollector().fetch_measurements()
         post.assert_not_called()
 
-    def test_fetch_with_get_error(self):
+    @staticmethod
+    def test_fetch_with_get_error():
         """Test fetching measurement when getting fails."""
         with patch("requests.get", side_effect=RuntimeError):
             with patch("requests.post") as post:
@@ -123,27 +117,6 @@ class CollectorTest(unittest.TestCase):
                     dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
-
-    def test_fetch_twice_no_skip(self):
-        """Test that the metric is not skipped on the second fetch if it wants to be collected as soon as possible."""
-        self.source_metric_class.next_collection_datetime = datetime.datetime.min
-        self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
-        side_effect = [self.data_model_response, self.metrics_response, Mock()] * 2
-        with patch("requests.get", side_effect=side_effect):
-            with patch("requests.post") as post:
-                metric_collector = MetricsCollector()
-                metric_collector.fetch_measurements()
-                metric_collector.fetch_measurements()
-        post_call = call(
-            "http://localhost:5001/measurements",
-            json=dict(
-                sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
-                         connection_error=None, parse_error=None, source_uuid="source_id")],
-                metric_uuid="metric_uuid", report_uuid="report_uuid")),
-        post.assert_has_calls(post_call, post_call)
 
     def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""

@@ -141,10 +141,6 @@ class SourceCollector(ABC):
         This method can to be overridden by collectors when a source can provide the measured entities."""
         return []
 
-    def next_collection(self) -> datetime:  # pylint: disable=no-self-use
-        """Return when this source should be connected again for measurement data."""
-        return datetime.now() + timedelta(seconds=15 * 60)
-
 
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that do not need to access the network but return static or user-supplied

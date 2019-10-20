@@ -175,5 +175,5 @@ class OJAuditTest(SourceCollectorTestCase):
         response = self.collect(self.metric, get_request_text=ojaudit_xml)
         expected_entities = [
             dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
-                  count="2")]
+                 count="2")]
         self.assert_measurement(response, value="2", entities=expected_entities)

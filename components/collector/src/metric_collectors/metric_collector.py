@@ -1,6 +1,5 @@
 """Collector base class."""
 
-from datetime import datetime
 from typing import Dict
 
 from source_collectors.source_collector import SourceCollector
@@ -28,10 +27,6 @@ class MetricCollector:
                         not source.get("parameters", {}).get(parameter_key):
                     return False
         return bool(sources)
-
-    def next_collection(self) -> datetime:
-        """Return when the metric can/should be collected again."""
-        return min([collector.next_collection() for collector in self.collectors.values()], default=datetime.min)
 
     def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
