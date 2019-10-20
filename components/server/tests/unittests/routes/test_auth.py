@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import bottle
-import ldap  # pylint: disable=import-error
+import ldap  # pylint: disable=import-error,wrong-import-order
 
 from src.routes import auth
 
