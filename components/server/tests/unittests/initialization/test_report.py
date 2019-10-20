@@ -10,11 +10,14 @@ from src.initialization.report import import_report, import_example_reports
 class ReportInitTest(unittest.TestCase):
     """Unit tests for the report import code."""
 
+    def setUp(self) -> None:
+        self.database = Mock()
+        self.database.reports.find_one.return_value = True
+
     def test_import(self):
         """Test that a report can be imported."""
-        database = Mock()
-        database.reports.find_one.return_value = None
-        database.datamodels.find_one.return_value = dict(
+        self.database.reports.find_one.return_value = None
+        self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="name", description="")),
             metrics=dict(
@@ -33,27 +36,19 @@ class ReportInitTest(unittest.TestCase):
                     ])
                 ])]))
         with patch("builtins.open", mock_open(read_data=report_json)):
-            import_report(database, "filename")
-        database.reports.insert.assert_called_once()
+            import_report(self.database, "filename")
+        self.database.reports.insert.assert_called_once()
 
     def test_import_is_skipped(self):
         """Test that a report isn't imported when it's already in the database."""
-        database = Mock()
-        database.reports.find_one.return_value = True
         with patch("builtins.open", mock_open(read_data='{"report_uuid": "id", "subjects": []}')):
-            import_report(database, "filename")
-        database.reports.insert.assert_not_called()
+            import_report(self.database, "filename")
+        self.database.reports.insert.assert_not_called()
 
-
-class ExampleReportInitTest(unittest.TestCase):
-    """Unit tests for the example report import code."""
-
-    def test_import(self):
+    def test_import_example_report(self):
         """Test that the example reports are imported."""
-        database = Mock()
-        database.reports.find_one.return_value = True
         mock_glob = Mock(return_value=["filename"])
         with patch("glob.glob", mock_glob):
             with patch("builtins.open", mock_open(read_data='{"report_uuid": "id", "subjects": []}')):
-                import_example_reports(database)
-        database.reports.insert.assert_not_called()
+                import_example_reports(self.database)
+        self.database.reports.insert.assert_not_called()

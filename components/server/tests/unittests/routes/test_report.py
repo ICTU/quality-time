@@ -1,13 +1,13 @@
 """Unit tests for the report routes."""
 
 import unittest
+from unittest.mock import Mock, patch
 
 from routes.report import (
     delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
-from unittest.mock import Mock, patch
 from utilities.functions import iso_timestamp
 
 
@@ -490,8 +490,8 @@ class ReportTest(unittest.TestCase):
                 subject_uuid=dict(
                     metrics=dict(
                         metric_uuid=dict(
-                            type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
-                            addition="sum", tags=["a"])))))
+                            type="metric_type", addition="sum", target="0", near_target="10", debt_target="0",
+                            accept_debt=False, tags=["a"])))))
         self.database.reports.find_one.return_value = report
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = dict(subject_uuid=dict(red=0, green=0, yellow=0, grey=0, white=1))

@@ -56,20 +56,22 @@ class LoginTests(unittest.TestCase):
         self.assertFalse("domain=" in cookie.lower())
 
     def test_lookup_user_simple_bind_s_failure(self):
-        self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS
+        """Test lookup user invalid credentials."""
+        self.ldap_server.simple_bind_s.side_effect = ldap.INVALID_CREDENTIALS  # pylint: disable=no-member
         with patch("bottle.request", return_value=self.valid_creds_uid_json):
             with patch("ldap.initialize", return_value=self.ldap_server):
                 self.assertEqual(dict(ok=False), auth.login(self.database))
 
     def test_simple_search_s_failure(self):
-        self.ldap_server.search_s.side_effect = ldap.INVALID_CREDENTIALS
+        """Test user invalid credentials."""
+        self.ldap_server.search_s.side_effect = ldap.INVALID_CREDENTIALS  # pylint: disable=no-member
         with patch("bottle.request", return_value=self.invalid_creds_json):
             with patch("ldap.initialize", return_value=self.ldap_server):
                 self.assertEqual(dict(ok=False), auth.login(self.database))
 
     def test_unsuccessful_login_localhost_cn(self):
         """Test unsuccessful login on localhost."""
-        self.ldap_server.simple_bind_s.side_effect = [None, ldap.INVALID_CREDENTIALS]
+        self.ldap_server.simple_bind_s.side_effect = [None, ldap.INVALID_CREDENTIALS]  # pylint: disable=no-member
         with patch("bottle.request", return_value=self.invalid_creds_json):
             with patch("ldap.initialize", return_value=self.ldap_server):
                 self.assertEqual(dict(ok=False), auth.login(self.database))
