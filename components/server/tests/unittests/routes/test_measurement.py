@@ -68,7 +68,7 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[])]
         request.json = dict(report_uuid="report_uuid", metric_uuid="metric_uuid", sources=sources)
         new_measurement = dict(
-            _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid",  last=True,
+            _id="measurement_id", report_uuid="report_uuid", metric_uuid="metric_uuid", last=True,
             count=dict(status="near_target_met", value="1"), start="2019-01-01", end="2019-01-01", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()

@@ -1,7 +1,8 @@
 """Unit tests for the CORS module."""
 
-import bottle
 import unittest
+
+import bottle
 
 from routes import cors
 

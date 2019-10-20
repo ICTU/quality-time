@@ -1,7 +1,8 @@
 """Unit tests for the route injection plugin model."""
 
-import bottle
 import unittest
+
+import bottle
 
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
 

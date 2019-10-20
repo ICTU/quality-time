@@ -8,8 +8,11 @@ class AxeCSVAccessibility(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.metric = dict(type="accessibility", sources=dict(
-             source_id=dict(type="axecsv", parameters=dict(url="https://axecsv", private_token="xxx"))), addition="sum")
+        self.metric = dict(
+            type="accessibility",
+            sources=dict(
+                source_id=dict(
+                    type="axecsv", parameters=dict(url="https://axecsv", private_token="xxx"))), addition="sum")
 
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""

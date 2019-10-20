@@ -1,6 +1,6 @@
 """Metrics collector."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import os
 import time
@@ -44,18 +44,18 @@ class MetricsCollector:
             logging.info("Sleeping...")
             time.sleep(60)
 
-    def fetch_measurements(self) -> None:
+    def fetch_measurements(self, frequency_in_minutes: int = 15) -> None:
         """Fetch the metrics and their measurements."""
-        datamodel = get(URL(f"{self.server_url}/datamodel"))
+        data_model = get(URL(f"{self.server_url}/datamodel"))
         metrics = get(URL(f"{self.server_url}/metrics"))
         for metric_uuid, metric in metrics.items():
-            if not (collector := MetricCollector(metric, datamodel)).can_collect():
+            if not (collector := MetricCollector(metric, data_model)).can_collect():
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
             measurement = collector.get()
             self.last_parameters[metric_uuid] = metric
-            self.next_fetch[metric_uuid] = collector.next_collection()
+            self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=frequency_in_minutes * 60)
             measurement["metric_uuid"] = metric_uuid
             measurement["report_uuid"] = metric["report_uuid"]
             post(URL(f"{self.server_url}/measurements"), measurement)

@@ -42,8 +42,7 @@ class SourceCollectorTestCase(unittest.TestCase):
         with patch("requests.post", return_value=mock_post_request, side_effect=post_request_side_effect):
             with patch("requests.get", return_value=mock_get_request):
                 with patch("requests.delete", return_value=None):
-                    self.collector = MetricCollector(metric, self.data_model)
-                    return self.collector.get()
+                    return MetricCollector(metric, self.data_model).get()
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
