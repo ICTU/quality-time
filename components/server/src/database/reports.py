@@ -8,6 +8,7 @@ from pymongo.database import Database
 from utilities.functions import iso_timestamp
 from utilities.type import Color, MetricId, ReportId, Status
 from .datamodels import latest_datamodel
+from .measurements import last_measurements
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
@@ -36,7 +37,6 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
-    from .measurements import last_measurements  # pylint:disable=cyclic-import
     status_color_mapping: Dict[Status, Color] = dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)

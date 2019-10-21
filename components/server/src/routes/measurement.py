@@ -8,6 +8,7 @@ import bottle
 
 from database.measurements import count_measurements, latest_measurement, recent_measurements, insert_new_measurement, \
     update_measurement_end
+from database.reports import latest_metric
 from database import sessions
 from utilities.functions import report_date_time
 from utilities.type import MetricId, ReportId, SourceId
@@ -28,7 +29,8 @@ def post_measurement(database: Database) -> Dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, measurement)
+    metric = latest_metric(database, measurement["report_uuid"], measurement["metric_uuid"])
+    return insert_new_measurement(database, metric, measurement)
 
 
 @bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
@@ -44,7 +46,8 @@ def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_ke
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
     measurement["delta"] = \
         f"{sessions.user(database)} changed the {attribute} of '{entity_description}' from '{old_value}' to '{value}'."
-    return insert_new_measurement(database, measurement)
+    metric = latest_metric(database, measurement["report_uuid"], metric_uuid)
+    return insert_new_measurement(database, metric, measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
