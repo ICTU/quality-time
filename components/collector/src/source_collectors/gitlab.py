@@ -119,6 +119,9 @@ class GitlabUnmergedBranches(GitlabBase, UnmergedBranchesSourceCollector):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("repository/branches")
 
+    def _landing_url(self, responses: Responses) -> URL:
+        return URL(f"{str(super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
+
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and
                 self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
