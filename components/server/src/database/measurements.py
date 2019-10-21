@@ -10,7 +10,6 @@ from pymongo.database import Database
 from utilities.functions import iso_timestamp
 from utilities.type import Addition, Direction, MeasurementId, MetricId, ReportId, Scale, Status
 from .datamodels import latest_datamodel
-from .reports import latest_metric
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId):
@@ -45,14 +44,12 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
         filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
 
 
-def insert_new_measurement(database: Database, measurement: Dict, metric=None) -> Dict:
+def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    metric = latest_metric(
-        database, measurement["report_uuid"], measurement["metric_uuid"]) if metric is None else metric
-    datamodel = latest_datamodel(database)
-    metric_type = datamodel["metrics"][metric["type"]]
+    data_model = latest_datamodel(database)
+    metric_type = data_model["metrics"][metric["type"]]
     direction = metric.get("direction") or metric_type["direction"]
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
