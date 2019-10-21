@@ -12,8 +12,8 @@ from utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
-class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for Azure DevOps collectors."""
+class AzureDevopsIssues(SourceCollector):
+    """Collector to get issues from Azure Devops Server."""
 
     MAX_IDS_PER_WORKITEMS_API_CALL = 200  # See
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
@@ -33,6 +33,9 @@ class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(responses[0].json()["workItems"]))
+
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         if len(responses) < 2:
             return []  # We didn't get a response with work items, so assume there are none
@@ -44,14 +47,7 @@ class AzureDevopsBase(SourceCollector, ABC):  # pylint: disable=abstract-method
                 url=work_item["url"]) for work_item in responses[1].json()["value"]]
 
 
-class AzureDevopsIssues(AzureDevopsBase):
-    """Collector to get issues from Azure Devops Server."""
-
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(responses[0].json()["workItems"]))
-
-
-class AzureDevopsReadyUserStoryPoints(AzureDevopsBase):
+class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
     """Collector to get ready user story points from Azure Devops Server."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
@@ -68,13 +64,30 @@ class AzureDevopsReadyUserStoryPoints(AzureDevopsBase):
         return entities
 
 
-class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
+class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for Azure DevOps collectors that work with repositories."""
+
+    def _repository_id(self) -> str:
+        """Return the repository id belonging to the repository."""
+        api_url = str(super()._api_url())
+        repository = self._parameter("repository") or api_url.rsplit("/", 1)[-1]
+        repositories_url = f"{api_url}/_apis/git/repositories?api-version=4.1"
+        repositories = requests.get(repositories_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
+        repositories.raise_for_status()
+        return str([r for r in repositories.json()["value"] if repository in (r["name"], r["id"])][0]["id"])
+
+
+class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRepositoryBase):
     """Collector for unmerged branches."""
 
     def _api_url(self) -> URL:
-        url = super()._api_url()
-        project = str(url).split("/")[-1]
-        return URL(f"{url}/_apis/git/repositories/{project}/stats/branches?api-version=4.1")
+        api_url = str(super()._api_url())
+        return URL(f"{api_url}/_apis/git/repositories/{self._repository_id()}/stats/branches?api-version=4.1")
+
+    def _landing_url(self, responses: Responses) -> URL:
+        landing_url = str(super()._landing_url(responses))
+        repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
+        return URL(f"{landing_url}/_git/{repository}/branches")
 
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
@@ -85,21 +98,24 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector):
         return parse(branch["commit"]["committer"]["date"])
 
 
-class AzureDevopsSourceUpToDateness(SourceCollector):
+class AzureDevopsSourceUpToDateness(AzureDevopsRepositoryBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def _api_url(self) -> URL:
         api_url = str(super()._api_url())
-        repository = self._parameter("repository")
-        repositories_url = f"{api_url}/_apis/git/repositories?api-version=4.1"
-        repositories = requests.get(repositories_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
-        repositories.raise_for_status()
-        repository_id = [r for r in repositories.json()["value"] if repository in (r["name"], r["id"])][0]["id"]
+        repository_id = self._repository_id()
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
         search_criteria = \
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
         return URL(f"{api_url}/_apis/git/repositories/{repository_id}/commits?{search_criteria}&api-version=4.1")
+
+    def _landing_url(self, responses: Responses) -> URL:
+        landing_url = str(super()._landing_url(responses))
+        repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
+        path = self._parameter("file_path", quote=True)
+        branch = self._parameter("branch", quote=True)
+        return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(days_ago(parse(responses[0].json()["value"][0]["committer"]["date"])))

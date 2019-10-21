@@ -76,29 +76,32 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(
-            source_id=dict(type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+            source_id=dict(
+                type="azure_devops", parameters=dict(url="https://azure_devops/org/project", private_token="xxx")))
         self.metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
+        self.repositories = dict(value=[dict(id="id", name="project")])
 
     def test_no_branches_except_master(self):
         """Test that the number of unmerged branches is returned."""
-        response = self.collect(
-            self.metric, get_request_json_return_value=dict(value=[dict(name="master", isBaseVersion=True)]))
-        self.assert_measurement(response, value="0", entities=[])
+        branches = dict(value=[dict(name="master", isBaseVersion=True)])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches, branches])
+        self.assert_measurement(
+            response, value="0", entities=[], landing_url="https://azure_devops/org/project/_git/project/branches")
 
     def test_unmerged_branches(self):
         """Test that the number of unmerged branches is returned."""
-        response = self.collect(
-            self.metric,
-            get_request_json_return_value=dict(
-                value=[
-                    dict(name="master", isBaseVersion=True),
-                    dict(name="branch", isBaseVersion=False, aheadCount=1,
-                         commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))]))
+        branches = dict(
+            value=[
+                dict(name="master", isBaseVersion=True),
+                dict(name="branch", isBaseVersion=False, aheadCount=1,
+                     commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches, branches])
         expected_age = str(days_ago(datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)))
         self.assert_measurement(
             response,
             value="1",
-            entities=[dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03")])
+            entities=[dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03")],
+            landing_url="https://azure_devops/org/project/_git/project/branches")
 
 
 class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
@@ -109,14 +112,19 @@ class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
         sources = dict(
             source_id=dict(
                 type="azure_devops",
-                parameters=dict(url="https://azure_devops", repository="repo", private_token="xxx")))
+                parameters=dict(
+                    url="https://azure_devops/org/project", repository="repo", private_token="xxx",
+                    file_path="README.md")))
         metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
         repositories = dict(value=[dict(id="id", name="repo")])
         commits = dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))])
         response = self.collect(
             metric, get_request_json_side_effect=[repositories, commits])
         expected_age = str(days_ago(datetime(2019, 9, 3, 20, 43, 43, tzinfo=timezone.utc)))
-        self.assert_measurement(response, value=expected_age)
+        self.assert_measurement(
+            response,
+            value=expected_age,
+            landing_url="https://azure_devops/org/project/_git/repo?path=README.md&version=GBmaster")
 
 
 class AzureDevopsTestsTest(SourceCollectorTestCase):

@@ -797,10 +797,12 @@
                 "repository": {
                     "name": "Repository (name or id)",
                     "type": "string",
-                    "mandatory": true,
+                    "placeholder": "default repository",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "source_up_to_dateness"
+                        "source_up_to_dateness",
+                        "unmerged_branches"
                     ]
                 },
                 "branch": {

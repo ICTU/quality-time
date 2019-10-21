@@ -14,7 +14,8 @@ class GitLabTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="gitlab",
                 parameters=dict(
-                    url="https://gitlab/", project="project", file_path="file", branch="branch", inactive_days="7")))
+                    url="https://gitlab/", project="namespace/project", file_path="file", branch="branch",
+                    inactive_days="7")))
 
 
 class GitLabFailedJobsTest(GitLabTestCase):
@@ -47,7 +48,8 @@ class GitLabFailedJobsTest(GitLabTestCase):
         self.sources["source_id"]["parameters"]["private_token"] = "token"
         response = self.collect(self.metric)
         self.assert_measurement(
-            response, api_url="https://gitlab/api/v4/projects/project/jobs?per_page=100&private_token=token",
+            response,
+            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
             parse_error="Traceback")
 
 
@@ -101,4 +103,5 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         expected_entities = [
             dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(
+            response, value="1", entities=expected_entities, landing_url="https://gitlab/namespace/project/-/branches")
