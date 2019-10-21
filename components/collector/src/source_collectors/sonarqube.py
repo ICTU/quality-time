@@ -13,23 +13,26 @@ from .source_collector import SourceCollector
 class SonarQubeViolations(SourceCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
+    landing_url = "{url}/project/issues?id={component}&resolved=false&branch={branch}"
     rules_parameter = "Subclass responsibility"
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
-        landing_url = f"{url}/project/issues?id={component}&resolved=false"
+        branch = self._parameter("branch")
+        landing_url = f"{url}/project/issues?id={component}&resolved=false&branch={branch}"
         return URL(landing_url + self.__rules_url_parameter())
 
     def _api_url(self) -> URL:
         url = super()._api_url()
         component = self._parameter("component")
+        branch = self._parameter("branch")
         severities = ",".join([severity.upper() for severity in self._parameter("severities")])
         types = ",".join([violation_type.upper() for violation_type in self._parameter("types")])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
-              f"severities={severities}&types={types}"
+              f"severities={severities}&types={types}&branch={branch}"
         return URL(api + self.__rules_url_parameter())
 
     def __rules_url_parameter(self) -> str:
@@ -47,7 +50,8 @@ class SonarQubeViolations(SourceCollector):
         """Generate a landing url for the issue."""
         url = super()._landing_url([response])
         component = self._parameter("component")
-        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}")
+        branch = self._parameter("branch")
+        return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}&branch={branch}")
 
     def _entity(self, issue, response: requests.Response) -> Entity:
         """Create an entity from an issue."""
@@ -80,7 +84,9 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         responses = super()._get_source_responses(api_url)
         url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
-        api_url = URL(f"{url}/api/measures/component?component={component}&metricKeys={self.total_metric}")
+        branch = self._parameter("branch")
+        api_url = URL(
+            f"{url}/api/measures/component?component={component}&metricKeys={self.total_metric}&branch={branch}")
         return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
     def _parse_source_responses_total(self, responses: Responses) -> Value:
@@ -122,7 +128,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         responses = super()._get_source_responses(api_url)
         url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
-        all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}")
+        branch = self._parameter("branch")
+        all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
         for issues_api_url in (resolved_issues_api_url, all_issues_api_url):
             responses.append(requests.get(issues_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials()))
@@ -155,12 +162,15 @@ class SonarQubeMetricsBaseClass(SourceCollector):
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
-        return URL(f"{url}/component_measures?id={component}&metric={self._metric_keys()}")
+        branch = self._parameter("branch")
+        return URL(f"{url}/component_measures?id={component}&metric={self._metric_keys()}&branch={branch}")
 
     def _api_url(self) -> URL:
         url = super()._api_url()
         component = self._parameter("component")
-        return URL(f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}")
+        branch = self._parameter("branch")
+        return URL(
+            f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(self.__get_metrics(responses)[self._metric_keys().split(",")[0]])
@@ -223,13 +233,15 @@ class SonarQubeTests(SourceCollector):
     def _api_url(self) -> URL:
         url = super()._api_url()
         component = self._parameter("component")
+        branch = self._parameter("branch")
         metric_keys = "tests,test_errors,test_failures,skipped_tests"
-        return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric_keys}")
+        return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric_keys}&branch={branch}")
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         component = self._parameter("component")
-        return URL(f"{url}/component_measures?id={component}&metric=tests")
+        branch = self._parameter("branch")
+        return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         tests = self.__nr_of_tests(responses)
@@ -257,11 +269,15 @@ class SonarQubeSourceUpToDateness(SourceCollector):
 
     def _api_url(self) -> URL:
         url = super()._api_url()
-        return URL(f"{url}/api/project_analyses/search?project={self._parameter('component')}")
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
-        return URL(f"{url}/project/activity?id={self._parameter('component')}")
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])

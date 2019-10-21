@@ -1,13 +1,13 @@
 {
-   "scales": {
-       "count": {
-           "name": "Count",
-           "description": "Counts of objects (e.g. lines of code, violations, complex units)."
-       },
-       "percentage": {
-           "name": "Percentage",
-           "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
-       }
+    "scales": {
+        "count": {
+            "name": "Count",
+            "description": "Counts of objects (e.g. lines of code, violations, complex units)."
+        },
+        "percentage": {
+            "name": "Percentage",
+            "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
+        }
     },
     "metrics": {
         "accessibility": {
@@ -2752,6 +2752,29 @@
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
+                    "metrics": [
+                        "commented_out_code",
+                        "complex_units",
+                        "duplicated_lines",
+                        "failed_tests",
+                        "many_parameters",
+                        "loc",
+                        "long_units",
+                        "ncloc",
+                        "source_up_to_dateness",
+                        "suppressed_violations",
+                        "tests",
+                        "uncovered_branches",
+                        "uncovered_lines",
+                        "violations"
+                    ]
+                },
+                "branch": {
+                    "name": "Branch (only supported by commercial SonarQube editions)",
+                    "help_url": "https://docs.sonarqube.org/latest/branches/overview/",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "master",
                     "metrics": [
                         "commented_out_code",
                         "complex_units",

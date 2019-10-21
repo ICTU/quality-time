@@ -23,9 +23,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         response = self.collect(metric, get_request_json_return_value=json)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
-                 url="https://sonar/project/issues?id=id&issues=a&open=a"),
+                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
             dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 url="https://sonar/project/issues?id=id&issues=b&open=b")]
+                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_commented_out_code(self):
@@ -120,9 +120,9 @@ class SonarQubeTest(SourceCollectorTestCase):
             metric, get_request_json_side_effect=[violations_json, wont_fix_json, total_violations_json] * 3)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
-                 resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a"),
+                 resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
             dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b")]
+                 resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
         self.assert_measurement(response, value="2", total="4", entities=expected_entities)
 
     def test_loc_returns_ncloc_by_default(self):
