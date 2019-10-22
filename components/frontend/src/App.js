@@ -13,6 +13,17 @@ import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 
+function show_message(title, description, type, icon) {
+  toast({
+    title: title,
+    type: type,
+    icon: icon,
+    size: "large",
+    description: <p>{description}</p>,
+    time: 30000
+  }, () => {}, () => {}, () => {});  // Event handlers are mandatory
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -49,14 +60,7 @@ class App extends Component {
   reload(json) {
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
-      toast(
-        {
-            title: 'Your session expired',
-            type: 'warning',
-            icon: 'user x',
-            time: 30000,
-            description: <p>Please log in to renew your session</p>
-        });
+      show_message("Your session expired", "Please log in to renew your session", "warning", "user x");
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date();
@@ -65,7 +69,9 @@ class App extends Component {
       .then(function (datamodel_json) {
         self.setState({ loading_datamodel: false, datamodel: datamodel_json });
       }).catch(function (error) {
-        console.log(error);
+        show_message(
+          "Server unreachable", "Couldn't load data from the server. Please try again later.", "error",
+          "exclamation triangle")
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
       const tag = this.state.report_uuid.slice(4);
