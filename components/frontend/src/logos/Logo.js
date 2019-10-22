@@ -5,7 +5,6 @@ import AzureDevops from './azure_devops.png';
 import Bandit from './bandit.png'
 import Checkmarx from './checkmarx.png';
 import Gitlab from './gitlab.png';
-import HQ from './hq.png';
 import JaCoCo from './jacoco.png';
 import Jenkins from './jenkins.png';
 import Jira from './jira.png';
@@ -28,7 +27,6 @@ export function Logo(props) {
         bandit: Bandit,
         cxsast: Checkmarx,
         gitlab: Gitlab,
-        hq: HQ,
         jacoco: JaCoCo,
         jenkins: Jenkins,
         jira: Jira,

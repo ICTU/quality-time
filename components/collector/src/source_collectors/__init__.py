@@ -6,7 +6,6 @@ from .bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .calendar import CalendarSourceUpToDateness
 from .cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .gitlab import GitlabFailedJobs, GitlabSourceUpToDateness, GitlabUnmergedBranches
-from .hq import HQ
 from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .jenkins import JenkinsFailedJobs, JenkinsJobs
 from .jenkins_test_report import (

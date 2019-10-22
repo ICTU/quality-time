@@ -99,11 +99,6 @@ class DataModelTest(unittest.TestCase):
             else:  # pragma: nocover
                 self.fail(f"Metric {metric} not listed in any subject.")
 
-    def test_hq_parameters(self):
-        """Test that the HQ parameters URL and metric id support the same metrics."""
-        hq_parameters = self.datamodel["sources"]["hq"]["parameters"]
-        self.assertEqual(hq_parameters["url"]["metrics"], hq_parameters["metric_id"]["metrics"])
-
     def test_sources_with_landing_url(self):
         """Test that the the sources with landing url also have url."""
         for source in self.datamodel["sources"]:
