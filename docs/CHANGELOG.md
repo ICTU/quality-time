@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Toaster messages didn't disappear when clicked. Fixes [#717](https://github.com/ICTU/quality-time/issues/717).  
+
 ### Added
 
 - Instead of python_ldap, ldap3 library introduced. Closes [#679](https://github.com/ICTU/quality-time/issues/679).
