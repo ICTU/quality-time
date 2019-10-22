@@ -7,14 +7,15 @@ export function SourceEntities(props) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
 
-  if (!Array.isArray(props.source.entities) || props.source.entities.length === 0) {
-    return null;
-  }
   const report_source = props.metric.sources[props.source.source_uuid];
   const source_type = report_source.type;
-  const entity_attributes = props.datamodel.sources[source_type].entities[props.metric.type].attributes;
-  const entity_name = props.datamodel.sources[source_type].entities[props.metric.type].name;
-  const entity_name_plural = props.datamodel.sources[source_type].entities[props.metric.type].name_plural;
+  const metric_entities = props.datamodel.sources[source_type].entities[props.metric.type];
+  if (!metric_entities || !Array.isArray(props.source.entities) || props.source.entities.length === 0) {
+    return null;
+  }
+  const entity_attributes = metric_entities.attributes;
+  const entity_name = metric_entities.name;
+  const entity_name_plural = metric_entities.name_plural;
   const headers =
     <Table.Row>
       <Table.HeaderCell collapsing textAlign="center">
