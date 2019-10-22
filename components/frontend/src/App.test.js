@@ -26,7 +26,7 @@ it('renders all components, while loading', () => {
 
 it('renders Reports', () => {
   const wrapper = shallow(<App />);
-  wrapper.setState({ loading: false, report_uuid: '' });
+  wrapper.setState({ loading_report: false, loading_datamodel: false, report_uuid: '' });
   expect(wrapper.find('Container').find('Reports').exists()).toBe(true);
   expect(wrapper.find('Container').find('Report').exists()).toBe(false);
   expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
@@ -34,7 +34,7 @@ it('renders Reports', () => {
 
 it('renders Report', () => {
   const wrapper = shallow(<App />);
-  wrapper.setState({ loading: false, report_uuid: 'id' });
+  wrapper.setState({ loading_report: false, loading_datamodel: false, report_uuid: 'id' });
   expect(wrapper.find('Container').find('Reports').exists()).toBe(false);
   expect(wrapper.find('Container').find('Report').exists()).toBe(true);
   expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
