@@ -21,12 +21,13 @@ function MoveButton(props) {
   }
 
   export function MoveButtonGroup(props) {
+    var { marginTop, ...otherProps } = props;
     return (
-      <Button.Group style={{ marginTop: "10px" }}>
-        <MoveButton {...props} direction="first" />
-        <MoveButton {...props} direction="previous" />
-        <MoveButton {...props} direction="next" />
-        <MoveButton {...props} direction="last" />
+      <Button.Group style={{ marginTop: marginTop || "0px" }}>
+        <MoveButton {...otherProps} direction="first" />
+        <MoveButton {...otherProps} direction="previous" />
+        <MoveButton {...otherProps} direction="next" />
+        <MoveButton {...otherProps} direction="last" />
       </Button.Group>
     )
   }

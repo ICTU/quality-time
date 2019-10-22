@@ -103,6 +103,8 @@ export function Subject(props) {
     <div id={props.subject_uuid}>
       <SubjectTitle
         datamodel={props.datamodel}
+        first_subject={props.first_subject}
+        last_subject={props.last_subject}
         readOnly={props.readOnly}
         reload={props.reload}
         report={props.report}

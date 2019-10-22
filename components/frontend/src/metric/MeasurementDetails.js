@@ -92,6 +92,7 @@ export function MeasurementDetails(props) {
           <MoveButtonGroup
             first={props.first_metric}
             last={props.last_metric}
+            marginTop="10px"
             moveable="metric"
             onClick={(direction) => {
               props.stop_sort();

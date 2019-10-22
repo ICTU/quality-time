@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
+import { MoveButtonGroup} from '../widgets/MoveButton';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 
@@ -48,6 +49,15 @@ export function SubjectTitle(props) {
                     {!props.readOnly &&
                         <Grid.Row>
                             <Grid.Column>
+                                <MoveButtonGroup
+                                    first={props.first_subject}
+                                    last={props.last_subject}
+                                    moveable="subject"
+                                    onClick={(direction) => {
+                                        set_subject_attribute(props.report.report_uuid, props.subject_uuid, "position", direction, props.reload)
+                                    }}
+                                    slot="position"
+                                />
                                 <Button
                                     basic
                                     floated='right'
