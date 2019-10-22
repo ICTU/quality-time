@@ -25,7 +25,6 @@
             "default_source": "axecsv",
             "sources": [
                 "axecsv",
-                "hq",
                 "manual_number",
                 "random"
             ],
@@ -47,7 +46,6 @@
             "near_target": "100",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "sonarqube",
                 "random"
@@ -117,7 +115,6 @@
             "near_target": "5",
             "default_source": "jenkins",
             "sources": [
-                "hq",
                 "jenkins",
                 "gitlab",
                 "manual_number",
@@ -143,7 +140,6 @@
             "sources": [
                 "jenkins_test_report",
                 "junit",
-                "hq",
                 "manual_number",
                 "performancetest_runner",
                 "random",
@@ -169,7 +165,6 @@
             "default_source": "jira",
             "sources": [
                 "azure_devops",
-                "hq",
                 "jira",
                 "manual_number",
                 "random",
@@ -192,7 +187,6 @@
             "near_target": "35000",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "random",
                 "sonarqube"
@@ -238,7 +232,6 @@
             "near_target": "60",
             "default_source": "jira",
             "sources": [
-                "hq",
                 "jira",
                 "manual_number",
                 "random"
@@ -305,7 +298,6 @@
             "near_target": "35000",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "random",
                 "sonarqube"
@@ -328,7 +320,6 @@
             "near_target": "25",
             "default_source": "performancetest_runner",
             "sources": [
-                "hq",
                 "manual_number",
                 "performancetest_runner",
                 "random"
@@ -374,7 +365,6 @@
             "default_source": "azure_devops",
             "sources": [
                 "azure_devops",
-                "hq",
                 "jira",
                 "manual_number",
                 "random"
@@ -419,7 +409,6 @@
             "near_target": "5",
             "default_source": "performancetest_runner",
             "sources": [
-                "hq",
                 "manual_number",
                 "performancetest_runner",
                 "random"
@@ -447,7 +436,6 @@
                 "calendar",
                 "cxsast",
                 "gitlab",
-                "hq",
                 "jacoco",
                 "jenkins_test_report",
                 "junit",
@@ -483,7 +471,6 @@
             "sources": [
                 "bandit",
                 "cxsast",
-                "hq",
                 "manual_number",
                 "openvas",
                 "owasp_dependency_check",
@@ -613,7 +600,6 @@
                 "azure_devops",
                 "gitlab",
                 "manual_number",
-                "hq",
                 "random"
             ],
             "tags": [
@@ -634,7 +620,6 @@
             "near_target": "5",
             "default_source": "jenkins",
             "sources": [
-                "hq",
                 "jenkins",
                 "manual_number",
                 "random"
@@ -657,7 +642,6 @@
             "near_target": "10",
             "default_source": "sonarqube",
             "sources": [
-                "hq",
                 "manual_number",
                 "ojaudit",
                 "random",
@@ -1212,86 +1196,6 @@
                     ]
                 }
             }
-        },
-        "hq": {
-            "name": "HQ",
-            "description": "Holistic Software Quality Reporting.",
-            "url": "https://github.com/ICTU/quality-report",
-            "parameters": {
-                "url": {
-                    "name": "URL to HQ report in JSON format",
-                    "type": "string",
-                    "mandatory": true,
-                    "default_value": "",
-                    "metrics": [
-                        "accessibility",
-                        "commented_out_code",
-                        "failed_jobs",
-                        "failed_tests",
-                        "issues",
-                        "loc",
-                        "manual_test_duration",
-                        "ncloc",
-                        "performancetest_duration",
-                        "ready_user_story_points",
-                        "security_warnings",
-                        "slow_transactions",
-                        "source_up_to_dateness",
-                        "unmerged_branches",
-                        "unused_jobs",
-                        "violations"
-                    ]
-                },
-                "landing_url": {
-                    "name": "URL to HQ report in a human readable format",
-                    "type": "string",
-                    "mandatory": false,
-                    "default_value": "",
-                    "metrics": [
-                        "accessibility",
-                        "commented_out_code",
-                        "failed_jobs",
-                        "failed_tests",
-                        "issues",
-                        "loc",
-                        "manual_test_duration",
-                        "ncloc",
-                        "performancetest_duration",
-                        "ready_user_story_points",
-                        "security_warnings",
-                        "slow_transactions",
-                        "source_up_to_dateness",
-                        "unmerged_branches",
-                        "unused_jobs",
-                        "violations"
-                    ]
-                },
-                "metric_id": {
-                    "name": "Stable metric ID",
-                    "type": "string",
-                    "mandatory": true,
-                    "default_value": "",
-                    "metrics": [
-                        "accessibility",
-                        "commented_out_code",
-                        "failed_jobs",
-                        "failed_tests",
-                        "issues",
-                        "loc",
-                        "manual_test_duration",
-                        "ncloc",
-                        "performancetest_duration",
-                        "ready_user_story_points",
-                        "security_warnings",
-                        "slow_transactions",
-                        "source_up_to_dateness",
-                        "unmerged_branches",
-                        "unused_jobs",
-                        "violations"
-                    ]
-                }
-            },
-            "entities": {}
         },
         "jacoco": {
             "name": "JaCoCo",
