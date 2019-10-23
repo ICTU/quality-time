@@ -8,16 +8,17 @@ function StringInputWithSuggestions(props) {
   useEffect(() => setOptions(props.options), [props.options]);
   const [search_query, setSearchQuery] = useState(value || '');
   useEffect(() => setSearchQuery(props.value || ''), [props.value]);
+  
   return (
     <Form>
       <Form.Dropdown
         {...otherProps}
         allowAdditions
-        error={required && search_query === ""}
+        error={(required && search_query === "") || (props.warning !== undefined && props.warning)}
         fluid
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])} }
         onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}
-        onSearchChange={(event, { searchQuery} ) => { setSearchQuery(searchQuery)}}
+        onSearchChange={(event, { searchQuery} ) => { setSearchQuery(searchQuery) }}
         options={string_options}
         search
         searchQuery={search_query}

@@ -58,6 +58,29 @@ class App extends Component {
   }
 
   reload(json) {
+    this.changed_fileds = null
+    if ( json && json.availability) {
+      this.changed_fileds = json.availability.filter((url_key) => url_key.status_code !== 200)
+      json.availability.map((url_key) => {
+          if (url_key.status_code !== 200) {
+            toast({
+              title: 'URL connection error!',
+              type: 'warning',
+              time: 30000,
+              description: <p>{ 'HTTP code '+ url_key.status_code + ': ' + url_key.reason}</p>
+            });
+          } else if (url_key.status_code === 200) {
+            toast({
+                title: 'URL connection OK!',
+                type: 'success',
+                time: 30000
+            });
+          }
+          return null
+        }
+      )
+    }
+
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
       show_message("Your session expired", "Please log in to renew your session", "warning", "user x");
@@ -232,6 +255,7 @@ class App extends Component {
                 report={current_report}
                 report_date={report_date}
                 search_string={this.state.search_string}
+                changed_fileds={this.changed_fileds}
               />
           }
         </Container>

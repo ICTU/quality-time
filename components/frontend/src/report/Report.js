@@ -72,6 +72,7 @@ export function Report(props) {
                 report_date={props.report_date}
                 search_string={props.search_string}
                 tags={tags}
+                changed_fileds={props.changed_fileds}
             />
         </>
     )

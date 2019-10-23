@@ -34,7 +34,21 @@ export function SourceParameter(props) {
     <label>{props.parameter_name} <a href={props.help_url}><Icon name="help circle" link /></a></label>
     :
     props.parameter_name;
-  if (props.parameter_type === "string") {
+  if (props.parameter_type === "url") {
+    return (
+      <StringInput
+        label={label}
+        options={options()}
+        placeholder={props.placeholder}
+        readOnly={props.readOnly}
+        required={props.required}
+        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
+        value={props.parameter_value}
+        warning={props.warning}
+      />
+    )
+  }
+  else if (props.parameter_type === "string") {
     return (
       <StringInput
         label={label}
@@ -47,7 +61,7 @@ export function SourceParameter(props) {
       />
     )
   }
-  if (props.parameter_type === "password") {
+  else if (props.parameter_type === "password") {
     return (
       <PasswordInput
         label={label}
@@ -59,7 +73,7 @@ export function SourceParameter(props) {
       />
     )
   }
-  if (props.parameter_type === "integer") {
+  else if (props.parameter_type === "integer") {
     return (
       <IntegerInput
         label={label}
@@ -74,7 +88,7 @@ export function SourceParameter(props) {
       />
     )
   }
-  if (props.parameter_type === "multiple_choice_with_addition") {
+  else if (props.parameter_type === "multiple_choice_with_addition") {
     return (
       <MultipleChoiceInput
         allowAdditions
@@ -88,7 +102,7 @@ export function SourceParameter(props) {
       />
     )
   }
-  if (props.parameter_type === "date") {
+  else if (props.parameter_type === "date") {
     return (
       <DateInput
         label={label}

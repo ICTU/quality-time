@@ -10,6 +10,7 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_
   const report_date_parameter = report_date || new Date(3000, 1, 1);
   get_measurements(metric_uuid, report_date_parameter)
     .then(function (json) {
+      console.log('>>>>>', json)
       setMeasurements(json.measurements);
       set_last_measurement(metric_uuid, last_measurement(json.measurements));
     })
@@ -42,6 +43,7 @@ export function Metric(props) {
       readOnly={props.readOnly}
       stop_sort={props.stop_sort}
       subject_uuid={props.subject_uuid}
+      changed_fileds={props.changed_fileds}
     />
   )
 }

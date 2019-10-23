@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Immediate check of url's accessibility added.  Closes [#478](https://github.com/ICTU/quality-time/issues/478).
 - When measuring unmerged branches, have the metric landing url point to the list of branches in GitLab or Azure DevOps. When measuring the source up-to-dateness of a folder or file in GitLab or Azure DevOps, have the metric landing url point to the folder or file. Closes [#711](https://github.com/ICTU/quality-time/issues/711).
 - When SonarQube is the source for a metric, users can now select the branch to use. Note that only the commercial editions of SonarQube support branch analysis. Closes [#712](https://github.com/ICTU/quality-time/issues/712). 
 

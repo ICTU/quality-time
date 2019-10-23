@@ -3,10 +3,13 @@ import { Grid } from 'semantic-ui-react';
 import { SourceParameter } from './SourceParameter';
 
 export function SourceParameters(props) {
+    //changed_param_keys
     const all_parameters = props.datamodel.sources[props.source.type].parameters;
     const parameter_keys = Object.keys(all_parameters).filter((parameter_key) =>
         all_parameters[parameter_key].metrics.includes(props.metric_type)
     );
+    console.log('-SourceParameter-props.changed_param_keys-', props.changed_param_keys)
+    console.log('-SourceParameter-parameter_keys-', parameter_keys)
     const parameters = parameter_keys.map((parameter_key) =>
         (
             <Grid.Column key={parameter_key} style={{paddingTop: '10px'}}>
@@ -28,6 +31,7 @@ export function SourceParameters(props) {
                     required={all_parameters[parameter_key].mandatory}
                     source={props.source}
                     source_uuid={props.source_uuid}
+                    warning={props.changed_param_keys ? (props.changed_param_keys.indexOf(parameter_key) !== -1) : false}
                 />
             </Grid.Column>
         )

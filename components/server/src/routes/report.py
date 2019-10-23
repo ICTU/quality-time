@@ -1,8 +1,9 @@
 """Report routes."""
 
 from collections import namedtuple
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Optional
 
+import requests
 from pymongo.database import Database
 import bottle
 
@@ -235,23 +236,54 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
         data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
     return insert_new_report(database, data.report)
 
+def _basic_auth_credentials(params) -> Optional[Tuple[str, str]]:
+    """Return the basic authentication credentials, if any."""
+    if 'private_token' in params:
+        return params["private_token"], ""
+    return (params["username"], params["password"]) if 'username' in params and 'password' in params else None
+
+def _check_url_availability(filled_data: dict, param_key):
+    try:
+        response = requests.get(filled_data[param_key], auth=_basic_auth_credentials(filled_data))
+        return dict(status_code=response.status_code, reason=response.reason)
+    except Exception:  # pylint: disable=broad-except
+        return dict(status_code=-1, reason='Unknown error')
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
-    parameter_value = dict(bottle.request.json)[parameter_key]
+    response_json = dict(bottle.request.json)
+    parameter_value = response_json[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
     new_value = data.source["parameters"][parameter_key] = parameter_value
     if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
         new_value, old_value = "*" * len(parameter_value), "*" * len(old_value)
+
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' from "
                     f"'{old_value}' to '{new_value}'.")
-    return insert_new_report(database, data.report)
 
+    ret_val = insert_new_report(database, data.report)
+
+    parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
+
+    urls_param_keys = [param_key for param_key in parameters
+                       if parameters[param_key]['type'] == 'url' and parameter_key == param_key
+                       or ("validate_on" in parameters[param_key]
+                           and parameter_key in parameters[param_key]["validate_on"].split(','))]
+
+    if urls_param_keys:
+        ret_val['availability'] = []
+        for param_key in urls_param_keys:
+            availability = _check_url_availability(data.source['parameters'], param_key)
+            availability['parameter_key'] = param_key
+            availability['source_uuid'] = source_uuid
+            ret_val['availability'].append(availability)
+
+    return ret_val
 
 @bottle.get("/reports")
 def get_reports(database: Database):
