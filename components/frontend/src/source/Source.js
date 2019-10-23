@@ -8,13 +8,13 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_source, set_source_attribute } from '../api/source';
 
 
-function select_sources_parameter_keys(changed_fileds, source_uuid) {
-    return changed_fileds ? changed_fileds.filter((filed) => filed.source_uuid === source_uuid).map((filed) => filed.parameter_key) : []
+function select_sources_parameter_keys(changed_fields, source_uuid) {
+    return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
 }
 
 export function Source(props) {
     const source_type = props.datamodel.sources[props.source.type];
-   
+
     return (
         <>
             <Header>
@@ -53,7 +53,7 @@ export function Source(props) {
                         report={props.report}
                         source={props.source}
                         source_uuid={props.source_uuid}
-                        changed_param_keys={select_sources_parameter_keys(props.changed_fileds, props.source_uuid)}
+                        changed_param_keys={select_sources_parameter_keys(props.changed_fields, props.source_uuid)}
                     />
                 </Grid.Row>
                 {props.connection_error && <Grid.Row columns={1}>

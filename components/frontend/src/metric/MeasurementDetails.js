@@ -100,7 +100,7 @@ export function MeasurementDetails(props) {
           reload={props.reload}
           report={props.report}
           sources={metric.sources}
-          changed_fileds={props.changed_fileds}
+          changed_fields={props.changed_fields}
         />
       </Tab.Pane>
     }
