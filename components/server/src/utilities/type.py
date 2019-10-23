@@ -7,6 +7,7 @@ Color = Literal["green", "grey", "red", "yellow", "white"]
 Direction = Literal["<", ">"]
 Scale = Literal["count", "percentage"]
 Status = Literal["target_met", "debt_target_met", "near_target_met", "target_not_met"]
+Position = Literal["first", "last", "next", "previous"]
 
 MeasurementId = NewType("MeasurementId", str)
 MetricId = NewType("MetricId", str)
