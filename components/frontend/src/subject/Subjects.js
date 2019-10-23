@@ -4,12 +4,15 @@ import { Subject } from './Subject';
 import { add_subject } from '../api/subject';
 
 export function Subjects(props) {
+  const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
-      {Object.keys(props.report.subjects).map((subject_uuid) =>
+      {Object.keys(props.report.subjects).map((subject_uuid, index) =>
         <Subject
           datamodel={props.datamodel}
+          first_subject={index === 0}
           key={subject_uuid}
+          last_subject={index === last_index}
           nr_new_measurements={props.nr_new_measurements}
           readOnly={props.readOnly}
           reload={props.reload}

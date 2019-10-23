@@ -1,7 +1,7 @@
 """Report routes."""
 
 from collections import namedtuple
-from typing import Any, Dict, Tuple, Optional
+from typing import Any, Dict, Literal, Tuple, Optional
 
 import requests
 from pymongo.database import Database
@@ -16,7 +16,7 @@ from database.reports import (
 )
 from database import sessions
 from utilities.functions import report_date_time, uuid, sanitize_html
-from utilities.type import MetricId, ReportId, SourceId, SubjectId
+from utilities.type import MetricId, Position, ReportId, SourceId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
 
 
@@ -77,12 +77,41 @@ def post_subject_attribute(report_uuid: ReportId, subject_uuid: SubjectId, subje
     value = dict(bottle.request.json)[subject_attribute]
     data = get_data(database, report_uuid, subject_uuid)
     old_value = data.subject.get(subject_attribute) or ""
-    data.subject[subject_attribute] = value
+    if subject_attribute == "position":
+        old_value, value = move_item(data, value, "subject")
+    else:
+        data.subject[subject_attribute] = value
+    if old_value == value:
+        return dict(ok=True)  # Nothing to do
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=subject_uuid,
         description=f"{sessions.user(database)} changed the {subject_attribute} of subject '{data.subject_name}' in "
                     f"report '{data.report_name}' from '{old_value}' to '{value}'.")
     return insert_new_report(database, data.report)
+
+
+def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:
+    """Change the item position."""
+    container = data.report if item_type == "subject" else data.subject
+    items = container[item_type + "s"]
+    nr_items = len(items)
+    item_to_move = getattr(data, item_type)
+    item_to_move_id = getattr(data, f"{item_type}_uuid")
+    old_index = list(items.keys()).index(item_to_move_id)
+    new_index = dict(
+        first=0, last=nr_items - 1, previous=max(0, old_index - 1), next=min(nr_items - 1, old_index + 1))[new_position]
+    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
+    # we construct a new dict in the right order and insert that in the report.
+    reordered_items: Dict[str, Dict] = dict()
+    del items[item_to_move_id]
+    for item_id, item in items.items():
+        if len(reordered_items) == new_index:
+            reordered_items[item_to_move_id] = item_to_move
+        reordered_items[item_id] = item
+    if len(reordered_items) == new_index:
+        reordered_items[item_to_move_id] = item_to_move
+    container[item_type + "s"] = reordered_items
+    return old_index, new_index
 
 
 @bottle.post("/report/<report_uuid>/subject/new")
@@ -128,7 +157,7 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
     if metric_attribute == "comment" and value:
         value = sanitize_html(value)
     if metric_attribute == "position":
-        old_value, value = move_metric(data, value)
+        old_value, value = move_item(data, value, "metric")
     else:
         data.metric[metric_attribute] = value
     if old_value == value:
@@ -144,28 +173,6 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
         if latest := latest_measurement(database, metric_uuid):
             return insert_new_measurement(database, data.metric, latest)
     return dict(ok=True)
-
-
-def move_metric(data, new_position: str) -> Tuple[int, int]:
-    """Change the metric position."""
-    metrics = data.subject["metrics"]
-    nr_metrics = len(metrics)
-    old_index = list(metrics.keys()).index(data.metric_uuid)
-    new_index = dict(
-        first=0, last=nr_metrics - 1, previous=max(0, old_index - 1),
-        next=min(nr_metrics - 1, old_index + 1))[new_position]
-    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
-    # we construct a new metrics dict in the right order and insert that in the report.
-    reordered_metrics: Dict[str, Dict] = dict()
-    del metrics[data.metric_uuid]
-    for metric_uuid, metric in metrics.items():
-        if len(reordered_metrics) == new_index:
-            reordered_metrics[data.metric_uuid] = data.metric
-        reordered_metrics[metric_uuid] = metric
-    if len(reordered_metrics) == new_index:
-        reordered_metrics[data.metric_uuid] = data.metric
-    data.subject["metrics"] = reordered_metrics
-    return old_index, new_index
 
 
 @bottle.post("/report/<report_uuid>/subject/<subject_uuid>/metric/new")
@@ -236,11 +243,13 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
         data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
     return insert_new_report(database, data.report)
 
+
 def _basic_auth_credentials(params) -> Optional[Tuple[str, str]]:
     """Return the basic authentication credentials, if any."""
     if 'private_token' in params:
         return params["private_token"], ""
     return (params["username"], params["password"]) if 'username' in params and 'password' in params else None
+
 
 def _check_url_availability(filled_data: dict, param_key):
     try:
@@ -248,6 +257,7 @@ def _check_url_availability(filled_data: dict, param_key):
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
+
 
 @bottle.post("/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
@@ -284,6 +294,7 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
             ret_val['availability'].append(availability)
 
     return ret_val
+
 
 @bottle.get("/reports")
 def get_reports(database: Database):

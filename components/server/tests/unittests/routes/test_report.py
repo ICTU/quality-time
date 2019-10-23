@@ -2,6 +2,7 @@
 
 import unittest
 from unittest.mock import Mock, patch, MagicMock
+
 import requests
 
 from routes.report import (
@@ -33,23 +34,91 @@ class PostReportAttributeTest(unittest.TestCase):
 @patch("bottle.request")
 class PostSubjectAttributeTest(unittest.TestCase):
     """Unit tests for the post subject report attribute route."""
+
+    def setUp(self):
+        self.database = Mock()
+        self.report = dict(
+            _id="id", report_uuid="report_uuid", title="Report",
+            subjects=dict(subject_uuid=dict(name="subject1"), subject_uuid2=dict(name="subject2")))
+        self.database.reports.find_one.return_value = self.report
+        self.database.datamodels.find_one.return_value = dict()
+        self.database.sessions.find_one.return_value = dict(user="John")
+
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
-        report = dict(
-            _id="id", report_uuid="report_uuid", title="Report", subjects=dict(subject_uuid=dict(name="old name")))
         request.json = dict(name="new name")
-        database = Mock()
-        database.reports.find_one.return_value = report
-        database.sessions.find_one.return_value = dict(user="John")
-        database.datamodels.find_one.return_value = dict()
-        self.assertEqual(dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "name", database))
-        database.reports.insert.assert_called_once_with(report)
+        self.assertEqual(dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "name", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(
-                description="John changed the name of subject 'old name' in report 'Report' from 'old name' to "
+                description="John changed the name of subject 'subject1' in report 'Report' from 'subject1' to "
                             "'new name'.",
                 report_uuid="report_uuid", subject_uuid="subject_uuid"),
-            report["delta"])
+            self.report["delta"])
+
+    def test_post_position_first(self, request):
+        """Test that a subject can be moved to the top."""
+        request.json = dict(position="first")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid2", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(["subject_uuid2", "subject_uuid"], list(self.report["subjects"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid2",
+                 description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
+            self.report["delta"])
+
+    def test_post_position_last(self, request):
+        """Test that a subject can be moved to the bottom."""
+        request.json = dict(position="last")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(["subject_uuid2", "subject_uuid"], list(self.report["subjects"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid",
+                 description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
+            self.report["delta"])
+
+    def test_post_position_previous(self, request):
+        """Test that a subject can be moved up."""
+        request.json = dict(position="previous")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid2", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(["subject_uuid2", "subject_uuid"], list(self.report["subjects"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid2",
+                 description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
+            self.report["delta"])
+
+    def test_post_position_next(self, request):
+        """Test that a subject can be moved down."""
+        request.json = dict(position="next")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(["subject_uuid2", "subject_uuid"], list(self.report["subjects"].keys()))
+        self.assertEqual(
+            dict(report_uuid="report_uuid", subject_uuid="subject_uuid",
+                 description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
+            self.report["delta"])
+
+    def test_post_position_first_previous(self, request):
+        """Test that moving the first subject up does nothing."""
+        request.json = dict(position="previous")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid", "position", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(["subject_uuid", "subject_uuid2"], list(self.report["subjects"].keys()))
+
+    def test_post_position_last_next(self, request):
+        """Test that moving the last subject down does nothing."""
+        request.json = dict(position="next")
+        self.assertEqual(
+            dict(ok=True), post_subject_attribute("report_uuid", "subject_uuid2", "position", self.database))
+        self.database.reports.insert.assert_not_called()
+        self.assertEqual(["subject_uuid", "subject_uuid2"], list(self.report["subjects"].keys()))
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))

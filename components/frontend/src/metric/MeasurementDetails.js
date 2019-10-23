@@ -1,34 +1,13 @@
 import React from 'react';
-import { Button, Icon, Popup, Tab, Menu } from 'semantic-ui-react';
+import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
+import { MoveButtonGroup} from '../widgets/MoveButton';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
-
-function MoveMetricButton(props) {
-  const label = `Move metric to the ${props.direction} row`;
-  const icon = {"first": "double up", "last": "double down", "previous": "up", "next": "down"}[props.direction];
-  const disabled = (props.first_metric && (props.direction === "first" || props.direction === "previous")) ||
-                   (props.last_metric && (props.direction === "last" || props.direction === "next"));
-  return (
-    <Popup content={label} trigger={
-      <Button
-        aria-label={label}
-        basic
-        disabled={disabled}
-        icon={`angle ${icon}`}
-        onClick={() => {
-          props.stop_sort();
-          set_metric_attribute(props.report.report_uuid, props.metric_uuid, "position", props.direction, props.reload)}
-        }
-        primary
-      />}
-    />
-  )
-}
 
 export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
@@ -110,12 +89,17 @@ export function MeasurementDetails(props) {
       <Tab panes={panes} />
       {!props.readOnly &&
         <>
-          <Button.Group style={{ marginTop: "10px" }}>
-            <MoveMetricButton {...props} direction="first" />
-            <MoveMetricButton {...props} direction="previous" />
-            <MoveMetricButton {...props} direction="next" />
-            <MoveMetricButton {...props} direction="last" />
-          </Button.Group>
+          <MoveButtonGroup
+            first={props.first_metric}
+            last={props.last_metric}
+            marginTop="10px"
+            moveable="metric"
+            onClick={(direction) => {
+              props.stop_sort();
+              set_metric_attribute(props.report.report_uuid, props.metric_uuid, "position", direction, props.reload)}
+            }
+            slot="row"
+          />
           <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
             onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}>
             <Icon name='trash' /> Delete metric
