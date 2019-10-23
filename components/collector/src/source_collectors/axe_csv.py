@@ -2,8 +2,9 @@
 
 import csv
 import hashlib
-from io import StringIO
 import re
+from io import StringIO
+from typing import Dict, List, Tuple
 
 from utilities.type import Responses, Value, Entities
 from .source_collector import SourceCollector
@@ -20,13 +21,19 @@ class AxeCSVAccessibility(SourceCollector):
         """Convert csv rows of the Axe report into entities, in this case accessibility violations."""
         return [
             dict(
-                key=hashlib.md5(str(row).encode('utf-8')).hexdigest(),  # nosec
-                violation_type=row["Violation Type"], impact=row["Impact"], url=str(row["URL"]),
-                element=row["DOM Element"], page=re.sub(r'http[s]?://[^/]+', '', row['URL']),
-                description=row["Messages"], help=row["Help"])
-            for row in self.__parse_csv(responses)]
+                key=hashlib.md5(row.strip().encode('utf-8')).hexdigest(),  # nosec
+                violation_type=parsed_row["Violation Type"], impact=parsed_row["Impact"], url=str(parsed_row["URL"]),
+                element=parsed_row["DOM Element"], page=re.sub(r'http[s]?://[^/]+', '', parsed_row['URL']),
+                description=parsed_row["Messages"], help=parsed_row["Help"])
+            for row, parsed_row in self.__parse_csv(responses)]
 
-    @staticmethod
-    def __parse_csv(responses: Responses) -> csv.DictReader:
-        """Parse the CSV and return the row iterator."""
-        return csv.DictReader(StringIO(responses[0].text, newline=None))
+    def __parse_csv(self, responses: Responses) -> List[Tuple[str, Dict[str, str]]]:
+        """Parse the CSV and return the rows and parsed items ."""
+        impact_levels = self._parameter("impact")
+        violation_types = self._parameter("violation_type")
+        csv_text = responses[0].text.strip()
+        rows = csv_text.split("\n")[1:]
+        parsed_rows = csv.DictReader(StringIO(csv_text))
+        return [
+            (row, parsed_row) for (row, parsed_row) in zip(rows, parsed_rows)
+            if parsed_row["Impact"] in impact_levels and parsed_row["Violation Type"] in violation_types]
