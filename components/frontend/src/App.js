@@ -13,7 +13,7 @@ import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 
-function show_message(title, description, type, icon) {
+function show_message(type, title, description, icon) {
   toast({
     title: title,
     type: type,
@@ -58,23 +58,14 @@ class App extends Component {
   }
 
   reload(json) {
-    this.changed_fileds = null
-    if ( json && json.availability) {
-      this.changed_fileds = json.availability.filter((url_key) => url_key.status_code !== 200)
+    this.changed_fields = null
+    if (json && json.availability) {
+      this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
       json.availability.map((url_key) => {
           if (url_key.status_code !== 200) {
-            toast({
-              title: 'URL connection error!',
-              type: 'warning',
-              time: 30000,
-              description: <p>{ 'HTTP code '+ url_key.status_code + ': ' + url_key.reason}</p>
-            });
+            show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
           } else if (url_key.status_code === 200) {
-            toast({
-                title: 'URL connection OK!',
-                type: 'success',
-                time: 30000
-            });
+            show_message("success", "URL connection OK")
           }
           return null
         }
@@ -83,7 +74,7 @@ class App extends Component {
 
     if (json && json.ok === false && json.reason === "invalid_session") {
       this.logout();
-      show_message("Your session expired", "Please log in to renew your session", "warning", "user x");
+      show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date();
@@ -92,9 +83,7 @@ class App extends Component {
       .then(function (datamodel_json) {
         self.setState({ loading_datamodel: false, datamodel: datamodel_json });
       }).catch(function (error) {
-        show_message(
-          "Server unreachable", "Couldn't load data from the server. Please try again later.", "error",
-          "exclamation triangle")
+        show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
       const tag = this.state.report_uuid.slice(4);
@@ -255,7 +244,7 @@ class App extends Component {
                 report={current_report}
                 report_date={report_date}
                 search_string={this.state.search_string}
-                changed_fileds={this.changed_fileds}
+                changed_fields={this.changed_fields}
               />
           }
         </Container>
