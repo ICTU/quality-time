@@ -77,12 +77,39 @@ def post_subject_attribute(report_uuid: ReportId, subject_uuid: SubjectId, subje
     value = dict(bottle.request.json)[subject_attribute]
     data = get_data(database, report_uuid, subject_uuid)
     old_value = data.subject.get(subject_attribute) or ""
-    data.subject[subject_attribute] = value
+    if subject_attribute == "position":
+        old_value, value = move_subject(data, value)
+    else:
+        data.subject[subject_attribute] = value
+    if old_value == value:
+        return dict(ok=True)  # Nothing to do
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=subject_uuid,
         description=f"{sessions.user(database)} changed the {subject_attribute} of subject '{data.subject_name}' in "
                     f"report '{data.report_name}' from '{old_value}' to '{value}'.")
     return insert_new_report(database, data.report)
+
+
+def move_subject(data, new_position: str) -> Tuple[int, int]:
+    """Change the subject position."""
+    subjects = data.report["subjects"]
+    nr_subjects = len(subjects)
+    old_index = list(subjects.keys()).index(data.subject_uuid)
+    new_index = dict(
+        first=0, last=nr_subjects - 1, previous=max(0, old_index - 1),
+        next=min(nr_subjects - 1, old_index + 1))[new_position]
+    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
+    # we construct a new subjects dict in the right order and insert that in the report.
+    reordered_subjects: Dict[str, Dict] = dict()
+    del subjects[data.subject_uuid]
+    for subject_uuid, subject in subjects.items():
+        if len(reordered_subjects) == new_index:
+            reordered_subjects[data.subject_uuid] = data.subject
+        reordered_subjects[subject_uuid] = subject
+    if len(reordered_subjects) == new_index:
+        reordered_subjects[data.subject_uuid] = data.subject
+    data.report["subjects"] = reordered_subjects
+    return old_index, new_index
 
 
 @bottle.post("/report/<report_uuid>/subject/new")
