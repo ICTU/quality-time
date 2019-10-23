@@ -694,6 +694,21 @@
                     "metrics": [
                         "accessibility"
                     ]
+                },
+                "impact": {
+                    "name": "Impact",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "minor",
+                        "moderate",
+                        "serious",
+                        "critical"
+                    ],
+                    "metrics": [
+                        "accessibility"
+                    ]
                 }
             },
             "entities": {
