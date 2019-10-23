@@ -696,10 +696,11 @@
                     ]
                 },
                 "impact": {
-                    "name": "Impact",
+                    "name": "Impact levels",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
+                    "placeholder": "all",
                     "values": [
                         "minor",
                         "moderate",
@@ -711,11 +712,12 @@
                     ]
                 },
                 "violation_type": {
-                    "name": "Violation type",
-                    "type": "multiple_choice_with_addition",
+                    "name": "Violation types",
+                    "type": "multiple_choice",
                     "help_url": "https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md",
                     "mandatory": false,
                     "default_value": "",
+                    "placeholder": "all",
                     "values": [
                         "accesskeys",
                         "area-alt",
