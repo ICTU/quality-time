@@ -16,6 +16,8 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   frontend:
     image: ictu/quality-time_frontend:v0.14.1
+    expose:
+      - "5000"
     depends_on:
     - server
     labels:
@@ -30,6 +32,8 @@ services:
     - server
   server:
     image: ictu/quality-time_server:v0.14.1
+    expose:
+      - "5001"
     env_file:
     - ${ENV:-dev}.env
     depends_on:
