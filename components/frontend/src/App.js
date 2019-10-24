@@ -32,9 +32,7 @@ class App extends Component {
       nr_measurements: 0, nr_new_measurements: 0, loading_report: true, loading_datamodel: true, user: null,
       last_update: new Date(), login_error: false
     };
-    const hostname = window.location.hostname;
-    const server = hostname.startsWith("www.") ? `server.${hostname.slice("www.".length)}` : hostname;
-    window.server_url = `http://${server}:5001`
+    window.server_url = `http://${window.location.hostname}`
 
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
