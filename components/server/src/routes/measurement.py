@@ -14,7 +14,7 @@ from utilities.functions import report_date_time
 from utilities.type import MetricId, ReportId, SourceId
 
 
-@bottle.post("/measurements")
+@bottle.post("/api/v1/measurements")
 def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
@@ -33,7 +33,7 @@ def post_measurement(database: Database) -> Dict:
     return insert_new_measurement(database, metric, measurement)
 
 
-@bottle.post("/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
+@bottle.post("/api/v1/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
 def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set a entity attribute."""
@@ -55,7 +55,7 @@ def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
 
-@bottle.get("/nr_measurements/<report_uuid>")
+@bottle.get("/api/v1/nr_measurements/<report_uuid>")
 def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterator[str]:
     """Return the number of measurements for the given report as server sent events."""
     # Keep event IDs consistent
@@ -78,7 +78,7 @@ def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterato
             yield sse_pack(event_id, "delta", data)
 
 
-@bottle.get("/measurements/<metric_uuid>")
+@bottle.get("/api/v1/measurements/<metric_uuid>")
 def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])

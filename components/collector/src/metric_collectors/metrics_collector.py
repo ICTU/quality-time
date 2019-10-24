@@ -46,8 +46,8 @@ class MetricsCollector:
 
     def fetch_measurements(self, frequency_in_minutes: int = 15) -> None:
         """Fetch the metrics and their measurements."""
-        data_model = get(URL(f"{self.server_url}/datamodel"))
-        metrics = get(URL(f"{self.server_url}/metrics"))
+        data_model = get(URL(f"{self.server_url}/api/v1/datamodel"))
+        metrics = get(URL(f"{self.server_url}/api/v1/metrics"))
         for metric_uuid, metric in metrics.items():
             if not (collector := MetricCollector(metric, data_model)).can_collect():
                 continue
@@ -58,7 +58,7 @@ class MetricsCollector:
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=frequency_in_minutes * 60)
             measurement["metric_uuid"] = metric_uuid
             measurement["report_uuid"] = metric["report_uuid"]
-            post(URL(f"{self.server_url}/measurements"), measurement)
+            post(URL(f"{self.server_url}/api/v1/measurements"), measurement)
 
     def __skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""

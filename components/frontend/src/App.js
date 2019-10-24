@@ -144,7 +144,7 @@ class App extends Component {
   }
 
   connect_to_nr_measurements_event_source(report_uuid) {
-    this.source = new EventSource(`${window.server_url}/nr_measurements/${report_uuid}`);
+    this.source = new EventSource(`${window.server_url}/api/v1/nr_measurements/${report_uuid}`);
     let self = this;
     this.source.addEventListener('init', function (e) {
       self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });

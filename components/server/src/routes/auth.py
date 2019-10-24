@@ -33,6 +33,7 @@ def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
         options["domain"] = domain
     bottle.response.set_cookie("session_id", session_id, **options)
 
+
 def check_password(ssha_ldap_salted_password, password):
     """Checks the OpenLDAP tagged digest against the given password"""
 
@@ -51,7 +52,8 @@ def check_password(ssha_ldap_salted_password, password):
 
     return digest == sha.digest()
 
-@bottle.post("/login")
+
+@bottle.post("/api/v1/login")
 def login(database: Database) -> Dict[str, bool]:
     """Log the user in."""
     credentials = dict(bottle.request.json)
@@ -86,7 +88,7 @@ def login(database: Database) -> Dict[str, bool]:
     return dict(ok=True)
 
 
-@bottle.post("/logout")
+@bottle.post("/api/v1/logout")
 def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
     session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
