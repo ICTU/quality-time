@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- LDAP login problem solved for servers where user bind must be done. Fixes [#734](https://github.com/ICTU/quality-time/issues/734).
+- Login problem solved for LDAP servers where a user bind must be done. Fixes [#734](https://github.com/ICTU/quality-time/issues/734).
 
 ## [0.14.0] - [2019-10-23]
 
