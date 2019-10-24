@@ -9,7 +9,7 @@ from ldap3.core import exceptions
 
 import bottle
 from database import sessions
-from src.routes import auth
+from routes import auth
 
 # pylint: disable=too-many-arguments
 
@@ -51,7 +51,46 @@ class LoginTests(unittest.TestCase):
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertTrue("domain=" in cookie.lower())
-        fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
+        self.assertEqual(connection_mock.call_args[1],
+                         {'user': 'cn=admin,dc=example,dc=org', 'password': 'admin'})
+        fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))',
+                                           attributes=['cn', 'userPassword'])
+
+    @patch.object(ldap3.Connection, '__exit__')
+    @patch.object(ldap3.Connection, '__enter__')
+    @patch.object(ldap3.Connection, '__init__')
+    @patch.object(ldap3.Server, '__init__')
+    @patch('bottle.request')
+    def test_successful_bind_login(self, request_json_mock, server_mock, connection_mock, connection_enter,
+                                   connection_exit):
+        """Test successful login if ldap server does not reveal password digest."""
+        request_json_mock.json = dict(username="jodoe", password="secret")
+        server_mock.return_value = None
+        connection_mock.return_value = None
+        connection_exit.return_value = None
+        fake_con = MagicMock()
+        fake_con.bind = MagicMock(return_value=True)
+        fake_con.search = MagicMock()
+        ldap_entry = Mock()
+        ldap_entry.userPassword = Mock()
+        ldap_entry.userPassword.value = None
+        ldap_entry.cn.value = 'concrete cn value, e.g. Jo Doe'
+        fake_con.entries = [ldap_entry]
+        connection_enter.return_value = fake_con
+        with patch("os.environ.get", self.environ_get):
+            self.assertEqual(dict(ok=True), auth.login(self.database))
+
+        cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
+        self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
+        self.assertFalse("domain=" in cookie.lower())
+        self.assertEqual(connection_mock.call_args_list[0][1],
+                         {'user': 'cn=admin,dc=example,dc=org', 'password': 'admin'})
+        self.assertEqual(connection_mock.call_args_list[1][1],
+                         {'user': 'cn=concrete cn value, e.g. Jo Doe,dc=example,dc=org',
+                          'password': 'secret', 'auto_bind': True})
+        fake_con.search.assert_called_with(
+            "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
+
 
     @patch.object(ldap3.Connection, '__exit__')
     @patch.object(ldap3.Connection, '__enter__')
@@ -79,7 +118,8 @@ class LoginTests(unittest.TestCase):
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertFalse("domain=" in cookie.lower())
-        fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
+        fake_con.search.assert_called_with(
+            "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
 
     @patch.object(logging, 'warning')
     @patch.object(ldap3.Connection, '__init__')
@@ -174,7 +214,8 @@ class LoginTests(unittest.TestCase):
         connection_enter.return_value = fake_con
         with patch("os.environ.get", self.environ_get):
             self.assertEqual(dict(ok=False), auth.login(self.database))
-        fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
+        fake_con.search.assert_called_with(
+            "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
         self.assertEqual('Only SSHA LDAP password digest supported!', logging_mock.call_args_list[0][0][0])
         self.assertEqual('LDAP error for cn=%s,%s: %s', logging_mock.call_args_list[1][0][0])
         self.assertEqual('jodoe', logging_mock.call_args_list[1][0][1])
@@ -204,7 +245,8 @@ class LoginTests(unittest.TestCase):
         connection_enter.return_value = fake_con
         with patch("os.environ.get", self.environ_get):
             self.assertEqual(dict(ok=False), auth.login(self.database))
-        fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
+        fake_con.search.assert_called_with(
+            "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
         logging_mock.assert_not_called()
 
 class LogoutTests(unittest.TestCase):
