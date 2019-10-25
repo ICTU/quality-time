@@ -14,12 +14,12 @@ When(/^the quality manager creates a new report$/, () => {
 
 When(/^the quality manager adds a new subject$/, () => {
     waitForBrowser();
-    cy.contains('.button', 'Add subject', {}).click();
+    cy.get('.button').contains('Add subject').click();
 });
 
 When(/^the quality manager adds a new metric$/, () => {
     waitForBrowser();
-    cy.contains('.button', 'Add metric').click();
+    cy.get('.button').contains('Add metric').click();
 });
 
 When(/^the quality manager sets the metric target value to (.+)$/, (metric_target_value) => {
