@@ -10,5 +10,5 @@ export function fetch_server_api(method, api, body) {
   if (method === 'post') {
     options['body'] = JSON.stringify(body)
   }
-  return fetch(`${window.server_url}/api/v1/${api}`, options).then((response) => response.json());
+  return fetch(`/api/v1/${api}`, options).then((response) => response.json());
 }
