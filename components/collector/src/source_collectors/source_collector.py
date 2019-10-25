@@ -44,8 +44,7 @@ class SourceCollector(ABC):
 
     def get(self) -> Measurement:
         """Return the measurement from this source."""
-        api_url = self._api_url()
-        responses, connection_error = self.__safely_get_source_responses(api_url)
+        responses, api_url, connection_error = self.__safely_get_source_responses()
         value, total, entities, parse_error = self.__safely_parse_source_responses(responses)
         landing_url = self._landing_url(responses)
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
@@ -80,19 +79,21 @@ class SourceCollector(ABC):
             value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
-    def __safely_get_source_responses(self, api_url: URL) -> Tuple[Responses, ErrorMessage]:
+    def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
-        logging.info("Retrieving %s", api_url or self.__class__.__name__)
         responses: Responses = []
+        api_url = URL("")
         error = None
         try:
-            responses = self._get_source_responses(api_url)
+            responses = self._get_source_responses(api_url := self._api_url())
             for response in responses:
                 response.raise_for_status()
-        except Exception:  # pylint: disable=broad-except
+            logging.info("Retrieved %s", api_url or self.__class__.__name__)
+        except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-        return responses, error
+            logging.warning("Failed to retrieve %s: %s", api_url or self.__class__.__name__, reason)
+        return responses, api_url, error
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
