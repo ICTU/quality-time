@@ -1,6 +1,7 @@
 import { When, Then } from "cypress-cucumber-preprocessor/steps";
 
 function waitForBrowser() {
+    // Suggested at https://github.com/cypress-io/cypress/issues/695
     cy.window().then(win => {
         return new Cypress.Promise(resolve => win['requestIdleCallback'](resolve));
     });
