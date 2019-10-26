@@ -1,21 +1,61 @@
 import unittest
 from selenium import webdriver
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as expect
+from selenium.webdriver.support.ui import WebDriverWait
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-#chrome_options.add_argument('--disable-dev-shm-usage')
+
+class element_has_no_css_class:
+    """An expectation for checking that an element has no css class.
+
+    locator - used to find the element
+    returns the WebElement once it has the particular css class
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        element = driver.find_element(*self.locator)
+        return element if len(element.get_attribute("class")) == 0 else False
 
 
 class OpenReportTest(unittest.TestCase):
     """Open a report."""
+
     def setUp(self):
+        chrome_options = webdriver.ChromeOptions()
+        for argument in '--headless', '--no-sandbox', '--single-process', '--disable-dev-shm-usage':
+            chrome_options.add_argument(argument)
         self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver.implicitly_wait(10)
+        self.wait = WebDriverWait(self.driver, 10)
+        self.driver.get("http://localhost:5000")
 
     def tearDown(self):
         self.driver.close()
 
+    def login(self):
+        self.driver.find_element_by_class_name("button").click()
+        login_form = self.driver.find_element_by_class_name("form")
+        login_form.find_element_by_name("username").send_keys("admin")
+        login_form.find_element_by_name("password").send_keys("admin")
+        login_form.find_element_by_class_name("button").click()
+        self.wait.until(element_has_no_css_class((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
+
     def test_title(self):
-        self.driver.get("http://localhost:5000")
-        self.assertTrue(EC.title_contains("Quality-time"))
+        self.assertTrue(expect.title_contains("Quality-time"))
+
+    def test_open_report(self):
+        report = self.driver.find_elements_by_class_name("card")[0]
+        report_title = report.find_element_by_class_name("header")
+        report.click()
+        self.assertTrue(
+            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title))
+
+    def test_login_and_logout(self):
+        self.login()
+        logout_button = self.driver.find_element_by_class_name("button")
+        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Logout admin"))
+        logout_button.click()
+        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Login"))
+
