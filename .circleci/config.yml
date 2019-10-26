@@ -48,6 +48,7 @@ jobs:
           docker-compose build && docker-compose up -d
           docker images
           docker ps -a
+          ci/test.sh
 
 workflows:
   version: 2
