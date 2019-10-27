@@ -19,15 +19,14 @@ export function CardDashboard({ uuid, cards }) {
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
     function onDragStop(current_layout, oldItem, newItem, placeholder, event) {
+        setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
+    }
+    function isDragging(event) {
         const now = new Date();
         const distanceX = Math.abs(event.clientX - mousePos[0]);
         const distanceY = Math.abs(event.clientY - mousePos[1]);
         const timedelta = now.getTime() - mousePos[2];
-        if (distanceX > 10 || distanceY > 10 || timedelta > 250) {
-            setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
-        } else {
-            setDragging(false);  // User was clicking, don't prevent click event propagation
-        }
+        return (distanceX > 10 || distanceY > 10 || timedelta > 250) ? dragging : false;
     }
     const cols = 32;
     const card_width = 4;
@@ -36,7 +35,7 @@ export function CardDashboard({ uuid, cards }) {
     cards.forEach(
         (card, index) => divs.push(
             <div
-                onClickCapture={(e) => { if (dragging) { e.stopPropagation() } }}
+                onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
                 key={card.key}
                 data-grid={
                     {
