@@ -19,6 +19,18 @@ class element_has_no_css_class:
         return element if len(element.get_attribute("class")) == 0 else False
 
 
+class nr_elements:
+    """An expectation for the number of matching elements."""
+
+    def __init__(self, locator, expected_nr: int):
+        self.locator = locator
+        self.expected_nr = expected_nr
+
+    def __call__(self, driver):
+        elements = driver.find_elements(*self.locator)
+        return elements if len(elements) == self.expected_nr else False
+
+
 class OpenReportTest(unittest.TestCase):
     """Open a report."""
 
@@ -35,6 +47,7 @@ class OpenReportTest(unittest.TestCase):
         self.driver.close()
 
     def login(self):
+        """Login the default admin user."""
         self.driver.find_element_by_class_name("button").click()
         login_form = self.driver.find_element_by_class_name("form")
         login_form.find_element_by_name("username").send_keys("admin")
@@ -43,9 +56,11 @@ class OpenReportTest(unittest.TestCase):
         self.wait.until(element_has_no_css_class((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
     def test_title(self):
+        """Test the title."""
         self.assertTrue(expect.title_contains("Quality-time"))
 
     def test_open_report(self):
+        """Test that the first report can be opened."""
         report = self.driver.find_elements_by_class_name("card")[0]
         report_title = report.find_element_by_class_name("header")
         report.click()
@@ -53,9 +68,16 @@ class OpenReportTest(unittest.TestCase):
             expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title))
 
     def test_login_and_logout(self):
+        """Test that the admin user can login and logout."""
         self.login()
         logout_button = self.driver.find_element_by_class_name("button")
         self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Logout admin"))
         logout_button.click()
         self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Login"))
 
+    def test_add_report(self):
+        """Test that a logged in user can add a report."""
+        self.login()
+        nr_reports = len(self.driver.find_elements_by_class_name("card"))
+        self.driver.find_element_by_class_name("button.primary").click()
+        self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports + 1))

@@ -46,7 +46,6 @@ jobs:
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          apt-get update
           wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           ci/test.sh
