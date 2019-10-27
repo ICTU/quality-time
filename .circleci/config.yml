@@ -48,7 +48,8 @@ jobs:
           docker-compose build && docker-compose up -d
           wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
-          ci/test.sh
+          pip3 install -r requirements-dev.txt
+          python3 -m unittest discover --start-directory tests
 
 workflows:
   version: 2
