@@ -47,7 +47,7 @@ jobs:
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
           docker build -t test tests
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time_frontend_1 test python -m unittest discover --start-directory tests
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_frontend_1 test python -m unittest discover --start-directory tests
 
 workflows:
   version: 2
