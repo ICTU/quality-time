@@ -46,11 +46,8 @@ jobs:
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          pyenv global 3.5.2
-          pip install -r requirements-dev.txt
-          python -m unittest discover --start-directory tests
+          docker build -t test tests
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time_frontend_1 test python -m unittest discover --start-directory tests
 
 workflows:
   version: 2

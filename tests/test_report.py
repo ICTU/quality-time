@@ -36,12 +36,12 @@ class OpenReportTest(unittest.TestCase):
 
     def setUp(self):
         chrome_options = webdriver.ChromeOptions()
-        for argument in '--headless', '--no-sandbox', '--single-process', '--disable-dev-shm-usage':
-            chrome_options.add_argument(argument)
+        for argument in "headless no-sandbox single-process disable-dev-shm-usage disable-gpu".split(" "):
+            chrome_options.add_argument(f"--{argument}")
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(10)
         self.wait = WebDriverWait(self.driver, 10)
-        self.driver.get("http://localhost:5000")
+        self.driver.get("http://frontend:5000")
 
     def tearDown(self):
         self.driver.close()
