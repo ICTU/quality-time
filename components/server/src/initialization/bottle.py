@@ -3,7 +3,7 @@
 from pymongo.database import Database
 import bottle
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
-from routes import cors, changelog, report, measurement, datamodel, auth  # pylint: disable=unused-import
+from routes import changelog, report, measurement, datamodel, auth  # pylint: disable=unused-import
 
 
 def init_bottle(database: Database) -> None:
