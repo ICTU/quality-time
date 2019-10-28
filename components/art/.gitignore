@@ -1,9 +1,0 @@
-# dependencies
-/node_modules
-
-# testing
-/coverage
-
-#videos&screenshots
-/cypress/videos
-/cypress/screenshots

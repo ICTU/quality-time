@@ -77,24 +77,12 @@ To run mypy and pylint:
 ci/quality.sh
 ```
 
-To run the frontend unit tests (which are unfortunately mostly missing at the moment):
+To run the frontend unit tests:
 
 ```console
 cd compontents/frontend
 npm run test
 ```
-
-To run the frontend UI tests (automated regression test):
-
-```console
-docker-compose build
-docker-compose up -d
-cd components/art
-npm install --save-dev
-npx cypress run
-```
-
-Cypress stores screenshots (if a test fails) and video in `components/art/cypress/screenshots` and `components/art/cypress/videos`.
 
 ## Release
 
@@ -110,4 +98,4 @@ For more information about the custom components, see:
 
 For testing purposes there are also:
 - [Test data](../components/testdata/README.md)
-- Automated regression test (ART) (README.md not available yet)
+- LDAP with one user. Username "admin", password "admin".
