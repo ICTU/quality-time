@@ -41,7 +41,7 @@ class OpenReportTest(unittest.TestCase):
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(10)
         self.wait = WebDriverWait(self.driver, 10)
-        self.driver.get("http://frontend:5000")
+        self.driver.get("http://proxy:80")
 
     def tearDown(self):
         self.driver.close()
