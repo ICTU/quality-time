@@ -5,7 +5,6 @@ import logging
 import os
 import re
 from typing import cast, Dict, Tuple
-import urllib.parse
 import hashlib
 import base64
 
@@ -27,10 +26,6 @@ def generate_session() -> Tuple[SessionId, datetime]:
 def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
     """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     options = dict(expires=expires_datetime, path="/", httponly=True)
-    server_url = os.environ.get("SERVER_URL_EXTERNAL", "http://localhost:5001")
-    domain = urllib.parse.urlparse(server_url).netloc.split(":")[0]
-    if domain != "localhost":
-        options["domain"] = domain
     bottle.response.set_cookie("session_id", session_id, **options)
 
 

@@ -12,7 +12,6 @@ if not DEBUG:
 
 import bottle
 import logging
-import urllib
 
 from initialization import init_bottle, init_database
 
@@ -22,9 +21,9 @@ def serve() -> None:  # pragma: nocover
     logging.getLogger().setLevel(logging.INFO)
     database = init_database()
     init_bottle(database)
-    server = urllib.parse.urlparse(os.environ.get("SERVER_URL_EXTERNAL", "http://localhost:5001"))
+    server_port = os.environ.get("SERVER_PORT", "5001")
     bottle.run(  # nosec
-        server="wsgiref" if DEBUG else "gevent", host="0.0.0.0", port=server.port, reloader=not DEBUG,
+        server="wsgiref" if DEBUG else "gevent", host="0.0.0.0", port=server_port, reloader=not DEBUG,
         log=None if DEBUG else logging.getLogger())
 
 

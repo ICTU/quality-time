@@ -2,12 +2,30 @@
 
 version: '3'
 services:
+  proxy:
+    image: traefik:v2.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"  # For the Traefik Web UI
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   frontend:
     image: ictu/quality-time_frontend:v0.14.1
+    env_file:
+      - ${ENV:-dev}.env
+    expose:
+      - ${FRONTEND_PORT:-5000}
     depends_on:
     - server
-    ports:
-    - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
   collector:
     image: ictu/quality-time_collector:v0.14.1
     env_file:
@@ -16,19 +34,21 @@ services:
     - server
   server:
     image: ictu/quality-time_server:v0.14.1
-    ports:
-    - "5001:5001"
     env_file:
-    - ${ENV:-dev}.env
+      - ${ENV:-dev}.env
+    expose:
+      - ${SERVER_PORT:-5001}
     depends_on:
     - database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=PathPrefix(`/api/`)"
+      - "traefik.http.routers.server.entrypoints=web"
   database:
     image: mongo
     restart: always
     env_file:
     - ${ENV:-dev}.env
-    ports:
-    - "27017:27017"
     volumes:
     - "dbdata:/data/db"
 volumes:

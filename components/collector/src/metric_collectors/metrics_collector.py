@@ -32,7 +32,7 @@ def post(api: URL, data) -> None:
 class MetricsCollector:
     """Collect measurements for all metrics."""
     def __init__(self) -> None:
-        self.server_url = URL(os.environ.get("SERVER_URL", "http://localhost:5001"))
+        self.server_url = URL(f"http://server:{os.environ.get('SERVER_PORT', '5001')}")
         self.next_fetch: Dict[str, datetime] = dict()
         self.last_parameters: Dict[str, Any] = dict()
 
