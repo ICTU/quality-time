@@ -317,7 +317,10 @@ def post_reports_attribute(reports_attribute: str, database: Database):
 @bottle.post("/api/v1/report/new")
 def post_report_new(database: Database):
     """Add a new report."""
-    report = dict(report_uuid=uuid(), title="New report", subjects={})
+    report_uuid = uuid()
+    report = dict(
+        report_uuid=report_uuid, title="New report", subjects={},
+        delta=dict(report_uuid=report_uuid, description=f"{sessions.user(database)} created this report."))
     return insert_new_report(database, report)
 
 

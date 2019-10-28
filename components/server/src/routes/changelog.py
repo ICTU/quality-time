@@ -14,7 +14,7 @@ def get_changelog(database: Database, nr_changes: str, report_uuid: ReportId, **
                for change in measurements.changelog(database, report_uuid, limit)]
     changes.extend(
         [dict(delta=change["delta"]["description"], timestamp=change["timestamp"]) for change in
-         reports.changelog(database, limit, **uuids)])
+         reports.changelog(database, limit, report_uuid, **uuids) if "delta" in change])
     return dict(changelog=sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:limit])
 
 

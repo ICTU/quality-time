@@ -633,6 +633,10 @@ class ReportTest(unittest.TestCase):
     def test_add_report(self):
         """Test that a report can be added."""
         self.assertEqual(dict(ok=True), post_report_new(self.database))
+        self.database.reports.insert.assert_called_once()
+        inserted = self.database.reports.insert.call_args_list[0][0][0]
+        self.assertEqual("New report", inserted["title"])
+        self.assertEqual("Jenny created this report.", inserted["delta"]["description"])
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
