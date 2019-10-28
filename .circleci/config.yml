@@ -48,17 +48,6 @@ jobs:
           docker-compose build && docker-compose up -d
           docker images
           docker ps -a
-      - run: "cd components/art && npm install --save-dev"
-      - run: "cd /home/circleci/project"
-      - run:
-          name: UI tests
-          command: "cd components/art && npx cypress run"
-      - store_test_results:
-          path: multiple-results
-      - store_artifacts:
-          path: /home/circleci/project/components/art/cypress/videos/
-      - store_artifacts:
-          path: /home/circleci/project/components/art/cypress/screenshots/
 
 workflows:
   version: 2
