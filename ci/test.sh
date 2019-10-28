@@ -1,6 +1,4 @@
 #!/bin/sh
 
-python -m venv venv
-. venv/bin/activate
-pip install -r requirements-dev.txt
+pip install --user selenium
 python -m unittest discover --start-directory tests
