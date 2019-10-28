@@ -50,7 +50,6 @@ class LoginTests(unittest.TestCase):
 
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
-        self.assertTrue("domain=" in cookie.lower())
         self.assertEqual(connection_mock.call_args[1],
                          {'user': 'cn=admin,dc=example,dc=org', 'password': 'admin'})
         fake_con.search.assert_called_with("dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))',
@@ -82,7 +81,6 @@ class LoginTests(unittest.TestCase):
 
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
-        self.assertFalse("domain=" in cookie.lower())
         self.assertEqual(connection_mock.call_args_list[0][1],
                          {'user': 'cn=admin,dc=example,dc=org', 'password': 'admin'})
         self.assertEqual(connection_mock.call_args_list[1][1],
@@ -117,7 +115,6 @@ class LoginTests(unittest.TestCase):
 
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
-        self.assertFalse("domain=" in cookie.lower())
         fake_con.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
 

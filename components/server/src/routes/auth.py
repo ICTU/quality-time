@@ -5,7 +5,6 @@ import logging
 import os
 import re
 from typing import cast, Dict, Tuple
-import urllib.parse
 import hashlib
 import base64
 
