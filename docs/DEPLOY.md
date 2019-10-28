@@ -2,11 +2,17 @@
 
 (To be completed)
 
+## Proxy
+
+External traffic is routed by the Traefik reverse proxy (container name: proxy) to either the frontend container or the server container. 
+
 ## Frontend
 
-If the frontend is served from a URL starting with `www`, it assumes the server can be reached at the same URL but with `www` replaced by `server` and port 5001. For example, if the frontend is served from `www.quality-time.example.org:5000`, it assumes the server can be reached at `server.quality-time.example.org:5001`.
+The React UI is served by the frontend container, which runs at port 5000 by default. The Traefik reverse proxy routes external traffic that's not meant for the API to the frontend container. 
 
-If the frontend is served from a URL that doesn't start with `www`, it assumes the server can be reached at the same URL, but with port 5001. For example, if the frontend is served from `quality-time.example.org:5000`, it assumes the server can be reached at `quality-time.example.org:5001`. Similarly, if the frontend is served from `localhost:5000`, it assumes the server can be reached at `localhost:5001`.
+## Server
+
+The API is accessible at the server container, running at port 5001 by default. The Traefik reverse proxy routes URLs that start with /api to the server.  
 
 ## LDAP
 

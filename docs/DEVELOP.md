@@ -96,6 +96,5 @@ For more information about the custom components, see:
 - [Frontend](../components/frontend/README.md)
 - [Collector](../components/collector/README.md)
 
-For testing purposes there are also:
+For testing purposes there is also:
 - [Test data](../components/testdata/README.md)
-- LDAP with one user. Username "admin", password "admin".

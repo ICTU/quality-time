@@ -14,13 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - The collector component would crash if an Azure DevOps source was unreachable. Fixes [#738](https://github.com/ICTU/quality-time/issues/738).
-
-## [Unreleased]
-
-### Fixed
-
 - Add a changelog entry when a user creates a report. Fixes [#742](https://github.com/ICTU/quality-time/issues/742).
- 
+
+### Changed
+
+- Introduce a reverse proxy (Traefik) so that web frontend and API can both be accessed through the same port. Which is now port 80 by default. Fixes [#727](https://github.com/ICTU/quality-time/issues/727).
+
 ## [0.14.1] - [2019-10-24]
 
 ### Fixed

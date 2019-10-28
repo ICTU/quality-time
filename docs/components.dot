@@ -1,10 +1,13 @@
 digraph {
-  rankdir=LR
+  browser -> proxy [label=ui, dir="back"]
+  browser -> proxy [label=measurements, dir="back"]
+  browser -> proxy [label=metrics, dir="both"]
+  proxy -> frontend [label=ui, dir="back"]
+  proxy -> server [label=measurements, dir="back"]
+  proxy -> server [label=metrics, dir="both"]
   server -> database [label=measurements, dir="both"]
   server -> database [label=metrics, dir="both"]
   collector -> server [label=measurements]
   server -> collector [label=metrics]
-  source -> collector [label=measurements]
-  server -> frontend [label=metrics, dir="both"]
-  server -> frontend [label=measurements]
+  collector -> source [label=measurements, dir="back"]
 }
