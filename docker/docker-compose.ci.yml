@@ -5,6 +5,8 @@ version: "3"
 services:
   frontend:
     build: ../components/frontend
+    env_file:
+      - ${ENV:-ci}.env
   collector:
     build: ../components/collector
     env_file:

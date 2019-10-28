@@ -30,8 +30,7 @@ When using docker-compose, add the LDAP environment variables to the relevant en
 ```yaml
 ...
 # Server
-FRONTEND_URL=http://localhost:5000
-SERVER_URL_EXTERNAL=http://localhost:5001
+SERVER_PORT=5001
 DATABASE_URL=mongodb://root:root@database:27017
 LDAP_URL=ldap://ldap.example.org:389
 LDAP_LOOKUP_USER=lookup
