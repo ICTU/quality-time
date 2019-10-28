@@ -1,7 +1,7 @@
 """Unit tests for the report routes."""
 
 import unittest
-from unittest.mock import call, Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock
 
 import requests
 
