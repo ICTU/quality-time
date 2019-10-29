@@ -15,7 +15,7 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   frontend:
-    image: ictu/quality-time_frontend:v0.14.1
+    image: ictu/quality-time_frontend:v0.15.0-rc1
     env_file:
       - ${ENV:-dev}.env
     expose:
@@ -27,13 +27,13 @@ services:
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
   collector:
-    image: ictu/quality-time_collector:v0.14.1
+    image: ictu/quality-time_collector:v0.15.0-rc1
     env_file:
     - ${ENV:-dev}.env
     depends_on:
     - server
   server:
-    image: ictu/quality-time_server:v0.14.1
+    image: ictu/quality-time_server:v0.15.0-rc1
     env_file:
       - ${ENV:-dev}.env
     expose:
