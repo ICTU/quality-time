@@ -25,19 +25,19 @@ services:
           proxy / http://frontend:${FRONTEND_PORT:-5000}
         }
   frontend:
-    image: ictu/quality-time_frontend:v0.15.0-rc2
+    image: ictu/quality-time_frontend:v0.14.1
     env_file:
       - ${ENV:-dev}.env
     depends_on:
     - server
   collector:
-    image: ictu/quality-time_collector:v0.15.0-rc2
+    image: ictu/quality-time_collector:v0.14.1
     env_file:
     - ${ENV:-dev}.env
     depends_on:
     - server
   server:
-    image: ictu/quality-time_server:v0.15.0-rc2
+    image: ictu/quality-time_server:v0.14.1
     env_file:
       - ${ENV:-dev}.env
     depends_on:
