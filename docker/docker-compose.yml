@@ -2,30 +2,34 @@
 
 version: '3'
 services:
-  proxy:
-    image: traefik:v2.0
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=true"
-      - "--entrypoints.web.address=:80"
+  www:
+    image: greyarch/caddy
     ports:
       - "80:80"
-      - "8080:8080"  # For the Traefik Web UI
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      CONFIG: |
+        :80 {
+          tls off
+          errors stdout
+          gzip
+          header / {
+            -Server
+            Strict-Transport-Security "max-age=31536000;"
+            X-XSS-Protection "1; mode=block"
+            X-Content-Type-Options "nosniff"
+            X-Frame-Options "DENY"
+            Pragma "no-cache"
+            Cache-Control "no-store"
+          }
+          proxy /api http://server:${SERVER_PORT:-5001}
+          proxy / http://frontend:${FRONTEND_PORT:-5000}
+        }
   frontend:
     image: ictu/quality-time_frontend:v0.15.0-rc1
     env_file:
       - ${ENV:-dev}.env
-    expose:
-      - ${FRONTEND_PORT:-5000}
     depends_on:
     - server
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.frontend.entrypoints=web"
   collector:
     image: ictu/quality-time_collector:v0.15.0-rc1
     env_file:
@@ -36,14 +40,8 @@ services:
     image: ictu/quality-time_server:v0.15.0-rc1
     env_file:
       - ${ENV:-dev}.env
-    expose:
-      - ${SERVER_PORT:-5001}
     depends_on:
     - database
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.server.rule=PathPrefix(`/api/`)"
-      - "traefik.http.routers.server.entrypoints=web"
   database:
     image: mongo
     restart: always
