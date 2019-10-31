@@ -1,5 +1,6 @@
 """Jenkins metric collector."""
 
+import re
 from datetime import datetime, timedelta
 from typing import cast, Iterator
 
@@ -36,7 +37,14 @@ class JenkinsJobs(SourceCollector):
 
     def _count_job(self, job: Job) -> bool:
         """Return whether the job should be counted."""
-        raise NotImplementedError  # pragma: nocover
+        for job_to_ignore in self._parameter("jobs_to_ignore"):
+            if set("$^?.+*[]") & set(job_to_ignore):
+                if re.match(job_to_ignore, job["name"]):
+                    return False
+            else:
+                if job["name"] == job_to_ignore:
+                    return False
+        return True
 
     def _build_age(self, job: Job) -> timedelta:
         """Return the age of the most recent build of the job."""
@@ -61,7 +69,7 @@ class JenkinsFailedJobs(JenkinsJobs):
 
     def _count_job(self, job: Job) -> bool:
         """Count the job if its build status matches the failure types selected by the user."""
-        return self._build_status(job) in self._parameter("failure_type")
+        return super()._count_job(job) and self._build_status(job) in self._parameter("failure_type")
 
 
 class JenkinsUnusedJobs(JenkinsJobs):
@@ -69,6 +77,7 @@ class JenkinsUnusedJobs(JenkinsJobs):
 
     def _count_job(self, job: Job) -> bool:
         """Count the job if its most recent build is too old."""
-        age = self._build_age(job)
-        max_days = int(cast(str, self._parameter("inactive_days")))
-        return age > timedelta(days=max_days) if age < timedelta.max else False
+        if super()._count_job(job) and (age := self._build_age(job)) < timedelta.max:
+            max_days = int(cast(str, self._parameter("inactive_days")))
+            return age > timedelta(days=max_days)
+        return False

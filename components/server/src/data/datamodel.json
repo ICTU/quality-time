@@ -1410,6 +1410,16 @@
                         "unused_jobs"
                     ]
                 },
+                "jobs_to_ignore": {
+                    "name": "Jobs to ignore (job names and/or regular expressions)",
+                    "type": "multiple_choice_with_addition",
+                    "mandatory":  false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
                 "failure_type": {
                     "name": "Failure type",
                     "type": "multiple_choice",
