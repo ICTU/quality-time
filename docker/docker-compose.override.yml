@@ -12,6 +12,9 @@ services:
     build: ../components/server
     depends_on:
       - ldap
+  database:
+    ports:
+      - "27017:27017"
   testdata:
     build: ../components/testdata
     ports:
