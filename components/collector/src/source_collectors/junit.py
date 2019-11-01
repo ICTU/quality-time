@@ -1,15 +1,23 @@
 """JUnit metric collector."""
 
+from abc import ABC
+from datetime import datetime
 from typing import cast, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Responses, Value
+from collector_utilities.type import Entity, Entities, Response, Responses, Value
 from collector_utilities.functions import days_ago, parse_source_response_xml
-from .source_collector import SourceCollector
+from .source_collector import FileSourceCollector
 
 
-class JUnitTests(SourceCollector):
+class JUnitBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for JUnit collectors."""
+
+    file_extensions = ["xml"]
+
+
+class JUnitTests(JUnitBaseClass):
     """Collector for JUnit tests."""
 
     junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
@@ -29,16 +37,17 @@ class JUnitTests(SourceCollector):
             name = case_node.get("name", "<nameless test case>")
             return dict(key=name, name=name, class_name=case_node.get("classname", ""), test_result=case_result)
 
-        tree = parse_source_response_xml(responses[0])
         entities = []
-        for test_case in tree.findall(".//testcase"):
-            for test_result, junit_status_node in self.junit_status_nodes.items():
-                if test_case.find(junit_status_node) is not None:
-                    break
-            else:
-                test_result = "passed"
-            if test_result in self._test_statuses_to_count():
-                entities.append(entity(test_case, test_result))
+        for response in responses:
+            tree = parse_source_response_xml(response)
+            for test_case in tree.findall(".//testcase"):
+                for test_result, junit_status_node in self.junit_status_nodes.items():
+                    if test_case.find(junit_status_node) is not None:
+                        break
+                else:
+                    test_result = "passed"
+                if test_result in self._test_statuses_to_count():
+                    entities.append(entity(test_case, test_result))
         return entities
 
 
@@ -56,19 +65,24 @@ class JUnitFailedTests(JUnitTests):
             name = case_node.get("name", "<nameless test case>")
             return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=test_case_status)
 
-        tree = parse_source_response_xml(responses[0])
         entities = []
-        for status in self._test_statuses_to_count():
-            status_node = self.junit_status_nodes[status]
-            entities.extend([entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
+        for response in responses:
+            tree = parse_source_response_xml(response)
+            for status in self._test_statuses_to_count():
+                status_node = self.junit_status_nodes[status]
+                entities.extend([entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
         return entities
 
 
-class JUnitSourceUpToDateness(SourceCollector):
+class JUnitSourceUpToDateness(JUnitBaseClass):
     """Collector to collect the Junit report age."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        tree = parse_source_response_xml(responses[0])
+        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
+
+    @staticmethod
+    def __parse_date_time(response: Response) -> datetime:
+        """Parse the date time from the JUnit report."""
+        tree = parse_source_response_xml(response)
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
-        report_datetime = parse(test_suite.get("timestamp", ""))
-        return str(days_ago(report_datetime))
+        return parse(test_suite.get("timestamp", ""))

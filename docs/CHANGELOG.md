@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Allow for ignoring Jenkins jobs by name or regular expression. Closes [#747](https://github.com/ICTU/quality-time/issues/747).
-- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. Quality-time will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, and JaCoCo XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
+- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. Quality-time will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, and JUnit XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
 
 ## [0.15.0] - [2019-10-30]
 

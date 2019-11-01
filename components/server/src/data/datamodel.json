@@ -1745,7 +1745,7 @@
             "url": "https://junit.org",
             "parameters": {
                 "url": {
-                    "name": "URL to JUnit report in XML format",
+                    "name": "URL to a JUnit report in XML format or to a zip with JUnit reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
