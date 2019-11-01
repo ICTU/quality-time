@@ -74,8 +74,8 @@ class JiraManualTestDuration(JiraFieldSumBase):
     field_parameter = "manual_test_duration_field"
     entity_key = "duration"
 
-class JiraManualTestExectution(JiraFieldSumBase):
+class JiraManualTestExecution(JiraFieldSumBase):
     """Collector to get manual test execution from Jira."""
 
-    field_parameter = "xxmanual_test_execution_field"
-    entity_key = "xxduration"
+    field_parameter = "manual_test_execution_field"
+    entity_key = "days"

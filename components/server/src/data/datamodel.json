@@ -240,6 +240,28 @@
                 "test quality"
             ]
         },
+        "manual_test_execution": {
+            "name": "Manual test execution",
+            "description": "Measure the number of manual test cases that have not been tested on time.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
+            "unit": "manual test cases",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "jira",
+            "sources": [
+                "jira",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "test quality"
+            ]
+        },
         "many_parameters": {
             "name": "Many parameters",
             "description": "The amount of units (functions, methods, procedures) that have too many parameters.",
@@ -1639,6 +1661,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1651,6 +1674,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1662,6 +1686,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1673,6 +1698,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1721,6 +1747,21 @@
                         {
                             "name": "Duration (minutes)",
                             "key": "duration"
+                        }
+                    ]
+                },
+                "manual_test_execution_field": {
+                    "name": "last test",
+                    "name_plural": "last tests",
+                    "attributes": [
+                        {
+                            "name": "Summary",
+                            "key": "summary",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Days since last test",
+                            "key": "days"
                         }
                     ]
                 },
