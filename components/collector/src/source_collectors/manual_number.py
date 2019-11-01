@@ -1,6 +1,6 @@
 """Metric collector that returns a mnaually entered number."""
 
-from utilities.type import Responses, Value
+from collector_utilities.type import Responses, Value
 from .source_collector import LocalSourceCollector
 
 

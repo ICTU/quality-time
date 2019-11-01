@@ -6,7 +6,7 @@ import re
 from io import StringIO
 from typing import Dict, List, Tuple
 
-from utilities.type import Responses, Value, Entities
+from collector_utilities.type import Responses, Value, Entities
 from .source_collector import SourceCollector
 
 

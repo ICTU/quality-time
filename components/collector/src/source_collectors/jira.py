@@ -4,7 +4,7 @@ from abc import ABC
 from typing import cast
 from urllib.parse import quote
 
-from utilities.type import Entities, Responses, URL, Value
+from collector_utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -73,3 +73,9 @@ class JiraManualTestDuration(JiraFieldSumBase):
 
     field_parameter = "manual_test_duration_field"
     entity_key = "duration"
+
+class JiraManualTestExectution(JiraFieldSumBase):
+    """Collector to get manual test execution from Jira."""
+
+    field_parameter = "xxmanual_test_execution_field"
+    entity_key = "xxduration"

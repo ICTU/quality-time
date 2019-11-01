@@ -8,7 +8,7 @@ from urllib.parse import quote
 from dateutil.parser import parse
 import requests
 
-from utilities.type import Job, Jobs, Entities, Responses, URL, Value
+from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 

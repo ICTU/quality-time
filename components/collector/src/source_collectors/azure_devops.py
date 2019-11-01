@@ -7,8 +7,8 @@ from typing import cast, List
 from dateutil.parser import parse
 import requests
 
-from utilities.functions import days_ago
-from utilities.type import Entities, Responses, URL, Value
+from collector_utilities.functions import days_ago
+from collector_utilities.type import Entities, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 

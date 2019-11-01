@@ -15,8 +15,8 @@ from database.reports import (
     summarize_report
 )
 from database import sessions
-from utilities.functions import report_date_time, uuid, sanitize_html
-from utilities.type import MetricId, Position, ReportId, SourceId, SubjectId
+from server_utilities.functions import report_date_time, uuid, sanitize_html
+from server_utilities.type import MetricId, Position, ReportId, SourceId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
 
 

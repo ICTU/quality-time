@@ -6,8 +6,8 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import parse
 
-from utilities.type import Entities, Responses, URL, Value
-from utilities.functions import days_ago, hashless, parse_source_response_xml
+from collector_utilities.type import Entities, Responses, URL, Value
+from collector_utilities.functions import days_ago, hashless, parse_source_response_xml
 from .source_collector import SourceCollector
 
 

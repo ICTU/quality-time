@@ -10,8 +10,8 @@ from database.measurements import count_measurements, latest_measurement, recent
     update_measurement_end
 from database.reports import latest_metric
 from database import sessions
-from utilities.functions import report_date_time
-from utilities.type import MetricId, ReportId, SourceId
+from server_utilities.functions import report_date_time
+from server_utilities.type import MetricId, ReportId, SourceId
 
 
 @bottle.post("/api/v1/measurements")

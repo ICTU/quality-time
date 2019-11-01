@@ -5,7 +5,7 @@ from urllib import parse
 
 import requests
 
-from utilities.type import Responses, URL, Value
+from collector_utilities.type import Responses, URL, Value
 from .source_collector import SourceCollector
 
 

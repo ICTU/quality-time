@@ -10,7 +10,7 @@ from routes.report import (
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
-from utilities.functions import iso_timestamp
+from server_utilities.functions import iso_timestamp
 
 
 @patch("bottle.request")

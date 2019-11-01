@@ -3,8 +3,8 @@
 from datetime import datetime
 from typing import Dict
 
-from utilities.functions import days_ago
-from utilities.type import Entities, Entity, Responses, Value, URL
+from collector_utilities.functions import days_ago
+from collector_utilities.type import Entities, Entity, Responses, Value, URL
 from .source_collector import SourceCollector
 
 

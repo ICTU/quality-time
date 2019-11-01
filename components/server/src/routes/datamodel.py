@@ -4,7 +4,7 @@ from pymongo.database import Database
 import bottle
 
 from database.datamodels import latest_datamodel
-from utilities.functions import report_date_time
+from server_utilities.functions import report_date_time
 
 
 @bottle.get("/api/v1/datamodel")

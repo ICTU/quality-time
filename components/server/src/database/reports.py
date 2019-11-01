@@ -5,8 +5,8 @@ from typing import Dict
 import pymongo
 from pymongo.database import Database
 
-from utilities.functions import iso_timestamp
-from utilities.type import Color, MetricId, ReportId, Status
+from server_utilities.functions import iso_timestamp
+from server_utilities.type import Color, MetricId, ReportId, Status
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
 

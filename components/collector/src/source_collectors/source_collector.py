@@ -10,8 +10,8 @@ from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
-from utilities.functions import stable_traceback
-from utilities.type import ErrorMessage, Entities, Measurement, Responses, URL, Value
+from collector_utilities.functions import stable_traceback
+from collector_utilities.type import ErrorMessage, Entities, Measurement, Responses, URL, Value
 
 
 class SourceCollector(ABC):

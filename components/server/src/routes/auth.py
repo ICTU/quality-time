@@ -14,8 +14,8 @@ from ldap3.core import exceptions
 
 import bottle
 from database import sessions
-from utilities.functions import uuid
-from utilities.type import SessionId
+from server_utilities.functions import uuid
+from server_utilities.type import SessionId
 
 
 def generate_session() -> Tuple[SessionId, datetime]:

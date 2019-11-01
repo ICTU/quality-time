@@ -10,7 +10,7 @@ import requests
 import quality_time_collector
 from metric_collectors import MetricsCollector
 from source_collectors import source_collector
-from utilities.type import Value
+from collector_utilities.type import Value
 
 
 class CollectorTest(unittest.TestCase):

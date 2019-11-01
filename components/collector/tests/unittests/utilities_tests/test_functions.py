@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from src.utilities.functions import days_ago, hashless, stable_traceback
+from collector_utilities.functions import days_ago, hashless, stable_traceback
 
 
 class StableTracebackTest(unittest.TestCase):
