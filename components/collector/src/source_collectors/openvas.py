@@ -5,8 +5,8 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import isoparse
 
-from utilities.type import Entities, Responses, Value
-from utilities.functions import days_ago, parse_source_response_xml
+from collector_utilities.type import Entities, Responses, Value
+from collector_utilities.functions import days_ago, parse_source_response_xml
 from .source_collector import SourceCollector
 
 

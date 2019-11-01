@@ -4,8 +4,8 @@ import hashlib
 from typing import cast, Dict, List, Optional
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-from utilities.type import Namespaces, Entities, Entity, Responses, Value
-from utilities.functions import parse_source_response_xml_with_namespace
+from collector_utilities.type import Namespaces, Entities, Entity, Responses, Value
+from collector_utilities.functions import parse_source_response_xml_with_namespace
 from .source_collector import SourceCollector
 
 

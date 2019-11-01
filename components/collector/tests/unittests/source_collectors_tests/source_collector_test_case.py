@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch, Mock
 
 from metric_collectors import MetricCollector
-from utilities.type import Measurement
+from collector_utilities.type import Measurement
 
 
 class SourceCollectorTestCase(unittest.TestCase):

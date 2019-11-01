@@ -2,7 +2,7 @@
 
 from dateutil.parser import parse
 
-from utilities.functions import days_ago
+from collector_utilities.functions import days_ago
 from .source_collector_test_case import SourceCollectorTestCase
 
 

@@ -5,8 +5,8 @@ from typing import List
 
 from bs4 import BeautifulSoup, Tag
 
-from utilities.type import Entities, Entity, Responses, Value
-from utilities.functions import days_ago
+from collector_utilities.type import Entities, Entity, Responses, Value
+from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 

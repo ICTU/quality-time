@@ -5,8 +5,8 @@ from typing import Dict, List
 from dateutil.parser import isoparse
 import requests
 
-from utilities.type import URL, Entities, Entity, Responses, Value
-from utilities.functions import days_ago
+from collector_utilities.type import URL, Entities, Entity, Responses, Value
+from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 

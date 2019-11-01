@@ -3,7 +3,7 @@
 from typing import Dict
 
 from source_collectors.source_collector import SourceCollector
-from utilities.type import Measurement
+from collector_utilities.type import Measurement
 
 
 class MetricCollector:

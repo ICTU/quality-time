@@ -4,7 +4,7 @@ import re
 from datetime import datetime, timedelta
 from typing import cast, Iterator
 
-from utilities.type import Job, Jobs, Entities, Responses, URL, Value
+from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 

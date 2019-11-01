@@ -4,8 +4,8 @@ from typing import cast, List
 
 from dateutil.parser import parse
 
-from utilities.type import Entity, Entities, Responses, Value
-from utilities.functions import days_ago, parse_source_response_xml
+from collector_utilities.type import Entity, Entities, Responses, Value
+from collector_utilities.functions import days_ago, parse_source_response_xml
 from .source_collector import SourceCollector
 
 

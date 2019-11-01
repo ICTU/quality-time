@@ -1,6 +1,6 @@
 """Pyup.io Safety metrics collector."""
 
-from utilities.type import Entities, Responses, Value
+from collector_utilities.type import Entities, Responses, Value
 from .source_collector import SourceCollector
 
 

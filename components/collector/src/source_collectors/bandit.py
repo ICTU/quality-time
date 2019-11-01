@@ -2,8 +2,8 @@
 
 from dateutil.parser import parse
 
-from utilities.type import Entities, Responses, Value
-from utilities.functions import days_ago
+from collector_utilities.type import Entities, Responses, Value
+from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 

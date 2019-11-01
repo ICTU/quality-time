@@ -3,8 +3,8 @@
 from datetime import datetime
 from typing import cast
 
-from utilities.functions import days_ago
-from utilities.type import Responses, Value
+from collector_utilities.functions import days_ago
+from collector_utilities.type import Responses, Value
 from .source_collector import LocalSourceCollector
 
 
