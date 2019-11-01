@@ -4,7 +4,7 @@ from pymongo.database import Database
 import bottle
 
 from database import measurements, reports
-from utilities.type import MetricId, ReportId, SourceId, SubjectId
+from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 
 
 def get_changelog(database: Database, nr_changes: str, report_uuid: ReportId, **uuids: str):

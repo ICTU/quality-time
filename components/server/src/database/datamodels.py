@@ -5,8 +5,8 @@ from typing import Any, Dict
 import pymongo
 from pymongo.database import Database
 
-from utilities.functions import iso_timestamp
-from utilities.type import ReportId
+from server_utilities.functions import iso_timestamp
+from server_utilities.type import ReportId
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):

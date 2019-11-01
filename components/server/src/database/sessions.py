@@ -6,7 +6,7 @@ from typing import cast
 from pymongo.database import Database
 import bottle
 
-from utilities.type import SessionId
+from server_utilities.type import SessionId
 
 
 def upsert(database: Database, username: str, session_id: SessionId, session_expiration_datetime: datetime) -> None:
