@@ -9,17 +9,19 @@ from typing import Tuple
 from bs4 import BeautifulSoup
 
 from collector_utilities.functions import days_ago
-from collector_utilities.type import Responses, Value
-from .source_collector import SourceCollector
+from collector_utilities.type import Response, Responses, Value
+from .source_collector import FileSourceCollector
 
 
-class NCoverBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class NCoverBase(FileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for NCover collectors."""
 
+    file_extensions = ["html", "htm"]
+
     @staticmethod
-    def _find_script(responses: Responses, text: str) -> str:
+    def _find_script(response: Response, text: str) -> str:
         """Return the script containing the text."""
-        for script in BeautifulSoup(responses[0].text, "html.parser").find_all("script", type="text/javascript"):
+        for script in BeautifulSoup(response.text, "html.parser").find_all("script", type="text/javascript"):
             if text in script.string:
                 return str(script.string)
         return ""  # pragma: nocover
@@ -39,10 +41,14 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
 
     def __coverage(self, responses) -> Tuple[str, str]:
         """Return the coverage (covered items, total number) from the execution summary with the specified label."""
-        script = self._find_script(responses, "ncover.execution.stats = ")
-        json_string = script.strip()[len('ncover.execution.stats = '):].strip(";")
-        coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
-        return str(coverage["coveredPoints"]), str(coverage["coveragePoints"])
+        covered, total = 0, 0
+        for response in responses:
+            script = self._find_script(response, "ncover.execution.stats = ")
+            json_string = script.strip()[len('ncover.execution.stats = '):].strip(";")
+            coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
+            covered += int(coverage["coveredPoints"])
+            total += int(coverage["coveragePoints"])
+        return str(covered), str(total)
 
 
 class NCoverUncoveredLines(NCoverCoverageBase):
@@ -62,7 +68,11 @@ class NCoverSourceUpToDateness(NCoverBase):
     """Collector to collect the NCover report age."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        script = self._find_script(responses, "ncover.createDateTime")
+        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
+
+    def __parse_date_time(self, response: Response) -> datetime:
+        """Parse the date time from the NCover report."""
+        script = self._find_script(response, "ncover.createDateTime")
         match = re.search(r"ncover\.createDateTime = '(\d+)'", script)
         timestamp = match.group(1) if match else ""
-        return str(days_ago(datetime.fromtimestamp(float(timestamp) / 1000)))
+        return datetime.fromtimestamp(float(timestamp) / 1000)

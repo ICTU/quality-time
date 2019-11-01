@@ -1917,7 +1917,7 @@
             "url": "https://www.ncover.com/",
             "parameters": {
                 "url": {
-                    "name": "URL to NCover report in HTML format",
+                    "name": "URL to a NCover report in HTML format or to a zip with NCover reports in HTML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
