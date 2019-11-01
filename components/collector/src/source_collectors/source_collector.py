@@ -1,8 +1,10 @@
 """Source collector base class."""
 
+import io
 import logging
 import traceback
 import urllib
+import zipfile
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
@@ -11,7 +13,7 @@ from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 import requests
 
 from collector_utilities.functions import stable_traceback
-from collector_utilities.type import ErrorMessage, Entities, Measurement, Responses, URL, Value
+from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
 
 
 class SourceCollector(ABC):
@@ -140,6 +142,34 @@ class SourceCollector(ABC):
         """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
         This method can to be overridden by collectors when a source can provide the measured entities."""
         return []
+
+
+class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for source collectors that retrieve files."""
+
+    file_extensions: List[str] = []  # Subclass responsibility
+
+    def _get_source_responses(self, api_url: URL) -> Responses:
+        responses = super()._get_source_responses(api_url)
+        if not api_url.endswith(".zip"):
+            return responses
+        unzipped_responses = []
+        for response in responses:
+            unzipped_responses.extend(self.__unzip(response))
+        return unzipped_responses
+
+    @classmethod
+    def __unzip(cls, response: Response) -> Responses:
+        """Unzip the response content."""
+        responses = []
+        with zipfile.ZipFile(io.BytesIO(response.content)) as response_zipfile:
+            names = [name for name in response_zipfile.namelist() if name.split(".")[-1] in cls.file_extensions]
+            for name in names:
+                unzipped_response = requests.Response()
+                unzipped_response.raw = io.BytesIO(response_zipfile.read(name))
+                unzipped_response.status_code = HTTPStatus.OK
+                responses.append(unzipped_response)
+        return responses
 
 
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method

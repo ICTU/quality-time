@@ -7,12 +7,11 @@ import urllib
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
-import requests
 
-from .type import Namespaces, URL
+from .type import Namespaces, Response, URL
 
 
-def parse_source_response_xml(response: requests.Response, allowed_root_tags: Collection[str] = None) -> Element:
+def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
     """Parse the XML from the source response."""
     tree = cast(Element, ElementTree.fromstring(response.text))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
@@ -21,7 +20,7 @@ def parse_source_response_xml(response: requests.Response, allowed_root_tags: Co
 
 
 def parse_source_response_xml_with_namespace(
-        response: requests.Response, allowed_root_tags: Collection[str] = None) -> Tuple[Element, Namespaces]:
+        response: Response, allowed_root_tags: Collection[str] = None) -> Tuple[Element, Namespaces]:
     """Parse the XML with namespace from the source response."""
     tree = parse_source_response_xml(response, allowed_root_tags)
     # ElementTree has no API to get the namespace so we extract it from the root tag:

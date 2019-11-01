@@ -3,9 +3,7 @@
 from typing import Iterator
 from urllib import parse
 
-import requests
-
-from collector_utilities.type import Responses, URL, Value
+from collector_utilities.type import Response, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
@@ -25,7 +23,7 @@ class QualityTimeMetrics(SourceCollector):
             responses.extend(super()._get_source_responses(URL(f"{api_url}/measurements/{metric_uuid}")))
         return responses
 
-    def __get_metric_uuids(self, response: requests.Response) -> Iterator[str]:
+    def __get_metric_uuids(self, response: Response) -> Iterator[str]:
         """Get the relevant metric uuids from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         tags_to_count = set(self._parameter("tags"))

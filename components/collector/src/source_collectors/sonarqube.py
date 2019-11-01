@@ -5,7 +5,7 @@ from typing import Dict, List
 from dateutil.parser import isoparse
 import requests
 
-from collector_utilities.type import URL, Entities, Entity, Responses, Value
+from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -46,14 +46,14 @@ class SonarQubeViolations(SourceCollector):
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [self._entity(issue, response) for response in responses for issue in response.json().get("issues", [])]
 
-    def __issue_landing_url(self, issue_key: str, response: requests.Response) -> URL:
+    def __issue_landing_url(self, issue_key: str, response: Response) -> URL:
         """Generate a landing url for the issue."""
         url = super()._landing_url([response])
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}&branch={branch}")
 
-    def _entity(self, issue, response: requests.Response) -> Entity:
+    def _entity(self, issue, response: Response) -> Entity:
         """Create an entity from an issue."""
         return dict(
             key=issue["key"],
@@ -144,7 +144,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return super()._parse_source_responses_entities(responses[:-1])
 
-    def _entity(self, issue, response: requests.Response) -> Entity:
+    def _entity(self, issue, response: Response) -> Entity:
         """Also add the resolution to the entity."""
         entity = super()._entity(issue, response)
         resolution = issue.get("resolution", "").lower()

@@ -1,15 +1,22 @@
 """Jacoco coverage report collector."""
 
 from datetime import datetime
+from abc import ABC
 
 from defusedxml import ElementTree
 
-from collector_utilities.type import Responses, Value
+from collector_utilities.type import Response, Responses, Value
 from collector_utilities.functions import days_ago
-from .source_collector import SourceCollector
+from .source_collector import FileSourceCollector
 
 
-class JacocoCoverageBaseClass(SourceCollector):
+class JacococBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for Jacoco collectors."""
+
+    file_extensions = ["xml"]
+
+
+class JacocoCoverageBaseClass(JacococBaseClass):
     """Base class for Jacoco coverage collectors."""
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
@@ -21,9 +28,12 @@ class JacocoCoverageBaseClass(SourceCollector):
         return str(sum(self.__parse_source_responses(responses, status) for status in ("missed", "covered")))
 
     def __parse_source_responses(self, responses: Responses, coverage_status: str) -> int:
-        tree = ElementTree.fromstring(responses[0].text)
-        counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
-        return int(counter.get(coverage_status))
+        total = 0
+        for response in responses:
+            tree = ElementTree.fromstring(response.text)
+            counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
+            total += int(counter.get(coverage_status))
+        return total
 
 
 class JacocoUncoveredLines(JacocoCoverageBaseClass):
@@ -38,12 +48,16 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
     coverage_type = "branch"
 
 
-class JacocoSourceUpToDateness(SourceCollector):
+class JacocoSourceUpToDateness(JacococBaseClass):
     """Collector to collect the Jacoco report age."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        tree = ElementTree.fromstring(responses[0].text)
+        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
+
+    @staticmethod
+    def __parse_date_time(response: Response) -> datetime:
+        """Parse the date time from the Jacoco report."""
+        tree = ElementTree.fromstring(response.text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"
-        report_datetime = datetime.utcfromtimestamp(int(timestamp) / 1000.)
-        return str(days_ago(report_datetime))
+        return datetime.utcfromtimestamp(int(timestamp) / 1000.)

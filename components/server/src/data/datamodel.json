@@ -1318,7 +1318,7 @@
             "url": "https://www.eclemma.org/jacoco/",
             "parameters": {
                 "url": {
-                    "name": "URL to JaCoCo report in XML format",
+                    "name": "URL to a JaCoCo report in XML format or to a zip of JaCoCo reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
