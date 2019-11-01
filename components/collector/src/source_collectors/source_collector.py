@@ -50,7 +50,7 @@ class SourceCollector(ABC):
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=no-self-use,unused-argument
+    def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).strip("/"):
@@ -58,7 +58,7 @@ class SourceCollector(ABC):
         url = cast(str, self.__parameters.get("url", "")).strip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
-    def _api_url(self) -> URL:  # pylint: disable=no-self-use
+    def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
         return URL(cast(str, self.__parameters.get("url", "")).strip("/"))
 
@@ -124,7 +124,6 @@ class SourceCollector(ABC):
 
     @abstractmethod
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        # pylint: disable=no-self-use
         """Parse the responses to get the measurement for the metric. This method must be overridden by collectors
         to parse the retrieved sources data."""
         return None  # pragma: nocover
