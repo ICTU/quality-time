@@ -659,7 +659,7 @@
             "url": "https://github.com/ICTU/axe-reports",
             "parameters": {
                 "url": {
-                    "name": "URL to Axe report in CSV format",
+                    "name": "URL to an Axe report in CSV format or to a zip with Axe reports in CSV format",
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
@@ -1023,9 +1023,19 @@
             "url": "https://github.com/PyCQA/bandit",
             "parameters": {
                 "url": {
-                    "name": "URL to Bandit JSON-report",
+                    "name": "URL to a Bandit JSON-report or to a zip with Bandit JSON-reports",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to Bandit report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
