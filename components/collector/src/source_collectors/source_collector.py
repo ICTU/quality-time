@@ -160,10 +160,10 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     @classmethod
     def __unzip(cls, response: Response) -> Responses:
-        """Unzip the response content."""
+        """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
         responses = []
         with zipfile.ZipFile(io.BytesIO(response.content)) as response_zipfile:
-            names = [name for name in response_zipfile.namelist() if name.split(".")[-1] in cls.file_extensions]
+            names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
             for name in names:
                 unzipped_response = requests.Response()
                 unzipped_response.raw = io.BytesIO(response_zipfile.read(name))

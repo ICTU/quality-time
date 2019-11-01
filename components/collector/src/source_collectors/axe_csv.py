@@ -7,11 +7,13 @@ from io import StringIO
 from typing import Dict, List, Tuple
 
 from collector_utilities.type import Responses, Value, Entities
-from .source_collector import SourceCollector
+from .source_collector import FileSourceCollector
 
 
-class AxeCSVAccessibility(SourceCollector):
+class AxeCSVAccessibility(FileSourceCollector):
     """Collector class to get accessibility violations."""
+
+    file_extensions = ["csv"]
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         """Simply count the rows in the csv file."""
@@ -31,9 +33,11 @@ class AxeCSVAccessibility(SourceCollector):
         """Parse the CSV and return the rows and parsed items ."""
         impact_levels = self._parameter("impact")
         violation_types = self._parameter("violation_type")
-        csv_text = responses[0].text.strip()
-        rows = csv_text.split("\n")[1:]
-        parsed_rows = csv.DictReader(StringIO(csv_text))
+        rows, parsed_rows = [], []
+        for response in responses:
+            csv_text = response.text.strip()
+            rows.extend(csv_text.split("\n")[1:])
+            parsed_rows.extend(list(csv.DictReader(StringIO(csv_text))))
         return [
             (row, parsed_row) for (row, parsed_row) in zip(rows, parsed_rows)
             if parsed_row["Impact"] in impact_levels and parsed_row["Violation Type"] in violation_types]
