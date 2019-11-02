@@ -2408,7 +2408,7 @@
             "url": "https://github.com/ICTU/performancetest-runner",
             "parameters": {
                 "url": {
-                    "name": "URL to Performancetest-runner HTML report",
+                    "name": "URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
