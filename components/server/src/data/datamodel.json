@@ -2650,7 +2650,7 @@
             "url": "https://robotframework.org",
             "parameters": {
                 "url": {
-                    "name": "URL to a Robot Framework report in XML format",
+                    "name": "URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",

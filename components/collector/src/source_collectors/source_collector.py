@@ -1,4 +1,4 @@
-"""Source collector base class."""
+"""Source collector base classes."""
 
 import io
 import logging
