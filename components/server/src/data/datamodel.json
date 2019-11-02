@@ -2527,7 +2527,7 @@
             "url": "https://github.com/pyupio/safety",
             "parameters": {
                 "url": {
-                    "name": "URL to Safety JSON-report",
+                    "name": "URL to a Safety report in JSON format or a zip with Safety reports in JSON format.",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
