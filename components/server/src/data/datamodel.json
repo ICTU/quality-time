@@ -2307,7 +2307,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
-                    "name": "URL to an OWASP ZAP report in XML format",
+                    "name": "URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
