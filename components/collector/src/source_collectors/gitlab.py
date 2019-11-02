@@ -8,7 +8,7 @@ from urllib.parse import quote
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
+from collector_utilities.type import Job, Jobs, Entities, Response, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
@@ -99,7 +99,7 @@ class GitlabSourceUpToDateness(GitlabBase):
         responses.extend(get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses
 
-    def __last_commit(self, file_path: str) -> requests.Response:
+    def __last_commit(self, file_path: str) -> Response:
         files_api_url = self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
         response = requests.head(files_api_url)

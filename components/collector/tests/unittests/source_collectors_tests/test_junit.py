@@ -1,5 +1,7 @@
 """Unit tests for the JUnit XML test report source."""
 
+import io
+import zipfile
 from datetime import datetime
 
 from .source_collector_test_case import SourceCollectorTestCase
@@ -21,16 +23,24 @@ class JUnitTestReportTest(SourceCollectorTestCase):
             <testcase name="tc4" classname="cn"><error/></testcase>
             <testcase name="tc5" classname="cn"><skipped/></testcase>
         </testsuite></testsuites>"""
-
-    def test_tests(self):
-        """Test that the number of tests is returned."""
-        response = self.collect(self.metric, get_request_text=self.junit_xml)
-        expected_entities = [
+        self.expected_entities = [
             dict(key="tc1", name="tc1", class_name="cn", test_result="passed"),
             dict(key="tc2", name="tc2", class_name="cn", test_result="passed"),
             dict(key="tc3", name="tc3", class_name="cn", test_result="failed"),
             dict(key="tc4", name="tc4", class_name="cn", test_result="errored")]
-        self.assert_measurement(response, value="4", entities=expected_entities)
+
+    def test_tests(self):
+        """Test that the number of tests is returned."""
+        response = self.collect(self.metric, get_request_text=self.junit_xml)
+        self.assert_measurement(response, value="4", entities=self.expected_entities)
+
+    def test_zipped_junit_report(self):
+        """Test that the number of tests is returned from a zip with JUnit reports."""
+        self.sources["source_id"]["parameters"]["url"] = "junit.zip"
+        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
+            zipped_bandit_report.writestr("junit.xml", self.junit_xml)
+        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        self.assert_measurement(response, value="4", entities=self.expected_entities)
 
 
 class JunitTestReportFailedTestsTest(SourceCollectorTestCase):

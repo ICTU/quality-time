@@ -1,5 +1,8 @@
 """Unit tests for the Bandit source."""
 
+import io
+import json
+import zipfile
 from datetime import datetime, timezone
 
 from .source_collector_test_case import SourceCollectorTestCase
@@ -30,18 +33,17 @@ class BanditSecurityWarningsTest(BanditTestCase):
                     test_id="B106",
                     test_name="hardcoded_password_funcarg")])
         self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
+        self.expected_entities = [
+            dict(
+                location="src/collectors/cxsast.py:37", key="B106:src/collectors/cxsast.py:37",
+                issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
+                issue_severity="Low", issue_confidence="Medium",
+                more_info="https://bandit/b106_hardcoded_password_funcarg.html")]
 
     def test_warnings(self):
         """Test the number of security warnings."""
         response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
-        self.assert_measurement(
-            response,
-            value="1",
-            entities=[dict(
-                location="src/collectors/cxsast.py:37", key="B106:src/collectors/cxsast.py:37",
-                issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
-                issue_severity="Low", issue_confidence="Medium",
-                more_info="https://bandit/b106_hardcoded_password_funcarg.html")])
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
 
     def test_warnings_with_high_severity(self):
         """Test the number of high severity security warnings."""
@@ -54,6 +56,15 @@ class BanditSecurityWarningsTest(BanditTestCase):
         self.sources["source_id"]["parameters"]["confidence_levels"] = ["high"]
         response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="0", entities=[])
+
+    def test_zipped_report(self):
+        """Test that a zip with reports can be read."""
+        self.sources["source_id"]["parameters"]["url"] = "bandit.zip"
+        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
+            zipped_bandit_report.writestr(
+                "bandit.json", json.dumps(self.bandit_json))
+        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
 
 
 class BanditSourceUpToDatenessTest(BanditTestCase):

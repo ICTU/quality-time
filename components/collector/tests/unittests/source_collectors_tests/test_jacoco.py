@@ -1,5 +1,7 @@
 """Unit tests for the JaCoCo source."""
 
+import io
+import zipfile
 from datetime import datetime
 
 from .source_collector_test_case import SourceCollectorTestCase
@@ -32,3 +34,13 @@ class JaCoCoTest(SourceCollectorTestCase):
         response = self.collect(metric, get_request_text='<report><sessioninfo dump="1553821197442"/></report>')
         expected_age = (datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days
         self.assert_measurement(response, value=str(expected_age))
+
+    def test_zipped_report(self):
+        """Test that a zipped report can be read."""
+        self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
+        metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
+        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_jacoco_report:
+            zipped_jacoco_report.writestr(
+                "jacoco.xml", "<report><counter type='LINE' missed='2' covered='4'/></report>")
+        response = self.collect(metric, get_request_content=bytes_io.getvalue())
+        self.assert_measurement(response, value="2", total="6")

@@ -1,16 +1,27 @@
 """Performancetest-runner collector."""
 
+from abc import ABC
 from datetime import datetime
 from typing import List
 
 from bs4 import BeautifulSoup, Tag
 
-from collector_utilities.type import Entities, Entity, Responses, Value
-from collector_utilities.functions import days_ago
-from .source_collector import SourceCollector
+from collector_utilities.type import Entities, Entity, Response, Responses, Value
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
-class PerformanceTestRunnerSlowTransactions(SourceCollector):
+class PerformanceTestRunnerBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for performancetest runner collectors."""
+
+    file_extensions = ["html"]
+
+    @staticmethod
+    def _soup(response: Response):
+        """Return the HTML soup."""
+        return BeautifulSoup(response.text, "html.parser")
+
+
+class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performancetest report."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
@@ -29,47 +40,55 @@ class PerformanceTestRunnerSlowTransactions(SourceCollector):
     def __slow_transactions(self, responses: Responses) -> List[Tag]:
         """Return the slow transactions in the performancetest report."""
         thresholds = self._parameter("thresholds")
-        soup = BeautifulSoup(responses[0].text, "html.parser")
         slow_transactions: List[Tag] = []
-        for color in thresholds:
-            slow_transactions.extend(soup.select(f"tr.transaction:has(> td.{color}.evaluated)"))
+        for response in responses:
+            soup = self._soup(response)
+            for color in thresholds:
+                slow_transactions.extend(soup.select(f"tr.transaction:has(> td.{color}.evaluated)"))
         return slow_transactions
 
 
-class PerformanceTestRunnerSourceUpToDateness(SourceCollector):
+class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, SourceUpToDatenessCollector):
     """Collector for the performancetest report age."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        soup = BeautifulSoup(responses[0].text, "html.parser")
-        datetime_parts = [int(part) for part in soup.find(id="start_of_the_test").string.split(".")]
-        test_datetime = datetime(*datetime_parts)  # type: ignore
-        return str(days_ago(test_datetime))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        datetime_parts = [int(part) for part in self._soup(response).find(id="start_of_the_test").string.split(".")]
+        return datetime(*datetime_parts)  # type: ignore
 
 
-class PerformanceTestRunnerPerformanceTestDuration(SourceCollector):
+class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClass):
     """Collector for the performancetest duration."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        soup = BeautifulSoup(responses[0].text, "html.parser")
-        hours, minutes, seconds = [int(part) for part in soup.find(id="duration").string.split(":", 2)]
-        return str(60 * hours + minutes + round(seconds / 60.))
+        durations = []
+        for response in responses:
+            hours, minutes, seconds = [
+                int(part) for part in self._soup(response).find(id="duration").string.split(":", 2)]
+            durations.append(60 * hours + minutes + round(seconds / 60.))
+        return str(sum(durations))
 
 
-class PerformanceTestRunnerPerformanceTestStability(SourceCollector):
+class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
     """Collector for the performancetest stability."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_stability").string)
+        trend_breaks = []
+        for response in responses:
+            trend_breaks.append(int(self._soup(response).find(id="trendbreak_stability").string))
+        return str(min(trend_breaks))
 
 
-class PerformanceTestRunnerTests(SourceCollector):
+class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
     status_parameter = "test_result"
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        soup = BeautifulSoup(responses[0].text, "html.parser")
-        return str(sum(int(soup.find(id=status).string) for status in self._parameter(self.status_parameter)))
+        count = 0
+        statuses = self._parameter(self.status_parameter)
+        for response in responses:
+            count += sum(int(self._soup(response).find(id=status).string) for status in statuses)
+        return str(count)
 
 
 class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
@@ -78,12 +97,15 @@ class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
     status_parameter = "failure_type"
 
 
-class PerformanceTestRunnerScalability(SourceCollector):
+class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        breaking_point = str(BeautifulSoup(responses[0].text, "html.parser").find(id="trendbreak_scalability").string)
-        if breaking_point == "100":
-            raise AssertionError(
-                "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
-        return breaking_point
+        trend_breaks = []
+        for response in responses:
+            breaking_point = int(self._soup(response).find(id="trendbreak_scalability").string)
+            if breaking_point == 100:
+                raise AssertionError(
+                    "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
+            trend_breaks.append(breaking_point)
+        return str(min(trend_breaks))

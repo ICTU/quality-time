@@ -6,7 +6,7 @@ from typing import cast
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.type import Responses, URL, Value
+from collector_utilities.type import Response, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -38,20 +38,20 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         scan_response = self._api_get(f"sast/scans?projectId={project_id}&scanStatus=Finished&last=1", token)
         return [token_response, project_response, scan_response]
 
-    def __project_id(self, project_response: requests.Response) -> str:
+    def __project_id(self, project_response: Response) -> str:
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = self._parameter("project")
         projects = project_response.json()
         return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
 
-    def _api_get(self, api: str, token: str) -> requests.Response:
+    def _api_get(self, api: str, token: str) -> Response:
         """Open the API and return the response."""
         response = requests.get(
             f"{self._api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"), timeout=self.TIMEOUT)
         response.raise_for_status()
         return response
 
-    def _api_post(self, api: str, data, token: str = None) -> requests.Response:
+    def _api_post(self, api: str, data, token: str = None) -> Response:
         """Post to the API and return the response."""
         headers = dict(Authorization=f"Bearer {token}") if token else dict()
         response = requests.post(f"{self._api_url()}/cxrestapi/{api}", data=data, headers=headers, timeout=self.TIMEOUT)

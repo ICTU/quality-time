@@ -659,7 +659,7 @@
             "url": "https://github.com/ICTU/axe-reports",
             "parameters": {
                 "url": {
-                    "name": "URL to Axe report in CSV format",
+                    "name": "URL to an Axe report in CSV format or to a zip with Axe reports in CSV format",
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
@@ -1023,9 +1023,19 @@
             "url": "https://github.com/PyCQA/bandit",
             "parameters": {
                 "url": {
-                    "name": "URL to Bandit JSON-report",
+                    "name": "URL to a Bandit JSON-report or to a zip with Bandit JSON-reports",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to Bandit report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -1318,7 +1328,7 @@
             "url": "https://www.eclemma.org/jacoco/",
             "parameters": {
                 "url": {
-                    "name": "URL to JaCoCo report in XML format",
+                    "name": "URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1329,7 +1339,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to JaCoCo report in a human readable format",
+                    "name": "URL to a JaCoCo report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1735,7 +1745,7 @@
             "url": "https://junit.org",
             "parameters": {
                 "url": {
-                    "name": "URL to JUnit report in XML format",
+                    "name": "URL to a JUnit report in XML format or to a zip with JUnit reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1746,7 +1756,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to JUnit report in a human readable format",
+                    "name": "URL to a JUnit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1907,7 +1917,7 @@
             "url": "https://www.ncover.com/",
             "parameters": {
                 "url": {
-                    "name": "URL to NCover report in HTML format",
+                    "name": "URL to a NCover report in HTML format or to a zip with NCover reports in HTML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1948,7 +1958,7 @@
             "url": "https://www.oracle.com/technetwork/developer-tools/jdev",
             "parameters": {
                 "url": {
-                    "name": "URL to OJAudit report in XML format",
+                    "name": "URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1957,7 +1967,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to OJAudit report in a human readable format",
+                    "name": "URL to an OJAudit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2036,9 +2046,19 @@
             "url": "http://www.openvas.org",
             "parameters": {
                 "url": {
-                    "name": "URL to XML report",
+                    "name": "URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to an OpenVAS report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -2121,7 +2141,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Dependency_Check",
             "parameters": {
                 "url": {
-                    "name": "URL to OWASP Dependency Check report in XML format",
+                    "name": "URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2287,7 +2307,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
-                    "name": "URL to OWASP ZAP report in XML format",
+                    "name": "URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2297,7 +2317,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to OWASP ZAP report in a human readable format",
+                    "name": "URL to an OWASP ZAP report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2388,7 +2408,7 @@
             "url": "https://github.com/ICTU/performancetest-runner",
             "parameters": {
                 "url": {
-                    "name": "URL to Performancetest-runner HTML report",
+                    "name": "URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2507,7 +2527,7 @@
             "url": "https://github.com/pyupio/safety",
             "parameters": {
                 "url": {
-                    "name": "URL to Safety JSON-report",
+                    "name": "URL to a Safety report in JSON format or a zip with Safety reports in JSON format.",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2630,7 +2650,7 @@
             "url": "https://robotframework.org",
             "parameters": {
                 "url": {
-                    "name": "URL to Robot Framework report in XML format",
+                    "name": "URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2641,7 +2661,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Robot Framework report in a human readable format",
+                    "name": "URL to a Robot Framework report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
