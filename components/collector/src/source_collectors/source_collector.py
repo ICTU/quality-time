@@ -12,7 +12,7 @@ from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
-from collector_utilities.functions import stable_traceback
+from collector_utilities.functions import days_ago, stable_traceback
 from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
 
 
@@ -205,3 +205,14 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
     @abstractmethod
     def _commit_datetime(self, branch) -> datetime:
         """Return the date and time of the last commit on the branch."""
+
+
+class SourceUpToDatenessCollector(SourceCollector):
+    """Base class for source up-to-dateness collectors."""
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(days_ago(min(self._parse_source_response_date_time(response) for response in responses)))
+
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        """Parse the date time from the source."""
+        raise NotImplementedError  # pragma: nocover

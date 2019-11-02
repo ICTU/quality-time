@@ -127,7 +127,7 @@ class OJAuditTest(SourceCollectorTestCase):
         response = self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_ignore_duplication_violations(self):
+    def test_ignore_duplicated_violations(self):
         """Test that violations with the same model, message, location, etc. are ignored."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>

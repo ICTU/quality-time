@@ -1,11 +1,11 @@
 """Bandit metrics collector."""
 
 from abc import ABC
+from datetime import datetime
 from dateutil.parser import parse
 
-from collector_utilities.type import Entities, Responses, Value
-from collector_utilities.functions import days_ago
-from .source_collector import FileSourceCollector
+from collector_utilities.type import Entities, Response, Responses, Value
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
 class BanditBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -38,9 +38,8 @@ class BanditSecurityWarnings(BanditBaseClass):
         return entities
 
 
-class BanditSourceUpToDateness(BanditBaseClass):
+class BanditSourceUpToDateness(BanditBaseClass, SourceUpToDatenessCollector):
     """Bandit collector for source up-to-dateness."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        date_times = [parse(response.json()["generated_at"]) for response in responses]
-        return str(days_ago(min(date_times)))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return parse(response.json()["generated_at"])

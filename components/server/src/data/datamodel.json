@@ -1958,7 +1958,7 @@
             "url": "https://www.oracle.com/technetwork/developer-tools/jdev",
             "parameters": {
                 "url": {
-                    "name": "URL to OJAudit report in XML format",
+                    "name": "URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2046,7 +2046,7 @@
             "url": "http://www.openvas.org",
             "parameters": {
                 "url": {
-                    "name": "URL to XML report",
+                    "name": "URL to an OpenVAS XML report or to a zip with OpenVAS XML reports",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",

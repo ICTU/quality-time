@@ -8,9 +8,8 @@ from typing import Tuple
 
 from bs4 import BeautifulSoup
 
-from collector_utilities.functions import days_ago
 from collector_utilities.type import Response, Responses, Value
-from .source_collector import FileSourceCollector
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
 class NCoverBase(FileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -64,14 +63,10 @@ class NCoverUncoveredBranches(NCoverCoverageBase):
     coverage_type = "branch"
 
 
-class NCoverSourceUpToDateness(NCoverBase):
+class NCoverSourceUpToDateness(NCoverBase, SourceUpToDatenessCollector):
     """Collector to collect the NCover report age."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
-
-    def __parse_date_time(self, response: Response) -> datetime:
-        """Parse the date time from the NCover report."""
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
         script = self._find_script(response, "ncover.createDateTime")
         match = re.search(r"ncover\.createDateTime = '(\d+)'", script)
         timestamp = match.group(1) if match else ""

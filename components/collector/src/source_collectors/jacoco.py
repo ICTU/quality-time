@@ -6,8 +6,7 @@ from abc import ABC
 from defusedxml import ElementTree
 
 from collector_utilities.type import Response, Responses, Value
-from collector_utilities.functions import days_ago
-from .source_collector import FileSourceCollector
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
 class JacococBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -48,15 +47,10 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
     coverage_type = "branch"
 
 
-class JacocoSourceUpToDateness(JacococBaseClass):
+class JacocoSourceUpToDateness(JacococBaseClass, SourceUpToDatenessCollector):
     """Collector to collect the Jacoco report age."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
-
-    @staticmethod
-    def __parse_date_time(response: Response) -> datetime:
-        """Parse the date time from the Jacoco report."""
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
         tree = ElementTree.fromstring(response.text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"

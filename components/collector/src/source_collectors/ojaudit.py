@@ -6,36 +6,37 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from collector_utilities.type import Namespaces, Entities, Entity, Responses, Value
 from collector_utilities.functions import parse_source_response_xml_with_namespace
-from .source_collector import SourceCollector
+from .source_collector import FileSourceCollector
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 
 
-class OJAuditViolations(SourceCollector):
+class OJAuditViolations(FileSourceCollector):
     """Collector to get violations from OJAudit."""
+
+    file_extensions = ["xml"]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         severities = cast(List[str], self._parameter("severities"))
-        return self.__violation_count(tree, namespaces, severities)
+        count = 0
+        for response in responses:
+            tree, namespaces = parse_source_response_xml_with_namespace(response)
+            for severity in severities:
+                count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
+        return str(count)
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0])
         severities = cast(List[str], self._parameter("severities"))
-        return self.__violations(tree, namespaces, severities)
-
-    @staticmethod
-    def __violation_count(tree: Element, namespaces: Namespaces, severities: List[str]) -> str:
-        """Return the violation count."""
-        count = 0
-        for severity in severities:
-            count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
-        return str(count)
+        entities = []
+        for response in responses:
+            tree, namespaces = parse_source_response_xml_with_namespace(response)
+            entities.extend(self.__violations(tree, namespaces, severities))
+        return entities
 
     def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""

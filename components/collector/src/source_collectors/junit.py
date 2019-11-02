@@ -7,8 +7,8 @@ from typing import cast, List
 from dateutil.parser import parse
 
 from collector_utilities.type import Entity, Entities, Response, Responses, Value
-from collector_utilities.functions import days_ago, parse_source_response_xml
-from .source_collector import FileSourceCollector
+from collector_utilities.functions import parse_source_response_xml
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
 class JUnitBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -74,15 +74,10 @@ class JUnitFailedTests(JUnitTests):
         return entities
 
 
-class JUnitSourceUpToDateness(JUnitBaseClass):
+class JUnitSourceUpToDateness(JUnitBaseClass, SourceUpToDatenessCollector):
     """Collector to collect the Junit report age."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(days_ago(min(self.__parse_date_time(response) for response in responses)))
-
-    @staticmethod
-    def __parse_date_time(response: Response) -> datetime:
-        """Parse the date time from the JUnit report."""
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
         tree = parse_source_response_xml(response)
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
         return parse(test_suite.get("timestamp", ""))
