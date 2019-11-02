@@ -2,29 +2,34 @@
 
 import hashlib
 from abc import ABC
+from datetime import datetime
 from typing import List, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Namespaces, Entity, Entities, Responses, Value
-from collector_utilities.functions import days_ago, parse_source_response_xml_with_namespace
-from .source_collector import SourceCollector
+from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, Value
+from collector_utilities.functions import parse_source_response_xml_with_namespace
+from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
-class OWASPDependencyCheckBase(SourceCollector, ABC):  # pylint: disable=abstract-method
+class OWASPDependencyCheckBase(FileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for OWASP Dependency Check collectors."""
 
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
                          for version in ("2.0", "2.1", "2.2")]
+    file_extensions = ["xml"]
 
 
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
     """Collector to get security warnings from OWASP Dependency Check."""
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
-        return str(len(self.__vulnerable_dependencies(tree, namespaces)))
+        count = 0
+        for response in responses:
+            tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
+            count += len(self.__vulnerable_dependencies(tree, namespaces))
+        return str(count)
 
     def __vulnerable_dependencies(self, tree: Element, namespaces: Namespaces) -> List[Tuple[int, Element]]:
         """Return the vulnerable dependencies."""
@@ -32,10 +37,14 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
                 if self.__vulnerabilities(dependency, namespaces)]
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
         landing_url = self._landing_url(responses)
-        return [self.__parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
-                in self.__vulnerable_dependencies(tree, namespaces)]
+        entities = []
+        for response in responses:
+            tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
+            entities.extend(
+                [self.__parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
+                 in self.__vulnerable_dependencies(tree, namespaces)])
+        return entities
 
     def __parse_entity(
             self, dependency: Element, dependency_index: int, namespaces: Namespaces, landing_url: str) -> Entity:
@@ -65,10 +74,9 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
                 vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower() in severities]
 
 
-class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase):
+class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase, SourceUpToDatenessCollector):
     """Collector to collect the OWASP Dependency Check report age."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        tree, namespaces = parse_source_response_xml_with_namespace(responses[0], self.allowed_root_tags)
-        report_datetime = isoparse(tree.findtext(".//ns:reportDate", default="", namespaces=namespaces))
-        return str(days_ago(report_datetime))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
+        return isoparse(tree.findtext(".//ns:reportDate", default="", namespaces=namespaces))

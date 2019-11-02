@@ -1328,7 +1328,7 @@
             "url": "https://www.eclemma.org/jacoco/",
             "parameters": {
                 "url": {
-                    "name": "URL to a JaCoCo report in XML format or to a zip of JaCoCo reports in XML format",
+                    "name": "URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1339,7 +1339,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to JaCoCo report in a human readable format",
+                    "name": "URL to a JaCoCo report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1756,7 +1756,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to JUnit report in a human readable format",
+                    "name": "URL to a JUnit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1967,7 +1967,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to OJAudit report in a human readable format",
+                    "name": "URL to an OJAudit report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2046,9 +2046,19 @@
             "url": "http://www.openvas.org",
             "parameters": {
                 "url": {
-                    "name": "URL to an OpenVAS XML report or to a zip with OpenVAS XML reports",
+                    "name": "URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format",
                     "type": "string",
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to an OpenVAS report in a human readable format",
+                    "type": "string",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "security_warnings",
@@ -2131,7 +2141,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Dependency_Check",
             "parameters": {
                 "url": {
-                    "name": "URL to OWASP Dependency Check report in XML format",
+                    "name": "URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2297,7 +2307,7 @@
             "url": "https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project",
             "parameters": {
                 "url": {
-                    "name": "URL to OWASP ZAP report in XML format",
+                    "name": "URL to an OWASP ZAP report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2307,7 +2317,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to OWASP ZAP report in a human readable format",
+                    "name": "URL to an OWASP ZAP report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2640,7 +2650,7 @@
             "url": "https://robotframework.org",
             "parameters": {
                 "url": {
-                    "name": "URL to Robot Framework report in XML format",
+                    "name": "URL to a Robot Framework report in XML format",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -2651,7 +2661,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Robot Framework report in a human readable format",
+                    "name": "URL to a Robot Framework report in a human readable format",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
