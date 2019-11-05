@@ -1423,6 +1423,7 @@
                 "jobs_to_ignore": {
                     "name": "Jobs to ignore (job names and/or regular expressions; use <parent job name>/<child job name> for nested jobs)",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
                     "mandatory":  false,
                     "default_value": "",
                     "metrics": [
@@ -1435,6 +1436,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
+                    "placeholder": "all",
                     "values": [
                         "Aborted",
                         "Failure",
