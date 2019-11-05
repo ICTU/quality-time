@@ -1461,7 +1461,7 @@
                             "key": "build_status",
                             "color": {
                                 "Success": "positive",
-                                "Failed": "negative",
+                                "Failure": "negative",
                                 "Aborted": "active",
                                 "Unstable": "warning"
                             }
