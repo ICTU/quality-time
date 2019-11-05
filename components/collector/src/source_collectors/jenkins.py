@@ -60,8 +60,10 @@ class JenkinsJobs(SourceCollector):
     @staticmethod
     def _build_status(job: Job) -> str:
         """Return the build status of the job."""
-        status = (job.get("builds") or [dict()])[0].get("result")
-        return str(status).capitalize().replace("_", " ") if status else "Not built"
+        for build in job.get("builds", []):
+            if status := build.get("result"):
+                return str(status).capitalize().replace("_", " ")
+        return "Not built"
 
 
 class JenkinsFailedJobs(JenkinsJobs):
