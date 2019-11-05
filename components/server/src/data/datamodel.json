@@ -1421,7 +1421,7 @@
                     ]
                 },
                 "jobs_to_ignore": {
-                    "name": "Jobs to ignore (job names and/or regular expressions)",
+                    "name": "Jobs to ignore (job names and/or regular expressions; use <parent job name>/<child job name> for nested jobs)",
                     "type": "multiple_choice_with_addition",
                     "mandatory":  false,
                     "default_value": "",
