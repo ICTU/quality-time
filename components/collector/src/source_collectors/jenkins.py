@@ -27,12 +27,14 @@ class JenkinsJobs(SourceCollector):
                 build_date=str(self.__build_datetime(job).date()) if self.__build_datetime(job) > datetime.min else "")
             for job in self.__jobs(responses[0].json()["jobs"])]
 
-    def __jobs(self, jobs: Jobs) -> Iterator[Job]:
+    def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""
         for job in jobs:
+            if parent_job_name:
+                job["name"] = f"{parent_job_name}/{job['name']}"
             if job.get("buildable") and self._count_job(job):
                 yield job
-            for child_job in self.__jobs(job.get("jobs", [])):
+            for child_job in self.__jobs(job.get("jobs", []), parent_job_name=job["name"]):
                 yield child_job
 
     def _count_job(self, job: Job) -> bool:
