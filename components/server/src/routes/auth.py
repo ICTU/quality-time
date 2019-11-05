@@ -42,8 +42,8 @@ def check_password(ssha_ldap_salted_password, password):
     digest = digest_salt[:20]
     salt = digest_salt[20:]
 
-    sha = hashlib.sha1(bytes(password, 'utf-8'))  #nosec
-    sha.update(salt)  #nosec
+    sha = hashlib.sha1(bytes(password, 'utf-8'))  # nosec
+    sha.update(salt)  # nosec
 
     return digest == sha.digest()
 
@@ -56,27 +56,35 @@ def login(database: Database) -> Dict[str, bool]:
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
-    ldap_lookup_user = os.environ.get("LDAP_LOOKUP_USER", "admin")
+    ldap_lookup_userdn = os.environ.get("LDAP_LOOKUP_USERDN", "cn:admin,dc=example,dc=org")
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+    ldap_user_username = os.environ.get("LDAP_USERNAME", "uid")
+    ldap_user_filter = os.environ.get("LDAP_USER_FILTER", "")
 
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server,
-                        user=f"cn={ldap_lookup_user},{ldap_root_dn}", password=ldap_lookup_user_password) as conn:
+                        user=ldap_lookup_userdn, password=ldap_lookup_user_password) as conn:
             if not conn.bind():
-                username = ldap_lookup_user
                 raise exceptions.LDAPBindError
-
-            conn.search(ldap_root_dn, f"(|(uid={username})(cn={username}))", attributes=['cn', 'userPassword'])
+            if not ldap_user_filter.strip():
+                search_filter = f"({ldap_user_username}={username})"
+            else:
+                search_filter = f"(&{ldap_user_filter}({ldap_user_username}={username}))"
+            conn.search(ldap_root_dn, search_filter, attributes=["userPassword"])
+            if not conn.entries:
+                return dict(ok=False)
             result = conn.entries[0]
+            result_dn = conn.response[0]['dn']
             pwd = credentials.get("password", "no password given")
-            if not result.userPassword.value:
-                with Connection(ldap_server, user=f"cn={result.cn.value},{ldap_root_dn}", password=pwd, auto_bind=True):
-                    pass
+            if not result.userPassword or not result.userPassword.value:
+                with Connection(ldap_server, user=result_dn, password=pwd) as userconn:
+                    if not userconn.bind():
+                        raise exceptions.LDAPBindError
             elif not check_password(result.userPassword.value, pwd):
                 return dict(ok=False)
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for cn=%s,%s: %s", username, ldap_root_dn, reason)
+        logging.warning("LDAP error for user %s: %s", username, reason)
         return dict(ok=False)
 
     session_id, session_expiration_datetime = generate_session()
