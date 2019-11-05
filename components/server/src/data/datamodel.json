@@ -1421,8 +1421,9 @@
                     ]
                 },
                 "jobs_to_ignore": {
-                    "name": "Jobs to ignore (job names and/or regular expressions)",
+                    "name": "Jobs to ignore (regular expressions or job names, use <parent job name>/<child job name> for the names of nested jobs)",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
                     "mandatory":  false,
                     "default_value": "",
                     "metrics": [
@@ -1435,6 +1436,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
+                    "placeholder": "all",
                     "values": [
                         "Aborted",
                         "Failure",
@@ -1461,7 +1463,7 @@
                             "key": "build_status",
                             "color": {
                                 "Success": "positive",
-                                "Failed": "negative",
+                                "Failure": "negative",
                                 "Aborted": "active",
                                 "Unstable": "warning"
                             }
