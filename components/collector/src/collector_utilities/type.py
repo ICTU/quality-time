@@ -9,6 +9,7 @@ Entities = List[Entity]
 ErrorMessage = Optional[str]
 Job = Dict[str, Any]
 Jobs = List[Job]
+JSON = Dict[str, Any]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
 Measurement = Dict[str, Any]
 Response = requests.Response

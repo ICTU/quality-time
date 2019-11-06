@@ -4,18 +4,18 @@ from datetime import datetime, timedelta
 import logging
 import os
 import time
-from typing import Any, Dict, NoReturn
+from typing import cast, Any, Dict, NoReturn
 
 import requests
 
-from collector_utilities.type import URL
+from collector_utilities.type import JSON, URL
 from .metric_collector import MetricCollector
 
 
-def get(api: URL) -> Any:
+def get(api: URL) -> JSON:
     """Get data from the API url."""
     try:
-        return requests.get(api).json()
+        return cast(JSON, requests.get(api).json())
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
         return {}
@@ -34,29 +34,41 @@ class MetricsCollector:
     def __init__(self) -> None:
         self.server_url = \
             URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
+        self.data_model: JSON = dict()
         self.next_fetch: Dict[str, datetime] = dict()
         self.last_parameters: Dict[str, Any] = dict()
 
     def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
+        sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
+        measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
+        self.data_model = self.fetch_data_model(sleep_duration)
         while True:
             logging.info("Collecting...")
-            self.fetch_measurements()
-            logging.info("Sleeping...")
-            time.sleep(60)
+            self.fetch_measurements(measurement_frequency)
+            logging.info("Sleeping %ss...", sleep_duration)
+            time.sleep(sleep_duration)
 
-    def fetch_measurements(self, frequency_in_minutes: int = 15) -> None:
+    def fetch_data_model(self, sleep_duration: int) -> JSON:
+        """Fetch the data model."""
+        while True:
+            logging.info("Loading data model...")
+            if data_model := get(URL(f"{self.server_url}/api/v1/datamodel")):
+                return data_model
+            logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
+            time.sleep(sleep_duration)
+
+    def fetch_measurements(self, measurement_frequency: int) -> None:
         """Fetch the metrics and their measurements."""
-        data_model = get(URL(f"{self.server_url}/api/v1/datamodel"))
         metrics = get(URL(f"{self.server_url}/api/v1/metrics"))
         for metric_uuid, metric in metrics.items():
-            if not (collector := MetricCollector(metric, data_model)).can_collect():
+            if not (collector := MetricCollector(metric, self.data_model)).can_collect():
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
             measurement = collector.get()
             self.last_parameters[metric_uuid] = metric
-            self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=frequency_in_minutes * 60)
+            self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid
             measurement["report_uuid"] = metric["report_uuid"]
             post(URL(f"{self.server_url}/api/v1/measurements"), measurement)
