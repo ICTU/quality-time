@@ -1,5 +1,6 @@
 """Measurement routes."""
 
+import logging
 import time
 from typing import cast, Dict, Iterator
 
@@ -63,10 +64,14 @@ def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterato
 
     # Set the response headers
     bottle.response.set_header("Content-Type", "text/event-stream")
+    # See https://github.com/facebook/create-react-app/issues/1633 why the next header is needed when running locally
+    # with the webpack proxy.
+    bottle.response.set_header("Cache-Control", "no-transform")
 
     # Provide an initial data dump to each new client and set up our
     # message payload with a retry value in case of connection failure
     data = count_measurements(database, report_uuid)
+    logging.info("Initializing nr_measurements stream for report %s with %s measurements", report_uuid, data)
     yield sse_pack(event_id, "init", data)
 
     # Now give the client updates as they arrive
@@ -75,6 +80,7 @@ def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterato
         if (new_data := count_measurements(database, report_uuid)) > data:
             data = new_data
             event_id += 1
+            logging.info("Updating nr_measurements stream for report %s with %s measurements", report_uuid, data)
             yield sse_pack(event_id, "delta", data)
 
 

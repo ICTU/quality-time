@@ -11,7 +11,9 @@ services:
         :80 {
           tls off
           errors stdout
-          gzip
+          gzip {
+            not /api/v1/nr_measurements
+          }
           header / {
             -Server
             Strict-Transport-Security "max-age=31536000;"
@@ -20,6 +22,9 @@ services:
             X-Frame-Options "DENY"
             Pragma "no-cache"
             Cache-Control "no-store"
+          }
+          proxy /api/v1/nr_measurements http://server:${SERVER_PORT:-5001} {
+            timeout 0
           }
           proxy /api http://server:${SERVER_PORT:-5001}
           proxy / http://frontend:${FRONTEND_PORT:-5000}

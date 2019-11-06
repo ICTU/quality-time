@@ -32,7 +32,6 @@ export function Metric(props) {
       last_metric={props.last_metric}
       measurements={measurements}
       metric_uuid={props.metric_uuid}
-      nr_new_measurements={props.nr_new_measurements}
       reload={props.reload}
       fetch_measurement_and_reload={() => {
         fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
