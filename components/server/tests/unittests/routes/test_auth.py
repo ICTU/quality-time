@@ -18,10 +18,6 @@ class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
         self.database = Mock()
-        self.environ_get = Mock(
-            side_effect=[
-                "dc=example,dc=org", "ldap://localhost:389", "cn=admin,dc=example,dc=org", "admin",
-                "(|(uid=$username)(cn=$username))"])
         self.ldap_entry = Mock(entry_dn="cn=jodoe,dc=example,dc=org")
         self.ldap_entry.userPassword = Mock()
         self.ldap_connection = Mock(bind=Mock(return_value=True), search=Mock(), entries=[self.ldap_entry])
@@ -51,8 +47,7 @@ class LoginTests(unittest.TestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = None
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=True), auth.login(self.database))
+        self.assertEqual(dict(ok=True), auth.login(self.database))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.assertEqual(
@@ -69,8 +64,7 @@ class LoginTests(unittest.TestCase):
         """Test successful login."""
         self.ldap_entry.userPassword.value = b'{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr'
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=True), auth.login(self.database))
+        self.assertEqual(dict(ok=True), auth.login(self.database))
         cookie = str(bottle.response._cookies)  # pylint: disable=protected-access
         self.assertTrue(cookie.startswith("Set-Cookie: session_id="))
         self.ldap_connection.search.assert_called_with(
@@ -83,8 +77,7 @@ class LoginTests(unittest.TestCase):
     def test_login_server_error(self, connection_mock, logging_mock, connection_enter):
         """Test login when a server creation error occurs."""
         connection_mock.return_value = None
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=False), auth.login(self.database))
+        self.assertEqual(dict(ok=False), auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
         self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
@@ -99,8 +92,7 @@ class LoginTests(unittest.TestCase):
         connection_mock.return_value = None
         self.ldap_connection.bind.return_value = False
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=False), auth.login(self.database))
+        self.assertEqual(dict(ok=False), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
@@ -115,8 +107,7 @@ class LoginTests(unittest.TestCase):
         connection_mock.return_value = None
         self.ldap_connection.search.side_effect = exceptions.LDAPResponseTimeoutError
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=False), auth.login(self.database))
+        self.assertEqual(dict(ok=False), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
@@ -130,8 +121,7 @@ class LoginTests(unittest.TestCase):
         """Test login fails when LDAP password hash is not salted SHA1."""
         self.ldap_entry.userPassword.value = b'{XSHA}whatever-here'
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=False), auth.login(self.database))
+        self.assertEqual(dict(ok=False), auth.login(self.database))
         self.ldap_connection.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
         self.assertEqual('Only SSHA LDAP password digest supported!', logging_mock.call_args_list[0][0][0])
@@ -146,8 +136,7 @@ class LoginTests(unittest.TestCase):
         """Test login when search error of the login user occurs."""
         self.ldap_entry.userPassword.value = b'{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr'
         connection_enter.return_value = self.ldap_connection
-        with patch("os.environ.get", self.environ_get):
-            self.assertEqual(dict(ok=False), auth.login(self.database))
+        self.assertEqual(dict(ok=False), auth.login(self.database))
         self.ldap_connection.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
         logging_mock.assert_not_called()
