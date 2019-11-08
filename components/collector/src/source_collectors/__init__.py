@@ -10,7 +10,7 @@ from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUnc
 from .jenkins import JenkinsFailedJobs, JenkinsJobs
 from .jenkins_test_report import (
     JenkinsTestReportSourceUpToDateness, JenkinsTestReportFailedTests, JenkinsTestReportTests)
-from .jira import JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraReadyUserStoryPoints
+from .jira import JiraIssues, JiraManualTestDuration, JiraManualTestExecutionFrequency, JiraReadyUserStoryPoints
 from .junit import JUnitFailedTests, JUnitSourceUpToDateness, JUnitTests
 from .manual_number import ManualNumber
 from .ncover import NCoverSourceUpToDateness

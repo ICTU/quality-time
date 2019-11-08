@@ -1,10 +1,12 @@
 """Jira metric collector."""
 
 from abc import ABC
-from typing import cast
+from datetime import datetime
+from typing import cast, List
 from urllib.parse import quote
 
 from collector_utilities.type import Entities, Responses, URL, Value
+from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
@@ -74,8 +76,39 @@ class JiraManualTestDuration(JiraFieldSumBase):
     field_parameter = "manual_test_duration_field"
     entity_key = "duration"
 
-class JiraManualTestExecution(JiraFieldSumBase):
+class JiraManualTestExecutionFrequency(JiraFieldSumBase):
     """Collector to get manual test execution from Jira."""
 
-    field_parameter = "manual_test_execution_field"
+    field_parameter = "manual_test_execution_frequency_field"
     entity_key = "days"
+
+    # @functools.lru_cache(maxsize=2048)
+    def _parse_source_responses(self, responses: Responses) -> List:
+        field = self._parameter(self.field_parameter)
+        param = self._parameter("manual_test_default_frequency_field")
+        default_frequency = int(param[0] if isinstance(param, list) else param)
+
+        def __frequency(issue_fields, default: int) -> int:
+            return int(issue_fields[field] if field in issue_fields and issue_fields[field] is not None else default)
+
+        def __touched_days_ago(issue_fields) -> int:
+            max_date_str = max([comment["updated"] for comment in issue_fields["comment"]["comments"]])
+            split_date = max_date_str[:max_date_str.find('T')].split('-') if max_date_str else [0, 0, 0]
+            return days_ago(datetime(int(split_date[0]), int(split_date[1]), int(split_date[2])))
+
+        return [issue  for issue in responses[0].json()["issues"]
+                if __frequency(issue["fields"], default_frequency) <= __touched_days_ago(issue["fields"])]
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(self._parse_source_responses(responses)))
+
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        url = self._parameter("url")
+        ltc_issues = self._parse_source_responses(responses)
+        return [dict(key=issue["id"], summary=issue["fields"]["summary"], url=f"{url}/browse/{issue['key']}")
+                for issue in ltc_issues]
+
+    def _fields(self) -> str:  # pylint: disable=no-self-use
+        """Return the fields to get from Jira."""
+        return "*all"

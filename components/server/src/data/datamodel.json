@@ -1712,6 +1712,26 @@
                         "manual_test_duration"
                     ]
                 },
+                "manual_test_execution_frequency_field": {
+                    "name": "Execution frequency field",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "manual_test_execution"
+                    ]
+                },
+                "manual_test_default_frequency_field": {
+                    "name": "Default execution frequency (days)",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "21",
+                    "metrics": [
+                        "manual_test_execution"
+                    ]
+                },
                 "story_points_field": {
                     "name": "Story points field id",
                     "type": "string",
@@ -1750,7 +1770,7 @@
                         }
                     ]
                 },
-                "manual_test_execution_field": {
+                "manual_test_execution": {
                     "name": "last test",
                     "name_plural": "last tests",
                     "attributes": [
