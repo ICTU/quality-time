@@ -66,11 +66,11 @@ def login(database: Database) -> Dict[str, bool]:
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
 
-            conn.search(ldap_root_dn, f"(|(uid={username})(cn={username}))", attributes=['cn', 'userPassword'])
+            conn.search(ldap_root_dn, f"(|(uid={username})(cn={username}))", attributes=['userPassword'])
             result = conn.entries[0]
             pwd = credentials.get("password", "no password given")
             if not result.userPassword.value:
-                with Connection(ldap_server, user=f"cn={result.cn.value},{ldap_root_dn}", password=pwd, auto_bind=True):
+                with Connection(ldap_server, user=result.entry_dn, password=pwd, auto_bind=True):
                     pass
             elif not check_password(result.userPassword.value, pwd):
                 return dict(ok=False)
