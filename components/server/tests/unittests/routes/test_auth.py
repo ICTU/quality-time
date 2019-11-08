@@ -12,9 +12,10 @@ from database import sessions
 from routes import auth
 
 
-@patch.object(ldap3.Connection, '__enter__')
-@patch.object(ldap3.Connection, '__exit__', lambda *args: None)
 @patch('bottle.request', Mock(json=dict(username="jodoe", password="secret")))
+@patch.object(ldap3.Connection, '__exit__', lambda *args: None)
+@patch.object(ldap3.Connection, '__enter__')
+@patch.object(ldap3.Connection, '__init__')
 class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
@@ -27,7 +28,6 @@ class LoginTests(unittest.TestCase):
         bottle.response._cookies = None  # pylint: disable=protected-access
         logging.disable(logging.NOTSET)
 
-    @patch.object(ldap3.Connection, '__init__')
     def test_successful_login(self, connection_mock, connection_enter):
         """Test successful login."""
         connection_mock.return_value = None
@@ -40,7 +40,6 @@ class LoginTests(unittest.TestCase):
         self.ldap_connection.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
 
-    @patch.object(ldap3.Connection, '__init__')
     def test_successful_bind_login(self, connection_mock, connection_enter):
         """Test successful login if ldap server does not reveal password digest."""
         connection_mock.return_value = None
@@ -57,9 +56,9 @@ class LoginTests(unittest.TestCase):
         self.ldap_connection.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
 
-    @patch.object(ldap3.Connection, '__init__', Mock(return_value=None))
-    def test_successful_login_local(self, connection_enter):
+    def test_successful_login_local(self, connection_mock, connection_enter):
         """Test successful login."""
+        connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b'{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr'
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(dict(ok=True), auth.login(self.database))
@@ -69,9 +68,8 @@ class LoginTests(unittest.TestCase):
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
 
     @patch.object(logging, 'warning')
-    @patch.object(ldap3.Connection, '__init__')
     @patch.object(ldap3.Server, '__init__', Mock(side_effect=exceptions.LDAPServerPoolError))
-    def test_login_server_error(self, connection_mock, logging_mock, connection_enter):
+    def test_login_server_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when a server creation error occurs."""
         connection_mock.return_value = None
         self.assertEqual(dict(ok=False), auth.login(self.database))
@@ -82,8 +80,7 @@ class LoginTests(unittest.TestCase):
         self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPServerPoolError)
 
     @patch.object(logging, 'warning')
-    @patch.object(ldap3.Connection, '__init__')
-    def test_login_bind_error(self, connection_mock, logging_mock, connection_enter):
+    def test_login_bind_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when an error of binding dn reader occurs."""
         connection_mock.return_value = None
         self.ldap_connection.bind.return_value = False
@@ -96,8 +93,7 @@ class LoginTests(unittest.TestCase):
         self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPBindError)
 
     @patch.object(logging, 'warning')
-    @patch.object(ldap3.Connection, '__init__')
-    def test_login_search_error(self, connection_mock, logging_mock, connection_enter):
+    def test_login_search_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when search error of the login user occurs."""
         connection_mock.return_value = None
         self.ldap_connection.search.side_effect = exceptions.LDAPResponseTimeoutError
@@ -110,9 +106,9 @@ class LoginTests(unittest.TestCase):
         self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPResponseTimeoutError)
 
     @patch.object(logging, 'warning')
-    @patch.object(ldap3.Connection, '__init__', Mock(return_value=None))
-    def test_login_password_hash_error(self, logging_mock, connection_enter):
+    def test_login_password_hash_error(self, logging_mock, connection_mock, connection_enter):
         """Test login fails when LDAP password hash is not salted SHA1."""
+        connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b'{XSHA}whatever-here'
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(dict(ok=False), auth.login(self.database))
@@ -124,9 +120,9 @@ class LoginTests(unittest.TestCase):
         self.assertIsInstance(logging_mock.call_args_list[1][0][2], exceptions.LDAPInvalidAttributeSyntaxResult)
 
     @patch.object(logging, 'warning')
-    @patch.object(ldap3.Connection, '__init__', Mock(return_value=None))
-    def test_login_wrong_password(self, logging_mock, connection_enter):
+    def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
         """Test login when search error of the login user occurs."""
+        connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b'{SSHA}W841/abcdefghijklmnopqrstuvwxyz0'
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(dict(ok=False), auth.login(self.database))
