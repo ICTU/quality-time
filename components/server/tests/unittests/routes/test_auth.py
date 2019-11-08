@@ -13,12 +13,15 @@ from routes import auth
 
 # pylint: disable=too-many-arguments
 
+
 class LoginTests(unittest.TestCase):
     """Unit tests for the login route."""
     def setUp(self):
         self.database = Mock()
         self.environ_get = MagicMock(
-            side_effect=["dc=example,dc=org", "ldap://localhost:389", "admin", "admin", "ldap://localhost:389"])
+            side_effect=[
+                "dc=example,dc=org", "ldap://localhost:389", "cn=admin,dc=example,dc=org", "admin",
+                "ldap://localhost:389"])
 
     def tearDown(self):
         bottle.response._cookies = None  # pylint: disable=protected-access
@@ -31,8 +34,10 @@ class LoginTests(unittest.TestCase):
     @patch('bottle.request')
     def test_successful_login(self, request_json_mock, server_mock, connection_mock, connection_enter, connection_exit):
         """Test successful login."""
-        environ_get = MagicMock(side_effect=["dc=example,dc=org", 'http://www.quality-time.my-org.org:5001',
-                                             "admin", "admin", 'http://www.quality-time.my-org.org:5001'])
+        environ_get = MagicMock(
+            side_effect=[
+                "dc=example,dc=org", "http://www.quality-time.my-org.org:5001", "cn=admin,dc=example,dc=org", "admin",
+                "http://www.quality-time.my-org.org:5001"])
         request_json_mock.json = dict(username="jodoe", password="secret")
         server_mock.return_value = None
         connection_mock.return_value = None
@@ -89,7 +94,6 @@ class LoginTests(unittest.TestCase):
         fake_con.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
 
-
     @patch.object(ldap3.Connection, '__exit__')
     @patch.object(ldap3.Connection, '__enter__')
     @patch.object(ldap3.Connection, '__init__')
@@ -130,10 +134,9 @@ class LoginTests(unittest.TestCase):
         with patch("os.environ.get", self.environ_get):
             self.assertEqual(dict(ok=False), auth.login(self.database))
         connection_mock.assert_not_called()
-        self.assertEqual('LDAP error for cn=%s,%s: %s', logging_mock.call_args[0][0])
+        self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
         self.assertEqual('jodoe', logging_mock.call_args[0][1])
-        self.assertEqual("dc=example,dc=org", logging_mock.call_args[0][2])
-        self.assertIsInstance(logging_mock.call_args[0][3], exceptions.LDAPServerPoolError)
+        self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPServerPoolError)
 
     @patch.object(logging, 'warning')
     @patch.object(ldap3.Connection, '__exit__')
@@ -156,10 +159,9 @@ class LoginTests(unittest.TestCase):
 
         connection_mock.assert_called_once()
         fake_con.bind.assert_called_once()
-        self.assertEqual('LDAP error for cn=%s,%s: %s', logging_mock.call_args[0][0])
-        self.assertEqual('admin', logging_mock.call_args[0][1])
-        self.assertEqual("dc=example,dc=org", logging_mock.call_args[0][2])
-        self.assertIsInstance(logging_mock.call_args[0][3], exceptions.LDAPBindError)
+        self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
+        self.assertEqual('cn=admin,dc=example,dc=org', logging_mock.call_args[0][1])
+        self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPBindError)
 
     @patch.object(logging, 'warning')
     @patch.object(ldap3.Connection, '__exit__')
@@ -183,10 +185,9 @@ class LoginTests(unittest.TestCase):
 
         connection_mock.assert_called_once()
         fake_con.bind.assert_called_once()
-        self.assertEqual('LDAP error for cn=%s,%s: %s', logging_mock.call_args[0][0])
+        self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
         self.assertEqual('jodoe', logging_mock.call_args[0][1])
-        self.assertEqual("dc=example,dc=org", logging_mock.call_args[0][2])
-        self.assertIsInstance(logging_mock.call_args[0][3], exceptions.LDAPResponseTimeoutError)
+        self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPResponseTimeoutError)
 
     @patch.object(logging, 'warning')
     @patch.object(ldap3.Connection, '__exit__')
@@ -214,10 +215,9 @@ class LoginTests(unittest.TestCase):
         fake_con.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
         self.assertEqual('Only SSHA LDAP password digest supported!', logging_mock.call_args_list[0][0][0])
-        self.assertEqual('LDAP error for cn=%s,%s: %s', logging_mock.call_args_list[1][0][0])
-        self.assertEqual('jodoe', logging_mock.call_args_list[1][0][1])
-        self.assertEqual("dc=example,dc=org", logging_mock.call_args_list[1][0][2])
-        self.assertIsInstance(logging_mock.call_args_list[1][0][3], exceptions.LDAPInvalidAttributeSyntaxResult)
+        self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args_list[1][0][0])
+        self.assertEqual('jodoe', logging_mock.call_args[0][1])
+        self.assertIsInstance(logging_mock.call_args_list[1][0][2], exceptions.LDAPInvalidAttributeSyntaxResult)
 
     @patch.object(logging, 'warning')
     @patch.object(ldap3.Connection, '__exit__')
@@ -245,6 +245,7 @@ class LoginTests(unittest.TestCase):
         fake_con.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['cn', 'userPassword'])
         logging_mock.assert_not_called()
+
 
 class LogoutTests(unittest.TestCase):
     """Unit tests for the logout route."""

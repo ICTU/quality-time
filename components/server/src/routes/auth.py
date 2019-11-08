@@ -56,15 +56,14 @@ def login(database: Database) -> Dict[str, bool]:
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
-    ldap_lookup_user = os.environ.get("LDAP_LOOKUP_USER", "admin")
+    ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
 
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
-        with Connection(ldap_server,
-                        user=f"cn={ldap_lookup_user},{ldap_root_dn}", password=ldap_lookup_user_password) as conn:
+        with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as conn:
             if not conn.bind():
-                username = ldap_lookup_user
+                username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
 
             conn.search(ldap_root_dn, f"(|(uid={username})(cn={username}))", attributes=['cn', 'userPassword'])
@@ -76,7 +75,7 @@ def login(database: Database) -> Dict[str, bool]:
             elif not check_password(result.userPassword.value, pwd):
                 return dict(ok=False)
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for cn=%s,%s: %s", username, ldap_root_dn, reason)
+        logging.warning("LDAP error for user %s: %s", username, reason)
         return dict(ok=False)
 
     session_id, session_expiration_datetime = generate_session()
