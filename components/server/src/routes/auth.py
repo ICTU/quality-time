@@ -1,18 +1,19 @@
 """Login/logout."""
 
-from datetime import datetime, timedelta
+import base64
+import hashlib
 import logging
 import os
 import re
+import string
+from datetime import datetime, timedelta
 from typing import cast, Dict, Tuple
-import hashlib
-import base64
-
-from pymongo.database import Database
-from ldap3 import Server, Connection, ALL
-from ldap3.core import exceptions
 
 import bottle
+from ldap3 import Server, Connection, ALL
+from ldap3.core import exceptions
+from pymongo.database import Database
+
 from database import sessions
 from server_utilities.functions import uuid
 from server_utilities.type import SessionId
@@ -37,43 +38,47 @@ def check_password(ssha_ldap_salted_password, password):
         raise exceptions.LDAPInvalidAttributeSyntaxResult
 
     digest_salt_b64 = ssha_ldap_salted_password[6:]  # strip {SSHA}
-
     digest_salt = base64.b64decode(digest_salt_b64)
     digest = digest_salt[:20]
     salt = digest_salt[20:]
-
-    sha = hashlib.sha1(bytes(password, 'utf-8'))  #nosec
-    sha.update(salt)  #nosec
-
+    sha = hashlib.sha1(bytes(password, 'utf-8'))  # nosec
+    sha.update(salt)  # nosec
     return digest == sha.digest()
+
+
+def get_credentials() -> Tuple[str, str]:
+    """Return the credentials from the request."""
+    credentials = dict(bottle.request.json)
+    unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
+    username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
+    password = credentials.get("password", "no password given")
+    return username, password
 
 
 @bottle.post("/api/v1/login")
 def login(database: Database) -> Dict[str, bool]:
     """Log the user in."""
-    credentials = dict(bottle.request.json)
-    unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
-    username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
+    username, password = get_credentials()
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
     ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
-
+    ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
+    ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as conn:
             if not conn.bind():
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
-
-            conn.search(ldap_root_dn, f"(|(uid={username})(cn={username}))", attributes=['userPassword'])
+            conn.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword'])
             result = conn.entries[0]
-            pwd = credentials.get("password", "no password given")
-            if not result.userPassword.value:
-                with Connection(ldap_server, user=result.entry_dn, password=pwd, auto_bind=True):
+            if result.userPassword.value:
+                if not check_password(result.userPassword.value, password):
+                    return dict(ok=False)
+            else:
+                with Connection(ldap_server, user=result.entry_dn, password=password, auto_bind=True):
                     pass
-            elif not check_password(result.userPassword.value, pwd):
-                return dict(ok=False)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error for user %s: %s", username, reason)
         return dict(ok=False)
