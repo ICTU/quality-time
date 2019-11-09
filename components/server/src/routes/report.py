@@ -1,12 +1,13 @@
 """Report routes."""
 
 from collections import namedtuple
-from typing import Any, Dict, Literal, Tuple, Optional
+from typing import Any, Dict, List, Literal, Tuple, Optional, Union
 
+import bottle
 import requests
 from pymongo.database import Database
-import bottle
 
+from database import sessions
 from database.datamodels import (
     latest_datamodel, default_subject_attributes, default_metric_attributes, default_source_parameters
 )
@@ -14,9 +15,8 @@ from database.reports import (
     latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
 )
-from database import sessions
 from server_utilities.functions import report_date_time, uuid, sanitize_html
-from server_utilities.type import MetricId, Position, ReportId, SourceId, SubjectId
+from server_utilities.type import MetricId, Position, ReportId, SourceId, SubjectId, URL
 from .measurement import latest_measurement, insert_new_measurement
 
 
@@ -244,19 +244,36 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
     return insert_new_report(database, data.report)
 
 
-def _basic_auth_credentials(params) -> Optional[Tuple[str, str]]:
+def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
     """Return the basic authentication credentials, if any."""
-    if 'private_token' in params:
-        return params["private_token"], ""
-    return (params["username"], params["password"]) if 'username' in params and 'password' in params else None
+    if "private_token" in source_parameters:
+        return source_parameters["private_token"], ""
+    if "username" in source_parameters and "password" in source_parameters:
+        return source_parameters["username"], source_parameters["password"]
+    return None
 
 
-def _check_url_availability(filled_data: dict, param_key):
+def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict[str, Union[int, str]]:
+    """Check the availability of the URL."""
     try:
-        response = requests.get(filled_data[param_key], auth=_basic_auth_credentials(filled_data))
+        response = requests.get(url, auth=_basic_auth_credentials(source_parameters))
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
+
+
+def _availability_checks(url_parameter_keys, source_parameters, source_uuid) -> List[Dict[str, Union[str, int]]]:
+    """Check the availability of the URLs."""
+    availability_checks = []
+    for url_parameter_key in url_parameter_keys:
+        url = source_parameters.get(url_parameter_key, "")
+        if not url:
+            continue
+        availability = _check_url_availability(url, source_parameters)
+        availability['parameter_key'] = url_parameter_key
+        availability['source_uuid'] = source_uuid
+        availability_checks.append(availability)
+    return availability_checks
 
 
 @bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
@@ -281,17 +298,12 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
 
     urls_param_keys = [param_key for param_key in parameters
-                       if parameters[param_key]['type'] == 'url' and parameter_key == param_key
-                       or ("validate_on" in parameters[param_key]
-                           and parameter_key in parameters[param_key]["validate_on"].split(','))]
+                       if parameters[param_key]['type'] == 'url' and parameter_key == param_key or
+                       ("validate_on" in parameters[param_key] and parameter_key in
+                        parameters[param_key]["validate_on"].split(','))]
 
-    if urls_param_keys:
-        ret_val['availability'] = []
-        for param_key in urls_param_keys:
-            availability = _check_url_availability(data.source['parameters'], param_key)
-            availability['parameter_key'] = param_key
-            availability['source_uuid'] = source_uuid
-            ret_val['availability'].append(availability)
+    if availability_checks := _availability_checks(urls_param_keys, data.source["parameters"], source_uuid):
+        ret_val["availability"] = availability_checks
 
     return ret_val
 

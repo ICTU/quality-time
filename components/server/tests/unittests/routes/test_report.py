@@ -446,6 +446,16 @@ class PostSourceParameterTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_not_called()
 
+    def test_empty_url(self, request):
+        """Test that the source url availability is not checked when the url is empty."""
+        database = self.database
+        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
+            type="url"), username=dict(type="string"), password=dict(type="pwd")))))
+        request.json = dict(url="")
+        response = post_source_parameter("report_uuid", "source_uuid", "url", database)
+        self.assertEqual(response, dict(ok=True))
+        self.database.reports.insert.assert_called_once_with(self.report)
+
     @patch.object(requests, 'get')
     def test_url_with_token(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
