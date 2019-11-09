@@ -7,11 +7,13 @@ jobs:
     steps:
       - checkout
       - run:
-         command: |
-           cd components/collector
-           sudo pip install -r requirements.txt -r requirements-dev.txt
-           ci/unittest.sh
-           ci/quality.sh
+          command: |
+            cd components/collector
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt -r requirements-dev.txt
+            ci/unittest.sh
+            ci/quality.sh
 
   unittest_server:
     docker:
