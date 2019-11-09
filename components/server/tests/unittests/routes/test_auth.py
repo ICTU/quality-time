@@ -116,7 +116,7 @@ class LoginTests(unittest.TestCase):
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
         self.assertEqual('Only SSHA LDAP password digest supported!', logging_mock.call_args_list[0][0][0])
         self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args_list[1][0][0])
-        self.assertEqual('jodoe', logging_mock.call_args[0][1])
+        self.assertEqual('cn=jodoe,dc=example,dc=org', logging_mock.call_args[0][1])
         self.assertIsInstance(logging_mock.call_args_list[1][0][2], exceptions.LDAPInvalidAttributeSyntaxResult)
 
     @patch.object(logging, 'warning')
@@ -128,7 +128,9 @@ class LoginTests(unittest.TestCase):
         self.assertEqual(dict(ok=False), auth.login(self.database))
         self.ldap_connection.search.assert_called_with(
             "dc=example,dc=org", '(|(uid=jodoe)(cn=jodoe))', attributes=['userPassword'])
-        logging_mock.assert_not_called()
+        self.assertEqual('LDAP error for user %s: %s', logging_mock.call_args[0][0])
+        self.assertEqual('cn=jodoe,dc=example,dc=org', logging_mock.call_args[0][1])
+        self.assertIsInstance(logging_mock.call_args[0][2], exceptions.LDAPInvalidCredentialsResult)
 
 
 class LogoutTests(unittest.TestCase):

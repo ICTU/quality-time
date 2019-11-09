@@ -19,12 +19,23 @@ from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 
 
-def generate_session() -> Tuple[SessionId, datetime]:
-    """Generate a new random, secret and unique session id and a session expiration datetime."""
-    return cast(SessionId, uuid()), datetime.now() + timedelta(hours=24)
+def create_session(database: Database, username: str) -> None:
+    """Generate a new random, secret and unique session id and a session expiration datetime and add it to the
+    database and the session cookie."""
+    session_id = cast(SessionId, uuid())
+    session_expiration_datetime = datetime.now() + timedelta(hours=24)
+    sessions.upsert(database, username, session_id, session_expiration_datetime)
+    set_session_cookie(session_id, session_expiration_datetime)
 
 
-def set_session_cookie(session_id: str, expires_datetime: datetime) -> None:
+def delete_session(database: Database) -> None:
+    """Delete the session."""
+    session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
+    sessions.delete(database, session_id)
+    set_session_cookie(session_id, datetime.min)
+
+
+def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:
     """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     options = dict(expires=expires_datetime, path="/", httponly=True)
     bottle.response.set_cookie("session_id", session_id, **options)
@@ -55,10 +66,8 @@ def get_credentials() -> Tuple[str, str]:
     return username, password
 
 
-@bottle.post("/api/v1/login")
-def login(database: Database) -> Dict[str, bool]:
-    """Log the user in."""
-    username, password = get_credentials()
+def verify_user(username: str, password: str) -> bool:
+    """Authenticate the user and return whether they are authorized to login."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
     ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
@@ -67,32 +76,38 @@ def login(database: Database) -> Dict[str, bool]:
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
-        with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as conn:
-            if not conn.bind():
+        with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
+            if not lookup_connection.bind():
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
-            conn.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword'])
-            result = conn.entries[0]
-            if result.userPassword.value:
-                if not check_password(result.userPassword.value, password):
-                    return dict(ok=False)
+            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword'])
+            result = lookup_connection.entries[0]
+        username, salted_password = result.entry_dn, result.userPassword.value
+        if salted_password:
+            if check_password(salted_password, password):
+                logging.info("LDAP salted password check for user %s succeeded", username)
             else:
-                with Connection(ldap_server, user=result.entry_dn, password=password, auto_bind=True):
-                    pass
+                raise exceptions.LDAPInvalidCredentialsResult
+        else:
+            with Connection(ldap_server, user=username, password=password, auto_bind=True):
+                logging.info("LDAP bind for user %s succeeded", username)
     except Exception as reason:  # pylint: disable=broad-except
         logging.warning("LDAP error for user %s: %s", username, reason)
-        return dict(ok=False)
+        return False
+    return True
 
-    session_id, session_expiration_datetime = generate_session()
-    sessions.upsert(database, username, session_id, session_expiration_datetime)
-    set_session_cookie(session_id, session_expiration_datetime)
-    return dict(ok=True)
+
+@bottle.post("/api/v1/login")
+def login(database: Database) -> Dict[str, bool]:
+    """Log the user in."""
+    username, password = get_credentials()
+    if verified := verify_user(username, password):
+        create_session(database, username)
+    return dict(ok=verified)
 
 
 @bottle.post("/api/v1/logout")
 def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
-    session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
-    sessions.delete(database, session_id)
-    set_session_cookie(session_id, datetime.min)
+    delete_session(database)
     return dict(ok=True)
