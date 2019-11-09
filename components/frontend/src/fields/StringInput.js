@@ -14,6 +14,7 @@ function StringInputWithSuggestions(props) {
       <Form.Dropdown
         {...otherProps}
         allowAdditions
+        clearable
         error={(required && search_query === "") || (warning !== undefined && props.warning)}
         fluid
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options])} }
