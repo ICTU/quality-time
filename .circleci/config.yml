@@ -23,7 +23,7 @@ jobs:
             sudo apt-get install libsasl2-dev libldap2-dev libssl-dev
             cd components/server
             python -m venv venv
-            venv/bin/activate
+            . venv/bin/activate
             pip install -r requirements.txt -r requirements-dev.txt
             ci/unittest.sh
             ci/quality.sh
