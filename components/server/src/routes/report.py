@@ -1,7 +1,7 @@
 """Report routes."""
 
 from collections import namedtuple
-from typing import Any, Dict, Literal, Tuple, Optional, Union
+from typing import Any, Dict, List, Literal, Tuple, Optional, Union
 
 import bottle
 import requests
@@ -254,11 +254,26 @@ def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
 
 
 def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict[str, Union[int, str]]:
+    """Check the availability of the URL."""
     try:
         response = requests.get(url, auth=_basic_auth_credentials(source_parameters))
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
+
+
+def _availability_checks(url_parameter_keys, source_parameters, source_uuid) -> List[Dict[str, Union[str, int]]]:
+    """Check the availability of the URLs."""
+    availability_checks = []
+    for url_parameter_key in url_parameter_keys:
+        url = source_parameters.get(url_parameter_key, "")
+        if not url:
+            continue
+        availability = _check_url_availability(url, source_parameters)
+        availability['parameter_key'] = url_parameter_key
+        availability['source_uuid'] = source_uuid
+        availability_checks.append(availability)
+    return availability_checks
 
 
 @bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
@@ -287,19 +302,8 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
                        ("validate_on" in parameters[param_key] and parameter_key in
                         parameters[param_key]["validate_on"].split(','))]
 
-    if urls_param_keys:
-        availability_checks = []
-        for param_key in urls_param_keys:
-            source_parameters = data.source["parameters"]
-            url = source_parameters.get(param_key, "")
-            if not url:
-                continue
-            availability = _check_url_availability(url, source_parameters)
-            availability['parameter_key'] = param_key
-            availability['source_uuid'] = source_uuid
-            availability_checks.append(availability)
-        if availability_checks:
-            ret_val["availability"] = availability_checks
+    if availability_checks := _availability_checks(urls_param_keys, data.source["parameters"], source_uuid):
+        ret_val["availability"] = availability_checks
 
     return ret_val
 
