@@ -1,13 +1,13 @@
 """Unit tests for the Axe accessibility analysis report."""
 
-import hashlib
 import io
 import zipfile
 
+from source_collectors import AxeCSVAccessibility
 from .source_collector_test_case import SourceCollectorTestCase
 
 
-class AxeCSVAccessibility(SourceCollectorTestCase):
+class AxeCSVAccessibilityTest(SourceCollectorTestCase):
     """Unit tests for the Axe CSV collector for accessibility violations."""
 
     def setUp(self):
@@ -19,14 +19,27 @@ class AxeCSVAccessibility(SourceCollectorTestCase):
         self.metric = dict(
             type="accessibility", addition="sum",
             sources=dict(source_id=dict(type="axecsv", parameters=dict(url="https://axecsv"))))
-        expected_key1 = hashlib.md5(self.serious_violation.strip().encode("utf-8")).hexdigest()
-        expected_key2 = hashlib.md5(self.moderate_violation.strip().encode("utf-8")).hexdigest()
         self.expected_entities = [
-            {'description': None, 'element': None, 'help': 'help1', 'impact': 'serious',
-             'key': expected_key1, 'page': 'url1', 'url': 'url1', 'violation_type': 'aria-input-field-name'},
-            {'description': 'messages2', 'element': 'dom2', 'help': 'help2', 'impact': 'moderate',
-             'key': expected_key2, 'page': 'url2', 'url': 'url2', 'violation_type': 'aria-hidden-focus'},
-        ]
+            {
+                'url': 'url1',
+                'violation_type': 'aria-input-field-name',
+                'impact': 'serious',
+                'element': None,
+                'page': 'url1',
+                'description': None,
+                'help': 'help1'
+            },
+            {
+                'url': 'url2',
+                'violation_type': 'aria-hidden-focus',
+                'impact': 'moderate',
+                'element': 'dom2',
+                'page': 'url2',
+                'description': 'messages2',
+                'help': 'help2'
+            }]
+        for entity in self.expected_entities:
+            entity["key"] = AxeCSVAccessibility.hash_entity(entity)
 
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
@@ -59,3 +72,24 @@ class AxeCSVAccessibility(SourceCollectorTestCase):
                 zipped_axe_csv.writestr(f"axe{index}.csv", self.csv)
         response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
+
+    def test_empty_line(self):
+        """Test that empty lines are ignored."""
+        response = self.collect(self.metric, get_request_text=self.csv + "\n\n")
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    def test_embedded_newlines(self):
+        """Test that embedded newlines are ignored."""
+        violation_with_newline = 'url3,aria-hidden-focus,moderate,help3,html3,"messages3\nsecond line",dom3\n'
+        expected_entity = {
+            'url': 'url3',
+            'violation_type': 'aria-hidden-focus',
+            'impact': 'moderate',
+            'element': 'dom3',
+            'page': 'url3',
+            'description': 'messages3\nsecond line',
+            'help': 'help3'
+        }
+        expected_entity["key"] = AxeCSVAccessibility.hash_entity(expected_entity)
+        response = self.collect(self.metric, get_request_text=self.csv + violation_with_newline)
+        self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])

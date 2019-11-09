@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Open Axe CSV files in universal newline mode. Fixes [#777](https://github.com/ICTU/quality-time/issues/777). 
+
 ### Added
 
 - More flexibility in configuring LDAP by introducing a `LDAP_SEARCH_FILTER` environment variable and replacing the `LDAP_LOOKUP_USER` variable by `LDAP_LOOKUP_USER_DN`. See the [LDAP section in the deployment document](https://github.com/ICTU/quality-time/blob/master/docs/DEPLOY.md#ldap). Closes [#774](https://github.com/ICTU/quality-time/issues/774). 
