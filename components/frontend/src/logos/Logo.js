@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image } from 'semantic-ui-react';
 
+import Axe from './axe.png';
 import AzureDevops from './azure_devops.png';
 import Bandit from './bandit.png'
 import Checkmarx from './checkmarx.png';
@@ -23,6 +24,7 @@ import Wekan from './wekan.png';
 
 export function Logo(props) {
     const logo = {
+        axecsv: Axe,
         azure_devops: AzureDevops,
         bandit: Bandit,
         cxsast: Checkmarx,
