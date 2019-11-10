@@ -44,7 +44,7 @@ LDAP_URL=ldap://ldap:389
 LDAP_ROOT_DN=dc=example,dc=org
 LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
 LDAP_LOOKUP_USER_PASSWORD=admin
-LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))  # Escape the $-sign to prevent docker-compose from expanding the username variable
+LDAP_SEARCH_FILTER=(|(uid=$username)(cn=$username))
 LOAD_EXAMPLE_REPORTS=True
 ...
 ```
