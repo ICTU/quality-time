@@ -23,7 +23,7 @@ $ export LDAP_URL="ldap://ldap.example.org:389"
 $ export LDAP_ROOT_DN="dc=example,dc=org"
 $ export LDAP_LOOKUP_USER_DN="cn=lookup_user,dc=example,dc=org"
 $ export LDAP_LOOKUP_USER_PASSWORD="secret"
-$ export LDAP_SEARCH_FILTER="(|(uid=$username)(cn=$username))"
+$ export LDAP_SEARCH_FILTER='(|(uid=$username)(cn=$username))'  # Single quotes to prevent the shell from expanding the username variable
 $ cd components/server
 $ python src/quality_report_server.py
 INFO:root:Connected to database: Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quality_time_db')
@@ -44,7 +44,7 @@ LDAP_URL=ldap://ldap:389
 LDAP_ROOT_DN=dc=example,dc=org
 LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
 LDAP_LOOKUP_USER_PASSWORD=admin
-LDAP_SEARCH_FILTER=(|(uid=$username)(cn=$username))
+LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))  # Escape the $-sign to prevent docker-compose from expanding the username variable
 LOAD_EXAMPLE_REPORTS=True
 ...
 ```
