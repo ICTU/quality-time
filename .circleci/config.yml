@@ -11,7 +11,7 @@ jobs:
             cd components/collector
             python -m venv venv
             . venv/bin/activate
-            pip install -r requirements.txt -r requirements-dev.txt
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
             ci/unittest.sh
             ci/quality.sh
 
@@ -26,7 +26,7 @@ jobs:
             cd components/server
             python -m venv venv
             . venv/bin/activate
-            pip install -r requirements.txt -r requirements-dev.txt
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
             ci/unittest.sh
             ci/quality.sh
 
