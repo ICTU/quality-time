@@ -150,4 +150,5 @@ class StreamNrMeasurementsTest(unittest.TestCase):
         with patch("time.sleep", sleep):
             stream = stream_nr_measurements("report_uuid", database)
             self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
+            self.assertEqual(": keep-alive\n\n", next(stream))
             self.assertEqual("retry: 2000\nid: 1\nevent: delta\ndata: 43\n\n", next(stream))
