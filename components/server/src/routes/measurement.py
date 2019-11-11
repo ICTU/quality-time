@@ -82,6 +82,8 @@ def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterato
             event_id += 1
             logging.info("Updating nr_measurements stream for report %s with %s measurements", report_uuid, data)
             yield sse_pack(event_id, "delta", data)
+        else:
+            yield ": keep-alive\n\n"
 
 
 @bottle.get("/api/v1/measurements/<metric_uuid>")
