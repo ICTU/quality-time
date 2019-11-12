@@ -30,7 +30,10 @@ export function ReportTitle(props) {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
-                            <ChangeLog report={props.report} />
+                            <ChangeLog
+                               report_uuid={props.report.report_uuid}
+                               timestamp={props.report.timestamp}
+                            />
                         </Grid.Column>
                     </Grid.Row>
                     {!props.readOnly &&

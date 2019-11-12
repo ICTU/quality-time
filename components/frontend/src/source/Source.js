@@ -74,7 +74,11 @@ export function Source(props) {
                 </Grid.Row>}
                 <Grid.Row>
                     <Grid.Column>
-                        <ChangeLog report={props.report} source_uuid={props.source_uuid} />
+                        <ChangeLog
+                            report_uuid={props.report.report_uuid}
+                            source_uuid={props.source_uuid}
+                            timestamp={props.report.timestamp}
+                        />
                     </Grid.Column>
                 </Grid.Row>
                 {!props.readOnly &&

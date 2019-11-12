@@ -322,7 +322,11 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]
     overview = latest_reports_overview(database)
+    old_value = overview[reports_attribute]
     overview[reports_attribute] = value
+    overview["delta"] = dict(
+        description=f"{sessions.user(database)} changed the {reports_attribute} of the reports overview "
+                    f"from '{old_value}' to '{value}'.")
     return insert_new_reports_overview(database, overview)
 
 
@@ -332,16 +336,18 @@ def post_report_new(database: Database):
     report_uuid = uuid()
     report = dict(
         report_uuid=report_uuid, title="New report", subjects={},
-        delta=dict(report_uuid=report_uuid, description=f"{sessions.user(database)} created this report."))
+        delta=dict(report_uuid=report_uuid, description=f"{sessions.user(database)} created a new report."))
     return insert_new_report(database, report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>")
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
-    report = latest_report(database, report_uuid)
-    report["deleted"] = "true"
-    return insert_new_report(database, report)
+    data = get_data(database, report_uuid)
+    data.report["deleted"] = "true"
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, description=f"{sessions.user(database)} deleted the report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
 
 
 @bottle.get("/api/v1/tagreport/<tag>")

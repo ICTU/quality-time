@@ -34,7 +34,10 @@ function get_changelog(nr_changes, uuids) {
   if (Object.keys(uuids).includes("subject_uuid")) {
     return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/subject/${uuids.subject_uuid}/${nr_changes}`)
   }
-  return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/${nr_changes}`)
+  if (Object.keys(uuids).includes("report_uuid")) {
+    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/${nr_changes}`)
+  }
+  return fetch_server_api('get', `changelog/${nr_changes}`)
 }
 
 export {

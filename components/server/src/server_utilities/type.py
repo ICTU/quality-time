@@ -1,8 +1,10 @@
 """Quality-time specific types."""
 
-from typing import Literal, NewType
+from typing import Dict, Literal, NewType, Union
+
 
 Addition = Literal["max", "min", "sum"]
+Change = Dict[str, Union[str, Dict[str, str]]]
 Color = Literal["green", "grey", "red", "yellow", "white"]
 Direction = Literal["<", ">"]
 Scale = Literal["count", "percentage"]

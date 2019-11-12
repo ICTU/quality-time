@@ -1,12 +1,12 @@
 """Reports collection."""
 
-from typing import Dict
+from typing import Dict, List
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Color, MetricId, ReportId, Status
+from server_utilities.type import Change, Color, MetricId, ReportId, Status
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
 
@@ -90,15 +90,15 @@ def insert_new_reports_overview(database: Database, reports_overview):
     return dict(ok=True)
 
 
-def changelog(database: Database, nr_changes: int, report_uuid: ReportId, **uuids):
-    """Return the changelog for the report, narrowed to a single subject, metric, or source if so required.
-    The uuids keyword arguments should contain report_uuid="report_uuid" and optionally subject_uuid="subject_uuid",
+def changelog(database: Database, nr_changes: int, **uuids):
+    """Return the changelog, narrowed to a single report, subject, metric, or source if so required.
+    The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
-    # Build a filter for finding the right "delta" subdocuments using the passed uuid's
+    sort_order = [("timestamp", pymongo.DESCENDING)]
+    projection = {"delta.description": True, "timestamp": True}
+    changes: List[Change] = []
+    if not uuids:
+        changes.extend(database.reports_overviews.find(sort=sort_order, limit=nr_changes, projection=projection))
     delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
-    delta_filter["delta.report_uuid"] = report_uuid
-    # Find the "nr_changes" most recent "delta" subdocuments with the required uuid's and return (using the projection)
-    # the description and the timestamp of the report:
-    return database.reports.find(
-        filter=delta_filter, sort=[("timestamp", pymongo.DESCENDING)], limit=nr_changes,
-        projection={"delta.description": True, "timestamp": True})
+    changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
+    return sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:nr_changes]
