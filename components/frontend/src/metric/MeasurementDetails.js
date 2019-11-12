@@ -61,7 +61,7 @@ export function MeasurementDetails(props) {
           reload={props.reload}
           report_uuid={report_uuid}
         />
-        <ChangeLog report={props.report} metric_uuid={props.metric_uuid} />
+        <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     }
   );

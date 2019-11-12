@@ -12,7 +12,10 @@ function fetch_changelog(uuids, nrChanges, setChanges) {
 }
 
 export function ChangeLog(props) {
-    let scope = "Changes in this report";
+    let scope = "Changes in this instance of Quality-time";
+    if (props.report_uuid) {
+        scope = "Changes in this report"
+    }
     if (props.subject_uuid) {
         scope = "Changes to this subject";
     }
@@ -25,7 +28,10 @@ export function ChangeLog(props) {
     const [nrChanges, setNrChanges] = useState(10);
     const [changes, setChanges] = useState([]);
     useEffect(() => {
-        let uuids = { report_uuid: props.report.report_uuid };
+        let uuids = {};
+        if (props.report_uuid) {
+            uuids.report_uuid = props.report_uuid;
+        }
         if (props.subject_uuid) {
             uuids.subject_uuid = props.subject_uuid;
         }
@@ -36,7 +42,7 @@ export function ChangeLog(props) {
             uuids.source_uuid = props.source_uuid;
         }
         fetch_changelog(uuids, nrChanges, setChanges)
-    }, [props.report.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.report.timestamp, nrChanges]);
+    }, [props.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.timestamp, nrChanges]);
     let rows = [];
     changes.forEach((change) => rows.push(<Table.Row key={change.timestamp + change.delta}>
         <Table.Cell>

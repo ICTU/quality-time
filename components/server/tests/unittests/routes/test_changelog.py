@@ -3,7 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
-from routes.changelog import get_report_changelog, get_subject_changelog, get_metric_changelog, get_source_changelog
+from routes.changelog import get_changelog, get_report_changelog, get_subject_changelog, get_metric_changelog, \
+    get_source_changelog
 
 
 class ChangeLogTest(unittest.TestCase):
@@ -15,6 +16,17 @@ class ChangeLogTest(unittest.TestCase):
 
     def test_get_changelog(self):
         """Test that the changelog is returned."""
+        report1 = dict(timestamp="1", delta=dict(description="delta1"))
+        report2 = dict(timestamp="2", delta=dict(description="delta2"))
+        self.database.reports.find.return_value = [report2, report1]
+        self.database.reports_overviews.find.return_value = []
+        self.database.measurements.find.return_value = []
+        self.assertEqual(
+            dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
+            get_changelog("10", self.database))
+
+    def test_get_report_changelog(self):
+        """Test that the report changelog is returned."""
         report1 = dict(timestamp="1", delta=dict(description="delta1"))
         report2 = dict(timestamp="2", delta=dict(description="delta2"))
         self.database.reports.find.return_value = [report2, report1]

@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { Grid, Segment } from 'semantic-ui-react';
+import { ChangeLog } from '../changelog/ChangeLog';
 import { StringInput } from '../fields/StringInput';
 import { set_reports_attribute } from '../api/report';
 
@@ -25,6 +26,11 @@ export function ReportsTitle(props) {
                                 set_value={(value) => set_reports_attribute("subtitle", value, props.reload)}
                                 value={props.subtitle}
                             />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <ChangeLog />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
