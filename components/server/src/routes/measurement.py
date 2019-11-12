@@ -63,27 +63,28 @@ def stream_nr_measurements(report_uuid: ReportId, database: Database) -> Iterato
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
 
     # Set the response headers
+    bottle.response.set_header("Connection", "keep-alive")
     bottle.response.set_header("Content-Type", "text/event-stream")
-    # See https://github.com/facebook/create-react-app/issues/1633 why the next header is needed when running locally
-    # with the webpack proxy.
-    bottle.response.set_header("Cache-Control", "no-transform")
+    bottle.response.set_header("Cache-Control", "no-cache")
 
-    # Provide an initial data dump to each new client and set up our
-    # message payload with a retry value in case of connection failure
-    data = count_measurements(database, report_uuid)
-    logging.info("Initializing nr_measurements stream for report %s with %s measurements", report_uuid, data)
-    yield sse_pack(event_id, "init", data)
-
+    # Provide an initial data dump to each new client and set up our message payload with a retry value in case of
+    # connection failure
+    nr_measurements = count_measurements(database, report_uuid)
+    logging.info("Initializing nr_measurements stream for report %s with %s measurements", report_uuid, nr_measurements)
+    yield sse_pack(event_id, "init", nr_measurements)
+    skipped = 0
     # Now give the client updates as they arrive
     while True:
         time.sleep(10)
-        if (new_data := count_measurements(database, report_uuid)) > data:
-            data = new_data
+        if (new_nr_measurements := count_measurements(database, report_uuid)) > nr_measurements or skipped > 5:
+            skipped = 0
+            nr_measurements = new_nr_measurements
             event_id += 1
-            logging.info("Updating nr_measurements stream for report %s with %s measurements", report_uuid, data)
-            yield sse_pack(event_id, "delta", data)
+            logging.info(
+                "Updating nr_measurements stream for report %s with %s measurements", report_uuid, nr_measurements)
+            yield sse_pack(event_id, "delta", nr_measurements)
         else:
-            yield ": keep-alive\n\n"
+            skipped += 1
 
 
 @bottle.get("/api/v1/measurements/<metric_uuid>")
