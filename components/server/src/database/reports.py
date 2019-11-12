@@ -1,12 +1,12 @@
 """Reports collection."""
 
-from typing import Dict
+from typing import Dict, List
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Color, MetricId, ReportId, Status
+from server_utilities.type import Change, Color, MetricId, ReportId, Status
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
 
@@ -96,7 +96,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
     sort_order = [("timestamp", pymongo.DESCENDING)]
     projection = {"delta.description": True, "timestamp": True}
-    changes = []
+    changes: List[Change] = []
     if not uuids:
         changes.extend(database.reports_overviews.find(sort=sort_order, limit=nr_changes, projection=projection))
     delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}

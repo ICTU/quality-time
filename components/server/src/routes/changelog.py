@@ -1,5 +1,7 @@
 """Changelog routes."""
 
+from typing import cast
+
 from pymongo.database import Database
 import bottle
 
@@ -14,7 +16,7 @@ def _get_changelog(database: Database, nr_changes: str, **uuids: str):
     if "report_uuid" in uuids:
         changes.extend(
             [dict(delta=change["delta"], timestamp=change["start"])
-             for change in measurements.changelog(database, uuids["report_uuid"], limit)])
+             for change in measurements.changelog(database, cast(ReportId, uuids["report_uuid"]), limit)])
     changes.extend(
         [dict(delta=change["delta"]["description"], timestamp=change["timestamp"]) for change in
          reports.changelog(database, limit, **uuids) if "delta" in change])
