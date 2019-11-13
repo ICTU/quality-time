@@ -55,29 +55,40 @@ class OpenReportTest(unittest.TestCase):
         login_form.find_element_by_class_name("button").click()
         self.wait.until(element_has_no_css_class((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
+    def assert_text_to_be_present_in_element(self, element, text: str):
+        """Assert that the text is present in the element."""
+        self.assertTrue(expect.text_to_be_present_in_element(element, text))
+
     def test_title(self):
         """Test the title."""
         self.assertTrue(expect.title_contains("Quality-time"))
-
-    def test_open_report(self):
-        """Test that the first report can be opened."""
-        report = self.driver.find_elements_by_class_name("card")[0]
-        report_title = report.find_element_by_class_name("header")
-        report.click()
-        self.assertTrue(
-            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title))
 
     def test_login_and_logout(self):
         """Test that the admin user can login and logout."""
         self.login()
         logout_button = self.driver.find_element_by_class_name("button")
-        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Logout admin"))
+        self.assert_text_to_be_present_in_element(logout_button, "Logout admin")
         logout_button.click()
-        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Login"))
+        self.assert_text_to_be_present_in_element(logout_button, "Login")
 
-    def test_add_report(self):
-        """Test that a logged in user can add a report."""
+    def test_add_open_and_delete_report(self):
+        """Test that a logged in user can add a report, open it, and delete it."""
         self.login()
         nr_reports = len(self.driver.find_elements_by_class_name("card"))
         self.driver.find_element_by_class_name("button.primary").click()
-        self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports + 1))
+        cards = self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports + 1))
+        new_report = [card for card in cards if "New report" in card.text][-1]
+        new_report.click()
+        self.assert_text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), "New report")
+        self.driver.find_element_by_class_name("caret").click()
+        self.driver.find_element_by_class_name("button.negative").click()
+        self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports))
+
+    def test_change_overview_title(self):
+        """Test that a logged in user can change the overview title."""
+        self.login()
+        self.driver.find_element_by_class_name("caret").click()
+        form = self.driver.find_element_by_tag_name("form")
+        form.find_element_by_tag_name("input").send_keys("OVERVIEW")
+        self.driver.find_element_by_class_name("caret").click()
+        self.assert_text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), "OVERVIEW")
