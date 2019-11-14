@@ -49,7 +49,7 @@ jobs:
       - run: |
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-          docker-compose --no-ansi build --parallel && docker-compose up -d
+          docker-compose build --parallel && docker-compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
 
 workflows:
