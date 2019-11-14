@@ -81,7 +81,9 @@ class OpenReportTest(unittest.TestCase):
         new_report.click()
         self.assert_text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), "New report")
         self.driver.find_element_by_class_name("caret").click()
+        current_url = self.driver.current_url
         self.driver.find_element_by_class_name("button.negative").click()
+        self.wait.until(expect.url_changes(current_url))
         self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports))
 
     def test_change_overview_title(self):
