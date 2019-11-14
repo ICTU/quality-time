@@ -1,4 +1,4 @@
 #!/bin/sh
 
-pip install --user selenium
+pip install --progress-bar off --user selenium
 python -m unittest discover --start-directory tests
