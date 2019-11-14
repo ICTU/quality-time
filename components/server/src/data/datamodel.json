@@ -1953,6 +1953,7 @@
                         "loc",
                         "long_units",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "many_parameters",
                         "metrics",
                         "ncloc",
@@ -3634,6 +3635,7 @@
             "metrics": [
                 "issues",
                 "manual_test_duration",
+                "manual_test_execution",
                 "ready_user_story_points",
                 "source_up_to_dateness",
                 "unmerged_branches"
