@@ -154,11 +154,12 @@ class AzureDevopsFailedJobs(SourceCollector):
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         entities: Entities = []
         for job in responses[0].json()["value"]:
-            if job.get("latestCompletedBuild", {}).get("result") == "failed":
+            if (build_status := job.get("latestCompletedBuild", {}).get("result")) not in ("succeeded", None):
                 name = "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
                 url = job["_links"]["web"]["href"]
                 build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
                 build_age = (date.today() - build_date).days
                 entities.append(
-                    dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age)))
+                    dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age),
+                         build_status=build_status))
         return entities

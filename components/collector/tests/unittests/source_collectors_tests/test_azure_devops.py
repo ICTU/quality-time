@@ -184,4 +184,4 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
             entities=[
                 dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
-                     build_date="2019-11-15", build_age=str(expected_age))])
+                     build_date="2019-11-15", build_age=str(expected_age), build_status="failed")])

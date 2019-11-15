@@ -982,6 +982,16 @@
                             "url": "url"
                         },
                         {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "succeeded": "positive",
+                                "failed": "negative",
+                                "canceled": "active",
+                                "partiallySucceeded": "warning"
+                            }
+                        },
+                        {
                             "name": "Date of most recent build",
                             "key": "build_date",
                             "type": "date"
