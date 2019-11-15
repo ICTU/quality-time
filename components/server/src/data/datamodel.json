@@ -240,6 +240,28 @@
                 "test quality"
             ]
         },
+        "manual_test_execution": {
+            "name": "Manual test execution",
+            "description": "Measure the number of manual test cases that have not been tested on time.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
+            "unit": "manual test cases",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "5",
+            "default_source": "jira",
+            "sources": [
+                "jira",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "test quality"
+            ]
+        },
         "many_parameters": {
             "name": "Many parameters",
             "description": "The amount of units (functions, methods, procedures) that have too many parameters.",
@@ -1633,12 +1655,14 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
                     "default_value": "",
+                    "validate_on": "username,password",
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1651,6 +1675,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1662,6 +1687,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1673,6 +1699,7 @@
                     "metrics": [
                         "issues",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "ready_user_story_points"
                     ]
                 },
@@ -1684,6 +1711,26 @@
                     "default_value": "",
                     "metrics": [
                         "manual_test_duration"
+                    ]
+                },
+                "manual_test_execution_frequency_field": {
+                    "name": "Execution frequency field (id or name)",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "manual_test_execution"
+                    ]
+                },
+                "manual_test_default_frequency_field": {
+                    "name": "Default execution frequency (days)",
+                    "type": "string",
+                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                    "mandatory": true,
+                    "default_value": "21",
+                    "metrics": [
+                        "manual_test_execution"
                     ]
                 },
                 "story_points_field": {
@@ -1721,6 +1768,21 @@
                         {
                             "name": "Duration (minutes)",
                             "key": "duration"
+                        }
+                    ]
+                },
+                "manual_test_execution": {
+                    "name": "last test",
+                    "name_plural": "last tests",
+                    "attributes": [
+                        {
+                            "name": "Summary",
+                            "key": "summary",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Days since last test",
+                            "key": "days"
                         }
                     ]
                 },
@@ -1892,6 +1954,7 @@
                         "loc",
                         "long_units",
                         "manual_test_duration",
+                        "manual_test_execution",
                         "many_parameters",
                         "metrics",
                         "ncloc",
@@ -3573,6 +3636,7 @@
             "metrics": [
                 "issues",
                 "manual_test_duration",
+                "manual_test_execution",
                 "ready_user_story_points",
                 "source_up_to_dateness",
                 "unmerged_branches"

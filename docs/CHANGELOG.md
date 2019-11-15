@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Use correct API url when accessing Quality-time as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791). 
+- Use correct API url when accessing Quality-time as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791).
+
+### Added
+
+-  Metric for manual test execution added. Closes [#556](https://github.com/ICTU/quality-time/issues/556).
 
 ## [0.18.0] - [2019-11-12]
 
