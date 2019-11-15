@@ -1,7 +1,7 @@
 """Azure Devops Server metric collector."""
 
 from abc import ABC
-from datetime import datetime
+from datetime import datetime, date
 from typing import cast, List
 
 from dateutil.parser import parse
@@ -155,7 +155,10 @@ class AzureDevopsFailedJobs(SourceCollector):
         entities: Entities = []
         for job in responses[0].json()["value"]:
             if job.get("latestCompletedBuild", {}).get("result") == "failed":
-                name = "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]])
+                name = "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
                 url = job["_links"]["web"]["href"]
-                entities.append(dict(name=name, key=name, url=url))
+                build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
+                build_age = (date.today() - build_date).days
+                entities.append(
+                    dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age)))
         return entities

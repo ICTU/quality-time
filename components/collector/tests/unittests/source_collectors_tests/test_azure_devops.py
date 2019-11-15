@@ -1,5 +1,7 @@
 """Unit tests for the Azure Devops Server (formerly Team Foundation Server) source."""
 
+from datetime import date
+
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
@@ -176,9 +178,10 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
                     dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="succeeded")),
                     dict(path=r"\\", name="pipeline")
                 ]))
+        expected_age = (date.today() - date(2019, 11, 15)).days
         self.assert_measurement(
             response, value="1",
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
             entities=[
                 dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
-                     build_date="2019-11-15")])
+                     build_date="2019-11-15", build_age=str(expected_age))])
