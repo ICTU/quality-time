@@ -103,7 +103,7 @@
         },
         "failed_jobs": {
             "name": "Failed CI-jobs",
-            "description": "The number of continuous integration jobs that have failed.",
+            "description": "The number of continuous integration jobs or pipelines that have failed.",
             "scales": [
                 "count"
             ],
@@ -115,6 +115,7 @@
             "near_target": "5",
             "default_source": "jenkins",
             "sources": [
+                "azure_devops",
                 "jenkins",
                 "gitlab",
                 "manual_number",
@@ -874,6 +875,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "failed_jobs",
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
@@ -888,6 +890,7 @@
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
                     "metrics": [
+                        "failed_jobs",
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
@@ -969,6 +972,17 @@
                 }
             },
             "entities": {
+                "failed_jobs": {
+                    "name": "failed pipeline",
+                    "name_plural": "failed pipelines",
+                    "attributes": [
+                        {
+                            "name": "Pipeline",
+                            "key": "name",
+                            "url": "url"
+                        }
+                    ]
+                },
                 "unmerged_branches": {
                     "name": "branch",
                     "name_plural": "branches",

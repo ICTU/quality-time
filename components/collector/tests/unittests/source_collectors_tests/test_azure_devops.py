@@ -156,3 +156,27 @@ class AzureDevopsTestsTest(SourceCollectorTestCase):
         response = self.collect(
             metric, get_request_json_return_value=dict(value=[dict(build=dict(id="1"), unanalyzedTests=4)]))
         self.assert_measurement(response, value="4")
+
+
+class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
+    """Unit tests for the Azure Devops Server failed jobs collector."""
+
+    def test_nr_of_failed_jobs(self):
+        """Test that the number of failed jobs is returned."""
+        sources = dict(
+            source_id=dict(
+                type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+        metric = dict(type="failed_jobs", sources=sources, addition="sum")
+        response = self.collect(
+            metric,
+            get_request_json_return_value=dict(
+                value=[
+                    dict(path=r"\\folder", name="pipeline", latestCompletedBuild=dict(result="failed"),
+                         _links=dict(web=dict(href="https://azure_devops/build"))),
+                    dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="succeeded")),
+                    dict(path=r"\\", name="pipeline")
+                ]))
+        self.assert_measurement(
+            response, value="1",
+            entities=[dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build")],
+            api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")

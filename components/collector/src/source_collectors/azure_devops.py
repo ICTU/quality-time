@@ -140,3 +140,22 @@ class AzureDevopsTests(SourceCollector):
                 test_count = 0
             test_count += sum(run.get(test_result, 0) for test_result in test_results)
         return str(test_count)
+
+
+class AzureDevopsFailedJobs(SourceCollector):
+    """Collector for the failed jobs metric."""
+
+    def _api_url(self) -> URL:
+        return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(self._parse_source_responses_entities(responses)))
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        entities: Entities = []
+        for job in responses[0].json()["value"]:
+            if job.get("latestCompletedBuild", {}).get("result") == "failed":
+                name = "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]])
+                url = job["_links"]["web"]["href"]
+                entities.append(dict(name=name, key=name, url=url))
+        return entities
