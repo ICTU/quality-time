@@ -1655,9 +1655,10 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
                     "default_value": "",
+                    "validate_on": "username,password",
                     "metrics": [
                         "issues",
                         "manual_test_duration",
@@ -1713,7 +1714,7 @@
                     ]
                 },
                 "manual_test_execution_frequency_field": {
-                    "name": "Execution frequency field",
+                    "name": "Execution frequency field (id or name)",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,
