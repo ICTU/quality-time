@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Metric for manual test execution added. Closes [#556](https://github.com/ICTU/quality-time/issues/556).
-- Azure DevOps can now be a source for the failing jobs metric. Closes [#638](https://github.com/ICTU/quality-time/issues/638).
+- Azure DevOps can now be a source for the failing jobs metric and the unused jobs metric. Closes [#638](https://github.com/ICTU/quality-time/issues/638).
 
 ## [0.18.0] - [2019-11-12]
 

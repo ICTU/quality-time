@@ -3,6 +3,7 @@
 from abc import ABC
 from datetime import datetime, date
 from typing import cast, List
+import re
 
 from dateutil.parser import parse
 import requests
@@ -142,8 +143,8 @@ class AzureDevopsTests(SourceCollector):
         return str(test_count)
 
 
-class AzureDevopsFailedJobs(SourceCollector):
-    """Collector for the failed jobs metric."""
+class AxureDevopsJobs(SourceCollector):
+    """Base class for job collectors."""
 
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
@@ -153,14 +154,55 @@ class AzureDevopsFailedJobs(SourceCollector):
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         entities: Entities = []
-        failure_types = self._parameter("failure_type")
         for job in responses[0].json()["value"]:
-            if (build_status := job.get("latestCompletedBuild", {}).get("result")) in failure_types:
-                name = "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
-                url = job["_links"]["web"]["href"]
-                build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
-                build_age = (date.today() - build_date).days
-                entities.append(
-                    dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age),
-                         build_status=build_status))
+            if self._ignore_job(job):
+                continue
+            name = self.__job_name(job)
+            url = job["_links"]["web"]["href"]
+            build_status = job["latestCompletedBuild"]["result"]
+            build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
+            build_age = (date.today() - build_date).days
+            entities.append(
+                dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age),
+                     build_status=build_status))
         return entities
+
+    def _ignore_job(self, job) -> bool:
+        """Return whether this job should be ignored"""
+        if not job.get("latestCompletedBuild", {}).get("result"):
+            return True
+        name = self.__job_name(job)
+        for job_to_ignore in self._parameter("jobs_to_ignore"):
+            if set("$^?.+*[]") & set(job_to_ignore):
+                if re.match(job_to_ignore, name):
+                    return True
+            else:
+                if name == job_to_ignore:
+                    return True
+        return False
+
+    @staticmethod
+    def __job_name(job) -> str:
+        """Return the job name."""
+        return "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
+
+
+class AzureDevopsFailedJobs(AxureDevopsJobs):
+    """Collector for the failed jobs metric."""
+
+    def _ignore_job(self, job) -> bool:
+        if super()._ignore_job(job):
+            return True
+        return job["latestCompletedBuild"]["result"] not in self._parameter("failure_type")
+
+
+class AzureDevopsUnusedJobs(AxureDevopsJobs):
+    """Collector for the unused jobs metric."""
+
+    def _ignore_job(self, job) -> bool:
+        if super()._ignore_job(job):
+            return True
+        max_days = int(cast(str, self._parameter("inactive_job_days")))
+        build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
+        build_age = (date.today() - build_date).days
+        return build_age <= max_days

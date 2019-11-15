@@ -164,11 +164,14 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
     """Unit tests for the Azure Devops Server failed jobs collector."""
 
     def test_nr_of_failed_jobs(self):
-        """Test that the number of failed jobs is returned."""
+        """Test that the number of failed jobs is returned, that pipelines can be ignored by status, by name, and by
+        regular expression."""
         sources = dict(
             source_id=dict(
                 type="azure_devops",
-                parameters=dict(url="https://azure_devops", private_token="xxx", failure_type=["failed"])))
+                parameters=dict(
+                    url="https://azure_devops", private_token="xxx", failure_type=["failed"],
+                    jobs_to_ignore=["ignore_by_name", "folder/ignore.*"])))
         metric = dict(type="failed_jobs", sources=sources, addition="sum")
         response = self.collect(
             metric,
@@ -177,7 +180,9 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
                     dict(path=r"\\folder", name="pipeline", _links=dict(web=dict(href="https://azure_devops/build")),
                          latestCompletedBuild=dict(result="failed", finishTime="2019-11-15T12:24:10.1905868Z")),
                     dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="canceled")),
-                    dict(path=r"\\", name="pipeline")
+                    dict(path=r"\\folder", name="ignore_by_re", latestCompletedBuild=dict(result="failed")),
+                    dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed")),
+                    dict(path=r"\\", name="no_builds")
                 ]))
         expected_age = (date.today() - date(2019, 11, 15)).days
         self.assert_measurement(
@@ -186,3 +191,30 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
             entities=[
                 dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
                      build_date="2019-11-15", build_age=str(expected_age), build_status="failed")])
+
+    def test_nr_of_unused_jobs(self):
+        """Test that the number of unused jobs is returned, that pipelines can be ignored by name and by
+        regular expression."""
+        sources = dict(
+            source_id=dict(
+                type="azure_devops",
+                parameters=dict(
+                    url="https://azure_devops", private_token="xxx",
+                    jobs_to_ignore=["ignore_by_name", "folder/ignore.*"])))
+        metric = dict(type="unused_jobs", sources=sources, addition="sum")
+        response = self.collect(
+            metric,
+            get_request_json_return_value=dict(
+                value=[
+                    dict(path=r"\\folder", name="pipeline", _links=dict(web=dict(href="https://azure_devops/build")),
+                         latestCompletedBuild=dict(result="failed", finishTime="2019-10-15T12:24:10.1905868Z")),
+                    dict(path=r"\\folder", name="ignore_by_re", latestCompletedBuild=dict(result="failed")),
+                    dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed"))
+                ]))
+        expected_age = (date.today() - date(2019, 10, 15)).days
+        self.assert_measurement(
+            response, value="1",
+            api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
+            entities=[
+                dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
+                     build_date="2019-10-15", build_age=str(expected_age), build_status="failed")])
