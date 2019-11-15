@@ -969,6 +969,26 @@
                     "metrics": [
                         "tests"
                     ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "placeholder": "all",
+                    "values": [
+                        "canceled",
+                        "failed",
+                        "no result",
+                        "partially succeeded"
+                    ],
+                    "api_values": {
+                        "no result": "none",
+                        "partially succeeded": "partiallySucceeded"
+                    },
+                    "metrics": [
+                        "failed_jobs"
+                    ]
                 }
             },
             "entities": {

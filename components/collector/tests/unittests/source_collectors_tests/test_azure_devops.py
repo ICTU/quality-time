@@ -167,7 +167,8 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
         """Test that the number of failed jobs is returned."""
         sources = dict(
             source_id=dict(
-                type="azure_devops", parameters=dict(url="https://azure_devops", private_token="xxx")))
+                type="azure_devops",
+                parameters=dict(url="https://azure_devops", private_token="xxx", failure_type=["failed"])))
         metric = dict(type="failed_jobs", sources=sources, addition="sum")
         response = self.collect(
             metric,
@@ -175,7 +176,7 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
                 value=[
                     dict(path=r"\\folder", name="pipeline", _links=dict(web=dict(href="https://azure_devops/build")),
                          latestCompletedBuild=dict(result="failed", finishTime="2019-11-15T12:24:10.1905868Z")),
-                    dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="succeeded")),
+                    dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="canceled")),
                     dict(path=r"\\", name="pipeline")
                 ]))
         expected_age = (date.today() - date(2019, 11, 15)).days
