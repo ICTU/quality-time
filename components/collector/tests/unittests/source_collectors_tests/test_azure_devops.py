@@ -171,12 +171,14 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
             metric,
             get_request_json_return_value=dict(
                 value=[
-                    dict(path=r"\\folder", name="pipeline", latestCompletedBuild=dict(result="failed"),
-                         _links=dict(web=dict(href="https://azure_devops/build"))),
+                    dict(path=r"\\folder", name="pipeline", _links=dict(web=dict(href="https://azure_devops/build")),
+                         latestCompletedBuild=dict(result="failed", finishTime="2019-11-15T12:24:10.1905868Z")),
                     dict(path=r"\\folder\\subfolder", name="pipeline", latestCompletedBuild=dict(result="succeeded")),
                     dict(path=r"\\", name="pipeline")
                 ]))
         self.assert_measurement(
             response, value="1",
-            entities=[dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build")],
-            api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
+            api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
+            entities=[
+                dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
+                     build_date="2019-11-15")])

@@ -980,6 +980,15 @@
                             "name": "Pipeline",
                             "key": "name",
                             "url": "url"
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
                         }
                     ]
                 },
