@@ -1,7 +1,8 @@
 """Unit tests for the Jenkins test report source."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 
+from collector_utilities.functions import days_ago
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -21,8 +22,7 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
         self.assert_measurement(
-            response,
-            value="2",
+            response, value="2",
             entities=[
                 dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
                 dict(class_name="c2", key="tc2", name="tc2", test_result="passed")])
@@ -67,7 +67,6 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         response = self.collect(
             metric,
-            get_request_json_side_effect=[
-                dict(suites=[dict(timestamp=None)]), dict(timestamp="1565284457173")])
-        expected_age = (datetime.now(timezone.utc) - datetime(2019, 8, 8, 17, 14, 17, 173, tzinfo=timezone.utc)).days
+            get_request_json_side_effect=[dict(suites=[dict(timestamp=None)]), dict(timestamp="1565284457173")])
+        expected_age = days_ago(datetime.fromtimestamp(1565284457173 / 1000.))
         self.assert_measurement(response, value=str(expected_age))

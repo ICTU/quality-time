@@ -1,7 +1,8 @@
 """Unit tests for the OWASP Dependency Check Jenkins plugin source."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 
+from collector_utilities.functions import days_ago
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -37,5 +38,5 @@ class OWASPDependencyCheckJenkinsPluginTest(SourceCollectorTestCase):
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         response = self.collect(
             metric, get_request_json_return_value=dict(timestamp="1565284457173"))
-        expected_age = (datetime.now(timezone.utc) - datetime(2019, 8, 8, 17, 14, 17, 173, tzinfo=timezone.utc)).days
+        expected_age = days_ago(datetime.fromtimestamp(1565284457173 / 1000.))
         self.assert_measurement(response, value=str(expected_age))
