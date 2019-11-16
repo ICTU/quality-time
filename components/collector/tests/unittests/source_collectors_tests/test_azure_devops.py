@@ -188,6 +188,7 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
         self.assert_measurement(
             response, value="1",
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
+            landing_url="https://azure_devops/_build",
             entities=[
                 dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
                      build_date="2019-11-15", build_age=str(expected_age), build_status="failed")])
@@ -215,6 +216,7 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
         self.assert_measurement(
             response, value="1",
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
+            landing_url="https://azure_devops/_build",
             entities=[
                 dict(name=r"folder/pipeline", key=r"folder/pipeline", url="https://azure_devops/build",
                      build_date="2019-10-15", build_age=str(expected_age), build_status="failed")])

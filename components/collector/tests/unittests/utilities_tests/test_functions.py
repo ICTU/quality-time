@@ -3,7 +3,8 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from collector_utilities.functions import days_ago, hashless, stable_traceback
+from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback
+from collector_utilities.type import URL
 
 
 class StableTracebackTest(unittest.TestCase):
@@ -32,7 +33,7 @@ class StableTracebackTest(unittest.TestCase):
 
 
 class DaysAgoTest(unittest.TestCase):
-    """Unit tests for the days ago method."""
+    """Unit tests for the days ago function."""
 
     def test_days_ago(self):
         """Test that the days ago works properly with timezones."""
@@ -43,32 +44,44 @@ class DaysAgoTest(unittest.TestCase):
 
 
 class StripHashTest(unittest.TestCase):
-    """Unit tests for the strip hash method."""
+    """Unit tests for the strip hash function."""
 
     def test_no_hash(self):
         """Test that an url without hash is returned unchanged."""
-        expected_url = url = "https://www.google.com/"
+        expected_url = url = URL("https://www.google.com/")
         self.assertEqual(expected_url, hashless(url))
 
     def test_hash(self):
         """Test that an url with hash is returned without the hash."""
-        url = "https://test.app.example.org:1234/main.58064cb8d36474bd79f9.js"
-        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
+        url = URL("https://test.app.example.org:1234/main.58064cb8d36474bd79f9.js")
+        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_uppercase_hash(self):
         """Test that an url with uppercase hash is returned without the hash."""
-        url = "https://test.app.example.org:1234/main.58064CB8D36474BD79F9.js"
-        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
+        url = URL("https://test.app.example.org:1234/main.58064CB8D36474BD79F9.js")
+        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_long_hash(self):
         """Test that an url with a long hash is returned without the hash."""
-        url = "https://test.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js"
-        expected_url = "https://test.app.example.org:1234/main.hashremoved.js"
+        url = URL("https://test.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js")
+        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_hash_in_host(self):
         """Test that an url with a host name that matches the hash regular expression is returned unchanged."""
-        expected_url = url = "https://test.app58064cb8d36474bd79f9.example.org:1234/main.js"
+        expected_url = url = URL("https://test.app58064cb8d36474bd79f9.example.org:1234/main.js")
         self.assertEqual(expected_url, hashless(url))
+
+
+class IsRegularExpressionTest(unittest.TestCase):
+    """Unit tests for the is_regexp function."""
+
+    def test_is_regexp(self):
+        """Test that regular expressions are recognized."""
+        self.assertFalse(is_regexp(""))
+        self.assertFalse(is_regexp("No punctuation"))
+        self.assertTrue(is_regexp(".*"))
+        self.assertTrue(is_regexp("bar?foo"))
+        self.assertTrue(is_regexp("[a-z]+foo"))

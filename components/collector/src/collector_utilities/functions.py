@@ -55,3 +55,20 @@ def hashless(url: URL) -> URL:
     query = re.sub(HASH_RE, "hashremoved", query)
     fragment = re.sub(HASH_RE, "hashremoved", fragment)
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
+
+
+def is_regexp(string: str) -> bool:
+    """Return whether the string looks like a regular expression."""
+    return bool(set("$^?.+*[]") & set(string))
+
+
+def match_string_or_regular_expression(string: str, strings_and_or_regular_expressions: Collection[str]) -> bool:
+    """Return whether the string is equal to one of the strings or matches one of the regular expressions."""
+    for string_or_regular_expression in strings_and_or_regular_expressions:
+        if is_regexp(string_or_regular_expression):
+            if re.match(string_or_regular_expression, string):
+                return True
+        else:
+            if string_or_regular_expression == string:
+                return True
+    return False

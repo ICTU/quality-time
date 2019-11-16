@@ -1,15 +1,18 @@
-"""Azure Devops Server metric collector."""
+"""Azure Devops Server metric collector.
+
+Where possible we use version 4.1 of the API so we can support TFS 2018 and newer.
+See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-rest-4.1#api-and-tfs-version-mapping
+"""
 
 from abc import ABC
 from datetime import datetime, date
 from typing import cast, List
-import re
 
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Entities, Responses, URL, Value
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.type import Entities, Job, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
@@ -149,6 +152,9 @@ class AxureDevopsJobs(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
 
+    def _landing_url(self, responses: Responses) -> URL:
+        return URL(f"{super()._api_url()}/_build")
+
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses_entities(responses)))
 
@@ -167,22 +173,14 @@ class AxureDevopsJobs(SourceCollector):
                      build_status=build_status))
         return entities
 
-    def _ignore_job(self, job) -> bool:
+    def _ignore_job(self, job: Job) -> bool:
         """Return whether this job should be ignored"""
         if not job.get("latestCompletedBuild", {}).get("result"):
-            return True
-        name = self.__job_name(job)
-        for job_to_ignore in self._parameter("jobs_to_ignore"):
-            if set("$^?.+*[]") & set(job_to_ignore):
-                if re.match(job_to_ignore, name):
-                    return True
-            else:
-                if name == job_to_ignore:
-                    return True
-        return False
+            return True  # The job has no completed builds
+        return match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
 
     @staticmethod
-    def __job_name(job) -> str:
+    def __job_name(job: Job) -> str:
         """Return the job name."""
         return "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
 
@@ -190,7 +188,7 @@ class AxureDevopsJobs(SourceCollector):
 class AzureDevopsFailedJobs(AxureDevopsJobs):
     """Collector for the failed jobs metric."""
 
-    def _ignore_job(self, job) -> bool:
+    def _ignore_job(self, job: Job) -> bool:
         if super()._ignore_job(job):
             return True
         return job["latestCompletedBuild"]["result"] not in self._parameter("failure_type")
@@ -199,7 +197,7 @@ class AzureDevopsFailedJobs(AxureDevopsJobs):
 class AzureDevopsUnusedJobs(AxureDevopsJobs):
     """Collector for the unused jobs metric."""
 
-    def _ignore_job(self, job) -> bool:
+    def _ignore_job(self, job: Job) -> bool:
         if super()._ignore_job(job):
             return True
         max_days = int(cast(str, self._parameter("inactive_job_days")))
