@@ -103,7 +103,7 @@
         },
         "failed_jobs": {
             "name": "Failed CI-jobs",
-            "description": "The number of continuous integration jobs that have failed.",
+            "description": "The number of continuous integration jobs or pipelines that have failed.",
             "scales": [
                 "count"
             ],
@@ -115,6 +115,7 @@
             "near_target": "5",
             "default_source": "jenkins",
             "sources": [
+                "azure_devops",
                 "jenkins",
                 "gitlab",
                 "manual_number",
@@ -642,6 +643,7 @@
             "near_target": "5",
             "default_source": "jenkins",
             "sources": [
+                "azure_devops",
                 "jenkins",
                 "manual_number",
                 "random"
@@ -874,11 +876,13 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "failed_jobs",
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
                         "tests",
-                        "unmerged_branches"
+                        "unmerged_branches",
+                        "unused_jobs"
                     ]
                 },
                 "private_token": {
@@ -888,11 +892,13 @@
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
                     "default_value": "",
                     "metrics": [
+                        "failed_jobs",
                         "issues",
                         "ready_user_story_points",
                         "source_up_to_dateness",
                         "tests",
-                        "unmerged_branches"
+                        "unmerged_branches",
+                        "unused_jobs"
                     ]
                 },
                 "wiql": {
@@ -946,6 +952,17 @@
                         "unmerged_branches"
                     ]
                 },
+                "inactive_job_days": {
+                    "name": "Number of days since last build after which to consider pipelines inactive",
+                    "type": "integer",
+                    "mandatory": false,
+                    "unit": "days",
+                    "min_value": "1",
+                    "default_value": "21",
+                    "metrics": [
+                        "unused_jobs"
+                    ]
+                },
                 "test_result": {
                     "name": "Test result",
                     "type": "multiple_choice",
@@ -966,9 +983,102 @@
                     "metrics": [
                         "tests"
                     ]
+                },
+                "jobs_to_ignore": {
+                    "name": "Pipelines to ignore (regular expressions or pipeline names, use <folder>/<pipeline name> for pipelines in folders)",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory":  false,
+                    "default_value": "",
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "placeholder": "all",
+                    "values": [
+                        "canceled",
+                        "failed",
+                        "no result",
+                        "partially succeeded"
+                    ],
+                    "api_values": {
+                        "canceled": "canceled",
+                        "failed": "failed",
+                        "no result": "none",
+                        "partially succeeded": "partiallySucceeded"
+                    },
+                    "metrics": [
+                        "failed_jobs"
+                    ]
                 }
             },
             "entities": {
+                "failed_jobs": {
+                    "name": "failed pipeline",
+                    "name_plural": "failed pipelines",
+                    "attributes": [
+                        {
+                            "name": "Pipeline",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "succeeded": "positive",
+                                "failed": "negative",
+                                "canceled": "active",
+                                "partiallySucceeded": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
+                        }
+                    ]
+                },
+                "unused_jobs": {
+                    "name": "unused pipeline",
+                    "name_plural": "unused pipelines",
+                    "attributes": [
+                        {
+                            "name": "Pipeline",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "succeeded": "positive",
+                                "failed": "negative",
+                                "canceled": "active",
+                                "partiallySucceeded": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
+                        }
+                    ]
+                },
                 "unmerged_branches": {
                     "name": "branch",
                     "name_plural": "branches",

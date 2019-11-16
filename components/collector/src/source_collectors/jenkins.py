@@ -1,9 +1,9 @@
 """Jenkins metric collector."""
 
-import re
 from datetime import datetime, timedelta
 from typing import cast, Iterator
 
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
@@ -39,14 +39,7 @@ class JenkinsJobs(SourceCollector):
 
     def _count_job(self, job: Job) -> bool:
         """Return whether the job should be counted."""
-        for job_to_ignore in self._parameter("jobs_to_ignore"):
-            if set("$^?.+*[]") & set(job_to_ignore):
-                if re.match(job_to_ignore, job["name"]):
-                    return False
-            else:
-                if job["name"] == job_to_ignore:
-                    return False
-        return True
+        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
 
     def _build_age(self, job: Job) -> timedelta:
         """Return the age of the most recent build of the job."""

@@ -1,14 +1,18 @@
-"""Azure Devops Server metric collector."""
+"""Azure Devops Server metric collector.
+
+Where possible we use version 4.1 of the API so we can support TFS 2018 and newer.
+See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-rest-4.1#api-and-tfs-version-mapping
+"""
 
 from abc import ABC
-from datetime import datetime
+from datetime import datetime, date
 from typing import cast, List
 
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Entities, Responses, URL, Value
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.type import Entities, Job, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
@@ -140,3 +144,63 @@ class AzureDevopsTests(SourceCollector):
                 test_count = 0
             test_count += sum(run.get(test_result, 0) for test_result in test_results)
         return str(test_count)
+
+
+class AxureDevopsJobs(SourceCollector):
+    """Base class for job collectors."""
+
+    def _api_url(self) -> URL:
+        return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
+
+    def _landing_url(self, responses: Responses) -> URL:
+        return URL(f"{super()._api_url()}/_build")
+
+    def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(self._parse_source_responses_entities(responses)))
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        entities: Entities = []
+        for job in responses[0].json()["value"]:
+            if self._ignore_job(job):
+                continue
+            name = self.__job_name(job)
+            url = job["_links"]["web"]["href"]
+            build_status = job["latestCompletedBuild"]["result"]
+            build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
+            build_age = (date.today() - build_date).days
+            entities.append(
+                dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age),
+                     build_status=build_status))
+        return entities
+
+    def _ignore_job(self, job: Job) -> bool:
+        """Return whether this job should be ignored"""
+        if not job.get("latestCompletedBuild", {}).get("result"):
+            return True  # The job has no completed builds
+        return match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
+
+    @staticmethod
+    def __job_name(job: Job) -> str:
+        """Return the job name."""
+        return "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
+
+
+class AzureDevopsFailedJobs(AxureDevopsJobs):
+    """Collector for the failed jobs metric."""
+
+    def _ignore_job(self, job: Job) -> bool:
+        if super()._ignore_job(job):
+            return True
+        return job["latestCompletedBuild"]["result"] not in self._parameter("failure_type")
+
+
+class AzureDevopsUnusedJobs(AxureDevopsJobs):
+    """Collector for the unused jobs metric."""
+
+    def _ignore_job(self, job: Job) -> bool:
+        if super()._ignore_job(job):
+            return True
+        max_days = int(cast(str, self._parameter("inactive_job_days")))
+        build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
+        build_age = (date.today() - build_date).days
+        return build_age <= max_days
