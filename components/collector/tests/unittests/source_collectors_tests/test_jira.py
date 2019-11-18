@@ -1,15 +1,15 @@
 """Unit tests for the Jira metric source."""
+
 import json
+import logging
 import os.path
 import pathlib
-
-from typing import Dict
+from datetime import datetime, timedelta
 from http.client import HTTPException
+from typing import Dict
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
-from datetime import datetime, timedelta
 
-import logging
 import requests
 
 from source_collectors.jira import JiraBase, JiraManualTestExecution
@@ -19,6 +19,7 @@ from .source_collector_test_case import SourceCollectorTestCase
 def datetime_days_from_now(days: int) -> str:
     """Return date certain number of days ago in string format."""
     return (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
 
 def get_jira_json_for_days(test_frequency1: int, last_tested_days_ago1: int,
                            test_frequency2: int, last_tested_days_ago2: int) -> Dict:
@@ -38,6 +39,7 @@ def get_jira_json_for_days(test_frequency1: int, last_tested_days_ago1: int,
         jira_json["issues"][1]["fields"]["freq_field"] = test_frequency2
     return jira_json
 
+
 class JiraTestCase(SourceCollectorTestCase):
     """Base class for Jira unit tests."""
 
@@ -49,6 +51,7 @@ class JiraTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="https://jira", jql="query", story_points_field="field",
                     manual_test_execution_frequency_field="freq_field", manual_test_duration_field="field")))
+
 
 class JiraIssuesTest(JiraTestCase):
     """Unit tests for the Jira issue collector."""
@@ -107,9 +110,8 @@ class JiraManualTestExecutionFrequencyTest(JiraTestCase):
         metric = dict(type="manual_test_execution", addition="count", sources=self.sources)
         jira_json = get_jira_json_for_days(15, 13, 10, 11)
         response = self.collect(metric, get_request_json_return_value=jira_json)
-        self.assert_measurement(response, value="1")
-        self.assertEqual(response["sources"][0]["entities"],
-                         [{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
+        self.assert_measurement(
+            response, value="1", entities=[{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
 
     def test_execution_field_found(self, mock__get_fields):
         """Test that when field id is found, issues are returned according to the given frequency."""
@@ -117,9 +119,8 @@ class JiraManualTestExecutionFrequencyTest(JiraTestCase):
         metric = dict(type="manual_test_execution", addition="count", sources=self.sources)
         jira_json = get_jira_json_for_days(15, 13, 10, 11)
         response = self.collect(metric, get_request_json_return_value=jira_json)
-        self.assert_measurement(response, value="1")
-        self.assertEqual(response["sources"][0]["entities"],
-                         [{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
+        self.assert_measurement(
+            response, value="1", entities=[{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
 
     def test_execution_field_empty(self, mock__get_fields):
         """Test that when the field id is empty, issues are returned according to the default frequency."""
@@ -128,29 +129,25 @@ class JiraManualTestExecutionFrequencyTest(JiraTestCase):
         metric = dict(type="manual_test_execution", addition="count", sources=self.sources)
         jira_json = get_jira_json_for_days(15, 20, 10, 22)
         response = self.collect(metric, get_request_json_return_value=jira_json)
-        self.assert_measurement(response, value="1")
-        self.assertEqual(response["sources"][0]["entities"],
-                         [{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
+        self.assert_measurement(
+            response, value="1", entities=[{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
 
     def test_execution_frequency_field_not_found(self, mock__get_fields):
         """Test that when the field id is not found, an exception is thrown."""
         mock__get_fields.return_value = [{"id": "wrong!", "name": "Not matching also"}]
         metric = dict(type="manual_test_execution", addition="count", sources=self.sources)
         response = self.collect(metric)
-        self.assertTrue(response["sources"][0]["parse_error"].endswith(
-            "ValueError: Jira field with id or name freq_field does not exist!\n"))
+        self.assert_measurement(
+            response, parse_error="ValueError: Jira field with id or name freq_field does not exist!\n")
 
     def test_execution_default_frequency(self, mock__get_fields):
         """Test that the test cases ready to test, according to default frequency od 21 days, are returned."""
         mock__get_fields.return_value = []
         metric = dict(type="manual_test_execution", addition="count", sources=self.sources)
         jira_json = get_jira_json_for_days(0, 20, 0, 22)
-
         response = self.collect(metric, get_request_json_return_value=jira_json)
-
-        self.assert_measurement(response, value="1")
-        self.assertEqual(response["sources"][0]["entities"],
-                         [{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
+        self.assert_measurement(
+            response, value="1", entities=[{'key': '2', 'summary': 'summary 2', 'url': 'https://jira/browse/2'}])
 
 
 class JiraBaseTestCase(TestCase):
