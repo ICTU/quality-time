@@ -46,15 +46,12 @@ class JUnitTestReportTest(SourceCollectorTestCase):
 class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
     """Unit tests for the failed test metric."""
 
-    def setUp(self):
-        super().setUp()
-        self.sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
-        self.metric = dict(type="failed_tests", sources=self.sources, addition="sum")
-
     def test_failed_tests(self):
         """Test that the failed tests are returned."""
+        sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
+        metric = dict(type="failed_tests", sources=sources, addition="sum")
         response = self.collect(
-            self.metric,
+            metric,
             get_request_text="""<testsuites><testsuite failures="1"><testcase name="tc" classname="cn"><failure/>
             </testcase></testsuite></testsuites>""")
         self.assert_measurement(
@@ -64,13 +61,10 @@ class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
 class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
-    def setUp(self):
-        super().setUp()
-        self.sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
-
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
+        sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
+        metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
         response = self.collect(
             metric, get_request_text='<?xml version="1.0"?><testsuite timestamp="2009-12-19T17:58:59"></testsuite>')
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days

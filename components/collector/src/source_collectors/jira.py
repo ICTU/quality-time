@@ -7,6 +7,8 @@ from datetime import datetime
 from typing import cast, List
 from urllib.parse import quote
 
+from dateutil.parser import parse
+
 from collector_utilities.type import Entities, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
@@ -118,9 +120,7 @@ class JiraManualTestExecution(JiraFieldSumBase):
 
         def __touched_days_ago(issue_fields) -> int:
             comment_dates = [comment["updated"] for comment in issue_fields["comment"]["comments"]]
-            max_date_str = max(comment_dates) if comment_dates else None
-            split_date = max_date_str[:max_date_str.find('T')].split('-') if max_date_str else [1, 1, 1]
-            return days_ago(datetime(int(split_date[0]), int(split_date[1]), int(split_date[2])))
+            return days_ago(parse(max(comment_dates)) if comment_dates else datetime.min)
 
         return [issue for issue in responses[0].json()["issues"]
                 if __frequency(issue["fields"], field_x, default_frequency) <= __touched_days_ago(issue["fields"])]
