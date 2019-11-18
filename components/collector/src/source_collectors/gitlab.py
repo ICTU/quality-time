@@ -1,14 +1,15 @@
 """Gitlab metric source."""
 
 from abc import ABC
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import cast, List, Optional, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.type import Job, Jobs, Entities, Response, Responses, URL, Value
+from collector_utilities.functions import days_ago
+from collector_utilities.type import Jobs, Entities, Response, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
@@ -43,17 +44,9 @@ class GitlabFailedJobs(GitlabBase):
         return [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],
-                build_age=str(self.__build_age(job).days), build_date=str(self.__build_datetime(job).date()))
+                build_date=str((build_date := parse(job["created_at"])).date()),
+                build_age=str(days_ago(build_date)))
             for job in self.__failed_jobs(responses)]
-
-    def __build_age(self, job: Job) -> timedelta:
-        """Return the age of the job in days."""
-        return datetime.now(timezone.utc) - self.__build_datetime(job)
-
-    @staticmethod
-    def __build_datetime(job: Job) -> datetime:
-        """Return the build date of the job."""
-        return parse(job["created_at"])
 
     @staticmethod
     def __failed_jobs(responses: Responses) -> Jobs:
