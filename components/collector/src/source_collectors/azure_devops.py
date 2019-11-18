@@ -12,8 +12,8 @@ from dateutil.parser import parse
 import requests
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Entities, Job, Responses, URL, Value
-from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
+from collector_utilities.type import Entities, Job, Response, Responses, URL, Value
+from .source_collector import SourceCollector, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -102,7 +102,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         return parse(branch["commit"]["committer"]["date"])
 
 
-class AzureDevopsSourceUpToDateness(AzureDevopsRepositoryBase):
+class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepositoryBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     def _api_url(self) -> URL:
@@ -121,8 +121,8 @@ class AzureDevopsSourceUpToDateness(AzureDevopsRepositoryBase):
         branch = self._parameter("branch", quote=True)
         return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(days_ago(parse(responses[0].json()["value"][0]["committer"]["date"])))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return parse(response.json()["value"][0]["committer"]["date"])
 
 
 class AzureDevopsTests(SourceCollector):

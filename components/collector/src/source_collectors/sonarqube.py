@@ -1,13 +1,13 @@
 """Collectors for SonarQube."""
 
+from datetime import datetime
 from typing import Dict, List
 
 from dateutil.parser import isoparse
 import requests
 
 from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
-from collector_utilities.functions import days_ago
-from .source_collector import SourceCollector
+from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
 class SonarQubeViolations(SourceCollector):
@@ -264,7 +264,7 @@ class SonarQubeTests(SourceCollector):
         return dict(errored=errored, failed=failed, skipped=skipped, passed=passed)
 
 
-class SonarQubeSourceUpToDateness(SourceCollector):
+class SonarQubeSourceUpToDateness(SourceUpToDatenessCollector):
     """SonarQube source up-to-dateness."""
 
     def _api_url(self) -> URL:
@@ -279,6 +279,5 @@ class SonarQubeSourceUpToDateness(SourceCollector):
         branch = self._parameter("branch")
         return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        analysis_datetime = isoparse(responses[0].json()["analyses"][0]["date"])
-        return str(days_ago(analysis_datetime))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return isoparse(response.json()["analyses"][0]["date"])

@@ -3,9 +3,8 @@
 from datetime import datetime
 from typing import Dict
 
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Entities, Entity, Responses, Value, URL
-from .source_collector import SourceCollector
+from collector_utilities.type import Entities, Entity, Response, Responses, Value, URL
+from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
 class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
@@ -43,12 +42,11 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         return severity1 if severities.index(severity1) >= severities.index(severity2) else severity2
 
 
-class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceCollector):
+class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceUpToDatenessCollector):
     """Collector to get the age of the OWASP Dependency Check Jenkins plugin report."""
 
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/api/json")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        job_datetime = datetime.fromtimestamp(float(responses[0].json()["timestamp"]) / 1000.)
-        return str(days_ago(job_datetime))
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return datetime.fromtimestamp(float(response.json()["timestamp"]) / 1000.)

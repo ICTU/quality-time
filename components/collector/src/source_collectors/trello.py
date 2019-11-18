@@ -7,9 +7,9 @@ from typing import cast
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.type import Entity, Entities, Responses, URL, Value
+from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
 from collector_utilities.functions import days_ago
-from .source_collector import SourceCollector
+from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -81,16 +81,16 @@ class TrelloIssues(TrelloBase):
             date_last_activity=card["dateLastActivity"])
 
 
-class TrelloSourceUpToDateness(TrelloBase):
+class TrelloSourceUpToDateness(TrelloBase, SourceUpToDatenessCollector):
     """Collector to measure how up-to-date a Trello board is."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        json = responses[0].json()
+    def _parse_source_response_date_time(self, response: Response) -> datetime:
+        json = response.json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         dates = [json["dateLastActivity"]] + \
                 [card["dateLastActivity"] for card in cards if not self._ignore_card(card, lists)]
-        return str(days_ago(parse(max(dates))))
+        return parse(max(dates))
 
     def _ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""
