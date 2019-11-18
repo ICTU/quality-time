@@ -6,7 +6,7 @@ import traceback
 import urllib
 import zipfile
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from http import HTTPStatus
 from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
 
@@ -190,13 +190,9 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         return [
-            dict(key=branch["name"], name=branch["name"], commit_age=str(self._commit_age(branch).days),
+            dict(key=branch["name"], name=branch["name"], commit_age=str(days_ago(self._commit_datetime(branch))),
                  commit_date=str(self._commit_datetime(branch).date()))
             for branch in self._unmerged_branches(responses)]
-
-    def _commit_age(self, branch) -> timedelta:
-        """Return the age of the last commit on the branch."""
-        return datetime.now(timezone.utc) - self._commit_datetime(branch)
 
     @abstractmethod
     def _unmerged_branches(self, responses: Responses) -> List:

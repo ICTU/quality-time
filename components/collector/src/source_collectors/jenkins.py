@@ -1,9 +1,9 @@
 """Jenkins metric collector."""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import cast, Iterator
 
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
@@ -23,8 +23,8 @@ class JenkinsJobs(SourceCollector):
         return [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),
-                build_age=str(self._build_age(job).days) if self._build_age(job) < timedelta.max else "",
-                build_date=str(self.__build_datetime(job).date()) if self.__build_datetime(job) > datetime.min else "")
+                build_age=str(days_ago(self._build_datetime(job))) if self._build_datetime(job) > datetime.min else "",
+                build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "")
             for job in self.__jobs(responses[0].json()["jobs"])]
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
@@ -41,13 +41,8 @@ class JenkinsJobs(SourceCollector):
         """Return whether the job should be counted."""
         return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
 
-    def _build_age(self, job: Job) -> timedelta:
-        """Return the age of the most recent build of the job."""
-        build_datetime = self.__build_datetime(job)
-        return datetime.now() - build_datetime if build_datetime > datetime.min else timedelta.max
-
     @staticmethod
-    def __build_datetime(job: Job) -> datetime:
+    def _build_datetime(job: Job) -> datetime:
         """Return the date and time of the most recent build of the job."""
         builds = job.get("builds")
         return datetime.utcfromtimestamp(int(builds[0]["timestamp"]) / 1000.) if builds else datetime.min
@@ -74,7 +69,7 @@ class JenkinsUnusedJobs(JenkinsJobs):
 
     def _count_job(self, job: Job) -> bool:
         """Count the job if its most recent build is too old."""
-        if super()._count_job(job) and (age := self._build_age(job)) < timedelta.max:
+        if super()._count_job(job) and (build_datetime := self._build_datetime(job)) > datetime.min:
             max_days = int(cast(str, self._parameter("inactive_days")))
-            return age > timedelta(days=max_days)
+            return days_ago(build_datetime) > max_days
         return False

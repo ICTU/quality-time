@@ -5,7 +5,7 @@ See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-re
 """
 
 from abc import ABC
-from datetime import datetime, date
+from datetime import datetime
 from typing import cast, List
 
 from dateutil.parser import parse
@@ -96,7 +96,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
-                self._commit_age(branch).days > int(cast(str, self._parameter("inactive_days")))]
+                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))]
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committer"]["date"])
@@ -165,11 +165,12 @@ class AxureDevopsJobs(SourceCollector):
                 continue
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
-            build_status = job["latestCompletedBuild"]["result"]
-            build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
-            build_age = (date.today() - build_date).days
+            build_status = self._latest_build_result(job)
+            build_date_time = self._latest_build_date_time(job)
             entities.append(
-                dict(name=name, key=name, url=url, build_date=str(build_date), build_age=str(build_age),
+                dict(name=name, key=name, url=url,
+                     build_date=str(build_date_time.date()),
+                     build_age=str(days_ago(build_date_time)),
                      build_status=build_status))
         return entities
 
@@ -178,6 +179,16 @@ class AxureDevopsJobs(SourceCollector):
         if not job.get("latestCompletedBuild", {}).get("result"):
             return True  # The job has no completed builds
         return match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
+
+    @staticmethod
+    def _latest_build_result(job: Job) -> str:
+        """Return the result of the latest build."""
+        return str(job["latestCompletedBuild"]["result"])
+
+    @staticmethod
+    def _latest_build_date_time(job: Job) -> datetime:
+        """Return the finish time of the latest build of the job."""
+        return parse(job["latestCompletedBuild"]["finishTime"])
 
     @staticmethod
     def __job_name(job: Job) -> str:
@@ -191,7 +202,7 @@ class AzureDevopsFailedJobs(AxureDevopsJobs):
     def _ignore_job(self, job: Job) -> bool:
         if super()._ignore_job(job):
             return True
-        return job["latestCompletedBuild"]["result"] not in self._parameter("failure_type")
+        return self._latest_build_result(job) not in self._parameter("failure_type")
 
 
 class AzureDevopsUnusedJobs(AxureDevopsJobs):
@@ -201,6 +212,5 @@ class AzureDevopsUnusedJobs(AxureDevopsJobs):
         if super()._ignore_job(job):
             return True
         max_days = int(cast(str, self._parameter("inactive_job_days")))
-        build_date = parse(job["latestCompletedBuild"]["finishTime"]).date()
-        build_age = (date.today() - build_date).days
-        return build_age <= max_days
+        actual_days = days_ago(self._latest_build_date_time(job))
+        return actual_days <= max_days
