@@ -1,7 +1,7 @@
 """Gitlab metric source."""
 
 from abc import ABC
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import cast, List, Optional, Tuple
 from urllib.parse import quote
 
@@ -102,8 +102,7 @@ class GitlabSourceUpToDateness(GitlabBase):
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         commit_responses = responses[1:]
-        return str(min((datetime.now(timezone.utc) - parse(response.json()["committed_date"])).days
-                       for response in commit_responses))
+        return str(days_ago(max(parse(response.json()["committed_date"]) for response in commit_responses)))
 
 
 class GitlabUnmergedBranches(GitlabBase, UnmergedBranchesSourceCollector):
