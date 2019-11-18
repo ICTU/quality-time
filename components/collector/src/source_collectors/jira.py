@@ -7,6 +7,8 @@ from datetime import datetime
 from typing import cast, List
 from urllib.parse import quote
 
+from dateutil.parser import parse
+
 from collector_utilities.type import Entities, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
@@ -32,7 +34,7 @@ class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
             return []
 
     @functools.lru_cache(maxsize=2048)
-    def _get_filed_id(self, field_id_or_name):
+    def _get_field_id(self, field_id_or_name):
         all_fields = self._get_fields()
         if not all_fields or field_id_or_name in [field["id"] for field in all_fields]:
             return field_id_or_name
@@ -99,6 +101,7 @@ class JiraManualTestDuration(JiraFieldSumBase):
     field_parameter = "manual_test_duration_field"
     entity_key = "duration"
 
+
 class JiraManualTestExecution(JiraFieldSumBase):
     """Collector to get manual test execution from Jira."""
 
@@ -107,7 +110,7 @@ class JiraManualTestExecution(JiraFieldSumBase):
 
     def _parse_source_responses(self, responses: Responses) -> List:
         field_param = self._parameter(self.field_parameter)
-        field_x = self._get_filed_id(field_param) if field_param else None
+        field_x = self._get_field_id(field_param) if field_param else None
         param = self._parameter("manual_test_default_frequency_field")
         default_frequency = int(param[0] if isinstance(param, list) else param)
 
@@ -117,16 +120,13 @@ class JiraManualTestExecution(JiraFieldSumBase):
 
         def __touched_days_ago(issue_fields) -> int:
             comment_dates = [comment["updated"] for comment in issue_fields["comment"]["comments"]]
-            max_date_str = max(comment_dates) if comment_dates else None
-            split_date = max_date_str[:max_date_str.find('T')].split('-') if max_date_str else [1, 1, 1]
-            return days_ago(datetime(int(split_date[0]), int(split_date[1]), int(split_date[2])))
+            return days_ago(parse(max(comment_dates)) if comment_dates else datetime.min)
 
-        return [issue  for issue in responses[0].json()["issues"]
+        return [issue for issue in responses[0].json()["issues"]
                 if __frequency(issue["fields"], field_x, default_frequency) <= __touched_days_ago(issue["fields"])]
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
         return str(len(self._parse_source_responses(responses)))
-
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         url = self._parameter("url")
