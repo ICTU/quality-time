@@ -24,6 +24,7 @@ class SourceCollectorTestCase(unittest.TestCase):
                 get_request_json_return_value=None,
                 get_request_json_side_effect=None,
                 get_request_content="",
+                get_request_encoding="",
                 get_request_text="",
                 post_request_side_effect=None,
                 post_request_json_return_value=None,
@@ -34,6 +35,8 @@ class SourceCollectorTestCase(unittest.TestCase):
             mock_get_request.json.side_effect = get_request_json_side_effect
         else:
             mock_get_request.json.return_value = get_request_json_return_value
+        if get_request_encoding != "":
+            mock_get_request.encoding = get_request_encoding
         mock_get_request.content = get_request_content
         mock_get_request.text = get_request_text
         mock_post_request = Mock()

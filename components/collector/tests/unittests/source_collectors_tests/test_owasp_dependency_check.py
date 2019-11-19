@@ -96,3 +96,17 @@ AssertionError: The XML root element should be one of \
         timezone_info = timezone(timedelta(hours=2))
         expected_age = (datetime.now(timezone_info) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info)).days
         self.assert_measurement(response, value=str(expected_age))
+
+    def test_source_up_to_dateness_no_encoding(self):
+        """Test that the source age in days is returned, also when the XML has no encoding specified."""
+        xml = """<?xml version="1.0"?>
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
+            <projectInfo>
+                <reportDate>2018-10-03T13:01:24.784+0200</reportDate>
+            </projectInfo>
+        </analysis>"""
+        metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
+        response = self.collect(metric, get_request_text=xml, get_request_encoding=None)
+        timezone_info = timezone(timedelta(hours=2))
+        expected_age = (datetime.now(timezone_info) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info)).days
+        self.assert_measurement(response, value=str(expected_age))
