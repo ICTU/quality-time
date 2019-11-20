@@ -12,7 +12,7 @@ class QualityTimeMetrics(SourceCollector):
 
     def _api_url(self) -> URL:
         parts = parse.urlsplit(super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}:5001"
+        netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v1", "", "")))
 
     def _get_source_responses(self, api_url: URL) -> Responses:

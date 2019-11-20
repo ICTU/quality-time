@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The Quality-time source still used port 5001 to access the Quality-time API. Fixes [#806](https://github.com/ICTU/quality-time/issues/806).
+
 ## [0.19.1] - [2019-11-19]
 
 ### Fixed
