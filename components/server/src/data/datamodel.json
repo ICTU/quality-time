@@ -2777,6 +2777,23 @@
                         "metrics"
                     ]
                 },
+                "source_types": {
+                    "name": "Source types",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "Pyup.io Safety",
+                        "Quality-time"
+                    ],
+                    "api_values": {
+                        "Pyup.io Safety": "pyupio_safety",
+                        "Quality-time": "quality_time"
+                    },
+                    "metrics": [
+                        "metrics"
+                    ]
+                },
                 "status": {
                     "name": "Metric status",
                     "type": "multiple_choice",
