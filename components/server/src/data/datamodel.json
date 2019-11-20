@@ -2944,7 +2944,18 @@
                     ]
                 }
             },
-            "entities": {}
+            "entities": {
+                "metrics": {
+                    "name": "metric",
+                    "name_plural": "metrics",
+                    "attributes": [
+                        {
+                            "name": "Metric name",
+                            "key": "name"
+                        }
+                    ]
+                }
+            }
         },
         "random": {
             "name": "Random",

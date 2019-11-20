@@ -4,12 +4,16 @@ from functools import lru_cache
 from typing import Dict
 from urllib import parse
 
-from collector_utilities.type import Response, Responses, URL, Value
+from collector_utilities.type import Entities, Response, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
 class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.__counted_metrics = None
 
     def _api_url(self) -> URL:
         parts = parse.urlsplit(super()._api_url())
@@ -25,26 +29,39 @@ class QualityTimeMetrics(SourceCollector):
         return responses
 
     def _parse_source_responses_value(self, responses: Responses) -> Value:
+        return str(len(self._parse_source_responses_entities(responses)))
+
+    def _parse_source_responses_total(self, responses: Responses) -> Value:
+        return str(len(self.__get_metrics(responses[0])))
+
+    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+        if self.__counted_metrics is None:  # Can't use lru_cache because responses is a list. Cache by hand instead.
+            self.__counted_metrics = self.__count_metrics(responses)
+        entities: Entities = []
+        for metric_uuid, metric in self.__counted_metrics.items():
+            entities.append(
+                dict(key=metric_uuid, name=metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"]))
+        return entities
+
+    def __count_metrics(self, responses: Responses) -> Dict[str, Dict]:
+        """Count the metrics from the responses."""
         measurements_by_metric_uuid = dict()
         for response in responses[1:]:
             if measurements := response.json()["measurements"]:
                 last = measurements[-1]
                 measurements_by_metric_uuid[last["metric_uuid"]] = last
         status_to_count = self._parameter("status")
-        count = 0
+        metrics = dict()
         for metric_uuid, metric in self.__get_metrics(responses[0]).items():
             scale = metric.get("scale", "count")
             status = measurements_by_metric_uuid.get(metric_uuid, {}).get(scale, {}).get("status")
             if status in status_to_count or (status is None and "unknown" in status_to_count):
-                count += 1
-        return str(count)
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(len(self.__get_metrics(responses[0])))
+                metrics[metric_uuid] = metric
+        return metrics
 
     @lru_cache(maxsize=4)
     def __get_metrics(self, response: Response) -> Dict[str, Dict]:
-        """Get the relevant metric uuids from the reports response."""
+        """Get the relevant metrics from the reports response."""
 
         def metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:
             """Return whether the metric has been selected by the user by means of metric type, source type or tag."""

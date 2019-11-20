@@ -52,4 +52,5 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
         self.assert_measurement(
-            response, value="1", total="3", api_url="https://quality-time/api/v1", landing_url="https://quality-time")
+            response, value="1", total="3", entities=[{'key': 'm2', 'name': 'Tests'}],
+            api_url="https://quality-time/api/v1", landing_url="https://quality-time")
