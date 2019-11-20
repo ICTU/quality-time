@@ -12,7 +12,8 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
             source_id=dict(
                 type="quality_time",
                 parameters=dict(
-                    url="https://quality-time/", reports=["r1"], status=["target not met (red)"], tags=["security"])))
+                    url="https://quality-time/", reports=["r1"], status=["target not met (red)"], tags=["security"],
+                    metric_type=["tests", "violations"], source_type=["sonarqube"])))
         metric = dict(type="metrics", sources=sources, addition="sum")
         reports = dict(
             reports=[
@@ -21,17 +22,34 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                     subjects=dict(
                         subject_uuid=dict(
                             metrics=dict(
-                                m1=dict(tags=["security"]), m2=dict(tags=["security"]), m3=dict(tags=["security"]),
-                                m4=dict())))),
+                                m1=dict(
+                                    tags=["security"], scale="count", type="tests",
+                                    sources=dict(s1=dict(type="sonarqube"))),
+                                m2=dict(
+                                    tags=["security"], scale="count", type="tests",
+                                    sources=dict(s2=dict(type="sonarqube"))),
+                                m3=dict(
+                                    tags=["security"], scale="count", type="tests",
+                                    sources=dict(s3=dict(type="sonarqube"))),
+                                m4=dict(
+                                    tags=["security"], scale="count", type="tests",
+                                    sources=dict(s4=dict(type="junit"))),
+                                m5=dict(
+                                    tags=["performance"], scale="count", type="tests",
+                                    sources=dict(s5=dict(type="sonarqube"))),
+                                m6=dict(
+                                    tags=["security"], scale="count", type="loc",
+                                    sources=dict(s6=dict(type="sonarqube"))))))),
                 dict(
                     title="R2", report_uuid="r2")])
-        measurements1 = dict(measurements=[dict(metric_uuid="m1", status="target_met")])
-        measurements2 = dict(measurements=[dict(metric_uuid="m2", status="target_not_met")])
+        measurements1 = dict(measurements=[dict(metric_uuid="m1", count=dict(status="target_met"))])
+        measurements2 = dict(measurements=[dict(metric_uuid="m2", count=dict(status="target_not_met"))])
         measurements3 = dict(measurements=[])
         response = self.collect(
             metric,
             get_request_json_side_effect=[reports, measurements1, measurements2, measurements3, reports, reports])
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
-        # and tag "security". Only m2 matches those criteria.
+        # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
+        # Only m2 matches those criteria.
         self.assert_measurement(
             response, value="1", total="3", api_url="https://quality-time/api/v1", landing_url="https://quality-time")

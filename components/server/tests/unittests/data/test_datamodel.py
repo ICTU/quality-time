@@ -146,3 +146,34 @@ class DataModelTest(unittest.TestCase):
                     "values" in parameter,
                     f"Parameter {parameter_key} of source {source_id} has api values, but no values.")
                 self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))
+
+    def test_quality_time_source_type_parameter(self):
+        """Test that the source type parameter of the Quality-time source lists all source types."""
+        all_source_names = set(source["name"] for source in self.datamodel["sources"].values())
+        quality_time_source_names = set(
+            self.datamodel["sources"]["quality_time"]["parameters"]["source_type"]["values"])
+        self.assertEqual(all_source_names, quality_time_source_names)
+        all_source_api_values = set(
+            (source["name"], source_id) for source_id, source in self.datamodel["sources"].items())
+        quality_time_api_values = set(
+            self.datamodel["sources"]["quality_time"]["parameters"]["source_type"]["api_values"].items())
+        self.assertEqual(all_source_api_values, quality_time_api_values)
+
+    def test_quality_time_metric_type_parameter(self):
+        """Test that the metric type parameter of the Quality-time source lists all metric types."""
+        all_metric_names = set(metric["name"] for metric in self.datamodel["metrics"].values())
+        quality_time_metric_names = set(
+            self.datamodel["sources"]["quality_time"]["parameters"]["metric_type"]["values"])
+        self.assertEqual(all_metric_names, quality_time_metric_names)
+        all_metric_api_values = set(
+            (metric["name"], metric_id) for metric_id, metric in self.datamodel["metrics"].items())
+        quality_time_api_values = set(
+            self.datamodel["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items())
+        self.assertEqual(all_metric_api_values, quality_time_api_values)
+
+    def test_invalid_characters_in_names(self):
+        """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
+        for source in self.datamodel["sources"].values():
+            self.assertFalse("." in source["name"])
+        for metric in self.datamodel["metrics"].values():
+            self.assertFalse("." in metric["name"])
