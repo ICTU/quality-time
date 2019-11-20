@@ -37,7 +37,7 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
     def test_no_issues(self):
         """Test zero issues."""
         response = self.collect(self.metric, post_request_json_return_value=dict(workItems=[]))
-        self.assert_measurement(response, value="0")
+        self.assert_measurement(response, value="0", entities=[])
 
     def test_issues(self):
         """Test that the issues are returned."""
@@ -69,7 +69,7 @@ class AzureDevopsReadyStoryPointsTest(AzureDevopsTestCase):
         response = self.collect(
             self.metric, post_request_json_return_value=dict(workItems=[]),
             get_request_json_return_value=dict(value=[]))
-        self.assert_measurement(response, value="0")
+        self.assert_measurement(response, value="0", entities=[])
 
 
 class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
@@ -184,7 +184,7 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
                     dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed")),
                     dict(path=r"\\", name="no_builds")
                 ]))
-        expected_age = (date.today() - date(2019, 11, 15)).days
+        expected_age = days_ago(parse("2019-11-15T12:24:10.1905868Z"))
         self.assert_measurement(
             response, value="1",
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
@@ -212,7 +212,7 @@ class AzureDevopsFailedJobsTest(SourceCollectorTestCase):
                     dict(path=r"\\folder", name="ignore_by_re", latestCompletedBuild=dict(result="failed")),
                     dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed"))
                 ]))
-        expected_age = (date.today() - date(2019, 10, 15)).days
+        expected_age = days_ago(parse("2019-10-15T12:24:10.1905868Z"))
         self.assert_measurement(
             response, value="1",
             api_url="https://azure_devops/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1",
