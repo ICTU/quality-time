@@ -1,7 +1,5 @@
 """Unit tests for the Azure Devops Server (formerly Team Foundation Server) source."""
 
-from datetime import date
-
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago
