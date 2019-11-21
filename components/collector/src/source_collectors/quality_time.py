@@ -40,9 +40,14 @@ class QualityTimeMetrics(SourceCollector):
         landing_url = self._landing_url(responses)
         entities: Entities = []
         for metric_uuid, metric in self.__counted_metrics.items():
-            name = metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"]
-            url = f"{landing_url}/{metric['report_uuid']}#{metric_uuid}"
-            entities.append(dict(key=metric_uuid, url=url, name=name))
+            metric_name = metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"]
+            report_url = f"{landing_url}/{metric['report_uuid']}"
+            subject_url = f"{report_url}#{metric['subject_uuid']}"
+            metric_url = f"{report_url}#{metric_uuid}"
+            entities.append(
+                dict(
+                    key=metric_uuid, report=metric["report_title"], subject=metric["subject_name"], metric=metric_name,
+                    report_url=report_url, subject_url=subject_url, metric_url=metric_url, status=metric["status"]))
         return entities
 
     def __count_metrics(self, responses: Responses) -> Dict[str, Dict]:
@@ -58,6 +63,7 @@ class QualityTimeMetrics(SourceCollector):
             scale = metric.get("scale", "count")
             status = measurements_by_metric_uuid.get(metric_uuid, {}).get(scale, {}).get("status")
             if status in status_to_count or (status is None and "unknown" in status_to_count):
+                metric["status"] = status
                 metrics[metric_uuid] = metric
         return metrics
 
@@ -82,8 +88,11 @@ class QualityTimeMetrics(SourceCollector):
         for report in response.json()["reports"]:
             if report_titles_or_ids and (report_titles_or_ids & {report["title"], report["report_uuid"]} == set()):
                 continue
-            for subject in report.get("subjects", {}).values():
+            for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_uuid, metric in subject.get("metrics", {}).items():
                     if metric_is_to_be_measured(metric, metric_types, source_types, tags):
+                        metric["report_title"] = report["title"]
+                        metric["subject_name"] = subject["name"]
+                        metric["subject_uuid"] = subject_uuid
                         metrics[metric_uuid] = metric
         return metrics

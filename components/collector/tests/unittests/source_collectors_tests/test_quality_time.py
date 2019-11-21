@@ -20,7 +20,8 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                 dict(
                     title="R1", report_uuid="r1",
                     subjects=dict(
-                        subject_uuid=dict(
+                        s1=dict(
+                            name="S1",
                             metrics=dict(
                                 m1=dict(
                                     tags=["security"], scale="count", type="tests", report_uuid="r1",
@@ -52,5 +53,9 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
         self.assert_measurement(
-            response, value="1", total="3", entities=[dict(key="m2", name="Tests", url="https://quality-time/r1#m2")],
-            api_url="https://quality-time/api/v1", landing_url="https://quality-time")
+            response, value="1", total="3", api_url="https://quality-time/api/v1", landing_url="https://quality-time",
+            entities=[
+                dict(
+                    key="m2", report="R1", subject="S1", metric="Tests", report_url="https://quality-time/r1",
+                    subject_url="https://quality-time/r1#s1", metric_url="https://quality-time/r1#m2",
+                    status="target_not_met")])

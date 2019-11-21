@@ -2950,9 +2950,29 @@
                     "name_plural": "metrics",
                     "attributes": [
                         {
-                            "name": "Metric name",
-                            "key": "name",
-                            "url": "url"
+                            "name": "Report",
+                            "key": "report",
+                            "url": "report_url"
+                        },
+                        {
+                            "name": "Subject",
+                            "key": "subject",
+                            "url": "subject_url"
+                        },
+                        {
+                            "name": "Metric",
+                            "key": "metric",
+                            "url": "metric_url"
+                        },
+                        {
+                            "name": "Metric status",
+                            "key": "status",
+                            "color": {
+                                "target_met": "positive",
+                                 "near_target_met": "warning",
+                                 "target_not_met": "negative",
+                                 "technical_debt_target_met": "active"
+                             }
                         }
                     ]
                 }
