@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
 import { SemanticToastContainer, toast } from 'react-semantic-toasts';
+import HashLinkObserver from "react-hash-link";
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import './App.css';
 
@@ -204,6 +205,7 @@ class App extends Component {
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+        <HashLinkObserver />
         <Menubar
           go_home={() => this.go_home()}
           login={(u, p) => this.login(u, p)}
