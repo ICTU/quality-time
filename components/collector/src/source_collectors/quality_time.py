@@ -37,10 +37,12 @@ class QualityTimeMetrics(SourceCollector):
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         if self.__counted_metrics is None:  # Can't use lru_cache because responses is a list. Cache by hand instead.
             self.__counted_metrics = self.__count_metrics(responses)
+        landing_url = self._landing_url(responses)
         entities: Entities = []
         for metric_uuid, metric in self.__counted_metrics.items():
-            entities.append(
-                dict(key=metric_uuid, name=metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"]))
+            name = metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"]
+            url = f"{landing_url}/{metric['report_uuid']}#{metric_uuid}"
+            entities.append(dict(key=metric_uuid, url=url, name=name))
         return entities
 
     def __count_metrics(self, responses: Responses) -> Dict[str, Dict]:

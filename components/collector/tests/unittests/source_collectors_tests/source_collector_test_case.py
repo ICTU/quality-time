@@ -51,11 +51,11 @@ class SourceCollectorTestCase(unittest.TestCase):
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
-        for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
-            if (attribute_value := attributes.get(attribute_key)) is not None:
-                self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:
                 self.assertIn(attribute_value, measurement["sources"][source_index][attribute_key])
             else:
                 self.assertIsNone(measurement["sources"][source_index][attribute_key])
+        for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
+            if (attribute_value := attributes.get(attribute_key)) is not None:
+                self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])

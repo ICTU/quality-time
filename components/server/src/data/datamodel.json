@@ -2951,7 +2951,8 @@
                     "attributes": [
                         {
                             "name": "Metric name",
-                            "key": "name"
+                            "key": "name",
+                            "url": "url"
                         }
                     ]
                 }

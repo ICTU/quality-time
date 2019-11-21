@@ -64,7 +64,7 @@ export function Measurement(props) {
     changed_fields={props.changed_fields}
   />
   return (
-    <TableRowWithDetails show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>
+    <TableRowWithDetails id={props.metric_uuid} show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>
       <Table.Cell>
         {metric_name}
       </Table.Cell>
