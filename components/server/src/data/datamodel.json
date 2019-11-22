@@ -2974,6 +2974,14 @@
                                 "target_not_met": "negative",
                                 "technical_debt_target_met": "active"
                             }
+                        },
+                        {
+                            "name": "Measurement",
+                            "key": "measurement"
+                        },
+                        {
+                            "name": "Target",
+                            "key": "target"
                         }
                     ]
                 }

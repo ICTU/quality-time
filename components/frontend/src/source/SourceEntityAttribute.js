@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusIcon } from '../widgets/StatusIcon';
+import { StatusIcon } from '../metric/StatusIcon';
 
 export function SourceEntityAttribute(props) {
   let cell_contents = props.entity[props.entity_attribute.key] || "";

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { shallow } from 'enzyme';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
-import { StatusIcon } from '../widgets/StatusIcon';
+import { StatusIcon } from '../metric/StatusIcon';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');

@@ -4,7 +4,7 @@ import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
 import { MeasurementDetails } from './MeasurementDetails';
-import { StatusIcon } from '../widgets/StatusIcon';
+import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 
