@@ -2768,6 +2768,29 @@
                         "metrics"
                     ]
                 },
+                "status": {
+                    "name": "Metric status",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "values": [
+                        "target met (green)",
+                        "near target met (yellow)",
+                        "target not met (red)",
+                        "technical debt target met (grey)",
+                        "unknown (white)"
+                    ],
+                    "api_values": {
+                       "target met (green)": "target_met",
+                        "near target met (yellow)": "near_target_met",
+                        "target not met (red)": "target_not_met",
+                        "technical debt target met (grey)": "debt_target_met",
+                        "unknown (white)": "unknown"
+                    },
+                    "metrics": [
+                        "metrics"
+                    ]
+                },
                 "reports": {
                     "name": "Report names or identifiers",
                     "type": "multiple_choice_with_addition",
@@ -2906,29 +2929,6 @@
                         "SonarQube": "sonarqube",
                         "Trello": "trello",
                         "Wekan": "wekan"
-                    },
-                    "metrics": [
-                        "metrics"
-                    ]
-                },
-                "status": {
-                    "name": "Metric status",
-                    "type": "multiple_choice",
-                    "mandatory": false,
-                    "default_value": "",
-                    "values": [
-                        "target met (green)",
-                        "near target met (yellow)",
-                        "target not met (red)",
-                        "technical debt target met (grey)",
-                        "unknown (white)"
-                    ],
-                    "api_values": {
-                       "target met (green)": "target_met",
-                        "near target met (yellow)": "near_target_met",
-                        "target not met (red)": "target_not_met",
-                        "technical debt target met (grey)": "debt_target_met",
-                        "unknown (white)": "unknown"
                     },
                     "metrics": [
                         "metrics"

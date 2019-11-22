@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The Quality-time source still used port 5001 to access the Quality-time API. Fixes [#806](https://github.com/ICTU/quality-time/issues/806).
 
+### Added
+
+- Allow for filtering metrics by metric type and source type in the Quality-time source. Closes [#808](https://github.com/ICTU/quality-time/issues/808).
+
 ## [0.19.1] - [2019-11-19]
 
 ### Fixed
