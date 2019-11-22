@@ -47,7 +47,8 @@ class QualityTimeMetrics(SourceCollector):
             entities.append(
                 dict(
                     key=metric_uuid, report=metric["report_title"], subject=metric["subject_name"], metric=metric_name,
-                    report_url=report_url, subject_url=subject_url, metric_url=metric_url, status=metric["status"]))
+                    report_url=report_url, subject_url=subject_url, metric_url=metric_url, status=metric["status"],
+                    target=metric["target"], measurement=metric["measurement"]))
         return entities
 
     def __count_metrics(self, responses: Responses) -> Dict[str, Dict]:
@@ -61,9 +62,16 @@ class QualityTimeMetrics(SourceCollector):
         metrics = dict()
         for metric_uuid, metric in self.__get_metrics(responses[0]).items():
             scale = metric.get("scale", "count")
-            status = measurements_by_metric_uuid.get(metric_uuid, {}).get(scale, {}).get("status")
+            scale_data = measurements_by_metric_uuid.get(metric_uuid, {}).get(scale, {})
+            status = scale_data.get("status")
             if status in status_to_count or (status is None and "unknown" in status_to_count):
                 metric["status"] = status
+                unit = metric.get("unit") or self._datamodel["metrics"][metric["type"]]["unit"]
+                metric["measurement"] = f"{scale_data.get('value') or '?'} {unit}"
+                direction = metric.get("direction") or self._datamodel["metrics"][metric["type"]]["direction"]
+                direction = {"<": "≦", ">": "≧"}.get(direction, direction)
+                target = metric.get("target") or self._datamodel["metrics"][metric["type"]]["target"]
+                metric["target"] = f"{direction} {target} {unit}"
                 metrics[metric_uuid] = metric
         return metrics
 
