@@ -1,9 +1,10 @@
 import React from 'react';
-import { Icon, Table, Popup } from 'semantic-ui-react';
+import { Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { SourceStatus } from './SourceStatus';
 import { TrendSparkline } from './TrendSparkline';
 import { MeasurementDetails } from './MeasurementDetails';
+import { StatusIcon } from '../widgets/StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 
@@ -29,10 +30,6 @@ export function Measurement(props) {
     end = new Date(latest_measurement.end);
     measurement_timestring = latest_measurement.end;
   }
-  const status_icon = {
-    target_met: 'check', near_target_met: 'warning', debt_target_met: 'money',
-    target_not_met: 'x', null: 'question'
-  }[status];
   const target = metric.accept_debt ? metric.debt_target : metric.target;
   const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
   const positive = status === "target_met";
@@ -72,7 +69,7 @@ export function Measurement(props) {
         <TrendSparkline measurements={props.measurements.filter((measurement) => measurement.end >= week_ago_string)} scale={metric_scale} />
       </Table.Cell>
       <Table.Cell>
-        <Icon size='large' name={status_icon} />
+        <StatusIcon status={status} />
       </Table.Cell>
       <Table.Cell>
         <Popup
