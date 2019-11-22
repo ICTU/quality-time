@@ -1,7 +1,7 @@
 """Collector for Quality-time."""
 
 from functools import lru_cache
-from typing import Dict
+from typing import Dict, Optional
 from urllib import parse
 
 from collector_utilities.type import Entities, Response, Responses, URL, Value
@@ -13,7 +13,7 @@ class QualityTimeMetrics(SourceCollector):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.__counted_metrics = None
+        self.__counted_metrics: Optional[Dict[str, Dict]] = None
 
     def _api_url(self) -> URL:
         parts = parse.urlsplit(super()._api_url())
