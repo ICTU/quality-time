@@ -77,17 +77,17 @@ To add a metric to a subject, hit the "Add metric" button.
 
 ### Editing metrics
 
-After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab. 
+After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab.
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-* The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field. 
+* The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field.
 * Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
   ![Dashboard tags](screenshots/dashboard_tags.png)
 
 * The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
-* The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better. 
+* The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to changes the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better.
 * The "Metric unit" derives its default value from the metric type. Override as needed.
 * The "Metric target" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 * If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
@@ -128,9 +128,17 @@ To delete a metric's source, expand the metric in the metric table, select the "
 
 ## Notes on specific metrics
 
+### Metrics
+
+One special metric type is "Metrics". It counts the number of metrics in a quality report. This makes it possible to create 'meta'-reports that for example measure the number of security metrics that don't meet their target.
+
+After adding Quality-time as a source to a "Metrics"-metric, one can configure which statuses to count and which metrics to consider by filtering on report names or identifiers, on metric types, on source types, and on tags.
+
+![Editing Quality-time source screenshot](screenshots/editing_quality_time_source.png)
+
 ### Unmerged branches
 
-The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric. 
+The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric.
 
 The "master"-branch is the default branch in both GitLab and Azure DevOps. This means that a branch is considered unmerged if it has not been merged with master. If you want to use a different branch as default branch, you need to configure this in the source, see the documentation for [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/#default-branch) or [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#change-your-default-branch).
 
@@ -151,3 +159,5 @@ In a report's dashboard, click on a tag card to show only metrics that have the 
 ### Filtering metrics by status
 
 Each metric table has a button on the top left hand side that can clicked to hide metrics that need to action. Click it again to undo the filtering.
+
+![Metric table columns](screenshots/metric_table_columns.png)
