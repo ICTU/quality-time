@@ -46,7 +46,7 @@ class QualityTimeMetrics(SourceCollector):
         landing_url = self._landing_url(responses)
         entities: Entities = []
         for metric, entity in self.__get_metrics_and_entities(responses[0]):
-            status, value = self.__get_status_and_value(metric, last_measurements.get(entity["key"], {}))
+            status, value = self.__get_status_and_value(metric, last_measurements.get(str(entity["key"]), {}))
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
                 entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
