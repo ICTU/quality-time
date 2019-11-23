@@ -56,11 +56,11 @@ jobs:
       - cd components/collector
       - mkdir build
       - ci/unittest.sh
-      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
       - cd ../../components/server
       - mkdir build
       - ci/unittest.sh
-      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests/unittests
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
       - cd ../../components/frontend
       - npm test -- --coverage
       - cd ../..
