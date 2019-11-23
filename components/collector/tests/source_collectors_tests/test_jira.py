@@ -156,7 +156,7 @@ class JiraBaseTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         data_model_path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)),
-                                       "..", "..", "..", "..", "server", "src", "data", "datamodel.json")
+                                       "..", "..", "..", "server", "src", "data", "datamodel.json")
         with open(data_model_path) as json_data_model:
             cls.data_model = json.load(json_data_model)
         cls.sources = dict(

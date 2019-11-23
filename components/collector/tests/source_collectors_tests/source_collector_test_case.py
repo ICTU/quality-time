@@ -16,7 +16,7 @@ class SourceCollectorTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         module_dir = os.path.dirname(os.path.abspath(__file__))
-        data_model_path = pathlib.Path(module_dir, "..", "..", "..", "..", "server", "src", "data", "datamodel.json")
+        data_model_path = pathlib.Path(module_dir, "..", "..", "..", "server", "src", "data", "datamodel.json")
         with open(data_model_path) as json_data_model:
             cls.data_model = json.load(json_data_model)
 
