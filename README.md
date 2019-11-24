@@ -90,6 +90,6 @@ Start the containers:
 docker-compose up
 ```
 
-The frontend is served at [http://localhost:5000](http://localhost:5000).
+The frontend is served at [http://localhost](http://localhost).
 
 By default, there is one user defined. Use username `admin` and password `admin` to log in.
