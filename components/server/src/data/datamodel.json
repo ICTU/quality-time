@@ -1824,20 +1824,20 @@
                     ]
                 },
                 "manual_test_execution_frequency_field": {
-                    "name": "Execution frequency field (id or name)",
+                    "name": "Manual test execution frequency field id",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
-                    "mandatory": true,
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "manual_test_execution"
                     ]
                 },
-                "manual_test_default_frequency_field": {
-                    "name": "Default execution frequency (days)",
-                    "type": "string",
-                    "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
+                "manual_test_execution_frequency_default": {
+                    "name": "Default expected manual test execution frequency (days)",
+                    "type": "integer",
                     "mandatory": true,
+                    "min_value": "1",
                     "default_value": "21",
                     "metrics": [
                         "manual_test_execution"
@@ -1882,8 +1882,8 @@
                     ]
                 },
                 "manual_test_execution": {
-                    "name": "last test",
-                    "name_plural": "last tests",
+                    "name": "test case",
+                    "name_plural": "test cases",
                     "attributes": [
                         {
                             "name": "Summary",
@@ -1892,7 +1892,11 @@
                         },
                         {
                             "name": "Days since last test",
-                            "key": "days"
+                            "key": "days_untested"
+                        },
+                        {
+                            "name": "Desired test frequency (days)",
+                            "key": "desired_test_frequency"
                         }
                     ]
                 },
