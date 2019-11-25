@@ -1814,7 +1814,7 @@
                     ]
                 },
                 "manual_test_duration_field": {
-                    "name": "Manual test duration field id",
+                    "name": "Manual test duration field (name or id)",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,
@@ -1824,7 +1824,7 @@
                     ]
                 },
                 "manual_test_execution_frequency_field": {
-                    "name": "Manual test execution frequency field id",
+                    "name": "Manual test execution frequency field (name or id)",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": false,
@@ -1844,7 +1844,7 @@
                     ]
                 },
                 "story_points_field": {
-                    "name": "Story points field id",
+                    "name": "Story points field (name or id)",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,

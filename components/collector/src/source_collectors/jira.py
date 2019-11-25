@@ -1,8 +1,7 @@
 """Jira metric collector."""
 
 from abc import ABC
-from typing import cast, Dict, Optional, Union
-from urllib.parse import quote
+from typing import cast, Dict, List, Union
 
 from dateutil.parser import parse
 
@@ -14,16 +13,33 @@ from .source_collector import SourceCollector
 class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Jira collectors."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._field_ids = {}
+
     def _api_url(self) -> URL:
         url = super()._api_url()
-        jql = quote(str(self._parameter("jql")))
+        jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
-        jql = quote(str(self._parameter("jql")))
+        jql = str(self._parameter("jql", quote=True))
         return URL(f"{url}/issues?jql={jql}")
+
+    def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
+        parameter_value = super()._parameter(parameter_key, quote)
+        if parameter_key.endswith("field"):
+            parameter_value = self._field_ids.get(parameter_value, parameter_value)
+        return parameter_value
+
+    def _get_source_responses(self, api_url: URL) -> Responses:
+        fields_url = URL(f"{super()._api_url()}/rest/api/2/field")
+        response = super()._get_source_responses(fields_url)[0]
+        response.raise_for_status()
+        self._field_ids = dict((field["name"], field["id"]) for field in response.json())
+        return super()._get_source_responses(api_url)
 
     def _parse_source_responses_entities(self, responses: Responses) -> Entities:
         url = URL(str(self._parameter("url")))
@@ -102,9 +118,9 @@ class JiraFieldSumBase(JiraBase):
     def _fields(self) -> str:
         return super()._fields() + "," + cast(str, self._parameter(self.field_parameter))
 
-    def __value_of_field_to_sum(self, issue: Dict) -> Optional[Union[int, float]]:
+    def __value_of_field_to_sum(self, issue: Dict) -> float:
         """Return the value of the issue field that this collectors is to sum."""
-        return issue["fields"][self._parameter(self.field_parameter)]
+        return float(issue["fields"][self._parameter(self.field_parameter)])
 
 
 class JiraReadyUserStoryPoints(JiraFieldSumBase):
