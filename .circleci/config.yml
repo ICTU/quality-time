@@ -54,7 +54,6 @@ jobs:
       - run:
           name: Scan images
           command: |
-            apk add curl bash
             curl -s https://ci-tools.anchore.io/inline_scan-v0.3.3 | bash -s -- -r "ictu/quality-time_frontend:v0.20.0"
 workflows:
   version: 2
