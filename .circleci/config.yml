@@ -52,10 +52,10 @@ jobs:
           docker-compose build && docker-compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
       - run:
-        name: Scan images
-        command: |
-          apk add curl bash
-          curl -s https://ci-tools.anchore.io/inline_scan-v0.3.3 | bash -s -- -r "ictu/quality-time_frontend:v0.20.0"
+          name: Scan images
+          command: |
+            apk add curl bash
+            curl -s https://ci-tools.anchore.io/inline_scan-v0.3.3 | bash -s -- -r "ictu/quality-time_frontend:v0.20.0"
 workflows:
   version: 2
   build_test:
