@@ -80,7 +80,7 @@ class SourceCollector(ABC):
         if api_values := parameter_info.get("api_values"):
             value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
         if parameter_key.endswith("url"):
-            value = value.rstrip("/")
+            value = cast(str, value).rstrip("/")
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
