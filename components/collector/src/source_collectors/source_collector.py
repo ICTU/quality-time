@@ -55,14 +55,14 @@ class SourceCollector(ABC):
     def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
-        if landing_url := cast(str, self.__parameters.get("landing_url", "")).strip("/"):
+        if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
             return URL(landing_url)
-        url = cast(str, self.__parameters.get("url", "")).strip("/")
+        url = cast(str, self.__parameters.get("url", "")).rstrip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
     def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
-        return URL(cast(str, self.__parameters.get("url", "")).strip("/"))
+        return URL(cast(str, self.__parameters.get("url", "")).rstrip("/"))
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         """Return the parameter value."""
@@ -79,6 +79,8 @@ class SourceCollector(ABC):
             value = self.__parameters.get(parameter_key, default_value)
         if api_values := parameter_info.get("api_values"):
             value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
+        if parameter_key.endswith("url"):
+            value = value.rstrip("/")
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
