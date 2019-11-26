@@ -17,7 +17,7 @@ class JiraTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="jira",
                 parameters=dict(
-                    url="https://jira", jql="query", story_points_field="field",
+                    url="https://jira/", jql="query", story_points_field="field",
                     manual_test_execution_frequency_field="desired_test_frequency",
                     manual_test_duration_field="field")))
         self.fields_json = []
