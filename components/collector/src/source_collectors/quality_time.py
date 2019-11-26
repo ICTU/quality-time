@@ -1,7 +1,7 @@
 """Collector for Quality-time."""
 
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 from urllib import parse
 
 from collector_utilities.type import Entity, Entities, Measurement, Response, Responses, URL, Value
@@ -10,10 +10,6 @@ from .source_collector import SourceCollector
 
 class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.__entities: Optional[Entities] = None
 
     def _api_url(self) -> URL:
         parts = parse.urlsplit(super()._api_url())
@@ -28,24 +24,19 @@ class QualityTimeMetrics(SourceCollector):
             responses.extend(super()._get_source_responses(URL(f"{api_url}/measurements/{entity['key']}")))
         return responses
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        metrics_and_entities = self.__get_metrics_and_entities(responses[0])
+        entities = self.__get_entities(responses[1:], metrics_and_entities)
+        return str(len(entities)), str(len(metrics_and_entities)), entities
 
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(len(self.__get_metrics_and_entities(responses[0])))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        if self.__entities is None:  # Can't use lru_cache because responses is a list. Cache by hand instead.
-            self.__entities = self.__get_entities(responses)
-        return self.__entities
-
-    def __get_entities(self, responses: Responses) -> Entities:
+    def __get_entities(
+            self, responses: Responses, metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]]) -> Entities:
         """Get the metric entities from the responses."""
         last_measurements = self.__get_last_measurements(responses)
         status_to_count = self._parameter("status")
         landing_url = self._landing_url(responses)
         entities: Entities = []
-        for metric, entity in self.__get_metrics_and_entities(responses[0]):
+        for metric, entity in metrics_and_entities:
             status, value = self.__get_status_and_value(metric, last_measurements.get(str(entity["key"]), {}))
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
@@ -66,7 +57,7 @@ class QualityTimeMetrics(SourceCollector):
     def __get_last_measurements(responses: Responses) -> Dict[str, Measurement]:
         """Return the last measurements by metric UUID for easy lookup."""
         last_measurements = dict()
-        for response in responses[1:]:
+        for response in responses:
             if measurements := response.json()["measurements"]:
                 last_measurement = measurements[-1]
                 last_measurements[last_measurement["metric_uuid"]] = last_measurement
@@ -79,7 +70,7 @@ class QualityTimeMetrics(SourceCollector):
         scale_data = measurement.get(scale, {})
         return scale_data.get("status") or "unknown", scale_data.get("value")
 
-    @lru_cache(maxsize=4)
+    @lru_cache(maxsize=2)
     def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Dict], Entity]]:
         """Get the relevant metrics from the reports response."""
         tags = set(self._parameter("tags"))

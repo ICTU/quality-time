@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List
+from typing import cast, Dict, List, Tuple
 
 import cachetools.func
 from dateutil.parser import parse
@@ -62,10 +62,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         token = responses[0].json()['token']
         api_url = self._api_url()
         board_url = f"{api_url}/api/boards/{self._board_id(token)}"
@@ -74,7 +71,7 @@ class WekanIssues(WekanBase):
         for lst in self._lists(board_url, token):
             for card in self._cards(f"{board_url}/lists/{lst['_id']}", token):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return entities
+        return str(len(entities)), "100", entities
 
     def _ignore_card(self, card: Dict) -> bool:
 
@@ -108,7 +105,7 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         token = responses[0].json()['token']
         board_url = f"{self._api_url()}/api/boards/{self._board_id(token)}"
         board = self._get_json(URL(board_url), token)
@@ -117,4 +114,4 @@ class WekanSourceUpToDateness(WekanBase):
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             list_url = f"{board_url}/lists/{lst['_id']}"
             dates.extend([card["dateLastActivity"] for card in self._cards(list_url, token)])
-        return str(days_ago(parse(max([date for date in dates if date]))))
+        return str(days_ago(parse(max([date for date in dates if date])))), "100", []

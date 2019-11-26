@@ -3,7 +3,7 @@
 import re
 from abc import ABC
 from datetime import datetime
-from typing import List
+from typing import cast, List, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import parse
@@ -22,16 +22,11 @@ class OWASPZAPBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-m
 class OWASPZAPSecurityWarnings(OWASPZAPBaseClass):
     """Collector to get security warnings from OWASP ZAP."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        alert_instances = []
-        for alert in self.__alerts(responses):
-            alert_instances.extend(alert.findall("./instances/instance"))
-        return str(len(alert_instances))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []
         tag_re = re.compile(r"<[^>]*>")
-        for alert in self.__alerts(responses):
+        risks = cast(List[str], self._parameter("risks"))
+        for alert in self.__alerts(responses, risks):
             alert_key = ":".join(
                 [alert.findtext(id_tag, default="") for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
             name = alert.findtext("name", default="")
@@ -43,11 +38,11 @@ class OWASPZAPSecurityWarnings(OWASPZAPBaseClass):
                 key = f"{alert_key}:{method}:{uri}"
                 entities.append(
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
-        return entities
+        return str(len(entities)), "100", entities
 
-    def __alerts(self, responses: Responses) -> List[Element]:
+    @staticmethod
+    def __alerts(responses: Responses, risks: List[str]) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
-        risks = self._parameter("risks")
         alerts = []
         for response in responses:
             tree = parse_source_response_xml(response)

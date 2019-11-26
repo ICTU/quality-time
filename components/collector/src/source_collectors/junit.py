@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import cast, List, Tuple
 
 from dateutil.parser import parse
 
@@ -15,28 +15,13 @@ class JUnitBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-meth
     """Base class for JUnit collectors."""
 
     file_extensions = ["xml"]
+    junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
 
 
 class JUnitTests(JUnitBaseClass):
     """Collector for JUnit tests."""
 
-    junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
-
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _test_statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
-        """Return the test statuses to count."""
-        return cast(List[str], self._parameter("test_result"))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        """Return a list of failed tests."""
-
-        def entity(case_node, case_result: str) -> Entity:
-            """Transform a test case into a test case entity."""
-            name = case_node.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case_node.get("classname", ""), test_result=case_result)
-
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = []
         for response in responses:
             tree = parse_source_response_xml(response)
@@ -46,32 +31,42 @@ class JUnitTests(JUnitBaseClass):
                         break
                 else:
                     test_result = "passed"
-                if test_result in self._test_statuses_to_count():
-                    entities.append(entity(test_case, test_result))
-        return entities
+                if test_result in self.__test_statuses_to_count():
+                    entities.append(self.__entity(test_case, test_result))
+        return str(len(entities)), "100", entities
+
+    def __test_statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
+        """Return the test statuses to count."""
+        return cast(List[str], self._parameter("test_result"))
+
+    @staticmethod
+    def __entity(case_node, case_result: str) -> Entity:
+        """Transform a test case into a test case entity."""
+        name = case_node.get("name", "<nameless test case>")
+        return dict(key=name, name=name, class_name=case_node.get("classname", ""), test_result=case_result)
 
 
-class JUnitFailedTests(JUnitTests):
+class JUnitFailedTests(JUnitBaseClass):
     """Collector to get the number of failed tests from JUnit XML reports."""
 
-    def _test_statuses_to_count(self) -> List[str]:
-        return cast(List[str], self._parameter("failure_type"))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        """Return a list of failed tests."""
-
-        def entity(case_node, test_case_status: str) -> Entity:
-            """Transform a test case into a test case entity."""
-            name = case_node.get("name", "<nameless test case>")
-            return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=test_case_status)
-
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = []
         for response in responses:
             tree = parse_source_response_xml(response)
-            for status in self._test_statuses_to_count():
+            for status in self.__test_statuses_to_count():
                 status_node = self.junit_status_nodes[status]
-                entities.extend([entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
-        return entities
+                entities.extend(
+                    [self.__entity(case_node, status) for case_node in tree.findall(f".//{status_node}/..")])
+        return str(len(entities)), "100", entities
+
+    def __test_statuses_to_count(self) -> List[str]:
+        return cast(List[str], self._parameter("failure_type"))
+
+    @staticmethod
+    def __entity(case_node, test_case_status: str) -> Entity:
+        """Transform a test case into a test case entity."""
+        name = case_node.get("name", "<nameless test case>")
+        return dict(key=name, name=name, class_name=case_node.get("classname", ""), failure_type=test_case_status)
 
 
 class JUnitSourceUpToDateness(JUnitBaseClass, SourceUpToDatenessCollector):

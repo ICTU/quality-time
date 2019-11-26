@@ -1,12 +1,12 @@
 """Collectors for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import cast
+from typing import cast, Tuple
 
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.type import Response, Responses, URL, Value
+from collector_utilities.type import Entities, Response, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -62,9 +62,9 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         scan = responses[self.SCAN_RESPONSE].json()[0]
-        return str(days_ago(parse(scan["dateAndTime"]["finishedOn"])))
+        return str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))), "100", []
 
 
 class CxSASTSecurityWarnings(CxSASTBase):
@@ -80,7 +80,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         responses.append(self._api_get(f"sast/scans/{scan_id}/resultsStatistics", token))
         return responses
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         stats = responses[self.STATS_RESPONSE].json()
         severities = self._parameter("severities")
-        return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities]))
+        return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities])), "100", []

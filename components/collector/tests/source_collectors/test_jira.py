@@ -33,13 +33,13 @@ class JiraIssuesTest(JiraTestCase):
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         issues_json = dict(total=42)
-        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json, issues_json])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
         self.assert_measurement(response, value="42")
 
     def test_issues(self):
         """Test that the issues are returned."""
-        jira_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
-        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, jira_json, jira_json])
+        issues_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
         self.assert_measurement(response, entities=[dict(key="id", summary="Summary", url="https://jira/browse/key")])
 
 
@@ -68,7 +68,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                          desired_test_frequency="5",
                          summary="Tested too long ago according to its own desired frequency"))])
         response = self.collect(
-            self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json, test_cases_json])
+            self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         expected_days = str(days_ago(parse("2019-10-02T11:07:02.444+0200")))
         self.assert_measurement(
             response, value="2",
@@ -90,7 +90,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                          comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
                          custom_field_001="5", summary="Tested too long ago according to its own desired frequency"))])
         response = self.collect(
-            self.metric, get_request_json_side_effect=[fields_json, test_cases_json, test_cases_json])
+            self.metric, get_request_json_side_effect=[fields_json, test_cases_json])
         self.assert_measurement(
             response, value="1",
             entities=[
@@ -109,8 +109,12 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=32))])
         response = self.collect(
-            metric, get_request_json_side_effect=[self.fields_json, user_stories_json, user_stories_json])
-        self.assert_measurement(response, value="42")
+            metric, get_request_json_side_effect=[self.fields_json, user_stories_json])
+        self.assert_measurement(
+            response, value="42",
+            entities=[
+                dict(key="1", summary="summary 1", url="https://jira/browse/1", points=10.0),
+                dict(key="2", summary="summary 2", url="https://jira/browse/2", points=32.0)])
 
 
 class JiraManualTestDurationTest(JiraTestCase):
@@ -124,5 +128,9 @@ class JiraManualTestDurationTest(JiraTestCase):
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
         response = self.collect(
-            metric, get_request_json_side_effect=[self.fields_json, test_cases_json, test_cases_json])
-        self.assert_measurement(response, value="25")
+            metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
+        self.assert_measurement(
+            response, value="25",
+            entities=[
+                dict(duration=10.0, key="1", summary="summary 1", url="https://jira/browse/1"),
+                dict(duration=15.0, key="2", summary="summary 2", url="https://jira/browse/2")])

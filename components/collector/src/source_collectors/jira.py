@@ -1,7 +1,6 @@
 """Jira metric collector."""
 
-from abc import ABC
-from typing import cast, Dict, List, Union
+from typing import cast, Dict, List, Tuple, Union
 
 from dateutil.parser import parse
 
@@ -10,8 +9,8 @@ from collector_utilities.type import Entity, Entities, Responses, URL, Value
 from .source_collector import SourceCollector
 
 
-class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for Jira collectors."""
+class JiraIssues(SourceCollector):
+    """Jira collector for issues."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -41,10 +40,11 @@ class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self._field_ids = dict((field["name"], field["id"]) for field in response.json())
         return super()._get_source_responses(api_url)
 
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         url = URL(str(self._parameter("url")))
-        issues = responses[0].json().get("issues", [])
-        return [self._create_entity(issue, url) for issue in issues if self._include_issue(issue)]
+        json = responses[0].json()
+        entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
+        return str(json.get("total", 0)), "100", entities
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
@@ -59,18 +59,12 @@ class JiraBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return "summary"
 
 
-class JiraIssues(JiraBase):
-    """Collector to get issues from Jira."""
-
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(responses[0].json()["total"])
-
-
-class JiraManualTestExecution(JiraBase):
+class JiraManualTestExecution(JiraIssues):
     """Collector for the number of manual test cases that have not been executed recently enough."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        _, total, entities = super()._parse_source_responses(responses)
+        return str(len(entities)), total, entities
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
@@ -97,15 +91,16 @@ class JiraManualTestExecution(JiraBase):
             round(float(frequency)) if frequency else str(self._parameter("manual_test_execution_frequency_default")))
 
 
-class JiraFieldSumBase(JiraBase):
+class JiraFieldSumBase(JiraIssues):
     """Base class for collectors that sum a custom Jira field."""
 
     field_parameter = "subclass responsibility"
     entity_key = "subclass responsibility"
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        entities = self._parse_source_responses_entities(responses)
-        return str(round(sum(float(entity[self.entity_key]) for entity in entities)))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        _, total, entities = super()._parse_source_responses(responses)
+        value = str(round(sum(float(entity[self.entity_key]) for entity in entities)))
+        return value, total, entities
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)

@@ -1,7 +1,7 @@
 """Jenkins metric collector."""
 
 from datetime import datetime
-from typing import cast, Iterator
+from typing import cast, Iterator, Tuple
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import Job, Jobs, Entities, Responses, URL, Value
@@ -16,16 +16,14 @@ class JenkinsJobs(SourceCollector):
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(list(self.__jobs(responses[0].json()["jobs"]))))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        entities = [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),
                 build_age=str(days_ago(self._build_datetime(job))) if self._build_datetime(job) > datetime.min else "",
                 build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "")
             for job in self.__jobs(responses[0].json()["jobs"])]
+        return str(len(entities)), "100", entities
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""

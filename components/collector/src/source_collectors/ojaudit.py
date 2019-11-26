@@ -1,7 +1,7 @@
 """OJAudit metric collector."""
 
 import hashlib
-from typing import cast, Dict, List, Optional
+from typing import cast, Dict, List, Optional, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces, Entities, Entity, Responses, Value
@@ -21,22 +21,16 @@ class OJAuditViolations(FileSourceCollector):
         super().__init__(*args, **kwargs)
         self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         severities = cast(List[str], self._parameter("severities"))
         count = 0
-        for response in responses:
-            tree, namespaces = parse_source_response_xml_with_namespace(response)
-            for severity in severities:
-                count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
-        return str(count)
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        severities = cast(List[str], self._parameter("severities"))
         entities = []
         for response in responses:
             tree, namespaces = parse_source_response_xml_with_namespace(response)
             entities.extend(self.__violations(tree, namespaces, severities))
-        return entities
+            for severity in severities:
+                count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
+        return str(count), "100", entities
 
     def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""
