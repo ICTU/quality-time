@@ -6,7 +6,7 @@ See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-re
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import cast, List, Tuple
 
 from dateutil.parser import parse
 import requests
@@ -37,35 +37,32 @@ class AzureDevopsIssues(SourceCollector):
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(responses[0].json()["workItems"]))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        if len(responses) < 2:
-            return []  # We didn't get a response with work items, so assume there are none
-        return [
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        value = str(len(responses[0].json()["workItems"]))
+        entities = [
             dict(
                 key=str(work_item["id"]), project=work_item["fields"]["System.TeamProject"],
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
-                state=work_item["fields"]["System.State"],
-                url=work_item["url"]) for work_item in responses[1].json()["value"]]
+                state=work_item["fields"]["System.State"], url=work_item["url"])
+            for work_item in self._work_items(responses)]
+        return value, "100", entities
+
+    @staticmethod
+    def _work_items(responses: Responses):
+        """Return the work items, if any."""
+        return responses[1].json()["value"] if len(responses) > 1 else []
 
 
 class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
     """Collector to get ready user story points from Azure Devops Server."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(round(sum(
-            [work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints", 0)
-             for work_item in responses[1].json()["value"]]))) if len(responses) > 1 else "0"
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        entities = super()._parse_source_responses_entities(responses)
-        # Add story points to the entities:
-        if len(responses) > 1:
-            for entity, work_item in zip(entities, responses[1].json()["value"]):
-                entity["story_points"] = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
-        return entities
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        _, total, entities = super()._parse_source_responses(responses)
+        value = 0
+        for entity, work_item in zip(entities, self._work_items(responses)):
+            entity["story_points"] = story_points = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
+            value += 0 if story_points is None else story_points
+        return str(round(value)), total, entities
 
 
 class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -131,7 +128,7 @@ class AzureDevopsTests(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         test_results = cast(List[str], self._parameter("test_result"))
         runs = responses[0].json().get("value", [])
         test_count, highest_build_nr_seen = 0, 0
@@ -143,7 +140,7 @@ class AzureDevopsTests(SourceCollector):
                 highest_build_nr_seen = build_nr
                 test_count = 0
             test_count += sum(run.get(test_result, 0) for test_result in test_results)
-        return str(test_count)
+        return str(test_count), "100", []
 
 
 class AxureDevopsJobs(SourceCollector):
@@ -155,10 +152,7 @@ class AxureDevopsJobs(SourceCollector):
     def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/_build")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []
         for job in responses[0].json()["value"]:
             if self._ignore_job(job):
@@ -172,7 +166,7 @@ class AxureDevopsJobs(SourceCollector):
                      build_date=str(build_date_time.date()),
                      build_age=str(days_ago(build_date_time)),
                      build_status=build_status))
-        return entities
+        return str(len(entities)), "100", entities
 
     def _ignore_job(self, job: Job) -> bool:
         """Return whether this job should be ignored"""

@@ -1,7 +1,7 @@
 """Collectors for SonarQube."""
 
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from dateutil.parser import isoparse
 import requests
@@ -40,24 +40,27 @@ class SonarQubeViolations(SourceCollector):
         rules = self._parameter(self.rules_parameter) if self.rules_parameter != "Subclass responsibility" else []
         return f"&rules={','.join(rules)}" if rules else ""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(sum([int(response.json().get("total", 0)) for response in responses]))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        value = 0
+        entities: Entities = []
+        for response in responses:
+            json = response.json()
+            value += int(json.get("total", 0))
+            entities.extend([self._entity(issue) for issue in json.get("issues", [])])
+        return str(value), "100", entities
 
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [self._entity(issue, response) for response in responses for issue in response.json().get("issues", [])]
-
-    def __issue_landing_url(self, issue_key: str, response: Response) -> URL:
+    def __issue_landing_url(self, issue_key: str) -> URL:
         """Generate a landing url for the issue."""
-        url = super()._landing_url([response])
+        url = super()._landing_url([])
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}&branch={branch}")
 
-    def _entity(self, issue, response: Response) -> Entity:
+    def _entity(self, issue) -> Entity:
         """Create an entity from an issue."""
         return dict(
             key=issue["key"],
-            url=self.__issue_landing_url(issue["key"], response),
+            url=self.__issue_landing_url(issue["key"]),
             message=issue["message"],
             severity=issue["severity"].lower(),
             type=issue["type"].lower(),
@@ -89,11 +92,12 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
             f"{url}/api/measures/component?component={component}&metricKeys={self.total_metric}&branch={branch}")
         return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        value, _, entities = super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:
             measures.extend(response.json().get("component", {}).get("measures", []))
-        return str(sum(int(measure["value"]) for measure in measures))
+        return value, str(sum(int(measure["value"]) for measure in measures)), entities
 
 
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
@@ -135,18 +139,13 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
             responses.append(requests.get(issues_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials()))
         return responses
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return super()._parse_source_responses_value(responses[:-1])
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        value, _, entities = super()._parse_source_responses(responses[:-1])
+        return value, str(responses[-1].json()["total"]), entities
 
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(responses[-1].json()["total"])
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return super()._parse_source_responses_entities(responses[:-1])
-
-    def _entity(self, issue, response: Response) -> Entity:
+    def _entity(self, issue) -> Entity:
         """Also add the resolution to the entity."""
-        entity = super()._entity(issue, response)
+        entity = super()._entity(issue)
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
         return entity
@@ -172,12 +171,12 @@ class SonarQubeMetricsBaseClass(SourceCollector):
         return URL(
             f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(self.__get_metrics(responses)[self._metric_keys().split(",")[0]])
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(self.__get_metrics(responses)[self._metric_keys().split(",")[1]]) \
-            if "," in self.metricKeys else super()._parse_source_responses_total(responses)
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        metric_keys = self._metric_keys().split(",")
+        metrics = self.__get_metrics(responses)
+        value = str(metrics[metric_keys[0]])
+        total = str(metrics[metric_keys[1]]) if len(metric_keys) > 1 else "100"
+        return value, total, []
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -243,14 +242,12 @@ class SonarQubeTests(SourceCollector):
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         tests = self.__nr_of_tests(responses)
-        return str(sum(tests[test_result] for test_result in self._parameter("test_result")))
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        tests = self.__nr_of_tests(responses)
+        value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
-        return str(sum(tests[test_result] for test_result in test_results))
+        total = str(sum(tests[test_result] for test_result in test_results))
+        return value, total, []
 
     @staticmethod
     def __nr_of_tests(responses: Responses) -> Dict[str, int]:

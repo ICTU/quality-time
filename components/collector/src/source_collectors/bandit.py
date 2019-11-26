@@ -2,6 +2,8 @@
 
 from abc import ABC
 from datetime import datetime
+from typing import Tuple
+
 from dateutil.parser import parse
 
 from collector_utilities.type import Entities, Response, Responses, Value
@@ -16,11 +18,7 @@ class BanditBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-met
 class BanditSecurityWarnings(BanditBaseClass):
     """Bandit collector for security warnings."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        """Return a list of warnings."""
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
         entities = []
@@ -35,7 +33,7 @@ class BanditSecurityWarnings(BanditBaseClass):
                     more_info=warning["more_info"])
                 for warning in response.json().get("results", []) if warning["issue_severity"].lower() in severities
                 and warning["issue_confidence"].lower() in confidence_levels])
-        return entities
+        return str(len(entities)), "100", entities
 
 
 class BanditSourceUpToDateness(BanditBaseClass, SourceUpToDatenessCollector):

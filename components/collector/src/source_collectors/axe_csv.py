@@ -4,7 +4,7 @@ import csv
 import hashlib
 import re
 from io import StringIO
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from collector_utilities.type import Responses, Value, Entities, Entity
 from .source_collector import FileSourceCollector
@@ -15,12 +15,7 @@ class AxeCSVAccessibility(FileSourceCollector):
 
     file_extensions = ["csv"]
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        """Simply count the rows in the csv file."""
-        return str(len(list(self.__parse_csv(responses))))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        """Convert csv rows of the Axe report into entities, in this case accessibility violations."""
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = [
             dict(
                 url=str(row["URL"]), violation_type=row["Violation Type"], impact=row["Impact"],
@@ -29,7 +24,7 @@ class AxeCSVAccessibility(FileSourceCollector):
             for row in self.__parse_csv(responses)]
         for entity in entities:
             entity["key"] = self.hash_entity(entity)
-        return entities
+        return str(len(entities)), "100", entities
 
     def __parse_csv(self, responses: Responses) -> List[Dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""

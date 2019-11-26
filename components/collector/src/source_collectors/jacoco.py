@@ -1,11 +1,12 @@
 """Jacoco coverage report collector."""
 
-from datetime import datetime
 from abc import ABC
+from datetime import datetime
+from typing import Tuple
 
 from defusedxml import ElementTree
 
-from collector_utilities.type import Response, Responses, Value
+from collector_utilities.type import Entities, Response, Responses, Value
 from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
@@ -20,19 +21,14 @@ class JacocoCoverageBaseClass(JacococBaseClass):
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(self.__parse_source_responses(responses, "missed"))
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return str(sum(self.__parse_source_responses(responses, status) for status in ("missed", "covered")))
-
-    def __parse_source_responses(self, responses: Responses, coverage_status: str) -> int:
-        total = 0
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        missed, covered = 0, 0
         for response in responses:
             tree = ElementTree.fromstring(response.text)
             counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
-            total += int(counter.get(coverage_status))
-        return total
+            missed += int(counter.get("missed"))
+            covered += int(counter.get("covered"))
+        return str(missed), str(missed + covered), []
 
 
 class JacocoUncoveredLines(JacocoCoverageBaseClass):

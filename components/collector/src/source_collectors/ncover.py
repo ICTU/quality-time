@@ -8,7 +8,7 @@ from typing import Tuple
 
 from bs4 import BeautifulSoup
 
-from collector_utilities.type import Response, Responses, Value
+from collector_utilities.type import Entities, Response, Responses, Value
 from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
@@ -31,15 +31,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
 
     coverage_type = "Subclass responsibility"
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        covered_items, total_items = self.__coverage(responses)
-        return str(int(total_items) - int(covered_items))
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        return self.__coverage(responses)[1]
-
-    def __coverage(self, responses) -> Tuple[str, str]:
-        """Return the coverage (covered items, total number) from the execution summary with the specified label."""
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         covered, total = 0, 0
         for response in responses:
             script = self._find_script(response, "ncover.execution.stats = ")
@@ -47,7 +39,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
             coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
             covered += int(coverage["coveredPoints"])
             total += int(coverage["coveragePoints"])
-        return str(covered), str(total)
+        return str(total - covered), str(total), []
 
 
 class NCoverUncoveredLines(NCoverCoverageBase):

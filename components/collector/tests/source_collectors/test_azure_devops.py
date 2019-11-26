@@ -84,7 +84,7 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
     def test_no_branches_except_master(self):
         """Test that the number of unmerged branches is returned."""
         branches = dict(value=[dict(name="master", isBaseVersion=True)])
-        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches, branches])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
         self.assert_measurement(
             response, value="0", entities=[], landing_url="https://azure_devops/org/project/_git/project/branches")
 
@@ -95,7 +95,7 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
                 dict(name="master", isBaseVersion=True),
                 dict(name="branch", isBaseVersion=False, aheadCount=1,
                      commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))])
-        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches, branches])
+        response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
         expected_age = str(days_ago(parse("2019-09-03T20:43:00Z")))
         self.assert_measurement(
             response,

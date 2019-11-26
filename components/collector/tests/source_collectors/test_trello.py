@@ -38,7 +38,7 @@ class TrelloIssuesTest(TrelloTestCase):
                     id="card1", name="Card 1", idList="list1", due=None, dateLastActivity="2019-01-01",
                     url="https://trello/card1")],
             lists=[dict(id="list1", name="List 1")])
-        json = [[dict(id="board1", name="Board1")], cards, cards, cards]
+        json = [[dict(id="board1", name="Board1")], cards, cards]
         response = self.collect(self.metric, get_request_json_side_effect=json)
         expected_entities = [
             dict(key="card1", url="https://trello/card1", title="Card 1", list="List 1", due_date=None,
@@ -58,7 +58,7 @@ class TrelloIssuesTest(TrelloTestCase):
                     id="card2", name="Card 2", idList="list2", due=None, dateLastActivity="2019-01-01",
                     url="https://trello/card2")],
             lists=[dict(id="list1", name="List 1"), dict(id="list2", name="List 2")])
-        json = [[dict(id="board1", name="Board1")], cards, cards, cards]
+        json = [[dict(id="board1", name="Board1")], cards, cards]
         response = self.collect(self.metric, get_request_json_side_effect=json)
         expected_entities = [
             dict(key="card2", url="https://trello/card2", title="Card 2", list="List 2",
@@ -78,7 +78,7 @@ class TrelloIssuesTest(TrelloTestCase):
                     id="card2", name="Card 2", idList="list1", due="2019-01-01", dateLastActivity="2019-01-01",
                     url="https://trello/card2")],
             lists=[dict(id="list1", name="List 1")])
-        json = [[dict(id="board1", name="Board1")], cards, cards, cards]
+        json = [[dict(id="board1", name="Board1")], cards, cards]
         response = self.collect(self.metric, get_request_json_side_effect=json)
         expected_entities = [
             dict(key="card2", url="https://trello/card2", title="Card 2", list="List 1",
@@ -98,7 +98,7 @@ class TrelloIssuesTest(TrelloTestCase):
                     id="card2", name="Card 2", idList="list1", due=None, dateLastActivity="2019-01-01",
                     url="https://trello/card2")],
             lists=[dict(id="list1", name="List 1")])
-        json = [[dict(id="board1", name="Board1")], cards, cards, cards]
+        json = [[dict(id="board1", name="Board1")], cards, cards]
         response = self.collect(self.metric, get_request_json_side_effect=json)
         expected_entities = [
             dict(key="card2", url="https://trello/card2", title="Card 2", list="List 1", due_date=None,

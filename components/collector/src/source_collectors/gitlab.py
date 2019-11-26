@@ -37,16 +37,14 @@ class GitlabFailedJobs(GitlabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("jobs")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self.__failed_jobs(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        entities = [
             dict(
                 key=job["id"], name=job["ref"], url=job["web_url"], build_status=job["status"],
                 build_date=str((build_date := parse(job["created_at"])).date()),
                 build_age=str(days_ago(build_date)))
             for job in self.__failed_jobs(responses)]
+        return str(len(entities)), "100", entities
 
     @staticmethod
     def __failed_jobs(responses: Responses) -> Jobs:
@@ -100,9 +98,10 @@ class GitlabSourceUpToDateness(GitlabBase):
         commit_api_url = self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return requests.get(commit_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]
-        return str(days_ago(max(parse(response.json()["committed_date"]) for response in commit_responses)))
+        value = str(days_ago(max(parse(response.json()["committed_date"]) for response in commit_responses)))
+        return value, "100", []
 
 
 class GitlabUnmergedBranches(GitlabBase, UnmergedBranchesSourceCollector):

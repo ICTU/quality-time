@@ -117,31 +117,16 @@ class SourceCollector(ABC):
         value, total, error = None, None, None
         if responses:
             try:
-                value = self._parse_source_responses_value(responses)
-                total = self._parse_source_responses_total(responses)  # pylint: disable=assignment-from-none
-                entities = self._parse_source_responses_entities(responses)
+                value, total, entities = self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
         return value, total, entities[:self.MAX_ENTITIES], error
 
-    @abstractmethod
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        """Parse the responses to get the measurement for the metric. This method must be overridden by collectors
-        to parse the retrieved sources data."""
-        return None  # pragma: nocover
-
-    def _parse_source_responses_total(self, responses: Responses) -> Value:
-        # pylint: disable=no-self-use,unused-argument
-        """Parse the responses to get the total for the metric. The total is the denominator for percentage
-        scale metrics, i.e. measurement = (value / total) * 100%. This method can be overridden by collectors to
-        parse the retrieved source data."""
-        return "100"  # Return 100 by default so sources that already return a percentage simply work
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        # pylint: disable=no-self-use,unused-argument
-        """Parse the response to get the entities (e.g. violation, test cases, user stories) for the metric.
-        This method can to be overridden by collectors when a source can provide the measured entities."""
-        return []
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        """Parse the responses to get the measurement value, the total value, and the entities for the metric.
+        This method can be overridden by collectors to parse the retrieved sources data."""
+        # pylint: disable=assignment-from-none,no-self-use,unused-argument
+        return None, "100", []  # pragma nocover
 
 
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -185,14 +170,12 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for unmerged branches source collectors."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._unmerged_branches(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-        return [
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        entities = [
             dict(key=branch["name"], name=branch["name"], commit_age=str(days_ago(self._commit_datetime(branch))),
                  commit_date=str(self._commit_datetime(branch).date()))
             for branch in self._unmerged_branches(responses)]
+        return str(len(entities)), "100", entities
 
     @abstractmethod
     def _unmerged_branches(self, responses: Responses) -> List:
@@ -206,8 +189,8 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(days_ago(min(self._parse_source_response_date_time(response) for response in responses)))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        return str(days_ago(min(self._parse_source_response_date_time(response) for response in responses))), "100", []
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""

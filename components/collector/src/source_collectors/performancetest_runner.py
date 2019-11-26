@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 
 from bs4 import BeautifulSoup, Tag
 
@@ -24,18 +24,16 @@ class PerformanceTestRunnerBaseClass(FileSourceCollector, ABC):  # pylint: disab
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performancetest report."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self.__slow_transactions(responses)))
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        entities = [self.__entity(transaction) for transaction in self.__slow_transactions(responses)]
+        return str(len(entities)), "100", entities
 
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
-
-        def entity(transaction) -> Entity:
-            """Transform a transaction into a transaction entity."""
-            name = transaction.find("td", class_="name").string
-            threshold = "high" if transaction.select("td.red.evaluated") else "warning"
-            return dict(key=name, name=name, threshold=threshold)
-
-        return [entity(transaction) for transaction in self.__slow_transactions(responses)]
+    @staticmethod
+    def __entity(transaction) -> Entity:
+        """Transform a transaction into a transaction entity."""
+        name = transaction.find("td", class_="name").string
+        threshold = "high" if transaction.select("td.red.evaluated") else "warning"
+        return dict(key=name, name=name, threshold=threshold)
 
     def __slow_transactions(self, responses: Responses) -> List[Tag]:
         """Return the slow transactions in the performancetest report."""
@@ -59,23 +57,23 @@ class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, So
 class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClass):
     """Collector for the performancetest duration."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         durations = []
         for response in responses:
             hours, minutes, seconds = [
                 int(part) for part in self._soup(response).find(id="duration").string.split(":", 2)]
             durations.append(60 * hours + minutes + round(seconds / 60.))
-        return str(sum(durations))
+        return str(sum(durations)), "100", []
 
 
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
     """Collector for the performancetest stability."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         trend_breaks = []
         for response in responses:
             trend_breaks.append(int(self._soup(response).find(id="trendbreak_stability").string))
-        return str(min(trend_breaks))
+        return str(min(trend_breaks)), "100", []
 
 
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
@@ -83,12 +81,12 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     status_parameter = "test_result"
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         count = 0
         statuses = self._parameter(self.status_parameter)
         for response in responses:
             count += sum(int(self._soup(response).find(id=status).string) for status in statuses)
-        return str(count)
+        return str(count), "100", []
 
 
 class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
@@ -100,7 +98,7 @@ class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         trend_breaks = []
         for response in responses:
             breaking_point = int(self._soup(response).find(id="trendbreak_scalability").string)
@@ -108,4 +106,4 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
                 raise AssertionError(
                     "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
             trend_breaks.append(breaking_point)
-        return str(min(trend_breaks))
+        return str(min(trend_breaks)), "100", []

@@ -31,19 +31,7 @@ class OWASPDependencyCheckBase(FileSourceCollector, ABC):  # pylint: disable=abs
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
     """Collector to get security warnings from OWASP Dependency Check."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        count = 0
-        for response in responses:
-            tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
-            count += len(self.__vulnerable_dependencies(tree, namespaces))
-        return str(count)
-
-    def __vulnerable_dependencies(self, tree: Element, namespaces: Namespaces) -> List[Tuple[int, Element]]:
-        """Return the vulnerable dependencies."""
-        return [(index, dependency) for (index, dependency) in enumerate(tree.findall(".//ns:dependency", namespaces))
-                if self.__vulnerabilities(dependency, namespaces)]
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         landing_url = self._landing_url(responses)
         entities = []
         for response in responses:
@@ -51,7 +39,12 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
             entities.extend(
                 [self.__parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
                  in self.__vulnerable_dependencies(tree, namespaces)])
-        return entities
+        return str(len(entities)), "100", entities
+
+    def __vulnerable_dependencies(self, tree: Element, namespaces: Namespaces) -> List[Tuple[int, Element]]:
+        """Return the vulnerable dependencies."""
+        return [(index, dependency) for (index, dependency) in enumerate(tree.findall(".//ns:dependency", namespaces))
+                if self.__vulnerabilities(dependency, namespaces)]
 
     def __parse_entity(
             self, dependency: Element, dependency_index: int, namespaces: Namespaces, landing_url: str) -> Entity:

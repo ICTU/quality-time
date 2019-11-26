@@ -2,15 +2,13 @@
 
 import logging
 import unittest
-from typing import List
+from typing import Tuple
 from unittest.mock import patch, Mock
-
-import requests
 
 import quality_time_collector
 from metric_collectors import MetricsCollector
 from source_collectors import source_collector
-from collector_utilities.type import Value
+from collector_utilities.type import Entities, Responses, Value
 
 
 class CollectorTest(unittest.TestCase):
@@ -20,13 +18,8 @@ class CollectorTest(unittest.TestCase):
         class SourceMetric(source_collector.SourceCollector):  # pylint: disable=unused-variable
             """Register a fake collector automatically."""
 
-            def _parse_source_responses_value(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
-                """Return the answer."""
-                return "42"
-
-            def _parse_source_responses_total(self, responses: List[requests.Response]) -> Value:  # pylint: disable=unused-argument
-                """Return the answer."""
-                return "84"
+            def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+                return "42", "84", []
 
         self.data_model_response = Mock()
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))

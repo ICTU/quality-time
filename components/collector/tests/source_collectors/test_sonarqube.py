@@ -40,7 +40,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         complex_units_json = dict(total="2")
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="complex_units", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[complex_units_json, functions_json] * 3)
+        response = self.collect(metric, get_request_json_side_effect=[complex_units_json, functions_json] * 2)
         self.assert_measurement(response, value="2", total="4")
 
     def test_tests(self):
@@ -85,7 +85,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="many_parameters", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[many_parameters_json, functions_json] * 3)
+        response = self.collect(metric, get_request_json_side_effect=[many_parameters_json, functions_json] * 2)
         self.assert_measurement(response, value="2", total="4")
 
     def test_long_units(self):
@@ -94,7 +94,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         long_units_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="long_units", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[long_units_json, functions_json] * 3)
+        response = self.collect(metric, get_request_json_side_effect=[long_units_json, functions_json] * 2)
         self.assert_measurement(response, value="2", total="4")
 
     def test_source_up_to_dateness(self):
@@ -117,7 +117,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = self.collect(
-            metric, get_request_json_side_effect=[violations_json, wont_fix_json, total_violations_json] * 3)
+            metric, get_request_json_side_effect=[violations_json, wont_fix_json, total_violations_json] * 2)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
                  resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),

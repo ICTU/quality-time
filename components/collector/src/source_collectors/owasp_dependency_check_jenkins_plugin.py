@@ -1,7 +1,7 @@
 """OWASP Dependency Check Jenkins plugin metric collector."""
 
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Tuple
 
 from collector_utilities.type import Entities, Entity, Response, Responses, Value, URL
 from .source_collector import SourceCollector, SourceUpToDatenessCollector
@@ -16,10 +16,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
     def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]
@@ -34,7 +31,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
             else:
                 entities[file_path] = dict(
                     key=file_path, file_path=file_path, highest_severity=priority.capitalize(), nr_vulnerabilities=1)
-        return list(entities.values())
+        return str(len(entities)), "100", list(entities.values())
 
     def __highest_severity(self, severity1: str, severity2: str) -> str:
         """Return the highest of the two severities."""

@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast
+from typing import cast, Tuple
 
 from dateutil.parser import parse
 import requests
@@ -41,16 +41,14 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    def _parse_source_responses_value(self, responses: Responses) -> Value:
-        return str(len(self._parse_source_responses_entities(responses)))
-
-    def _parse_source_responses_entities(self, responses: Responses) -> Entities:
+    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
-        return [self.__card_to_entity(card, lists) for card in cards if not self._ignore_card(card, lists)]
+        entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
+        return str(len(entities)), "100", entities
 
-    def _ignore_card(self, card, lists) -> bool:
+    def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""
 
         def card_is_inactive() -> bool:
@@ -89,10 +87,10 @@ class TrelloSourceUpToDateness(TrelloBase, SourceUpToDatenessCollector):
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         dates = [json["dateLastActivity"]] + \
-                [card["dateLastActivity"] for card in cards if not self._ignore_card(card, lists)]
+                [card["dateLastActivity"] for card in cards if not self.__ignore_card(card, lists)]
         return parse(max(dates))
 
-    def _ignore_card(self, card, lists) -> bool:
+    def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""
         lists_to_ignore = self._parameter("lists_to_ignore")
         return card["idList"] in lists_to_ignore or lists[card["idList"]] in lists_to_ignore
