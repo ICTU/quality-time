@@ -24,7 +24,9 @@ export function Subject(props) {
   const last_index = Object.entries(subject.metrics).length - 1;
   let metric_components = [];
   Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
-    const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid].status) || '';
+    const metric_type = props.datamodel.metrics[metric.type];
+    const scale = metric.scale || metric_type.default_scale || "count";
+    const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid][scale] && lastMeasurements[metric_uuid][scale].status) || '';
     if (hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
     if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
     metric_components.push(
