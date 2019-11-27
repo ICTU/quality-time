@@ -4,14 +4,16 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export function CardDashboard({ uuid, cards }) {
+export function CardDashboard({ cards, initial_layout, readOnly, save_layout }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
-    const [layout, setLayout] = useState(JSON.parse(localStorage.getItem(`layout-${uuid}`) || '[]'));
+    const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
     function onLayoutChange(new_layout) {
-        setLayout(new_layout);
-        localStorage.setItem(`layout-${uuid}`, JSON.stringify(new_layout))
+        if (JSON.stringify(new_layout) !== JSON.stringify(layout)) {
+            setLayout(new_layout);
+            save_layout(new_layout)
+        }
     }
     function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
         setDragging(true);
@@ -56,6 +58,7 @@ export function CardDashboard({ uuid, cards }) {
             <ReactGridLayout
                 cols={cols}
                 compactType={null}
+                isDraggable={!readOnly}
                 layout={layout}
                 onDragStart={onDragStart}
                 onDragStop={onDragStop}

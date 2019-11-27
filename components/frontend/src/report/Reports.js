@@ -3,7 +3,7 @@ import { Button, Icon, Message, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
-import { add_report } from '../api/report';
+import { add_report, set_reports_attribute } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
 
 function ReportsDashboard(props) {
@@ -24,7 +24,12 @@ function ReportsDashboard(props) {
     <MetricSummaryCard key={tag} header={<Tag tag={tag} />} onClick={(e) => props.open_tag_report(e, tag)} {...counts} />
   );
   return (
-    <CardDashboard cards={report_cards.concat(tag_cards)} readOnly={props.readOnly} uuid={"/"} />
+    <CardDashboard
+      cards={report_cards.concat(tag_cards)}
+      initial_layout={props.layout || []}
+      readOnly={props.readOnly}
+      save_layout={function(layout) {set_reports_attribute("layout", layout, props.reload)}}
+    />
   )
 }
 
@@ -40,8 +45,20 @@ export function Reports(props) {
   }
   return (
     <>
-      <ReportsTitle title={props.reports_overview.title} subtitle={props.reports_overview.subtitle} readOnly={props.readOnly} reload={props.reload} />
-      <ReportsDashboard reports={props.reports} open_report={props.open_report} open_tag_report={props.open_tag_report} readOnly={props.readOnly} />
+      <ReportsTitle
+        readOnly={props.readOnly}
+        reload={props.reload}
+        subtitle={props.reports_overview.subtitle}
+        title={props.reports_overview.title}
+      />
+      <ReportsDashboard
+        layout={props.reports_overview.layout}
+        open_report={props.open_report}
+        open_tag_report={props.open_tag_report}
+        readOnly={props.readOnly}
+        reload={props.reload}
+        reports={props.reports}
+      />
       <Segment basic>
         {!props.readOnly &&
           <Button icon primary basic onClick={() => add_report(props.reload)}>

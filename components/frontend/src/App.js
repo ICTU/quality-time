@@ -101,7 +101,11 @@ class App extends Component {
           self.setState(
             {
               reports: report_overview_json.reports,
-              reports_overview: { title: report_overview_json.title, subtitle: report_overview_json.subtitle },
+              reports_overview: {
+                layout: report_overview_json.layout,
+                subtitle: report_overview_json.subtitle,
+                title: report_overview_json.title
+              },
               nr_measurements: nr_measurements,
               nr_new_measurements: 0,
               loading_report: false,

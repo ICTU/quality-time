@@ -4,7 +4,8 @@ import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
-import { ReportTitle } from './ReportTitle'
+import { set_report_attribute } from '../api/report';
+import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
@@ -24,7 +25,12 @@ function ReportDashboard(props) {
         />
     );
     return (
-        <CardDashboard cards={subject_cards.concat(tag_cards)} readOnly={props.readOnly} uuid={props.report.report_uuid} />
+        <CardDashboard
+            cards={subject_cards.concat(tag_cards)}
+            initial_layout={props.report.layout || []}
+            readOnly={props.readOnly}
+            save_layout={function(layout) {set_report_attribute(props.report.report_uuid, "layout", layout, props.reload)}}
+        />
     )
 }
 
@@ -59,6 +65,7 @@ export function Report(props) {
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 readOnly={props.readOnly}
+                reload={props.reload}
                 report={props.report}
                 setTags={setTags}
                 tags={tags}
