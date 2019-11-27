@@ -26,19 +26,30 @@ SUBJECT_ID2 = cast(SubjectId, "subject_uuid2")
 @patch("bottle.request")
 class PostReportAttributeTest(unittest.TestCase):
     """Unit tests for the post report attribute route."""
-    def test_post_report_name(self, request):
-        """Test that the report name can be changed."""
-        report = dict(_id="id", report_uuid=REPORT_ID)
-        request.json = dict(name="name")
-        database = Mock()
-        database.reports.find_one.return_value = report
-        database.sessions.find_one.return_value = dict(user="John")
-        database.datamodels.find_one.return_value = dict()
-        self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "name", database))
-        database.reports.insert.assert_called_once_with(report)
+    def setUp(self):
+        self.database = Mock()
+        self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
+        self.database.reports.find_one.return_value = self.report
+        self.database.sessions.find_one.return_value = dict(user="John")
+        self.database.datamodels.find_one.return_value = dict()
+
+    def test_post_report_title(self, request):
+        """Test that the report title can be changed."""
+        request.json = dict(title="New title")
+        self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "title", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(description="John changed the name of report '' from '' to 'name'.", report_uuid=REPORT_ID),
-            report["delta"])
+            dict(description="John changed the title of report 'Title' from 'Title' to 'New title'.",
+                 report_uuid=REPORT_ID),
+            self.report["delta"])
+
+    def test_post_report_layout(self, request):
+        """Test that the report layout can be changed."""
+        request.json = dict(layout=[dict(x=1, y=2)])
+        self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "layout", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            dict(description="John changed the layout of report 'Title'.", report_uuid=REPORT_ID), self.report["delta"])
 
 
 @patch("bottle.request")
@@ -459,8 +470,8 @@ class PostSourceParameterTest(unittest.TestCase):
             type="url"), username=dict(type="string"), private_token=dict(type="pwd")))))
         mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
         request.json = dict(url="https://url")
-        srcs = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
-        srcs[SOURCE_ID]['parameters']['private_token'] = 'xxx'
+        sources = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
+        sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
         self.assertTrue(response['ok'])
         self.assertEqual(
@@ -676,11 +687,24 @@ class ReportTest(unittest.TestCase):
         self.assertEqual("Jenny deleted the report 'Report'.", inserted["delta"]["description"])
 
     @patch("bottle.request")
-    def test_post_reports_attribute(self, request):
+    def test_post_reports_attribute_title(self, request):
         """Test that a reports (overview) attribute can be changed."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
         request.json = dict(title="All the reports")
         self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        self.assertEqual(
+            "Jenny changed the title of the reports overview from 'Reports' to 'All the reports'.",
+            inserted["delta"]["description"])
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_layout(self, request):
+        """Test that a reports (overview) layout can be changed."""
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
+        request.json = dict(layout=[dict(x=1, y=2)])
+        self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        self.assertEqual("Jenny changed the layout of the reports overview.", inserted["delta"]["description"])
 
     @patch("bottle.request")
     def test_get_tag_report(self, request):

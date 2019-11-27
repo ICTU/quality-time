@@ -64,10 +64,11 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     value = dict(bottle.request.json)[report_attribute]
     old_value = data.report.get(report_attribute) or ""
     data.report[report_attribute] = value
+    value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
     data.report["delta"] = dict(
         report_uuid=report_uuid,
-        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}' from "
-                    f"'{old_value}' to '{value}'.")
+        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}'"
+                    f"{value_change_description}.")
     return insert_new_report(database, data.report)
 
 
@@ -322,11 +323,12 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]
     overview = latest_reports_overview(database)
-    old_value = overview[reports_attribute]
+    old_value = overview.get(reports_attribute)
     overview[reports_attribute] = value
+    value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
     overview["delta"] = dict(
-        description=f"{sessions.user(database)} changed the {reports_attribute} of the reports overview "
-                    f"from '{old_value}' to '{value}'.")
+        description=f"{sessions.user(database)} changed the {reports_attribute} of the reports overview"
+                    f"{value_change_description}.")
     return insert_new_reports_overview(database, overview)
 
 
