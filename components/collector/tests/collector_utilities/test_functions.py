@@ -53,20 +53,20 @@ class StripHashTest(unittest.TestCase):
 
     def test_hash(self):
         """Test that an url with hash is returned without the hash."""
-        url = URL("https://test.app.example.org:1234/main.58064cb8d36474bd79f9.js")
-        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
+        url = URL("https://test1.app.example.org:1234/main.58064cb8d36474bd79f9.js")
+        expected_url = URL("https://test1.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_uppercase_hash(self):
         """Test that an url with uppercase hash is returned without the hash."""
-        url = URL("https://test.app.example.org:1234/main.58064CB8D36474BD79F9.js")
-        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
+        url = URL("https://test2.app.example.org:1234/main.58064CB8D36474BD79F9.js")
+        expected_url = URL("https://test2.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_long_hash(self):
         """Test that an url with a long hash is returned without the hash."""
-        url = URL("https://test.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js")
-        expected_url = URL("https://test.app.example.org:1234/main.hashremoved.js")
+        url = URL("https://test3.app.example.org:1234/main.58064cb8d36474bd79f956dc4ac40404d.js")
+        expected_url = URL("https://test3.app.example.org:1234/main.hashremoved.js")
         self.assertEqual(expected_url, hashless(url))
 
     def test_hash_in_host(self):

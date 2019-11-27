@@ -26,6 +26,8 @@ class CollectorTest(unittest.TestCase):
         self.data_model_response.json.return_value = self.data_model
         self.metrics_response = Mock()
         self.metrics_collector = MetricsCollector()
+        self.url = "https://url"
+        self.measurement_api_url = "http://localhost:5001/api/v1/measurements"
         logging.disable()
 
     def tearDown(self):
@@ -50,35 +52,37 @@ class CollectorTest(unittest.TestCase):
     def test_fetch_with_post_error(self):
         """Test fetching measurement when posting fails."""
         self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
+            metric_uuid=dict(
+                report_uuid="report_uuid", addition="sum", type="metric",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
 
         with patch("requests.get", side_effect=[self.metrics_response, Mock()]):
             with patch("requests.post", side_effect=RuntimeError) as post:
                 self.metrics_collector.data_model = self.data_model
                 self.metrics_collector.fetch_measurements(60)
         post.assert_called_once_with(
-            "http://localhost:5001/api/v1/measurements",
+            self.measurement_api_url,
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                    dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
     def test_collect(self):
         """Test the collect method."""
         self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
+            metric_uuid=dict(
+                report_uuid="report_uuid", addition="sum", type="metric",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
                 with patch("time.sleep", side_effect=[RuntimeError]):
                     self.assertRaises(RuntimeError, quality_time_collector.collect)
         post.assert_called_once_with(
-            "http://localhost:5001/api/v1/measurements",
+            self.measurement_api_url,
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                    dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
@@ -87,15 +91,16 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
                 type="metric", addition="sum", report_uuid="report_uuid",
-                sources=dict(missing=dict(type="unknown_source", parameters=dict(url="https://url")))))
+                sources=dict(missing=dict(type="unknown_source", parameters=dict(url=self.url)))))
         with patch("requests.get", return_value=self.metrics_response):
             self.assertRaises(LookupError, self.metrics_collector.fetch_measurements, 60)
 
     def test_fetch_twice(self):
         """Test that the metric is skipped on the second fetch."""
         self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", addition="sum", type="metric",
-                             sources=dict(source_id=dict(type="source", parameters=dict(url="https://url")))))
+            metric_uuid=dict(
+                report_uuid="report_uuid", addition="sum", type="metric",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         with patch("requests.get", side_effect=[self.metrics_response, Mock(), self.metrics_response]):
             with patch("requests.post") as post:
                 self.metrics_collector.data_model = self.data_model
@@ -105,7 +110,7 @@ class CollectorTest(unittest.TestCase):
             "http://localhost:5001/api/v1/measurements",
             json=dict(
                 sources=[
-                    dict(api_url="https://url", landing_url="https://url", value="42", total="84", entities=[],
+                    dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid", report_uuid="report_uuid"))
 
