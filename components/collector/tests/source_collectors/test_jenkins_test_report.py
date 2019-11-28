@@ -33,10 +33,8 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
             failCount=1, passCount=1, suites=[dict(
                 cases=[dict(status="FAILED", name="tc1", className="c1"),
                        dict(status="PASSED", name="tc2", className="c2")])])
-        sources = dict(
-            source_id=dict(
-                type="jenkins_test_report", parameters=dict(url="https://jenkins/job", test_result=["passed"])))
-        metric = dict(type="tests", addition="sum", sources=sources)
+        self.sources["source_id"]["parameters"]["test_result"] = ["passed"]
+        metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
         expected_entities = [dict(class_name="c2", key="tc2", name="tc2", test_result="passed")]
         self.assert_measurement(response, value="1", entities=expected_entities)
@@ -46,12 +44,14 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
         jenkins_json = dict(
             failCount=2, suites=[dict(
                 cases=[dict(status="FAILED", name="tc1", className="c1"),
-                       dict(status="FAILED", name="tc2", className="c2")])])
-        metric = dict(type="failed_tests", addition="sum", sources=self.sources)
+                       dict(status="FAILED", name="tc2", className="c2"),
+                       dict(status="PASSED", name="tc3", className="c3")])])
+        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=jenkins_json)
         expected_entities = [
-            dict(class_name="c1", key="tc1", name="tc1", failure_type="failed"),
-            dict(class_name="c2", key="tc2", name="tc2", failure_type="failed")]
+            dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
+            dict(class_name="c2", key="tc2", name="tc2", test_result="failed")]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_source_up_to_dateness(self):

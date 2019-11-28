@@ -54,50 +54,6 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         self.assert_measurement(response, value="1", entities=expected_entities, landing_url="report.html")
 
 
-class RobotFrameworkTestReportFailedTestsTest(RobotFrameworkTestCase):
-    """Unit tests for the failed test metric."""
-
-    def setUp(self):
-        super().setUp()
-        self.metric = dict(type="failed_tests", sources=self.sources, addition="sum")
-
-    def test_failed_tests(self):
-        """Test that the number of failed tests is returned."""
-        xml = """<?xml version="1.0"?>
-<robot>
-    <statistics>
-        <total>
-            <stat pass="8" fail="2">Critical Tests</stat>
-            <stat pass="8" fail="3">All Tests</stat>
-        </total>
-    </statistics>
-</robot>"""
-        response = self.collect(self.metric, get_request_text=xml)
-        self.assert_measurement(response, value="3")
-
-    def test_failed_tests_entities(self):
-        """Test that the failed tests are returned as entities."""
-        xml = """<?xml version="1.0"?>
-<robot>
-    <suite>
-        <test id="s1-t1" name="Test 1">
-            <status status="FAIL"></status>
-        </test>
-        <test id="s1-t2" name="Test 2">
-            <status status="PASS"></status>
-        </test>
-    </suite>
-    <statistics>
-        <total>
-            <stat pass="1" fail="1">Critical Tests</stat>
-            <stat pass="1" fail="1">All Tests</stat>
-        </total>
-    </statistics>
-</robot>"""
-        response = self.collect(self.metric, get_request_text=xml)
-        self.assert_measurement(response, entities=[dict(key="s1-t1", name="Test 1", failure_type="fail")])
-
-
 class RobotFrameworkSourceUpToDatenessTest(RobotFrameworkTestCase):
     """Unit test for the source up-to-dateness metric."""
 

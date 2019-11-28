@@ -201,12 +201,6 @@ class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
     metricKeys = "test_failures"
 
 
-class SonarQubeNCLOC(SonarQubeMetricsBaseClass):
-    """SonarQube non-commented lines of code."""
-
-    metricKeys = "ncloc"
-
-
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 

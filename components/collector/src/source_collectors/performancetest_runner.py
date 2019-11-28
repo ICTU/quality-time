@@ -79,20 +79,12 @@ class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseCla
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
-    status_parameter = "test_result"
-
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         count = 0
-        statuses = self._parameter(self.status_parameter)
+        statuses = self._parameter("test_result")
         for response in responses:
             count += sum(int(self._soup(response).find(id=status).string) for status in statuses)
         return str(count), "100", []
-
-
-class PerformanceTestRunnerFailedTests(PerformanceTestRunnerTests):
-    """Collector for the number of failed performance test transactions."""
-
-    status_parameter = "failure_type"
 
 
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):

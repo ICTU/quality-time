@@ -22,42 +22,27 @@ class JenkinsTestReportTests(SourceCollector):
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         suites = json.get("suites", [])
-        statuses = self._test_statuses_to_count()
+        statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.jenkins_test_report_counts[status] for status in statuses]
         value = str(sum(int(json.get(status_count, 0)) for status_count in status_counts))
         entities = [
-            self._entity(case) for suite in suites for case in suite.get("cases", []) if self._status(case) in statuses]
+            self.__entity(case) for suite in suites for case in suite.get("cases", [])
+            if self.__status(case) in statuses]
         return value, "100", entities
 
-    def _test_statuses_to_count(self) -> List[str]:  # pylint: disable=no-self-use
-        """Return the test statuses to count."""
-        return cast(List[str], self._parameter("test_result"))
-
-    def _entity(self, case) -> Entity:
+    def __entity(self, case) -> Entity:
         """Transform a test case into a test case entity."""
         name = case.get("name", "<nameless test case>")
-        return dict(key=name, name=name, class_name=case.get("className", ""), test_result=self._status(case))
+        return dict(key=name, name=name, class_name=case.get("className", ""), test_result=self.__status(case))
 
     @staticmethod
-    def _status(case) -> str:
+    def __status(case) -> str:
         """Return the status of the test case."""
         # The Jenkins test report has three counts: passed, skipped, and failed. Individual test cases
         # can be skipped (indicated by the attribute skipped being "true") and/or have a status that can
         # take the values: "failed", "passed", "regression", and "fixed".
         test_case_status = "skipped" if case.get("skipped") == "true" else case.get("status", "").lower()
         return dict(regression="failed", fixed="passed").get(test_case_status, test_case_status)
-
-
-class JenkinsTestReportFailedTests(JenkinsTestReportTests):
-    """Collector to get the amount of failed tests from a Jenkins test report."""
-
-    def _test_statuses_to_count(self) -> List[str]:
-        return cast(List[str], self._parameter("failure_type"))
-
-    def _entity(self, case) -> Entity:
-        """Transform a test case into a test case entity."""
-        name = case.get("name", "<nameless test case>")
-        return dict(key=name, name=name, class_name=case.get("className", ""), failure_type=self._status(case))
 
 
 class JenkinsTestReportSourceUpToDateness(SourceCollector):

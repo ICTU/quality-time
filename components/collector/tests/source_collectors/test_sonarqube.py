@@ -126,7 +126,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_measurement(response, value="2", total="4", entities=expected_entities)
 
     def test_loc_returns_ncloc_by_default(self):
-        """Test that the number of lines of code is returned."""
+        """Test that the number of lines of non-comment code is returned."""
         json = dict(component=dict(measures=[dict(metric="ncloc", value="1234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
@@ -139,13 +139,6 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="1234", total="100")
-
-    def test_ncloc(self):
-        """Test that the number of non-commented lines of code is returned."""
-        json = dict(component=dict(measures=[dict(metric="ncloc", value="999")]))
-        metric = dict(type="ncloc", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(response, value="999", total="100")
 
     def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
@@ -169,10 +162,3 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value=None, total=None, parse_error="KeyError")
-
-    def test_failed_tests(self):
-        """Test that the number of failed tests is returned."""
-        json = dict(component=dict(measures=[dict(metric="test_failures", value="13")]))
-        metric = dict(type="failed_tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(response, value="13", total="100")

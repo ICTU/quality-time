@@ -12,8 +12,7 @@ class JUnitTestReportTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(
-            source_id=dict(type="junit", parameters=dict(url="junit.xml", test_result=["failed", "errored", "passed"])))
+        self.sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
         self.metric = dict(type="tests", sources=self.sources, addition="sum")
         self.junit_xml = """<testsuites>
         <testsuite>
@@ -27,12 +26,20 @@ class JUnitTestReportTest(SourceCollectorTestCase):
             dict(key="tc1", name="tc1", class_name="cn", test_result="passed"),
             dict(key="tc2", name="tc2", class_name="cn", test_result="passed"),
             dict(key="tc3", name="tc3", class_name="cn", test_result="failed"),
-            dict(key="tc4", name="tc4", class_name="cn", test_result="errored")]
+            dict(key="tc4", name="tc4", class_name="cn", test_result="errored"),
+            dict(key="tc5", name="tc5", class_name="cn", test_result="skipped")]
 
     def test_tests(self):
         """Test that the number of tests is returned."""
         response = self.collect(self.metric, get_request_text=self.junit_xml)
-        self.assert_measurement(response, value="4", entities=self.expected_entities)
+        self.assert_measurement(response, value="5", entities=self.expected_entities)
+
+    def test_failed_tests(self):
+        """Test that the failed tests are returned."""
+        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        response = self.collect(self.metric, get_request_text=self.junit_xml)
+        self.assert_measurement(
+            response, value="1", entities=[dict(key="tc3", name="tc3", class_name="cn", test_result="failed")])
 
     def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
@@ -40,22 +47,7 @@ class JUnitTestReportTest(SourceCollectorTestCase):
         with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
             zipped_bandit_report.writestr("junit.xml", self.junit_xml)
         response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
-        self.assert_measurement(response, value="4", entities=self.expected_entities)
-
-
-class JunitTestReportFailedTestsTest(SourceCollectorTestCase):
-    """Unit tests for the failed test metric."""
-
-    def test_failed_tests(self):
-        """Test that the failed tests are returned."""
-        sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
-        metric = dict(type="failed_tests", sources=sources, addition="sum")
-        response = self.collect(
-            metric,
-            get_request_text="""<testsuites><testsuite failures="1"><testcase name="tc" classname="cn"><failure/>
-            </testcase></testsuite></testsuites>""")
-        self.assert_measurement(
-            response, value="1", entities=[dict(key="tc", name="tc", class_name="cn", failure_type="failed")])
+        self.assert_measurement(response, value="5", entities=self.expected_entities)
 
 
 class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
