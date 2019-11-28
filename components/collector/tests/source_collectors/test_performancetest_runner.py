@@ -90,16 +90,13 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
         response = self.collect(metric, get_request_text=html)
         self.assert_measurement(response, value="712")
 
-
-class PerformanceTestRunnerFailedTestsTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner failed tests collector."""
-
     def test_failed_tests(self):
         """Test that the number of failed performancetest transactions is returned."""
         html = '<html><table class="config">' \
             '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
             '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
-        metric = dict(type="failed_tests", sources=self.sources, addition="sum")
+        self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
+        metric = dict(type="tests", sources=self.sources, addition="sum")
         response = self.collect(metric, get_request_text=html)
         self.assert_measurement(response, value="42")
 

@@ -38,22 +38,6 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
         return str(count), "100", entities
 
 
-class RobotFrameworkFailedTests(RobotFrameworkBaseClass):
-    """Collector to get the number of failed tests from Robot Framework XML reports."""
-
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        count = 0
-        entities: Entities = []
-        for response in responses:
-            tree = parse_source_response_xml(response)
-            stats = tree.findall("statistics/total/stat")[1]
-            count += int(stats.get("fail", "0"))
-            failed_tests = tree.findall(".//test/status[@status='FAIL']/..")
-            entities.extend(
-                [dict(key=test.get("id", ""), name=test.get("name", ""), failure_type="fail") for test in failed_tests])
-        return str(count), "100", entities
-
-
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass, SourceUpToDatenessCollector):
     """Collector to collect the Robot Framework report age."""
 

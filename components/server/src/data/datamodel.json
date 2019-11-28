@@ -125,32 +125,6 @@
                 "ci"
             ]
         },
-        "failed_tests": {
-            "name": "Failed tests (deprecated)",
-            "description": "The number of tests that fail. This metric is deprecated. Please use the 'Tests' metric.",
-            "scales": [
-                "count"
-            ],
-            "default_scale": "count",
-            "unit": "failed tests",
-            "addition": "sum",
-            "direction": "<",
-            "target": "0",
-            "near_target": "0",
-            "default_source": "sonarqube",
-            "sources": [
-                "jenkins_test_report",
-                "junit",
-                "manual_number",
-                "performancetest_runner",
-                "random",
-                "robot_framework",
-                "sonarqube"
-            ],
-            "tags": [
-                "test quality"
-            ]
-        },
         "issues": {
             "name": "Issues",
             "description": "The number of issues.",
@@ -306,28 +280,6 @@
                 "random"
             ],
             "tags": []
-        },
-        "ncloc": {
-            "name": "Size (non-commented LOC) (deprecated)",
-            "description": "The size of the software in lines of code, excluding comments. This metric is deprecated. Please use the 'Size (LOC)' metric.",
-            "scales": [
-                "count"
-            ],
-            "default_scale": "count",
-            "unit": "non-commented lines",
-            "addition": "sum",
-            "direction": "<",
-            "target": "30000",
-            "near_target": "35000",
-            "default_source": "sonarqube",
-            "sources": [
-                "manual_number",
-                "random",
-                "sonarqube"
-            ],
-            "tags": [
-                "maintainability"
-            ]
         },
         "performancetest_duration": {
             "name": "Performancetest duration",
@@ -1654,7 +1606,6 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -1665,7 +1616,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -1676,22 +1626,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
-                    ]
-                },
-                "failure_type": {
-                    "name": "Failure type",
-                    "type": "multiple_choice",
-                    "mandatory": false,
-                    "default_value": "",
-                    "values": [
-                        "failed",
-                        "skipped"
-                    ],
-                    "metrics": [
-                        "failed_tests"
                     ]
                 },
                  "test_result": {
@@ -1710,29 +1646,6 @@
                 }
             },
             "entities": {
-                "failed_tests": {
-                    "name": "test",
-                    "name_plural": "tests",
-                    "attributes": [
-                        {
-                            "name": "Class name",
-                            "key": "class_name"
-                        },
-                        {
-                            "name": "Test case",
-                            "key": "name"
-                        },
-                        {
-                            "name": "Failure type",
-                            "key": "failure_type",
-                            "color": {
-                                "failed": "negative",
-                                "passed": "positive",
-                                "skipped": "warning"
-                            }
-                        }
-                    ]
-                },
                 "tests": {
                     "name": "test",
                     "name_plural": "tests",
@@ -1928,7 +1841,6 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -1939,7 +1851,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -1950,7 +1861,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -1961,23 +1871,8 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
-                    ]
-                },
-                "failure_type": {
-                    "name": "Failure type",
-                    "type": "multiple_choice",
-                    "mandatory": false,
-                    "default_value": "",
-                    "values": [
-                        "errored",
-                        "failed",
-                        "skipped"
-                    ],
-                    "metrics": [
-                        "failed_tests"
                     ]
                 },
                 "test_result": {
@@ -1997,30 +1892,6 @@
                 }
             },
             "entities": {
-                "failed_tests": {
-                    "name": "test",
-                    "name_plural": "tests",
-                    "attributes": [
-                        {
-                            "name": "Class name",
-                            "key": "class_name"
-                        },
-                        {
-                            "name": "Test case",
-                            "key": "name"
-                        },
-                        {
-                            "name": "Failure type",
-                            "key": "failure_type",
-                            "color": {
-                                "errored": "negative",
-                                "failed": "negative",
-                                "passed": "positive",
-                                "skipped": "warning"
-                            }
-                        }
-                    ]
-                },
                 "tests": {
                     "name": "test",
                     "name_plural": "tests",
@@ -2063,7 +1934,6 @@
                         "complex_units",
                         "duplicated_lines",
                         "failed_jobs",
-                        "failed_tests",
                         "issues",
                         "loc",
                         "long_units",
@@ -2071,7 +1941,6 @@
                         "manual_test_execution",
                         "many_parameters",
                         "metrics",
-                        "ncloc",
                         "performancetest_duration",
                         "performancetest_stability",
                         "ready_user_story_points",
@@ -2592,7 +2461,6 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
                         "scalability",
@@ -2607,7 +2475,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
                         "scalability",
@@ -2622,26 +2489,12 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "performancetest_duration",
                         "performancetest_stability",
                         "scalability",
                         "slow_transactions",
                         "source_up_to_dateness",
                         "tests"
-                    ]
-                },
-                "failure_type": {
-                    "name": "Failure type",
-                    "type": "multiple_choice",
-                    "mandatory": false,
-                    "default_value": "",
-                    "values": [
-                        "canceled",
-                        "failed"
-                    ],
-                    "metrics": [
-                        "failed_tests"
                     ]
                 },
                 "test_result": {
@@ -2815,7 +2668,6 @@
                         "Complex units",
                         "Duplicated lines",
                         "Failed CI-jobs",
-                        "Failed tests (deprecated)",
                         "Issues",
                         "Long units",
                         "Manual test duration",
@@ -2828,7 +2680,6 @@
                         "Scalability",
                         "Security warnings",
                         "Size (LOC)",
-                        "Size (non-commented LOC) (deprecated)",
                         "Slow transactions",
                         "Source up-to-dateness",
                         "Suppressed violations",
@@ -2845,7 +2696,6 @@
                         "Complex units": "complex_units",
                         "Duplicated lines": "duplicated_lines",
                         "Failed CI-jobs": "failed_jobs",
-                        "Failed tests (deprecated)": "failed_tests",
                         "Issues": "issues",
                         "Long units": "long_units",
                         "Manual test duration": "manual_test_duration",
@@ -2858,7 +2708,6 @@
                         "Scalability": "scalability",
                         "Security warnings": "security_warnings",
                         "Size (LOC)": "loc",
-                        "Size (non-commented LOC) (deprecated)": "ncloc",
                         "Slow transactions": "slow_transactions",
                         "Source up-to-dateness": "source_up_to_dateness",
                         "Suppressed violations": "suppressed_violations",
@@ -3009,7 +2858,6 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -3020,7 +2868,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -3031,7 +2878,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -3042,7 +2888,6 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "failed_tests",
                         "source_up_to_dateness",
                         "tests"
                     ]
@@ -3062,24 +2907,6 @@
                 }
             },
             "entities": {
-                "failed_tests": {
-                    "name": "test",
-                    "name_plural": "tests",
-                    "attributes": [
-                        {
-                            "name": "Test name",
-                            "key": "name"
-                        },
-                        {
-                            "name": "Failure type",
-                            "key": "failure_type",
-                            "color": {
-                                "fail": "negative",
-                                "pass": "positive"
-                            }
-                        }
-                    ]
-                },
                 "tests": {
                     "name": "test",
                     "name_plural": "tests",
@@ -3114,11 +2941,9 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "failed_tests",
                         "many_parameters",
                         "loc",
                         "long_units",
-                        "ncloc",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3137,11 +2962,9 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "failed_tests",
                         "many_parameters",
                         "loc",
                         "long_units",
-                        "ncloc",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3159,11 +2982,9 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "failed_tests",
                         "many_parameters",
                         "loc",
                         "long_units",
-                        "ncloc",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3182,11 +3003,9 @@
                         "commented_out_code",
                         "complex_units",
                         "duplicated_lines",
-                        "failed_tests",
                         "many_parameters",
                         "loc",
                         "long_units",
-                        "ncloc",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3946,11 +3765,9 @@
                 "commented_out_code",
                 "complex_units",
                 "duplicated_lines",
-                "failed_tests",
                 "loc",
                 "many_parameters",
                 "long_units",
-                "ncloc",
                 "performancetest_stability",
                 "scalability",
                 "security_warnings",
