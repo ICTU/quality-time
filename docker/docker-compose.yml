@@ -34,25 +34,29 @@ services:
     env_file:
       - ${ENV:-dev}.env
     depends_on:
-    - server
+      - server
   collector:
     image: ictu/quality-time_collector:v1.0.0
     env_file:
-    - ${ENV:-dev}.env
+      - ${ENV:-dev}.env
     depends_on:
-    - server
+      - server
   server:
     image: ictu/quality-time_server:v1.0.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
-    - database
+      - database
   database:
     image: mongo
     restart: always
     env_file:
-    - ${ENV:-dev}.env
+      - ${ENV:-dev}.env
     volumes:
-    - "dbdata:/data/db"
+      - "dbdata:/data/db"
+  renderer:
+    image: msokk/electron-render-service:1.0.0
+    env_file:
+      - ${ENV:-dev}.env
 volumes:
   dbdata:

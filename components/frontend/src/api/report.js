@@ -40,6 +40,10 @@ function get_changelog(nr_changes, uuids) {
   return fetch_server_api('get', `changelog/${nr_changes}`)
 }
 
+function get_report_pdf(report_uuid) {
+  return fetch_server_api('get', `report/${report_uuid}/pdf`, {}, 'application/pdf')
+}
+
 export {
-  add_report, delete_report, get_reports, get_tag_report, set_report_attribute, set_reports_attribute,
+  add_report, delete_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute, set_reports_attribute,
   get_changelog }

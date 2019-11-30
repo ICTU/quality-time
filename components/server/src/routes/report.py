@@ -342,6 +342,15 @@ def post_report_new(database: Database):
     return insert_new_report(database, report)
 
 
+@bottle.get("/api/v1/report/<report_uuid>/pdf")
+def export_report_as_pdf(report_uuid: ReportId):
+    """Download the report as pdf."""
+    response = requests.get(f"http://renderer:3000/pdf?accessKey=qt&url=http://www/{report_uuid}&delay=5")
+    response.raise_for_status()
+    bottle.response.content_type = "application/pdf"
+    return response.content
+
+
 @bottle.delete("/api/v1/report/<report_uuid>")
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
