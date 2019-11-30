@@ -12,6 +12,7 @@ services:
     build: ../components/server
     depends_on:
       - ldap
+      - renderer
   database:
     ports:
       - "27017:27017"

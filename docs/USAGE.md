@@ -6,6 +6,7 @@
 - [Configuring quality reports](#configuring-quality-reports)
 - [Notes on specific metrics](#notes-on-specific-metrics)
 - [Customizing quality reports](#customizing-quality-reports)
+- [Exporting quality reports](#exporting-quality-reports)
 
 ## Logging in and out
 
@@ -161,3 +162,15 @@ In a report's dashboard, click on a tag card to show only metrics that have the 
 Each metric table has a button on the top left hand side that can clicked to hide metrics that need to action. Click it again to undo the filtering.
 
 ![Metric table columns](screenshots/metric_table_columns.png)
+
+## Exporting quality reports
+
+Quality-time reports can be downloaded as PDF. To create PDFs, Quality-time has a rendering service included to convert the HTML report into PDF.
+
+### Manually
+
+To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.
+
+### API
+
+If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v1/report/<report_uuid>/pdf`. No authorization is needed for this API.

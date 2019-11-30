@@ -7,7 +7,7 @@ from typing import cast
 import requests
 
 from routes.report import (
-    delete_metric, delete_report, delete_source, delete_subject, get_metrics, get_reports,
+    delete_metric, delete_report, delete_source, delete_subject, export_report_as_pdf, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
     post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
 )
@@ -676,6 +676,14 @@ class ReportTest(unittest.TestCase):
         report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
         report["summary_by_tag"] = {}
         self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
+
+    @patch("requests.get")
+    def test_get_pdf_report(self, requests_get):
+        """Test that a PDF version of the report can be retrieved."""
+        response = Mock()
+        response.content = b"PDF"
+        requests_get.return_value = response
+        self.assertEqual(b"PDF", export_report_as_pdf("report_uuid"))
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
