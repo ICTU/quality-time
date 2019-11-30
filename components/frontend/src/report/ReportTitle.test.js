@@ -17,10 +17,10 @@ const report = {
 };
 
 describe("<ReportTitle />", () => {
-    it('shows a loading indicator on download button click', () => {
+    it('indicates loading on click', () => {
         const wrapper = mount(<ReportTitle report={report} />);
         wrapper.find(Header).simulate("click");  // Expand title
         wrapper.find("button.left").simulate("click");
-        expect(wrapper.find("button.left").hasClass("loading")).to.equal(true);
+        expect(wrapper.find("button.left").hasClass("loading")).toBe(true);
     });
 });
