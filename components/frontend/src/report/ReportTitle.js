@@ -65,7 +65,7 @@ export function ReportTitle(props) {
                                     }
                                     primary
                                 >
-                                    <Icon name="file pdf" /> Download report as pdf
+                                    <Icon name="file pdf" /> Download report as PDF
                                 </Button>
                                 <Button
                                     basic
