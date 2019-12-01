@@ -41,7 +41,7 @@ jobs:
             npm install
             npm test
 
-  ui_tests:
+  application_tests:
     machine: true
     parallelism: 1
     steps:
@@ -54,12 +54,15 @@ jobs:
       - run:
           name: Scan images
           command: |
-            curl -s https://ci-tools.anchore.io/inline_scan-v0.3.3 | bash -s -- -r "ictu/quality-time_frontend:v0.20.0"
+            curl -s https://ci-tools.anchore.io/inline_scan-v0.3.3 | bash -s -- -r "ictu/quality-time_frontend:v1.0.0"
+      - store_artifacts:
+          path: /home/circleci/project/anchore-reports
+
 workflows:
   version: 2
   build_test:
     jobs:
-      - ui_tests:
+      - application_tests:
           context: QualityTime
       - unittest_collector:
           context: QualityTime
