@@ -56,7 +56,7 @@ jobs:
           command: |
             curl -s https://ci-tools.anchore.io/inline_scan-v0.5.0 | bash -s -- -d components/server/Dockerfile -r "ictu/quality-time_frontend:v1.0.0"
       - store_artifacts:
-          path: /home/circleci/project/anchore-reports
+          path: anchore-reports
 
 workflows:
   version: 2
