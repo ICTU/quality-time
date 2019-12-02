@@ -1,4 +1,4 @@
-bottle==0.12.17
+bottle==0.12.18
 bottle-mongo==0.3.0
 gevent==1.4.0
 lxml==4.4.2
