@@ -25,7 +25,7 @@ export function ChangeLog(props) {
     if (props.source_uuid) {
         scope = "Changes to this source";
     }
-    const [nrChanges, setNrChanges] = useState(10);
+    const [nrChanges, setNrChanges] = useState(5);
     const [changes, setChanges] = useState([]);
     useEffect(() => {
         let uuids = {};
