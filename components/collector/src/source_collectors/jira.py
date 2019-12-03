@@ -1,6 +1,6 @@
 """Jira metric collector."""
 
-from typing import cast, Dict, List, Tuple, Union
+from typing import cast, Dict, List, Optional, Tuple, Union
 
 from dateutil.parser import parse
 
@@ -104,7 +104,7 @@ class JiraFieldSumBase(JiraIssues):
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
-        entity[self.entity_key] = self.__value_of_field_to_sum(issue)
+        entity[self.entity_key] = cast(float, self.__value_of_field_to_sum(issue))
         return entity
 
     def _include_issue(self, issue: Dict) -> bool:
@@ -113,9 +113,10 @@ class JiraFieldSumBase(JiraIssues):
     def _fields(self) -> str:
         return super()._fields() + "," + cast(str, self._parameter(self.field_parameter))
 
-    def __value_of_field_to_sum(self, issue: Dict) -> float:
+    def __value_of_field_to_sum(self, issue: Dict) -> Optional[float]:
         """Return the value of the issue field that this collectors is to sum."""
-        return float(issue["fields"][self._parameter(self.field_parameter)])
+        value = issue["fields"].get(self._parameter(self.field_parameter))
+        return value if value is None else float(value)
 
 
 class JiraReadyUserStoryPoints(JiraFieldSumBase):
