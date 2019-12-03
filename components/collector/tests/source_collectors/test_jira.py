@@ -126,7 +126,8 @@ class JiraManualTestDurationTest(JiraTestCase):
         test_cases_json = dict(
             issues=[
                 dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
-                dict(key="2", id="2", fields=dict(summary="summary 2", field=15))])
+                dict(key="2", id="2", fields=dict(summary="summary 2", field=15)),
+                dict(key="3", id="3", fields=dict(summary="summary 3", field=None))])
         response = self.collect(
             metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         self.assert_measurement(
