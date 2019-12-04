@@ -1,7 +1,7 @@
 """Jenkins test report metric collector."""
 
 from datetime import datetime
-from typing import cast, List, Tuple
+from typing import cast, Dict, Final, List, Tuple
 
 from dateutil.parser import parse
 import requests
@@ -14,7 +14,8 @@ from .source_collector import SourceCollector
 class JenkinsTestReportTests(SourceCollector):
     """Collector to get the amount of tests from a Jenkins test report."""
 
-    jenkins_test_report_counts = dict(failed="failCount", passed="passCount", skipped="skipCount")
+    JENKINS_TEST_REPORT_COUNTS: Final[Dict[str, str]] = dict(
+        failed="failCount", passed="passCount", skipped="skipCount")
 
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
@@ -23,7 +24,7 @@ class JenkinsTestReportTests(SourceCollector):
         json = responses[0].json()
         suites = json.get("suites", [])
         statuses = cast(List[str], self._parameter("test_result"))
-        status_counts = [self.jenkins_test_report_counts[status] for status in statuses]
+        status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
         value = str(sum(int(json.get(status_count, 0)) for status_count in status_counts))
         entities = [
             self.__entity(case) for suite in suites for case in suite.get("cases", [])

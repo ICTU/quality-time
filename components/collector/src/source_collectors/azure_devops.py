@@ -6,7 +6,7 @@ See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-re
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List, Tuple
+from typing import cast, Final, List, Tuple
 
 from dateutil.parser import parse
 import requests
@@ -19,7 +19,7 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector, Unme
 class AzureDevopsIssues(SourceCollector):
     """Collector to get issues from Azure Devops Server."""
 
-    MAX_IDS_PER_WORKITEMS_API_CALL = 200  # See
+    MAX_IDS_PER_WORK_ITEMS_API_CALL: Final[int] = 200  # See
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
 
     def _api_url(self) -> URL:
@@ -33,7 +33,7 @@ class AzureDevopsIssues(SourceCollector):
         ids = [str(work_item["id"]) for work_item in response.json().get("workItems", [])]
         if not ids:
             return [response]
-        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORKITEMS_API_CALL, self.MAX_ENTITIES)])
+        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 

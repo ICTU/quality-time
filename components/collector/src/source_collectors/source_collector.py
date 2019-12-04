@@ -8,7 +8,7 @@ import zipfile
 from abc import ABC, abstractmethod
 from datetime import datetime
 from http import HTTPStatus
-from typing import cast, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import cast, Dict, Final, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
@@ -26,8 +26,8 @@ class SourceCollector(ABC):
     subclasses: Set[Type["SourceCollector"]] = set()
 
     def __init__(self, source, datamodel) -> None:
-        self._datamodel = datamodel
-        self.__parameters: Dict[str, Union[str, List[str]]] = source.get("parameters", {})
+        self._datamodel: Final = datamodel
+        self.__parameters: Final[Dict[str, Union[str, List[str]]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:
         SourceCollector.subclasses.add(cls)
