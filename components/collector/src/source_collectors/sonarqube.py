@@ -13,8 +13,7 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector
 class SonarQubeViolations(SourceCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
-    landing_url = "{url}/project/issues?id={component}&resolved=false&branch={branch}"
-    rules_parameter = "Subclass responsibility"
+    rules_parameter = ""  # Subclass responsibility
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
@@ -37,7 +36,7 @@ class SonarQubeViolations(SourceCollector):
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = self._parameter(self.rules_parameter) if self.rules_parameter != "Subclass responsibility" else []
+        rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
         return f"&rules={','.join(rules)}" if rules else ""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
@@ -80,7 +79,7 @@ class SonarQubeCommentedOutCode(SonarQubeViolations):
 class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
     """SonarQube violations collectors that support the percentage scale."""
 
-    total_metric = "Subclass responsibility"
+    total_metric = ""  # Subclass responsibility
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         """Next to the violations, also get the total number of units as basis for the percentage scale."""
@@ -156,7 +155,7 @@ class SonarQubeMetricsBaseClass(SourceCollector):
 
     # Metric keys is a string containing one or two metric keys separated by a comma. The first metric key is used for
     # the metric value, the second for the total value (used for calculating a percentage).
-    metricKeys = "Subclass responsibility"
+    metricKeys = ""  # Subclass responsibility
 
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)

@@ -1,6 +1,6 @@
 """Collector base class."""
 
-from typing import Dict
+from typing import Dict, Final
 
 from source_collectors.source_collector import SourceCollector
 from collector_utilities.type import Measurement
@@ -10,8 +10,8 @@ class MetricCollector:
     """Base class for collecting measurements from multiple sources for a metric."""
 
     def __init__(self, metric, datamodel=None) -> None:
-        self.metric = metric
-        self.datamodel = datamodel
+        self.metric: Final = metric
+        self.datamodel: Final = datamodel
         self.collectors: Dict[str, SourceCollector] = dict()
         for source_uuid, source in self.metric["sources"].items():
             collector_class = SourceCollector.get_subclass(source['type'], self.metric['type'])

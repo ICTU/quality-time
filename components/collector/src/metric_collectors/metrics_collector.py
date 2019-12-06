@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import logging
 import os
 import time
-from typing import cast, Any, Dict, NoReturn
+from typing import cast, Any, Dict, Final, NoReturn
 
 import requests
 
@@ -32,7 +32,7 @@ def post(api: URL, data) -> None:
 class MetricsCollector:
     """Collect measurements for all metrics."""
     def __init__(self) -> None:
-        self.server_url = \
+        self.server_url: Final[URL] = \
             URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
         self.data_model: JSON = dict()
         self.next_fetch: Dict[str, datetime] = dict()

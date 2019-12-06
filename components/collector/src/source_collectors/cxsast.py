@@ -1,7 +1,7 @@
 """Collectors for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import cast, Tuple
+from typing import cast, Final, Tuple
 
 from dateutil.parser import parse
 import requests
@@ -14,7 +14,9 @@ from .source_collector import SourceCollector
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for CxSAST collectors."""
 
-    TOKEN_RESPONSE, PROJECT_RESPONSE, SCAN_RESPONSE = range(3)
+    TOKEN_RESPONSE: Final[int] = 0
+    PROJECT_RESPONSE: Final[int] = 1
+    SCAN_RESPONSE: Final[int] = 2
 
     def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()

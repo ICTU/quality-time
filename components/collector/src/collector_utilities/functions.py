@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import re
-from typing import cast, Collection, Tuple
+from typing import cast, Collection, Final, Pattern, Tuple
 import urllib
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
@@ -28,9 +28,9 @@ def parse_source_response_xml_with_namespace(
     return tree, namespaces
 
 
-MEMORY_ADDRESS_RE = re.compile(r" at 0x[0-9abcdef]+>")
-TOKEN_RE = re.compile(r"token=[0-9a-zA-Z]+")
-KEY_RE = re.compile(r"key=[0-9abcdef]+")
+MEMORY_ADDRESS_RE: Final[Pattern] = re.compile(r" at 0x[0-9abcdef]+>")
+TOKEN_RE: Final[Pattern] = re.compile(r"token=[0-9a-zA-Z]+")
+KEY_RE: Final[Pattern] = re.compile(r"key=[0-9abcdef]+")
 
 
 def stable_traceback(traceback: str) -> str:
@@ -45,7 +45,7 @@ def days_ago(date_time: datetime) -> int:
     return (datetime.now(tz=date_time.tzinfo) - date_time).days
 
 
-HASH_RE = re.compile(r"(?i)[a-f0-9]{20,}")
+HASH_RE: Final[Pattern] = re.compile(r"(?i)[a-f0-9]{20,}")
 
 
 def hashless(url: URL) -> URL:
