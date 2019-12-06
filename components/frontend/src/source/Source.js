@@ -23,7 +23,7 @@ export function Source(props) {
                     {source_type.name}
                     <Header.Subheader>
                         {source_type.description}
-                        {source_type.url && <a href={source_type.url}><Icon name="external" link /></a>}
+                        {source_type.url && <a href={source_type.url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="external" link /></a>}
                     </Header.Subheader>
                 </Header.Content>
             </Header>

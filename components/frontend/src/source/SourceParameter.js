@@ -31,7 +31,7 @@ export function SourceParameter(props) {
     return values;
   }
   const label = props.help_url ?
-    <label>{props.parameter_name} <a href={props.help_url}><Icon name="help circle" link /></a></label>
+    <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
     :
     props.parameter_name;
   if (props.parameter_type === "url") {

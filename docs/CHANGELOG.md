@@ -9,13 +9,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Open help urls in a new window or tab. Closes [#842](https://github.com/ICTU/quality-time/issues/842).
+
 ## [1.1.0] - [2019-12-03]
 
 ### Fixed
 
 - Ignore Jira fields that have no number value when summing Jira issues for the ready user story points and manual test duration metrics. Fixes [#834](https://github.com/ICTU/quality-time/issues/834).
 
-### Added 
+### Added
 
 - Added a button (expand a report title to access it) to download a PDF version of a report. The PDF report can also be downloaded via the API: `http://www.quality-time.example.org/api/v1/report/<report_uuid>/pdf`.
 Closes [#828](https://github.com/ICTU/quality-time/issues/828).
@@ -24,6 +30,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Changed
 
 - Show the five most recent changes in the change log table initially so that the buttons below the change log table don't disappear off screen. Each click on the "load more changes" button still loads ten more changes. Closes [#836](https://github.com/ICTU/quality-time/issues/836).
+
 ## [1.0.0] - [2019-11-28]
 
 ### Fixed
