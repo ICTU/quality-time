@@ -20,7 +20,7 @@ Enter your LDAP-credentials in the dialog:
 
 > You can either use your canonical LDAP name as username or your LDAP user id. Please contact your system administrator if you don't know your LDAP credentials.
 
-After hitting "Submit" you should be logged in. The menu bar shows your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://gravatar.com), it will be shown next to your username.
 
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 

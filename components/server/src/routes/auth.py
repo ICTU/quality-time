@@ -66,44 +66,47 @@ def get_credentials() -> Tuple[str, str]:
     return username, password
 
 
-def verify_user(username: str, password: str) -> bool:
-    """Authenticate the user and return whether they are authorized to login."""
+def verify_user(username: str, password: str) -> Tuple[bool, str]:
+    """Authenticate the user and return whether they are authorized to login and their email address."""
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
     ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
+    email = "email address not retrieved"
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
             if not lookup_connection.bind():
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
-            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword'])
+            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword', 'mail'])
             result = lookup_connection.entries[0]
         username, salted_password = result.entry_dn, result.userPassword.value
+        email = result.mail.value or "email address not found"
         if salted_password:
             if check_password(salted_password, password):
-                logging.info("LDAP salted password check for user %s succeeded", username)
+                logging.info("LDAP salted password check for user %s <%s> succeeded", username, email)
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:
             with Connection(ldap_server, user=username, password=password, auto_bind=True):
-                logging.info("LDAP bind for user %s succeeded", username)
+                logging.info("LDAP bind for user %s <%s> succeeded", username, email)
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for user %s: %s", username, reason)
-        return False
-    return True
+        logging.warning("LDAP error for user %s <%s>: %s", username, email, reason)
+        return False, email
+    return True, email
 
 
 @bottle.post("/api/v1/login")
 def login(database: Database) -> Dict[str, bool]:
     """Log the user in."""
     username, password = get_credentials()
-    if verified := verify_user(username, password):
+    verified, email = verify_user(username, password)
+    if verified:
         create_session(database, username)
-    return dict(ok=verified)
+    return dict(ok=verified, email=email)
 
 
 @bottle.post("/api/v1/logout")

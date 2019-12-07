@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- If you have a [Gravatar](https://gravatar.com), it will be shown next to your username after you log in.
+
 ### Changed
 
 - Open help urls in a new window or tab. Closes [#842](https://github.com/ICTU/quality-time/issues/842).
