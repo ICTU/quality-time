@@ -20,7 +20,9 @@ jobs:
         pip install -r requirements.txt -r requirements-dev.txt
     - name: Test
       run: |
+        cd components/collector
         ci/unittest.sh
     - name: Quality
       run: |
+        cd components/collector
         ci/quality.sh
