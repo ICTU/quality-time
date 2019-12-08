@@ -73,7 +73,7 @@ class LoginTests(unittest.TestCase):
     def test_login_server_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when a server creation error occurs."""
         connection_mock.return_value = None
-        self.assertEqual(dict(ok=False, email='email address not retrieved'), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=''), auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
         self.assertEqual('LDAP error for user %s <%s>: %s', logging_mock.call_args[0][0])
@@ -86,7 +86,7 @@ class LoginTests(unittest.TestCase):
         connection_mock.return_value = None
         self.ldap_connection.bind.return_value = False
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email='email address not retrieved'), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=''), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assertEqual('LDAP error for user %s <%s>: %s', logging_mock.call_args[0][0])
@@ -99,7 +99,7 @@ class LoginTests(unittest.TestCase):
         connection_mock.return_value = None
         self.ldap_connection.search.side_effect = exceptions.LDAPResponseTimeoutError
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email='email address not retrieved'), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=''), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assertEqual('LDAP error for user %s <%s>: %s', logging_mock.call_args[0][0])

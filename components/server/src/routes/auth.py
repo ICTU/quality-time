@@ -7,7 +7,7 @@ import os
 import re
 import string
 from datetime import datetime, timedelta
-from typing import cast, Dict, Tuple
+from typing import cast, Dict, Tuple, Union
 
 import bottle
 from ldap3 import Server, Connection, ALL
@@ -74,7 +74,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
     ldap_lookup_user_password = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
     ldap_search_filter = string.Template(ldap_search_filter_template).substitute(username=username)
-    email = "email address not retrieved"
+    email = ""
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
@@ -84,23 +84,24 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword', 'mail'])
             result = lookup_connection.entries[0]
         username, salted_password = result.entry_dn, result.userPassword.value
-        email = result.mail.value or "email address not found"
+        email = result.mail.value or ""
         if salted_password:
             if check_password(salted_password, password):
-                logging.info("LDAP salted password check for user %s <%s> succeeded", username, email)
+                logging.info(
+                    "LDAP salted password check for user %s <%s> succeeded", username, email or "unknown email")
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:
             with Connection(ldap_server, user=username, password=password, auto_bind=True):
-                logging.info("LDAP bind for user %s <%s> succeeded", username, email)
+                logging.info("LDAP bind for user %s <%s> succeeded", username, email or "unknown email")
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for user %s <%s>: %s", username, email, reason)
+        logging.warning("LDAP error for user %s <%s>: %s", username, email or "unknown email", reason)
         return False, email
     return True, email
 
 
 @bottle.post("/api/v1/login")
-def login(database: Database) -> Dict[str, bool]:
+def login(database: Database) -> Dict[str, Union[bool, str]]:
     """Log the user in."""
     username, password = get_credentials()
     verified, email = verify_user(username, password)
