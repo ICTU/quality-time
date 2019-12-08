@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import md5 from 'md5';
 import './Menubar.css';
@@ -24,10 +24,12 @@ function Login(props) {
 }
 
 function Logout(props) {
+  const trigger = <><Image avatar src={`https://www.gravatar.com/avatar/${md5(props.email || '')}?d=identicon`} /> {props.user}</>
   return (
-    <Button secondary onClick={props.logout}>
-      <Image avatar src={`https://www.gravatar.com/avatar/${md5(props.email || '')}?d=identicon`} />Logout {props.user}
-    </Button>
+    <Dropdown
+      trigger={trigger}
+      options={[{key: "logout", text: "Logout", icon: "log out", onClick: props.logout}]}
+    />
   )
 }
 
