@@ -48,16 +48,18 @@ class JiraManualTestExecutionTest(JiraTestCase):
 
     def setUp(self):
         super().setUp()
+        self.too_long_ago_summary = "Tested too long ago according to its own desired frequency"
         self.metric = dict(type="manual_test_execution", addition="sum", sources=self.sources)
 
     def test_nr_of_test_cases(self):
         """Test that the number of test cases is returned."""
+        comment_updated = "2019-10-02T11:07:02.444+0200"
         test_cases_json = dict(
             issues=[
                 dict(key="key1", id="id1",
                      fields=dict(
                          comment=dict(
-                             comments=[dict(updated="2019-10-02T11:07:02.444+0200")]), summary="Tested too long ago")),
+                             comments=[dict(updated=comment_updated)]), summary="Tested too long ago")),
                 dict(key="key2", id="id2", fields=dict(comment=dict(comments=[]), summary="Never tested")),
                 dict(key="key3", id="id3",
                      fields=dict(
@@ -66,16 +68,16 @@ class JiraManualTestExecutionTest(JiraTestCase):
                      fields=dict(
                          comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
                          desired_test_frequency="5",
-                         summary="Tested too long ago according to its own desired frequency"))])
+                         summary=self.too_long_ago_summary))])
         response = self.collect(
             self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
-        expected_days = str(days_ago(parse("2019-10-02T11:07:02.444+0200")))
+        expected_days = str(days_ago(parse(comment_updated)))
         self.assert_measurement(
             response, value="2",
             entities=[
                 dict(key="id1", summary="Tested too long ago", url="https://jira/browse/key1",
                      days_untested=expected_days, desired_test_frequency="21"),
-                dict(key="id4", summary="Tested too long ago according to its own desired frequency",
+                dict(key="id4", summary=self.too_long_ago_summary,
                      url="https://jira/browse/key4", days_untested="10", desired_test_frequency="5")])
 
     def test_nr_of_test_cases_with_field_name(self):
@@ -88,13 +90,13 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 dict(key="key", id="id",
                      fields=dict(
                          comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
-                         custom_field_001="5", summary="Tested too long ago according to its own desired frequency"))])
+                         custom_field_001="5", summary=self.too_long_ago_summary))])
         response = self.collect(
             self.metric, get_request_json_side_effect=[fields_json, test_cases_json])
         self.assert_measurement(
             response, value="1",
             entities=[
-                dict(key="id", summary="Tested too long ago according to its own desired frequency",
+                dict(key="id", summary=self.too_long_ago_summary,
                      url="https://jira/browse/key", days_untested="10", desired_test_frequency="5")])
 
 
