@@ -30,7 +30,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, nr_new_measurements: 0, loading_report: true, loading_datamodel: true, user: null,
+      nr_measurements: 0, nr_new_measurements: 0, loading_report: true, loading_datamodel: true, user: null, email: null,
       last_update: new Date(), login_error: false
     };
     this.history = createBrowserHistory();
@@ -50,7 +50,8 @@ class App extends Component {
       this.connect_to_nr_measurements_event_source(report_uuid)
     }
     this.setState(
-      { report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user") },
+      { report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
+        email: localStorage.getItem("email") },
       () => this.reload());
   }
 
@@ -184,8 +185,10 @@ class App extends Component {
     login(username, password)
       .then(function (json) {
         if (json.ok) {
-          self.setState({ user: username, login_error: false })
+          const email = json.email.indexOf("@") > -1 ? json.email : null;
+          self.setState({ user: username, email: email, login_error: false })
           localStorage.setItem("user", username)
+          localStorage.setItem("email", email)
         } else {
           self.setState({ login_error: true })
         }
@@ -200,6 +203,7 @@ class App extends Component {
     logout().then(() => {
       self.setState({ user: null });
       localStorage.removeItem("user");
+      localStorage.removeItem("email");
     })
   }
 
@@ -211,6 +215,7 @@ class App extends Component {
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
         <Menubar
+          email={this.state.email}
           go_home={() => this.go_home()}
           login={(u, p) => this.login(u, p)}
           login_error={this.state.login_error}
