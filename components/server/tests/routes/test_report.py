@@ -372,6 +372,7 @@ class PostSourceParameterTest(unittest.TestCase):
     """Unit tests for the post source parameter route."""
 
     def setUp(self):
+        self.status_code_reason = "Reason for the status code"
         self.report = dict(
             _id=REPORT_ID, title="Report",
             subjects={
@@ -390,11 +391,11 @@ class PostSourceParameterTest(unittest.TestCase):
     @patch.object(requests, 'get')
     def test_url(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
         request.json = dict(url="https://url")
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": self.status_code_reason,
                                                      'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=None)
@@ -429,13 +430,13 @@ class PostSourceParameterTest(unittest.TestCase):
         srcs = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
         srcs[SOURCE_ID]['parameters']['username'] = 'un'
         srcs[SOURCE_ID]['parameters']['password'] = 'pwd'
-        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
         request.json = dict(url="https://url")
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
         self.assertTrue(response['ok'])
         self.assertEqual(
             response['availability'],
-            [{"status_code": 123, "reason": 'A good reason', 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+            [{"status_code": 123, "reason": self.status_code_reason, 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=('un', 'pwd'))
 
@@ -445,7 +446,7 @@ class PostSourceParameterTest(unittest.TestCase):
         database = self.database
         database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
             type="string"), username=dict(type="string"), password=dict(type="pwd")))))
-        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
         request.json = dict(url="unimportant")
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
         self.assertEqual(response, dict(ok=True))
@@ -468,7 +469,7 @@ class PostSourceParameterTest(unittest.TestCase):
         database = self.database
         database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
             type="url"), username=dict(type="string"), private_token=dict(type="pwd")))))
-        mock_get.return_value = MagicMock(status_code=123, reason='A good reason')
+        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
         request.json = dict(url="https://url")
         sources = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
         sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
@@ -476,7 +477,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.assertTrue(response['ok'])
         self.assertEqual(
             response['availability'],
-            [{"status_code": 123, "reason": 'A good reason', 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+            [{"status_code": 123, "reason": self.status_code_reason, 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with('https://url', auth=('xxx', ''))
 
@@ -488,13 +489,13 @@ class PostSourceParameterTest(unittest.TestCase):
             _id="id", sources=dict(type=dict(parameters=dict(
                 url=dict(type="url", validate_on='password'), landing_url=dict(type="url"),
                 password=dict(type="password")))))
-        mock_get.side_effect = [MagicMock(status_code=123, reason='A good reason')]
+        mock_get.side_effect = [MagicMock(status_code=123, reason=self.status_code_reason)]
         request.json = dict(password="changed")
         sources = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
         sources[SOURCE_ID]['parameters']['url'] = "https://url"
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", database)
         self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'], [{"status_code": 123, "reason": 'A good reason',
+        self.assertEqual(response['availability'], [{"status_code": 123, "reason": self.status_code_reason,
                                                      'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
         self.database.reports.insert.assert_called_once_with(self.report)
 

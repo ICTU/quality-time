@@ -68,6 +68,10 @@ def get_credentials() -> Tuple[str, str]:
 
 def verify_user(username: str, password: str) -> Tuple[bool, str]:
     """Authenticate the user and return whether they are authorized to login and their email address."""
+    def user(username: str, email: str) -> str:
+        """Format user and email for logging purposes."""
+        return f"user {username} <{email or 'unknown email'}>"
+
     ldap_root_dn = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     ldap_url = os.environ.get("LDAP_URL", "ldap://localhost:389")
     ldap_lookup_user_dn = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
@@ -87,15 +91,14 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
         email = result.mail.value or ""
         if salted_password:
             if check_password(salted_password, password):
-                logging.info(
-                    "LDAP salted password check for user %s <%s> succeeded", username, email or "unknown email")
+                logging.info("LDAP salted password check for %s succeeded", user(username, email))
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
         else:
             with Connection(ldap_server, user=username, password=password, auto_bind=True):
-                logging.info("LDAP bind for user %s <%s> succeeded", username, email or "unknown email")
+                logging.info("LDAP bind for %s succeeded", user(username, email))
     except Exception as reason:  # pylint: disable=broad-except
-        logging.warning("LDAP error for user %s <%s>: %s", username, email or "unknown email", reason)
+        logging.warning("LDAP error for %s: %s", user(username, email), reason)
         return False, email
     return True, email
 

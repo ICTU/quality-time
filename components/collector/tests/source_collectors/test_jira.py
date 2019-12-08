@@ -108,15 +108,15 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
         metric = dict(type="ready_user_story_points", addition="sum", sources=self.sources)
         user_stories_json = dict(
             issues=[
-                dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
-                dict(key="2", id="2", fields=dict(summary="summary 2", field=32))])
+                dict(key="1", id="1", fields=dict(summary="user story 1", field=10)),
+                dict(key="2", id="2", fields=dict(summary="user story 2", field=32))])
         response = self.collect(
             metric, get_request_json_side_effect=[self.fields_json, user_stories_json])
         self.assert_measurement(
             response, value="42",
             entities=[
-                dict(key="1", summary="summary 1", url="https://jira/browse/1", points=10.0),
-                dict(key="2", summary="summary 2", url="https://jira/browse/2", points=32.0)])
+                dict(key="1", summary="user story 1", url="https://jira/browse/1", points=10.0),
+                dict(key="2", summary="user story 2", url="https://jira/browse/2", points=32.0)])
 
 
 class JiraManualTestDurationTest(JiraTestCase):
@@ -127,13 +127,13 @@ class JiraManualTestDurationTest(JiraTestCase):
         metric = dict(type="manual_test_duration", addition="sum", sources=self.sources)
         test_cases_json = dict(
             issues=[
-                dict(key="1", id="1", fields=dict(summary="summary 1", field=10)),
-                dict(key="2", id="2", fields=dict(summary="summary 2", field=15)),
-                dict(key="3", id="3", fields=dict(summary="summary 3", field=None))])
+                dict(key="1", id="1", fields=dict(summary="test 1", field=10)),
+                dict(key="2", id="2", fields=dict(summary="test 2", field=15)),
+                dict(key="3", id="3", fields=dict(summary="test 3", field=None))])
         response = self.collect(
             metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         self.assert_measurement(
             response, value="25",
             entities=[
-                dict(duration=10.0, key="1", summary="summary 1", url="https://jira/browse/1"),
-                dict(duration=15.0, key="2", summary="summary 2", url="https://jira/browse/2")])
+                dict(duration=10.0, key="1", summary="test 1", url="https://jira/browse/1"),
+                dict(duration=15.0, key="2", summary="test 2", url="https://jira/browse/2")])

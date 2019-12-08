@@ -39,7 +39,7 @@ class App extends Component {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
         this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
-      };
+      }
     });
   }
 
