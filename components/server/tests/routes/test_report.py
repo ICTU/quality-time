@@ -1,7 +1,7 @@
 """Unit tests for the report routes."""
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from typing import cast
 
 import requests
@@ -371,8 +371,12 @@ class PostSourceAttributeTest(unittest.TestCase):
 class PostSourceParameterTest(unittest.TestCase):
     """Unit tests for the post source parameter route."""
 
+    STATUS_CODE = 200
+    STATUS_CODE_REASON = "OK"
+
     def setUp(self):
-        self.status_code_reason = "Reason for the status code"
+        self.url = "https://url"
+        self.sources = {SOURCE_ID: dict(name="Source", type="type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report",
             subjects={
@@ -380,130 +384,118 @@ class PostSourceParameterTest(unittest.TestCase):
                     name="Subject",
                     metrics={
                         METRIC_ID: dict(
-                            name="Metric", type="type",
-                            sources={SOURCE_ID: dict(name="Source", type="type", parameters=dict())})})})
+                            name="Metric", type="type", sources=self.sources)})})
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.reports.find_one.return_value = self.report
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id", sources=dict(type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))))
+        self.datamodel = dict(
+            _id="id",
+            sources=dict(
+                type=dict(
+                    parameters=dict(
+                        url=dict(type="url"), username=dict(type="string"), password=dict(type="password")))))
+        self.database.datamodels.find_one.return_value = self.datamodel
+        self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
+
+    def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
+        """Check the url check result."""
+        status_code = status_code or self.STATUS_CODE
+        status_code_reason = status_code_reason or self.STATUS_CODE_REASON
+        self.assertEqual(
+            response,
+            dict(
+                ok=True,
+                availability=[
+                    dict(
+                        status_code=status_code, reason=status_code_reason, source_uuid=SOURCE_ID,
+                        parameter_key="url")]))
 
     @patch.object(requests, 'get')
     def test_url(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
-        request.json = dict(url="https://url")
+        mock_get.return_value = self.url_check_get_response
+        request.json = dict(url=self.url)
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
-        self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'], [{"status_code": 123, "reason": self.status_code_reason,
-                                                     'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+        self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with('https://url', auth=None)
+        mock_get.assert_called_once_with(self.url, auth=None)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from '' to 'https://url'."),
+                             f"report 'Report' from '' to '{self.url}'."),
             self.report["delta"])
 
     @patch.object(requests, 'get')
     def test_url_http_error(self, mock_get, request):
         """Test that the error is reported if a request exception occurs, while checking connection of a url."""
         mock_get.side_effect = requests.exceptions.RequestException
-        request.json = dict(url="https://url")
+        request.json = dict(url=self.url)
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
-        self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'], [{"status_code": -1, "reason": 'Unknown error',
-                                                     'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+        self.assert_url_check(response, -1, "Unknown error")
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from '' to 'https://url'."),
+                             f"report 'Report' from '' to '{self.url}'."),
             self.report["delta"])
 
     @patch.object(requests, 'get')
     def test_url_with_user(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        database = self.database
-        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
-            type="url"), username=dict(type="string"), password=dict(type="pwd")))))
-        srcs = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
-        srcs[SOURCE_ID]['parameters']['username'] = 'un'
-        srcs[SOURCE_ID]['parameters']['password'] = 'pwd'
-        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
-        request.json = dict(url="https://url")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
-        self.assertTrue(response['ok'])
-        self.assertEqual(
-            response['availability'],
-            [{"status_code": 123, "reason": self.status_code_reason, 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+        self.sources[SOURCE_ID]['parameters']['username'] = 'un'
+        self.sources[SOURCE_ID]['parameters']['password'] = 'pwd'
+        mock_get.return_value = self.url_check_get_response
+        request.json = dict(url=self.url)
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with('https://url', auth=('un', 'pwd'))
+        mock_get.assert_called_once_with(self.url, auth=('un', 'pwd'))
 
     @patch.object(requests, 'get')
     def test_url_no_url_type(self, mock_get, request):
-        """Test that the source url can be changed and that the availability is checked."""
-        database = self.database
-        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
-            type="string"), username=dict(type="string"), password=dict(type="pwd")))))
-        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
+        """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
+        self.datamodel["sources"]["type"]["parameters"]["url"]["type"] = "string"
+        mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_not_called()
 
     def test_empty_url(self, request):
         """Test that the source url availability is not checked when the url is empty."""
-        database = self.database
-        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
-            type="url"), username=dict(type="string"), password=dict(type="pwd")))))
         request.json = dict(url="")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
 
     @patch.object(requests, 'get')
     def test_url_with_token(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        database = self.database
-        database.datamodels.find_one.return_value = dict(_id="id", sources=dict(type=dict(parameters=dict(url=dict(
-            type="url"), username=dict(type="string"), private_token=dict(type="pwd")))))
-        mock_get.return_value = MagicMock(status_code=123, reason=self.status_code_reason)
-        request.json = dict(url="https://url")
-        sources = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
-        sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", database)
-        self.assertTrue(response['ok'])
-        self.assertEqual(
-            response['availability'],
-            [{"status_code": 123, "reason": self.status_code_reason, 'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+        mock_get.return_value = self.url_check_get_response
+        request.json = dict(url=self.url)
+        self.sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with('https://url', auth=('xxx', ''))
+        mock_get.assert_called_once_with(self.url, auth=('xxx', ''))
 
     @patch.object(requests, 'get')
     def test_urls_connection_on_update_other_field(self, mock_get, request):
-        """Test that the all urls availability is checked when a parameter is changed."""
-        database = self.database
-        database.datamodels.find_one.return_value = dict(
-            _id="id", sources=dict(type=dict(parameters=dict(
-                url=dict(type="url", validate_on='password'), landing_url=dict(type="url"),
-                password=dict(type="password")))))
-        mock_get.side_effect = [MagicMock(status_code=123, reason=self.status_code_reason)]
+        """Test that the all urls availability is checked when a parameter that it depends on is changed."""
+        self.datamodel["sources"]["type"]["parameters"]["url"]["validate_on"] = "password"
+        mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
-        sources = database.reports.find_one.return_value['subjects'][SUBJECT_ID]['metrics'][METRIC_ID]['sources']
-        sources[SOURCE_ID]['parameters']['url'] = "https://url"
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", database)
-        self.assertTrue(response['ok'])
-        self.assertEqual(response['availability'], [{"status_code": 123, "reason": self.status_code_reason,
-                                                     'source_uuid': SOURCE_ID, "parameter_key": 'url'}])
+        self.sources[SOURCE_ID]['parameters']['url'] = self.url
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", self.database)
+        self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
 
     def test_password(self, request):
         """Test that the password can be changed and is not logged."""
         request.json = dict(url="unimportant", password="secret")
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", self.database)
-        self.assertTrue(response['ok'])
+        self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,

@@ -14,6 +14,8 @@ class JenkinsTestCase(SourceCollectorTestCase):
             source_id=dict(type="jenkins", parameters=dict(url="https://jenkins/", failure_type=["Red"])))
         self.builds = [dict(result="red", timestamp="1552686540953")]
         self.build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
+        self.job_url = "https://job"
+        self.job2_url = "https://job2"
 
 
 class JenkinsFailedJobsTest(JenkinsTestCase):
@@ -28,7 +30,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         jenkins_json = dict(
             jobs=[
                 dict(
-                    name="job", url="https://job", buildable=True, color="red", builds=self.builds,
+                    name="job", url=self.job_url, buildable=True, color="red", builds=self.builds,
                     jobs=[
                         dict(
                             name="child_job", url="https://child_job", buildable=True, color="red",
@@ -39,40 +41,40 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
     def test_failed_jobs(self):
         """Test that the failed jobs are returned."""
         jenkins_json = dict(
-            jobs=[dict(name="job", url="https://job", buildable=True, color="red", builds=self.builds)])
+            jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         expected_entities = [
             dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url="https://job")]
+                 url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     def test_ignore_jobs(self):
         """Test that a failed job can be ignored."""
         self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
         jenkins_json = dict(
-            jobs=[dict(name="job", url="https://job", buildable=True, color="red", builds=self.builds),
-                  dict(name="job2", url="https://job2", buildable=True, color="red", builds=self.builds)])
+            jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds),
+                  dict(name="job2", url=self.job2_url, buildable=True, color="red", builds=self.builds)])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         expected_entities = [
             dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url="https://job")]
+                 url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     def test_ignore_jobs_by_regular_expression(self):
         """Test that failed jobs can be ignored by regular expression."""
         self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job."]
         jenkins_json = dict(
-            jobs=[dict(name="job", url="https://job", buildable=True, color="red", builds=self.builds),
-                  dict(name="job2", url="https://job2", buildable=True, color="red", builds=self.builds)])
+            jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds),
+                  dict(name="job2", url=self.job2_url, buildable=True, color="red", builds=self.builds)])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         expected_entities = [
             dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url="https://job")]
+                 url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     def test_no_builds(self):
         """Test no builds."""
-        jenkins_json = dict(jobs=[dict(name="job", url="https://job", buildable=True, color="notbuilt", builds=[])])
+        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="notbuilt", builds=[])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, entities=[])
 
@@ -88,12 +90,12 @@ class JenkinsUnusedJobsTest(JenkinsTestCase):
         """Test that the number of unused jobs is returned."""
         jenkins_json = dict(
             jobs=[dict(
-                name="job", url="https://job", buildable=True, color="red", builds=[dict(timestamp="1548311610349")])])
+                name="job", url=self.job_url, buildable=True, color="red", builds=[dict(timestamp="1548311610349")])])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, value="1")
 
     def test_unbuild_job(self):
         """Test that jobs without builds are ignored."""
-        jenkins_json = dict(jobs=[dict(name="job", url="https://job", buildable=True, color="red")])
+        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red")])
         response = self.collect(self.metric, get_request_json_return_value=jenkins_json)
         self.assert_measurement(response, value="0")
