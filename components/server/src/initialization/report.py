@@ -28,6 +28,12 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
     if latest_report(database, imported_report["report_uuid"]):
         logging.info("Skipping import of %s; it already exists", filename)
         return
+    import_json_report(database, imported_report)
+    logging.info("Report %s imported", filename)
+
+
+def import_json_report(database: Database, imported_report) -> None:
+    """ Store the report given as json to the database. """
     report_to_store = dict(
         title=imported_report.get("title", "Example report"), report_uuid=imported_report["report_uuid"], subjects={})
     for imported_subject in imported_report["subjects"]:
@@ -50,7 +56,6 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
                         source_to_store["parameters"][key] = value
 
     insert_new_report(database, report_to_store)
-    logging.info("Report %s imported", filename)
 
 
 def import_example_reports(database: Database) -> None:
