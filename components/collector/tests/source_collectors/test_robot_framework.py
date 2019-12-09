@@ -17,6 +17,8 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
     """Unit tests for the Robot Framework XML test report metrics."""
 
     def setUp(self):
+        super().setUp()
+        self.metric = dict(type="tests", sources=self.sources, addition="sum")
         self.xml = """<?xml version="1.0"?>
         <robot>
              <suite>
@@ -37,9 +39,7 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
 
     def test_tests(self):
         """Test that the number of tests is returned."""
-        sources = dict(source_id=dict(type="robot_framework", parameters=dict(url="output.xml")))
-        metric = dict(type="tests", sources=sources, addition="sum")
-        response = self.collect(metric, get_request_text=self.xml)
+        response = self.collect(self.metric, get_request_text=self.xml)
         expected_entities = [
             dict(key="s1-t1", name="Test 1", test_result="fail"),
             dict(key="s1-t2", name="Test 2", test_result="pass")]
@@ -47,9 +47,8 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
 
     def test_failed_tests(self):
         """Test that the number of failed tests is returned."""
-        sources = dict(source_id=dict(type="robot_framework", parameters=dict(url="output.xml", test_result=["fail"])))
-        metric = dict(type="tests", sources=sources, addition="sum")
-        response = self.collect(metric, get_request_text=self.xml)
+        self.sources["source_id"]["parameters"]["test_result"] = ["fail"]
+        response = self.collect(self.metric, get_request_text=self.xml)
         expected_entities = [dict(key="s1-t1", name="Test 1", test_result="fail")]
         self.assert_measurement(response, value="1", entities=expected_entities, landing_url="report.html")
 
