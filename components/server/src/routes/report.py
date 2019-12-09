@@ -15,10 +15,10 @@ from database.reports import (
     latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
 )
+from initialization.report import import_json_report
 from server_utilities.functions import report_date_time, uuid, sanitize_html
 from server_utilities.type import MetricId, Position, ReportId, SourceId, SubjectId, URL
 from .measurement import latest_measurement, insert_new_measurement
-from initialization.report import import_json_report
 
 
 def get_subject_uuid(report, metric_uuid: MetricId):
@@ -334,7 +334,7 @@ def post_reports_attribute(reports_attribute: str, database: Database):
 
 
 @bottle.post("/api/v1/report/import")
-def post_reports_attribute(database: Database):
+def post_report_import(database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)
     return import_json_report(database, value)

@@ -9,7 +9,8 @@ import requests
 from routes.report import (
     delete_metric, delete_report, delete_source, delete_subject, export_report_as_pdf, get_metrics, get_reports,
     get_tag_report, post_metric_attribute, post_metric_new, post_new_subject, post_report_attribute, post_report_new,
-    post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute
+    post_reports_attribute, post_source_attribute, post_source_new, post_source_parameter, post_subject_attribute,
+    post_report_import
 )
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
@@ -706,6 +707,16 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
         inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
         self.assertEqual("Jenny changed the layout of the reports overview.", inserted["delta"]["description"])
+
+    @patch("bottle.request")
+    def test_post_report_import(self, request):
+        """Test that a report is imported correctly."""
+        #self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
+        request.json = dict(_id="id", title="QT", report_uuid="qt", subjects={})
+        post_report_import(self.database)
+        inserted = self.database.reports.insert.call_args_list[0][0][0]
+        self.assertEqual("QT", inserted["title"])
+        self.assertEqual("qt", inserted["report_uuid"])
 
     @patch("bottle.request")
     def test_get_tag_report(self, request):
