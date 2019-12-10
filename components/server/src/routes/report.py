@@ -335,9 +335,9 @@ def post_reports_attribute(reports_attribute: str, database: Database):
 
 @bottle.post("/api/v1/report/import")
 def post_report_import(database: Database):
-    """Set a reports overview attribute."""
-    value = dict(bottle.request.json)
-    return import_json_report(database, value)
+    """Import a preconfigured report into the database."""
+    report = dict(bottle.request.json)
+    return import_json_report(database, report)
 
 
 @bottle.post("/api/v1/report/new")
