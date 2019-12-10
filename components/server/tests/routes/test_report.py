@@ -711,12 +711,11 @@ class ReportTest(unittest.TestCase):
     @patch("bottle.request")
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
-        #self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
-        request.json = dict(_id="id", title="QT", report_uuid="qt", subjects={})
+        request.json = dict(_id="id", title="Title", report_uuid="report_uuid", subjects={})
         post_report_import(self.database)
         inserted = self.database.reports.insert.call_args_list[0][0][0]
-        self.assertEqual("QT", inserted["title"])
-        self.assertEqual("qt", inserted["report_uuid"])
+        self.assertEqual("Title", inserted["title"])
+        self.assertEqual("report_uuid", inserted["report_uuid"])
 
     @patch("bottle.request")
     def test_get_tag_report(self, request):
