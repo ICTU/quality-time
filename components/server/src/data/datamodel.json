@@ -596,6 +596,7 @@
             "default_source": "jenkins",
             "sources": [
                 "azure_devops",
+                "gitlab",
                 "jenkins",
                 "manual_number",
                 "random"
@@ -1297,7 +1298,8 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
-                        "unmerged_branches"
+                        "unmerged_branches",
+                        "unused_jobs"
                     ]
                 },
                 "project": {
@@ -1309,7 +1311,8 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
-                        "unmerged_branches"
+                        "unmerged_branches",
+                        "unused_jobs"
                     ]
                 },
                 "private_token": {
@@ -1321,7 +1324,8 @@
                     "metrics": [
                         "failed_jobs",
                         "source_up_to_dateness",
-                        "unmerged_branches"
+                        "unmerged_branches",
+                        "unused_jobs"
                     ]
                 },
                 "file_path": {
@@ -1354,6 +1358,32 @@
                     "metrics": [
                         "unmerged_branches"
                     ]
+                },
+                "inactive_job_days": {
+                    "name": "Number of days without builds after which to consider CI-jobs unused.",
+                    "type": "integer",
+                    "mandatory": false,
+                    "unit": "days",
+                    "min_value": "1",
+                    "default_value": "90",
+                    "metrics": [
+                        "unused_jobs"
+                    ]
+                },
+                "failure_type": {
+                    "name": "Failure type",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": "",
+                    "placeholder": "all",
+                    "values": [
+                        "canceled",
+                        "failed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "failed_jobs"
+                    ]
                 }
             },
             "entities": {
@@ -1365,6 +1395,14 @@
                             "name": "Job name",
                             "key": "name",
                             "url": "url"
+                        },
+                        {
+                            "name": "Job stage",
+                            "key": "stage"
+                        },
+                        {
+                            "name": "Branch name",
+                            "key": "branch"
                         },
                         {
                             "name": "Status of most recent build",
@@ -1401,6 +1439,43 @@
                         {
                             "name": "Age of most recent commit (in days)",
                             "key": "commit_age"
+                        }
+                    ]
+                },
+                "unused_jobs": {
+                    "name": "job",
+                    "name_plural": "jobs",
+                    "attributes": [
+                        {
+                            "name": "Job name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Job stage",
+                            "key": "stage"
+                        },
+                        {
+                            "name": "Branch name",
+                            "key": "branch"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "canceled": "active",
+                                "failed": "negative",
+                                "success": "positive"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        },
+                        {
+                            "name": "Age of most recent build (in days)",
+                            "key": "build_age"
                         }
                     ]
                 }

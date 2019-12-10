@@ -5,7 +5,7 @@ from .azure_devops import AzureDevopsIssues, AzureDevopsReadyUserStoryPoints
 from .bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .calendar import CalendarSourceUpToDateness
 from .cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
-from .gitlab import GitlabFailedJobs, GitlabSourceUpToDateness, GitlabUnmergedBranches
+from .gitlab import GitLabFailedJobs, GitLabUnusedJobs, GitLabSourceUpToDateness, GitLabUnmergedBranches
 from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .jenkins import JenkinsFailedJobs, JenkinsJobs
 from .jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
