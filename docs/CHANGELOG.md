@@ -13,8 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- If you have a [Gravatar](https://gravatar.com), it will be shown next to your username after you log in.
+- If users have a [Gravatar](https://gravatar.com), it will be shown next to their username after they log in.
 - REST API added for importing a complete report. Closes [#818](https://github.com/ICTU/quality-time/issues/818).
+- Allow GitLab as source for the unused CI-jobs metric. Closes [#851](https://github.com/ICTU/quality-time/issues/851).
 
 ### Changed
 

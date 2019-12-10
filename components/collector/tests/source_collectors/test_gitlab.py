@@ -28,20 +28,23 @@ class GitLabFailedJobsTest(GitLabTestCase):
     def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         gitlab_json = [
-            dict(id="id", status="failed", created_at="2019-03-31T19:50:39.927Z",
-                 web_url="https://gitlab/job", ref="ref")]
+            dict(id="id", status="failed", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="master")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         expected_entities = [
-            dict(key="id", name="ref", url="https://gitlab/job", build_age=build_age, build_date="2019-03-31",
-                 build_status="failed")]
+            dict(
+                key="id", name="name", stage="stage", branch="master", url="https://gitlab/job", build_age=build_age,
+                build_date="2019-03-31", build_status="failed")]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_nr_of_failed_jobs_without_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
-        gitlab_json = [dict(name="job", url="https://job", status="success")]
+        gitlab_json = [
+            dict(id="id", status="success", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="master")]
         response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
-        self.assert_measurement(response, value="0")
+        self.assert_measurement(response, value="0", entities=[])
 
     def test_private_token(self):
         """Test that the private token is used."""
@@ -51,6 +54,37 @@ class GitLabFailedJobsTest(GitLabTestCase):
             response,
             api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
             parse_error="Traceback")
+
+    def test_ignore_previous_runs_of_jobs(self):
+        """Test that previous runs of the same job are ignored."""
+        gitlab_json = [
+            dict(id="2", status="success", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/jobs/2", ref="master"),
+            dict(id="1", status="failed", name="name", stage="stage", created_at="2019-03-31T19:40:39.927Z",
+                 web_url="https://gitlab/jobs/1", ref="master")]
+        response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
+        self.assert_measurement(response, value="0", entities=[])
+
+
+class GitLabUnusedJobsTest(GitLabTestCase):
+    """Unit tests for the GitLab unused jobs metric."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
+
+    def test_nr_of_unused_jobs(self):
+        """Test that the number of unused jobs is returned."""
+        gitlab_json = [
+            dict(id="id", status="failed", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="master")]
+        response = self.collect(self.metric, get_request_json_return_value=gitlab_json)
+        build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
+        expected_entities = [
+            dict(
+                key="id", name="name", stage="stage", branch="master", url="https://gitlab/job", build_age=build_age,
+                build_date="2019-03-31", build_status="failed")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
