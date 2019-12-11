@@ -16,6 +16,8 @@ class AuthenticationPluginTest(unittest.TestCase):
     def setUp(self):
         logging.disable()
         self.mock_database = Mock()
+        self.success = dict(ok=True)
+        self.failure = dict(ok=False, reason="invalid_session")
         bottle.install(InjectionPlugin(self.mock_database, "database"))
         bottle.install(AuthenticationPlugin())
 
@@ -23,31 +25,30 @@ class AuthenticationPluginTest(unittest.TestCase):
         bottle.app().uninstall(True)
         logging.disable(logging.NOTSET)
 
-    @staticmethod
-    def route(database):  # pylint: disable=unused-argument
+    def route(self, database):  # pylint: disable=unused-argument
         """Route handler with database parameter."""
-        return "route called"
+        return self.success
 
     def test_valid_session(self):
         """Test that session ids are authenticated."""
         self.mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.max)
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
-        self.assertEqual("route called", route.call())
+        self.assertEqual(self.success, route.call())
 
     def test_expired_session(self):
         """Test that the session is invalid when it's expired."""
         self.mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.min)
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
-        self.assertEqual(dict(ok=False, reason="invalid_session"), route.call())
+        self.assertEqual(self.failure, route.call())
 
     def test_missing_session(self):
         """Test that the session is invalid when it's missing."""
         self.mock_database.sessions.find_one.return_value = None
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
-        self.assertEqual(dict(ok=False, reason="invalid_session"), route.call())
+        self.assertEqual(self.failure, route.call())
 
     def test_http_get_routes(self):
         """Test that session ids are not authenticated with non-post routes."""
         self.mock_database.sessions.find_one.return_value = None
         route = bottle.Route(bottle.app(), "/", "GET", self.route)
-        self.assertEqual("route called", route.call())
+        self.assertEqual(self.success, route.call())
