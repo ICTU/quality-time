@@ -41,7 +41,7 @@ export function StatusPieChart(props) {
                         { y: props.green, label: `Target met: ${nr_metrics_label(props.green)}` },
                         { y: props.yellow, label: `Near target: ${nr_metrics_label(props.yellow)}` },
                         { y: props.grey, label: `Technical debt target met: ${nr_metrics_label(props.grey)}` },
-                        { y: props.white, label: `Uknown: ${nr_metrics_label(props.white)}` }
+                        { y: props.white, label: `Unknown: ${nr_metrics_label(props.white)}` }
                     ]}
                 />
             }
