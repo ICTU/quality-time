@@ -1,8 +1,5 @@
 image: python:3.8-alpine
 
-before_script:
-  - apk add libldap libxslt-dev build-base openldap-dev python3-dev
-
 stages:
   - test
 
@@ -20,6 +17,8 @@ collector:
 
 server:
   stage: test
+  before_script:
+    - apk add libldap libxslt-dev build-base openldap-dev python3-dev
   script:
     - cd components/server
     - pip install -r requirements.txt -r requirements-dev.txt
