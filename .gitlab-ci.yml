@@ -5,6 +5,7 @@ collector:
   stage: test
   script: 
     - cd components/collector
+    - pip install -r requirements.txt -r requirements-dev.txt
     - ci/unittest.sh
     - ci/quality.sh
   coverage: '/ \d+%/'
@@ -16,6 +17,7 @@ server:
   stage: test
   script: 
     - cd components/server
+    - pip install -r requirements.txt -r requirements-dev.txt
     - ci/unittest.sh
     - ci/quality.sh
   coverage: '/ \d+%/'
