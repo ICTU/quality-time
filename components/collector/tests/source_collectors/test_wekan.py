@@ -16,14 +16,6 @@ class WekanTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="https://wekan", board="board1", username="user", password="pass",
                     inactive_days="90", lists_to_ignore=[])))
-
-
-class WekanIssuesTest(WekanTestCase):
-    """Unit tests for the Wekan issues collector."""
-
-    def setUp(self):
-        super().setUp()
-        self.metric = dict(type="issues", addition="sum", sources=self.sources)
         self.json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1")],
@@ -40,6 +32,14 @@ class WekanIssuesTest(WekanTestCase):
                  due_date="", date_last_activity="2019-01-01"),
             dict(key="card3", url="https://wekan/b/board1/board-slug/card3", title="Card 3", list="List 2",
                  due_date="", date_last_activity="2019-01-01")]
+
+
+class WekanIssuesTest(WekanTestCase):
+    """Unit tests for the Wekan issues collector."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="issues", addition="sum", sources=self.sources)
 
     def test_issues(self):
         """Test that the number of issues and the individual issues are returned and that archived cards are ignored."""
@@ -82,16 +82,6 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
         """Test that lists can be ignored when measuring the number of days since the last activity."""
         self.sources["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        json = [
-            dict(_id="user_id"),
-            [dict(_id="board1", title="Board 1")],
-            dict(_id="board1", createdAt="2019-01-01"),
-            [dict(_id="list1", title="List 1", archived=False, createdAt="2019-01-15"),
-             dict(_id="list2", title="List 2", archived=False, createdAt="2019-01-01")],
-            [dict(_id="card1", title="Card 1"), dict(_id="card2", title="Card 2")],
-            dict(_id="card1", title="Card 1", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
-            dict(_id="card2", title="Card 2", archived=False, boardId="board1", dateLastActivity="2019-01-01"),
-            []]
         response = self.collect(
-            metric, get_request_json_side_effect=json, post_request_json_return_value=dict(token="token"))
+            metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 1, 1)).days))
