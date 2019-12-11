@@ -151,7 +151,7 @@ Users can customize quality reports on an individual basis by changing the dashb
 
 ### Customizing dashboards
 
-Both the reports dashboard on the Quality-time landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the local storage of the user's browser. There is currently no mechanism to share dashboard layouts with other users.
+Both the reports dashboard on the Quality-time landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
 
 ### Filtering metrics by tag
 
