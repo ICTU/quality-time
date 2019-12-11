@@ -13,7 +13,7 @@ class DataModelImportTest(unittest.TestCase):
         self.database = Mock()
         self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="timestamp")
 
-    def import_data_model(self, data_model_json: str):
+    def import_data_model(self, data_model_json: str) -> None:
         """Import the data model"""
         with patch("builtins.open", mock_open(read_data=data_model_json)):
             import_datamodel(self.database)

@@ -12,7 +12,11 @@ class ReportInitTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.database = Mock()
-        self.database.reports.find_one.return_value = True
+
+    def import_report(self, report_json: str) -> None:
+        """Import the report."""
+        with patch("builtins.open", mock_open(read_data=report_json)):
+            import_report(self.database, "filename")
 
     def test_import(self):
         """Test that a report can be imported."""
@@ -35,14 +39,13 @@ class ReportInitTest(unittest.TestCase):
                         dict(type="source_type", parameters=dict(p1=dict()))
                     ])
                 ])]))
-        with patch("builtins.open", mock_open(read_data=report_json)):
-            import_report(self.database, "filename")
+        self.import_report(report_json)
         self.database.reports.insert.assert_called_once()
 
     def test_import_is_skipped(self):
         """Test that a report isn't imported when it's already in the database."""
-        with patch("builtins.open", mock_open(read_data='{"report_uuid": "id", "subjects": []}')):
-            import_report(self.database, "filename")
+        self.database.reports.find_one.return_value = True
+        self.import_report('{"report_uuid": "id", "subjects": []}')
         self.database.reports.insert.assert_not_called()
 
     def test_import_example_report(self):
