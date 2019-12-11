@@ -1,0 +1,24 @@
+stages:
+  - test
+
+collector:
+  stage: test
+  script: 
+    - cd components/collector
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - build/unittest-coverage
+
+server:
+  stage: test
+  script: 
+    - cd components/server
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - build/unittest-coverage
