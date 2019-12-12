@@ -1,4 +1,3 @@
-exclude:
 component_depth: 2
 languages:
 - javascript
