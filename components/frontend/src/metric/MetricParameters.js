@@ -9,6 +9,29 @@ import { TextInput } from '../fields/TextInput';
 import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 
+function metric_scale_options(metric_scales, datamodel) {
+    let scale_options = [];
+    metric_scales.forEach((scale) => {
+        let scale_name = datamodel.scales ? datamodel.scales[scale].name : "Count";
+        let scale_description = datamodel.scales ? datamodel.scales[scale].description : "";
+        scale_options.push(
+            {
+                content: <Header as="h4" content={scale_name} subheader={scale_description} />,
+                key: scale,
+                text: scale_name,
+                value: scale
+            })
+    });
+    return scale_options;
+}
+
+function combine_tags(metric, datamodel) {
+    let tags = new Set();
+    Object.values(datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
+    metric.tags.forEach((tag) => tags.add(tag));
+    return tags;
+}
+
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
@@ -21,21 +44,8 @@ export function MetricParameters(props) {
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
     const max = metric_scale === "percentage" ? "100" : null;
-    let tags = new Set();
-    Object.values(props.datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
-    props.metric.tags.forEach((tag) => tags.add(tag));
-    let scale_options = [];
-    metric_scales.forEach((scale) => {
-        let scale_name = props.datamodel.scales ? props.datamodel.scales[scale].name : "Count";
-        let scale_description = props.datamodel.scales ? props.datamodel.scales[scale].description : "";
-        scale_options.push(
-            {
-                content: <Header as="h4" content={scale_name} subheader={scale_description} />,
-                key: scale,
-                text: scale_name,
-                value: scale
-            })
-    });
+    const tags = combine_tags(props.metric, props.datamodel);
+    const scale_options = metric_scale_options(metric_scales, props.datamodel);
     return (
         <>
             <Header>
