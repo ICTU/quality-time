@@ -1,0 +1,31 @@
+image: python:3.8-alpine
+
+before_script:
+  - apk add libldap libxslt-dev build-base openldap-dev python3-dev
+
+stages:
+  - test
+
+collector:
+  stage: test
+  script:
+    - cd components/collector
+    - pip install -r requirements.txt -r requirements-dev.txt
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - components/collector/build/unittest-coverage
+
+server:
+  stage: test
+  script:
+    - cd components/server
+    - pip install -r requirements.txt -r requirements-dev.txt
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - components/server/build/unittest-coverage
