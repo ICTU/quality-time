@@ -5,7 +5,7 @@ import { IntegerInput } from '../fields/IntegerInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
-import { TextInput } from '../fields/TextInput';
+import { Comment } from '../fields/Comment';
 import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
 
@@ -35,7 +35,6 @@ function combine_tags(metric, datamodel) {
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
-    const metric_scales = metric_type.scales || ["count"];
     const metric_unit_without_percentage = props.metric.unit || metric_type.unit;
     const metric_unit = `${metric_scale === "percentage" ? "% " : ""}${metric_unit_without_percentage}`;
     const fewer = metric_scale === "percentage" ? `A lower percentage of ${metric_unit_without_percentage}` : `Fewer ${metric_unit}`;
@@ -45,7 +44,7 @@ export function MetricParameters(props) {
     const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
     const max = metric_scale === "percentage" ? "100" : null;
     const tags = combine_tags(props.metric, props.datamodel);
-    const scale_options = metric_scale_options(metric_scales, props.datamodel);
+    const scale_options = metric_scale_options(metric_type.scales || ["count"], props.datamodel);
     return (
         <>
             <Header>
@@ -182,9 +181,7 @@ export function MetricParameters(props) {
                 </Grid.Row>
                 <Grid.Row columns={1}>
                     <Grid.Column>
-                        <TextInput
-                            label="Comment"
-                            placeholder="Enter comments here (HTML allowed; URL's are transformed into links)"
+                        <Comment
                             readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "comment", value, props.reload)}
                             value={props.metric.comment}
