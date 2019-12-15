@@ -51,7 +51,6 @@ export function Measurement(props) {
     measurements={props.measurements}
     metric_name={metric_name}
     metric_uuid={props.metric_uuid}
-    readOnly={props.readOnly}
     reload={props.reload}
     report={props.report}
     scale={metric_scale}

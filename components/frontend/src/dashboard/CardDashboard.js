@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
+import { ReadOnlyContext } from '../context/ReadOnly';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export function CardDashboard({ cards, initial_layout, readOnly, save_layout }) {
+export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
@@ -55,19 +56,21 @@ export function CardDashboard({ cards, initial_layout, readOnly, save_layout }) 
     )
     return (
         <Segment>
-            <ReactGridLayout
-                cols={cols}
-                compactType={null}
-                isDraggable={!readOnly}
-                layout={layout}
-                onDragStart={onDragStart}
-                onDragStop={onDragStop}
-                onLayoutChange={onLayoutChange}
-                preventCollision={true}
-                rowHeight={24}
-            >
-                {divs}
-            </ReactGridLayout>
+            <ReadOnlyContext.Consumer>{(readOnly) => (
+                <ReactGridLayout
+                    cols={cols}
+                    compactType={null}
+                    isDraggable={!readOnly}
+                    layout={layout}
+                    onDragStart={onDragStart}
+                    onDragStop={onDragStop}
+                    onLayoutChange={onLayoutChange}
+                    preventCollision={true}
+                    rowHeight={24}
+                >
+                    {divs}
+                </ReactGridLayout>)}
+            </ReadOnlyContext.Consumer>
         </Segment>
     )
 }

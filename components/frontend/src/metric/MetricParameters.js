@@ -62,7 +62,6 @@ export function MetricParameters(props) {
                             datamodel={props.datamodel}
                             metric_type={props.metric.type}
                             metric_uuid={props.metric_uuid}
-                            readOnly={props.readOnly}
                             reload={props.reload}
                             report_uuid={props.report_uuid}
                         />
@@ -71,7 +70,6 @@ export function MetricParameters(props) {
                         <StringInput
                             label="Metric name"
                             placeholder={metric_type.name}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "name", value, props.reload)}
                             value={props.metric.name}
                         />
@@ -81,7 +79,6 @@ export function MetricParameters(props) {
                             allowAdditions
                             label="Tags"
                             options={[...tags]}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "tags", value, props.reload)}
                             value={props.metric.tags}
                         />
@@ -93,7 +90,6 @@ export function MetricParameters(props) {
                             label="Metric scale"
                             options={scale_options}
                             placeholder={metric_type.default_scale || "Count"}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "scale", value, props.reload)}
                             value={metric_scale}
                         />
@@ -104,7 +100,6 @@ export function MetricParameters(props) {
                             options={[
                                 { key: "0", text: `${fewer} is better`, value: "<" },
                                 { key: "1", text: `${more} is better`, value: ">" }]}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
                             value={metric_direction}
                         />
@@ -114,7 +109,6 @@ export function MetricParameters(props) {
                             label="Metric unit"
                             placeholder={metric_type.unit}
                             prefix={metric_scale === "percentage" ? "%" : ""}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "unit", value, props.reload)}
                             value={props.metric.unit}
                         />
@@ -127,7 +121,6 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.target}
@@ -139,7 +132,6 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.near_target}
@@ -154,7 +146,6 @@ export function MetricParameters(props) {
                             options={[
                                 { key: true, text: "Yes", value: true },
                                 { key: false, text: "No", value: false }]}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "accept_debt", value, props.fetch_measurement_and_reload)}
                         />
                     </Grid.Column>
@@ -164,7 +155,6 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}
                             unit={metric_unit}
                             value={props.metric.debt_target}
@@ -173,7 +163,6 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <DateInput
                             label="Metric debt end date"
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_end_date", value, props.fetch_measurement_and_reload)}
                             value={props.metric.debt_end_date || ""}
                         />
@@ -182,7 +171,6 @@ export function MetricParameters(props) {
                 <Grid.Row columns={1}>
                     <Grid.Column>
                         <Comment
-                            readOnly={props.readOnly}
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "comment", value, props.reload)}
                             value={props.metric.comment}
                         />

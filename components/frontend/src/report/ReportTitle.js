@@ -4,6 +4,7 @@ import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_report, get_report_pdf, set_report_attribute} from '../api/report';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function download_pdf(report_uuid, callback) {
     get_report_pdf(report_uuid)
@@ -27,7 +28,6 @@ export function ReportTitle(props) {
                         <Grid.Column>
                             <StringInput
                                 label="Report title"
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_report_attribute(props.report.report_uuid, "title", value, props.reload)}
                                 value={props.report.title}
                             />
@@ -35,7 +35,6 @@ export function ReportTitle(props) {
                         <Grid.Column>
                             <StringInput
                                 label="Report subtitle"
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_report_attribute(props.report.report_uuid, "subtitle", value, props.reload)}
                                 value={props.report.subtitle}
                             />
@@ -49,7 +48,7 @@ export function ReportTitle(props) {
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    {!props.readOnly &&
+                    <ReadOnlyOrEditable editableComponent={
                         <Grid.Row>
                             <Grid.Column>
                                 <Button
@@ -78,8 +77,8 @@ export function ReportTitle(props) {
                                     <Icon name='trash' /> Delete report
                                 </Button>
                             </Grid.Column>
-                        </Grid.Row>
-                    }
+                        </Grid.Row>}
+                    />
                 </Grid>
             </Segment>
         </HeaderWithDetails>

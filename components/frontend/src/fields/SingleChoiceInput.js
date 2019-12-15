@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;
@@ -9,24 +10,22 @@ export function SingleChoiceInput(props) {
   useEffect(() => setChoice(props.value), [props.value]);
   return (
     <Form>
-      {props.readOnly ?
-        <Form.Input
-          {...otherProps}
-          value={value_text}
-        />
-        :
-        <Form.Dropdown
-          {...otherProps}
-          fluid
-          onChange={(event, { name, value }) => { setChoice(value); if (value !== props.value) { set_value(value) } }}
-          options={options}
-          search
-          selection
-          selectOnNavigation={false}
-          tabIndex="0"
-          value={choice}
-        />
-      }
+      <ReadOnlyOrEditable
+        readOnlyComponent={<Form.Input {...otherProps} value={value_text} />}
+        editableComponent={
+          <Form.Dropdown
+            {...otherProps}
+            fluid
+            onChange={(event, { name, value }) => { setChoice(value); if (value !== props.value) { set_value(value) } }}
+            options={options}
+            search
+            selection
+            selectOnNavigation={false}
+            tabIndex="0"
+            value={choice}
+          />
+        }
+      />
     </Form>
-  )
-}
+    )
+  }

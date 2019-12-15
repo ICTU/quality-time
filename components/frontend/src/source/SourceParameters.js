@@ -22,7 +22,6 @@ export function SourceParameters(props) {
                         props.source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
                     parameter_unit={all_parameters[parameter_key].unit || props.metric_unit}
                     placeholder={all_parameters[parameter_key].placeholder || ""}
-                    readOnly={props.readOnly}
                     reload={props.reload}
                     report={props.report}
                     required={all_parameters[parameter_key].mandatory}

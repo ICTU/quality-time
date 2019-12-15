@@ -14,7 +14,6 @@ export function ReportsTitle(props) {
                         <Grid.Column>
                             <StringInput
                                 label="Report overview title"
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_reports_attribute("title", value, props.reload)}
                                 value={props.title}
                             />
@@ -22,7 +21,6 @@ export function ReportsTitle(props) {
                         <Grid.Column>
                             <StringInput
                                 label="Report overview subtitle"
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_reports_attribute("subtitle", value, props.reload)}
                                 value={props.subtitle}
                             />

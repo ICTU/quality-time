@@ -17,7 +17,6 @@ it('renders url type', () => {
   expect(wrapper.find('StringInput').prop('label')).toBe("name");
   expect(Array.from(wrapper.find('StringInput').prop('options'))).toStrictEqual(["b"]);
   expect(wrapper.find('StringInput').prop('placeholder')).toBe("place-holder");
-  expect(wrapper.find('StringInput').prop('readOnly')).toBe(true);
   expect(wrapper.find('StringInput').prop('required')).toBe(false);
   expect(wrapper.find('StringInput').prop('set_value').toString().includes('set_source_parameter')).toBe(true);
   expect(wrapper.find('StringInput').prop('value')).toBe('value-');

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function sort_options(option_list) {
   let options = new Set();
@@ -17,25 +18,24 @@ export function MultipleChoiceInput(props) {
   useEffect(() => setOptions(props.options), [props.options]);
   return (
     <Form>
-      {props.readOnly ?
-        <Form.Input
-          {...otherProps}
-        />
-        :
-        <Form.Dropdown
-          {...otherProps}
-          allowAdditions={allowAdditions}
-          error={required && choices.length === 0}
-          fluid
-          multiple
-          onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
-          onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
-          options={sort_options(options)}
-          search
-          selection
-          value={choices}
-        />
-      }
+      <ReadOnlyOrEditable
+        readOnlyComponent={<Form.Input {...otherProps} />}
+        editableComponent={
+          <Form.Dropdown
+            {...otherProps}
+            allowAdditions={allowAdditions}
+            error={required && choices.length === 0}
+            fluid
+            multiple
+            onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
+            onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
+            options={sort_options(options)}
+            search
+            selection
+            value={choices}
+          />
+        }
+      />
     </Form>
   )
 }

@@ -10,6 +10,7 @@ import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
+import { ReadOnlyContext} from './context/ReadOnly';
 import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
@@ -22,7 +23,7 @@ function show_message(type, title, description, icon) {
     size: "large",
     description: <p>{description}</p>,
     time: 30000
-  }, () => {}, () => {}, () => {});  // Event handlers are mandatory
+  }, () => { }, () => { }, () => { });  // Event handlers are mandatory
 }
 
 class App extends Component {
@@ -50,8 +51,10 @@ class App extends Component {
       this.connect_to_nr_measurements_event_source(report_uuid)
     }
     this.setState(
-      { report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
-        email: localStorage.getItem("email") },
+      {
+        report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
+        email: localStorage.getItem("email")
+      },
       () => this.reload());
   }
 
@@ -60,13 +63,13 @@ class App extends Component {
     if (json && json.availability) {
       this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
       json.availability.map((url_key) => {
-          if (url_key.status_code !== 200) {
-            show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
-          } else if (url_key.status_code === 200) {
-            show_message("success", "URL connection OK")
-          }
-          return null
+        if (url_key.status_code !== 200) {
+          show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
+        } else if (url_key.status_code === 200) {
+          show_message("success", "URL connection OK")
         }
+        return null
+      }
       )
     }
 
@@ -227,34 +230,34 @@ class App extends Component {
           user={this.state.user}
         />
         <SemanticToastContainer />
-        <Container fluid className="MainContainer">
-          {this.state.loading_datamodel || this.state.loading_report ?
-            <Segment basic placeholder loading size="massive" />
-            :
-            this.state.report_uuid === "" ?
-              <Reports
-                open_report={(e, r) => this.open_report(e, r)}
-                open_tag_report={(e, t) => this.open_tag_report(e, t)}
-                readOnly={readOnly}
-                reload={(json) => this.reload(json)}
-                report_date={report_date}
-                reports={this.state.reports}
-                reports_overview={this.state.reports_overview}
-              />
+        <ReadOnlyContext.Provider value={readOnly}>
+          <Container fluid className="MainContainer">
+            {this.state.loading_datamodel || this.state.loading_report ?
+              <Segment basic placeholder loading size="massive" />
               :
-              <Report
-                datamodel={this.state.datamodel}
-                go_home={() => this.go_home()}
-                nr_new_measurements={this.state.nr_new_measurements}
-                readOnly={readOnly}
-                reload={(json) => this.reload(json)}
-                report={current_report}
-                report_date={report_date}
-                search_string={this.state.search_string}
-                changed_fields={this.changed_fields}
-              />
-          }
-        </Container>
+              this.state.report_uuid === "" ?
+                <Reports
+                  open_report={(e, r) => this.open_report(e, r)}
+                  open_tag_report={(e, t) => this.open_tag_report(e, t)}
+                  reload={(json) => this.reload(json)}
+                  report_date={report_date}
+                  reports={this.state.reports}
+                  reports_overview={this.state.reports_overview}
+                />
+                :
+                <Report
+                  datamodel={this.state.datamodel}
+                  go_home={() => this.go_home()}
+                  nr_new_measurements={this.state.nr_new_measurements}
+                  reload={(json) => this.reload(json)}
+                  report={current_report}
+                  report_date={report_date}
+                  search_string={this.state.search_string}
+                  changed_fields={this.changed_fields}
+                />
+            }
+          </Container>
+        </ReadOnlyContext.Provider>
         <Footer last_update={this.state.last_update} report={current_report} />
       </div>
     );

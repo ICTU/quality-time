@@ -67,7 +67,6 @@ export function SourceEntities(props) {
       rationale={
         props.source.entity_user_data && props.source.entity_user_data[entity.key] &&
           props.source.entity_user_data[entity.key].rationale ? props.source.entity_user_data[entity.key].rationale : ""}
-      readOnly={props.readOnly}
       source_uuid={props.source.source_uuid}
     />);
   return (

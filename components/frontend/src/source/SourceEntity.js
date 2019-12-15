@@ -27,7 +27,6 @@ export function SourceEntity(props) {
     metric_uuid={props.metric_uuid}
     name={props.entity_name}
     rationale={props.rationale}
-    readOnly={props.readOnly}
     source_uuid={props.source_uuid}
     status={props.status}
   />;

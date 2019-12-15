@@ -40,7 +40,6 @@ export function SourceParameter(props) {
         label={label}
         options={options()}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -54,7 +53,6 @@ export function SourceParameter(props) {
         label={label}
         options={options()}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -66,7 +64,6 @@ export function SourceParameter(props) {
       <PasswordInput
         label={label}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -80,7 +77,6 @@ export function SourceParameter(props) {
         max={props.parameter_max}
         min={props.parameter_min}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -95,7 +91,6 @@ export function SourceParameter(props) {
         label={label}
         options={options()}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value || []}
@@ -106,7 +101,6 @@ export function SourceParameter(props) {
     return (
       <DateInput
         label={label}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -119,7 +113,6 @@ export function SourceParameter(props) {
         label={label}
         options={props.parameter_values.map(value => ({key: value, text: value, value: value}))}
         placeholder={props.placeholder}
-        readOnly={props.readOnly}
         required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
@@ -131,7 +124,6 @@ export function SourceParameter(props) {
       label={label}
       options={props.parameter_values}
       placeholder={props.placeholder}
-      readOnly={props.readOnly}
       required={props.required}
       set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
       value={props.parameter_value || []}

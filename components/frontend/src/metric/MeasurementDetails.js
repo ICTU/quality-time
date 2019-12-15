@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
@@ -29,7 +30,6 @@ export function MeasurementDetails(props) {
             fetch_measurement_and_reload={props.fetch_measurement_and_reload}
             metric={metric}
             metric_uuid={props.metric_uuid}
-            readOnly={props.readOnly}
             report_uuid={report_uuid}
             source={source}
           />
@@ -57,7 +57,6 @@ export function MeasurementDetails(props) {
           fetch_measurement_and_reload={props.fetch_measurement_and_reload}
           metric={metric}
           metric_uuid={props.metric_uuid}
-          readOnly={props.readOnly}
           reload={props.reload}
           report_uuid={report_uuid}
         />
@@ -75,7 +74,6 @@ export function MeasurementDetails(props) {
           metric_type={metric.type}
           metric_unit={props.unit}
           metric_uuid={props.metric_uuid}
-          readOnly={props.readOnly}
           reload={props.reload}
           report={props.report}
           sources={metric.sources}
@@ -87,7 +85,7 @@ export function MeasurementDetails(props) {
   return (
     <>
       <Tab panes={panes} />
-      {!props.readOnly &&
+      <ReadOnlyOrEditable editableComponent={
         <>
           <MoveButtonGroup
             first={props.first_metric}
@@ -105,7 +103,7 @@ export function MeasurementDetails(props) {
             <Icon name='trash' /> Delete metric
           </Button>
         </>
-      }
+      } />
     </>
   )
 }

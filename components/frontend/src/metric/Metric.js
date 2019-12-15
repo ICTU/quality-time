@@ -38,7 +38,6 @@ export function Metric(props) {
         props.reload();
       }}
       report={props.report}
-      readOnly={props.readOnly}
       stop_sort={props.stop_sort}
       subject_uuid={props.subject_uuid}
       changed_fields={props.changed_fields}

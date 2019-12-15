@@ -58,7 +58,6 @@ export function SourceEntityDetails(props) {
         <SingleChoiceInput
           label={`${props.name[0].toUpperCase()}${props.name.slice(1)} status`}
           options={options}
-          readOnly={props.readOnly}
           set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.fetch_measurement_and_reload)}
           value={props.status}
         />
@@ -67,7 +66,6 @@ export function SourceEntityDetails(props) {
         <TextInput
           label="Rationale"
           placeholder={`Rationale for ${props.name} status...`}
-          readOnly={props.readOnly}
           set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.fetch_measurement_and_reload)}
           value={props.rationale}
         />
