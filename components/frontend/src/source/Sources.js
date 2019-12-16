@@ -4,6 +4,24 @@ import { Source } from './Source';
 import { add_source } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
+
+function SourcesEditSegment(props) {
+    return (
+        <ReadOnlyOrEditable editableComponent={
+            <Segment vertical>
+                <Button
+                    basic
+                    icon
+                    onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
+                    primary
+                >
+                    <Icon name='plus' /> Add source
+                </Button>
+            </Segment>}
+        />
+    )
+}
+
 export function Sources(props) {
     const measurement_sources = props.measurement ? props.measurement.sources : [];
     function source_error(source_uuid, error_type) {
@@ -40,18 +58,7 @@ export function Sources(props) {
     return (
         <>
             {sources}
-            <ReadOnlyOrEditable editableComponent={
-                <Segment vertical>
-                    <Button
-                        basic
-                        icon
-                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
-                        primary
-                    >
-                        <Icon name='plus' /> Add source
-                    </Button>
-                </Segment>}
-            />
+            <SourcesEditSegment {...props} />
         </>
     )
 }
