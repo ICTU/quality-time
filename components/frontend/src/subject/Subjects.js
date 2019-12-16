@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Icon, Segment } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
 import { add_subject } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { AddButton } from '../widgets/Button';
 
 export function Subjects(props) {
   const last_index = Object.keys(props.report.subjects).length - 1;
@@ -26,9 +27,7 @@ export function Subjects(props) {
       )}
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
-          <Button icon primary basic onClick={() => add_subject(props.report.report_uuid, props.reload)}>
-            <Icon name='plus' /> Add subject
-          </Button>
+          <AddButton item_type={"subject"} onClick={() => add_subject(props.report.report_uuid, props.reload)} />
         </Segment>}
       />
     </>

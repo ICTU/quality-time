@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Icon, Popup, Table } from 'semantic-ui-react';
+import { Button, Popup, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { add_metric } from '../api/metric';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { AddButton } from '../widgets/Button';
 
 export function Subject(props) {
   function handleSort(column) {
@@ -179,18 +180,13 @@ export function Subject(props) {
           <Table.Footer>
             <Table.Row>
               <Table.HeaderCell colSpan='9'>
-                <Button
-                  basic
-                  floated='left'
-                  icon
+                <AddButton
+                  item_type={"metric"}
                   onClick={() => {
                     setSortColumn(null);
                     add_metric(props.report.report_uuid, props.subject_uuid, props.reload);
                   }}
-                  primary
-                >
-                  <Icon name='plus' /> Add metric
-                </Button>
+                />
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>}

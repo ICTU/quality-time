@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, Icon, Message, Segment } from 'semantic-ui-react';
+import { Message, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { AddButton } from '../widgets/Button';
 
 function ReportsDashboard(props) {
   var tag_counts = {};
@@ -28,7 +29,7 @@ function ReportsDashboard(props) {
     <CardDashboard
       cards={report_cards.concat(tag_cards)}
       initial_layout={props.layout || []}
-      save_layout={function(layout) {set_reports_attribute("layout", layout, props.reload)}}
+      save_layout={function (layout) { set_reports_attribute("layout", layout, props.reload) }}
     />
   )
 }
@@ -57,13 +58,12 @@ export function Reports(props) {
         reload={props.reload}
         reports={props.reports}
       />
-      <Segment basic>
-        <ReadOnlyOrEditable editableComponent={
-          <Button icon primary basic onClick={() => add_report(props.reload)}>
-            <Icon name='plus' /> Add report
-          </Button>}
-        />
-      </Segment>
+      <ReadOnlyOrEditable editableComponent={
+        <Segment basic>
+          <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />
+        </Segment>
+      }
+      />
     </>
   )
 }

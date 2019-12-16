@@ -1,25 +1,9 @@
 import React from 'react';
-import { Button, Icon, Segment } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 import { Source } from './Source';
 import { add_source } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-
-function AddSourceSegment(props) {
-    return (
-        <ReadOnlyOrEditable editableComponent={
-            <Segment vertical>
-                <Button
-                    basic
-                    icon
-                    onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
-                    primary
-                >
-                    <Icon name='plus' /> Add source
-                </Button>
-            </Segment>}
-        />
-    )
-}
+import { AddButton } from '../widgets/Button';
 
 export function Sources(props) {
     const measurement_sources = props.measurement ? props.measurement.sources : [];
@@ -57,7 +41,14 @@ export function Sources(props) {
     return (
         <>
             {sources}
-            <AddSourceSegment {...props} />
+            <ReadOnlyOrEditable editableComponent={
+                <Segment vertical>
+                    <AddButton
+                        item_type={"source"}
+                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
+                    />
+                </Segment>}
+            />
         </>
     )
 }

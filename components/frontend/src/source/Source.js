@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { DeleteButton } from '../widgets/Button';
 import { delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -82,16 +83,10 @@ export function Source(props) {
                 <ReadOnlyOrEditable editableComponent={
                     <Grid.Row columns={1}>
                         <Grid.Column>
-                            <Button
-                                basic
-                                floated='right'
-                                icon
-                                negative
+                            <DeleteButton
+                                item_type='source'
                                 onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
-                                primary
-                            >
-                                <Icon name='trash' /> Delete source
-                                </Button>
+                            />
                         </Grid.Column>
                     </Grid.Row>}
                 />

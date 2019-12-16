@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button, Icon, Tab, Menu } from 'semantic-ui-react';
+import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { MoveButtonGroup} from '../widgets/MoveButton';
+import { DeleteButton, MoveButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
@@ -98,10 +98,11 @@ export function MeasurementDetails(props) {
             }
             slot="row"
           />
-          <Button icon style={{ marginTop: "10px" }} floated='right' negative basic primary
-            onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}>
-            <Icon name='trash' /> Delete metric
-          </Button>
+          <DeleteButton
+            item_type='metric'
+            onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}
+            style={{ marginTop: "10px" }}
+          />
         </>
       } />
     </>

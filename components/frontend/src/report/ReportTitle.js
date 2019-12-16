@@ -3,6 +3,7 @@ import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { DeleteButton } from '../widgets/Button';
 import { delete_report, get_report_pdf, set_report_attribute} from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -66,16 +67,10 @@ export function ReportTitle(props) {
                                 >
                                     <Icon name="file pdf" /> Download report as PDF
                                 </Button>
-                                <Button
-                                    basic
-                                    floated='right'
-                                    negative
-                                    icon
+                                <DeleteButton
+                                    item_type='report'
                                     onClick={() => delete_report(props.report.report_uuid, props.go_home)}
-                                    primary
-                                >
-                                    <Icon name='trash' /> Delete report
-                                </Button>
+                                />
                             </Grid.Column>
                         </Grid.Row>}
                     />

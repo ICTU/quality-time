@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Header, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { MoveButtonGroup} from '../widgets/MoveButton';
+import { DeleteButton, MoveButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -63,16 +63,10 @@ export function SubjectTitle(props) {
                                     }}
                                     slot="position"
                                 />
-                                <Button
-                                    basic
-                                    floated='right'
-                                    negative
-                                    icon
+                                <DeleteButton
+                                    item_type='subject'
                                     onClick={() => delete_subject(report_uuid, subject_uuid, props.reload)}
-                                    primary
-                                >
-                                    <Icon name='trash' /> Delete subject
-                                </Button>
+                                />
                             </Grid.Column>
                         </Grid.Row>}
                     />
