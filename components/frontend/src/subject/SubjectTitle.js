@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, Grid, Header, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Header, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { MoveButtonGroup} from '../widgets/MoveButton';
+import { DeleteButton, MoveButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
@@ -28,7 +29,6 @@ export function SubjectTitle(props) {
                         <Grid.Column>
                             <SubjectType
                                 datamodel={props.datamodel}
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_subject_attribute(report_uuid, subject_uuid, "type", value, props.reload)}
                                 subject_type={props.subject.type}
                             />
@@ -37,7 +37,6 @@ export function SubjectTitle(props) {
                             <StringInput
                                 label="Subject name"
                                 placeholder={current_subject_type.name}
-                                readOnly={props.readOnly}
                                 set_value={(value) => set_subject_attribute(report_uuid, subject_uuid, "name", value, props.reload)}
                                 value={props.subject.name}
                             />
@@ -52,7 +51,7 @@ export function SubjectTitle(props) {
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    {!props.readOnly &&
+                    <ReadOnlyOrEditable editableComponent={
                         <Grid.Row>
                             <Grid.Column>
                                 <MoveButtonGroup
@@ -64,19 +63,13 @@ export function SubjectTitle(props) {
                                     }}
                                     slot="position"
                                 />
-                                <Button
-                                    basic
-                                    floated='right'
-                                    negative
-                                    icon
+                                <DeleteButton
+                                    item_type='subject'
                                     onClick={() => delete_subject(report_uuid, subject_uuid, props.reload)}
-                                    primary
-                                >
-                                    <Icon name='trash' /> Delete subject
-                                </Button>
+                                />
                             </Grid.Column>
-                        </Grid.Row>
-                    }
+                        </Grid.Row>}
+                    />
                 </Grid>
             </Segment>
         </HeaderWithDetails>

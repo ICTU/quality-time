@@ -15,7 +15,6 @@ export function SubjectType(props) {
         <SingleChoiceInput
             label="Subject type"
             options={options}
-            readOnly={props.readOnly}
             set_value={(value) => props.set_value(value)}
             value={props.subject_type}
         />

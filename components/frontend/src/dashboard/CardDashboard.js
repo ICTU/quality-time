@@ -1,10 +1,35 @@
 import React, { useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
+import { ReadOnlyContext } from '../context/ReadOnly';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export function CardDashboard({ cards, initial_layout, readOnly, save_layout }) {
+function card_divs(cards, cols, isDragging, card_width = 4, card_height = 6) {
+    let divs = [];
+    cards.forEach(
+        (card, index) => divs.push(
+            <div
+                onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
+                key={card.key}
+                data-grid={
+                    {
+                        i: card.key,
+                        x: (card_width * index) % cols,
+                        y: card_height * Math.trunc((card_width * index) / cols),
+                        w: card_width,
+                        h: card_height,
+                        isResizable: false
+                    }
+                }
+            >
+                {card}
+            </div>)
+    );
+    return divs;
+}
+
+export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
@@ -31,43 +56,24 @@ export function CardDashboard({ cards, initial_layout, readOnly, save_layout }) 
         return (distanceX > 10 || distanceY > 10 || timedelta > 250) ? dragging : false;
     }
     const cols = 32;
-    const card_width = 4;
-    const card_height = 6;
-    let divs = [];
-    cards.forEach(
-        (card, index) => divs.push(
-            <div
-                onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
-                key={card.key}
-                data-grid={
-                    {
-                        i: card.key,
-                        x: (card_width * index) % cols,
-                        y: card_height * Math.trunc((card_width * index) / cols),
-                        w: card_width,
-                        h: card_height,
-                        isResizable: false
-                    }
-                }
-            >
-                {card}
-            </div>)
-    )
+    const divs = card_divs(cards, cols, isDragging);
     return (
         <Segment>
-            <ReactGridLayout
-                cols={cols}
-                compactType={null}
-                isDraggable={!readOnly}
-                layout={layout}
-                onDragStart={onDragStart}
-                onDragStop={onDragStop}
-                onLayoutChange={onLayoutChange}
-                preventCollision={true}
-                rowHeight={24}
-            >
-                {divs}
-            </ReactGridLayout>
+            <ReadOnlyContext.Consumer>{(readOnly) => (
+                <ReactGridLayout
+                    cols={cols}
+                    compactType={null}
+                    isDraggable={!readOnly}
+                    layout={layout}
+                    onDragStart={onDragStart}
+                    onDragStop={onDragStop}
+                    onLayoutChange={onLayoutChange}
+                    preventCollision={true}
+                    rowHeight={24}
+                >
+                    {divs}
+                </ReactGridLayout>)}
+            </ReadOnlyContext.Consumer>
         </Segment>
     )
 }

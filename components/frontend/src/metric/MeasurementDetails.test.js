@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { ReadOnlyContext } from '../context/ReadOnly';
 import { MeasurementDetails } from './MeasurementDetails';
 
 const report = {
@@ -20,15 +21,19 @@ const report = {
 describe("<MeasurementDetails />", () => {
     it('calls the callback on click', () => {
         const mockCallBack = jest.fn();
-        const wrapper = mount(<MeasurementDetails
-            datamodel={{ metrics: { violations: { direction: "<", tags: [] } } }}
-            measurements={[]}
-            metric_uuid="metric_uuid"
-            report={report}
-            stop_sort={mockCallBack}
-            subject_uuid="subject_uuid"
-        />);
-        wrapper.find({icon: "angle double down"}).at(0).simulate("click");
+        const wrapper = mount(
+            <ReadOnlyContext.Provider value={false}>
+                <MeasurementDetails
+                    datamodel={{ metrics: { violations: { direction: "<", tags: [] } } }}
+                    measurements={[]}
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    stop_sort={mockCallBack}
+                    subject_uuid="subject_uuid"
+                />
+            </ReadOnlyContext.Provider>
+        );
+        wrapper.find({ icon: "angle double down" }).at(0).simulate("click");
         expect(mockCallBack).toHaveBeenCalled();
     });
 });

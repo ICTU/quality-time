@@ -2,21 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { MetricParameters } from './MetricParameters';
 
-const report = {
-    report_uuid: "report_uuid",
-    subjects: {
-        subject_uuid: {
-            metrics: {
-                metric_uuid: {
-                    accept_debt: false,
-                    tags: [],
-                    type: "violations",
-                }
-            }
-        }
-    }
-};
-
 describe("<MetricParameters />", () => {
     it('renders', () => {
         const wrapper = mount(<MetricParameters

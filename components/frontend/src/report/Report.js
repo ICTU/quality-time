@@ -28,7 +28,6 @@ function ReportDashboard(props) {
         <CardDashboard
             cards={subject_cards.concat(tag_cards)}
             initial_layout={props.report.layout || []}
-            readOnly={props.readOnly}
             save_layout={function(layout) {set_report_attribute(props.report.report_uuid, "layout", layout, props.reload)}}
         />
     )
@@ -59,12 +58,10 @@ export function Report(props) {
             <ReportTitle
                 go_home={props.go_home}
                 report={props.report}
-                readOnly={props.readOnly}
                 reload={props.reload}
             />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                readOnly={props.readOnly}
                 reload={props.reload}
                 report={props.report}
                 setTags={setTags}
@@ -73,7 +70,6 @@ export function Report(props) {
             <Subjects
                 datamodel={props.datamodel}
                 nr_new_measurements={props.nr_new_measurements}
-                readOnly={props.readOnly}
                 reload={props.reload}
                 report={props.report}
                 report_date={props.report_date}

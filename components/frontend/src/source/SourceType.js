@@ -25,7 +25,6 @@ export function SourceType(props) {
     <SingleChoiceInput
       label="Source type"
       options={options}
-      readOnly={props.readOnly}
       set_value={(value) => props.set_source_attribute("type", value)}
       value={props.source_type}
     />

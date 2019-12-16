@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Icon, Popup, Table } from 'semantic-ui-react';
+import { Button, Popup, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { add_metric } from '../api/metric';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { AddButton } from '../widgets/Button';
 
 export function Subject(props) {
   function handleSort(column) {
@@ -33,7 +35,6 @@ export function Subject(props) {
           metric_uuid={metric_uuid}
           metric={metric}
           nr_new_measurements={props.nr_new_measurements}
-          readOnly={props.readOnly}
           reload={props.reload}
           report={props.report}
           report_date={props.report_date}
@@ -111,7 +112,6 @@ export function Subject(props) {
         datamodel={props.datamodel}
         first_subject={props.first_subject}
         last_subject={props.last_subject}
-        readOnly={props.readOnly}
         reload={props.reload}
         report={props.report}
         subject={subject}
@@ -176,25 +176,21 @@ export function Subject(props) {
           </Table.Row>
         </Table.Header>
         <Table.Body>{metric_components}</Table.Body>
-        {!props.readOnly &&
+        <ReadOnlyOrEditable editableComponent={
           <Table.Footer>
             <Table.Row>
               <Table.HeaderCell colSpan='9'>
-                <Button
-                  basic
-                  floated='left'
-                  icon
+                <AddButton
+                  item_type={"metric"}
                   onClick={() => {
                     setSortColumn(null);
                     add_metric(props.report.report_uuid, props.subject_uuid, props.reload);
                   }}
-                  primary
-                >
-                  <Icon name='plus' /> Add metric
-                </Button>
+                />
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>}
+        />
       </Table>
     </div>
   )

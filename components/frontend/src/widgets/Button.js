@@ -1,5 +1,27 @@
 import React from 'react';
-import { Button, Popup } from 'semantic-ui-react';
+import { Button, Icon, Popup } from 'semantic-ui-react';
+
+function ActionButton(props) {
+    const { action, icon, item_type, ...other } = props;
+    return (
+        <Button
+            basic
+            icon
+            primary
+            {...other}
+        >
+            <Icon name={icon} /> {action} {item_type}
+        </Button>
+    )
+}
+
+export function AddButton(props) {
+    return <ActionButton icon='plus' action='Add' {...props} />
+}
+
+export function DeleteButton(props) {
+    return <ActionButton icon='trash' action='Delete' negative floated='right' {...props} />
+}
 
 function MoveButton(props) {
     const label = `Move ${props.moveable} to the ${props.direction} ${props.slot}`;

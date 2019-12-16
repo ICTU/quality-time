@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Input } from './Input';
 
 function EditableDateInput(props) {
@@ -11,7 +12,7 @@ function EditableDateInput(props) {
             <CalendarDateInput
                 closable
                 dateFormat="YYYY-MM-DD"
-                disabled={props.readOnly}
+                disabled={false}
                 label={props.label}
                 onChange={(event, { name, value }) => { setDate(value); if (value !== props.value) { props.set_value(value)}}}
                 error={props.required && date === ""}
@@ -22,8 +23,5 @@ function EditableDateInput(props) {
 }
 
 export function DateInput(props) {
-    return props.readOnly ?
-        <Input {...props} />
-        :
-        <EditableDateInput {...props} />
+    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} />} />)
 }

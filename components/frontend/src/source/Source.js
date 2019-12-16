@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button, Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { DeleteButton } from '../widgets/Button';
 import { delete_source, set_source_attribute } from '../api/source';
-
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -31,7 +32,7 @@ export function Source(props) {
                 <Grid.Row columns={2}>
                     <Grid.Column>
                         <SourceType
-                            source_type={props.source.type} readOnly={props.readOnly}
+                            source_type={props.source.type}
                             metric_type={props.metric_type} datamodel={props.datamodel}
                             set_source_attribute={(a, v) => set_source_attribute(props.report.report_uuid, props.source_uuid, a, v, props.reload)} />
                     </Grid.Column>
@@ -39,7 +40,6 @@ export function Source(props) {
                         <StringInput
                             label="Source name"
                             placeholder={source_type.name}
-                            readOnly={props.readOnly}
                             set_value={(value) => set_source_attribute(props.report.report_uuid, props.source_uuid, "name", value, props.reload)}
                             value={props.source.name}
                         />
@@ -48,7 +48,6 @@ export function Source(props) {
                         datamodel={props.datamodel}
                         metric_type={props.metric_type}
                         metric_unit={props.metric_unit}
-                        readOnly={props.readOnly}
                         reload={props.reload}
                         report={props.report}
                         source={props.source}
@@ -81,21 +80,16 @@ export function Source(props) {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                {!props.readOnly &&
+                <ReadOnlyOrEditable editableComponent={
                     <Grid.Row columns={1}>
                         <Grid.Column>
-                            <Button
-                                basic
-                                floated='right'
-                                icon
-                                negative
+                            <DeleteButton
+                                item_type='source'
                                 onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
-                                primary
-                            >
-                                <Icon name='trash' /> Delete source
-                                </Button>
+                            />
                         </Grid.Column>
                     </Grid.Row>}
+                />
             </Grid>
         </>
     )

@@ -1,15 +1,20 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { mount } from 'enzyme';
+import { ReadOnlyContext } from '../context/ReadOnly';
 import { IntegerInput } from './IntegerInput';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<IntegerInput />, div);
-  ReactDOM.unmountComponentAtNode(div);
-});
-
-it('renders the value', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<IntegerInput value="42" />, div);
-  ReactDOM.unmountComponentAtNode(div);
+describe("<IntegerInput />", () => {
+  it('renders the value read only', () => {
+      const wrapper = mount(<IntegerInput value="42" />);
+      expect(wrapper.find("FormInput").prop("value")).toStrictEqual("42");
+      expect(wrapper.find("FormInput").prop("readOnly")).toBe(true);
+  });
+  it('renders the editable value', () => {
+      const wrapper = mount(
+        <ReadOnlyContext.Provider value={false}>
+          <IntegerInput value="42" />
+        </ReadOnlyContext.Provider>);
+      expect(wrapper.find("FormInput").prop("value")).toStrictEqual("42");
+      expect(wrapper.find("FormInput").prop("readOnly")).toBe(false);
+  })
 });
