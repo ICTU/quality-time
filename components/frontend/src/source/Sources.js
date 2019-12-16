@@ -4,8 +4,7 @@ import { Source } from './Source';
 import { add_source } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
-
-function SourcesEditSegment(props) {
+function AddSourceSegment(props) {
     return (
         <ReadOnlyOrEditable editableComponent={
             <Segment vertical>
@@ -58,7 +57,7 @@ export function Sources(props) {
     return (
         <>
             {sources}
-            <SourcesEditSegment {...props} />
+            <AddSourceSegment {...props} />
         </>
     )
 }
