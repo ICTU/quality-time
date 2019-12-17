@@ -9,7 +9,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-grid-layout": "^0.17.1",
-    "react-hash-link": "0.0.4",
+    "react-hash-link": "1.0.0",
     "react-scripts": "3.3.0",
     "react-semantic-toasts": "^0.6.5",
     "react-timeago": "^4.4.0",
