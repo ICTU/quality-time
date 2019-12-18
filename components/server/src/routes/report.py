@@ -374,6 +374,16 @@ def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
     reports = latest_reports(database, date_time)
+    subjects = get_subjects_and_metrics_by_tag(reports, tag)
+    tag_report = dict(
+        title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
+        timestamp=date_time, subjects=subjects)
+    summarize_report(database, tag_report)
+    return tag_report
+
+
+def get_subjects_and_metrics_by_tag(reports, tag: str):
+    """Return all subjects and metrics that have the tag."""
     subjects = dict()
     for report in reports:
         for subject_uuid, subject in list(report.get("subjects", {}).items()):
@@ -383,8 +393,4 @@ def get_tag_report(tag: str, database: Database):
             if subject.get("metrics", {}):
                 subject["name"] = report["title"] + " / " + subject["name"]
                 subjects[subject_uuid] = subject
-    tag_report = dict(
-        title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
-        timestamp=date_time, subjects=subjects)
-    summarize_report(database, tag_report)
-    return tag_report
+    return subjects
