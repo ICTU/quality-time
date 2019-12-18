@@ -1,10 +1,10 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Button, Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton } from '../widgets/Button';
-import { delete_report, get_report_pdf, set_report_attribute} from '../api/report';
+import { delete_report, get_report_pdf, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function download_pdf(report_uuid, callback) {
@@ -44,36 +44,36 @@ export function ReportTitle(props) {
                     <Grid.Row>
                         <Grid.Column>
                             <ChangeLog
-                               report_uuid={props.report.report_uuid}
-                               timestamp={props.report.timestamp}
+                                report_uuid={props.report.report_uuid}
+                                timestamp={props.report.timestamp}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    <ReadOnlyOrEditable editableComponent={
-                        <Grid.Row>
-                            <Grid.Column>
-                                <Button
-                                    basic
-                                    floated="left"
-                                    icon
-                                    loading={loading}
-                                    onClick={() => {
-                                        if (!loading) {
-                                            setLoading(true);
-                                            download_pdf(props.report.report_uuid, () => {setLoading(false)})}
-                                        }
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Button
+                                basic
+                                floated="left"
+                                icon
+                                loading={loading}
+                                onClick={() => {
+                                    if (!loading) {
+                                        setLoading(true);
+                                        download_pdf(props.report.report_uuid, () => { setLoading(false) })
                                     }
-                                    primary
-                                >
-                                    <Icon name="file pdf" /> Download report as PDF
-                                </Button>
+                                }}
+                                primary
+                            >
+                                <Icon name="file pdf" /> Download report as PDF
+                            </Button>
+                            <ReadOnlyOrEditable editableComponent={
                                 <DeleteButton
                                     item_type='report'
                                     onClick={() => delete_report(props.report.report_uuid, props.go_home)}
-                                />
-                            </Grid.Column>
-                        </Grid.Row>}
-                    />
+                                />}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
                 </Grid>
             </Segment>
         </HeaderWithDetails>
