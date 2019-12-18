@@ -727,10 +727,11 @@ class ReportTest(unittest.TestCase):
         self.database.measurements.find.return_value = []
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = dict(
-            _id="id", report_uuid=REPORT_ID,
+            _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={
                 "subject_without_metrics": dict(metrics=dict()),
                 SUBJECT_ID: dict(
+                    name="Subject",
                     metrics=dict(
                         metric_with_tag=dict(type="metric_type", tags=["tag"]),
                         metric_without_tag=dict(type="metric_type", tags=["other tag"])))})
@@ -741,5 +742,7 @@ class ReportTest(unittest.TestCase):
                 summary_by_subject={SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)},
                 title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
                 timestamp=date_time, subjects={
-                    SUBJECT_ID: dict(metrics=dict(metric_with_tag=dict(type="metric_type", tags=["tag"])))}),
+                    SUBJECT_ID: dict(
+                        name="Report / Subject",
+                        metrics=dict(metric_with_tag=dict(type="metric_type", tags=["tag"])))}),
             get_tag_report("tag", self.database))

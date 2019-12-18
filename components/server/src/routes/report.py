@@ -381,6 +381,7 @@ def get_tag_report(tag: str, database: Database):
                 if tag not in metric.get("tags", []):
                     del subject["metrics"][metric_uuid]
             if subject.get("metrics", {}):
+                subject["name"] = report["title"] + " / " + subject["name"]
                 subjects[subject_uuid] = subject
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
