@@ -34,85 +34,42 @@ export function SourceParameter(props) {
     <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
     :
     props.parameter_name;
-  const parameter_props = {label: label, placeholder: props.placeholder, required: props.required};
-  if (props.parameter_type === "url") {
-    return (
-      <StringInput
-        {...parameter_props}
-        options={options()}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
-        warning={props.warning}
-      />
-    )
+  let parameter_props = {
+    label: label,
+    placeholder: props.placeholder,
+    required: props.required,
+    set_value: ((value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)),
+    value: props.parameter_value
+  };
+  if (props.parameter_type === "date") {
+    return (<DateInput {...parameter_props} />)
   }
-  else if (props.parameter_type === "string") {
-    return (
-      <StringInput
-        {...parameter_props}
-        options={options()}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
-      />
-    )
+  if (props.parameter_type === "password") {
+    return (<PasswordInput {...parameter_props} />)
   }
-  else if (props.parameter_type === "password") {
-    return (
-      <PasswordInput
-        {...parameter_props}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
-      />
-    )
-  }
-  else if (props.parameter_type === "integer") {
-    return (
-      <IntegerInput
-        {...parameter_props}
-        max={props.parameter_max}
-        min={props.parameter_min}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
-        unit={props.parameter_unit}
-      />
-    )
-  }
-  else if (props.parameter_type === "multiple_choice_with_addition") {
-    return (
-      <MultipleChoiceInput
-        {...parameter_props}
-        allowAdditions
-        options={options()}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value || []}
-      />
-    )
-  }
-  else if (props.parameter_type === "date") {
-    return (
-      <DateInput
-        {...parameter_props}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
-      />
-    )
+  if (props.parameter_type === "integer") {
+    return (<IntegerInput {...parameter_props} max={props.parameter_max} min={props.parameter_min} unit={props.parameter_unit} />)
   }
   if (props.parameter_type === "single_choice") {
     return (
       <SingleChoiceInput
         {...parameter_props}
-        options={props.parameter_values.map(value => ({key: value, text: value, value: value}))}
-        set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-        value={props.parameter_value}
+        options={props.parameter_values.map(value => ({ key: value, text: value, value: value }))}
       />
     )
   }
-  return (
-    <MultipleChoiceInput
-      {...parameter_props}
-      options={props.parameter_values}
-      set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
-      value={props.parameter_value || []}
-    />
-  )
+  if (props.parameter_type === "multiple_choice") {
+    return (<MultipleChoiceInput {...parameter_props} options={props.parameter_values} />)
+  }
+  parameter_props["options"] = options();
+  if (props.parameter_type === "string") {
+    return (<StringInput {...parameter_props} />)
+  }
+  if (props.parameter_type === "url") {
+    return (<StringInput {...parameter_props} warning={props.warning} />)
+  }
+  if (props.parameter_type === "multiple_choice_with_addition") {
+    return (<MultipleChoiceInput {...parameter_props} allowAdditions />)
+  }
+  return null;
 }

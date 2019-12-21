@@ -56,7 +56,11 @@ it('renders date type', () => {
   expect(wrapper.find('DateInput').exists()).toBe(true);
 });
 
-it('renders multiple choice type, if unknown', () => {
-  const wrapper = shallow(<SourceParameter parameter_type="UNKNOWN type" source={{"type": "x"}} report={example_report}/>);
+it('renders multiple choice type', () => {
+  const wrapper = shallow(<SourceParameter parameter_type="multiple_choice" source={{"type": "x"}} report={example_report}/>);
   expect(wrapper.find('MultipleChoiceInput').exists()).toBe(true);
+});
+it('renders null, if unknown', () => {
+  const wrapper = shallow(<SourceParameter parameter_type="UNKNOWN type" source={{"type": "x"}} report={example_report}/>);
+  expect(wrapper).toEqual({});
 });
