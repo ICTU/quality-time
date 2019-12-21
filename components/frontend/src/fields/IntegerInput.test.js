@@ -46,7 +46,7 @@ describe("<IntegerInput />", () => {
     const wrapper = integerinput_wrapper({value: "0", set_value: mock_set_value});
     wrapper.find("input").simulate("change", {target: {value: "42"}});
     wrapper.find("input").simulate("blur");
-    expect(mock_set_value).toHaveBeenCalled();
+    expect(mock_set_value).toHaveBeenCalledTimes(1);
   });
   it('does not submit an unchanged value', () => {
     const wrapper = integerinput_wrapper({value: "42", set_value: mock_set_value});
