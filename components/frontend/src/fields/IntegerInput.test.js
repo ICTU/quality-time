@@ -54,11 +54,16 @@ describe("<IntegerInput />", () => {
     wrapper.find("FormInput").simulate("submit");
     expect(mock_set_value).toHaveBeenCalledTimes(0);
   });
-  it('does not submit an invalid value', () => {
+  it('does not submit a value that is too small', () => {
     const wrapper = integerinput_wrapper({value: "0", min: "0", set_value: mock_set_value});
     wrapper.find("input").simulate("change", {target: {value: "-42"}});
     wrapper.find("FormInput").simulate("submit");
     expect(mock_set_value).toHaveBeenCalledTimes(0);
+  });
+  it('does not accept an invalid value', () => {
+    const wrapper = integerinput_wrapper({value: "0"});
+    wrapper.find("input").simulate("change", {target: {value: "abc"}});
+    expect(wrapper.find("FormInput").prop("value")).toStrictEqual("0");
   });
   it('undoes the change on escape', () => {
     const wrapper = integerinput_wrapper({value: "0", set_value: mock_set_value});

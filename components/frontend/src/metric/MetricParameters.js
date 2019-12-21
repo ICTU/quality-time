@@ -141,7 +141,7 @@ export function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <SingleChoiceInput
-                            label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></a></label>}
+                            label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt" target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>}
                             value={props.metric.accept_debt}
                             options={[
                                 { key: true, text: "Yes", value: true },
@@ -151,7 +151,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <IntegerInput
-                            label="Metric debt target"
+                            label="Accepted technical debt"
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
@@ -162,7 +162,7 @@ export function MetricParameters(props) {
                     </Grid.Column>
                     <Grid.Column>
                         <DateInput
-                            label="Metric debt end date"
+                            label="Technical debt end date"
                             set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "debt_end_date", value, props.fetch_measurement_and_reload)}
                             value={props.metric.debt_end_date || ""}
                         />

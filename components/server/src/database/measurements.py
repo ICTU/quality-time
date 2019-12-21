@@ -98,9 +98,9 @@ def determine_measurement_status(database: Database, metric, measurement_value: 
         return None
     direction = metric.get("direction") or latest_datamodel(database)["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
-    target = int(metric["target"])
-    near_target = int(metric["near_target"])
-    debt_target = int(metric["debt_target"] or target)
+    target = int(metric.get("target") or 0)
+    near_target = int(metric.get("near_target") or 0)
+    debt_target = int(metric.get("debt_target") or 0)
     debt_end_date = metric.get("debt_end_date", date.max.isoformat())
     better_or_equal = {">": int.__ge__, "<": int.__le__}[direction]
     if better_or_equal(value, target):

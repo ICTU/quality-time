@@ -9,6 +9,9 @@ export function IntegerInput(props) {
     useEffect(() => setValue(initialValue), [initialValue]);
 
     function is_valid(a_value) {
+        if (Number.isNaN(parseInt(a_value))) {
+            return false
+        }
         if (props.min !== null && Number(a_value) < Number(props.min)) {
             return false
         }

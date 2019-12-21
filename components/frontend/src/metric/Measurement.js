@@ -30,7 +30,7 @@ export function Measurement(props) {
     end = new Date(latest_measurement.end);
     measurement_timestring = latest_measurement.end;
   }
-  const target = metric.accept_debt ? metric.debt_target : metric.target;
+  const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
   const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
   const positive = status === "target_met";
   const active = status === "debt_target_met";

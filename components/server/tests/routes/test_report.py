@@ -221,6 +221,27 @@ class PostMetricAttributeTest(unittest.TestCase):
             self.report["delta"])
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_post_metric_technical_debt(self, request):
+        """Test that accepting techinical debt also sets the technical debt value."""
+        self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
+
+        def set_measurement_id(measurement):
+            measurement["_id"] = "measurement_id"
+
+        self.database.measurements.insert_one.side_effect = set_measurement_id
+        request.json = dict(accept_debt=True)
+        self.assertEqual(
+            dict(
+                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True,
+                metric_uuid=METRIC_ID, count=dict(value=None, status=None)),
+            post_metric_attribute(REPORT_ID, METRIC_ID, "accept_debt", self.database))
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
+                 description="John changed the accept_debt of metric 'name' of subject 'Subject' in report 'Report' "
+                             "from '' to 'True'."),
+            self.report["delta"])
+
+    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
