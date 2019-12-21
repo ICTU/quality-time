@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Header, Icon } from 'semantic-ui-react';
+import { Header, Icon, Segment } from 'semantic-ui-react';
 import './HeaderWithDetails.css';
 
 export function HeaderWithDetails(props) {
     const [show_details, setShowDetails] = useState(false);
     return (
-        <>
+        <Segment>
             <Header
                 as={props.level}
                 onClick={() => setShowDetails(!show_details)}
@@ -20,6 +20,6 @@ export function HeaderWithDetails(props) {
                 </Header.Content>
             </Header>
             {show_details && props.children}
-        </>
+        </Segment>
     )
 }
