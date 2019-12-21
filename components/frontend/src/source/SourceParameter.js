@@ -34,13 +34,12 @@ export function SourceParameter(props) {
     <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
     :
     props.parameter_name;
+  const parameter_props = {label: label, placeholder: props.placeholder, required: props.required};
   if (props.parameter_type === "url") {
     return (
       <StringInput
-        label={label}
+        {...parameter_props}
         options={options()}
-        placeholder={props.placeholder}
-        required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
         warning={props.warning}
@@ -50,10 +49,8 @@ export function SourceParameter(props) {
   else if (props.parameter_type === "string") {
     return (
       <StringInput
-        label={label}
+        {...parameter_props}
         options={options()}
-        placeholder={props.placeholder}
-        required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
       />
@@ -62,9 +59,7 @@ export function SourceParameter(props) {
   else if (props.parameter_type === "password") {
     return (
       <PasswordInput
-        label={label}
-        placeholder={props.placeholder}
-        required={props.required}
+        {...parameter_props}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
       />
@@ -73,11 +68,9 @@ export function SourceParameter(props) {
   else if (props.parameter_type === "integer") {
     return (
       <IntegerInput
-        label={label}
+        {...parameter_props}
         max={props.parameter_max}
         min={props.parameter_min}
-        placeholder={props.placeholder}
-        required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
         unit={props.parameter_unit}
@@ -87,11 +80,9 @@ export function SourceParameter(props) {
   else if (props.parameter_type === "multiple_choice_with_addition") {
     return (
       <MultipleChoiceInput
+        {...parameter_props}
         allowAdditions
-        label={label}
         options={options()}
-        placeholder={props.placeholder}
-        required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value || []}
       />
@@ -100,8 +91,7 @@ export function SourceParameter(props) {
   else if (props.parameter_type === "date") {
     return (
       <DateInput
-        label={label}
-        required={props.required}
+        {...parameter_props}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
       />
@@ -110,10 +100,8 @@ export function SourceParameter(props) {
   if (props.parameter_type === "single_choice") {
     return (
       <SingleChoiceInput
-        label={label}
+        {...parameter_props}
         options={props.parameter_values.map(value => ({key: value, text: value, value: value}))}
-        placeholder={props.placeholder}
-        required={props.required}
         set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
         value={props.parameter_value}
       />
@@ -121,10 +109,8 @@ export function SourceParameter(props) {
   }
   return (
     <MultipleChoiceInput
-      label={label}
+      {...parameter_props}
       options={props.parameter_values}
-      placeholder={props.placeholder}
-      required={props.required}
       set_value={(value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)}
       value={props.parameter_value || []}
     />
