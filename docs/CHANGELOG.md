@@ -11,10 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
-
-- When the user accepts the current measurement value as technical debt, set the accepted technical debt value to the current measurement value. Closes [#883](https://github.com/ICTU/quality-time/issues/883).
-
 ### Fixed
 
 - Typo in metric pie chart tooltip ("Uknown"). Fixes [#857](https://github.com/ICTU/quality-time/issues/857).
