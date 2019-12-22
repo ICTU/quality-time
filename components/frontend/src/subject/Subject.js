@@ -17,6 +17,7 @@ export function Subject(props) {
       setSortColumn(column)
     }
   }
+
   const subject = props.report.subjects[props.subject_uuid];
   function create_metric_components() {
     let metric_components = [];
@@ -106,6 +107,14 @@ export function Subject(props) {
       metric_components.reverse()
     }
   }
+  function SortableHeader({ column, label }) {
+    const sorted = sortColumn === column ? sortDirection : null;
+    return (
+      <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted}>
+        {label}
+      </Table.HeaderCell>
+    )
+  }
   return (
     <div id={props.subject_uuid}>
       <SubjectTitle
@@ -131,48 +140,14 @@ export function Subject(props) {
                 />
               } content={hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
             </Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('name')}
-              sorted={sortColumn === 'name' ? sortDirection : null}
-            >
-              Metric
-              </Table.HeaderCell>
+            <SortableHeader column='name' label='Metric' />
             <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('status')}
-              sorted={sortColumn === 'status' ? sortDirection : null}
-            >
-              Status
-              </Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('measurement')}
-              sorted={sortColumn === 'measurement' ? sortDirection : null}
-            >
-              Measurement
-              </Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('target')}
-              sorted={sortColumn === 'target' ? sortDirection : null}
-            >
-              Target
-              </Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('source')}
-              sorted={sortColumn === 'source' ? sortDirection : null}
-            >
-              Source
-              </Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('comment')}
-              sorted={sortColumn === 'comment' ? sortDirection : null}
-            >
-              Comment</Table.HeaderCell>
-            <Table.HeaderCell
-              onClick={() => handleSort('tags')}
-              sorted={sortColumn === 'tags' ? sortDirection : null}
-            >
-              Tags
-              </Table.HeaderCell>
+            <SortableHeader column='status' label='Status' />
+            <SortableHeader column='measurement' label='Measurement' />
+            <SortableHeader column='target' label='Target' />
+            <SortableHeader column='source' label='Source' />
+            <SortableHeader column='comment' label='Comment' />
+            <SortableHeader column='tags' label='Tags' />
           </Table.Row>
         </Table.Header>
         <Table.Body>{metric_components}</Table.Body>
