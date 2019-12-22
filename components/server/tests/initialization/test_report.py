@@ -16,14 +16,8 @@ class ReportInitTest(unittest.TestCase):
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""
-        class _MockPath(pathlib.Path):
-            """
-            Avoid mocking concrete Path, e.g. PosixPath
-            """
-            pass
-        path = _MockPath("filename")
-        with patch.object(path, "open", mock_open(read_data=report_json)):
-            import_report(self.database, path)
+        with patch("builtins.open", mock_open(read_data=report_json)):
+            import_report(self.database, "filename")
 
     def test_import(self):
         """Test that a report can be imported."""
