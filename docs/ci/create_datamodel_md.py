@@ -8,9 +8,9 @@ from typing import List
 
 def data_model():
     """Return the data model."""
-    data_model_path = pathlib.Path(
-        os.path.dirname(os.path.abspath(__file__)), "..", "..", "components", "server", "src", "data", "datamodel.json")
-    with open(data_model_path) as json_data_model:
+    data_model_path = pathlib.Path(__file__).resolve().parent.parent.parent / \
+                      "components" / "server" / "src" / "data" / "datamodel.json"
+    with data_model_path.open() as json_data_model:
         return json.load(json_data_model)
 
 
@@ -73,6 +73,6 @@ def data_model_as_table(dm) -> str:
 
 
 if __name__ == "__main__":
-    data_model_md_path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)), "..", "DATA_MODEL.md")
-    with open(data_model_md_path, "w") as data_model_md:
+    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "DATA_MODEL.md"
+    with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(data_model()))
