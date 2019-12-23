@@ -894,6 +894,17 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "branches_to_ignore": {
+                    "name": "Branches to ignore (regular expressions or branch names)",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "default_value": [],
+                    "metrics": [
+                        "unmerged_branches"
+                    ]
+                },
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
                     "type": "integer",
@@ -942,7 +953,7 @@
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
-                    "default_value": "",
+                    "default_value": [],
                     "metrics": [
                         "failed_jobs",
                         "unused_jobs"
@@ -1348,6 +1359,17 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "branches_to_ignore": {
+                    "name": "Branches to ignore (regular expressions or branch names)",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "default_value": [],
+                    "metrics": [
+                        "unmerged_branches"
+                    ]
+                },
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
                     "type": "integer",
@@ -1584,7 +1606,7 @@
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
-                    "default_value": "",
+                    "default_value": [],
                     "metrics": [
                         "failed_jobs",
                         "unused_jobs"

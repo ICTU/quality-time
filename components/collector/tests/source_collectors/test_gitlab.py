@@ -15,7 +15,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 type="gitlab",
                 parameters=dict(
                     url="https://gitlab/", project="namespace/project", file_path="file", branch="branch",
-                    inactive_days="7")))
+                    inactive_days="7", branches_to_ignore=["ignored_.*"])))
         self.gitlab_jobs_json = [
             dict(id="1", status="failed", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
                  web_url="https://gitlab/job", ref="master")]
@@ -115,6 +115,8 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         gitlab_json = [
             dict(name="master", default=True, merged=False),
             dict(name="unmerged_branch", default=False, merged=False,
+                 commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
+            dict(name="ignored_branch", default=False, merged=False,
                  commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
             dict(name="active_unmerged_branch", default=False, merged=False,
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),

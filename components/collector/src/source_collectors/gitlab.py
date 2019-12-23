@@ -8,7 +8,7 @@ from urllib.parse import quote
 from dateutil.parser import parse
 import requests
 
-from collector_utilities.functions import days_ago
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import Job, Entities, Response, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
@@ -144,7 +144,8 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
 
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and
-                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))]
+                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
+                not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committed_date"])
