@@ -12,6 +12,11 @@ export function Input(props) {
     if (value !== initialValue) { set_value(value) }
   }
 
+  function onKeyDown(event) {
+    if (event.key === "Escape") { setValue(initialValue) }
+    if (event.key === "Enter") { submit_if_changed() }
+  }
+
   const fixedProps = {...otherProps, error: required && value === "", fluid: true, focus: true, labelPosition: "left", value: value}
   return (
     <Form>
@@ -20,10 +25,7 @@ export function Input(props) {
           {...fixedProps}
           onBlur={() => { submit_if_changed() }}
           onChange={(event) => setValue(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") { setValue(initialValue) }
-            if (event.key === "Enter") { submit_if_changed() }
-          }}
+          onKeyDown={onKeyDown}
           readOnly={readOnly}
         >
           {prefix ? <Label basic>{prefix}</Label> : null}
