@@ -77,7 +77,8 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
         super().setUp()
         self.sources = dict(
             source_id=dict(
-                type="azure_devops", parameters=dict(url="https://azure_devops/org/project", private_token="xxx")))
+                type="azure_devops", parameters=dict(
+                    url="https://azure_devops/org/project", private_token="xxx", branches_to_ignore=["ignored_.*"])))
         self.metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         self.repositories = dict(value=[dict(id="id", name="project")])
 
@@ -94,6 +95,8 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
             value=[
                 dict(name="master", isBaseVersion=True),
                 dict(name="branch", isBaseVersion=False, aheadCount=1,
+                     commit=dict(committer=dict(date="2019-09-03T20:43:00Z"))),
+                dict(name="ignored_branch", isBaseVersion=False, aheadCount=1,
                      commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))])
         response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
         expected_age = str(days_ago(parse("2019-09-03T20:43:00Z")))

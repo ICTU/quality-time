@@ -93,7 +93,8 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
-                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))]
+                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
+                not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committer"]["date"])
