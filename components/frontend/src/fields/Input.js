@@ -4,25 +4,22 @@ import { ReadOnlyContext } from '../context/ReadOnly';
 
 export function Input(props) {
   let { prefix, required, set_value, ...otherProps } = props;
-  const [value, setValue] = useState(props.value || "");
-  useEffect(() => setValue(props.value || ''), [props.value]);
+  const initialValue = props.value || "";
+  const [value, setValue] = useState(initialValue);
+  useEffect(() => setValue(initialValue), [props.value]);
+  const fixedProps = {...otherProps, error: required && value === "", fluid: true, focus: true, labelPosition: "left", value: value}
   return (
     <Form>
       <ReadOnlyContext.Consumer>{(readOnly) => (
         <Form.Input
-          {...otherProps}
-          error={required && value === ""}
-          fluid
-          focus
-          labelPosition="left"
-          onBlur={() => { if (value !== (props.value || "")) { set_value(value) } }}
+          {...fixedProps}
+          onBlur={() => { if (value !== initialValue) { set_value(value) } }}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === "Escape") { setValue(props.value || "") }
-            if (event.key === "Enter" && value !== (props.value || "")) { set_value(value) }
+            if (event.key === "Escape") { setValue(initialValue) }
+            if (event.key === "Enter" && value !== initialValue) { set_value(value) }
           }}
           readOnly={readOnly}
-          value={value}
         >
           {prefix ? <Label basic>{prefix}</Label> : null}
           <input />
