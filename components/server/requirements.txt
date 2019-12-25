@@ -1,6 +1,6 @@
 bottle==0.12.18
 bottle-mongo==0.3.0
-gevent==1.4.0
+gevent==1.5a2
 lxml==4.4.2
 pymongo==3.10.0
 ldap3==2.6.1
