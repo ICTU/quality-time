@@ -1,7 +1,7 @@
-image: python:3.8-alpine
+image: python:3.8-buster
 
 before_script:
-  - apk add libldap libxslt-dev build-base openldap-dev python3-dev
+  - apt-get install libxml2-dev libxslt-dev
 
 stages:
   - test
