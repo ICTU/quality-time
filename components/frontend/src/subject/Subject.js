@@ -19,6 +19,8 @@ export function Subject(props) {
   }
 
   const subject = props.report.subjects[props.subject_uuid];
+  const last_index = Object.entries(subject.metrics).length - 1;
+
   function create_metric_components() {
     let metric_components = [];
     Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
@@ -52,7 +54,6 @@ export function Subject(props) {
   const [sortDirection, setSortDirection] = useState('ascending');
   const [lastMeasurements, setLastMeasurements] = useState({});
   const metric_components = create_metric_components();
-  const last_index = Object.entries(subject.metrics).length - 1;
 
   if (sortColumn !== null) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
