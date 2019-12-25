@@ -1,7 +1,6 @@
 """Base class for source collector unit tests."""
 
 import json
-import os.path
 import pathlib
 import unittest
 from unittest.mock import patch, Mock
@@ -15,9 +14,9 @@ class SourceCollectorTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        module_dir = os.path.dirname(os.path.abspath(__file__))
-        data_model_path = pathlib.Path(module_dir, "..", "..", "..", "server", "src", "data", "datamodel.json")
-        with open(data_model_path) as json_data_model:
+        module_dir = pathlib.Path(__file__).resolve().parent
+        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
+        with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
 
     def collect(self, metric, *,

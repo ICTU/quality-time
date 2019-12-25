@@ -2,7 +2,6 @@
 
 import json
 import logging
-import os.path
 import pathlib
 
 from pymongo.database import Database
@@ -23,7 +22,7 @@ def initialize_reports_overview(database: Database) -> None:
 
 def import_report(database: Database, filename: pathlib.Path) -> None:
     """Read the report and store it in the database."""
-    with open(str(filename)) as json_report:
+    with filename.open() as json_report:
         imported_report = json.load(json_report)
     if latest_report(database, imported_report["report_uuid"]):
         logging.info("Skipping import of %s; it already exists", filename)
@@ -60,7 +59,6 @@ def import_json_report(database: Database, imported_report) -> None:
 
 def import_example_reports(database: Database) -> None:
     """Import the example reports."""
-    example_reports_path = pathlib.Path(
-        os.path.dirname(os.path.abspath(__file__)), "..", "data", "example-reports").resolve()
+    example_reports_path = pathlib.Path(__file__).resolve().parent.parent / "data" / "example-reports"
     for filename in example_reports_path.glob("example-report*.json"):
         import_report(database, filename)

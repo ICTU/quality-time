@@ -1,6 +1,7 @@
 """Unit tests for the database initialization."""
 
 import unittest
+import pathlib
 from unittest.mock import Mock, mock_open, patch
 
 import bottle
@@ -21,8 +22,11 @@ class DatabaseInitTest(unittest.TestCase):
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
-        with patch("pathlib.Path.glob", new=Mock(return_value=[])) as glob_mock:
-            with patch("builtins.open", mock_open(read_data=data_model_json)):
+        def mocked_open(*args, **kwargs):
+            return mock_open(read_data=data_model_json)(*args, **kwargs)
+
+        with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock:
+            with patch.object(pathlib.Path, "open", mocked_open):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()
         if assert_glob_called:

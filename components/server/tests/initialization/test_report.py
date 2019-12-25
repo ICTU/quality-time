@@ -2,6 +2,7 @@
 
 import json
 import unittest
+import pathlib
 from unittest.mock import Mock, mock_open, patch
 
 from src.initialization.report import import_report, import_example_reports
@@ -15,8 +16,11 @@ class ReportInitTest(unittest.TestCase):
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""
-        with patch("builtins.open", mock_open(read_data=report_json)):
-            import_report(self.database, "filename")
+        def mocked_open(*args, **kwargs):
+            return mock_open(read_data=report_json)(*args, **kwargs)
+
+        with patch.object(pathlib.Path, "open", mocked_open):
+            import_report(self.database, pathlib.Path("filename"))
 
     def test_import(self):
         """Test that a report can be imported."""
