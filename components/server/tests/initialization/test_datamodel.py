@@ -1,6 +1,7 @@
 """Unit tests for importing the data model."""
 
 import unittest
+import pathlib
 from unittest.mock import Mock, patch, mock_open
 
 from src.initialization.datamodel import import_datamodel
@@ -15,7 +16,7 @@ class DataModelImportTest(unittest.TestCase):
 
     def import_data_model(self, data_model_json: str) -> None:
         """Import the data model"""
-        with patch("builtins.open", mock_open(read_data=data_model_json)):
+        with patch.object(pathlib.Path, "open", mock_open(read_data=data_model_json)):
             import_datamodel(self.database)
 
     def test_first_import(self):

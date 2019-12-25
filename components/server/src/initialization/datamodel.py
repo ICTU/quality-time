@@ -2,7 +2,6 @@
 
 import json
 import logging
-import os.path
 import pathlib
 
 from pymongo.database import Database
@@ -12,8 +11,8 @@ from database.datamodels import insert_new_datamodel, latest_datamodel
 
 def import_datamodel(database: Database) -> None:
     """Read the data model and store it in the database."""
-    data_model_path = pathlib.Path(os.path.dirname(os.path.abspath(__file__)), "..", "data", "datamodel.json")
-    with open(data_model_path) as json_data_model:
+    data_model_path = pathlib.Path(__file__).resolve().parent.parent / "data" / "datamodel.json"
+    with data_model_path.open() as json_data_model:
         data_model = json.load(json_data_model)
     if latest := latest_datamodel(database):
         del latest["timestamp"]
