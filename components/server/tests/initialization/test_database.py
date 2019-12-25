@@ -22,11 +22,8 @@ class DatabaseInitTest(unittest.TestCase):
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
-        def mocked_open(*args, **kwargs):
-            return mock_open(read_data=data_model_json)(*args, **kwargs)
-
         with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock:
-            with patch.object(pathlib.Path, "open", mocked_open):
+            with patch.object(pathlib.Path, "open", mock_open(read_data=data_model_json)):
                 with patch("pymongo.MongoClient", self.mongo_client):
                     init_database()
         if assert_glob_called:

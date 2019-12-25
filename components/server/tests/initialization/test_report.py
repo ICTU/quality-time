@@ -16,10 +16,7 @@ class ReportInitTest(unittest.TestCase):
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""
-        def mocked_open(*args, **kwargs):
-            return mock_open(read_data=report_json)(*args, **kwargs)
-
-        with patch.object(pathlib.Path, "open", mocked_open):
+        with patch.object(pathlib.Path, "open", mock_open(read_data=report_json)):
             import_report(self.database, pathlib.Path("filename"))
 
     def test_import(self):

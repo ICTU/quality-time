@@ -16,10 +16,7 @@ class DataModelImportTest(unittest.TestCase):
 
     def import_data_model(self, data_model_json: str) -> None:
         """Import the data model"""
-        def mocked_open(*args, **kwargs):
-            return mock_open(read_data=data_model_json)(*args, **kwargs)
-
-        with patch.object(pathlib.Path, "open", mocked_open):
+        with patch.object(pathlib.Path, "open", mock_open(read_data=data_model_json)):
             import_datamodel(self.database)
 
     def test_first_import(self):
