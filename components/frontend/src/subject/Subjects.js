@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
 import { add_subject } from '../api/subject';
@@ -6,6 +6,7 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton } from '../widgets/Button';
 
 export function Subjects(props) {
+  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(false);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
@@ -13,6 +14,7 @@ export function Subjects(props) {
         <Subject
           datamodel={props.datamodel}
           first_subject={index === 0}
+          hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
           key={subject_uuid}
           last_subject={index === last_index}
           nr_new_measurements={props.nr_new_measurements}
@@ -20,6 +22,7 @@ export function Subjects(props) {
           report={props.report}
           report_date={props.report_date}
           search_string={props.search_string}
+          setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
           subject_uuid={subject_uuid}
           tags={props.tags}
           changed_fields={props.changed_fields}
