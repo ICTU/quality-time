@@ -8,9 +8,7 @@ import requests
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import (
-    latest_datamodel, default_subject_attributes, default_metric_attributes
-)
+from database.datamodels import latest_datamodel, default_metric_attributes
 from database.reports import (
     latest_reports, latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview,
     summarize_report
@@ -73,25 +71,6 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")
-def post_subject_attribute(report_uuid: ReportId, subject_uuid: SubjectId, subject_attribute: str, database: Database):
-    """Set the subject attribute."""
-    value = dict(bottle.request.json)[subject_attribute]
-    data = get_data(database, report_uuid, subject_uuid)
-    old_value = data.subject.get(subject_attribute) or ""
-    if subject_attribute == "position":
-        old_value, value = move_item(data, value, "subject")
-    else:
-        data.subject[subject_attribute] = value
-    if old_value == value:
-        return dict(ok=True)  # Nothing to do
-    data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=subject_uuid,
-        description=f"{sessions.user(database)} changed the {subject_attribute} of subject '{data.subject_name}' in "
-                    f"report '{data.report_name}' from '{old_value}' to '{value}'.")
-    return insert_new_report(database, data.report)
-
-
 def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:
     """Change the item position."""
     container = data.report if item_type == "subject" else data.subject
@@ -114,29 +93,6 @@ def move_item(data, new_position: Position, item_type: Literal["metric", "subjec
         reordered_items[item_to_move_id] = item_to_move
     container[item_type + "s"] = reordered_items
     return old_index, new_index
-
-
-@bottle.post("/api/v1/report/<report_uuid>/subject/new")
-def post_new_subject(report_uuid: ReportId, database: Database):
-    """Create a new subject."""
-    data = get_data(database, report_uuid)
-    data.report["subjects"][uuid()] = default_subject_attributes(database)
-    data.report["delta"] = dict(
-        report_uuid=report_uuid,
-        description=f"{sessions.user(database)} created a new subject in report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
-
-
-@bottle.delete("/api/v1/report/<report_uuid>/subject/<subject_uuid>")
-def delete_subject(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
-    """Delete the subject."""
-    data = get_data(database, report_uuid, subject_uuid)
-    del data.report["subjects"][subject_uuid]
-    data.report["delta"] = dict(
-        report_uuid=report_uuid,
-        description=f"{sessions.user(database)} deleted the subject '{data.subject_name}' from report "
-                    f"'{data.report_name}'.")
-    return insert_new_report(database, data.report)
 
 
 @bottle.get("/api/v1/metrics")
