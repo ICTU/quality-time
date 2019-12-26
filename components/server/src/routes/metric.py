@@ -11,7 +11,8 @@ from database.reports import insert_new_report
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, ReportId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
-from .report import get_data, get_reports, move_item
+from .report import get_data, move_item
+from .reports import get_reports
 
 
 @bottle.get("/api/v1/metrics")
