@@ -7,11 +7,10 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_metric_attributes
-from database.reports import insert_new_report
+from database.reports import get_data, insert_new_report, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, ReportId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
-from .report import get_data, move_item
 from .reports import get_reports
 
 

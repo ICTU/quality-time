@@ -8,10 +8,9 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
-from database.reports import insert_new_report
+from database.reports import get_data, insert_new_report
 from server_utilities.functions import uuid
 from server_utilities.type import MetricId, ReportId, SourceId, URL
-from .report import get_data
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/source/new")

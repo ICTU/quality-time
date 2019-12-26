@@ -5,10 +5,9 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_subject_attributes
-from database.reports import insert_new_report
+from database.reports import get_data, insert_new_report, move_item
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
-from .report import get_data, move_item
 
 
 @bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")

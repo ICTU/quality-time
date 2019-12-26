@@ -1,12 +1,13 @@
 """Reports collection."""
 
-from typing import Dict, List
+from collections import namedtuple
+from typing import Dict, List, Literal, Tuple
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Change, Color, MetricId, ReportId, Status
+from server_utilities.type import Change, Color, MetricId, Position, ReportId, SourceId, Status, SubjectId
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
 
@@ -102,3 +103,64 @@ def changelog(database: Database, nr_changes: int, **uuids):
     delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
     return sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:nr_changes]
+
+
+def get_subject_uuid(report, metric_uuid: MetricId):
+    """Return the uuid of the subject that has the metric with the specified uuid."""
+    subjects = report["subjects"]
+    return [subject_uuid for subject_uuid in subjects if metric_uuid in subjects[subject_uuid]["metrics"]][0]
+
+
+def get_metric_uuid(report, source_uuid: SourceId):
+    """Return the uuid of the metric that has a source with the specified uuid."""
+    return [metric_uuid for subject in report["subjects"].values() for metric_uuid in subject["metrics"]
+            if source_uuid in subject["metrics"][metric_uuid]["sources"]][0]
+
+
+def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId = None, metric_uuid: MetricId = None,
+             source_uuid: SourceId = None):
+    """Return applicable report, subject, metric, source, and their uuids and names."""
+    data = namedtuple(
+        "data",
+        "datamodel, report, report_name, subject, subject_uuid, subject_name, "
+        "metric, metric_uuid, metric_name, source, source_uuid, source_name")
+    data.report = latest_report(database, report_uuid)
+    data.report_name = data.report.get("title") or ""
+    data.source_uuid = source_uuid
+    data.metric_uuid = get_metric_uuid(data.report, data.source_uuid) if data.source_uuid else metric_uuid
+    data.subject_uuid = get_subject_uuid(data.report, data.metric_uuid) if data.metric_uuid else subject_uuid
+    data.datamodel = latest_datamodel(database)
+    if data.subject_uuid:
+        data.subject = data.report["subjects"][data.subject_uuid]
+        data.subject_name = data.subject.get("name") or data.datamodel["subjects"][data.subject["type"]]["name"]
+    if data.metric_uuid:
+        data.metric = data.subject["metrics"][data.metric_uuid]
+        data.metric_name = data.metric.get("name") or data.datamodel["metrics"][data.metric["type"]]["name"]
+    if data.source_uuid:
+        data.source = data.metric["sources"][data.source_uuid]
+        data.source_name = data.source.get("name") or data.datamodel["sources"][data.source["type"]]["name"]
+    return data
+
+
+def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:
+    """Change the item position."""
+    container = data.report if item_type == "subject" else data.subject
+    items = container[item_type + "s"]
+    nr_items = len(items)
+    item_to_move = getattr(data, item_type)
+    item_to_move_id = getattr(data, f"{item_type}_uuid")
+    old_index = list(items.keys()).index(item_to_move_id)
+    new_index = dict(
+        first=0, last=nr_items - 1, previous=max(0, old_index - 1), next=min(nr_items - 1, old_index + 1))[new_position]
+    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
+    # we construct a new dict in the right order and insert that in the report.
+    reordered_items: Dict[str, Dict] = dict()
+    del items[item_to_move_id]
+    for item_id, item in items.items():
+        if len(reordered_items) == new_index:
+            reordered_items[item_to_move_id] = item_to_move
+        reordered_items[item_id] = item
+    if len(reordered_items) == new_index:
+        reordered_items[item_to_move_id] = item_to_move
+    container[item_type + "s"] = reordered_items
+    return old_index, new_index
