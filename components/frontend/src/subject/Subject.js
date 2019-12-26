@@ -19,13 +19,15 @@ export function Subject(props) {
   }
 
   const subject = props.report.subjects[props.subject_uuid];
+  const last_index = Object.entries(subject.metrics).length - 1;
+
   function create_metric_components() {
     let metric_components = [];
     Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
       const metric_type = props.datamodel.metrics[metric.type];
       const scale = metric.scale || metric_type.default_scale || "count";
       const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid][scale] && lastMeasurements[metric_uuid][scale].status) || '';
-      if (hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
+      if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
       if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
       metric_components.push(
         <Metric
@@ -48,12 +50,10 @@ export function Subject(props) {
     });
     return metric_components
   }
-  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(false);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
   const [lastMeasurements, setLastMeasurements] = useState({});
   const metric_components = create_metric_components();
-  const last_index = Object.entries(subject.metrics).length - 1;
 
   if (sortColumn !== null) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
@@ -134,11 +134,11 @@ export function Subject(props) {
                 <Button
                   basic
                   compact
-                  icon={hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
-                  onClick={() => setHideMetricsNotRequiringAction(!hideMetricsNotRequiringAction)}
+                  icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
+                  onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
                   primary
                 />
-              } content={hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
+              } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
             </Table.HeaderCell>
             <SortableHeader column='name' label='Metric' />
             <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
