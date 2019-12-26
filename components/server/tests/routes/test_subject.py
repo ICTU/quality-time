@@ -1,16 +1,11 @@
-"""Unit tests for the report routes."""
+"""Unit tests for the subject routes."""
 
 import unittest
 from unittest.mock import Mock, patch
-from typing import cast
 
 from routes.subject import delete_subject, post_new_subject, post_subject_attribute
-from server_utilities.type import ReportId, SubjectId
 
-
-REPORT_ID = cast(ReportId, "report_uuid")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
-SUBJECT_ID2 = cast(SubjectId, "subject_uuid2")
+from .fixtures import REPORT_ID, SUBJECT_ID, SUBJECT_ID2
 
 
 @patch("bottle.request")

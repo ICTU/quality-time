@@ -2,18 +2,12 @@
 
 import unittest
 from unittest.mock import Mock, patch
-from typing import cast
 
 import requests
 
 from routes.source import delete_source, post_source_attribute, post_source_new, post_source_parameter
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 
-
-METRIC_ID = cast(MetricId, "metric_uuid")
-REPORT_ID = cast(ReportId, "report_uuid")
-SOURCE_ID = cast(SourceId, "source_uuid")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
+from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 @patch("bottle.request")
