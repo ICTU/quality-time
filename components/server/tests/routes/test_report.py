@@ -756,7 +756,7 @@ class ReportTest(unittest.TestCase):
                     metrics=dict(
                         metric_with_tag=dict(type="metric_type", tags=["tag"]),
                         metric_without_tag=dict(type="metric_type", tags=["other tag"])))})
-        self.assertEqual(
+        self.assertDictEqual(
             dict(
                 summary=dict(red=0, green=0, yellow=0, grey=0, white=1),
                 summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
