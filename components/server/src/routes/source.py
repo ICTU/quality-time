@@ -29,6 +29,18 @@ def post_source_new(report_uuid: ReportId, metric_uuid: MetricId, database: Data
     return insert_new_report(database, data.report)
 
 
+@bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/copy")
+def post_source_copy(report_uuid: ReportId, source_uuid: SourceId, database: Database):
+    """Copy a source."""
+    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    data.metric["sources"][uuid()] = data.source
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        description=f"{sessions.user(database)} copied the source '{data.source_name}' of metric "
+                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
 @bottle.delete("/api/v1/report/<report_uuid>/source/<source_uuid>")
 def delete_source(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Delete a source."""

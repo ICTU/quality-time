@@ -1,11 +1,18 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { AddButton, DeleteButton, MoveButtonGroup } from './Button';
+import { AddButton, CopyButton, DeleteButton, MoveButtonGroup } from './Button';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
         const wrapper = shallow(<AddButton item_type="foo" />);
         expect(wrapper.dive().find("Button").children().at(4).text()).toBe("foo");
+    });
+});
+
+describe('<CopyButton />', () => {
+    it('has the correct label', () => {
+        const wrapper = shallow(<CopyButton item_type="baz" />);
+        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("baz");
     });
 });
 
