@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new
+from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy
 
 from .fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
@@ -238,6 +238,19 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
                  description="John added a new metric to subject 'Subject' in report 'Report'."),
+            report["delta"])
+
+    def test_copy_metric(self):
+        """Test that a metric can be copied."""
+        report = dict(
+            _id=REPORT_ID, title="Report",
+            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="Metric")})})
+        self.database.reports.find_one.return_value = report
+        self.assertEqual(dict(ok=True), post_metric_copy(REPORT_ID, METRIC_ID, self.database))
+        self.database.reports.insert.assert_called_once_with(report)
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
+                 description="John copied the metric 'Metric' of subject 'Subject' in report 'Report'."),
             report["delta"])
 
     def test_get_metrics(self):

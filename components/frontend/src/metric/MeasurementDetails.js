@@ -6,8 +6,8 @@ import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { DeleteButton, MoveButtonGroup } from '../widgets/Button';
-import { delete_metric, set_metric_attribute } from '../api/metric';
+import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
+import { copy_metric, delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
 export function MeasurementDetails(props) {
@@ -87,6 +87,10 @@ export function MeasurementDetails(props) {
       <Tab panes={panes} />
       <ReadOnlyOrEditable editableComponent={
         <>
+          <CopyButton
+            item_type="metric"
+            onClick={() => copy_metric(report_uuid, props.metric_uuid, props.reload)}
+          />
           <MoveButtonGroup
             first={props.first_metric}
             last={props.last_metric}
