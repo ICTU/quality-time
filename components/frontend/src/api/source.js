@@ -4,6 +4,10 @@ function add_source(report_uuid, metric_uuid, reload) {
     return fetch_server_api('post', `report/${report_uuid}/metric/${metric_uuid}/source/new`, {}).then(reload)
 }
 
+function copy_source(report_uuid, source_uuid, reload) {
+    return fetch_server_api('post', `report/${report_uuid}/source/${source_uuid}/copy`, {}).then(reload)
+}
+
 function delete_source(report_uuid, source_uuid, reload) {
     return fetch_server_api('delete', `report/${report_uuid}/source/${source_uuid}`, {}).then(reload)
 }
@@ -22,4 +26,4 @@ function set_source_entity_attribute(metric_uuid, source_uuid, entity_key, attri
         { [attribute]: value }).then(reload)
 }
 
-export { add_source, delete_source, set_source_attribute, set_source_entity_attribute, set_source_parameter }
+export { add_source, copy_source, delete_source, set_source_attribute, set_source_entity_attribute, set_source_parameter }
