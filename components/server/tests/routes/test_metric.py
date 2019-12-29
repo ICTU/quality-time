@@ -244,10 +244,17 @@ class MetricTest(unittest.TestCase):
         """Test that a metric can be copied."""
         report = dict(
             _id=REPORT_ID, title="Report",
-            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="Metric")})})
+            subjects={
+                SUBJECT_ID: dict(
+                    name="Subject", metrics={METRIC_ID: dict(name="Metric", sources={SOURCE_ID: dict()})})})
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_metric_copy(REPORT_ID, METRIC_ID, self.database))
-        self.database.reports.insert.assert_called_once_with(report)
+        self.database.reports.insert.assert_called_once()
+        inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
+        self.assertEqual(2, len(inserted_metrics))
+        metric_keys = list(inserted_metrics.keys())
+        self.assertNotEqual(
+            inserted_metrics[metric_keys[0]]["sources"].keys(), inserted_metrics[metric_keys[1]]["sources"].keys())
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
                  description="John copied the metric 'Metric' of subject 'Subject' in report 'Report'."),

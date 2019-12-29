@@ -3,9 +3,9 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.subject import delete_subject, post_new_subject, post_subject_attribute
+from routes.subject import delete_subject, post_new_subject, post_subject_attribute, post_subject_copy
 
-from .fixtures import REPORT_ID, SUBJECT_ID, SUBJECT_ID2
+from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
 
 
 @patch("bottle.request")
@@ -110,6 +110,28 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual(
             dict(report_uuid=REPORT_ID, description="Jenny created a new subject in report 'Report'."),
             self.report["delta"])
+
+    def test_copy_subject(self):
+        """Test that a subject can be copied."""
+        report = dict(
+            _id=REPORT_ID, title="Report",
+            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(sources={SOURCE_ID: {}})})})
+        self.database.reports.find_one.return_value = report
+        self.assertEqual(dict(ok=True), post_subject_copy(REPORT_ID, SUBJECT_ID, self.database))
+        self.database.reports.insert.assert_called_once()
+        inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
+        self.assertEqual(2, len(inserted_subjects))
+        subject_keys = list(inserted_subjects.keys())
+        self.assertNotEqual(
+            inserted_subjects[subject_keys[0]]["metrics"].keys(),
+            inserted_subjects[subject_keys[1]]["metrics"].keys())
+        self.assertNotEqual(
+            list(inserted_subjects[subject_keys[0]]["metrics"].values())[0]["sources"].keys(),
+            list(inserted_subjects[subject_keys[1]]["metrics"].values())[0]["sources"].keys())
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
+                 description="Jenny copied the subject 'Subject' in report 'Report'."),
+            report["delta"])
 
     def test_delete_subject(self):
         """Test that a subject can be deleted."""

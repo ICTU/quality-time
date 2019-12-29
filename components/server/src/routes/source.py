@@ -33,7 +33,7 @@ def post_source_new(report_uuid: ReportId, metric_uuid: MetricId, database: Data
 def post_source_copy(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Copy a source."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
-    data.metric["sources"][uuid()] = data.source
+    data.metric["sources"][uuid()] = data.source.copy()
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} copied the source '{data.source_name}' of metric "

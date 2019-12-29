@@ -31,7 +31,7 @@ export function Source(props) {
         )
     }
 
-    function ErrorMessage(title, message) {
+    function ErrorMessage({title, message}) {
         return (
             <Grid.Row columns={1}>
                 <Grid.Column>
