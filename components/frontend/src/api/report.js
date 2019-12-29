@@ -4,6 +4,10 @@ function add_report(reload) {
   return fetch_server_api('post', 'report/new', {}).then(reload)
 }
 
+function copy_report(report_uuid, reload) {
+  return fetch_server_api('post', `report/${report_uuid}/copy`, {}).then(reload)
+}
+
 function delete_report(report_uuid, go_home) {
   return fetch_server_api('delete', `report/${report_uuid}`, {}).then(go_home)
 }
@@ -45,5 +49,5 @@ function get_report_pdf(report_uuid) {
 }
 
 export {
-  add_report, delete_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute, set_reports_attribute,
-  get_changelog }
+  add_report, copy_report, delete_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute,
+  set_reports_attribute, get_changelog }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { AddButton, CopyButton, DeleteButton, MoveButtonGroup } from './Button';
+import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButtonGroup } from './Button';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
@@ -20,6 +20,13 @@ describe('<DeleteButton />', () => {
     it('has the correct label', () => {
         const wrapper = shallow(<DeleteButton item_type="bar" />);
         expect(wrapper.dive().find("Button").children().at(4).text()).toBe("bar");
+    });
+});
+
+describe('<DownloadAsPDFButton />', () => {
+    it('has the correct label', () => {
+        const wrapper = shallow(<DownloadAsPDFButton />);
+        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("report as pdf");
     });
 });
 

@@ -1,12 +1,12 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import Dict, List, Literal, Tuple
+from typing import Callable, Dict, List, Literal, Tuple
 
 import pymongo
 from pymongo.database import Database
 
-from server_utilities.functions import iso_timestamp
+from server_utilities.functions import iso_timestamp, uuid
 from server_utilities.type import Change, Color, MetricId, Position, ReportId, SourceId, Status, SubjectId
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
@@ -140,6 +140,28 @@ def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId 
         data.source = data.metric["sources"][data.source_uuid]
         data.source_name = data.source.get("name") or data.datamodel["sources"][data.source["type"]]["name"]
     return data
+
+
+def _copy_item(item, sub_items: str, copy_sub_item: Callable):
+    """Return a copy of the item and its sub-items."""
+    item_copy = item.copy()
+    item_copy[sub_items] = dict((uuid(), copy_sub_item(sub_item)) for sub_item in item[sub_items].values())
+    return item_copy
+
+
+def copy_metric(metric):
+    """Return a copy of the metric and its sources."""
+    return _copy_item(metric, "sources", dict.copy)
+
+
+def copy_subject(subject):
+    """Return a copy of the subject, its metrics, and their sources."""
+    return _copy_item(subject, "metrics", copy_metric)
+
+
+def copy_report(report):
+    """Return a copy of the report, its subjects, their metrics, and their sources."""
+    return _copy_item(report, "subjects", copy_subject)
 
 
 def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:

@@ -7,7 +7,7 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_metric_attributes
-from database.reports import get_data, insert_new_report, move_item
+from database.reports import copy_metric, get_data, insert_new_report, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, ReportId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
@@ -41,10 +41,7 @@ def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Da
 def post_metric_copy(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Copy a metric."""
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
-    metric_copy = data.metric.copy()
-    # Give sources a new uuid
-    metric_copy["sources"] = dict((uuid(), source) for source in data.metric["sources"].values())
-    data.subject["metrics"][uuid()] = metric_copy
+    data.subject["metrics"][uuid()] = copy_metric(data.metric)
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} copied the metric '{data.metric_name}' of subject "

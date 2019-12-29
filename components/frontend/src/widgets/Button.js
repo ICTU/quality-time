@@ -27,6 +27,10 @@ export function DeleteButton(props) {
     return <ActionButton icon='trash' action='Delete' negative floated='right' {...props} />
 }
 
+export function DownloadAsPDFButton(props) {
+  return <ActionButton icon="file pdf" action='Download' item_type='report as pdf' {...props} />
+}
+
 function MoveButton(props) {
     const label = `Move ${props.moveable} to the ${props.direction} ${props.slot}`;
     const icon = {"first": "double up", "last": "double down", "previous": "up", "next": "down"}[props.direction];
