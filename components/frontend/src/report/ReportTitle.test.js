@@ -30,8 +30,8 @@ describe("<ReportTitle />", () => {
             </ReadOnlyContext.Provider>
         );
         wrapper.find(Header).simulate("click");  // Expand title
-        wrapper.find("button.left").simulate("click");
-        expect(wrapper.find("button.left").hasClass("loading")).toBe(true);
+        wrapper.find("button").at(1).simulate("click");
+        expect(wrapper.find("button").at(1).hasClass("loading")).toBe(true);
     });
     it('ignores a second click', () => {
         report.get_report_pdf = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
@@ -41,9 +41,9 @@ describe("<ReportTitle />", () => {
             </ReadOnlyContext.Provider>
         );
         wrapper.find(Header).simulate("click");  // Expand title
-        wrapper.find("button.left").simulate("click");
-        wrapper.find("button.left").simulate("click");
-        expect(wrapper.find("button.left").hasClass("loading")).toBe(true);
+        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(1).simulate("click");
+        expect(wrapper.find("button").at(1).hasClass("loading")).toBe(true);
     });
     it('loads the pdf', () => {
         report.get_report_pdf = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: (callback => callback()) }) });
@@ -53,7 +53,7 @@ describe("<ReportTitle />", () => {
             </ReadOnlyContext.Provider>
         );
         wrapper.find(Header).simulate("click");  // Expand title
-        wrapper.find("button.left").simulate("click");
-        expect(wrapper.find("button.left").hasClass("loading")).toBe(false);
+        wrapper.find("button").at(1).simulate("click");
+        expect(wrapper.find("button").at(1).hasClass("loading")).toBe(false);
     });
 });
