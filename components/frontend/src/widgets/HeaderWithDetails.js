@@ -5,7 +5,7 @@ import './HeaderWithDetails.css';
 export function HeaderWithDetails(props) {
     const [show_details, setShowDetails] = useState(false);
     return (
-        <Segment>
+        <>
             <Header
                 as={props.level}
                 onClick={() => setShowDetails(!show_details)}
@@ -19,7 +19,7 @@ export function HeaderWithDetails(props) {
                     <Header.Subheader>{props.subheader}</Header.Subheader>
                 </Header.Content>
             </Header>
-            {show_details && props.children}
-        </Segment>
+            {show_details && <Segment>{props.children}</Segment>}
+        </>
     )
 }
