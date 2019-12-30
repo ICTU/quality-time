@@ -62,17 +62,22 @@ class ReportTest(unittest.TestCase):
         """Test that a report can be copied."""
         report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
-            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(sources={SOURCE_ID: {}})})})
+            subjects={
+                SUBJECT_ID: dict(
+                    name="Subject", metrics={METRIC_ID: dict(report_uuid=REPORT_ID, sources={SOURCE_ID: {}})})})
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_report = self.database.reports.insert.call_args[0][0]
-        self.assertEqual(
-            list(report["subjects"].values())[0]["name"], list(inserted_report["subjects"].values())[0]["name"])
+        inserted_report_uuid = inserted_report["report_uuid"]
+        inserted_subject = list(inserted_report["subjects"].values())[0]
+        self.assertEqual(list(report["subjects"].values())[0]["name"], inserted_subject["name"])
+        self.assertEqual(inserted_report_uuid, list(inserted_subject["metrics"].values())[0]["report_uuid"])
         self.assertNotEqual(report["subjects"].keys(), inserted_report["subjects"].keys())
-        self.assertNotEqual(report["report_uuid"], inserted_report["report_uuid"])
+        self.assertNotEqual(report["report_uuid"], inserted_report_uuid)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, description="Jenny copied the report 'Report'."), inserted_report["delta"])
+            dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
+            inserted_report["delta"])
 
     @patch("requests.get")
     def test_get_pdf_report(self, requests_get):
@@ -102,6 +107,7 @@ class ReportTest(unittest.TestCase):
     @patch("bottle.request")
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
+        self.maxDiff = None  # pylint: disable=invalid-name
         date_time = request.report_date = iso_timestamp()
         self.database.datamodels.find_one.return_value = dict(
             _id="id", metrics=dict(metric_type=dict(default_scale="count")))

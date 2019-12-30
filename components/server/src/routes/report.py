@@ -32,10 +32,9 @@ def post_report_new(database: Database):
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data = get_data(database, report_uuid)
-    report_copy = copy_report(data.report)
-    report_copy["report_uuid"] = uuid()
+    report_copy = copy_report(data.report, report_copy_uuid := uuid())
     report_copy["delta"] = dict(
-        report_uuid=report_uuid, description=f"{sessions.user(database)} copied the report '{data.report_name}'.")
+        report_uuid=report_copy_uuid, description=f"{sessions.user(database)} copied the report '{data.report_name}'.")
     return insert_new_report(database, report_copy)
 
 

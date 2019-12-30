@@ -9,6 +9,8 @@ import uuid as _uuid
 from lxml.html.clean import autolink_html, clean_html  # nosec, pylint: disable=no-name-in-module
 import bottle
 
+from server_utilities.type import ReportId
+
 
 def iso_timestamp() -> str:
     """Return the ISO-format version of the current UTC date and time without microseconds."""
@@ -21,9 +23,9 @@ def report_date_time() -> str:
     return str(report_date_string).replace("Z", "+00:00") if report_date_string else iso_timestamp()
 
 
-def uuid() -> str:
+def uuid() -> ReportId:
     """Return a UUID."""
-    return str(_uuid.uuid4())
+    return ReportId(str(_uuid.uuid4()))
 
 
 def sanitize_html(html_text: str) -> str:

@@ -142,26 +142,32 @@ def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId 
     return data
 
 
-def _copy_item(item, sub_items: str, copy_sub_item: Callable):
+def _copy_item(item, sub_items: str, copy_sub_item: Callable, report_uuid: ReportId = None):
     """Return a copy of the item and its sub-items."""
     item_copy = item.copy()
-    item_copy[sub_items] = dict((uuid(), copy_sub_item(sub_item)) for sub_item in item[sub_items].values())
+    copy_args = tuple([report_uuid] if report_uuid else [])
+    item_copy[sub_items] = dict((uuid(), copy_sub_item(sub_item, *copy_args)) for sub_item in item[sub_items].values())
     return item_copy
 
 
-def copy_metric(metric):
+def copy_metric(metric, report_uuid: ReportId = None):
     """Return a copy of the metric and its sources."""
-    return _copy_item(metric, "sources", dict.copy)
+    metric_copy = _copy_item(metric, "sources", dict.copy)
+    if report_uuid:
+        metric_copy["report_uuid"] = report_uuid
+    return metric_copy
 
 
-def copy_subject(subject):
+def copy_subject(subject, report_uuid: ReportId = None):
     """Return a copy of the subject, its metrics, and their sources."""
-    return _copy_item(subject, "metrics", copy_metric)
+    return _copy_item(subject, "metrics", copy_metric, report_uuid)
 
 
-def copy_report(report):
+def copy_report(report, report_uuid: ReportId):
     """Return a copy of the report, its subjects, their metrics, and their sources."""
-    return _copy_item(report, "subjects", copy_subject)
+    report_copy = _copy_item(report, "subjects", copy_subject, report_uuid)
+    report_copy["report_uuid"] = report_uuid
+    return report_copy
 
 
 def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:
