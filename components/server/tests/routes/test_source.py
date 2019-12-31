@@ -225,6 +225,8 @@ class SourceTest(unittest.TestCase):
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID] = dict(name="Source")
         self.assertEqual(dict(ok=True), post_source_copy(REPORT_ID, SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
+        copied_source = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].values())[1]
+        self.assertEqual("Source (copy)", copied_source["name"])
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
                  description="Jenny copied the source 'Source' of metric 'Metric Type' of subject 'Subject' in report "

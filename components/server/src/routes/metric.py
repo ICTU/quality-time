@@ -41,7 +41,7 @@ def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Da
 def post_metric_copy(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Copy a metric."""
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
-    data.subject["metrics"][uuid()] = copy_metric(data.metric)
+    data.subject["metrics"][uuid()] = copy_metric(data.metric, data.datamodel)
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} copied the metric '{data.metric_name}' of subject "

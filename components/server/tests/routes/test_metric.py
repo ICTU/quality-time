@@ -228,7 +228,8 @@ class MetricTest(unittest.TestCase):
             _id="",
             metrics=dict(
                 metric_type=dict(
-                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])))
+                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])),
+            sources=dict(source_type=dict(name="Source type")))
 
     def test_add_metric(self):
         """Test that a metric can be added."""
@@ -246,12 +247,17 @@ class MetricTest(unittest.TestCase):
             _id=REPORT_ID, title="Report",
             subjects={
                 SUBJECT_ID: dict(
-                    name="Subject", metrics={METRIC_ID: dict(name="Metric", sources={SOURCE_ID: dict()})})})
+                    name="Subject",
+                    metrics={
+                        METRIC_ID: dict(name="Metric", sources={SOURCE_ID: dict(type="source_type", name="Source")})})})
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_metric_copy(REPORT_ID, METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
+        metric_copy = list(inserted_metrics.values())[1]
         self.assertEqual(2, len(inserted_metrics))
+        self.assertEqual("Metric (copy)", metric_copy["name"])
+        self.assertEqual("Source", list(metric_copy["sources"].values())[0]["name"])
         metric_keys = list(inserted_metrics.keys())
         self.assertNotEqual(
             inserted_metrics[metric_keys[0]]["sources"].keys(), inserted_metrics[metric_keys[1]]["sources"].keys())

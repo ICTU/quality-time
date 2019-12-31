@@ -25,7 +25,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 def post_subject_copy(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Copy a subject."""
     data = get_data(database, report_uuid, subject_uuid=subject_uuid)
-    data.report["subjects"][uuid()] = copy_subject(data.subject)
+    data.report["subjects"][uuid()] = copy_subject(data.subject, data.datamodel)
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid,
         description=f"{sessions.user(database)} copied the subject '{data.subject_name}' in report "

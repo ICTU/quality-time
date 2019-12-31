@@ -48,7 +48,10 @@ class ReportTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.database.datamodels.find_one.return_value = dict(_id="id")
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            metrics=dict(metric_type=dict(name="Metric type")),
+            sources=dict(source_type=dict(name="Source type")))
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -64,7 +67,11 @@ class ReportTest(unittest.TestCase):
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
-                    name="Subject", metrics={METRIC_ID: dict(report_uuid=REPORT_ID, sources={SOURCE_ID: {}})})})
+                    name="Subject",
+                    metrics={
+                        METRIC_ID: dict(
+                            report_uuid=REPORT_ID, type="metric_type",
+                            sources={SOURCE_ID: dict(type="source_type")})})})
         self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
         self.database.reports.insert.assert_called_once()
@@ -75,6 +82,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(inserted_report_uuid, list(inserted_subject["metrics"].values())[0]["report_uuid"])
         self.assertNotEqual(report["subjects"].keys(), inserted_report["subjects"].keys())
         self.assertNotEqual(report["report_uuid"], inserted_report_uuid)
+        self.assertEqual("Report (copy)", inserted_report["title"])
         self.assertEqual(
             dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
             inserted_report["delta"])

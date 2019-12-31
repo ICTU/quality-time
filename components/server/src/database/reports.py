@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import Callable, Dict, List, Literal, Tuple
+from typing import Dict, List, Literal, Tuple
 
 import pymongo
 from pymongo.database import Database
@@ -41,8 +41,8 @@ def summarize_report(database: Database, report) -> None:
     status_color_mapping: Dict[Status, Color] = dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
-    report["summary_by_subject"] = dict()
-    report["summary_by_tag"] = dict()
+    report["summary_by_subject"] = {}
+    report["summary_by_tag"] = {}
     last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
     datamodel = latest_datamodel(database)
     for subject_uuid, subject in report.get("subjects", {}).items():
@@ -142,31 +142,48 @@ def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId 
     return data
 
 
-def _copy_item(item, sub_items: str, copy_sub_item: Callable, report_uuid: ReportId = None):
-    """Return a copy of the item and its sub-items."""
-    item_copy = item.copy()
-    copy_args = tuple([report_uuid] if report_uuid else [])
-    item_copy[sub_items] = dict((uuid(), copy_sub_item(sub_item, *copy_args)) for sub_item in item[sub_items].values())
-    return item_copy
+def copy_source(source, data_model, change_name: bool = True):
+    """Return a copy of the source."""
+    source_copy = source.copy()
+    if change_name:
+        name = source_copy.get("name") or data_model["sources"][source["type"]]["name"]
+        source_copy["name"] = f"{name} (copy)"
+    return source_copy
 
 
-def copy_metric(metric, report_uuid: ReportId = None):
+def copy_metric(metric, data_model, report_uuid: ReportId = None, change_name: bool = True):
     """Return a copy of the metric and its sources."""
-    metric_copy = _copy_item(metric, "sources", dict.copy)
+    metric_copy = metric.copy()
+    metric_copy["sources"] = dict(
+        (uuid(), copy_source(source, data_model, change_name=False)) for source in metric["sources"].values())
+    if change_name:
+        name = metric_copy.get("name") or data_model["metrics"][metric["type"]]["name"]
+        metric_copy["name"] = f"{name} (copy)"
     if report_uuid:
         metric_copy["report_uuid"] = report_uuid
     return metric_copy
 
 
-def copy_subject(subject, report_uuid: ReportId = None):
+def copy_subject(subject, data_model, report_uuid: ReportId = None, change_name: bool = True):
     """Return a copy of the subject, its metrics, and their sources."""
-    return _copy_item(subject, "metrics", copy_metric, report_uuid)
+    subject_copy = subject.copy()
+    subject_copy["metrics"] = dict(
+        (uuid(), copy_metric(metric, data_model, report_uuid, change_name=False))
+        for metric in subject["metrics"].values())
+    if change_name:
+        name = subject_copy.get("name") or data_model["subjects"][subject["type"]]["name"]
+        subject_copy["name"] = f"{name} (copy)"
+    return subject_copy
 
 
-def copy_report(report, report_uuid: ReportId):
+def copy_report(report, data_model, report_uuid: ReportId):
     """Return a copy of the report, its subjects, their metrics, and their sources."""
-    report_copy = _copy_item(report, "subjects", copy_subject, report_uuid)
+    report_copy = report.copy()
+    report_copy["subjects"] = dict(
+        (uuid(), copy_subject(subject, data_model, report_uuid, change_name=False))
+        for subject in report["subjects"].values())
     report_copy["report_uuid"] = report_uuid
+    report_copy["title"] = f"{report_copy['title']} (copy)"
     return report_copy
 
 

@@ -98,14 +98,23 @@ class SubjectTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.report = dict(title="Report", subjects={SUBJECT_ID: dict(name="ABC")})
+        self.report = dict(
+            _id=REPORT_ID, title="Report",
+            subjects={
+                SUBJECT_ID: dict(
+                    name="Subject", type="subject_type",
+                    metrics={
+                        METRIC_ID: dict(
+                            name="Metric", type="metric_type", sources={SOURCE_ID: dict(type="source_type")})})})
         self.database.reports.find_one.return_value = self.report
-        self.database.datamodels.find_one.return_value = {}
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            metrics=dict(metric_type=dict(name="Metric type")),
+            subjects=dict(subject_type=dict(name="Subject", description="")),
+            sources=dict(source_type=dict(name="Source type")))
 
     def test_add_subject(self):
         """Test that a subject can be added."""
-        self.database.datamodels.find_one.return_value = dict(
-            _id="", subjects=dict(subject_type=dict(name="Subject", description="")))
         self.assertEqual(dict(ok=True), post_new_subject(REPORT_ID, self.database))
         self.assertEqual(
             dict(report_uuid=REPORT_ID, description="Jenny created a new subject in report 'Report'."),
@@ -113,29 +122,26 @@ class SubjectTest(unittest.TestCase):
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""
-        report = dict(
-            _id=REPORT_ID, title="Report",
-            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(sources={SOURCE_ID: {}})})})
-        self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_subject_copy(REPORT_ID, SUBJECT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))
-        subject_keys = list(inserted_subjects.keys())
-        self.assertNotEqual(
-            inserted_subjects[subject_keys[0]]["metrics"].keys(),
-            inserted_subjects[subject_keys[1]]["metrics"].keys())
-        self.assertNotEqual(
-            list(inserted_subjects[subject_keys[0]]["metrics"].values())[0]["sources"].keys(),
-            list(inserted_subjects[subject_keys[1]]["metrics"].values())[0]["sources"].keys())
+        original_subject = list(inserted_subjects.values())[0]
+        copied_subject = list(inserted_subjects.values())[1]
+        original_metric = list(original_subject["metrics"].values())[0]
+        copied_metric = list(copied_subject["metrics"].values())[0]
+        self.assertNotEqual(original_subject["metrics"].keys(), copied_subject["metrics"].keys())
+        self.assertNotEqual(original_metric["sources"].keys(), copied_metric["sources"].keys())
+        self.assertEqual("Subject (copy)", copied_subject["name"])
+        self.assertEqual("Metric", copied_metric["name"])
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
                  description="Jenny copied the subject 'Subject' in report 'Report'."),
-            report["delta"])
+            self.report["delta"])
 
     def test_delete_subject(self):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject(REPORT_ID, SUBJECT_ID, self.database))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, description="Jenny deleted the subject 'ABC' from report 'Report'."),
+            dict(report_uuid=REPORT_ID, description="Jenny deleted the subject 'Subject' from report 'Report'."),
             self.report["delta"])
