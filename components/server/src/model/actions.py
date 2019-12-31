@@ -3,52 +3,53 @@
 from typing import Dict, Literal, Tuple
 
 from server_utilities.functions import uuid
-from server_utilities.type import Position, ReportId
+from server_utilities.type import Position
+
+
+def copy_item(item, **kwargs):
+    """Return a copy of the item."""
+    item_copy = item.copy()
+    for key, value in kwargs.items():
+        item_copy[key] = value
+    return item_copy
 
 
 def copy_source(source, data_model, change_name: bool = True):
     """Return a copy of the source."""
-    source_copy = source.copy()
+    kwargs = {}
     if change_name:
-        name = source_copy.get("name") or data_model["sources"][source["type"]]["name"]
-        source_copy["name"] = f"{name} (copy)"
-    return source_copy
+        kwargs["name"] = f"{source.get('name') or data_model['sources'][source['type']]['name']} (copy)"
+    return copy_item(source, **kwargs)
 
 
-def copy_metric(metric, data_model, report_uuid: ReportId = None, change_name: bool = True):
+def copy_metric(metric, data_model, change_name: bool = True, **kwargs):
     """Return a copy of the metric and its sources."""
-    metric_copy = metric.copy()
-    metric_copy["sources"] = dict(
+    kwargs["sources"] = dict(
         (uuid(), copy_source(source, data_model, change_name=False)) for source in metric["sources"].values())
     if change_name:
-        name = metric_copy.get("name") or data_model["metrics"][metric["type"]]["name"]
-        metric_copy["name"] = f"{name} (copy)"
-    if report_uuid:
-        metric_copy["report_uuid"] = report_uuid
-    return metric_copy
+        kwargs["name"] = f"{metric.get('name') or data_model['metrics'][metric['type']]['name']} (copy)"
+    return copy_item(metric, **kwargs)
 
 
-def copy_subject(subject, data_model, report_uuid: ReportId = None, change_name: bool = True):
+def copy_subject(subject, data_model, change_name: bool = True, **kwargs):
     """Return a copy of the subject, its metrics, and their sources."""
-    subject_copy = subject.copy()
-    subject_copy["metrics"] = dict(
-        (uuid(), copy_metric(metric, data_model, report_uuid, change_name=False))
+    kwargs["metrics"] = dict(
+        (uuid(), copy_metric(metric, data_model, change_name=False, **kwargs))
         for metric in subject["metrics"].values())
     if change_name:
-        name = subject_copy.get("name") or data_model["subjects"][subject["type"]]["name"]
-        subject_copy["name"] = f"{name} (copy)"
-    return subject_copy
+        kwargs["name"] = f"{subject.get('name') or data_model['subjects'][subject['type']]['name']} (copy)"
+    kwargs.pop("report_uuid", None)  # Subjects don't have a report uuid, but metrics do.
+    return copy_item(subject, **kwargs)
 
 
-def copy_report(report, data_model, report_uuid: ReportId):
+def copy_report(report, data_model):
     """Return a copy of the report, its subjects, their metrics, and their sources."""
-    report_copy = report.copy()
-    report_copy["subjects"] = dict(
-        (uuid(), copy_subject(subject, data_model, report_uuid, change_name=False))
-        for subject in report["subjects"].values())
-    report_copy["report_uuid"] = report_uuid
-    report_copy["title"] = f"{report_copy['title']} (copy)"
-    return report_copy
+    report_uuid = uuid()
+    return copy_item(
+        report, report_uuid=report_uuid, title=f"{report['title']} (copy)",
+        subjects=dict(
+            (uuid(), copy_subject(subject, data_model, change_name=False, report_uuid=report_uuid))
+            for subject in report["subjects"].values()))
 
 
 def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:

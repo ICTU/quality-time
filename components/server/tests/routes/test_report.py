@@ -50,6 +50,7 @@ class ReportTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
+            subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(metric_type=dict(name="Metric type")),
             sources=dict(source_type=dict(name="Source type")))
 

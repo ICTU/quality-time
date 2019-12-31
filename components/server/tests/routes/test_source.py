@@ -197,8 +197,8 @@ class SourceTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
             _id="",
-            metrics=dict(metric_type=dict(name="Metric Type", direction="<", default_source="source_type")),
-            sources=dict(source_type=dict(parameters=dict())))
+            metrics=dict(metric_type=dict(name="Metric type", direction="<", default_source="source_type")),
+            sources=dict(source_type=dict(name="Source type", parameters=dict())))
         self.database.reports.find_one.return_value = self.report = create_report()
 
     def test_add_source(self):

@@ -229,7 +229,8 @@ class MetricTest(unittest.TestCase):
             _id="",
             metrics=dict(
                 metric_type=dict(
-                    default_scale="count", addition="sum", direction="<", target="0", near_target="1", tags=[])),
+                    name="Metric type", default_scale="count", addition="sum", direction="<", target="0",
+                    near_target="1", tags=[])),
             sources=dict(source_type=dict(name="Source type")))
 
     def test_add_metric(self):
