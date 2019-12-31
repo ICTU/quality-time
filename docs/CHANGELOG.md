@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added an option to exclude branches from being reported as unmerged when using GitLab or Azure DevOps as source for the unmerged branches metric. Closes [#879](https://github.com/ICTU/quality-time/issues/879).
-- Sources can be copied. Partially implements [#881](https://github.com/ICTU/quality-time/issues/881).
+- Sources, metrics, subjects, and reports can be copied. Partially implements [#881](https://github.com/ICTU/quality-time/issues/881).
 
 ### Changed
 
