@@ -7,7 +7,7 @@ import requests
 
 from routes.source import delete_source, post_source_attribute, post_source_copy, post_source_new, post_source_parameter
 
-from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -199,16 +199,7 @@ class SourceTest(unittest.TestCase):
             _id="",
             metrics=dict(metric_type=dict(name="Metric Type", direction="<", default_source="source_type")),
             sources=dict(source_type=dict(parameters=dict())))
-        self.report = dict(
-            _id=REPORT_ID, title="Report",
-            subjects={
-                SUBJECT_ID: dict(
-                    name="Subject",
-                    metrics={
-                        METRIC_ID: dict(
-                            name=None, type="metric_type", addition="sum", target="0", near_target="10",
-                            debt_target=None, accept_debt=False, tags=[], sources=dict())})})
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find_one.return_value = self.report = create_report()
 
     def test_add_source(self):
         """Test that a new source is added."""
@@ -216,30 +207,28 @@ class SourceTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
-                 description="Jenny added a new source to metric 'Metric Type' of subject 'Subject' in report "
+                 description="Jenny added a new source to metric 'Metric' of subject 'Subject' in report "
                              "'Report'."),
             self.report["delta"])
 
     def test_copy_source(self):
         """Test that a source can be copied."""
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID] = dict(name="Source")
         self.assertEqual(dict(ok=True), post_source_copy(REPORT_ID, SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].values())[1]
         self.assertEqual("Source (copy)", copied_source["name"])
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
-                 description="Jenny copied the source 'Source' of metric 'Metric Type' of subject 'Subject' in report "
+                 description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' in report "
                              "'Report'."),
             self.report["delta"])
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID] = dict(name="Source")
         self.assertEqual(dict(ok=True), delete_source(REPORT_ID, SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
-                 description="Jenny deleted the source 'Source' from metric 'Metric Type' of subject 'Subject' in "
+                 description="Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in "
                              "report 'Report'."),
             self.report["delta"])

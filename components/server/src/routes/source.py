@@ -8,7 +8,8 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
-from database.reports import copy_source, get_data, insert_new_report
+from database.reports import get_data, insert_new_report
+from model.actions import copy_source
 from server_utilities.functions import uuid
 from server_utilities.type import MetricId, ReportId, SourceId, URL
 

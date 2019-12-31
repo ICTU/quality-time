@@ -5,7 +5,8 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_subject_attributes
-from database.reports import copy_subject, get_data, insert_new_report, move_item
+from database.reports import get_data, insert_new_report
+from model.actions import copy_subject, move_item
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
 

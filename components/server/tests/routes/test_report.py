@@ -10,7 +10,7 @@ from routes.report import (
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 
-from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from .fixtures import REPORT_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -63,26 +63,12 @@ class ReportTest(unittest.TestCase):
 
     def test_copy_report(self):
         """Test that a report can be copied."""
-        report = dict(
-            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
-            subjects={
-                SUBJECT_ID: dict(
-                    name="Subject",
-                    metrics={
-                        METRIC_ID: dict(
-                            report_uuid=REPORT_ID, type="metric_type",
-                            sources={SOURCE_ID: dict(type="source_type")})})})
-        self.database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = report = create_report()
         self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_report = self.database.reports.insert.call_args[0][0]
         inserted_report_uuid = inserted_report["report_uuid"]
-        inserted_subject = list(inserted_report["subjects"].values())[0]
-        self.assertEqual(list(report["subjects"].values())[0]["name"], inserted_subject["name"])
-        self.assertEqual(inserted_report_uuid, list(inserted_subject["metrics"].values())[0]["report_uuid"])
-        self.assertNotEqual(report["subjects"].keys(), inserted_report["subjects"].keys())
         self.assertNotEqual(report["report_uuid"], inserted_report_uuid)
-        self.assertEqual("Report (copy)", inserted_report["title"])
         self.assertEqual(
             dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
             inserted_report["delta"])
@@ -97,8 +83,7 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        report = dict(_id="1", report_uuid=REPORT_ID, title="Report")
-        self.database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = create_report()
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("Jenny deleted the report 'Report'.", inserted["delta"]["description"])
@@ -116,7 +101,7 @@ class ReportTest(unittest.TestCase):
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
         self.maxDiff = None  # pylint: disable=invalid-name
-        date_time = request.report_date = iso_timestamp()
+        request.query = dict(report_date=(date_time := iso_timestamp()))
         self.database.datamodels.find_one.return_value = dict(
             _id="id", metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = None

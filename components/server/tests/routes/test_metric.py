@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy
 
-from .fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from .fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -223,6 +223,7 @@ class MetricTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
+        self.database.reports.find_one.return_value = self.report = create_report()
         self.database.sessions.find_one.return_value = dict(user="John")
         self.database.datamodels.find_one.return_value = dict(
             _id="",
@@ -233,61 +234,42 @@ class MetricTest(unittest.TestCase):
 
     def test_add_metric(self):
         """Test that a metric can be added."""
-        report = dict(_id=REPORT_ID, title="Report", subjects={SUBJECT_ID: dict(name="Subject", metrics=dict())})
-        self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_metric_new(REPORT_ID, SUBJECT_ID, self.database))
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
                  description="John added a new metric to subject 'Subject' in report 'Report'."),
-            report["delta"])
+            self.report["delta"])
 
     def test_copy_metric(self):
         """Test that a metric can be copied."""
-        report = dict(
-            _id=REPORT_ID, title="Report",
-            subjects={
-                SUBJECT_ID: dict(
-                    name="Subject",
-                    metrics={
-                        METRIC_ID: dict(name="Metric", sources={SOURCE_ID: dict(type="source_type", name="Source")})})})
-        self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), post_metric_copy(REPORT_ID, METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
-        metric_copy = list(inserted_metrics.values())[1]
         self.assertEqual(2, len(inserted_metrics))
-        self.assertEqual("Metric (copy)", metric_copy["name"])
-        self.assertEqual("Source", list(metric_copy["sources"].values())[0]["name"])
-        metric_keys = list(inserted_metrics.keys())
-        self.assertNotEqual(
-            inserted_metrics[metric_keys[0]]["sources"].keys(), inserted_metrics[metric_keys[1]]["sources"].keys())
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
                  description="John copied the metric 'Metric' of subject 'Subject' in report 'Report'."),
-            report["delta"])
+            self.report["delta"])
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""
-        report = dict(
-            _id="id", report_uuid=REPORT_ID,
-            subjects={SUBJECT_ID: dict(metrics={METRIC_ID: dict(type="metric_type", tags=[])})})
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.reports.distinct.return_value = [REPORT_ID, "deleted_report"]
-        self.database.reports.find_one.side_effect = [report, dict(deleted=True)]
+        self.database.reports.find_one.side_effect = [self.report, dict(deleted=True)]
         self.database.measurements.find.return_value = [dict(
             _id="id", metric_uuid=METRIC_ID, status="red",
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
-        self.assertEqual({METRIC_ID: dict(type="metric_type", tags=[])}, get_metrics(self.database))
+        self.assertEqual(
+            {METRIC_ID: dict(
+                name="Metric", type="metric_type", tags=[], sources=dict(
+                    source_uuid=dict(name="Source", type="source_type")))},
+            get_metrics(self.database))
 
     def test_delete_metric(self):
         """Test that the metric can be deleted."""
-        report = dict(
-            _id=REPORT_ID, title="Report",
-            subjects={SUBJECT_ID: dict(name="Subject", metrics={METRIC_ID: dict(name="Metric")})})
-        self.database.reports.find_one.return_value = report
         self.assertEqual(dict(ok=True), delete_metric(REPORT_ID, METRIC_ID, self.database))
-        self.database.reports.insert.assert_called_once_with(report)
+        self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
                  description=f"John deleted metric 'Metric' from subject 'Subject' in report 'Report'."),
-            report["delta"])
+            self.report["delta"])

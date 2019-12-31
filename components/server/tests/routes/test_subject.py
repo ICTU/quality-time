@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from routes.subject import delete_subject, post_new_subject, post_subject_attribute, post_subject_copy
 
-from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
+from .fixtures import REPORT_ID, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 @patch("bottle.request")
@@ -98,15 +98,7 @@ class SubjectTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.report = dict(
-            _id=REPORT_ID, title="Report",
-            subjects={
-                SUBJECT_ID: dict(
-                    name="Subject", type="subject_type",
-                    metrics={
-                        METRIC_ID: dict(
-                            name="Metric", type="metric_type", sources={SOURCE_ID: dict(type="source_type")})})})
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find_one.return_value = self.report = create_report()
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             metrics=dict(metric_type=dict(name="Metric type")),
@@ -126,14 +118,6 @@ class SubjectTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once()
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))
-        original_subject = list(inserted_subjects.values())[0]
-        copied_subject = list(inserted_subjects.values())[1]
-        original_metric = list(original_subject["metrics"].values())[0]
-        copied_metric = list(copied_subject["metrics"].values())[0]
-        self.assertNotEqual(original_subject["metrics"].keys(), copied_subject["metrics"].keys())
-        self.assertNotEqual(original_metric["sources"].keys(), copied_metric["sources"].keys())
-        self.assertEqual("Subject (copy)", copied_subject["name"])
-        self.assertEqual("Metric", copied_metric["name"])
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
                  description="Jenny copied the subject 'Subject' in report 'Report'."),
