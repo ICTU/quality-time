@@ -3,7 +3,6 @@ import { Header } from 'semantic-ui-react';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 
 export function SubjectType(props) {
-    console.log(props)
     let options = [];
     Object.keys(props.datamodel.subjects).forEach((key) => {
         const subject_type = props.datamodel.subjects[key];

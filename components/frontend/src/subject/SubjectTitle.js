@@ -3,9 +3,9 @@ import { Grid, Header } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { DeleteButton, MoveButtonGroup } from '../widgets/Button';
+import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { delete_subject, set_subject_attribute } from '../api/subject';
+import { copy_subject, delete_subject, set_subject_attribute } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
@@ -13,6 +13,34 @@ export function SubjectTitle(props) {
     const report_uuid = props.report.report_uuid;
     const subject_name = props.subject.name || current_subject_type.name;
     const subject_uuid = props.subject_uuid;
+
+    function ButtonRow() {
+        return (
+            <ReadOnlyOrEditable editableComponent={
+                <Grid.Row>
+                    <Grid.Column>
+                        <CopyButton
+                            item_type="subject"
+                            onClick={() => copy_subject(report_uuid, subject_uuid, props.reload)}
+                        />
+                        <MoveButtonGroup
+                            first={props.first_subject}
+                            last={props.last_subject}
+                            moveable="subject"
+                            onClick={(direction) => {
+                                set_subject_attribute(report_uuid, subject_uuid, "position", direction, props.reload)
+                            }}
+                            slot="position"
+                        />
+                        <DeleteButton
+                            item_type='subject'
+                            onClick={() => delete_subject(report_uuid, subject_uuid, props.reload)}
+                        />
+                    </Grid.Column>
+                </Grid.Row>}
+            />
+        )
+    }
     return (
         <HeaderWithDetails level="h2" header={subject_name} style={{ marginTop: 50 }}>
             <Header>
@@ -50,25 +78,7 @@ export function SubjectTitle(props) {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <ReadOnlyOrEditable editableComponent={
-                    <Grid.Row>
-                        <Grid.Column>
-                            <MoveButtonGroup
-                                first={props.first_subject}
-                                last={props.last_subject}
-                                moveable="subject"
-                                onClick={(direction) => {
-                                    set_subject_attribute(report_uuid, subject_uuid, "position", direction, props.reload)
-                                }}
-                                slot="position"
-                            />
-                            <DeleteButton
-                                item_type='subject'
-                                onClick={() => delete_subject(report_uuid, subject_uuid, props.reload)}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>}
-                />
+                <ButtonRow />
             </Grid>
         </HeaderWithDetails>
     )

@@ -7,7 +7,8 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_metric_attributes
-from database.reports import get_data, insert_new_report, move_item
+from database.reports import get_data, insert_new_report
+from model.actions import copy_metric, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, ReportId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
@@ -23,6 +24,42 @@ def get_metrics(database: Database):
         for subject in report["subjects"].values():
             metrics.update(subject["metrics"])
     return metrics
+
+
+@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/metric/new")
+def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
+    """Add a new metric."""
+    data = get_data(database, report_uuid, subject_uuid)
+    data.subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
+                    f"'{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
+@bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/copy")
+def post_metric_copy(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
+    """Copy a metric."""
+    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    data.subject["metrics"][uuid()] = copy_metric(data.metric, data.datamodel)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        description=f"{sessions.user(database)} copied the metric '{data.metric_name}' of subject "
+                    f"'{data.subject_name}' in report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
+@bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")
+def delete_metric(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
+    """Delete a metric."""
+    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        description=f"{sessions.user(database)} deleted metric '{data.metric_name}' from subject '{data.subject_name}' "
+                    f"in report '{data.report_name}'.")
+    del data.subject["metrics"][metric_uuid]
+    return insert_new_report(database, data.report)
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")
@@ -50,27 +87,3 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
         if latest := latest_measurement(database, metric_uuid):
             return insert_new_measurement(database, data.metric, latest)
     return dict(ok=True)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/metric/new")
-def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
-    """Add a new metric."""
-    data = get_data(database, report_uuid, subject_uuid)
-    data.subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
-    data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
-        description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
-                    f"'{data.report_name}'.")
-    return insert_new_report(database, data.report)
-
-
-@bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")
-def delete_metric(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
-    """Delete a metric."""
-    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
-    data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
-        description=f"{sessions.user(database)} deleted metric '{data.metric_name}' from subject '{data.subject_name}' "
-                    f"in report '{data.report_name}'.")
-    del data.subject["metrics"][metric_uuid]
-    return insert_new_report(database, data.report)

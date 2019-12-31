@@ -6,24 +6,10 @@ from pymongo.database import Database
 
 from database import sessions
 from database.reports import get_data, latest_reports, insert_new_report, summarize_report
+from model.actions import copy_report
 from initialization.report import import_json_report
 from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import ReportId
-
-
-@bottle.post("/api/v1/report/<report_uuid>/<report_attribute>")
-def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
-    """Set a report attribute."""
-    data = get_data(database, report_uuid)
-    value = dict(bottle.request.json)[report_attribute]
-    old_value = data.report.get(report_attribute) or ""
-    data.report[report_attribute] = value
-    value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
-    data.report["delta"] = dict(
-        report_uuid=report_uuid,
-        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}'"
-                    f"{value_change_description}.")
-    return insert_new_report(database, data.report)
 
 
 @bottle.post("/api/v1/report/import")
@@ -43,6 +29,17 @@ def post_report_new(database: Database):
     return insert_new_report(database, report)
 
 
+@bottle.post("/api/v1/report/<report_uuid>/copy")
+def post_report_copy(report_uuid: ReportId, database: Database):
+    """Copy a report."""
+    data = get_data(database, report_uuid)
+    report_copy = copy_report(data.report, data.datamodel)
+    report_copy["delta"] = dict(
+        report_uuid=report_copy["report_uuid"],
+        description=f"{sessions.user(database)} copied the report '{data.report_name}'.")
+    return insert_new_report(database, report_copy)
+
+
 @bottle.get("/api/v1/report/<report_uuid>/pdf")
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as pdf."""
@@ -59,6 +56,21 @@ def delete_report(report_uuid: ReportId, database: Database):
     data.report["deleted"] = "true"
     data.report["delta"] = dict(
         report_uuid=report_uuid, description=f"{sessions.user(database)} deleted the report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
+@bottle.post("/api/v1/report/<report_uuid>/<report_attribute>")
+def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
+    """Set a report attribute."""
+    data = get_data(database, report_uuid)
+    value = dict(bottle.request.json)[report_attribute]
+    old_value = data.report.get(report_attribute) or ""
+    data.report[report_attribute] = value
+    value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
+    data.report["delta"] = dict(
+        report_uuid=report_uuid,
+        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}'"
+                    f"{value_change_description}.")
     return insert_new_report(database, data.report)
 
 

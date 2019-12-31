@@ -9,6 +9,7 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
 from database.reports import get_data, insert_new_report
+from model.actions import copy_source
 from server_utilities.functions import uuid
 from server_utilities.type import MetricId, ReportId, SourceId, URL
 
@@ -26,6 +27,18 @@ def post_source_new(report_uuid: ReportId, metric_uuid: MetricId, database: Data
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
         description=f"{sessions.user(database)} added a new source to metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
+@bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/copy")
+def post_source_copy(report_uuid: ReportId, source_uuid: SourceId, database: Database):
+    """Copy a source."""
+    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    data.metric["sources"][uuid()] = copy_source(data.source, data.datamodel)
+    data.report["delta"] = dict(
+        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        description=f"{sessions.user(database)} copied the source '{data.source_name}' of metric "
+                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 

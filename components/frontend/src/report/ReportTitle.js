@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Grid, Icon } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { DeleteButton } from '../widgets/Button';
-import { delete_report, get_report_pdf, set_report_attribute } from '../api/report';
+import { CopyButton, DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { copy_report, delete_report, get_report_pdf, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function download_pdf(report_uuid, callback) {
@@ -21,6 +21,35 @@ function download_pdf(report_uuid, callback) {
 
 export function ReportTitle(props) {
     const [loading, setLoading] = useState(false);
+    function ButtonRow() {
+        return (
+            <Grid.Row>
+                <Grid.Column>
+                    <DownloadAsPDFButton
+                        loading={loading}
+                        onClick={() => {
+                            if (!loading) {
+                                setLoading(true);
+                                download_pdf(props.report.report_uuid, () => { setLoading(false) })
+                            }
+                        }}
+                    />
+                    <ReadOnlyOrEditable editableComponent={
+                        <CopyButton
+                            item_type="report"
+                            onClick={() => copy_report(props.report.report_uuid, props.reload)}
+                        />}
+                    />
+                    <ReadOnlyOrEditable editableComponent={
+                        <DeleteButton
+                            item_type='report'
+                            onClick={() => delete_report(props.report.report_uuid, props.go_home)}
+                        />}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+        )
+    }
     return (
         <HeaderWithDetails level="h1" header={props.report.title} subheader={props.report.subtitle}>
             <Grid stackable>
@@ -48,31 +77,7 @@ export function ReportTitle(props) {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Button
-                            basic
-                            floated="left"
-                            icon
-                            loading={loading}
-                            onClick={() => {
-                                if (!loading) {
-                                    setLoading(true);
-                                    download_pdf(props.report.report_uuid, () => { setLoading(false) })
-                                }
-                            }}
-                            primary
-                        >
-                            <Icon name="file pdf" /> Download report as PDF
-                            </Button>
-                        <ReadOnlyOrEditable editableComponent={
-                            <DeleteButton
-                                item_type='report'
-                                onClick={() => delete_report(props.report.report_uuid, props.go_home)}
-                            />}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
+                <ButtonRow/>
             </Grid>
         </HeaderWithDetails>
     )

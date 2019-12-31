@@ -19,8 +19,16 @@ export function AddButton(props) {
     return <ActionButton icon='plus' action='Add' {...props} />
 }
 
+export function CopyButton(props) {
+    return <ActionButton icon='copy' action='Copy' {...props} />
+}
+
 export function DeleteButton(props) {
     return <ActionButton icon='trash' action='Delete' negative floated='right' {...props} />
+}
+
+export function DownloadAsPDFButton(props) {
+  return <ActionButton icon="file pdf" action='Download' item_type='report as pdf' {...props} />
 }
 
 function MoveButton(props) {

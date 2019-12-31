@@ -5,12 +5,12 @@ from unittest.mock import Mock, patch
 from typing import cast
 
 from routes.report import (
-    delete_report, export_report_as_pdf, get_tag_report, post_report_attribute, post_report_new, post_report_import
-)
+    delete_report, export_report_as_pdf, get_tag_report, post_report_attribute, post_report_copy, post_report_new,
+    post_report_import)
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 
-from .fixtures import REPORT_ID, SUBJECT_ID
+from .fixtures import REPORT_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -48,6 +48,11 @@ class ReportTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            subjects=dict(subject_type=dict(name="Subject type")),
+            metrics=dict(metric_type=dict(name="Metric type")),
+            sources=dict(source_type=dict(name="Source type")))
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -56,6 +61,18 @@ class ReportTest(unittest.TestCase):
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
         self.assertEqual("Jenny created a new report.", inserted["delta"]["description"])
+
+    def test_copy_report(self):
+        """Test that a report can be copied."""
+        self.database.reports.find_one.return_value = report = create_report()
+        self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
+        self.database.reports.insert.assert_called_once()
+        inserted_report = self.database.reports.insert.call_args[0][0]
+        inserted_report_uuid = inserted_report["report_uuid"]
+        self.assertNotEqual(report["report_uuid"], inserted_report_uuid)
+        self.assertEqual(
+            dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
+            inserted_report["delta"])
 
     @patch("requests.get")
     def test_get_pdf_report(self, requests_get):
@@ -67,9 +84,7 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        self.database.datamodels.find_one.return_value = dict(_id="id")
-        report = dict(_id="1", report_uuid=REPORT_ID, title="Report")
-        self.database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = create_report()
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("Jenny deleted the report 'Report'.", inserted["delta"]["description"])
@@ -86,7 +101,8 @@ class ReportTest(unittest.TestCase):
     @patch("bottle.request")
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
-        date_time = request.report_date = iso_timestamp()
+        self.maxDiff = None  # pylint: disable=invalid-name
+        request.query = dict(report_date=(date_time := iso_timestamp()))
         self.database.datamodels.find_one.return_value = dict(
             _id="id", metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = None

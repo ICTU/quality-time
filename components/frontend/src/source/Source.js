@@ -5,8 +5,8 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { DeleteButton } from '../widgets/Button';
-import { delete_source, set_source_attribute } from '../api/source';
+import { CopyButton, DeleteButton } from '../widgets/Button';
+import { copy_source, delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
@@ -16,8 +16,8 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
 export function Source(props) {
     const source_type = props.datamodel.sources[props.source.type];
 
-    return (
-        <>
+    function SourceHeader() {
+        return (
             <Header>
                 <Header.Content>
                     <Logo logo={props.source.type} alt={source_type.name} />
@@ -28,6 +28,25 @@ export function Source(props) {
                     </Header.Subheader>
                 </Header.Content>
             </Header>
+        )
+    }
+
+    function ErrorMessage({title, message}) {
+        return (
+            <Grid.Row columns={1}>
+                <Grid.Column>
+                    <Message negative>
+                        <Message.Header>{title}</Message.Header>
+                        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{message}</pre>
+                    </Message>
+                </Grid.Column>
+            </Grid.Row>
+        )
+    }
+
+    return (
+        <>
+            <SourceHeader />
             <Grid stackable>
                 <Grid.Row columns={2}>
                     <Grid.Column>
@@ -55,22 +74,8 @@ export function Source(props) {
                         changed_param_keys={select_sources_parameter_keys(props.changed_fields, props.source_uuid)}
                     />
                 </Grid.Row>
-                {props.connection_error && <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <Message negative>
-                            <Message.Header>Connection error</Message.Header>
-                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{props.connection_error}</pre>
-                        </Message>
-                    </Grid.Column>
-                </Grid.Row>}
-                {props.parse_error && <Grid.Row columns={1}>
-                    <Grid.Column>
-                        <Message negative>
-                            <Message.Header>Parse error</Message.Header>
-                            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{props.parse_error}</pre>
-                        </Message>
-                    </Grid.Column>
-                </Grid.Row>}
+                {props.connection_error && <ErrorMessage title="Connection error" message={props.connection_error} />}
+                {props.parse_error && <ErrorMessage title="Parse error" message={props.parse_error} />}
                 <Grid.Row>
                     <Grid.Column>
                         <ChangeLog
@@ -81,7 +86,13 @@ export function Source(props) {
                     </Grid.Column>
                 </Grid.Row>
                 <ReadOnlyOrEditable editableComponent={
-                    <Grid.Row columns={1}>
+                    <Grid.Row columns={2}>
+                        <Grid.Column>
+                            <CopyButton
+                                item_type='source'
+                                onClick={() => copy_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                            />
+                        </Grid.Column>
                         <Grid.Column>
                             <DeleteButton
                                 item_type='source'

@@ -2,6 +2,9 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { MeasurementDetails } from './MeasurementDetails';
+import * as metric_api from '../api/metric';
+
+jest.mock("../api/metric.js");
 
 const report = {
     report_uuid: "report_uuid",
@@ -35,5 +38,20 @@ describe("<MeasurementDetails />", () => {
         );
         wrapper.find({ icon: "angle double down" }).at(0).simulate("click");
         expect(mockCallBack).toHaveBeenCalled();
+    });
+    it('calls the callback on copy', () => {
+        const wrapper = mount(
+            <ReadOnlyContext.Provider value={false}>
+                <MeasurementDetails
+                    datamodel={{ metrics: { violations: { direction: "<", tags: [] } } }}
+                    measurements={[]}
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    subject_uuid="subject_uuid"
+                />
+            </ReadOnlyContext.Provider>
+        );
+        wrapper.find("CopyButton").simulate("click");
+        expect(metric_api.copy_metric).toHaveBeenCalled();
     });
 });
