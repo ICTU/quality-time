@@ -7,7 +7,7 @@ import requests
 
 from routes.source import delete_source, post_source_attribute, post_source_copy, post_source_new, post_source_parameter
 
-from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -15,6 +15,9 @@ class PostSourceAttributeTest(unittest.TestCase):
     """Unit tests for the post source attribute route."""
 
     def setUp(self):
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
+            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report",
             subjects={
@@ -22,7 +25,7 @@ class PostSourceAttributeTest(unittest.TestCase):
                     name="Subject",
                     metrics={
                         METRIC_ID: dict(
-                            name="Metric", type="type", sources={SOURCE_ID: dict(name="Source", type="type")})})})
+                            name="Metric", type="type", sources=self.sources)})})
         self.database = Mock()
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="Jenny")
@@ -51,6 +54,25 @@ class PostSourceAttributeTest(unittest.TestCase):
                              "report 'Report' from 'type' to 'new_type'."),
             self.report["delta"])
 
+    def test_post_position(self, request):
+        """Test that a metric can be moved."""
+        request.json = dict(position="first")
+        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID2, "position", self.database))
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual(
+            [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys()))
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID2,
+                 description="Jenny changed the position of source 'Source 2' of metric 'Metric' of subject 'Subject' "
+                             "in report 'Report' from '1' to '0'."),
+            self.report["delta"])
+
+    def test_no_change(self, request):
+        """Test that no new report is inserted when the attribute is unchanged."""
+        request.json = dict(name="Source")
+        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID, "name", self.database))
+        self.database.reports.insert.assert_not_called()
+
 
 @patch("bottle.request")
 class PostSourceParameterTest(unittest.TestCase):
@@ -61,15 +83,15 @@ class PostSourceParameterTest(unittest.TestCase):
 
     def setUp(self):
         self.url = "https://url"
-        self.sources = {SOURCE_ID: dict(name="Source", type="type", parameters=dict())}
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
+            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report",
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
-                    metrics={
-                        METRIC_ID: dict(
-                            name="Metric", type="type", sources=self.sources)})})
+                    metrics={METRIC_ID: dict(name="Metric", type="type", sources=self.sources)})})
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.reports.find_one.return_value = self.report
@@ -149,6 +171,7 @@ class PostSourceParameterTest(unittest.TestCase):
 
     def test_empty_url(self, request):
         """Test that the source url availability is not checked when the url is empty."""
+        self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = dict(url="")
         response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
         self.assertEqual(response, dict(ok=True))
@@ -187,6 +210,14 @@ class PostSourceParameterTest(unittest.TestCase):
                  description="Jenny changed the password of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              "report 'Report' from '' to '******'."),
             self.report["delta"])
+
+    def test_no_change(self, request):
+        """Test that no new report is inserted if the parameter value is unchanged."""
+        self.sources[SOURCE_ID]["parameters"]["url"] = self.url
+        request.json = dict(url=self.url)
+        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_not_called()
 
 
 class SourceTest(unittest.TestCase):

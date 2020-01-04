@@ -1,6 +1,6 @@
 """Source routes."""
 
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Any, Dict, List, Tuple, Optional, Union
 
 import bottle
 import requests
@@ -9,7 +9,7 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
 from database.reports import get_data, insert_new_report
-from model.actions import copy_source
+from model.actions import copy_source, move_item
 from server_utilities.functions import uuid
 from server_utilities.type import MetricId, ReportId, SourceId, URL
 
@@ -59,8 +59,14 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
     """Set a source attribute."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
     value = dict(bottle.request.json)[source_attribute]
-    old_value = data.source.get(source_attribute) or ""
-    data.source[source_attribute] = value
+    old_value: Any
+    if source_attribute == "position":
+        old_value, value = move_item(data, value, "source")
+    else:
+        old_value = data.source.get(source_attribute) or ""
+        data.source[source_attribute] = value
+    if old_value == value:
+        return dict(ok=True)  # Nothing to do
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {source_attribute} of source '{data.source_name}' of "
@@ -75,12 +81,13 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
 def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = get_data(database, report_uuid, source_uuid=source_uuid)
-    response_json = dict(bottle.request.json)
-    parameter_value = response_json[parameter_key]
+    new_value = dict(bottle.request.json)[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
-    new_value = data.source["parameters"][parameter_key] = parameter_value
+    if old_value == new_value:
+        return dict(ok=True)  # Nothing to do
+    data.source["parameters"][parameter_key] = new_value
     if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
-        new_value, old_value = "*" * len(parameter_value), "*" * len(old_value)
+        new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,

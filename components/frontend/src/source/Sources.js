@@ -20,12 +20,15 @@ export function Sources(props) {
     const source_uuids = Object.keys(props.sources).filter((source_uuid) =>
         props.datamodel.metrics[props.metric_type].sources.includes(props.sources[source_uuid].type)
     );
-    const sources = source_uuids.map((source_uuid) =>
+    const last_index = source_uuids.length - 1;
+    const sources = source_uuids.map((source_uuid, index) =>
         (
             <Segment vertical key={source_uuid}>
                 <Source
                     connection_error={source_error(source_uuid, "connection_error")}
                     datamodel={props.datamodel}
+                    first_source={index === 0}
+                    last_source={index === last_index}
                     metric_type={props.metric_type}
                     metric_unit={props.metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}

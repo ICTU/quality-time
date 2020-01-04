@@ -67,15 +67,16 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
     data = get_data(database, report_uuid, metric_uuid=metric_uuid)
-    old_value = data.metric.get(metric_attribute) or ""
     if metric_attribute == "comment" and value:
         value = sanitize_html(value)
+    old_value: Any
     if metric_attribute == "position":
         old_value, value = move_item(data, value, "metric")
     else:
-        data.metric[metric_attribute] = value
+        old_value = data.metric.get(metric_attribute) or ""
     if old_value == value:
         return dict(ok=True)  # Nothing to do
+    data.metric[metric_attribute] = value
     if metric_attribute == "type":
         data.metric.update(default_metric_attributes(database, report_uuid, value))
     data.report["delta"] = dict(

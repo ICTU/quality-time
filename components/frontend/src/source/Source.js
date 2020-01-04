@@ -5,7 +5,7 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { CopyButton, DeleteButton } from '../widgets/Button';
+import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
 import { copy_source, delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -31,7 +31,7 @@ export function Source(props) {
         )
     }
 
-    function ErrorMessage({title, message}) {
+    function ErrorMessage({ title, message }) {
         return (
             <Grid.Row columns={1}>
                 <Grid.Column>
@@ -86,14 +86,21 @@ export function Source(props) {
                     </Grid.Column>
                 </Grid.Row>
                 <ReadOnlyOrEditable editableComponent={
-                    <Grid.Row columns={2}>
+                    <Grid.Row>
                         <Grid.Column>
                             <CopyButton
                                 item_type='source'
                                 onClick={() => copy_source(props.report.report_uuid, props.source_uuid, props.reload)}
                             />
-                        </Grid.Column>
-                        <Grid.Column>
+                            <MoveButtonGroup
+                                first={props.first_source}
+                                last={props.last_source}
+                                moveable="source"
+                                onClick={(direction) => {
+                                    set_source_attribute(props.report.report_uuid, props.source_uuid, "position", direction, props.reload)
+                                }}
+                                slot="position"
+                            />
                             <DeleteButton
                                 item_type='source'
                                 onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
