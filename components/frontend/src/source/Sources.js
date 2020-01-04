@@ -33,8 +33,9 @@ export function Sources(props) {
         props.datamodel.metrics[props.metric_type].sources.includes(props.sources[source_uuid].type)
     );
     const last_index = source_uuids.length - 1;
-    const sources = source_uuids.map((source_uuid, index) =>
-        (
+
+    function SourceSegment(source_uuid, index) {
+        return (
             <Segment vertical key={source_uuid}>
                 <Source
                     connection_error={source_error(source_uuid, "connection_error")}
@@ -52,10 +53,10 @@ export function Sources(props) {
                 />
             </Segment>
         )
-    );
+    }
     return (
         <>
-            {sources}
+            {source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index))}
             <ButtonSegment />
         </>
     )

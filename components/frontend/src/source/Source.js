@@ -33,7 +33,7 @@ export function Source(props) {
 
     function ErrorMessage({ title, message }) {
         return (
-            <Grid.Row columns={1}>
+            <Grid.Row>
                 <Grid.Column>
                     <Message negative>
                         <Message.Header>{title}</Message.Header>
@@ -72,48 +72,68 @@ export function Source(props) {
         )
     }
 
+    function ChangeLogRow() {
+        return (
+            <Grid.Row>
+                <Grid.Column>
+                    <ChangeLog
+                        report_uuid={props.report.report_uuid}
+                        source_uuid={props.source_uuid}
+                        timestamp={props.report.timestamp}
+                    />
+                </Grid.Column>
+            </Grid.Row >
+        )
+    }
+
+    function AttributesRow() {
+        return (
+            <Grid.Row columns={2}>
+                <Grid.Column>
+                    <SourceType
+                        source_type={props.source.type}
+                        metric_type={props.metric_type} datamodel={props.datamodel}
+                        set_source_attribute={(a, v) => set_source_attribute(props.report.report_uuid, props.source_uuid, a, v, props.reload)} />
+                </Grid.Column>
+                <Grid.Column>
+                    <StringInput
+                        label="Source name"
+                        placeholder={source_type.name}
+                        set_value={(value) => set_source_attribute(props.report.report_uuid, props.source_uuid, "name", value, props.reload)}
+                        value={props.source.name}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+        )
+    }
+
+    function ParametersRow() {
+        return (
+            <Grid.Row columns={2}>
+                <SourceParameters
+                    datamodel={props.datamodel}
+                    metric_type={props.metric_type}
+                    metric_unit={props.metric_unit}
+                    reload={props.reload}
+                    report={props.report}
+                    source={props.source}
+                    source_uuid={props.source_uuid}
+                    changed_param_keys={select_sources_parameter_keys(props.changed_fields, props.source_uuid)}
+                />
+            </Grid.Row>
+        )
+    }
+
     return (
         <>
             <SourceHeader />
             <Grid stackable>
-                <Grid.Row columns={2}>
-                    <Grid.Column>
-                        <SourceType
-                            source_type={props.source.type}
-                            metric_type={props.metric_type} datamodel={props.datamodel}
-                            set_source_attribute={(a, v) => set_source_attribute(props.report.report_uuid, props.source_uuid, a, v, props.reload)} />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <StringInput
-                            label="Source name"
-                            placeholder={source_type.name}
-                            set_value={(value) => set_source_attribute(props.report.report_uuid, props.source_uuid, "name", value, props.reload)}
-                            value={props.source.name}
-                        />
-                    </Grid.Column>
-                    <SourceParameters
-                        datamodel={props.datamodel}
-                        metric_type={props.metric_type}
-                        metric_unit={props.metric_unit}
-                        reload={props.reload}
-                        report={props.report}
-                        source={props.source}
-                        source_uuid={props.source_uuid}
-                        changed_param_keys={select_sources_parameter_keys(props.changed_fields, props.source_uuid)}
-                    />
-                </Grid.Row>
+                <AttributesRow />
+                <ParametersRow />
                 {props.connection_error && <ErrorMessage title="Connection error" message={props.connection_error} />}
                 {props.parse_error && <ErrorMessage title="Parse error" message={props.parse_error} />}
-                <Grid.Row>
-                    <Grid.Column>
-                        <ChangeLog
-                            report_uuid={props.report.report_uuid}
-                            source_uuid={props.source_uuid}
-                            timestamp={props.report.timestamp}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-                <ButtonRow/>
+                <ChangeLogRow />
+                <ButtonRow />
             </Grid>
         </>
     )
