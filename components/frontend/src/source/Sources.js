@@ -17,6 +17,18 @@ export function Sources(props) {
         });
         return message;
     }
+    function ButtonSegment() {
+        return (
+            <ReadOnlyOrEditable editableComponent={
+                <Segment vertical>
+                    <AddButton
+                        item_type={"source"}
+                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
+                    />
+                </Segment>}
+            />
+        )
+    }
     const source_uuids = Object.keys(props.sources).filter((source_uuid) =>
         props.datamodel.metrics[props.metric_type].sources.includes(props.sources[source_uuid].type)
     );
@@ -44,14 +56,7 @@ export function Sources(props) {
     return (
         <>
             {sources}
-            <ReadOnlyOrEditable editableComponent={
-                <Segment vertical>
-                    <AddButton
-                        item_type={"source"}
-                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
-                    />
-                </Segment>}
-            />
+            <ButtonSegment />
         </>
     )
 }

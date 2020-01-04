@@ -44,6 +44,34 @@ export function Source(props) {
         )
     }
 
+    function ButtonRow() {
+        return (
+            <ReadOnlyOrEditable editableComponent={
+                <Grid.Row>
+                    <Grid.Column>
+                        <CopyButton
+                            item_type='source'
+                            onClick={() => copy_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                        />
+                        <MoveButtonGroup
+                            first={props.first_source}
+                            last={props.last_source}
+                            moveable="source"
+                            onClick={(direction) => {
+                                set_source_attribute(props.report.report_uuid, props.source_uuid, "position", direction, props.reload)
+                            }}
+                            slot="position"
+                        />
+                        <DeleteButton
+                            item_type='source'
+                            onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                        />
+                    </Grid.Column>
+                </Grid.Row>}
+            />
+        )
+    }
+
     return (
         <>
             <SourceHeader />
@@ -85,29 +113,7 @@ export function Source(props) {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <ReadOnlyOrEditable editableComponent={
-                    <Grid.Row>
-                        <Grid.Column>
-                            <CopyButton
-                                item_type='source'
-                                onClick={() => copy_source(props.report.report_uuid, props.source_uuid, props.reload)}
-                            />
-                            <MoveButtonGroup
-                                first={props.first_source}
-                                last={props.last_source}
-                                moveable="source"
-                                onClick={(direction) => {
-                                    set_source_attribute(props.report.report_uuid, props.source_uuid, "position", direction, props.reload)
-                                }}
-                                slot="position"
-                            />
-                            <DeleteButton
-                                item_type='source'
-                                onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>}
-                />
+                <ButtonRow/>
             </Grid>
         </>
     )
