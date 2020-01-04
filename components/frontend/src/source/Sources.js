@@ -17,15 +17,31 @@ export function Sources(props) {
         });
         return message;
     }
+    function ButtonSegment() {
+        return (
+            <ReadOnlyOrEditable editableComponent={
+                <Segment vertical>
+                    <AddButton
+                        item_type={"source"}
+                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
+                    />
+                </Segment>}
+            />
+        )
+    }
     const source_uuids = Object.keys(props.sources).filter((source_uuid) =>
         props.datamodel.metrics[props.metric_type].sources.includes(props.sources[source_uuid].type)
     );
-    const sources = source_uuids.map((source_uuid) =>
-        (
+    const last_index = source_uuids.length - 1;
+
+    function SourceSegment(source_uuid, index) {
+        return (
             <Segment vertical key={source_uuid}>
                 <Source
                     connection_error={source_error(source_uuid, "connection_error")}
                     datamodel={props.datamodel}
+                    first_source={index === 0}
+                    last_source={index === last_index}
                     metric_type={props.metric_type}
                     metric_unit={props.metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}
@@ -37,18 +53,11 @@ export function Sources(props) {
                 />
             </Segment>
         )
-    );
+    }
     return (
         <>
-            {sources}
-            <ReadOnlyOrEditable editableComponent={
-                <Segment vertical>
-                    <AddButton
-                        item_type={"source"}
-                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
-                    />
-                </Segment>}
-            />
+            {source_uuids.map((source_uuid, index) => SourceSegment(source_uuid, index))}
+            <ButtonSegment />
         </>
     )
 }

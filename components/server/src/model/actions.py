@@ -52,9 +52,9 @@ def copy_report(report, data_model):
             for subject in report["subjects"].values()))
 
 
-def move_item(data, new_position: Position, item_type: Literal["metric", "subject"]) -> Tuple[int, int]:
+def move_item(data, new_position: Position, item_type: Literal["metric", "source", "subject"]) -> Tuple[int, int]:
     """Change the item position."""
-    container = data.report if item_type == "subject" else data.subject
+    container = dict(subject=data.report, metric=data.subject, source=data.metric)[item_type]
     items = container[item_type + "s"]
     nr_items = len(items)
     item_to_move = getattr(data, item_type)
