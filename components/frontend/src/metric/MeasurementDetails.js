@@ -98,7 +98,7 @@ export function MeasurementDetails(props) {
             moveable="metric"
             onClick={(direction) => {
               props.stop_sort();
-              set_metric_attribute(props.report.report_uuid, props.metric_uuid, "position", direction, props.reload)}
+              set_metric_attribute(report_uuid, props.metric_uuid, "position", direction, props.reload)}
             }
             slot="row"
           />
