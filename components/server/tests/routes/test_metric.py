@@ -262,7 +262,7 @@ class MetricTest(unittest.TestCase):
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
         self.assertEqual(
             {METRIC_ID: dict(
-                name="Metric", type="metric_type", tags=[], sources=dict(
+                report_uuid=REPORT_ID, name="Metric", type="metric_type", tags=[], sources=dict(
                     source_uuid=dict(name="Source", type="source_type")))},
             get_metrics(self.database))
 

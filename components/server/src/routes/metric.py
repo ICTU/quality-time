@@ -22,7 +22,9 @@ def get_metrics(database: Database):
     reports = get_reports(database)
     for report in reports["reports"]:
         for subject in report["subjects"].values():
-            metrics.update(subject["metrics"])
+            for metric_uuid, metric in subject["metrics"].items():
+                metric["report_uuid"] = report["report_uuid"]
+                metrics[metric_uuid] = metric
     return metrics
 
 
@@ -30,7 +32,7 @@ def get_metrics(database: Database):
 def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data = get_data(database, report_uuid, subject_uuid)
-    data.subject["metrics"][uuid()] = default_metric_attributes(database, report_uuid)
+    data.subject["metrics"][uuid()] = default_metric_attributes(database)
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid,
         description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
@@ -78,7 +80,7 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
         return dict(ok=True)  # Nothing to do
     data.metric[metric_attribute] = value
     if metric_attribute == "type":
-        data.metric.update(default_metric_attributes(database, report_uuid, value))
+        data.metric.update(default_metric_attributes(database, value))
     data.report["delta"] = dict(
         report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
         description=f"{sessions.user(database)} changed the {metric_attribute} of metric '{data.metric_name}' of "

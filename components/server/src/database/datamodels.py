@@ -6,7 +6,6 @@ import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import ReportId
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
@@ -35,7 +34,7 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
     return parameters
 
 
-def default_metric_attributes(database: Database, report_uuid: ReportId, metric_type: str = ""):
+def default_metric_attributes(database: Database, metric_type: str = ""):
     """Return the metric attributes with their default values for the specified metric type.
     If no metric type is specified, use the first one from the datamodel."""
     metric_types = latest_datamodel(database)["metrics"]
@@ -43,7 +42,7 @@ def default_metric_attributes(database: Database, report_uuid: ReportId, metric_
         metric_type = list(metric_types.keys())[0]
     defaults = metric_types[metric_type]
     return dict(
-        type=metric_type, report_uuid=report_uuid, sources={}, name=None, scale=defaults["default_scale"], unit=None,
+        type=metric_type, sources={}, name=None, scale=defaults["default_scale"], unit=None,
         addition=defaults["addition"], accept_debt=False, debt_target=None, direction=None, target=defaults["target"],
         near_target=defaults["near_target"], tags=defaults["tags"])
 

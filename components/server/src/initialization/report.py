@@ -37,12 +37,11 @@ def import_json_report(database: Database, imported_report) -> None:
         title=imported_report.get("title", "Example report"), report_uuid=imported_report["report_uuid"], subjects={})
     for imported_subject in imported_report["subjects"]:
         subject_to_store = default_subject_attributes(database, imported_subject["type"])
-        subject_to_store["metrics"] = dict()  # Remove default metrics
+        subject_to_store["metrics"] = {}  # Remove default metrics
         subject_to_store["name"] = imported_subject["name"]
         report_to_store["subjects"][uuid()] = subject_to_store
         for imported_metric in imported_subject["metrics"]:
-            metric_to_store = default_metric_attributes(
-                database, imported_report["report_uuid"], imported_metric["type"])
+            metric_to_store = default_metric_attributes(database, imported_metric["type"])
             metric_to_store.update(imported_metric)
             metric_to_store["sources"] = {}  # Sources in the example report json are lists, we transform them to dicts
             subject_to_store["metrics"][uuid()] = metric_to_store
