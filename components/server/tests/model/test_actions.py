@@ -4,7 +4,6 @@
 import unittest
 
 from model.actions import copy_metric, copy_report, copy_source, copy_subject
-from server_utilities.type import ReportId
 
 
 class CopySourceTest(unittest.TestCase):
@@ -53,11 +52,6 @@ class CopyMetricTest(unittest.TestCase):
         """Test that the copy name can be left unchanged."""
         metric_copy = copy_metric(self.metric, self.data_model, change_name=False)
         self.assertEqual("Metric", metric_copy["name"])
-
-    def test_copy_report_uuid(self):
-        """Test that the report UUID can be changed."""
-        metric_copy = copy_metric(self.metric, self.data_model, report_uuid=ReportId("new report uuid"))
-        self.assertEqual("new report uuid", metric_copy["report_uuid"])
 
     def test_copy_sources(self):
         """Test that the sources are copied too."""
