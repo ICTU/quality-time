@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Popup } from 'semantic-ui-react';
+import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
 
 function ActionButton(props) {
     const { action, icon, item_type, ...other } = props;
@@ -61,3 +61,13 @@ function MoveButton(props) {
       </Button.Group>
     )
   }
+
+
+export function MoveSubjectButton(props) {
+  return (
+    <Button basic icon primary>
+      <Icon name="shuffle"/ >&nbsp;
+      <Dropdown basic defaultValue="" text="Move subject to" {...props} />
+    </Button>
+  )
+}

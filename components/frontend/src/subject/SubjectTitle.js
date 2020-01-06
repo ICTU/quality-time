@@ -3,7 +3,7 @@ import { Grid, Header } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
+import { CopyButton, DeleteButton, MoveButtonGroup, MoveSubjectButton } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { copy_subject, delete_subject, set_subject_attribute } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -14,6 +14,11 @@ export function SubjectTitle(props) {
     const subject_uuid = props.subject_uuid;
 
     function ButtonRow() {
+        const options = [
+            { key: '1', text: 'Report 1', value: 'uuid1' },
+            { key: '2', text: 'Report 2', value: 'uuid2' },
+            { key: '3', text: 'Report 3', value: 'uuid3' },
+          ]
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
@@ -22,6 +27,7 @@ export function SubjectTitle(props) {
                             item_type="subject"
                             onClick={() => copy_subject(subject_uuid, props.reload)}
                         />
+                        <MoveSubjectButton options={options} />
                         <MoveButtonGroup
                             first={props.first_subject}
                             last={props.last_subject}

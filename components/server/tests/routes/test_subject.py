@@ -3,9 +3,10 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.subject import delete_subject, post_new_subject, post_subject_attribute, post_subject_copy
+from routes.subject import (
+    delete_subject, post_move_subject, post_new_subject, post_subject_attribute, post_subject_copy)
 
-from .fixtures import REPORT_ID, SUBJECT_ID, SUBJECT_ID2, create_report
+from .fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 @patch("bottle.request")
@@ -135,3 +136,21 @@ class SubjectTest(unittest.TestCase):
             dict(uuids=[REPORT_ID, SUBJECT_ID],
                  description="Jenny deleted the subject 'Subject' from report 'Report'."),
             self.report["delta"])
+
+    def test_move_subject(self):
+        """Test that a subject can be moved to another report."""
+        subject = self.report["subjects"][SUBJECT_ID]
+        target_report = dict(title="Target", report_uuid=REPORT_ID2, subjects={})
+        self.database.reports.find_one.side_effect = [self.report, target_report]
+        self.assertEqual(dict(ok=True), post_move_subject(REPORT_ID, SUBJECT_ID, REPORT_ID2, self.database))
+        self.assertEqual({}, self.report["subjects"])
+        self.assertEqual(subject, list(target_report["subjects"].values())[0])
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID,
+                 description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
+            self.report["delta"])
+        self.assertEqual(
+            dict(report_uuid=REPORT_ID2,
+                 description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
+            target_report["delta"])
+
