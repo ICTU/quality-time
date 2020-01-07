@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, ReorderButtonGroup } from './Button';
+import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
@@ -87,3 +87,13 @@ describe("<ReorderButtonGroup />", () => {
         expect(mockCallBack).not.toHaveBeenCalled();
     });
 })
+
+describe('<MoveButton />', () => {
+    it('calls the callback on click', () => {
+        const mockCallBack = jest.fn();
+        const wrapper = mount(<MoveButton options={[{key: "1", value: "first", text: "First"}]} onClick={mockCallBack} />);
+        wrapper.find("Dropdown").at(0).simulate("click");
+        wrapper.find("DropdownItem").at(0).simulate("click");
+        expect(mockCallBack).toHaveBeenCalledWith("first");
+    });
+});

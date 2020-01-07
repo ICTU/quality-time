@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subject } from './Subject';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
@@ -9,6 +10,14 @@ describe("<Subject />", () => {
   it('shows the subject title', () => {
     const wrapper = shallow(<Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />);
     expect(wrapper.find("SubjectTitle").length).toBe(1);
+  });
+  it('shows the add subject button', () => {
+    const wrapper = mount(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />
+      </ReadOnlyContext.Provider>
+    );
+    expect(wrapper.find("AddButton").length).toBe(1);
   });
   it('changes the sort column when clicked', () => {
     function table_header_cell() {

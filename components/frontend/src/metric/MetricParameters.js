@@ -100,7 +100,7 @@ export function MetricParameters(props) {
                                 { key: "0", text: `${fewer} is better`, value: "<" },
                                 { key: "1", text: `${more} is better`, value: ">" }]}
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
-                            value={metric_direction}
+                            value={metric_direction || "<"}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -141,7 +141,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <SingleChoiceInput
                             label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt" target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>}
-                            value={props.metric.accept_debt}
+                            value={props.metric.accept_debt || false}
                             options={[
                                 { key: true, text: "Yes", value: true },
                                 { key: false, text: "No", value: false }]}
