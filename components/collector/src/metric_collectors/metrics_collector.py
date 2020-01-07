@@ -70,7 +70,6 @@ class MetricsCollector:
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid
-            measurement["report_uuid"] = metric["report_uuid"]
             post(URL(f"{self.server_url}/api/v1/measurements"), measurement)
 
     def __skip(self, metric_uuid: str, metric) -> bool:
