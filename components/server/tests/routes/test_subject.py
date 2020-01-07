@@ -150,7 +150,6 @@ class SubjectTest(unittest.TestCase):
                  description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
             self.report["delta"])
         self.assertEqual(
-            dict(report_uuid=REPORT_ID2,
+            dict(report_uuid=REPORT_ID2, subject_uuid=SUBJECT_ID,
                  description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
             target_report["delta"])
-

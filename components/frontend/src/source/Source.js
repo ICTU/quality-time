@@ -5,7 +5,7 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
+import { CopyButton, DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { copy_source, delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -53,7 +53,7 @@ export function Source(props) {
                             item_type='source'
                             onClick={() => copy_source(props.source_uuid, props.reload)}
                         />
-                        <MoveButtonGroup
+                        <ReorderButtonGroup
                             first={props.first_source}
                             last={props.last_source}
                             moveable="source"

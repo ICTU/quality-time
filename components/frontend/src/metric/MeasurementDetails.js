@@ -6,7 +6,7 @@ import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { CopyButton, DeleteButton, MoveButtonGroup } from '../widgets/Button';
+import { CopyButton, DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { copy_metric, delete_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
@@ -90,7 +90,7 @@ export function MeasurementDetails(props) {
             item_type="metric"
             onClick={() => copy_metric(props.metric_uuid, props.reload)}
           />
-          <MoveButtonGroup
+          <ReorderButtonGroup
             first={props.first_metric}
             last={props.last_metric}
             marginTop="10px"

@@ -123,6 +123,7 @@ export function Subject(props) {
         last_subject={props.last_subject}
         reload={props.reload}
         report={props.report}
+        reports={props.reports}
         subject={subject}
         subject_uuid={props.subject_uuid}
       />

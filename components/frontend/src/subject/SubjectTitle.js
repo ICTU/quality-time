@@ -3,9 +3,9 @@ import { Grid, Header } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { CopyButton, DeleteButton, MoveButtonGroup, MoveSubjectButton } from '../widgets/Button';
+import { CopyButton, DeleteButton, ReorderButtonGroup, MoveButton } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { copy_subject, delete_subject, set_subject_attribute } from '../api/subject';
+import { copy_subject, delete_subject, set_subject_attribute, move_subject } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
@@ -14,11 +14,13 @@ export function SubjectTitle(props) {
     const subject_uuid = props.subject_uuid;
 
     function ButtonRow() {
-        const options = [
-            { key: '1', text: 'Report 1', value: 'uuid1' },
-            { key: '2', text: 'Report 2', value: 'uuid2' },
-            { key: '3', text: 'Report 3', value: 'uuid3' },
-          ]
+        let report_options = [];
+        props.reports.forEach((report) => {
+            report_options.push({
+                disabled: report.report_uuid === report_uuid, key: report.report_uuid,
+                text: report.title, value: report.report_uuid})
+        });
+        report_options.sort((a, b) => a.text.localeCompare(b.text));
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
@@ -27,8 +29,13 @@ export function SubjectTitle(props) {
                             item_type="subject"
                             onClick={() => copy_subject(subject_uuid, props.reload)}
                         />
-                        <MoveSubjectButton options={options} />
-                        <MoveButtonGroup
+                        <MoveButton
+                            item_type="subject"
+                            onClick={(target_report_uuid) => {
+                                move_subject(report_uuid, subject_uuid, target_report_uuid, props.reload)
+                            }}
+                            options={report_options} />
+                        <ReorderButtonGroup
                             first={props.first_subject}
                             last={props.last_subject}
                             moveable="subject"

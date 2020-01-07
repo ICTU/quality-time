@@ -266,6 +266,7 @@ class App extends Component {
                   nr_measurements={this.state.nr_measurements}
                   reload={(json) => this.reload(json)}
                   report={current_report}
+                  reports={this.state.reports}
                   report_date={report_date}
                   search_string={this.state.search_string}
                   changed_fields={this.changed_fields}
