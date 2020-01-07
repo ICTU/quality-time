@@ -13,10 +13,10 @@ def _get_changelog(database: Database, nr_changes: str, **uuids: str):
     """Return the recent most nr_changes changes from the changelog."""
     limit = int(nr_changes)
     changes = []
-    if "report_uuid" in uuids:
+    if "metric_uuid" in uuids:
         changes.extend(
             [dict(delta=change["delta"], timestamp=change["start"])
-             for change in measurements.changelog(database, cast(ReportId, uuids["report_uuid"]), limit)])
+             for change in measurements.changelog(database, cast(MetricId, uuids["metric_uuid"]), limit)])
     changes.extend(
         [dict(delta=change["delta"]["description"], timestamp=change["timestamp"]) for change in
          reports.changelog(database, limit, **uuids) if "delta" in change])

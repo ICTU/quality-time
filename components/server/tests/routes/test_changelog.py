@@ -48,7 +48,7 @@ class ChangeLogTest(unittest.TestCase):
                 changelog=[
                     dict(delta="delta3", timestamp="3"), dict(delta="delta2", timestamp="2"),
                     dict(delta="delta1", timestamp="1")]),
-            get_report_changelog(REPORT_ID, "10", self.database))
+            get_metric_changelog(REPORT_ID, METRIC_ID, "10", self.database))
 
     def test_get_subject_changelog(self):
         """Test that the changelog can be limited to a specific subject."""
