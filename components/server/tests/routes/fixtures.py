@@ -28,6 +28,8 @@ def create_report():
                     METRIC_ID: dict(
                         name="Metric",
                         type="metric_type",
+                        addition="sum",
+                        accept_debt=False,
                         tags=[],
                         sources={
                             SOURCE_ID: dict(

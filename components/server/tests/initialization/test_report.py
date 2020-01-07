@@ -5,7 +5,7 @@ import unittest
 import pathlib
 from unittest.mock import Mock, mock_open, patch
 
-from src.initialization.report import import_report, import_example_reports
+from initialization.report import import_report, import_example_reports
 
 
 class ReportInitTest(unittest.TestCase):

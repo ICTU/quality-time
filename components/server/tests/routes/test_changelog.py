@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 from routes.changelog import get_changelog, get_report_changelog, get_subject_changelog, get_metric_changelog, \
     get_source_changelog
+from .fixtures import REPORT_ID, METRIC_ID, SOURCE_ID, SUBJECT_ID
 
 
 class ChangeLogTest(unittest.TestCase):
@@ -33,7 +34,7 @@ class ChangeLogTest(unittest.TestCase):
         self.database.measurements.find.return_value = []
         self.assertEqual(
             dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
-            get_report_changelog("report_uuid", "10", self.database))
+            get_report_changelog(REPORT_ID, "10", self.database))
 
     def test_get_changelog_with_measurements(self):
         """Test that the changelog is returned."""
@@ -47,7 +48,7 @@ class ChangeLogTest(unittest.TestCase):
                 changelog=[
                     dict(delta="delta3", timestamp="3"), dict(delta="delta2", timestamp="2"),
                     dict(delta="delta1", timestamp="1")]),
-            get_report_changelog("report_uuid", "10", self.database))
+            get_report_changelog(REPORT_ID, "10", self.database))
 
     def test_get_subject_changelog(self):
         """Test that the changelog can be limited to a specific subject."""
@@ -57,7 +58,7 @@ class ChangeLogTest(unittest.TestCase):
         self.database.measurements.find.return_value = []
         self.assertEqual(
             dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
-            get_subject_changelog("report_uuid", "subject_uuid", "10", self.database))
+            get_subject_changelog(REPORT_ID, SUBJECT_ID, "10", self.database))
 
     def test_get_metric_changelog(self):
         """Test that the changelog can be limited to a specific metric."""
@@ -67,7 +68,7 @@ class ChangeLogTest(unittest.TestCase):
         self.database.measurements.find.return_value = []
         self.assertEqual(
             dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
-            get_metric_changelog("report_uuid", "metric_uuid", "10", self.database))
+            get_metric_changelog(REPORT_ID, METRIC_ID, "10", self.database))
 
     def test_get_source_changelog(self):
         """Test that the changelog can be limited to a specific source."""
@@ -77,4 +78,4 @@ class ChangeLogTest(unittest.TestCase):
         self.database.measurements.find.return_value = []
         self.assertEqual(
             dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
-            get_source_changelog("report_uuid", "metric_uuid", "10", self.database))
+            get_source_changelog(REPORT_ID, SOURCE_ID, "10", self.database))

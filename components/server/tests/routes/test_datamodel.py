@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
-from src.routes import datamodel
-from src.database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
+from routes import datamodel
+from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 
 
 class DataModelTest(unittest.TestCase):
@@ -13,22 +13,22 @@ class DataModelTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
 
-    def test_get_datamodel(self):
+    def test_get_data_model(self):
         """Test that the data model can be retrieved."""
         self.database.datamodels.find_one.return_value = dict(_id=123)
         self.assertEqual(dict(_id="123"), datamodel.get_datamodel(self.database))
 
-    def test_get_datamodel_missing(self):
+    def test_get_data_model_missing(self):
         """Test that the data model is None if it's not there."""
         self.database.datamodels.find_one.return_value = None
         self.assertEqual({}, datamodel.get_datamodel(self.database))
 
-    def test_insert_datamodel_with_id(self):
+    def test_insert_data_model_with_id(self):
         """Test that a new data model can be inserted."""
         insert_new_datamodel(self.database, dict(_id="id"))
         self.database.datamodels.insert_one.assert_called_once()
 
-    def test_insert_datamodel_without_id(self):
+    def test_insert_data_model_without_id(self):
         """Test that a new data model can be inserted."""
         insert_new_datamodel(self.database, dict())
         self.database.datamodels.insert_one.assert_called_once()

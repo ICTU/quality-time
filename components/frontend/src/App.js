@@ -31,7 +31,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, nr_new_measurements: 0, loading_report: true, loading_datamodel: true, user: null, email: null,
+      nr_measurements: 0, loading_report: true, loading_datamodel: true, user: null, email: null,
       last_update: new Date(), login_error: false
     };
     this.history = createBrowserHistory();
@@ -47,15 +47,17 @@ class App extends Component {
   componentDidMount() {
     const pathname = this.history.location.pathname;
     const report_uuid = pathname.slice(1, pathname.length);
-    if (report_uuid !== "") {
-      this.connect_to_nr_measurements_event_source(report_uuid)
-    }
+    this.connect_to_nr_measurements_event_source()
     this.setState(
       {
         report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
         email: localStorage.getItem("email")
       },
       () => this.reload());
+  }
+
+  componentWillUnmount() {
+    this.source.close();
   }
 
   reload(json) {
@@ -69,8 +71,7 @@ class App extends Component {
           show_message("success", "URL connection OK")
         }
         return null
-      }
-      )
+      })
     }
 
     if (json && json.ok === false && json.reason === "invalid_session") {
@@ -101,7 +102,6 @@ class App extends Component {
     } else {
       get_reports(report_date)
         .then(function (report_overview_json) {
-          const nr_measurements = self.state.nr_measurements + self.state.nr_new_measurements;
           self.setState(
             {
               reports: report_overview_json.reports,
@@ -110,8 +110,6 @@ class App extends Component {
                 subtitle: report_overview_json.subtitle,
                 title: report_overview_json.title
               },
-              nr_measurements: nr_measurements,
-              nr_new_measurements: 0,
               loading_report: false,
               last_update: current_date
             }
@@ -135,9 +133,6 @@ class App extends Component {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
       this.setState({ report_uuid: "", loading_report: true, loading_datamodel: true }, () => this.reload());
-      if (this.source) {
-        this.source.close()
-      }
     }
   }
 
@@ -145,21 +140,20 @@ class App extends Component {
     event.preventDefault();
     this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
     this.history.push(report_uuid);
-    this.connect_to_nr_measurements_event_source(report_uuid);
   }
 
-  connect_to_nr_measurements_event_source(report_uuid) {
-    this.source = new EventSource(`/api/v1/nr_measurements/${report_uuid}`);
+  connect_to_nr_measurements_event_source() {
+    this.source = new EventSource('/api/v1/nr_measurements');
     let self = this;
     this.source.addEventListener('init', function (e) {
-      self.setState({ nr_measurements: Number(e.data), nr_new_measurements: 0 });
+      self.setState({ nr_measurements: Number(e.data) });
     }, false);
     this.source.addEventListener('delta', function (e) {
-      self.setState({ nr_new_measurements: Number(e.data) - self.state.nr_measurements });
+      self.setState({ nr_measurements: Number(e.data) });
     }, false);
     this.source.addEventListener('error', function (e) {
       if (e.readyState === EventSource.CLOSED || e.readyState === EventSource.OPEN) {
-        self.setState({ nr_measurements: 0, nr_new_measurements: 0 });
+        self.setState({ nr_measurements: 0 });
       }
     }, false);
   }
@@ -169,9 +163,6 @@ class App extends Component {
     const report_uuid = `tag-${tag}`
     this.setState({ report_uuid: report_uuid, loading_datamodel: true, loading_report: true }, () => this.reload());
     this.history.push(report_uuid);
-    if (this.source) {
-      this.source.close()
-    }
   }
 
   report_date() {
@@ -248,7 +239,7 @@ class App extends Component {
                 <Report
                   datamodel={this.state.datamodel}
                   go_home={() => this.go_home()}
-                  nr_new_measurements={this.state.nr_new_measurements}
+                  nr_measurements={this.state.nr_measurements}
                   reload={(json) => this.reload(json)}
                   report={current_report}
                   report_date={report_date}

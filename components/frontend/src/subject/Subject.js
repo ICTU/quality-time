@@ -37,7 +37,7 @@ export function Subject(props) {
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
           metric={metric}
-          nr_new_measurements={props.nr_new_measurements}
+          nr_measurements={props.nr_measurements}
           reload={props.reload}
           report={props.report}
           report_date={props.report_date}

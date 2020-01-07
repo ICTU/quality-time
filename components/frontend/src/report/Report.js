@@ -69,7 +69,7 @@ export function Report(props) {
             />
             <Subjects
                 datamodel={props.datamodel}
-                nr_new_measurements={props.nr_new_measurements}
+                nr_measurements={props.nr_measurements}
                 reload={props.reload}
                 report={props.report}
                 report_date={props.report_date}

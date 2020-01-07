@@ -6,7 +6,7 @@ from unittest.mock import Mock, mock_open, patch
 
 import bottle
 
-from src.initialization.database import init_database
+from initialization.database import init_database
 
 
 class DatabaseInitTest(unittest.TestCase):

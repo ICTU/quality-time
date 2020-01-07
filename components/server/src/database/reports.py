@@ -43,7 +43,7 @@ def summarize_report(database: Database, report) -> None:
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
-    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database, report["report_uuid"])}
+    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
     datamodel = latest_datamodel(database)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
@@ -63,13 +63,13 @@ def latest_report(database: Database, report_uuid: ReportId):
     return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
 
 
-def latest_metric(database: Database, report_uuid: ReportId, metric_uuid: MetricId):
-    """Return the latest metric with the specified report and metric uuid."""
-    report = latest_report(database, report_uuid) or dict()
-    for subject in report.get("subjects", {}).values():
-        metrics = subject.get("metrics", {})
-        if metric_uuid in metrics:
-            return metrics[metric_uuid]
+def latest_metric(database: Database, metric_uuid: MetricId):
+    """Return the latest metric with the specified metric uuid."""
+    for report in latest_reports(database):
+        for subject in report.get("subjects", {}).values():
+            metrics = subject.get("metrics", {})
+            if metric_uuid in metrics:
+                return metrics[metric_uuid]
     return None
 
 

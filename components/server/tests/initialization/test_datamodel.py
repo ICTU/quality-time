@@ -4,7 +4,7 @@ import unittest
 import pathlib
 from unittest.mock import Mock, patch, mock_open
 
-from src.initialization.datamodel import import_datamodel
+from initialization.datamodel import import_datamodel
 
 
 class DataModelImportTest(unittest.TestCase):
