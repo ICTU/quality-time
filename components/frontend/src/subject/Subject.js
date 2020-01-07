@@ -115,6 +115,52 @@ export function Subject(props) {
       </Table.HeaderCell>
     )
   }
+  function SubjectTableHeader() {
+    return (
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell collapsing textAlign="center">
+            <Popup trigger={
+              <Button
+                basic
+                compact
+                icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
+                onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
+                primary
+              />
+            } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
+          </Table.HeaderCell>
+          <SortableHeader column='name' label='Metric' />
+          <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
+          <SortableHeader column='status' label='Status' />
+          <SortableHeader column='measurement' label='Measurement' />
+          <SortableHeader column='target' label='Target' />
+          <SortableHeader column='source' label='Source' />
+          <SortableHeader column='comment' label='Comment' />
+          <SortableHeader column='tags' label='Tags' />
+        </Table.Row>
+      </Table.Header>
+    )
+  }
+  function SubjectTableFooter() {
+    return (
+      <ReadOnlyOrEditable editableComponent={
+        <Table.Footer>
+          <Table.Row>
+            <Table.HeaderCell colSpan='9'>
+              <AddButton
+                item_type={"metric"}
+                onClick={() => {
+                  setSortColumn(null);
+                  add_metric(props.subject_uuid, props.reload);
+                }}
+              />
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Footer>}
+      />
+    )
+  }
   return (
     <div id={props.subject_uuid}>
       <SubjectTitle
@@ -128,45 +174,9 @@ export function Subject(props) {
         subject_uuid={props.subject_uuid}
       />
       <Table sortable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell collapsing textAlign="center">
-              <Popup trigger={
-                <Button
-                  basic
-                  compact
-                  icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
-                  onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
-                  primary
-                />
-              } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
-            </Table.HeaderCell>
-            <SortableHeader column='name' label='Metric' />
-            <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
-            <SortableHeader column='status' label='Status' />
-            <SortableHeader column='measurement' label='Measurement' />
-            <SortableHeader column='target' label='Target' />
-            <SortableHeader column='source' label='Source' />
-            <SortableHeader column='comment' label='Comment' />
-            <SortableHeader column='tags' label='Tags' />
-          </Table.Row>
-        </Table.Header>
+        <SubjectTableHeader />
         <Table.Body>{metric_components}</Table.Body>
-        <ReadOnlyOrEditable editableComponent={
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='9'>
-                <AddButton
-                  item_type={"metric"}
-                  onClick={() => {
-                    setSortColumn(null);
-                    add_metric(props.subject_uuid, props.reload);
-                  }}
-                />
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>}
-        />
+        <SubjectTableFooter />
       </Table>
     </div>
   )
