@@ -3,7 +3,7 @@
 import unittest
 from unittest import mock
 
-from src.database.measurements import calculate_measurement_value, determine_measurement_status
+from database.measurements import calculate_measurement_value, determine_measurement_status
 
 
 class DetermineMeasurementStatusTest(unittest.TestCase):

@@ -2,7 +2,7 @@
 
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 
 import pymongo
 from pymongo.database import Database
@@ -17,12 +17,9 @@ def latest_measurement(database: Database, metric_uuid: MetricId):
     return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
 
 
-def last_measurements(database: Database, report_uuid: ReportId):
+def last_measurements(database: Database):
     """Return the last measurement for each metric."""
-    measurement_filter: Dict[str, Union[bool, str]] = dict(last=True)
-    if not report_uuid.startswith("tag-"):
-        measurement_filter["report_uuid"] = report_uuid
-    return database.measurements.find(filter=measurement_filter)
+    return database.measurements.find(filter=dict(last=True))
 
 
 def recent_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
@@ -30,9 +27,9 @@ def recent_measurements(database: Database, metric_uuid: MetricId, max_iso_times
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 
-def count_measurements(database: Database, report_uuid: ReportId) -> int:
+def count_measurements(database: Database) -> int:
     """Return the number of measurements."""
-    return int(database.measurements.count_documents(filter={"report_uuid": report_uuid}))
+    return int(database.measurements.count_documents(filter={}))
 
 
 def update_measurement_end(database: Database, measurement_id: MeasurementId):

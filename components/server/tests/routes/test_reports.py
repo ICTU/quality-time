@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from routes.reports import get_reports, post_reports_attribute
 
-from .fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from .fixtures import create_report, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 class ReportsTest(unittest.TestCase):
@@ -45,15 +45,7 @@ class ReportsTest(unittest.TestCase):
                 _id="id", metric_uuid=METRIC_ID, status="red",
                 sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
         self.database.reports.distinct.return_value = [REPORT_ID]
-        report = dict(
-            _id="id", report_uuid=REPORT_ID,
-            subjects={
-                SUBJECT_ID: dict(
-                    metrics={
-                        METRIC_ID: dict(
-                            type="metric_type", addition="sum", target="0", near_target="10", debt_target="0",
-                            accept_debt=False, tags=["a"])})})
-        self.database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = report = create_report()
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
         report["summary_by_tag"] = {}

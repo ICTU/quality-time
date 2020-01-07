@@ -29,7 +29,7 @@ class UtilTests(unittest.TestCase):
     def test_missing_report_date_time(self):
         """Test that the report datetime is now if it's not present in the request."""
         with patch("server_utilities.functions.bottle.request") as request:
-            request.query = dict()
+            request.query = {}
             with patch("server_utilities.functions.datetime") as date_time:
                 date_time.now.return_value = self.now
                 self.assertEqual(self.expected_time_stamp, report_date_time())
