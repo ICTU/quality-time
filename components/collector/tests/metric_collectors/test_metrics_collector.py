@@ -36,7 +36,7 @@ class CollectorTest(unittest.TestCase):
     def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
         self.metrics_response.json.return_value = dict(
-            metric_uuid=dict(report_uuid="report_uuid", type="metric", addition="sum", sources=dict()))
+            metric_uuid=dict(type="metric", addition="sum", sources=dict()))
         with patch("requests.get", return_value=self.metrics_response):
             with patch("requests.post") as post:
                 self.metrics_collector.fetch_measurements(60)
@@ -53,7 +53,7 @@ class CollectorTest(unittest.TestCase):
         """Test fetching measurement when posting fails."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
-                report_uuid="report_uuid", addition="sum", type="metric",
+                addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
 
         with patch("requests.get", side_effect=[self.metrics_response, Mock()]):
@@ -66,13 +66,13 @@ class CollectorTest(unittest.TestCase):
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
-                metric_uuid="metric_uuid", report_uuid="report_uuid"))
+                metric_uuid="metric_uuid"))
 
     def test_collect(self):
         """Test the collect method."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
-                report_uuid="report_uuid", addition="sum", type="metric",
+                addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
             with patch("requests.post") as post:
@@ -84,13 +84,13 @@ class CollectorTest(unittest.TestCase):
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
-                metric_uuid="metric_uuid", report_uuid="report_uuid"))
+                metric_uuid="metric_uuid"))
 
     def test_missing_collector(self):
         """Test that an exception is thrown if there's no collector for the source and metric type."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
-                type="metric", addition="sum", report_uuid="report_uuid",
+                type="metric", addition="sum",
                 sources=dict(missing=dict(type="unknown_source", parameters=dict(url=self.url)))))
         with patch("requests.get", return_value=self.metrics_response):
             self.assertRaises(LookupError, self.metrics_collector.fetch_measurements, 60)
@@ -99,7 +99,7 @@ class CollectorTest(unittest.TestCase):
         """Test that the metric is skipped on the second fetch."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
-                report_uuid="report_uuid", addition="sum", type="metric",
+                addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         with patch("requests.get", side_effect=[self.metrics_response, Mock(), self.metrics_response]):
             with patch("requests.post") as post:
@@ -112,14 +112,13 @@ class CollectorTest(unittest.TestCase):
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
                          connection_error=None, parse_error=None, source_uuid="source_id")],
-                metric_uuid="metric_uuid", report_uuid="report_uuid"))
+                metric_uuid="metric_uuid"))
 
     def test_missing_mandatory_parameter(self):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
-                type="metric", addition="sum", report_uuid="report_uuid",
-                sources=dict(missing=dict(type="source", parameters=dict(url="")))))
+                type="metric", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))))
         with patch("requests.get", return_value=self.metrics_response):
             with patch("requests.post") as post:
                 self.metrics_collector.data_model = self.data_model
