@@ -8,7 +8,7 @@ import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Addition, Direction, MeasurementId, MetricId, ReportId, Scale, Status
+from server_utilities.type import Addition, Direction, MeasurementId, MetricId, Scale, Status
 from .datamodels import latest_datamodel
 
 
