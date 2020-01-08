@@ -61,8 +61,10 @@ class App extends Component {
   }
 
   reload(json) {
-    this.show_connection_messages(json)
-    this.check_session(json)
+    if (json) {
+      this.show_connection_messages(json);
+      this.check_session(json)
+    }
     const report_date = this.report_date() || new Date(3000, 1, 1);
     this.reload_data_model(report_date);
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
@@ -74,7 +76,7 @@ class App extends Component {
 
   show_connection_messages(json) {
     this.changed_fields = null
-    if (json && json.availability) {
+    if (json.availability) {
       this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
       json.availability.map((url_key) => {
         if (url_key.status_code === 200) {
@@ -88,7 +90,7 @@ class App extends Component {
   }
 
   check_session(json) {
-    if (json && json.ok === false && json.reason === "invalid_session") {
+    if (json.ok === false && json.reason === "invalid_session") {
       this.logout();
       show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
@@ -171,7 +173,7 @@ class App extends Component {
       self.setState({ nr_measurements: Number(e.data) });
     }, false);
     this.source.addEventListener('delta', function (e) {
-      self.setState({ nr_measurements: Number(e.data) });
+      self.setState({ nr_measurements: Number(e.data) }, () => self.reload());
     }, false);
     this.source.addEventListener('error', function (e) {
       if (e.readyState === EventSource.CLOSED || e.readyState === EventSource.OPEN) {
