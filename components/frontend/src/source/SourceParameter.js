@@ -38,7 +38,7 @@ export function SourceParameter(props) {
     label: label,
     placeholder: props.placeholder,
     required: props.required,
-    set_value: ((value) => set_source_parameter(props.report.report_uuid, props.source_uuid, props.parameter_key, value, props.reload)),
+    set_value: ((value) => set_source_parameter(props.source_uuid, props.parameter_key, value, props.reload)),
     value: props.parameter_value
   };
   if (props.parameter_type === "date") {

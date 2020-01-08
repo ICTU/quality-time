@@ -104,6 +104,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
 
 
 @bottle.post("/api/v1/login")
+@bottle.post("/api/v2/login")
 def login(database: Database) -> Dict[str, Union[bool, str]]:
     """Log the user in."""
     username, password = get_credentials()
@@ -114,6 +115,7 @@ def login(database: Database) -> Dict[str, Union[bool, str]]:
 
 
 @bottle.post("/api/v1/logout")
+@bottle.post("/api/v2/logout")
 def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""
     delete_session(database)

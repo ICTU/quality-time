@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - The "hide metrics not requiring action" buttons now hide metrics in all subjects of a report at once. Closes [#907](https://github.com/ICTU/quality-time/issues/907).
+- A new, simpler version of the API was introduced, version 2. Version 1 of the API is deprecated. See http://quality-time.example.org/api/, http://quality-time.example.org/api/v1, and http://quality-time.example.org/api/v2.
 
 ### Fixed
 

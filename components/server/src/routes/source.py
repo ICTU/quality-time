@@ -15,39 +15,60 @@ from server_utilities.type import MetricId, ReportId, SourceId, URL
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/source/new")
-def post_source_new(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
+def post_source_new_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Add a new source."""
-    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    # pylint: disable=unused-argument
+    return post_source_new(metric_uuid, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/source/new/<metric_uuid>")
+def post_source_new(metric_uuid: MetricId, database: Database):
+    """Add a new source."""
+    data = get_data(database, metric_uuid=metric_uuid)
     data_model = latest_datamodel(database)
     metric_type = data.metric["type"]
     source_type = data_model["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
     data.metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
         description=f"{sessions.user(database)} added a new source to metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
 @bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/copy")
-def post_source_copy(report_uuid: ReportId, source_uuid: SourceId, database: Database):
+def post_source_copy_v1(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Copy a source."""
-    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    # pylint: disable=unused-argument
+    return post_source_copy(source_uuid, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/source/<source_uuid>/copy")
+def post_source_copy(source_uuid: SourceId, database: Database):
+    """Copy a source."""
+    data = get_data(database, source_uuid=source_uuid)
     data.metric["sources"][uuid()] = copy_source(data.source, data.datamodel)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} copied the source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>/source/<source_uuid>")
-def delete_source(report_uuid: ReportId, source_uuid: SourceId, database: Database):
+def delete_source_v1(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Delete a source."""
-    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    # pylint: disable=unused-argument
+    return delete_source(source_uuid, database)  # pragma: nocover
+
+
+@bottle.delete("/api/v2/source/<source_uuid>")
+def delete_source(source_uuid: SourceId, database: Database):
+    """Delete a source."""
+    data = get_data(database, source_uuid=source_uuid)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} deleted the source '{data.source_name}' from metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     del data.metric["sources"][source_uuid]
@@ -55,9 +76,16 @@ def delete_source(report_uuid: ReportId, source_uuid: SourceId, database: Databa
 
 
 @bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/<source_attribute>")
-def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_attribute: str, database: Database):
+def post_source_attribute_v1(report_uuid: ReportId, source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
-    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    # pylint: disable=unused-argument
+    return post_source_attribute(source_uuid, source_attribute, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/source/<source_uuid>/attribute/<source_attribute>")
+def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
+    """Set a source attribute."""
+    data = get_data(database, source_uuid=source_uuid)
     value = dict(bottle.request.json)[source_attribute]
     old_value: Any
     if source_attribute == "position":
@@ -68,7 +96,8 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
     if old_value == value:
         return dict(ok=True)  # Nothing to do
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {source_attribute} of source '{data.source_name}' of "
                     f"metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
                     f"from '{old_value}' to '{value}'.")
@@ -78,9 +107,16 @@ def post_source_attribute(report_uuid: ReportId, source_uuid: SourceId, source_a
 
 
 @bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
-def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
+def post_source_parameter_v1(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
+    """Set a source parameter."""
+    # pylint: disable=unused-argument
+    return post_source_parameter(source_uuid, parameter_key, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/source/<source_uuid>/parameter/<parameter_key>")
+def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
-    data = get_data(database, report_uuid, source_uuid=source_uuid)
+    data = get_data(database, source_uuid=source_uuid)
     new_value = dict(bottle.request.json)[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
@@ -90,7 +126,8 @@ def post_source_parameter(report_uuid: ReportId, source_uuid: SourceId, paramete
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid, source_uuid=source_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        source_uuid=source_uuid,
         description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' from "
                     f"'{old_value}' to '{new_value}'.")

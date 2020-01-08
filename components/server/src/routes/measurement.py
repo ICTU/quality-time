@@ -16,6 +16,7 @@ from server_utilities.type import MetricId, SourceId
 
 
 @bottle.post("/api/v1/measurements")
+@bottle.post("/api/v2/measurements")
 def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
@@ -35,6 +36,7 @@ def post_measurement(database: Database) -> Dict:
 
 
 @bottle.post("/api/v1/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
+@bottle.post("/api/v2/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
 def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set an entity attribute."""
@@ -57,6 +59,7 @@ def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
 
 
 @bottle.get("/api/v1/nr_measurements")
+@bottle.get("/api/v2/nr_measurements")
 def stream_nr_measurements(database: Database) -> Iterator[str]:
     """Return the number of measurements as server sent events."""
     # Keep event IDs consistent
@@ -88,6 +91,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 
 
 @bottle.get("/api/v1/measurements/<metric_uuid>")
+@bottle.get("/api/v2/measurements/<metric_uuid>")
 def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])

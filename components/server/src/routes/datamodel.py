@@ -8,6 +8,7 @@ from server_utilities.functions import report_date_time
 
 
 @bottle.get("/api/v1/datamodel")
-def get_datamodel(database: Database):
+@bottle.get("/api/v2/datamodel")
+def get_data_model(database: Database):
     """Return the data model."""
     return latest_datamodel(database, report_date_time())

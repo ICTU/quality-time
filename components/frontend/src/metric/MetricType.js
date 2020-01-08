@@ -17,7 +17,7 @@ export function MetricType(props) {
     <SingleChoiceInput
       label="Metric type"
       options={options}
-      set_value={(value) => set_metric_attribute(props.report_uuid, props.metric_uuid, "type", value, props.reload)}
+      set_value={(value) => set_metric_attribute(props.metric_uuid, "type", value, props.reload)}
       value={props.metric_type}
     />
   )

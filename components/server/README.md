@@ -4,11 +4,15 @@
 
 The [`example-reports`](example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. The server [`data` package](src/data/example-reports) contains the example reports.
 
+## API
+
+API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v[1|2] (all routes for a specific version), and http://www.quality-time.example.org/api/v[1|2]/<route_fragment> (all routes matching a specific text fragment).j
+
 ## Data model
 
-The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Every time the server is started, the latest datamodel is imported into the database. The server [`data` package](src/data/datamodel.json) contains the `datamodel.json`.
+The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Every time the server is started, the latest data model is imported into the database. The server [`data` package](src/data/datamodel.json) contains the `datamodel.json`.
 
-The datamodel consists of four parts:
+The data model consists of four parts:
 
 - Scales
 - Metrics
@@ -17,7 +21,7 @@ The datamodel consists of four parts:
 
 ### Scales
 
-The `scales` part of the datamodel defines the scales uses. At the time of writing these include an absolute count scale and a percentage scale.
+The `scales` part of the data model defines the scales uses. At the time of writing these include an absolute count scale and a percentage scale.
 
 ```json
 {
@@ -38,7 +42,7 @@ Each metric defines the scales it supports.
 
 ### Metrics
 
-The `metrics` part of the datamodel is an object where the keys are the metric types and the values are objects describing the metric type. A metric type, for example the `complex_units` metric, is described as follows:
+The `metrics` part of the data model is an object where the keys are the metric types and the values are objects describing the metric type. A metric type, for example the `complex_units` metric, is described as follows:
 
 ```json
 {
@@ -76,7 +80,7 @@ Users with sufficient rights can override the default name, unit, and target of 
 
 ### Sources
 
-The `sources` part of the datamodel is an object where the keys are the source types and the values are objects describing the source. A source, for example the `azure_devops` source type, is described as follows:
+The `sources` part of the data model is an object where the keys are the source types and the values are objects describing the source. A source, for example the `azure_devops` source type, is described as follows:
 
 ```json
 {
@@ -177,7 +181,7 @@ The `entities` object contains a list of columns to be used to display the entit
 
 ## Subjects
 
-The `subjects` part of the datamodel is an object where the keys are the subject types and the values are objects describing the subject type. A subject type, for example the `software` subject, is described as follows:
+The `subjects` part of the data model is an object where the keys are the subject types and the values are objects describing the subject type. A subject type, for example the `software` subject, is described as follows:
 
 ```json
 {
@@ -203,4 +207,4 @@ The `name` is the default name of the subject. The `description` describes the s
 *Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`. 
 The server component is the only component that directly interacts with the database. The server [`database` package](src/database) contains the code for interacting with the collections. 
 
-Datamodels, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the datamodel is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time. 
+Datamodels, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time. 

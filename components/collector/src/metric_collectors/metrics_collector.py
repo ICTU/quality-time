@@ -53,14 +53,14 @@ class MetricsCollector:
         """Fetch the data model."""
         while True:
             logging.info("Loading data model...")
-            if data_model := get(URL(f"{self.server_url}/api/v1/datamodel")):
+            if data_model := get(URL(f"{self.server_url}/api/v2/datamodel")):
                 return data_model
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
             time.sleep(sleep_duration)
 
     def fetch_measurements(self, measurement_frequency: int) -> None:
         """Fetch the metrics and their measurements."""
-        metrics = get(URL(f"{self.server_url}/api/v1/metrics"))
+        metrics = get(URL(f"{self.server_url}/api/v2/metrics"))
         for metric_uuid, metric in metrics.items():
             if not (collector := MetricCollector(metric, self.data_model)).can_collect():
                 continue
@@ -70,7 +70,7 @@ class MetricsCollector:
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid
-            post(URL(f"{self.server_url}/api/v1/measurements"), measurement)
+            post(URL(f"{self.server_url}/api/v2/measurements"), measurement)
 
     def __skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""

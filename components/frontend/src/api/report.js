@@ -21,27 +21,11 @@ function get_tag_report(tag, date) {
 }
 
 function set_report_attribute(report_uuid, attribute, value, reload) {
-  return fetch_server_api('post', `report/${report_uuid}/${attribute}`, { [attribute]: value }).then(reload)
+  return fetch_server_api('post', `report/${report_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
 function set_reports_attribute(attribute, value, reload) {
-  return fetch_server_api('post', `reports/${attribute}`, { [attribute]: value }).then(reload)
-}
-
-function get_changelog(nr_changes, uuids) {
-  if (Object.keys(uuids).includes("source_uuid")) {
-    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/source/${uuids.source_uuid}/${nr_changes}`)
-  }
-  if (Object.keys(uuids).includes("metric_uuid")) {
-    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/metric/${uuids.metric_uuid}/${nr_changes}`)
-  }
-  if (Object.keys(uuids).includes("subject_uuid")) {
-    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/subject/${uuids.subject_uuid}/${nr_changes}`)
-  }
-  if (Object.keys(uuids).includes("report_uuid")) {
-    return fetch_server_api('get', `changelog/report/${uuids.report_uuid}/${nr_changes}`)
-  }
-  return fetch_server_api('get', `changelog/${nr_changes}`)
+  return fetch_server_api('post', `reports/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
 function get_report_pdf(report_uuid) {
@@ -50,4 +34,4 @@ function get_report_pdf(report_uuid) {
 
 export {
   add_report, copy_report, delete_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute,
-  set_reports_attribute, get_changelog }
+  set_reports_attribute }

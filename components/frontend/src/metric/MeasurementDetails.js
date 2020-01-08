@@ -58,7 +58,6 @@ export function MeasurementDetails(props) {
           metric={metric}
           metric_uuid={props.metric_uuid}
           reload={props.reload}
-          report_uuid={report_uuid}
         />
         <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
@@ -89,7 +88,7 @@ export function MeasurementDetails(props) {
         <>
           <CopyButton
             item_type="metric"
-            onClick={() => copy_metric(report_uuid, props.metric_uuid, props.reload)}
+            onClick={() => copy_metric(props.metric_uuid, props.reload)}
           />
           <MoveButtonGroup
             first={props.first_metric}
@@ -98,13 +97,13 @@ export function MeasurementDetails(props) {
             moveable="metric"
             onClick={(direction) => {
               props.stop_sort();
-              set_metric_attribute(report_uuid, props.metric_uuid, "position", direction, props.reload)}
+              set_metric_attribute(props.metric_uuid, "position", direction, props.reload)}
             }
             slot="row"
           />
           <DeleteButton
             item_type='metric'
-            onClick={() => delete_metric(report_uuid, props.metric_uuid, props.reload)}
+            onClick={() => delete_metric(props.metric_uuid, props.reload)}
             style={{ marginTop: "10px" }}
           />
         </>

@@ -16,12 +16,12 @@ class DataModelTest(unittest.TestCase):
     def test_get_data_model(self):
         """Test that the data model can be retrieved."""
         self.database.datamodels.find_one.return_value = dict(_id=123)
-        self.assertEqual(dict(_id="123"), datamodel.get_datamodel(self.database))
+        self.assertEqual(dict(_id="123"), datamodel.get_data_model(self.database))
 
     def test_get_data_model_missing(self):
         """Test that the data model is None if it's not there."""
         self.database.datamodels.find_one.return_value = None
-        self.assertEqual({}, datamodel.get_datamodel(self.database))
+        self.assertEqual({}, datamodel.get_data_model(self.database))
 
     def test_insert_data_model_with_id(self):
         """Test that a new data model can be inserted."""
@@ -46,8 +46,7 @@ class DataModelTest(unittest.TestCase):
     def test_default_subject_attributes(self):
         """Test that the default subject attributes can be retrieved from the data model."""
         self.database.datamodels.find_one.return_value = dict(
-            _id=123,
-            subjects=dict(subject_type=dict(name="name", description="description")))
+            _id=123, subjects=dict(subject_type=dict(name="name", description="description")))
         self.assertEqual(
             dict(name=None, description="description", type="subject_type", metrics={}),
             default_subject_attributes(self.database, "subject_type"))

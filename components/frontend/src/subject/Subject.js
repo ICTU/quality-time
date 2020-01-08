@@ -159,7 +159,7 @@ export function Subject(props) {
                   item_type={"metric"}
                   onClick={() => {
                     setSortColumn(null);
-                    add_metric(props.report.report_uuid, props.subject_uuid, props.reload);
+                    add_metric(props.subject_uuid, props.reload);
                   }}
                 />
               </Table.HeaderCell>

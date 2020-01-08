@@ -16,6 +16,7 @@ from .reports import get_reports
 
 
 @bottle.get("/api/v1/metrics")
+@bottle.get("/api/v2/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
     metrics: Dict[str, Any] = {}
@@ -29,35 +30,56 @@ def get_metrics(database: Database):
 
 
 @bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/metric/new")
-def post_metric_new(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
+def post_metric_new_v1(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
-    data = get_data(database, report_uuid, subject_uuid)
+    # pylint: disable=unused-argument
+    return post_metric_new(subject_uuid, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/metric/new/<subject_uuid>")
+def post_metric_new(subject_uuid: SubjectId, database: Database):
+    """Add a new metric."""
+    data = get_data(database, subject_uuid=subject_uuid)
     data.subject["metrics"][uuid()] = default_metric_attributes(database)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid,
         description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
                     f"'{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/copy")
-def post_metric_copy(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
+def post_metric_copy_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Copy a metric."""
-    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    # pylint: disable=unused-argument
+    return post_metric_copy(metric_uuid, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/metric/<metric_uuid>/copy")
+def post_metric_copy(metric_uuid: MetricId, database: Database):
+    """Copy a metric."""
+    data = get_data(database, metric_uuid=metric_uuid)
     data.subject["metrics"][uuid()] = copy_metric(data.metric, data.datamodel)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
         description=f"{sessions.user(database)} copied the metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")
-def delete_metric(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
+def delete_metric_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Delete a metric."""
-    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    # pylint: disable=unused-argument
+    return delete_metric(metric_uuid, database)  # pragma: nocover
+
+
+@bottle.delete("/api/v2/metric/<metric_uuid>")
+def delete_metric(metric_uuid: MetricId, database: Database):
+    """Delete a metric."""
+    data = get_data(database, metric_uuid=metric_uuid)
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid,
         description=f"{sessions.user(database)} deleted metric '{data.metric_name}' from subject '{data.subject_name}' "
                     f"in report '{data.report_name}'.")
     del data.subject["metrics"][metric_uuid]
@@ -65,10 +87,17 @@ def delete_metric(report_uuid: ReportId, metric_uuid: MetricId, database: Databa
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")
-def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_attribute: str, database: Database):
+def post_metric_attribute_v1(report_uuid: ReportId, metric_uuid: MetricId, metric_attribute: str, database: Database):
+    """Set the metric attribute."""
+    # pylint: disable=unused-argument
+    return post_metric_attribute(metric_uuid, metric_attribute, database)  # pragma: nocover
+
+
+@bottle.post("/api/v2/metric/<metric_uuid>/attribute/<metric_attribute>")
+def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
-    data = get_data(database, report_uuid, metric_uuid=metric_uuid)
+    data = get_data(database, metric_uuid=metric_uuid)
     if metric_attribute == "comment" and value:
         value = sanitize_html(value)
     old_value: Any
@@ -82,7 +111,7 @@ def post_metric_attribute(report_uuid: ReportId, metric_uuid: MetricId, metric_a
     if metric_attribute == "type":
         data.metric.update(default_metric_attributes(database, value))
     data.report["delta"] = dict(
-        report_uuid=report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
         description=f"{sessions.user(database)} changed the {metric_attribute} of metric '{data.metric_name}' of "
                     f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     insert_new_report(database, data.report)

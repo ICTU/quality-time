@@ -19,7 +19,7 @@ class PostSourceAttributeTest(unittest.TestCase):
             SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
             SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
         self.report = dict(
-            _id=REPORT_ID, title="Report",
+            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
@@ -27,15 +27,17 @@ class PostSourceAttributeTest(unittest.TestCase):
                         METRIC_ID: dict(
                             name="Metric", type="type", sources=self.sources)})})
         self.database = Mock()
+        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
-            _id="id", sources=dict(type=dict(name="Type"), new_type=dict(parameters=dict())))
+            _id="id", metrics=dict(type=dict()), sources=dict(type=dict(name="Type"), new_type=dict(parameters=dict())))
+        self.database.measurements.find.return_value = []
 
     def test_name(self, request):
         """Test that the source name can be changed."""
         request.json = dict(name="New source name")
-        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID, "name", self.database))
+        self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
@@ -46,7 +48,7 @@ class PostSourceAttributeTest(unittest.TestCase):
     def test_post_source_type(self, request):
         """Test that the source type can be changed."""
         request.json = dict(type="new_type")
-        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID, "type", self.database))
+        self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
@@ -57,7 +59,7 @@ class PostSourceAttributeTest(unittest.TestCase):
     def test_post_position(self, request):
         """Test that a metric can be moved."""
         request.json = dict(position="first")
-        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID2, "position", self.database))
+        self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID2, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys()))
@@ -70,7 +72,7 @@ class PostSourceAttributeTest(unittest.TestCase):
     def test_no_change(self, request):
         """Test that no new report is inserted when the attribute is unchanged."""
         request.json = dict(name="Source")
-        self.assertEqual(dict(ok=True), post_source_attribute(REPORT_ID, SOURCE_ID, "name", self.database))
+        self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert.assert_not_called()
 
 
@@ -87,21 +89,24 @@ class PostSourceParameterTest(unittest.TestCase):
             SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
             SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
         self.report = dict(
-            _id=REPORT_ID, title="Report",
+            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
                     metrics={METRIC_ID: dict(name="Metric", type="type", sources=self.sources)})})
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
         self.datamodel = dict(
             _id="id",
+            metrics=dict(type=dict()),
             sources=dict(
                 type=dict(
                     parameters=dict(
                         url=dict(type="url"), username=dict(type="string"), password=dict(type="password")))))
         self.database.datamodels.find_one.return_value = self.datamodel
+        self.database.measurements.find.return_value = []
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
     def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
@@ -122,7 +127,7 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that the source url can be changed and that the availability is checked."""
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=None)
@@ -137,7 +142,7 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that the error is reported if a request exception occurs, while checking connection of a url."""
         mock_get.side_effect = requests.exceptions.RequestException
         request.json = dict(url=self.url)
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response, -1, "Unknown error")
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
@@ -153,7 +158,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.sources[SOURCE_ID]['parameters']['password'] = 'pwd'
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=('un', 'pwd'))
@@ -164,7 +169,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.datamodel["sources"]["type"]["parameters"]["url"]["type"] = "string"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_not_called()
@@ -173,7 +178,7 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that the source url availability is not checked when the url is empty."""
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = dict(url="")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
 
@@ -183,7 +188,7 @@ class PostSourceParameterTest(unittest.TestCase):
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
         self.sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=('xxx', ''))
@@ -195,14 +200,14 @@ class PostSourceParameterTest(unittest.TestCase):
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]['parameters']['url'] = self.url
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", self.database)
+        response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
 
     def test_password(self, request):
         """Test that the password can be changed and is not logged."""
         request.json = dict(url="unimportant", password="secret")
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "password", self.database)
+        response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
@@ -215,7 +220,7 @@ class PostSourceParameterTest(unittest.TestCase):
         """Test that no new report is inserted if the parameter value is unchanged."""
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = dict(url=self.url)
-        response = post_source_parameter(REPORT_ID, SOURCE_ID, "url", self.database)
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_not_called()
 
@@ -225,16 +230,18 @@ class SourceTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
+        self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.datamodels.find_one.return_value = dict(
             _id="",
             metrics=dict(metric_type=dict(name="Metric type", direction="<", default_source="source_type")),
             sources=dict(source_type=dict(name="Source type", parameters=dict())))
+        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report = create_report()
 
     def test_add_source(self):
         """Test that a new source is added."""
-        self.assertEqual(dict(ok=True), post_source_new(REPORT_ID, METRIC_ID, self.database))
+        self.assertEqual(dict(ok=True), post_source_new(METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
@@ -244,7 +251,7 @@ class SourceTest(unittest.TestCase):
 
     def test_copy_source(self):
         """Test that a source can be copied."""
-        self.assertEqual(dict(ok=True), post_source_copy(REPORT_ID, SOURCE_ID, self.database))
+        self.assertEqual(dict(ok=True), post_source_copy(SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].values())[1]
         self.assertEqual("Source (copy)", copied_source["name"])
@@ -256,7 +263,7 @@ class SourceTest(unittest.TestCase):
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
-        self.assertEqual(dict(ok=True), delete_source(REPORT_ID, SOURCE_ID, self.database))
+        self.assertEqual(dict(ok=True), delete_source(SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,

@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import Dict, List
+from typing import cast, Any, Dict, List, Optional, Tuple
 
 import pymongo
 from pymongo.database import Database
@@ -54,7 +54,7 @@ def summarize_report(database: Database, report) -> None:
             report["summary"][color] += 1
             report["summary_by_subject"].setdefault(
                 subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-            for tag in metric["tags"]:
+            for tag in metric.get("tags", []):
                 report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 
 
@@ -105,31 +105,43 @@ def changelog(database: Database, nr_changes: int, **uuids):
     return sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:nr_changes]
 
 
-def _get_subject_uuid(report, metric_uuid: MetricId):
+def _get_report_uuid(reports, subject_uuid: SubjectId) -> Optional[ReportId]:
+    """Return the uuid of the report that contains the subject with the specified uuid."""
+    return cast(ReportId, [report for report in reports if subject_uuid in report["subjects"]][0]["report_uuid"])
+
+
+def _get_subject_uuid(reports, metric_uuid: MetricId) -> Optional[SubjectId]:
     """Return the uuid of the subject that has the metric with the specified uuid."""
-    subjects = report["subjects"]
-    return [subject_uuid for subject_uuid in subjects if metric_uuid in subjects[subject_uuid]["metrics"]][0]
+    subjects: List[Tuple[SubjectId, Any]] = []
+    for report in reports:
+        subjects.extend(report["subjects"].items())
+    return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
 
 
-def _get_metric_uuid(report, source_uuid: SourceId):
+def _get_metric_uuid(reports, source_uuid: SourceId) -> Optional[MetricId]:
     """Return the uuid of the metric that has a source with the specified uuid."""
-    return [metric_uuid for subject in report["subjects"].values() for metric_uuid in subject["metrics"]
-            if source_uuid in subject["metrics"][metric_uuid]["sources"]][0]
+    metrics: List[Tuple[MetricId, Any]] = []
+    for report in reports:
+        for subject in report["subjects"].values():
+            metrics.extend(subject["metrics"].items())
+    return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
 
 
-def get_data(database: Database, report_uuid: ReportId, subject_uuid: SubjectId = None, metric_uuid: MetricId = None,
-             source_uuid: SourceId = None):
+def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None,
+             metric_uuid: MetricId = None, source_uuid: SourceId = None):
     """Return applicable report, subject, metric, source, and their uuids and names."""
     data = namedtuple(
         "data",
-        "datamodel, report, report_name, subject, subject_uuid, subject_name, "
+        "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
-    data.report = latest_report(database, report_uuid)
-    data.report_name = data.report.get("title") or ""
-    data.source_uuid = source_uuid
-    data.metric_uuid = _get_metric_uuid(data.report, data.source_uuid) if data.source_uuid else metric_uuid
-    data.subject_uuid = _get_subject_uuid(data.report, data.metric_uuid) if data.metric_uuid else subject_uuid
+    data.reports = latest_reports(database)
     data.datamodel = latest_datamodel(database)
+    data.source_uuid = source_uuid
+    data.metric_uuid = _get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
+    data.subject_uuid = _get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
+    data.report_uuid = _get_report_uuid(data.reports, data.subject_uuid) if data.subject_uuid else report_uuid
+    data.report = list(filter(lambda report: data.report_uuid == report["report_uuid"], data.reports))[0]
+    data.report_name = data.report.get("title") or ""
     if data.subject_uuid:
         data.subject = data.report["subjects"][data.subject_uuid]
         data.subject_name = data.subject.get("name") or data.datamodel["subjects"][data.subject["type"]]["name"]

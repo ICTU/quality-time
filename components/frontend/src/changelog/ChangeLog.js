@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Icon, Table } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
-import { get_changelog } from '../api/report';
+import { get_changelog } from '../api/changelog';
 
 
 function fetch_changelog(uuids, nrChanges, setChanges) {
