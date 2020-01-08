@@ -51,20 +51,20 @@ export function Source(props) {
                     <Grid.Column>
                         <CopyButton
                             item_type='source'
-                            onClick={() => copy_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                            onClick={() => copy_source(props.source_uuid, props.reload)}
                         />
                         <MoveButtonGroup
                             first={props.first_source}
                             last={props.last_source}
                             moveable="source"
                             onClick={(direction) => {
-                                set_source_attribute(props.report.report_uuid, props.source_uuid, "position", direction, props.reload)
+                                set_source_attribute(props.source_uuid, "position", direction, props.reload)
                             }}
                             slot="position"
                         />
                         <DeleteButton
                             item_type='source'
-                            onClick={() => delete_source(props.report.report_uuid, props.source_uuid, props.reload)}
+                            onClick={() => delete_source(props.source_uuid, props.reload)}
                         />
                     </Grid.Column>
                 </Grid.Row>}
@@ -93,13 +93,13 @@ export function Source(props) {
                     <SourceType
                         source_type={props.source.type}
                         metric_type={props.metric_type} datamodel={props.datamodel}
-                        set_source_attribute={(a, v) => set_source_attribute(props.report.report_uuid, props.source_uuid, a, v, props.reload)} />
+                        set_source_attribute={(a, v) => set_source_attribute(props.source_uuid, a, v, props.reload)} />
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
                         label="Source name"
                         placeholder={source_type.name}
-                        set_value={(value) => set_source_attribute(props.report.report_uuid, props.source_uuid, "name", value, props.reload)}
+                        set_value={(value) => set_source_attribute(props.source_uuid, "name", value, props.reload)}
                         value={props.source.name}
                     />
                 </Grid.Column>

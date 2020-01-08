@@ -10,7 +10,6 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
-    const report_uuid = props.report.report_uuid;
     const subject_name = props.subject.name || current_subject_type.name;
     const subject_uuid = props.subject_uuid;
 
@@ -21,20 +20,20 @@ export function SubjectTitle(props) {
                     <Grid.Column>
                         <CopyButton
                             item_type="subject"
-                            onClick={() => copy_subject(report_uuid, subject_uuid, props.reload)}
+                            onClick={() => copy_subject(subject_uuid, props.reload)}
                         />
                         <MoveButtonGroup
                             first={props.first_subject}
                             last={props.last_subject}
                             moveable="subject"
                             onClick={(direction) => {
-                                set_subject_attribute(report_uuid, subject_uuid, "position", direction, props.reload)
+                                set_subject_attribute(subject_uuid, "position", direction, props.reload)
                             }}
                             slot="position"
                         />
                         <DeleteButton
                             item_type='subject'
-                            onClick={() => delete_subject(report_uuid, subject_uuid, props.reload)}
+                            onClick={() => delete_subject(subject_uuid, props.reload)}
                         />
                     </Grid.Column>
                 </Grid.Row>}
@@ -56,7 +55,7 @@ export function SubjectTitle(props) {
                     <Grid.Column>
                         <SubjectType
                             datamodel={props.datamodel}
-                            set_value={(value) => set_subject_attribute(report_uuid, subject_uuid, "type", value, props.reload)}
+                            set_value={(value) => set_subject_attribute(subject_uuid, "type", value, props.reload)}
                             subject_type={props.subject.type}
                         />
                     </Grid.Column>
@@ -64,7 +63,7 @@ export function SubjectTitle(props) {
                         <StringInput
                             label="Subject name"
                             placeholder={current_subject_type.name}
-                            set_value={(value) => set_subject_attribute(report_uuid, subject_uuid, "name", value, props.reload)}
+                            set_value={(value) => set_subject_attribute(subject_uuid, "name", value, props.reload)}
                             value={props.subject.name}
                         />
                     </Grid.Column>
@@ -72,7 +71,7 @@ export function SubjectTitle(props) {
                 <Grid.Row>
                     <Grid.Column>
                         <ChangeLog
-                            report_uuid={report_uuid}
+                            report_uuid={props.report.report_uuid}
                             subject_uuid={subject_uuid}
                             timestamp={props.report.timestamp}
                         />

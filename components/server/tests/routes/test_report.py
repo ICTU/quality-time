@@ -19,9 +19,11 @@ class PostReportAttributeTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
+        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
         self.database.sessions.find_one.return_value = dict(user="John")
         self.database.datamodels.find_one.return_value = {}
+        self.database.measurements.find.return_value = []
 
     def test_post_report_title(self, request):
         """Test that the report title can be changed."""
@@ -53,6 +55,9 @@ class ReportTest(unittest.TestCase):
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(metric_type=dict(name="Metric type")),
             sources=dict(source_type=dict(name="Source type")))
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = self.report = create_report()
+        self.database.measurements.find.return_value = []
 
     def test_add_report(self):
         """Test that a report can be added."""
@@ -64,12 +69,11 @@ class ReportTest(unittest.TestCase):
 
     def test_copy_report(self):
         """Test that a report can be copied."""
-        self.database.reports.find_one.return_value = report = create_report()
         self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_report = self.database.reports.insert.call_args[0][0]
         inserted_report_uuid = inserted_report["report_uuid"]
-        self.assertNotEqual(report["report_uuid"], inserted_report_uuid)
+        self.assertNotEqual(self.report["report_uuid"], inserted_report_uuid)
         self.assertEqual(
             dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
             inserted_report["delta"])
@@ -84,7 +88,6 @@ class ReportTest(unittest.TestCase):
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
-        self.database.reports.find_one.return_value = create_report()
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("Jenny deleted the report 'Report'.", inserted["delta"]["description"])
@@ -105,9 +108,6 @@ class ReportTest(unittest.TestCase):
         request.query = dict(report_date=(date_time := iso_timestamp()))
         self.database.datamodels.find_one.return_value = dict(
             _id="id", metrics=dict(metric_type=dict(default_scale="count")))
-        self.database.reports.find_one.return_value = None
-        self.database.measurements.find.return_value = []
-        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={

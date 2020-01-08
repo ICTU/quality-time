@@ -27,7 +27,7 @@ class CollectorTest(unittest.TestCase):
         self.metrics_response = Mock()
         self.metrics_collector = MetricsCollector()
         self.url = "https://url"
-        self.measurement_api_url = "http://localhost:5001/api/v1/measurements"
+        self.measurement_api_url = "http://localhost:5001/api/v2/measurements"
         logging.disable(logging.CRITICAL)
 
     def tearDown(self):
@@ -107,7 +107,7 @@ class CollectorTest(unittest.TestCase):
                 self.metrics_collector.fetch_measurements(60)
                 self.metrics_collector.fetch_measurements(60)
         post.assert_called_once_with(
-            "http://localhost:5001/api/v1/measurements",
+            "http://localhost:5001/api/v2/measurements",
             json=dict(
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
