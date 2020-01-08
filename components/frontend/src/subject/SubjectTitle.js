@@ -17,7 +17,7 @@ export function SubjectTitle(props) {
         let report_options = [];
         props.reports.forEach((report) => {
             report_options.push({
-                disabled: report.report_uuid === report_uuid, key: report.report_uuid,
+                disabled: report.report_uuid === props.report.report_uuid, key: report.report_uuid,
                 text: report.title, value: report.report_uuid})
         });
         report_options.sort((a, b) => a.text.localeCompare(b.text));
