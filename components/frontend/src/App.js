@@ -106,6 +106,7 @@ class App extends Component {
 
   reload_tag_report(report_date) {
     const tag = this.state.report_uuid.slice(4);
+    let self = this;
     get_tag_report(tag, report_date)
       .then(function (tagreport_json) {
         const now = new Date();
@@ -120,6 +121,7 @@ class App extends Component {
   }
 
   reload_reports(report_date) {
+    let self = this;
     get_reports(report_date)
       .then(function (report_overview_json) {
         const now = new Date();
