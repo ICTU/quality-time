@@ -10,7 +10,7 @@ import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
-import { ReadOnlyContext} from './context/ReadOnly';
+import { ReadOnlyContext } from './context/ReadOnly';
 import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
@@ -64,42 +64,11 @@ class App extends Component {
     this.show_connection_messages(json)
     this.check_session(json)
     const report_date = this.report_date() || new Date(3000, 1, 1);
-    const current_date = new Date();
-    let self = this;
-    get_datamodel(report_date)
-      .then(function (datamodel_json) {
-        self.setState({ loading_datamodel: false, datamodel: datamodel_json });
-      }).catch(function () {
-        show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
-      });
+    this.reload_data_model(report_date);
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      const tag = this.state.report_uuid.slice(4);
-      get_tag_report(tag, report_date)
-        .then(function (tagreport_json) {
-          self.setState(
-            {
-              reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
-              loading_report: false,
-              last_update: current_date
-            }
-          );
-        })
+      this.reload_tag_report(report_date)
     } else {
-      get_reports(report_date)
-        .then(function (report_overview_json) {
-          self.setState(
-            {
-              reports: report_overview_json.reports,
-              reports_overview: {
-                layout: report_overview_json.layout,
-                subtitle: report_overview_json.subtitle,
-                title: report_overview_json.title
-              },
-              loading_report: false,
-              last_update: current_date
-            }
-          );
-        });
+      this.reload_reports(report_date)
     }
   }
 
@@ -123,6 +92,50 @@ class App extends Component {
       this.logout();
       show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
+  }
+
+  reload_data_model(report_date) {
+    let self = this;
+    get_datamodel(report_date)
+      .then(function (data_model_json) {
+        self.setState({ loading_datamodel: false, datamodel: data_model_json });
+      }).catch(function () {
+        show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
+      });
+  }
+
+  reload_tag_report(report_date) {
+    const tag = this.state.report_uuid.slice(4);
+    get_tag_report(tag, report_date)
+      .then(function (tagreport_json) {
+        const now = new Date();
+        self.setState(
+          {
+            reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
+            loading_report: false,
+            last_update: now
+          }
+        )
+      })
+  }
+
+  reload_reports(report_date) {
+    get_reports(report_date)
+      .then(function (report_overview_json) {
+        const now = new Date();
+        self.setState(
+          {
+            reports: report_overview_json.reports,
+            reports_overview: {
+              layout: report_overview_json.layout,
+              subtitle: report_overview_json.subtitle,
+              title: report_overview_json.title
+            },
+            loading_report: false,
+            last_update: now
+          }
+        )
+      })
   }
 
   handleSearchChange(event) {
