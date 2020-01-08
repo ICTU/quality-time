@@ -24,22 +24,22 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                             name="S1",
                             metrics=dict(
                                 m1=dict(
-                                    tags=["security"], scale="count", type="violations", report_uuid="r1", target="1",
+                                    tags=["security"], scale="count", type="violations", target="1",
                                     sources=dict(s1=dict(type="sonarqube"))),
                                 m2=dict(
-                                    tags=["security"], scale="count", type="violations", report_uuid="r1", target="2",
+                                    tags=["security"], scale="count", type="violations", target="2",
                                     sources=dict(s2=dict(type="sonarqube"))),
                                 m3=dict(
-                                    tags=["security"], scale="count", type="violations", report_uuid="r1", target="3",
+                                    tags=["security"], scale="count", type="violations", target="3",
                                     sources=dict(s3=dict(type="sonarqube"))),
                                 m4=dict(
-                                    tags=["security"], scale="count", type="violations", report_uuid="r1", target="4",
+                                    tags=["security"], scale="count", type="violations", target="4",
                                     sources=dict(s4=dict(type="junit"))),
                                 m5=dict(
-                                    tags=["performance"], scale="count", type="violations", report_uuid="r1",
-                                    target="5", sources=dict(s5=dict(type="sonarqube"))),
+                                    tags=["performance"], scale="count", type="violations", target="5",
+                                    sources=dict(s5=dict(type="sonarqube"))),
                                 m6=dict(
-                                    tags=["security"], scale="count", type="loc", report_uuid="r1", target="6",
+                                    tags=["security"], scale="count", type="loc", target="6",
                                     sources=dict(s6=dict(type="sonarqube"))))))),
                 dict(
                     title="R2", report_uuid="r2")])

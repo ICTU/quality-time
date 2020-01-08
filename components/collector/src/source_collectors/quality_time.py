@@ -81,6 +81,7 @@ class QualityTimeMetrics(SourceCollector):
             for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_uuid, metric in subject.get("metrics", {}).items():
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
+                        metric["report_uuid"] = report["report_uuid"]
                         metric["subject_uuid"] = subject_uuid
                         entity = dict(key=metric_uuid, report=report["title"], subject=subject["name"])
                         metrics_and_entities.append((metric, entity))
