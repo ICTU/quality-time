@@ -61,30 +61,15 @@ class App extends Component {
   }
 
   reload(json) {
-    this.changed_fields = null
-    if (json && json.availability) {
-      this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
-      json.availability.map((url_key) => {
-        if (url_key.status_code !== 200) {
-          show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
-        } else if (url_key.status_code === 200) {
-          show_message("success", "URL connection OK")
-        }
-        return null
-      })
-    }
-
-    if (json && json.ok === false && json.reason === "invalid_session") {
-      this.logout();
-      show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
-    }
+    this.show_connection_messages(json)
+    this.check_session(json)
     const report_date = this.report_date() || new Date(3000, 1, 1);
     const current_date = new Date();
     let self = this;
     get_datamodel(report_date)
       .then(function (datamodel_json) {
         self.setState({ loading_datamodel: false, datamodel: datamodel_json });
-      }).catch(function (error) {
+      }).catch(function () {
         show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
       });
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
@@ -115,6 +100,28 @@ class App extends Component {
             }
           );
         });
+    }
+  }
+
+  show_connection_messages(json) {
+    this.changed_fields = null
+    if (json && json.availability) {
+      this.changed_fields = json.availability.filter((url_key) => url_key.status_code !== 200)
+      json.availability.map((url_key) => {
+        if (url_key.status_code === 200) {
+          show_message("success", "URL connection OK")
+        } else {
+          show_message("warning", "URL connection error", "HTTP code " + url_key.status_code + ": " + url_key.reason)
+        }
+        return null
+      })
+    }
+  }
+
+  check_session(json) {
+    if (json && json.ok === false && json.reason === "invalid_session") {
+      this.logout();
+      show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
   }
 
