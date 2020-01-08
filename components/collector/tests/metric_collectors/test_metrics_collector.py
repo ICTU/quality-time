@@ -28,7 +28,7 @@ class CollectorTest(unittest.TestCase):
         self.metrics_collector = MetricsCollector()
         self.url = "https://url"
         self.measurement_api_url = "http://localhost:5001/api/v1/measurements"
-        logging.disable()
+        logging.disable(logging.CRITICAL)
 
     def tearDown(self):
         logging.disable(logging.NOTSET)
