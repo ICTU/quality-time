@@ -42,16 +42,16 @@ def post_subject_copy(subject_uuid: SubjectId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/move/<target_report_uuid>")
-def post_move_subject(report_uuid: ReportId, subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
+@bottle.post("/api/v2/subject/<subject_uuid>/move/<target_report_uuid>")
+def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
-    source = get_data(database, report_uuid, subject_uuid=subject_uuid)
-    target = get_data(database, target_report_uuid)
+    source = get_data(database, subject_uuid=subject_uuid)
+    target = get_data(database, report_uuid=target_report_uuid)
     target.report["subjects"][uuid()] = source.subject
     del source.report["subjects"][subject_uuid]
     delta_description = f"{sessions.user(database)} moved the subject '{source.subject_name}' from report " \
                         f"'{source.report_name}' to report '{target.report_name}'."
-    source.report["delta"] = dict(report_uuid=report_uuid, description=delta_description)
+    source.report["delta"] = dict(report_uuid=source.report_uuid, description=delta_description)
     target.report["delta"] = dict(
         report_uuid=target_report_uuid, subject_uuid=subject_uuid, description=delta_description)
     insert_new_report(database, target.report)

@@ -140,9 +140,9 @@ class SubjectTest(unittest.TestCase):
     def test_move_subject(self):
         """Test that a subject can be moved to another report."""
         subject = self.report["subjects"][SUBJECT_ID]
-        target_report = dict(title="Target", report_uuid=REPORT_ID2, subjects={})
+        target_report = dict(_id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={})
         self.database.reports.find_one.side_effect = [self.report, target_report]
-        self.assertEqual(dict(ok=True), post_move_subject(REPORT_ID, SUBJECT_ID, REPORT_ID2, self.database))
+        self.assertEqual(dict(ok=True), post_move_subject(SUBJECT_ID, REPORT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"])
         self.assertEqual(subject, list(target_report["subjects"].values())[0])
         self.assertEqual(
