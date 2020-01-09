@@ -53,6 +53,7 @@ export function Measurement(props) {
     metric_uuid={props.metric_uuid}
     reload={props.reload}
     report={props.report}
+    reports={props.reports}
     scale={metric_scale}
     stop_sort={props.stop_sort}
     subject_uuid={props.subject_uuid}

@@ -144,12 +144,10 @@ class SubjectTest(unittest.TestCase):
         self.database.reports.find_one.side_effect = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_subject(SUBJECT_ID, REPORT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"])
-        self.assertEqual(subject, list(target_report["subjects"].values())[0])
+        self.assertEqual((SUBJECT_ID, subject), next(iter(target_report["subjects"].items())))
+        expected_description = "Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."
         self.assertEqual(
-            dict(report_uuid=REPORT_ID,
-                 description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
-            self.report["delta"])
+            dict(report_uuid=REPORT_ID, description=expected_description), self.report["delta"])
         self.assertEqual(
-            dict(report_uuid=REPORT_ID2, subject_uuid=SUBJECT_ID,
-                 description="Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."),
+            dict(report_uuid=REPORT_ID2, subject_uuid=SUBJECT_ID, description=expected_description),
             target_report["delta"])

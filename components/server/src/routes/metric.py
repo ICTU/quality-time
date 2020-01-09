@@ -67,6 +67,29 @@ def post_metric_copy(metric_uuid: MetricId, database: Database):
     return insert_new_report(database, data.report)
 
 
+@bottle.post("/api/v2/metric/<metric_uuid>/move/<target_subject_uuid>")
+def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
+    """Move the metric to another subject."""
+    source = get_data(database, metric_uuid=metric_uuid)
+    target = get_data(database, subject_uuid=target_subject_uuid)
+    delta_description = f"{sessions.user(database)} moved the metric '{source.metric_name}' from subject " \
+                        f"'{source.subject_name}' in report '{source.report_name}' to subject " \
+                        f"'{target.subject_name}' in report '{target.report_name}'."
+    target.subject["metrics"][metric_uuid] = source.metric
+    if target.report_uuid == source.report_uuid:
+        del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
+    else:
+        del source.subject["metrics"][metric_uuid]
+        source.report["delta"] = dict(
+            report_uuid=source.report_uuid, subject_uuid=source.subject_uuid, metric_uuid=metric_uuid,
+            description=delta_description)
+        insert_new_report(database, source.report)
+    target.report["delta"] = dict(
+        report_uuid=target.report_uuid, subject_uuid=target_subject_uuid, metric_uuid=metric_uuid,
+        description=delta_description)
+    return insert_new_report(database, target.report)
+
+
 @bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")
 def delete_metric_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
     """Delete a metric."""

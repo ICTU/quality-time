@@ -6,8 +6,8 @@ import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { CopyButton, DeleteButton, ReorderButtonGroup } from '../widgets/Button';
-import { copy_metric, delete_metric, set_metric_attribute } from '../api/metric';
+import { CopyButton, DeleteButton, ReorderButtonGroup, MoveButton } from '../widgets/Button';
+import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
 export function MeasurementDetails(props) {
@@ -81,6 +81,16 @@ export function MeasurementDetails(props) {
       </Tab.Pane>
     }
   );
+  let subject_options = [];
+  props.reports.forEach((report) => {
+    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+      subject_options.push({
+        disabled: subject_uuid === props.subject_uuid, key: subject_uuid,
+        text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name), value: subject_uuid
+      })
+    })
+  });
+  subject_options.sort((a, b) => a.text.localeCompare(b.text));
   return (
     <>
       <Tab panes={panes} />
@@ -90,6 +100,11 @@ export function MeasurementDetails(props) {
             item_type="metric"
             onClick={() => copy_metric(props.metric_uuid, props.reload)}
           />
+          <MoveButton
+            item_type="metric"
+            onClick={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
+            options={subject_options}
+          />
           <ReorderButtonGroup
             first={props.first_metric}
             last={props.last_metric}
@@ -97,7 +112,8 @@ export function MeasurementDetails(props) {
             moveable="metric"
             onClick={(direction) => {
               props.stop_sort();
-              set_metric_attribute(props.metric_uuid, "position", direction, props.reload)}
+              set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
+            }
             }
             slot="row"
           />

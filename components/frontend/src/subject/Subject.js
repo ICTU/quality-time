@@ -40,6 +40,7 @@ export function Subject(props) {
           nr_measurements={props.nr_measurements}
           reload={props.reload}
           report={props.report}
+          reports={props.reports}
           report_date={props.report_date}
           search_string={props.search_string}
           set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}

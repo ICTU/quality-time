@@ -47,7 +47,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     """Move the subject to another report."""
     source = get_data(database, subject_uuid=subject_uuid)
     target = get_data(database, report_uuid=target_report_uuid)
-    target.report["subjects"][uuid()] = source.subject
+    target.report["subjects"][subject_uuid] = source.subject
     del source.report["subjects"][subject_uuid]
     delta_description = f"{sessions.user(database)} moved the subject '{source.subject_name}' from report " \
                         f"'{source.report_name}' to report '{target.report_name}'."

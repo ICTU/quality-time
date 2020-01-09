@@ -38,6 +38,7 @@ export function Metric(props) {
         props.reload();
       }}
       report={props.report}
+      reports={props.reports}
       stop_sort={props.stop_sort}
       subject_uuid={props.subject_uuid}
       changed_fields={props.changed_fields}
