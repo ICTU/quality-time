@@ -1,4 +1,4 @@
-"""Datamodels collection."""
+"""Data models collection."""
 
 from typing import Any, Dict
 
@@ -17,7 +17,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
 
 
 def insert_new_datamodel(database: Database, data_model):
-    """Insert a new datamodel in the datamodels collection."""
+    """Insert a new data model in the data models collection."""
     if "_id" in data_model:
         del data_model["_id"]
     data_model["timestamp"] = iso_timestamp()
@@ -36,7 +36,7 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
 
 def default_metric_attributes(database: Database, metric_type: str = ""):
     """Return the metric attributes with their default values for the specified metric type.
-    If no metric type is specified, use the first one from the datamodel."""
+    If no metric type is specified, use the first one from the data model."""
     metric_types = latest_datamodel(database)["metrics"]
     if not metric_type:
         metric_type = list(metric_types.keys())[0]

@@ -10,6 +10,7 @@ const report = {
     report_uuid: "report_uuid",
     subjects: {
         subject_uuid: {
+            name: "Metric",
             metrics: {
                 metric_uuid: {
                     accept_debt: false,
@@ -31,6 +32,7 @@ describe("<MeasurementDetails />", () => {
                     measurements={[]}
                     metric_uuid="metric_uuid"
                     report={report}
+                    reports={[report]}
                     stop_sort={mockCallBack}
                     subject_uuid="subject_uuid"
                 />
@@ -47,6 +49,7 @@ describe("<MeasurementDetails />", () => {
                     measurements={[]}
                     metric_uuid="metric_uuid"
                     report={report}
+                    reports={[report]}
                     subject_uuid="subject_uuid"
                 />
             </ReadOnlyContext.Provider>

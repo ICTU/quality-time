@@ -14,7 +14,7 @@ describe("<Subject />", () => {
   it('shows the add subject button', () => {
     const wrapper = mount(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />
+        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>
     );
     expect(wrapper.find("AddButton").length).toBe(1);
