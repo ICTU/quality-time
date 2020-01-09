@@ -18,7 +18,8 @@ export function SubjectTitle(props) {
         props.reports.forEach((report) => {
             report_options.push({
                 disabled: report.report_uuid === props.report.report_uuid, key: report.report_uuid,
-                text: report.title, value: report.report_uuid})
+                text: report.title, value: report.report_uuid
+            })
         });
         report_options.sort((a, b) => a.text.localeCompare(b.text));
         return (
@@ -32,7 +33,7 @@ export function SubjectTitle(props) {
                         <MoveButton
                             item_type="subject"
                             onClick={(target_report_uuid) => {
-                                move_subject(report_uuid, subject_uuid, target_report_uuid, props.reload)
+                                move_subject(subject_uuid, target_report_uuid, props.reload)
                             }}
                             options={report_options} />
                         <ReorderButtonGroup

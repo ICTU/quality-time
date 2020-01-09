@@ -8,6 +8,10 @@ export function copy_subject(subject_uuid, reload) {
   return fetch_server_api('post', `subject/${subject_uuid}/copy`, {}).then(reload)
 }
 
+export function move_subject(subject_uuid, report_uuid, reload) {
+  return fetch_server_api('post', `subject/${subject_uuid}/move/${report_uuid}`, {}).then(reload)
+}
+
 export function delete_subject(subject_uuid, reload) {
   return fetch_server_api('delete', `subject/${subject_uuid}`, {}).then(reload)
 }
