@@ -82,19 +82,19 @@ export function MeasurementDetails(props) {
       </Tab.Pane>
     }
   );
-  let subject_options = [];
-  props.reports.forEach((report) => {
-    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-      subject_options.push({
-        disabled: subject_uuid === props.subject_uuid, key: subject_uuid,
-        text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name), value: subject_uuid
+
+  function Buttons() {
+    let subject_options = [];
+    props.reports.forEach((report) => {
+      Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+        subject_options.push({
+          disabled: subject_uuid === props.subject_uuid, key: subject_uuid,
+          text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name), value: subject_uuid
+        })
       })
-    })
-  });
-  subject_options.sort((a, b) => a.text.localeCompare(b.text));
-  return (
-    <>
-      <Tab panes={panes} />
+    });
+    subject_options.sort((a, b) => a.text.localeCompare(b.text));
+    return (
       <ReadOnlyOrEditable editableComponent={
         <>
           <CopyButton
@@ -114,8 +114,7 @@ export function MeasurementDetails(props) {
             onClick={(direction) => {
               props.stop_sort();
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
-            }
-            }
+            }}
             slot="row"
           />
           <DeleteButton
@@ -125,6 +124,12 @@ export function MeasurementDetails(props) {
           />
         </>
       } />
+    )
+  }
+  return (
+    <>
+      <Tab panes={panes} />
+      <Buttons />
     </>
   )
 }

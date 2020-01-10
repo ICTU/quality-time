@@ -8,20 +8,24 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { copy_subject, delete_subject, set_subject_attribute, move_subject } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
+function report_options(reports, current_report_uuid) {
+    let report_options = [];
+    reports.forEach((report) => {
+        report_options.push({
+            disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
+            text: report.title, value: report.report_uuid
+        })
+    });
+    report_options.sort((a, b) => a.text.localeCompare(b.text));
+    return report_options;
+}
+
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };
     const subject_name = props.subject.name || current_subject_type.name;
     const subject_uuid = props.subject_uuid;
 
     function ButtonRow() {
-        let report_options = [];
-        props.reports.forEach((report) => {
-            report_options.push({
-                disabled: report.report_uuid === props.report.report_uuid, key: report.report_uuid,
-                text: report.title, value: report.report_uuid
-            })
-        });
-        report_options.sort((a, b) => a.text.localeCompare(b.text));
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
@@ -35,7 +39,7 @@ export function SubjectTitle(props) {
                             onClick={(target_report_uuid) => {
                                 move_subject(subject_uuid, target_report_uuid, props.reload)
                             }}
-                            options={report_options} />
+                            options={report_options(props.reports, props.report.report_uuid)} />
                         <ReorderButtonGroup
                             first={props.first_subject}
                             last={props.last_subject}

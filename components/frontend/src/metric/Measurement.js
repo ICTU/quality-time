@@ -32,10 +32,6 @@ export function Measurement(props) {
   }
   const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
   const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
-  const positive = status === "target_met";
-  const active = status === "debt_target_met";
-  const negative = status === "target_not_met";
-  const warning = status === "near_target_met";
   const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
   const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
   const metric_name = metric.name || metric_type.name;
@@ -61,7 +57,7 @@ export function Measurement(props) {
     changed_fields={props.changed_fields}
   />
   return (
-    <TableRowWithDetails id={props.metric_uuid} show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>
+    <TableRowWithDetails id={props.metric_uuid} positive={status === "target_met"} negative={status === "target_not_met"} warning={status === "near_target_met"} active={status === "debt_target_met"} details={details}>
       <Table.Cell>
         {metric_name}
       </Table.Cell>

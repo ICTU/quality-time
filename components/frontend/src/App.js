@@ -229,6 +229,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
+    const props = {reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports};
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
@@ -254,22 +255,18 @@ class App extends Component {
                 <Reports
                   open_report={(e, r) => this.open_report(e, r)}
                   open_tag_report={(e, t) => this.open_tag_report(e, t)}
-                  reload={(json) => this.reload(json)}
-                  report_date={report_date}
-                  reports={this.state.reports}
                   reports_overview={this.state.reports_overview}
+                  {...props}
                 />
                 :
                 <Report
                   datamodel={this.state.datamodel}
                   go_home={() => this.go_home()}
                   nr_measurements={this.state.nr_measurements}
-                  reload={(json) => this.reload(json)}
                   report={current_report}
-                  reports={this.state.reports}
-                  report_date={report_date}
                   search_string={this.state.search_string}
                   changed_fields={this.changed_fields}
+                  {...props}
                 />
             }
           </Container>

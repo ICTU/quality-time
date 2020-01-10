@@ -13,6 +13,25 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
 }
 
+function metric_options(reports, current_metric_uuid, datamodel) {
+    let metric_options = [];
+    reports.forEach((report) => {
+        Object.values(report.subjects).forEach((subject) => {
+            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                metric_options.push({
+                    disabled: metric_uuid === current_metric_uuid,
+                    key: metric_uuid,
+                    text: report.title + " / " + (subject.name || datamodel.subjects[subject.type].name) +
+                          " / " + (metric.name || datamodel.metrics[metric.type].name),
+                    value: metric_uuid
+                })
+            })
+        });
+    });
+    metric_options.sort((a, b) => a.text.localeCompare(b.text));
+    return metric_options;
+}
+
 export function Source(props) {
     const source_type = props.datamodel.sources[props.source.type];
 
@@ -45,21 +64,6 @@ export function Source(props) {
     }
 
     function ButtonRow() {
-        let metric_options = [];
-        props.reports.forEach((report) => {
-            Object.values(report.subjects).forEach((subject) => {
-                Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                    metric_options.push({
-                        disabled: metric_uuid === props.metric_uuid,
-                        key: metric_uuid,
-                        text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name) +
-                              " / " + (metric.name || props.datamodel.metrics[metric.type].name),
-                        value: metric_uuid
-                    })
-                })
-            });
-        });
-        metric_options.sort((a, b) => a.text.localeCompare(b.text));
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
@@ -71,7 +75,7 @@ export function Source(props) {
                         <MoveButton
                             item_type="source"
                             onClick={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
-                            options={metric_options}
+                            options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
                         />
                         <ReorderButtonGroup
                             first={props.first_source}
