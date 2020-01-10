@@ -27,7 +27,7 @@ def post_report_new(database: Database):
     report_uuid = uuid()
     report = dict(
         report_uuid=report_uuid, title="New report", subjects={},
-        delta=dict(report_uuid=report_uuid, description=f"{sessions.user(database)} created a new report."))
+        delta=dict(uuids=[report_uuid], description=f"{sessions.user(database)} created a new report."))
     return insert_new_report(database, report)
 
 
@@ -38,7 +38,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     data = get_data(database, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
     report_copy["delta"] = dict(
-        report_uuid=report_copy["report_uuid"],
+        uuids=[report_uuid, report_copy["report_uuid"]],
         description=f"{sessions.user(database)} copied the report '{data.report_name}'.")
     return insert_new_report(database, report_copy)
 
@@ -60,7 +60,7 @@ def delete_report(report_uuid: ReportId, database: Database):
     data = get_data(database, report_uuid)
     data.report["deleted"] = "true"
     data.report["delta"] = dict(
-        report_uuid=report_uuid, description=f"{sessions.user(database)} deleted the report '{data.report_name}'.")
+        uuids=[report_uuid], description=f"{sessions.user(database)} deleted the report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
@@ -74,7 +74,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     data.report[report_attribute] = value
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
     data.report["delta"] = dict(
-        report_uuid=report_uuid,
+        uuids=[report_uuid],
         description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}'"
                     f"{value_change_description}.")
     return insert_new_report(database, data.report)

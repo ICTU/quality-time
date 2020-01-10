@@ -100,7 +100,8 @@ def changelog(database: Database, nr_changes: int, **uuids):
     changes: List[Change] = []
     if not uuids:
         changes.extend(database.reports_overviews.find(sort=sort_order, limit=nr_changes, projection=projection))
-    delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
+    old_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
+    delta_filter = {"$or": [old_delta_filter, {"delta.uuids": {"$in": list(uuids.values())}}]}
     changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
     return sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:nr_changes]
 

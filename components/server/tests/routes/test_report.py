@@ -31,8 +31,8 @@ class PostReportAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "title", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(description="John changed the title of report 'Title' from 'Title' to 'New title'.",
-                 report_uuid=REPORT_ID),
+            dict(uuids=[REPORT_ID],
+                 description="John changed the title of report 'Title' from 'Title' to 'New title'."),
             self.report["delta"])
 
     def test_post_report_layout(self, request):
@@ -41,7 +41,7 @@ class PostReportAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "layout", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(description="John changed the layout of report 'Title'.", report_uuid=REPORT_ID), self.report["delta"])
+            dict(uuids=[REPORT_ID], description="John changed the layout of report 'Title'."), self.report["delta"])
 
 
 class ReportTest(unittest.TestCase):
@@ -65,7 +65,8 @@ class ReportTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once()
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
-        self.assertEqual("Jenny created a new report.", inserted["delta"]["description"])
+        self.assertEqual(
+            dict(uuids=[inserted["report_uuid"]], description="Jenny created a new report."), inserted["delta"])
 
     def test_copy_report(self):
         """Test that a report can be copied."""
@@ -75,7 +76,7 @@ class ReportTest(unittest.TestCase):
         inserted_report_uuid = inserted_report["report_uuid"]
         self.assertNotEqual(self.report["report_uuid"], inserted_report_uuid)
         self.assertEqual(
-            dict(report_uuid=inserted_report_uuid, description="Jenny copied the report 'Report'."),
+            dict(uuids=[REPORT_ID, inserted_report_uuid], description="Jenny copied the report 'Report'."),
             inserted_report["delta"])
 
     @patch("requests.get")
@@ -90,7 +91,7 @@ class ReportTest(unittest.TestCase):
         """Test that the report can be deleted."""
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert.call_args_list[0][0][0]
-        self.assertEqual("Jenny deleted the report 'Report'.", inserted["delta"]["description"])
+        self.assertEqual(dict(uuids=[REPORT_ID], description="Jenny deleted the report 'Report'."), inserted["delta"])
 
     @patch("bottle.request")
     def test_post_report_import(self, request):

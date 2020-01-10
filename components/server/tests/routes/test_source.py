@@ -40,7 +40,7 @@ class PostSourceAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the name of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              "report 'Report' from 'Source' to 'New source name'."),
             self.report["delta"])
@@ -51,7 +51,7 @@ class PostSourceAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the type of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              "report 'Report' from 'type' to 'new_type'."),
             self.report["delta"])
@@ -64,7 +64,7 @@ class PostSourceAttributeTest(unittest.TestCase):
         self.assertEqual(
             [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys()))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID2,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID2],
                  description="Jenny changed the position of source 'Source 2' of metric 'Metric' of subject 'Subject' "
                              "in report 'Report' from '1' to '0'."),
             self.report["delta"])
@@ -132,7 +132,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=None)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              f"report 'Report' from '' to '{self.url}'."),
             self.report["delta"])
@@ -146,7 +146,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.assert_url_check(response, -1, "Unknown error")
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              f"report 'Report' from '' to '{self.url}'."),
             self.report["delta"])
@@ -211,7 +211,7 @@ class PostSourceParameterTest(unittest.TestCase):
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID, source_uuid=SOURCE_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the password of source 'Source' of metric 'Metric' of subject 'Subject' in "
                              "report 'Report' from '' to '******'."),
             self.report["delta"])
@@ -243,8 +243,9 @@ class SourceTest(unittest.TestCase):
         """Test that a new source is added."""
         self.assertEqual(dict(ok=True), post_source_new(METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
+        source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid],
                  description="Jenny added a new source to metric 'Metric' of subject 'Subject' in report "
                              "'Report'."),
             self.report["delta"])
@@ -253,10 +254,11 @@ class SourceTest(unittest.TestCase):
         """Test that a source can be copied."""
         self.assertEqual(dict(ok=True), post_source_copy(SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        copied_source = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].values())[1]
+        copied_source_uuid, copied_source = list(
+            self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items())[1]
         self.assertEqual("Source (copy)", copied_source["name"])
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, copied_source_uuid],
                  description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' in report "
                              "'Report'."),
             self.report["delta"])
@@ -266,7 +268,7 @@ class SourceTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), delete_source(SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in "
                              "report 'Report'."),
             self.report["delta"])

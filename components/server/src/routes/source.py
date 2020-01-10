@@ -29,9 +29,9 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     metric_type = data.metric["type"]
     source_type = data_model["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
-    data.metric["sources"][uuid()] = dict(type=source_type, parameters=parameters)
+    data.metric["sources"][(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
         description=f"{sessions.user(database)} added a new source to metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
@@ -48,9 +48,9 @@ def post_source_copy_v1(report_uuid: ReportId, source_uuid: SourceId, database: 
 def post_source_copy(source_uuid: SourceId, database: Database):
     """Copy a source."""
     data = get_data(database, source_uuid=source_uuid)
-    data.metric["sources"][uuid()] = copy_source(data.source, data.datamodel)
+    data.metric["sources"][(source_copy_uuid := uuid())] = copy_source(data.source, data.datamodel)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid, source_copy_uuid],
         description=f"{sessions.user(database)} copied the source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
@@ -68,7 +68,7 @@ def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data = get_data(database, source_uuid=source_uuid)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid],
         description=f"{sessions.user(database)} deleted the source '{data.source_name}' from metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     del data.metric["sources"][source_uuid]
@@ -96,8 +96,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     if old_value == value:
         return dict(ok=True)  # Nothing to do
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
-        source_uuid=source_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid],
         description=f"{sessions.user(database)} changed the {source_attribute} of source '{data.source_name}' of "
                     f"metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
                     f"from '{old_value}' to '{value}'.")
@@ -126,8 +125,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
-        source_uuid=source_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid],
         description=f"{sessions.user(database)} changed the {parameter_key} of source '{data.source_name}' of metric "
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' from "
                     f"'{old_value}' to '{new_value}'.")

@@ -29,7 +29,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID],
                  description="John changed the name of subject 'subject1' in report 'Report' from 'subject1' to "
                              "'new name'."),
             self.report["delta"])
@@ -41,7 +41,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID2,
+            dict(uuids=[REPORT_ID, SUBJECT_ID2],
                  description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
             self.report["delta"])
 
@@ -52,7 +52,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID],
                  description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
             self.report["delta"])
 
@@ -63,7 +63,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID2,
+            dict(uuids=[REPORT_ID, SUBJECT_ID2],
                  description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
             self.report["delta"])
 
@@ -74,7 +74,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID],
                  description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
             self.report["delta"])
 
@@ -111,8 +111,9 @@ class SubjectTest(unittest.TestCase):
     def test_add_subject(self):
         """Test that a subject can be added."""
         self.assertEqual(dict(ok=True), post_new_subject(REPORT_ID, self.database))
+        subject_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, description="Jenny created a new subject in report 'Report'."),
+            dict(uuids=[REPORT_ID, subject_uuid], description="Jenny created a new subject in report 'Report'."),
             self.report["delta"])
 
     def test_copy_subject(self):
@@ -121,8 +122,9 @@ class SubjectTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once()
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))
+        subject_copy_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, subject_copy_uuid],
                  description="Jenny copied the subject 'Subject' in report 'Report'."),
             self.report["delta"])
 
@@ -130,5 +132,6 @@ class SubjectTest(unittest.TestCase):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject(SUBJECT_ID, self.database))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, description="Jenny deleted the subject 'Subject' from report 'Report'."),
+            dict(uuids=[REPORT_ID, SUBJECT_ID],
+                 description="Jenny deleted the subject 'Subject' from report 'Report'."),
             self.report["delta"])
