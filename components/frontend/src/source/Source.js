@@ -5,8 +5,8 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { CopyButton, DeleteButton, ReorderButtonGroup } from '../widgets/Button';
-import { copy_source, delete_source, set_source_attribute } from '../api/source';
+import { CopyButton, DeleteButton, MoveButton, ReorderButtonGroup } from '../widgets/Button';
+import { copy_source, delete_source, move_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
@@ -45,6 +45,21 @@ export function Source(props) {
     }
 
     function ButtonRow() {
+        let metric_options = [];
+        props.reports.forEach((report) => {
+            Object.values(report.subjects).forEach((subject) => {
+                Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                    metric_options.push({
+                        disabled: metric_uuid === props.metric_uuid,
+                        key: metric_uuid,
+                        text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name) +
+                              " / " + (metric.name || props.datamodel.metrics[metric.type].name),
+                        value: metric_uuid
+                    })
+                })
+            });
+        });
+        metric_options.sort((a, b) => a.text.localeCompare(b.text));
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
@@ -52,6 +67,11 @@ export function Source(props) {
                         <CopyButton
                             item_type='source'
                             onClick={() => copy_source(props.source_uuid, props.reload)}
+                        />
+                        <MoveButton
+                            item_type="source"
+                            onClick={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
+                            options={metric_options}
                         />
                         <ReorderButtonGroup
                             first={props.first_source}

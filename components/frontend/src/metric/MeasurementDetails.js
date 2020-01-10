@@ -75,6 +75,7 @@ export function MeasurementDetails(props) {
           metric_uuid={props.metric_uuid}
           reload={props.reload}
           report={props.report}
+          reports={props.reports}
           sources={metric.sources}
           changed_fields={props.changed_fields}
         />

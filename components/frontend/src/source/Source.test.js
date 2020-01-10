@@ -11,12 +11,12 @@ const datamodel = {
     sources: { source_type: { name: "Source type", parameters: {} } }
 };
 const source = { type: "source_type" };
-const report = { report_uuid: "report_uuid" };
+const report = { report_uuid: "report_uuid", subjects: {} };
 
 function source_wrapper() {
     return mount(
         <ReadOnlyContext.Provider value={false}>
-            <Source datamodel={datamodel} metric_type="metric_type" report={report} source={source} />
+            <Source datamodel={datamodel} metric_type="metric_type" report={report} reports={[report]} source={source} />
         </ReadOnlyContext.Provider>
     )
 }

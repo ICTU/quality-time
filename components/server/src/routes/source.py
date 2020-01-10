@@ -56,6 +56,36 @@ def post_source_copy(source_uuid: SourceId, database: Database):
     return insert_new_report(database, data.report)
 
 
+@bottle.post("/api/v2/source/<source_uuid>/move/<target_metric_uuid>")
+def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
+    """Move the source to another metric."""
+    source = get_data(database, source_uuid=source_uuid)
+    target = get_data(database, metric_uuid=target_metric_uuid)
+    delta_description = f"{sessions.user(database)} moved the source '{source.source_name}' from metric " \
+                        f"'{source.metric_name}' of subject '{source.subject_name}' in report '{source.report_name}' " \
+                        f"to metric '{target.metric_name}' of subject '{target.subject_name}' in report " \
+                        f"'{target.report_name}'."
+    target.metric["sources"][source_uuid] = source.source
+    target_uuids = [target.report_uuid]
+    if target.report_uuid == source.report_uuid:
+        # Source is moved within the same report
+        del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
+        if target.subject_uuid != source.subject_uuid:
+            # Source is moved from one subject to another subject, include both subject uuids in the delta
+            target_uuids.append(source.subject_uuid)
+        target_uuids.extend([target.subject_uuid, source.metric_uuid])
+    else:
+        # Source is move from one report to another, update both
+        del source.metric["sources"][source_uuid]
+        source.report["delta"] = dict(
+            uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid],
+            description=delta_description)
+        insert_new_report(database, source.report)
+        target_uuids.append(target.subject_uuid)
+    target.report["delta"] = dict(uuids=target_uuids + [target_metric_uuid, source_uuid], description=delta_description)
+    return insert_new_report(database, target.report)
+
+
 @bottle.delete("/api/v1/report/<report_uuid>/source/<source_uuid>")
 def delete_source_v1(report_uuid: ReportId, source_uuid: SourceId, database: Database):
     """Delete a source."""
