@@ -5,7 +5,7 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { CopyButton, DeleteButton, MoveButton, ReorderButtonGroup } from '../widgets/Button';
+import { ItemActionButtons } from '../widgets/Button';
 import { copy_source, delete_source, move_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -13,7 +13,7 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
 }
 
-function metric_options(reports, current_metric_uuid, datamodel) {
+function metric_options(reports, datamodel, current_metric_uuid) {
     let metric_options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
@@ -63,32 +63,22 @@ export function Source(props) {
         )
     }
 
-    function ButtonRow() {
+    function ButtonGridRow() {
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
                     <Grid.Column>
-                        <CopyButton
+                        <ItemActionButtons
                             item_type='source'
-                            onClick={() => copy_source(props.source_uuid, props.reload)}
-                        />
-                        <MoveButton
-                            item_type="source"
-                            onClick={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
-                            options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
-                        />
-                        <ReorderButtonGroup
-                            first={props.first_source}
-                            last={props.last_source}
-                            moveable="source"
-                            onClick={(direction) => {
+                            first_item={props.first_source}
+                            last_item={props.last_source}
+                            onCopy={() => copy_source(props.source_uuid, props.reload)}
+                            onDelete={() => delete_source(props.source_uuid, props.reload)}
+                            onMove={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
+                            onReorder={(direction) => {
                                 set_source_attribute(props.source_uuid, "position", direction, props.reload)
                             }}
-                            slot="position"
-                        />
-                        <DeleteButton
-                            item_type='source'
-                            onClick={() => delete_source(props.source_uuid, props.reload)}
+                            options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
                         />
                     </Grid.Column>
                 </Grid.Row>}
@@ -157,7 +147,7 @@ export function Source(props) {
                 {props.connection_error && <ErrorMessage title="Connection error" message={props.connection_error} />}
                 {props.parse_error && <ErrorMessage title="Parse error" message={props.parse_error} />}
                 <ChangeLogRow />
-                <ButtonRow />
+                <ButtonGridRow />
             </Grid>
         </>
     )

@@ -3,7 +3,7 @@ import { Grid, Header } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { CopyButton, DeleteButton, ReorderButtonGroup, MoveButton } from '../widgets/Button';
+import { ItemActionButtons } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { copy_subject, delete_subject, set_subject_attribute, move_subject } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -25,33 +25,24 @@ export function SubjectTitle(props) {
     const subject_name = props.subject.name || current_subject_type.name;
     const subject_uuid = props.subject_uuid;
 
-    function ButtonRow() {
+    function ButtonGridRow() {
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
                     <Grid.Column>
-                        <CopyButton
+                        <ItemActionButtons
                             item_type="subject"
-                            onClick={() => copy_subject(subject_uuid, props.reload)}
-                        />
-                        <MoveButton
-                            item_type="subject"
-                            onClick={(target_report_uuid) => {
+                            first_item={props.first_subject}
+                            last_item={props.last_subject}
+                            onCopy={() => copy_subject(subject_uuid, props.reload)}
+                            onDelete={() => delete_subject(subject_uuid, props.reload)}
+                            onMove={(target_report_uuid) => {
                                 move_subject(subject_uuid, target_report_uuid, props.reload)
                             }}
-                            options={report_options(props.reports, props.report.report_uuid)} />
-                        <ReorderButtonGroup
-                            first={props.first_subject}
-                            last={props.last_subject}
-                            moveable="subject"
-                            onClick={(direction) => {
+                            onReorder={(direction) => {
                                 set_subject_attribute(subject_uuid, "position", direction, props.reload)
                             }}
-                            slot="position"
-                        />
-                        <DeleteButton
-                            item_type='subject'
-                            onClick={() => delete_subject(subject_uuid, props.reload)}
+                            options={report_options(props.reports, props.report.report_uuid)}
                         />
                     </Grid.Column>
                 </Grid.Row>}
@@ -95,7 +86,7 @@ export function SubjectTitle(props) {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <ButtonRow />
+                <ButtonGridRow />
             </Grid>
         </HeaderWithDetails>
     )

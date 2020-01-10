@@ -6,7 +6,7 @@ import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { CopyButton, DeleteButton, ReorderButtonGroup, MoveButton } from '../widgets/Button';
+import { ItemActionButtons } from '../widgets/Button';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
@@ -96,34 +96,23 @@ export function MeasurementDetails(props) {
     subject_options.sort((a, b) => a.text.localeCompare(b.text));
     return (
       <ReadOnlyOrEditable editableComponent={
-        <>
-          <CopyButton
+        <div style={{ marginTop: "20px" }}>
+          <ItemActionButtons
             item_type="metric"
-            onClick={() => copy_metric(props.metric_uuid, props.reload)}
-          />
-          <MoveButton
-            item_type="metric"
-            onClick={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
-            options={subject_options}
-          />
-          <ReorderButtonGroup
-            first={props.first_metric}
-            last={props.last_metric}
-            marginTop="10px"
-            moveable="metric"
-            onClick={(direction) => {
+            first_item={props.first_metric}
+            last_item={props.last_metric}
+            onCopy={() => copy_metric(props.metric_uuid, props.reload)}
+            onDelete={() => delete_metric(props.metric_uuid, props.reload)}
+            onMove={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
+            onReorder={(direction) => {
               props.stop_sort();
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
             }}
+            options={subject_options}
             slot="row"
           />
-          <DeleteButton
-            item_type='metric'
-            onClick={() => delete_metric(props.metric_uuid, props.reload)}
-            style={{ marginTop: "10px" }}
-          />
-        </>
-      } />
+        </div>}
+      />
     )
   }
   return (

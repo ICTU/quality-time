@@ -77,3 +77,14 @@ export function MoveButton(props) {
     </Button>
   )
 }
+
+export function ItemActionButtons(props) {
+  return (
+    <>
+      <CopyButton item_type={props.item_type} onClick={props.onCopy} />
+      <MoveButton item_type={props.item_type} onClick={props.onMove} options={props.options} />
+      <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot || "position"} />
+      <DeleteButton item_type={props.item_type} onClick={props.onDelete} />
+    </>
+  )
+}
