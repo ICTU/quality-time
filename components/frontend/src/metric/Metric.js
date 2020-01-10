@@ -27,21 +27,13 @@ export function Metric(props) {
   if (search_string && !metric_name.toLowerCase().includes(search_string.toLowerCase())) { return null }
   return (
     <Measurement
-      datamodel={props.datamodel}
-      first_metric={props.first_metric}
-      last_metric={props.last_metric}
       measurements={measurements}
       metric_uuid={metric_uuid}
-      reload={props.reload}
       fetch_measurement_and_reload={() => {
         fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
         props.reload();
       }}
-      report={props.report}
-      reports={props.reports}
-      stop_sort={props.stop_sort}
-      subject_uuid={props.subject_uuid}
-      changed_fields={props.changed_fields}
+      {...props}
     />
   )
 }

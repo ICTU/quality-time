@@ -31,22 +31,14 @@ export function Subject(props) {
       if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
       metric_components.push(
         <Metric
-          datamodel={props.datamodel}
           first_metric={index === 0}
           key={metric_uuid}
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
           metric={metric}
-          nr_measurements={props.nr_measurements}
-          reload={props.reload}
-          report={props.report}
-          reports={props.reports}
-          report_date={props.report_date}
-          search_string={props.search_string}
           set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}
           stop_sort={() => setSortColumn(null)}
-          subject_uuid={props.subject_uuid}
-          changed_fields={props.changed_fields}
+          {...props}
         />)
     });
     return metric_components
