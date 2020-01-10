@@ -51,9 +51,8 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     del source.report["subjects"][subject_uuid]
     delta_description = f"{sessions.user(database)} moved the subject '{source.subject_name}' from report " \
                         f"'{source.report_name}' to report '{target.report_name}'."
-    source.report["delta"] = dict(report_uuid=source.report_uuid, description=delta_description)
-    target.report["delta"] = dict(
-        report_uuid=target_report_uuid, subject_uuid=subject_uuid, description=delta_description)
+    source.report["delta"] = dict(uuids=[source.report_uuid, subject_uuid], description=delta_description)
+    target.report["delta"] = dict(uuids=[target_report_uuid, subject_uuid], description=delta_description)
     insert_new_report(database, target.report)
     return insert_new_report(database, source.report)
 

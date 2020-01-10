@@ -147,7 +147,6 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual((SUBJECT_ID, subject), next(iter(target_report["subjects"].items())))
         expected_description = "Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, description=expected_description), self.report["delta"])
+            dict(uuids=[REPORT_ID, SUBJECT_ID], description=expected_description), self.report["delta"])
         self.assertEqual(
-            dict(report_uuid=REPORT_ID2, subject_uuid=SUBJECT_ID, description=expected_description),
-            target_report["delta"])
+            dict(uuids=[REPORT_ID2, SUBJECT_ID], description=expected_description), target_report["delta"])

@@ -265,7 +265,7 @@ class MetricTest(unittest.TestCase):
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID2, metric_uuid=METRIC_ID,
+            dict(uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID],
                  description="John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject "
                              "'Target' in report 'Report'."),
             self.report["delta"])
@@ -283,13 +283,9 @@ class MetricTest(unittest.TestCase):
         expected_description = "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to " \
                                "subject 'Target' in report 'Target'."
         self.assertEqual(
-            dict(report_uuid=REPORT_ID, subject_uuid=SUBJECT_ID, metric_uuid=METRIC_ID,
-                 description=expected_description),
-            self.report["delta"])
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], description=expected_description), self.report["delta"])
         self.assertEqual(
-            dict(report_uuid=REPORT_ID2, subject_uuid=SUBJECT_ID2, metric_uuid=METRIC_ID,
-                 description=expected_description),
-            target_report["delta"])
+            dict(uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID], description=expected_description), target_report["delta"])
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""

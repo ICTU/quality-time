@@ -78,15 +78,14 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     target.subject["metrics"][metric_uuid] = source.metric
     if target.report_uuid == source.report_uuid:
         del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
+        target_uuids = [target.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
     else:
         del source.subject["metrics"][metric_uuid]
         source.report["delta"] = dict(
-            report_uuid=source.report_uuid, subject_uuid=source.subject_uuid, metric_uuid=metric_uuid,
-            description=delta_description)
+            uuids=[source.report_uuid, source.subject_uuid, metric_uuid], description=delta_description)
         insert_new_report(database, source.report)
-    target.report["delta"] = dict(
-        report_uuid=target.report_uuid, subject_uuid=target_subject_uuid, metric_uuid=metric_uuid,
-        description=delta_description)
+        target_uuids = [target.report_uuid, target_subject_uuid, metric_uuid]
+    target.report["delta"] = dict(uuids=target_uuids, description=delta_description)
     return insert_new_report(database, target.report)
 
 
