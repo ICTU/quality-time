@@ -40,9 +40,9 @@ def post_metric_new_v1(report_uuid: ReportId, subject_uuid: SubjectId, database:
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data = get_data(database, subject_uuid=subject_uuid)
-    data.subject["metrics"][uuid()] = default_metric_attributes(database)
+    data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid],
         description=f"{sessions.user(database)} added a new metric to subject '{data.subject_name}' in report "
                     f"'{data.report_name}'.")
     return insert_new_report(database, data.report)
@@ -61,7 +61,7 @@ def post_metric_copy(metric_uuid: MetricId, database: Database):
     data = get_data(database, metric_uuid=metric_uuid)
     data.subject["metrics"][uuid()] = copy_metric(data.metric, data.datamodel)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=data.metric_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid],
         description=f"{sessions.user(database)} copied the metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
@@ -79,7 +79,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data = get_data(database, metric_uuid=metric_uuid)
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid],
         description=f"{sessions.user(database)} deleted metric '{data.metric_name}' from subject '{data.subject_name}' "
                     f"in report '{data.report_name}'.")
     del data.subject["metrics"][metric_uuid]
@@ -111,7 +111,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     if metric_attribute == "type":
         data.metric.update(default_metric_attributes(database, value))
     data.report["delta"] = dict(
-        report_uuid=data.report_uuid, subject_uuid=data.subject_uuid, metric_uuid=metric_uuid,
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid],
         description=f"{sessions.user(database)} changed the {metric_attribute} of metric '{data.metric_name}' of "
                     f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     insert_new_report(database, data.report)
