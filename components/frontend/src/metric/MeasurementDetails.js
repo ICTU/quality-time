@@ -10,6 +10,20 @@ import { ItemActionButtons } from '../widgets/Button';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
+function subject_options(reports, datamodel, current_subject_uuid) {
+  let subject_options = [];
+    reports.forEach((report) => {
+      Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+        subject_options.push({
+          disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
+          text: report.title + " / " + (subject.name || datamodel.subjects[subject.type].name), value: subject_uuid
+        })
+      })
+    });
+    subject_options.sort((a, b) => a.text.localeCompare(b.text));
+    return subject_options;
+}
+
 export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
@@ -84,16 +98,6 @@ export function MeasurementDetails(props) {
   );
 
   function Buttons() {
-    let subject_options = [];
-    props.reports.forEach((report) => {
-      Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        subject_options.push({
-          disabled: subject_uuid === props.subject_uuid, key: subject_uuid,
-          text: report.title + " / " + (subject.name || props.datamodel.subjects[subject.type].name), value: subject_uuid
-        })
-      })
-    });
-    subject_options.sort((a, b) => a.text.localeCompare(b.text));
     return (
       <ReadOnlyOrEditable editableComponent={
         <div style={{ marginTop: "20px" }}>
@@ -108,7 +112,7 @@ export function MeasurementDetails(props) {
               props.stop_sort();
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
             }}
-            options={subject_options}
+            options={subject_options(props.reports, props.datamodel, props.subject_uuid)}
             slot="row"
           />
         </div>}
