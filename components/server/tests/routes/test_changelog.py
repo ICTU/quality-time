@@ -79,3 +79,13 @@ class ChangeLogTest(unittest.TestCase):
         self.assertEqual(
             dict(changelog=[dict(delta="delta2", timestamp="2"), dict(delta="delta1", timestamp="1")]),
             get_source_changelog(SOURCE_ID, "10", self.database))
+
+    def test_get_change_log_after_move(self):
+        """Test that changelog entries are not repeated after moving items between reports."""
+        report1 = dict(timestamp="1", delta=dict(description="delta1"))
+        report2 = dict(timestamp="2", delta=dict(description="delta1"))
+        self.database.reports.find.return_value = [report2, report1]
+        self.database.measurements.find.return_value = []
+        self.assertEqual(
+            dict(changelog=[dict(delta="delta1", timestamp="2")]),
+            get_subject_changelog(SUBJECT_ID, "10", self.database))

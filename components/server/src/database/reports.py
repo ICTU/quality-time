@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Optional, Tuple
+from typing import cast, Any, Dict, List, Optional, Set, Tuple
 
 import pymongo
 from pymongo.database import Database
@@ -103,7 +103,16 @@ def changelog(database: Database, nr_changes: int, **uuids):
     old_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     delta_filter = {"$or": [old_delta_filter, {"delta.uuids": {"$in": list(uuids.values())}}]}
     changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
-    return sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:nr_changes]
+    changes = sorted(changes, reverse=True, key=lambda change: change["timestamp"])
+    # Weed out possible duplicate entries because the user moves items between reports, both reports get the same delta
+    descriptions_seen: Set[str] = set()
+    weeded_changes = []
+    for change in changes:
+        description = cast(Dict[str, str], change["delta"])["description"]
+        if description not in descriptions_seen:
+            descriptions_seen.add(description)
+            weeded_changes.append(change)
+    return weeded_changes[:nr_changes]
 
 
 def _get_report_uuid(reports, subject_uuid: SubjectId) -> Optional[ReportId]:
