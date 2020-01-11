@@ -70,9 +70,10 @@ export function MoveButton(props) {
       <Dropdown
         basic
         onChange={(event, { value }) => onClick(value)}
-        text={`Move ${item_type} to`}
+        scrolling
         selectOnBlur={false}
         selectOnNavigation={false}
+        text={`Move ${item_type} to`}
         {...otherProps} />
     </Button>
   )
@@ -82,7 +83,7 @@ export function ItemActionButtons(props) {
   return (
     <>
       <CopyButton item_type={props.item_type} onClick={props.onCopy} />
-      <MoveButton item_type={props.item_type} onClick={props.onMove} options={props.options} />
+      <MoveButton item_type={props.item_type} onClick={props.onMove} options={props.options} header={props.reorder_header} />
       <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot || "position"} />
       <DeleteButton item_type={props.item_type} onClick={props.onDelete} />
     </>

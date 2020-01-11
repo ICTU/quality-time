@@ -43,6 +43,7 @@ export function SubjectTitle(props) {
                                 set_subject_attribute(subject_uuid, "position", direction, props.reload)
                             }}
                             options={report_options(props.reports, props.report.report_uuid)}
+                            reorder_header="Report"
                         />
                     </Grid.Column>
                 </Grid.Row>}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tab, Menu } from 'semantic-ui-react';
+import { Dropdown, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
@@ -7,6 +7,7 @@ import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ItemActionButtons } from '../widgets/Button';
+import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
 
@@ -14,9 +15,12 @@ function subject_options(reports, datamodel, current_subject_uuid) {
   let subject_options = [];
     reports.forEach((report) => {
       Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+        const subject_name = subject.name || datamodel.subjects[subject.type].name;
         subject_options.push({
+          content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
           disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
-          text: report.title + " / " + (subject.name || datamodel.subjects[subject.type].name), value: subject_uuid
+          text: report.title + subject_name,
+          value: subject_uuid
         })
       })
     });
@@ -113,6 +117,7 @@ export function MeasurementDetails(props) {
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
             }}
             options={subject_options(props.reports, props.datamodel, props.subject_uuid)}
+            reorder_header={<Dropdown.Header>Report <Icon name='right chevron'/>Subject</Dropdown.Header>}
             slot="row"
           />
         </div>}

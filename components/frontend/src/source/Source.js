@@ -1,11 +1,12 @@
 import React from 'react';
-import { Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Dropdown, Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { ItemActionButtons } from '../widgets/Button';
+import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_source, delete_source, move_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -17,12 +18,14 @@ function metric_options(reports, datamodel, current_metric_uuid) {
     let metric_options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
+            const subject_name = subject.name || datamodel.subjects[subject.type].name;
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                const metric_name = metric.name || datamodel.metrics[metric.type].name;
                 metric_options.push({
+                    content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     disabled: metric_uuid === current_metric_uuid,
                     key: metric_uuid,
-                    text: report.title + " / " + (subject.name || datamodel.subjects[subject.type].name) +
-                          " / " + (metric.name || datamodel.metrics[metric.type].name),
+                    text: report.title + subject_name + metric_name,
                     value: metric_uuid
                 })
             })
@@ -79,6 +82,7 @@ export function Source(props) {
                                 set_source_attribute(props.source_uuid, "position", direction, props.reload)
                             }}
                             options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
+                            reorder_header={<Dropdown.Header>Report <Icon name='right chevron'/>Subject <Icon name='right chevron'/>Metric</Dropdown.Header>}
                         />
                     </Grid.Column>
                 </Grid.Row>}
