@@ -39,19 +39,10 @@ export function MeasurementDetails(props) {
       if (!report_source) { return }  // source was deleted, continue
       const nr_entities = (source.entities && source.entities.length) || 0;
       if (nr_entities === 0) { return } // no entities to show, continue
-      const source_name = get_source_name(report_source, datamodel);
+      const source_name = get_source_name(report_source, props.datamodel);
       panes.push({
         menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane>
-          <SourceEntities
-            datamodel={props.datamodel}
-            fetch_measurement_and_reload={props.fetch_measurement_and_reload}
-            metric={metric}
-            metric_uuid={props.metric_uuid}
-            report_uuid={report_uuid}
-            source={source}
-          />
-        </Tab.Pane>
+        render: () => <Tab.Pane><SourceEntities metric={metric} report_uuid={report_uuid} source={source} {...props} /></Tab.Pane>
       });
     });
   }
@@ -60,9 +51,7 @@ export function MeasurementDetails(props) {
     panes.push(
       {
         menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane>
-          <TrendGraph measurements={props.measurements} unit={unit_name} scale={props.scale} title={props.metric_name} />
-        </Tab.Pane>
+        render: () => <Tab.Pane><TrendGraph unit={unit_name} title={props.metric_name} {...props} /></Tab.Pane>
       }
     );
   }
@@ -70,13 +59,7 @@ export function MeasurementDetails(props) {
     {
       menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
       render: () => <Tab.Pane>
-        <MetricParameters
-          datamodel={props.datamodel}
-          fetch_measurement_and_reload={props.fetch_measurement_and_reload}
-          metric={metric}
-          metric_uuid={props.metric_uuid}
-          reload={props.reload}
-        />
+        <MetricParameters metric={metric} {...props} />
         <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
       </Tab.Pane>
     }
@@ -84,20 +67,7 @@ export function MeasurementDetails(props) {
   panes.push(
     {
       menuItem: <Menu.Item key='sources'><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
-      render: () => <Tab.Pane>
-        <Sources
-          datamodel={props.datamodel}
-          measurement={props.measurement}
-          metric_type={metric.type}
-          metric_unit={props.unit}
-          metric_uuid={props.metric_uuid}
-          reload={props.reload}
-          report={props.report}
-          reports={props.reports}
-          sources={metric.sources}
-          changed_fields={props.changed_fields}
-        />
-      </Tab.Pane>
+      render: () => <Tab.Pane><Sources metric_type={metric.type} sources={metric.sources} {...props} /></Tab.Pane>
     }
   );
 
