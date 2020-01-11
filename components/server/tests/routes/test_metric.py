@@ -3,9 +3,10 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy
+from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy, \
+    post_move_metric
 
-from .fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from .fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
@@ -255,6 +256,36 @@ class MetricTest(unittest.TestCase):
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
                  description="John copied the metric 'Metric' of subject 'Subject' in report 'Report'."),
             self.report["delta"])
+
+    def test_move_metric_within_report(self):
+        """Test that a metric can be moved to a different subject in the same report."""
+        metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
+        target_subject = self.report["subjects"][SUBJECT_ID2] = dict(name="Target", metrics={})
+        self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
+        self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
+        self.assertEqual(
+            dict(uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID],
+                 description="John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject "
+                             "'Target' in report 'Report'."),
+            self.report["delta"])
+
+    def test_move_metric_across_reports(self):
+        """Test that a metric can be moved to a different subject in a different report."""
+        metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
+        target_subject = dict(name="Target", metrics={})
+        target_report = dict(
+            _id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject})
+        self.database.reports.find_one.side_effect = [self.report, target_report]
+        self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
+        self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
+        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
+        expected_description = "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to " \
+                               "subject 'Target' in report 'Target'."
+        self.assertEqual(
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], description=expected_description), self.report["delta"])
+        self.assertEqual(
+            dict(uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID], description=expected_description), target_report["delta"])
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""

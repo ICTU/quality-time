@@ -7,6 +7,13 @@ import { MeasurementDetails } from './MeasurementDetails';
 import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
+import { get_metric_name } from '../utils';
+
+function week_ago_iso_string() {
+  let week_ago = new Date();
+  week_ago.setDate(week_ago.getDate() - 7)
+  return week_ago.toISOString();
+}
 
 export function Measurement(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
@@ -32,40 +39,23 @@ export function Measurement(props) {
   }
   const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
   const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
-  const positive = status === "target_met";
-  const active = status === "debt_target_met";
-  const negative = status === "target_not_met";
-  const warning = status === "near_target_met";
   const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
   const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
-  const metric_name = metric.name || metric_type.name;
-  let week_ago = new Date();
-  week_ago.setDate(week_ago.getDate() - 7)
-  const week_ago_string = week_ago.toISOString();
+  const metric_name = get_metric_name(metric, props.datamodel);
   const details = <MeasurementDetails
-    datamodel={props.datamodel}
-    fetch_measurement_and_reload={props.fetch_measurement_and_reload}
-    first_metric={props.first_metric}
-    last_metric={props.last_metric}
     measurement={latest_measurement}
-    measurements={props.measurements}
     metric_name={metric_name}
-    metric_uuid={props.metric_uuid}
-    reload={props.reload}
-    report={props.report}
     scale={metric_scale}
-    stop_sort={props.stop_sort}
-    subject_uuid={props.subject_uuid}
     unit={metric_unit}
-    changed_fields={props.changed_fields}
+    {...props}
   />
   return (
-    <TableRowWithDetails id={props.metric_uuid} show_details={Object.keys(metric.sources || []).length === 0} positive={positive} negative={negative} warning={warning} active={active} details={details}>
+    <TableRowWithDetails id={props.metric_uuid} positive={status === "target_met"} negative={status === "target_not_met"} warning={status === "near_target_met"} active={status === "debt_target_met"} details={details}>
       <Table.Cell>
         {metric_name}
       </Table.Cell>
       <Table.Cell>
-        <TrendSparkline measurements={props.measurements.filter((measurement) => measurement.end >= week_ago_string)} scale={metric_scale} />
+        <TrendSparkline measurements={props.measurements.filter((measurement) => measurement.end >= week_ago_iso_string())} scale={metric_scale} />
       </Table.Cell>
       <Table.Cell>
         <StatusIcon status={status} />

@@ -42,6 +42,21 @@ def post_subject_copy(subject_uuid: SubjectId, database: Database):
     return insert_new_report(database, data.report)
 
 
+@bottle.post("/api/v2/subject/<subject_uuid>/move/<target_report_uuid>")
+def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
+    """Move the subject to another report."""
+    source = get_data(database, subject_uuid=subject_uuid)
+    target = get_data(database, report_uuid=target_report_uuid)
+    target.report["subjects"][subject_uuid] = source.subject
+    del source.report["subjects"][subject_uuid]
+    delta_description = f"{sessions.user(database)} moved the subject '{source.subject_name}' from report " \
+                        f"'{source.report_name}' to report '{target.report_name}'."
+    source.report["delta"] = dict(uuids=[source.report_uuid, subject_uuid], description=delta_description)
+    target.report["delta"] = dict(uuids=[target_report_uuid, subject_uuid], description=delta_description)
+    insert_new_report(database, target.report)
+    return insert_new_report(database, source.report)
+
+
 @bottle.delete("/api/v1/report/<report_uuid>/subject/<subject_uuid>")
 def delete_subject_v1(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
     """Delete the subject."""

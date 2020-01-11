@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Measurement } from './Measurement';
 import { get_measurements } from '../api/measurement';
+import { get_metric_name } from '../utils';
 
 function last_measurement(measurements) {
   return measurements && measurements.length > 0 ? measurements[measurements.length - 1] : null;
@@ -23,24 +24,17 @@ export function Metric(props) {
     // eslint-disable-next-line
   }, [metric_uuid, props.nr_measurements, report_date]);
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
-  const metric_name = metric.name || props.datamodel.metrics[metric.type].name;
+  const metric_name = get_metric_name(metric, props.datamodel);
   if (search_string && !metric_name.toLowerCase().includes(search_string.toLowerCase())) { return null }
   return (
     <Measurement
-      datamodel={props.datamodel}
-      first_metric={props.first_metric}
-      last_metric={props.last_metric}
       measurements={measurements}
       metric_uuid={metric_uuid}
-      reload={props.reload}
       fetch_measurement_and_reload={() => {
         fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
         props.reload();
       }}
-      report={props.report}
-      stop_sort={props.stop_sort}
-      subject_uuid={props.subject_uuid}
-      changed_fields={props.changed_fields}
+      {...props}
     />
   )
 }

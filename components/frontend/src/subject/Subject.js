@@ -5,6 +5,7 @@ import { SubjectTitle } from './SubjectTitle';
 import { add_metric } from '../api/metric';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton } from '../widgets/Button';
+import { get_metric_name, get_source_name } from '../utils';
 
 export function Subject(props) {
   function handleSort(column) {
@@ -31,21 +32,14 @@ export function Subject(props) {
       if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
       metric_components.push(
         <Metric
-          datamodel={props.datamodel}
           first_metric={index === 0}
           key={metric_uuid}
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
           metric={metric}
-          nr_measurements={props.nr_measurements}
-          reload={props.reload}
-          report={props.report}
-          report_date={props.report_date}
-          search_string={props.search_string}
           set_last_measurement={(m, l) => setLastMeasurements(lm => ({ ...lm, [m]: l }))}
           stop_sort={() => setSortColumn(null)}
-          subject_uuid={props.subject_uuid}
-          changed_fields={props.changed_fields}
+          {...props}
         />)
     });
     return metric_components
@@ -59,8 +53,8 @@ export function Subject(props) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
     const sorters = {
       name: (m1, m2) => {
-        const attribute1 = m1.props.metric.name || props.datamodel.metrics[m1.props.metric.type].name;
-        const attribute2 = m2.props.metric.name || props.datamodel.metrics[m2.props.metric.type].name;
+        const attribute1 = get_metric_name(m1.props.metric, props.datamodel);
+        const attribute2 = get_metric_name(m2.props.metric, props.datamodel);
         return attribute1.localeCompare(attribute2)
       },
       measurement: (m1, m2) => {
@@ -84,9 +78,9 @@ export function Subject(props) {
         return attribute1.localeCompare(attribute2)
       },
       source: (m1, m2) => {
-        let m1_sources = Object.values(m1.props.metric.sources).map((source) => source.name || props.datamodel.sources[source.type].name);
+        let m1_sources = Object.values(m1.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
         m1_sources.sort();
-        let m2_sources = Object.values(m2.props.metric.sources).map((source) => source.name || props.datamodel.sources[source.type].name);
+        let m2_sources = Object.values(m2.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
         m2_sources.sort();
         const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
         const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
@@ -115,6 +109,52 @@ export function Subject(props) {
       </Table.HeaderCell>
     )
   }
+  function SubjectTableHeader() {
+    return (
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell collapsing textAlign="center">
+            <Popup trigger={
+              <Button
+                basic
+                compact
+                icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
+                onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
+                primary
+              />
+            } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
+          </Table.HeaderCell>
+          <SortableHeader column='name' label='Metric' />
+          <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
+          <SortableHeader column='status' label='Status' />
+          <SortableHeader column='measurement' label='Measurement' />
+          <SortableHeader column='target' label='Target' />
+          <SortableHeader column='source' label='Source' />
+          <SortableHeader column='comment' label='Comment' />
+          <SortableHeader column='tags' label='Tags' />
+        </Table.Row>
+      </Table.Header>
+    )
+  }
+  function SubjectTableFooter() {
+    return (
+      <ReadOnlyOrEditable editableComponent={
+        <Table.Footer>
+          <Table.Row>
+            <Table.HeaderCell colSpan='9'>
+              <AddButton
+                item_type={"metric"}
+                onClick={() => {
+                  setSortColumn(null);
+                  add_metric(props.subject_uuid, props.reload);
+                }}
+              />
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Footer>}
+      />
+    )
+  }
   return (
     <div id={props.subject_uuid}>
       <SubjectTitle
@@ -123,49 +163,14 @@ export function Subject(props) {
         last_subject={props.last_subject}
         reload={props.reload}
         report={props.report}
+        reports={props.reports}
         subject={subject}
         subject_uuid={props.subject_uuid}
       />
       <Table sortable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell collapsing textAlign="center">
-              <Popup trigger={
-                <Button
-                  basic
-                  compact
-                  icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
-                  onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
-                  primary
-                />
-              } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
-            </Table.HeaderCell>
-            <SortableHeader column='name' label='Metric' />
-            <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
-            <SortableHeader column='status' label='Status' />
-            <SortableHeader column='measurement' label='Measurement' />
-            <SortableHeader column='target' label='Target' />
-            <SortableHeader column='source' label='Source' />
-            <SortableHeader column='comment' label='Comment' />
-            <SortableHeader column='tags' label='Tags' />
-          </Table.Row>
-        </Table.Header>
+        <SubjectTableHeader />
         <Table.Body>{metric_components}</Table.Body>
-        <ReadOnlyOrEditable editableComponent={
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell colSpan='9'>
-                <AddButton
-                  item_type={"metric"}
-                  onClick={() => {
-                    setSortColumn(null);
-                    add_metric(props.subject_uuid, props.reload);
-                  }}
-                />
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>}
-        />
+        <SubjectTableFooter />
       </Table>
     </div>
   )

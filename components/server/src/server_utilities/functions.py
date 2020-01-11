@@ -1,6 +1,7 @@
 """Utility functions."""
 
 from datetime import datetime, timezone
+from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
 import re
 import uuid as _uuid
 
@@ -36,3 +37,15 @@ def sanitize_html(html_text: str) -> str:
     if sanitized_html.count("<") == 2:
         sanitized_html = re.sub("</?p>", "", sanitized_html)
     return sanitized_html
+
+
+Item = TypeVar('Item')
+
+
+def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable]) -> Iterator[Item]:
+    """Return the unique items in the list."""
+    seen: Set[Hashable] = set()
+    for item in items:
+        if (key := get_key(item)) not in seen:
+            seen.add(key)
+            yield item

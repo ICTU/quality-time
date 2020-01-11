@@ -43,10 +43,12 @@ export function Sources(props) {
                     first_source={index === 0}
                     last_source={index === last_index}
                     metric_type={props.metric_type}
+                    metric_uuid={props.metric_uuid}
                     metric_unit={props.metric_unit}
                     parse_error={source_error(source_uuid, "parse_error")}
                     reload={props.reload}
                     report={props.report}
+                    reports={props.reports}
                     source={props.sources[source_uuid]}
                     source_uuid={source_uuid}
                     changed_fields={props.changed_fields}
