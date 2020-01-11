@@ -1,12 +1,12 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Optional, Set, Tuple
+from typing import cast, Any, Dict, List, Optional, Tuple
 
 import pymongo
 from pymongo.database import Database
 
-from server_utilities.functions import iso_timestamp
+from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, Color, MetricId, ReportId, SourceId, Status, SubjectId
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
@@ -105,14 +105,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
     changes = sorted(changes, reverse=True, key=lambda change: change["timestamp"])
     # Weed out possible duplicate entries because the user moves items between reports, both reports get the same delta
-    descriptions_seen: Set[str] = set()
-    weeded_changes = []
-    for change in changes:
-        description = cast(Dict[str, str], change["delta"])["description"]
-        if description not in descriptions_seen:
-            descriptions_seen.add(description)
-            weeded_changes.append(change)
-    return weeded_changes[:nr_changes]
+    return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
 
 
 def _get_report_uuid(reports, subject_uuid: SubjectId) -> Optional[ReportId]:
