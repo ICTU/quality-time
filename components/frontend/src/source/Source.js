@@ -9,6 +9,7 @@ import { ItemActionButtons } from '../widgets/Button';
 import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_source, delete_source, move_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { get_metric_name, get_subject_name } from '../utils';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -18,9 +19,9 @@ function metric_options(reports, datamodel, current_metric_uuid) {
     let metric_options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
-            const subject_name = subject.name || datamodel.subjects[subject.type].name;
+            const subject_name = get_subject_name(subject, datamodel);
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                const metric_name = metric.name || datamodel.metrics[metric.type].name;
+                const metric_name = get_metric_name(metric, datamodel);
                 metric_options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     disabled: metric_uuid === current_metric_uuid,

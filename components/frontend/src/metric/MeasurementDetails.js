@@ -10,12 +10,13 @@ import { ItemActionButtons } from '../widgets/Button';
 import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { ChangeLog } from '../changelog/ChangeLog';
+import { get_source_name, get_subject_name } from '../utils';
 
 function subject_options(reports, datamodel, current_subject_uuid) {
   let subject_options = [];
     reports.forEach((report) => {
       Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const subject_name = subject.name || datamodel.subjects[subject.type].name;
+        const subject_name = get_subject_name(subject, datamodel);
         subject_options.push({
           content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
           disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
@@ -38,8 +39,7 @@ export function MeasurementDetails(props) {
       if (!report_source) { return }  // source was deleted, continue
       const nr_entities = (source.entities && source.entities.length) || 0;
       if (nr_entities === 0) { return } // no entities to show, continue
-      const source_type = report_source.type;
-      const source_name = report_source.name || props.datamodel.sources[source_type].name;
+      const source_name = get_source_name(report_source, datamodel);
       panes.push({
         menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
         render: () => <Tab.Pane>

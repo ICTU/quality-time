@@ -1,11 +1,12 @@
 import React from 'react';
 import { Label, Popup } from 'semantic-ui-react';
+import { get_source_name } from '../utils';
 
 export function SourceStatus(props) {
   // Source may be deleted from report but still referenced in the latest measurement, be prepared:
   if (!Object.keys(props.metric.sources).includes(props.source_uuid)) {return null}
   const source = props.metric.sources[props.source_uuid];
-  const source_name = source.name || props.datamodel.sources[source.type].name;
+  const source_name = get_source_name(source, props.datamodel);
   function source_label() {
     return (props.source.landing_url ? <a href={props.source.landing_url}>{source_name}</a> : source_name)
   }
