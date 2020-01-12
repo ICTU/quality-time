@@ -7,12 +7,11 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_metric_attributes
-from database.reports import get_data, insert_new_report
+from database.reports import get_data, insert_new_report, latest_reports
 from model.actions import copy_metric, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, ReportId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
-from .reports import get_reports
 
 
 @bottle.get("/api/v1/metrics")
@@ -20,8 +19,7 @@ from .reports import get_reports
 def get_metrics(database: Database):
     """Get all metrics."""
     metrics: Dict[str, Any] = {}
-    reports = get_reports(database)
-    for report in reports["reports"]:
+    for report in latest_reports(database):
         for subject in report["subjects"].values():
             for metric_uuid, metric in subject["metrics"].items():
                 metric["report_uuid"] = report["report_uuid"]

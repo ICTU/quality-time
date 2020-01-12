@@ -13,18 +13,22 @@ from .measurements import last_measurements
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
-    """Return all latest reports in the reports collection."""
-    report_uuids = database.reports.distinct("report_uuid")
-    reports = []
-    for report_uuid in report_uuids:
+    """Return the latest, undeleted, reports in the reports collection."""
+    for report_uuid in database.reports.distinct("report_uuid"):
         report = database.reports.find_one(
             filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
             sort=[("timestamp", pymongo.DESCENDING)])
         if report and "deleted" not in report:
             report["_id"] = str(report["_id"])
-            # Include a summary of the current measurement values
-            summarize_report(database, report)
-            reports.append(report)
+            yield report
+
+
+def latest_summarized_reports(database: Database, max_iso_timestamp: str = ""):
+    """Return all latest reports in the reports collection, including a summary of each report."""
+    reports = []
+    for report in latest_reports(database, max_iso_timestamp):
+        summarize_report(database, report)
+        reports.append(report)
     return reports
 
 
@@ -137,7 +141,7 @@ def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: Sub
         "data",
         "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
-    data.reports = latest_reports(database)
+    data.reports = latest_summarized_reports(database)
     data.datamodel = latest_datamodel(database)
     data.source_uuid = source_uuid
     data.metric_uuid = _get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid

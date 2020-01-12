@@ -5,7 +5,7 @@ import requests
 from pymongo.database import Database
 
 from database import sessions
-from database.reports import get_data, latest_reports, insert_new_report, summarize_report
+from database.reports import get_data, latest_summarized_reports, insert_new_report, summarize_report
 from model.actions import copy_report
 from initialization.report import import_json_report
 from server_utilities.functions import report_date_time, uuid
@@ -85,7 +85,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
-    reports = latest_reports(database, date_time)
+    reports = latest_summarized_reports(database, date_time)
     subjects = _get_subjects_and_metrics_by_tag(reports, tag)
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
