@@ -106,7 +106,8 @@ class PostSourceParameterTest(unittest.TestCase):
             sources=dict(
                 type=dict(
                     parameters=dict(
-                        url=dict(type="url"), username=dict(type="string"), password=dict(type="password")))))
+                        url=dict(type="url"), username=dict(type="string"), password=dict(type="password"),
+                        private_token=dict(type="password")))))
         self.database.datamodels.find_one.return_value = self.datamodel
         self.database.measurements.find.return_value = []
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)

@@ -298,7 +298,9 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(
             {METRIC_ID: dict(
                 report_uuid=REPORT_ID, name="Metric", addition="sum", accept_debt=False, type="metric_type", tags=[],
-                sources=dict(source_uuid=dict(name="Source", type="source_type")))},
+                sources=dict(
+                    source_uuid=dict(
+                        name="Source", type="source_type", parameters=dict(url="https://url", password="password"))))},
             get_metrics(self.database))
 
     def test_delete_metric(self):

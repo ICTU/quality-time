@@ -108,7 +108,7 @@ class ReportTest(unittest.TestCase):
         self.maxDiff = None  # pylint: disable=invalid-name
         request.query = dict(report_date=(date_time := iso_timestamp()))
         self.database.datamodels.find_one.return_value = dict(
-            _id="id", metrics=dict(metric_type=dict(default_scale="count")))
+            _id="id", sources={}, metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={

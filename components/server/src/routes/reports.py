@@ -4,7 +4,9 @@ import bottle
 from pymongo.database import Database
 
 from database import sessions
-from database.reports import latest_reports, latest_reports_overview, insert_new_reports_overview
+from database.reports import latest_datamodel, latest_summarized_reports, latest_reports_overview, \
+    insert_new_reports_overview
+from model.transformations import hide_credentials
 from server_utilities.functions import report_date_time
 
 
@@ -14,7 +16,8 @@ def get_reports(database: Database):
     """Return the quality reports."""
     date_time = report_date_time()
     overview = latest_reports_overview(database, date_time)
-    overview["reports"] = latest_reports(database, date_time)
+    overview["reports"] = latest_summarized_reports(database, date_time)
+    hide_credentials(latest_datamodel(database), *overview["reports"])
     return overview
 
 

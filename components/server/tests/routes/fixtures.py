@@ -35,4 +35,7 @@ def create_report():
                         sources={
                             SOURCE_ID: dict(
                                 type="source_type",
-                                name="Source")})})})
+                                name="Source",
+                                parameters=dict(
+                                    url="https://url",
+                                    password="password"))})})})
