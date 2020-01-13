@@ -36,9 +36,11 @@ class ReportsTest(unittest.TestCase):
         self.assertEqual("Jenny changed the layout of the reports overview.", inserted["delta"]["description"])
 
     def test_get_report(self):
-        """Test that a report can be retrieved."""
+        """Test that a report can be retrieved and credentials are hidden."""
         self.database.datamodels.find_one.return_value = dict(
-            _id="id", metrics=dict(metric_type=dict(default_scale="count")))
+            _id="id",
+            sources=dict(source_type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))),
+            metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.measurements.find.return_value = [
             dict(
