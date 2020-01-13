@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add report title to subject names in tag reports so it is clear from which report each subject comes. Fixes [#880](https://github.com/ICTU/quality-time/issues/880).
 - Tag reports could not be exported to PDF. Fixes [#885](https://github.com/ICTU/quality-time/issues/885).
 - Prevent users from entering invalid percentages. Fixes [#888](https://github.com/ICTU/quality-time/issues/888).
+- Fix Checkmarx landing url. Fixes [#919](https://github.com/ICTU/quality-time/issues/919).
 - Remove plaintext passwords from HTML. Fixes [#921](https://github.com/ICTU/quality-time/issues/921).
 
 ## [1.2.0] - [2019-12-10]

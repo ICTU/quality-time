@@ -20,9 +20,10 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
-        if len(responses) > self.PROJECT_RESPONSE:
+        if len(responses) > self.SCAN_RESPONSE:
             project_id = self.__project_id(responses[self.PROJECT_RESPONSE])
-            return URL(f"{api_url}/CxWebClient/projectscans.aspx?id={project_id}")
+            scan_id = self._scan_id(responses)
+            return URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={scan_id}&ProjectID={project_id}")
         return api_url
 
     def _get_source_responses(self, api_url: URL) -> Responses:
@@ -45,6 +46,10 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         project_name_or_id = self._parameter("project")
         projects = project_response.json()
         return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
+
+    def _scan_id(self, responses: Responses) -> str:
+        """Return the scan id."""
+        return str(responses[self.SCAN_RESPONSE].json()[0]["id"])
 
     def _api_get(self, api: str, token: str) -> Response:
         """Open the API and return the response."""
@@ -77,7 +82,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
     def _get_source_responses(self, api_url: URL) -> Responses:
         responses = super()._get_source_responses(api_url)
         token = responses[self.TOKEN_RESPONSE].json()["access_token"]
-        scan_id = responses[self.SCAN_RESPONSE].json()[0]["id"]
+        scan_id = self._scan_id(responses)
         # Get the statistics of the last scan; this is a single API call:
         responses.append(self._api_get(f"sast/scans/{scan_id}/resultsStatistics", token))
         return responses
@@ -85,4 +90,4 @@ class CxSASTSecurityWarnings(CxSASTBase):
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         stats = responses[self.STATS_RESPONSE].json()
         severities = self._parameter("severities")
-        return str(sum([stats.get(f"{severity.lower()}Severity", 0) for severity in severities])), "100", []
+        return str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)), "100", []
