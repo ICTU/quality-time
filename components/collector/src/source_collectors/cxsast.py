@@ -49,7 +49,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     def _scan_id(self, responses: Responses) -> str:
         """Return the scan id."""
-        return responses[self.SCAN_RESPONSE].json()[0]["id"]
+        return str(responses[self.SCAN_RESPONSE].json()[0]["id"])
 
     def _api_get(self, api: str, token: str) -> Response:
         """Open the API and return the response."""
