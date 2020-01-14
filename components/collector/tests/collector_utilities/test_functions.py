@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback
+from collector_utilities.functions import days_ago, hashless, is_regexp, safe_url, stable_traceback
 from collector_utilities.type import URL
 
 
@@ -30,6 +30,20 @@ class StableTracebackTest(unittest.TestCase):
         """Test that keys are redacted from tracebacks."""
         self.assertEqual(
             "https://example.com?key=<redacted>&id=5", stable_traceback("https://example.com?key=abcdef45321a&id=5"))
+
+
+class SafeURLTest(unittest.TestCase):
+    """Unit tests for the safe for logging function."""
+    def test_no_token(self):
+        """Test that the URL is returned unchanged if it does not contain a token."""
+        url = URL("https://url/path/1")
+        self.assertEqual(url, safe_url(url))
+
+    def test_private_token(self):
+        """Test that the URL is returned without the private token."""
+        self.assertEqual(
+            URL("https://url/path?private_token=<redacted>"),
+            safe_url(URL("https://url/path?private_token=abcdef45321a")))
 
 
 class DaysAgoTest(unittest.TestCase):
