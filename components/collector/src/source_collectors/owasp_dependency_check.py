@@ -1,6 +1,5 @@
 """OWASP Dependency Check metric collector."""
 
-import hashlib
 from abc import ABC
 from datetime import datetime
 from typing import List, Tuple
@@ -9,7 +8,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from dateutil.parser import isoparse
 
 from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, URL, Value
-from collector_utilities.functions import parse_source_response_xml_with_namespace
+from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
 from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
@@ -54,7 +53,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
         # We can only generate a entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
-        key = sha1 if sha1 else hashlib.sha1(bytes(file_path, "utf8")).hexdigest()  # nosec, Not used for cryptography
+        key = sha1 if sha1 else sha1_hash(file_path)
         vulnerabilities = self.__vulnerabilities(dependency, namespaces)
         severities = set(vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower()
                          for vulnerability in vulnerabilities)

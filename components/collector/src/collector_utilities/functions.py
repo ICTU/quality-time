@@ -1,9 +1,10 @@
 """Utility functions."""
 
-from datetime import datetime
+import hashlib
 import re
-from typing import cast, Collection, Pattern, Tuple
 import urllib
+from datetime import datetime
+from typing import cast, Collection, Pattern, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -54,6 +55,16 @@ def hashless(url: URL) -> URL:
     query = re.sub(HASH_SUB[0], HASH_SUB[1], query)
     fragment = re.sub(HASH_SUB[0], HASH_SUB[1], fragment)
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
+
+
+def md5_hash(string: str) -> str:
+    """Return a md5 hash of the string."""
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+
+
+def sha1_hash(string: str) -> str:
+    """Return a sha1 hash of the string."""
+    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
 
 
 def days_ago(date_time: datetime) -> int:

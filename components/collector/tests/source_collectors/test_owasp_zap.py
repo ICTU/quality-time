@@ -2,6 +2,7 @@
 
 from datetime import datetime
 
+from collector_utilities.functions import md5_hash
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -52,17 +53,19 @@ class OWASPZAPTest(SourceCollectorTestCase):
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=xml)
         expected_entities = [
-            dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
-                 name="X-Content-Type-Options Header Missing",
-                 description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
-                 location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
-                 uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
-            dict(key="10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                 name="X-Content-Type-Options Header Missing",
-                 description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
-                 location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                 uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                 risk="Low (Medium)")]
+            dict(
+                key=md5_hash("10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg"),
+                name="X-Content-Type-Options Header Missing",
+                description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
+                uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
+            dict(
+                key=md5_hash(
+                    "10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"),
+                name="X-Content-Type-Options Header Missing",
+                description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
+                uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg", risk="Low (Medium)")]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_source_up_to_dateness(self):

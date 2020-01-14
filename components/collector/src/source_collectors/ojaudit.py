@@ -1,11 +1,10 @@
 """OJAudit metric collector."""
 
-import hashlib
 from typing import cast, Dict, List, Optional, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces, Entities, Entity, Responses, Value
-from collector_utilities.functions import parse_source_response_xml_with_namespace
+from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
 from .source_collector import FileSourceCollector
 
 
@@ -55,7 +54,7 @@ class OJAuditViolations(FileSourceCollector):
         column_offset = violation.findtext(".//ns:column-offset", namespaces=namespaces)
         model = models[location.get("model", "")]
         component = f"{model}:{line_number}:{column_offset}"
-        key = hashlib.sha1(f"{message}:{component}".encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+        key = sha1_hash(f"{message}:{component}")
         if key in self.violation_counts:
             self.violation_counts[key] += 1
             return None  # Ignore duplicate violation
