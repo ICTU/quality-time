@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import re
-from typing import cast, Collection, Final, Pattern, Tuple
+from typing import cast, Collection, Pattern, Tuple
 import urllib
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
@@ -28,33 +28,37 @@ def parse_source_response_xml_with_namespace(
     return tree, namespaces
 
 
-MEMORY_ADDRESS_RE: Final[Pattern] = re.compile(r" at 0x[0-9abcdef]+>")
-TOKEN_RE: Final[Pattern] = re.compile(r"token=[0-9a-zA-Z]+")
-KEY_RE: Final[Pattern] = re.compile(r"key=[0-9abcdef]+")
+Substitution = Tuple[Pattern, str]
+MEMORY_ADDRESS_SUB: Substitution = (re.compile(r" at 0x[0-9abcdef]+>"), ">")
+TOKEN_SUB: Substitution = (re.compile(r"token=[0-9a-zA-Z]+"), "token=<redacted>")
+KEY_SUB: Substitution = (re.compile(r"key=[0-9abcdef]+"), "key=<redacted>")
+HASH_SUB: Substitution = (re.compile(r"(?i)[a-f0-9]{20,}"), "hashremoved")
 
 
 def stable_traceback(traceback: str) -> str:
     """Remove memory addresses from the traceback so make it easier to compare tracebacks."""
-    for reg_exp, replacement in [(MEMORY_ADDRESS_RE, ">"), (TOKEN_RE, "token=<redacted>"), (KEY_RE, "key=<redacted>")]:
+    for reg_exp, replacement in [MEMORY_ADDRESS_SUB, TOKEN_SUB, KEY_SUB]:
         traceback = re.sub(reg_exp, replacement, traceback)
     return traceback
 
 
-def days_ago(date_time: datetime) -> int:
-    """Return the days since the date/time."""
-    return (datetime.now(tz=date_time.tzinfo) - date_time).days
-
-
-HASH_RE: Final[Pattern] = re.compile(r"(?i)[a-f0-9]{20,}")
+def safe_url(url: URL) -> URL:
+    """Strip private tokens from the url."""
+    return URL(re.sub(TOKEN_SUB[0], TOKEN_SUB[1], url))
 
 
 def hashless(url: URL) -> URL:
     """Strip hashes from the url so that it can be used as part of a issue key."""
     scheme, netloc, path, query, fragment = urllib.parse.urlsplit(str(url))
-    path = re.sub(HASH_RE, "hashremoved", path)
-    query = re.sub(HASH_RE, "hashremoved", query)
-    fragment = re.sub(HASH_RE, "hashremoved", fragment)
+    path = re.sub(HASH_SUB[0], HASH_SUB[1], path)
+    query = re.sub(HASH_SUB[0], HASH_SUB[1], query)
+    fragment = re.sub(HASH_SUB[0], HASH_SUB[1], fragment)
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
+
+
+def days_ago(date_time: datetime) -> int:
+    """Return the days since the date/time."""
+    return (datetime.now(tz=date_time.tzinfo) - date_time).days
 
 
 def is_regexp(string: str) -> bool:
