@@ -32,7 +32,7 @@ jobs:
 
   unittest_frontend:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:lts
     steps:
       - checkout
       - run:

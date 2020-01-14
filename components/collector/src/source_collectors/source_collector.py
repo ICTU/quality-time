@@ -12,7 +12,7 @@ from typing import cast, Dict, Final, List, Optional, Set, Tuple, Type, Union
 
 import requests
 
-from collector_utilities.functions import days_ago, safe_url, stable_traceback
+from collector_utilities.functions import days_ago, tokenless, stable_traceback
 from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
 
 
@@ -93,10 +93,10 @@ class SourceCollector(ABC):
             responses = self._get_source_responses(api_url := self._api_url())
             for response in responses:
                 response.raise_for_status()
-            logging.info("Retrieved %s", safe_url(api_url) or self.__class__.__name__)
+            logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.warning("Failed to retrieve %s: %s", safe_url(api_url) or self.__class__.__name__, reason)
+            logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         return responses, api_url, error
 
     def _get_source_responses(self, api_url: URL) -> Responses:

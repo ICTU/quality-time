@@ -8,8 +8,8 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import parse
 
+from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
 from collector_utilities.type import Entities, Response, Responses, URL, Value
-from collector_utilities.functions import hashless, parse_source_response_xml
 from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
 
 
@@ -35,7 +35,7 @@ class OWASPZAPSecurityWarnings(OWASPZAPBaseClass):
             for alert_instance in alert.findall("./instances/instance"):
                 method = alert_instance.findtext("method", default="")
                 uri = hashless(URL(alert_instance.findtext("uri", default="")))
-                key = f"{alert_key}:{method}:{uri}"
+                key = md5_hash(f"{alert_key}:{method}:{uri}")
                 entities.append(
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
         return str(len(entities)), "100", entities

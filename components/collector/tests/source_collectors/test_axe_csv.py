@@ -3,7 +3,7 @@
 import io
 import zipfile
 
-from source_collectors import AxeCSVAccessibility
+from collector_utilities.functions import md5_hash
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -39,7 +39,7 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
                 'help': 'help2'
             }]
         for entity in self.expected_entities:
-            entity["key"] = AxeCSVAccessibility.hash_entity(entity)
+            entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
 
     def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
@@ -90,6 +90,6 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             'description': 'messages3\nsecond line',
             'help': 'help3'
         }
-        expected_entity["key"] = AxeCSVAccessibility.hash_entity(expected_entity)
+        expected_entity["key"] = md5_hash(",".join(str(value) for value in expected_entity.values()))
         response = self.collect(self.metric, get_request_text=self.csv + violation_with_newline)
         self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])
