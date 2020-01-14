@@ -42,7 +42,7 @@ def stable_traceback(traceback: str) -> str:
     return traceback
 
 
-def safe_url(url: URL) -> URL:
+def tokenless(url: URL) -> URL:
     """Strip private tokens from the url."""
     return URL(re.sub(TOKEN_SUB[0], TOKEN_SUB[1], url))
 

@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta, timezone
 import unittest
 
-from collector_utilities.functions import days_ago, hashless, is_regexp, safe_url, stable_traceback
+from collector_utilities.functions import days_ago, hashless, is_regexp, tokenless, stable_traceback
 from collector_utilities.type import URL
 
 
@@ -37,13 +37,13 @@ class SafeURLTest(unittest.TestCase):
     def test_no_token(self):
         """Test that the URL is returned unchanged if it does not contain a token."""
         url = URL("https://url/path/1")
-        self.assertEqual(url, safe_url(url))
+        self.assertEqual(url, tokenless(url))
 
     def test_private_token(self):
         """Test that the URL is returned without the private token."""
         self.assertEqual(
             URL("https://url/path?private_token=<redacted>"),
-            safe_url(URL("https://url/path?private_token=abcdef45321a")))
+            tokenless(URL("https://url/path?private_token=abcdef45321a")))
 
 
 class DaysAgoTest(unittest.TestCase):
