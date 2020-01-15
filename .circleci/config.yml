@@ -40,8 +40,8 @@ jobs:
           command: |
             npm version
             .circleci/load-nvm.sh
-            nvm install v12.14.1
-            nvm alias default v12.14.1
+            . /opt/circleci/.nvm/nvm.sh install v12.14.1
+            . /opt/circleci/.nvm/nvm.sh alias default v12.14.1
             npm version
             cd components/frontend
             npm install
