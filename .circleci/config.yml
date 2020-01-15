@@ -32,7 +32,7 @@ jobs:
 
   unittest_frontend:
     machine:
-      image: ubuntu-1604:201903-01
+      image: circleci/node:lts
     parallelism: 1
     steps:
       - checkout
