@@ -640,7 +640,10 @@
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
-                    "validate_on": "username,password",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "metrics": [
                         "accessibility"
                     ]
@@ -825,7 +828,10 @@
             "parameters": {
                 "url": {
                     "name": "URL including organization and project (e.g. https://dev.azure.com/{organization}/{project}",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "private_token"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1120,7 +1126,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Bandit JSON-report or to a zip with Bandit JSON-reports",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1240,7 +1250,11 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1303,8 +1317,11 @@
             "parameters": {
                 "url": {
                     "name": "GitLab instance URL",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
+                    "validate_on": [
+                        "private_token"
+                    ],
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
@@ -1510,7 +1527,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1562,7 +1583,11 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1699,7 +1724,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to job",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -1778,7 +1807,10 @@
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
-                    "validate_on": "username,password",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "metrics": [
                         "issues",
                         "manual_test_duration",
@@ -1934,7 +1966,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a JUnit report in XML format or to a zip with JUnit reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2063,7 +2099,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a NCover report in HTML format or to a zip with NCover reports in HTML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2104,7 +2144,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2192,7 +2236,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2287,7 +2335,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2376,7 +2428,11 @@
             {
                 "url" : {
                     "name": "URL to Jenkins job",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2453,7 +2509,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2554,7 +2614,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2657,7 +2721,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Safety report in JSON format or a zip with Safety reports in JSON format.",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2715,7 +2783,7 @@
             "parameters": {
                 "url": {
                     "name": "Quality-time URL",
-                    "type": "string",
+                    "type": "url",
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -2951,7 +3019,11 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -3032,6 +3104,9 @@
                 "url": {
                     "name": "URL",
                     "type": "url",
+                    "validate_on": [
+                        "private_token"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -3607,7 +3682,11 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "api_key",
+                        "token"
+                    ],
                     "mandatory": true,
                     "default_value": "https://trello.com",
                     "metrics": [
@@ -3720,7 +3799,11 @@
             "parameters": {
                 "url": {
                     "name": "URL",
-                    "type": "string",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
