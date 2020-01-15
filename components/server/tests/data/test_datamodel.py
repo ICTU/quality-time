@@ -13,7 +13,7 @@ def setUpModule():  # pylint: disable=invalid-name
 class DataModelTest(unittest.TestCase):
     """Unit tests for the data model."""
 
-    data_model = None
+    data_model = dict()
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
