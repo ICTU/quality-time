@@ -39,6 +39,7 @@ jobs:
       - run:
           command: |
             npm version
+            .circleci/load-nvm.sh
             nvm install v12.14.1
             nvm alias default v12.14.1
             npm version
