@@ -12,7 +12,7 @@ services:
           tls off
           errors stdout
           gzip {
-            not /api/v1/nr_measurements
+            not /api/v2/nr_measurements
           }
           header / {
             -Server
@@ -23,7 +23,7 @@ services:
             Pragma "no-cache"
             Cache-Control "no-store"
           }
-          proxy /api/v1/nr_measurements http://server:${SERVER_PORT:-5001} {
+          proxy /api/v2/nr_measurements http://server:${SERVER_PORT:-5001} {
             timeout 0
           }
           proxy /api http://server:${SERVER_PORT:-5001}
