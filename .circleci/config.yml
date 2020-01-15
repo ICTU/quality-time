@@ -31,8 +31,8 @@ jobs:
             ci/quality.sh
 
   unittest_frontend:
-    docker:
-      - image: circleci/node:lts
+    machine: true
+    parallelism: 1
     steps:
       - checkout
       - run:
