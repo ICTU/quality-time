@@ -5,12 +5,13 @@ import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { set_report_attribute } from '../api/report';
+import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard(props) {
     const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
         <MetricSummaryCard
-            header={props.report.subjects[subject_uuid].name}
+            header={get_subject_name(props.report.subjects[subject_uuid], props.datamodel)}
             key={subject_uuid}
             onClick={(event) => props.onClick(event, subject_uuid)}
             {...summary}
@@ -60,29 +61,14 @@ export function Report(props) {
     }
     return (
         <>
-            <ReportTitle
-                go_home={props.go_home}
-                report={props.report}
-                reload={props.reload}
-            />
+            <ReportTitle {...props} />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                reload={props.reload}
-                report={props.report}
                 setTags={setTags}
                 tags={tags}
+                {...props}
             />
-            <Subjects
-                datamodel={props.datamodel}
-                nr_measurements={props.nr_measurements}
-                reload={props.reload}
-                report={props.report}
-                reports={props.reports}
-                report_date={props.report_date}
-                search_string={props.search_string}
-                tags={tags}
-                changed_fields={props.changed_fields}
-            />
+            <Subjects tags={tags} {...props} />
         </>
     )
 }
