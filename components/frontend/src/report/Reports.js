@@ -51,13 +51,7 @@ export function Reports(props) {
         subtitle={props.reports_overview.subtitle}
         title={props.reports_overview.title}
       />
-      <ReportsDashboard
-        layout={props.reports_overview.layout}
-        open_report={props.open_report}
-        open_tag_report={props.open_tag_report}
-        reload={props.reload}
-        reports={props.reports}
-      />
+      <ReportsDashboard layout={props.reports_overview.layout} {...props} />
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
           <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />

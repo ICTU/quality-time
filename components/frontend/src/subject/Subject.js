@@ -157,16 +157,7 @@ export function Subject(props) {
   }
   return (
     <div id={props.subject_uuid}>
-      <SubjectTitle
-        datamodel={props.datamodel}
-        first_subject={props.first_subject}
-        last_subject={props.last_subject}
-        reload={props.reload}
-        report={props.report}
-        reports={props.reports}
-        subject={subject}
-        subject_uuid={props.subject_uuid}
-      />
+      <SubjectTitle subject={subject} {...props} />
       <Table sortable>
         <SubjectTableHeader />
         <Table.Body>{metric_components}</Table.Body>
