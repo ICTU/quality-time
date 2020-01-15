@@ -164,10 +164,9 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
 
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
 
-    urls_param_keys = [param_key for param_key in parameters
-                       if parameters[param_key]['type'] == 'url' and parameter_key == param_key or
-                       ("validate_on" in parameters[param_key] and parameter_key in
-                        parameters[param_key]["validate_on"].split(','))]
+    urls_param_keys = [
+        key for key, value in parameters.items()
+        if value['type'] == 'url' and parameter_key == key or parameter_key in value.get("validate_on", [])]
 
     if availability_checks := _availability_checks(urls_param_keys, data.source["parameters"], source_uuid):
         result["availability"] = availability_checks
