@@ -23,7 +23,7 @@ export function Sources(props) {
                 <Segment vertical>
                     <AddButton
                         item_type={"source"}
-                        onClick={() => add_source(props.report.report_uuid, props.metric_uuid, props.reload)}
+                        onClick={() => add_source(props.metric_uuid, props.reload)}
                     />
                 </Segment>}
             />
