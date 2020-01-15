@@ -32,12 +32,16 @@ jobs:
 
   unittest_frontend:
     machine:
-      image: circleci/node:lts
+      image: ubuntu-1604:201903-01
     parallelism: 1
     steps:
       - checkout
       - run:
           command: |
+            npm version
+            nvm install v12.14.1
+            nvm alias default v12.14.1
+            npm version
             cd components/frontend
             npm install
             npm test
