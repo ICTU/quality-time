@@ -31,18 +31,12 @@ jobs:
             ci/quality.sh
 
   unittest_frontend:
-    machine:
-      image: ubuntu-1604:201903-01
-    parallelism: 1
+    docker:
+      - image: circleci/node:lts
     steps:
       - checkout
       - run:
           command: |
-            npm version
-            cat /opt/circleci/.nvm/nvm.sh
-            . /opt/circleci/.nvm/nvm.sh install v12.14.1
-            . /opt/circleci/.nvm/nvm.sh alias default v12.14.1
-            npm version
             cd components/frontend
             npm install
             npm test
