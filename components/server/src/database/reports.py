@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Optional, Tuple
+from typing import cast, Any, Dict, List, Optional, Tuple, Union
 
 import pymongo
 from pymongo.database import Database
@@ -42,17 +42,17 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
 
 def summarize_report(database: Database, report) -> None:
     """Add a summary of the measurements to each subject."""
-    status_color_mapping: Dict[Status, Color] = dict(
-        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red")
+    status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
+        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
     last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
-    datamodel = latest_datamodel(database)
+    data_model = latest_datamodel(database)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
             last_measurement = last_measurements_by_metric_uuid.get(metric_uuid, dict())
-            scale = metric.get("scale") or datamodel["metrics"][metric["type"]].get("default_scale", "count")
+            scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
             status = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
             color = status_color_mapping.get(status, "white")
             report["summary"][color] += 1
@@ -101,14 +101,18 @@ def changelog(database: Database, nr_changes: int, **uuids):
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
     sort_order = [("timestamp", pymongo.DESCENDING)]
     projection = {"delta.description": True, "timestamp": True}
+    delta_filter: Dict[str, Union[Dict, List]] = {"delta": {"$exists": True}}
     changes: List[Change] = []
     if not uuids:
-        changes.extend(database.reports_overviews.find(sort=sort_order, limit=nr_changes, projection=projection))
-    old_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
-    delta_filter = {"$or": [old_delta_filter, {"delta.uuids": {"$in": list(uuids.values())}}]}
-    changes.extend(database.reports.find(filter=delta_filter, sort=sort_order, limit=nr_changes, projection=projection))
+        changes.extend(database.reports_overviews.find(
+            filter=delta_filter, sort=sort_order, limit=nr_changes*2, projection=projection))
+    old_report_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
+    new_report_delta_filter = {"delta.uuids": {"$in": list(uuids.values())}}
+    delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
+    changes.extend(database.reports.find(
+        filter=delta_filter, sort=sort_order, limit=nr_changes*2, projection=projection))
     changes = sorted(changes, reverse=True, key=lambda change: change["timestamp"])
-    # Weed out possible duplicate entries because the user moves items between reports, both reports get the same delta
+    # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
 
 
