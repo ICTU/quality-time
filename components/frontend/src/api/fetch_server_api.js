@@ -1,3 +1,5 @@
+export const api_version = 'v2'
+
 export function fetch_server_api(method, api, body, content_type) {
   let options = {
     method: method,
@@ -10,6 +12,6 @@ export function fetch_server_api(method, api, body, content_type) {
   if (method === 'post') {
     options['body'] = JSON.stringify(body)
   }
-  return fetch(`/api/v2/${api}`, options).then(
+  return fetch(`/api/${api_version}/${api}`, options).then(
     (response) => {return content_type ? response.blob() : response.json()});
 }
