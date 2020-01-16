@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- The front end was still using one version 1 API. Fixes [#947](https://github.com/ICTU/quality-time/issues/947).
 - Retrieving the change log would fail if not all recent changes had a change log entry. Fixes [#949](https://github.com/ICTU/quality-time/issues/949).
 
 ## [1.3.4] - [2020-01-15]

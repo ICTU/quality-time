@@ -14,6 +14,7 @@ import { ReadOnlyContext } from './context/ReadOnly';
 import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
+import { nr_measurements_api } from './api/measurement';
 
 function show_message(type, title, description, icon) {
   toast({
@@ -167,7 +168,7 @@ class App extends Component {
   }
 
   connect_to_nr_measurements_event_source() {
-    this.source = new EventSource('/api/v1/nr_measurements');
+    this.source = new EventSource(nr_measurements_api);
     let self = this;
     this.source.addEventListener('init', function (e) {
       self.setState({ nr_measurements: Number(e.data) });
