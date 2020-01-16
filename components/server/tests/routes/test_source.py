@@ -8,8 +8,8 @@ import requests
 from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy, post_source_new, \
     post_source_parameter
 
-from .fixtures import create_report, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, \
-    SUBJECT_ID2
+from .fixtures import create_report, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SOURCE_ID2, SOURCE_ID3, \
+    SOURCE_ID4, SOURCE_ID5, SUBJECT_ID, SUBJECT_ID2
 
 
 @patch("bottle.request")
@@ -88,27 +88,31 @@ class PostSourceParameterTest(unittest.TestCase):
     def setUp(self):
         self.url = "https://url"
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
-            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
+            SOURCE_ID: dict(name="Source", type="type", parameters=dict(username="username")),
+            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict(username="username"))}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
-                    metrics={METRIC_ID: dict(name="Metric", type="type", sources=self.sources)})})
+                    metrics={METRIC_ID: dict(name="Metric", type="type", sources=self.sources)}),
+                SUBJECT_ID2: dict(
+                    name="Subject 2",
+                    metrics={METRIC_ID2: dict(name="Metric 2", type="type", sources={})})})
         self.database = Mock()
         self.database.sessions.find_one.return_value = dict(user="Jenny")
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
-        self.datamodel = dict(
+        self.data_model = dict(
             _id="id",
             metrics=dict(type=dict()),
             sources=dict(
                 type=dict(
+                    name='Source type',
                     parameters=dict(
                         url=dict(type="url"), username=dict(type="string"), password=dict(type="password"),
                         private_token=dict(type="password")))))
-        self.database.datamodels.find_one.return_value = self.datamodel
+        self.database.datamodels.find_one.return_value = self.data_model
         self.database.measurements.find.return_value = []
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
@@ -169,7 +173,7 @@ class PostSourceParameterTest(unittest.TestCase):
     @patch.object(requests, 'get')
     def test_url_no_url_type(self, mock_get, request):
         """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
-        self.datamodel["sources"]["type"]["parameters"]["url"]["type"] = "string"
+        self.data_model["sources"]["type"]["parameters"]["url"]["type"] = "string"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
@@ -199,7 +203,7 @@ class PostSourceParameterTest(unittest.TestCase):
     @patch.object(requests, 'get')
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
-        self.datamodel["sources"]["type"]["parameters"]["url"]["validate_on"] = "password"
+        self.data_model["sources"]["type"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]['parameters']['url'] = self.url
@@ -226,6 +230,27 @@ class PostSourceParameterTest(unittest.TestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_not_called()
+
+    def test_mass_edit(self, request):
+        """Test that a source parameter can be mass edited."""
+        self.sources[SOURCE_ID3] = dict(name="Source 3", type="type", parameters=dict(username="different username"))
+        self.sources[SOURCE_ID4] = dict(name="Source 4", type="different_type", parameters=dict(username="username"))
+        source5 = self.report["subjects"][SUBJECT_ID2]["metrics"][METRIC_ID2]["sources"][SOURCE_ID5] = dict(
+            name="Source 5", type="type", parameters=dict(username="username"))
+        request.json = dict(username="new username", mass_edit=True)
+        response = post_source_parameter(SOURCE_ID, "username", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
+        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
+        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
+        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
+        self.assertEqual("new username", source5["parameters"]["username"])
+        self.assertEqual(
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID2, METRIC_ID2, SOURCE_ID5],
+                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                             "in report 'Report' from 'username' to 'new username'."),
+            self.report["delta"])
 
 
 class SourceTest(unittest.TestCase):
