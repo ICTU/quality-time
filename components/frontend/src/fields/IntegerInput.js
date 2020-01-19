@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
-import { CheckableLabel } from './CheckableLabel';
 
 export function IntegerInput(props) {
-    let { allow_mass_edit, mass_edit_label, prefix, set_value, unit, ...otherProps } = props;
+    let { editableLabel, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
     useEffect(() => setValue(initialValue), [initialValue]);
-    const [mass_edit, setMassEdit] = useState(false);
 
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
@@ -25,7 +23,7 @@ export function IntegerInput(props) {
 
     function submit_if_changed_and_valid() {
         if (value !== initialValue && is_valid(value)) {
-            props.set_value(value, mass_edit)
+            props.set_value(value)
         }
     }
 
@@ -36,7 +34,7 @@ export function IntegerInput(props) {
                 <Form.Input
                     {...otherProps}
                     error={!is_valid(value)}
-                    label={<CheckableLabel label={props.label} checkable={allow_mass_edit} checkbox_label={mass_edit_label} onClick={() => setMassEdit(true)} />}
+                    label={readOnly ? props.label : editableLabel}
                     onBlur={() => { submit_if_changed_and_valid() }}
                     onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
                     onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
-import { CheckableLabel } from './CheckableLabel';
 
 export function Input(props) {
-  let { allow_mass_edit, mass_edit_label, prefix, required, set_value, ...otherProps } = props;
+  let { editableLabel, prefix, required, set_value, ...otherProps } = props;
   const initialValue = props.value || "";
   const [value, setValue] = useState(initialValue);
   useEffect(() => setValue(initialValue), [initialValue]);
-  const [mass_edit, setMassEdit] = useState(false);
 
   function submit_if_changed() {
-    if (value !== initialValue) { set_value(value, mass_edit) }
+    if (value !== initialValue) { set_value(value) }
   }
 
   function onKeyDown(event) {
@@ -25,7 +23,7 @@ export function Input(props) {
       <ReadOnlyContext.Consumer>{(readOnly) => (
         <Form.Input
           {...fixedProps}
-          label={<CheckableLabel label={props.label} checkable={allow_mass_edit} checkbox_label={mass_edit_label} onClick={() => setMassEdit(true)} />}
+          label={readOnly ? props.label : editableLabel}
           onBlur={() => { submit_if_changed() }}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
@@ -7,8 +7,10 @@ import { IntegerInput } from '../fields/IntegerInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { CheckableLabel } from '../widgets/CheckableLabel';
 
 export function SourceParameter(props) {
+  const [mass_edit, setMassEdit] = useState(false);
   function options() {
     let values = new Set();
     // Collect all values in the current report used for this parameter, for this source type:
@@ -35,12 +37,11 @@ export function SourceParameter(props) {
     :
     props.parameter_name;
   let parameter_props = {
-    allow_mass_edit: true,
-    mass_edit_label: "Apply change to all sources",
+    editableLabel: <CheckableLabel label={label} checkbox_label="Apply change to all sources" onClick={() => setMassEdit(true)} />,
     label: label,
     placeholder: props.placeholder,
     required: props.required,
-    set_value: ((value, mass_edit) => set_source_parameter(props.source_uuid, props.parameter_key, value, props.reload, mass_edit)),
+    set_value: ((value) => set_source_parameter(props.source_uuid, props.parameter_key, value, mass_edit, props.reload)),
     value: props.parameter_value
   };
   if (props.parameter_type === "date") {

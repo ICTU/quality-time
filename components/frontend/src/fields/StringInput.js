@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { CheckableLabel } from './CheckableLabel';
 import { Input } from './Input';
 
 function StringInputWithSuggestions(props) {
-  let { allow_mass_edit, mass_edit_label, required, options, set_value, value, warning, ...otherProps } = props;
+  let { editableLabel, required, options, set_value, value, warning, ...otherProps } = props;
   const [string_options, setOptions] = useState(options);
   useEffect(() => setOptions(props.options), [props.options]);
   const [search_query, setSearchQuery] = useState(value || '');
   useEffect(() => setSearchQuery(props.value || ''), [props.value]);
-  const [mass_edit, setMassEdit] = useState(false);
 
   return (
     <Form>
@@ -20,9 +18,9 @@ function StringInputWithSuggestions(props) {
         clearable
         error={(required && search_query === "") || (warning !== undefined && props.warning)}
         fluid
-        label={<CheckableLabel label={props.label} checkable={allow_mass_edit} checkbox_label={mass_edit_label} onClick={() => setMassEdit(true)} />}
+        label={editableLabel}
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
-        onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value, mass_edit) } }}
+        onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}
         onSearchChange={(event, { searchQuery }) => { setSearchQuery(searchQuery) }}
         options={string_options}
         search

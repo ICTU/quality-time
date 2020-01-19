@@ -20,7 +20,7 @@ export function set_source_attribute(source_uuid, attribute, value, reload) {
     return fetch_server_api('post', `source/${source_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
-export function set_source_parameter(source_uuid, key, value, reload, mass_edit) {
+export function set_source_parameter(source_uuid, key, value, mass_edit, reload) {
     return fetch_server_api('post', `source/${source_uuid}/parameter/${key}`, { [key]: value, mass_edit: mass_edit || false}).then(reload)
 }
 
