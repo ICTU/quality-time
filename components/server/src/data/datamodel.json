@@ -1235,7 +1235,7 @@
                     "name": "Date",
                     "type": "date",
                     "mandatory": true,
-                    "default_value": "2019-01-01",
+                    "default_value": "2020-01-01",
                     "metrics": [
                         "source_up_to_dateness"
                     ]

@@ -26,12 +26,8 @@ def insert_new_datamodel(database: Database, data_model):
 
 def default_source_parameters(database: Database, metric_type: str, source_type: str):
     """Return the source parameters with their default values for the specified metric."""
-    datamodel = latest_datamodel(database)
-    parameters = dict()
-    for parameter_key, parameter_value in datamodel["sources"][source_type]["parameters"].items():
-        if metric_type in parameter_value["metrics"]:
-            parameters[parameter_key] = parameter_value["default_value"]
-    return parameters
+    parameters = latest_datamodel(database)["sources"][source_type]["parameters"].items()
+    return {key: value["default_value"] for key, value in parameters if metric_type in value["metrics"]}
 
 
 def default_metric_attributes(database: Database, metric_type: str = ""):
