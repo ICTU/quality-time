@@ -35,6 +35,8 @@ export function SourceParameter(props) {
     :
     props.parameter_name;
   let parameter_props = {
+    allow_mass_edit: true,
+    mass_edit_label: "Apply change to all sources",
     label: label,
     placeholder: props.placeholder,
     required: props.required,
@@ -42,34 +44,29 @@ export function SourceParameter(props) {
     value: props.parameter_value
   };
   if (props.parameter_type === "date") {
-    return (<DateInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" />)
+    return (<DateInput {...parameter_props} />)
   }
   if (props.parameter_type === "password") {
-    return (<PasswordInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" />)
+    return (<PasswordInput {...parameter_props} />)
   }
   if (props.parameter_type === "integer") {
-    return (<IntegerInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" max={props.parameter_max} min={props.parameter_min} unit={props.parameter_unit} />)
+    return (<IntegerInput {...parameter_props} max={props.parameter_max} min={props.parameter_min} unit={props.parameter_unit} />)
   }
   if (props.parameter_type === "single_choice") {
-    return (
-      <SingleChoiceInput
-        {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources"
-        options={props.parameter_values.map(value => ({ key: value, text: value, value: value }))}
-      />
-    )
+    return (<SingleChoiceInput {...parameter_props} options={props.parameter_values.map(value => ({ key: value, text: value, value: value }))} />)
   }
   if (props.parameter_type === "multiple_choice") {
-    return (<MultipleChoiceInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" options={props.parameter_values} />)
+    return (<MultipleChoiceInput {...parameter_props} options={props.parameter_values} />)
   }
   parameter_props["options"] = options();
   if (props.parameter_type === "string") {
-    return (<StringInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" />)
+    return (<StringInput {...parameter_props} />)
   }
   if (props.parameter_type === "url") {
-    return (<StringInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" warning={props.warning} />)
+    return (<StringInput {...parameter_props} warning={props.warning} />)
   }
   if (props.parameter_type === "multiple_choice_with_addition") {
-    return (<MultipleChoiceInput {...parameter_props} allow_mass_edit={true} mass_edit_label="Apply change to all sources" allowAdditions />)
+    return (<MultipleChoiceInput {...parameter_props} allowAdditions />)
   }
   return null;
 }
