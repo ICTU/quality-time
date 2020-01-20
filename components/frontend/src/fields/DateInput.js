@@ -24,5 +24,5 @@ function EditableDateInput(props) {
 }
 
 export function DateInput(props) {
-    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} label={props.editableLabel} />} />)
+    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />} />)
 }

@@ -34,7 +34,7 @@ export function IntegerInput(props) {
                 <Form.Input
                     {...otherProps}
                     error={!is_valid(value)}
-                    label={readOnly ? props.label : editableLabel}
+                    label={readOnly ? props.label : editableLabel || props.label}
                     onBlur={() => { submit_if_changed_and_valid() }}
                     onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
                     onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}

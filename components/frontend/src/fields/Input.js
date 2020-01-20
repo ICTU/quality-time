@@ -23,7 +23,7 @@ export function Input(props) {
       <ReadOnlyContext.Consumer>{(readOnly) => (
         <Form.Input
           {...fixedProps}
-          label={readOnly ? props.label : editableLabel}
+          label={readOnly ? props.label : editableLabel || props.label}
           onBlur={() => { submit_if_changed() }}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}

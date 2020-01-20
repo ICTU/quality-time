@@ -17,7 +17,7 @@ export function SingleChoiceInput(props) {
           <Form.Dropdown
             {...otherProps}
             fluid
-            label={editableLabel}
+            label={editableLabel || props.label}
             onChange={(event, { name, value }) => { setChoice(value); if (value !== props.value) { set_value(value) } }}
             options={options}
             search

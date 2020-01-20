@@ -26,7 +26,7 @@ export function MultipleChoiceInput(props) {
             allowAdditions={allowAdditions}
             error={required && choices.length === 0}
             fluid
-            label={editableLabel}
+            label={editableLabel || props.label}
             multiple
             onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
             onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}

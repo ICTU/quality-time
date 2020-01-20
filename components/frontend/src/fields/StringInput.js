@@ -18,7 +18,7 @@ function StringInputWithSuggestions(props) {
         clearable
         error={(required && search_query === "") || (warning !== undefined && props.warning)}
         fluid
-        label={editableLabel}
+        label={editableLabel || props.label}
         onAddItem={(event, { value }) => { setOptions(prev_options => [{ text: value, value: value, key: value }, ...prev_options]) }}
         onChange={(event, { value }) => { setSearchQuery(value); if (value !== props.value) { set_value(value) } }}
         onSearchChange={(event, { searchQuery }) => { setSearchQuery(searchQuery) }}

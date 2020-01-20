@@ -12,7 +12,7 @@ export function TextInput(props) {
         <Form.TextArea
           {...otherProps}
           error={required && text === ""}
-          label={readOnly ? props.label : editableLabel}
+          label={readOnly ? props.label : editableLabel || props.label}
           onBlur={() => { if (text !== (props.value || '')) { props.set_value(text) } }}
           onChange={(event) => setText(event.target.value)}
           onKeyDown={(event) => { if (event.key === "Escape") { setText(props.value || '') } }}
