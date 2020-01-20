@@ -1,6 +1,6 @@
 """Source routes."""
 
-from typing import Any, Dict, List, Tuple, Optional, Union
+from typing import cast, Any, Dict, List, Tuple, Optional, Union
 
 import bottle
 import requests
@@ -10,9 +10,9 @@ from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
 from database.reports import get_data, insert_new_report
 from model.actions import copy_source, move_item
-from model.transformations import mass_change_source_parameter
+from model.transformations import change_source_parameter
 from server_utilities.functions import uuid
-from server_utilities.type import MetricId, ReportId, SourceId, URL
+from server_utilities.type import EditScope, MetricId, ReportId, SourceId, URL
 
 
 @bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/source/new")
@@ -151,26 +151,24 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     old_value = data.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
-    if dict(bottle.request.json).get("mass_edit", False):
-        changed_ids = mass_change_source_parameter(
-            data.report, data.source["type"], parameter_key, old_value, new_value)
-    else:
-        data.source["parameters"][parameter_key] = new_value
-        changed_ids = [data.subject_uuid, data.metric_uuid, source_uuid]
+    edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
+    changed_ids = change_source_parameter(data, parameter_key, old_value, new_value, edit_scope)
 
     if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
-    if dict(bottle.request.json).get("mass_edit", False):
-        source_type_name = data.datamodel["sources"][data.source["type"]]["name"]
-        source_description = f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
-    else:
-        source_description = f"source '{data.source_name}' of metric '{data.metric_name}' of subject " \
-                             f"'{data.subject_name}'"
+    source_type_name = data.datamodel["sources"][data.source["type"]]["name"]
+    source_description = f"source '{data.source_name}'" if edit_scope == "source" else \
+        f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
+    if edit_scope in ["source", "metric"]:
+        source_description += f" of metric '{data.metric_name}'"
+    if edit_scope in ["subject", "metric", "source"]:
+        source_description += f" of subject '{data.subject_name}'"
+    source_description += " in all reports" if edit_scope == "reports" else f" in report '{data.report_name}'"
     data.report["delta"] = dict(
-        uuids=[data.report_uuid] + changed_ids,
+        uuids=changed_ids,
         description=f"{sessions.user(database)} changed the {parameter_key} of {source_description} "
-                    f"in report '{data.report_name}' from '{old_value}' to '{new_value}'.")
+                    f"from '{old_value}' to '{new_value}'.")
 
     result = insert_new_report(database, data.report)
 

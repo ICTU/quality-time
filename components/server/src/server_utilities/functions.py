@@ -42,7 +42,7 @@ def sanitize_html(html_text: str) -> str:
 Item = TypeVar('Item')
 
 
-def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable]) -> Iterator[Item]:
+def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:
     """Return the unique items in the list."""
     seen: Set[Hashable] = set()
     for item in items:
