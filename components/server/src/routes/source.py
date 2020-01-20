@@ -170,14 +170,14 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
         description=f"{sessions.user(database)} changed the {parameter_key} of {source_description} "
                     f"from '{old_value}' to '{new_value}'.")
 
-    result = insert_new_report(database, data.report)
+    for report in data.reports:
+        if report["report_uuid"] in changed_ids:
+            result = insert_new_report(database, report)
 
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
-
     urls_param_keys = [
         key for key, value in parameters.items()
         if value['type'] == 'url' and parameter_key == key or parameter_key in value.get("validate_on", [])]
-
     if availability_checks := _availability_checks(urls_param_keys, data.source["parameters"], source_uuid):
         result["availability"] = availability_checks
     return result

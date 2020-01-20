@@ -126,6 +126,8 @@ The parameters that sources need differ per source type. Most sources need a URL
 
 ![Editing source screenshot](screenshots/editing_source.png)
 
+Source parameter (URL's, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
+
 ### Deleting sources
 
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
@@ -178,4 +180,4 @@ To manually download a PDF version of a report, navigate to the report and expan
 
 ### API
 
-If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v1/report/<report_uuid>/pdf`. No authorization is needed for this API.
+If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v2/report/<report_uuid>/pdf`. No authorization is needed for this API.

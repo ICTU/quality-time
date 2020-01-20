@@ -1,7 +1,7 @@
 """Unit tests for the source routes."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import call, Mock, patch
 
 import requests
 
@@ -280,7 +280,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = dict(username="new username", edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
-        self.database.reports.insert.assert_called_once_with(self.report)
+        self.database.reports.insert.assert_has_calls([call(self.report), call(self.report2)])
         self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
         self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
         self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])

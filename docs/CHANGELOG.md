@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Source parameter (URL's, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports. Closes [#927](https://github.com/ICTU/quality-time/issues/927).
+
 ### Fixed
 
 - The front end was still using one version 1 API. Fixes [#947](https://github.com/ICTU/quality-time/issues/947).
