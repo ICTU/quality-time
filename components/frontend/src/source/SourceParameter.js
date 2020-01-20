@@ -7,10 +7,10 @@ import { IntegerInput } from '../fields/IntegerInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
-import { CheckableLabel } from '../widgets/CheckableLabel';
+import { LabelWithDropdown } from '../widgets/LabelWithDropdown';
 
 export function SourceParameter(props) {
-  const [mass_edit, setMassEdit] = useState(false);
+  const [edit_scope, setEditScope] = useState("source");
   function options() {
     let values = new Set();
     // Collect all values in the current report used for this parameter, for this source type:
@@ -36,12 +36,21 @@ export function SourceParameter(props) {
     <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
     :
     props.parameter_name;
+  const scope_options = [
+    {key: "source", value: "source", text: "source", description: `Change this ${props.source_type_name} only`, label: { color: 'grey', empty: true, circular: true }},
+    {key: "metric", value: "metric", text: "metric", description: `Change each ${props.source_type_name} of this metric that has the same ${props.parameter_short_name}`, label: { color: 'black', empty: true, circular: true }},
+    {key: "subject", value: "subject", text: "subject", description: `Change each ${props.source_type_name} in this subject that has the same ${props.parameter_short_name}`, label: { color: 'yellow', empty: true, circular: true }},
+    {key: "report", value: "report", text: "report", description: `Change each ${props.source_type_name} in this report that has the same ${props.parameter_short_name}`, label: { color: 'orange', empty: true, circular: true }},
+    {key: "reports", value: "reports", text: "all reports", description: `Change each ${props.source_type_name} in each report that has the same ${props.parameter_short_name}`, label: { color: 'red', empty: true, circular: true }}];
   let parameter_props = {
-    editableLabel: <CheckableLabel label={label} checkbox_label="Apply change to all sources" onClick={() => setMassEdit(true)} />,
+    editableLabel: <LabelWithDropdown
+      color={{source: "grey", metric: "black", subject: "gold", report: "orange", reports: "red"}[edit_scope]}
+      direction={props.index % 2 === 0 ? "right" : "left"} label={label} onChange={(event, data) => setEditScope(data.value)} options={scope_options} prefix="Apply change to"
+      value={edit_scope} />,
     label: label,
     placeholder: props.placeholder,
     required: props.required,
-    set_value: ((value) => set_source_parameter(props.source_uuid, props.parameter_key, value, mass_edit, props.reload)),
+    set_value: ((value) => set_source_parameter(props.source_uuid, props.parameter_key, value, edit_scope, props.reload)),
     value: props.parameter_value
   };
   if (props.parameter_type === "date") {

@@ -34,7 +34,15 @@ class DataModelTest(unittest.TestCase):
                         f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
                         f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
 
-    def test_metric_source_parameters(self):
+    def test_source_parameter_names(self):
+        """Test that each source parameter has a name and short name."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_key, parameter_value in source["parameters"].items():
+                for field in ["name", "short_name"]:
+                    error_message = f"Parameter '{parameter_key}' of source '{source_id}' has no {field}"
+                    self.assertTrue(field in parameter_value, error_message)
+
+    def test_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.data_model["metrics"].items():
             for source in metric["sources"]:
