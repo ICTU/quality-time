@@ -3,7 +3,7 @@ import { Form } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 
 export function TextInput(props) {
-  let { required, set_value, ...otherProps } = props;
+  let { editableLabel, required, set_value, ...otherProps } = props;
   const [text, setText] = useState(props.value || '');
   useEffect(() => setText(props.value || ''), [props.value]);
   return (
@@ -12,13 +12,10 @@ export function TextInput(props) {
         <Form.TextArea
           {...otherProps}
           error={required && text === ""}
-          onBlur={() => {
-            if (text !== (props.value || '')) { props.set_value(text) }
-          }}
+          label={readOnly ? props.label : editableLabel || props.label}
+          onBlur={() => { if (text !== (props.value || '')) { props.set_value(text) } }}
           onChange={(event) => setText(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") { setText(props.value || '') }
-          }}
+          onKeyDown={(event) => { if (event.key === "Escape") { setText(props.value || '') } }}
           onKeyPress={(event) => {
             if (event.key === "Enter" && event.shiftKey && text !== (props.value || '')) {
               event.preventDefault();

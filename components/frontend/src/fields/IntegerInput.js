@@ -3,11 +3,10 @@ import { Form, Label } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 
 export function IntegerInput(props) {
-    let { prefix, set_value, unit, ...otherProps } = props;
+    let { editableLabel, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
     useEffect(() => setValue(initialValue), [initialValue]);
-
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
             return false
@@ -20,33 +19,35 @@ export function IntegerInput(props) {
         }
         return true
     }
-
     function submit_if_changed_and_valid() {
         if (value !== initialValue && is_valid(value)) {
             props.set_value(value)
         }
     }
-
-    const fixedProps = { fluid: true, focus: true, labelPosition: "right", type: "number", width: 16}
+    const fixedProps = { fluid: true, focus: true, labelPosition: "right", type: "number", width: 16 }
+    function Input(input_props) {
+        return (
+            <Form.Input
+                {...otherProps}
+                error={!is_valid(value)}
+                label={input_props.readOnly ? props.label : editableLabel || props.label}
+                onBlur={() => { submit_if_changed_and_valid() }}
+                onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
+                onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}
+                onSubmit={() => { submit_if_changed_and_valid() }}
+                readOnly={input_props.readOnly}
+                value={value}
+                {...fixedProps}
+            >
+                {prefix ? <Label basic>{prefix}</Label> : null}
+                <input />
+                <Label basic>{unit}</Label>
+            </Form.Input>
+        )
+    }
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
-            <ReadOnlyContext.Consumer>{(readOnly) => (
-                <Form.Input
-                    {...otherProps}
-                    error={!is_valid(value)}
-                    onBlur={() => { submit_if_changed_and_valid() }}
-                    onChange={(event) => { if (is_valid(event.target.value)) { setValue(event.target.value) } }}
-                    onKeyDown={(event) => { if (event.key === "Escape") { setValue(initialValue) } }}
-                    onSubmit={() => { submit_if_changed_and_valid() }}
-                    readOnly={readOnly}
-                    value={value}
-                    {...fixedProps}
-                >
-                    {prefix ? <Label basic>{prefix}</Label> : null}
-                    <input />
-                    <Label basic>{unit}</Label>
-                </Form.Input>)}
-            </ReadOnlyContext.Consumer>
+            <ReadOnlyContext.Consumer>{(readOnly) => <Input readOnly={readOnly}/>}</ReadOnlyContext.Consumer>
         </Form>
     )
 }

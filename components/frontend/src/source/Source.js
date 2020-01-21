@@ -83,7 +83,7 @@ export function Source(props) {
                                 set_source_attribute(props.source_uuid, "position", direction, props.reload)
                             }}
                             options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
-                            reorder_header={<Dropdown.Header>Report <Icon name='right chevron'/>Subject <Icon name='right chevron'/>Metric</Dropdown.Header>}
+                            reorder_header={<Dropdown.Header>Report <Icon name='right chevron' />Subject <Icon name='right chevron' />Metric</Dropdown.Header>}
                         />
                     </Grid.Column>
                 </Grid.Row>}

@@ -7,6 +7,7 @@ import { Input } from './Input';
 function EditableDateInput(props) {
     const [date, setDate] = useState(props.value);
     useEffect(() => setDate(props.value), [props.value]);
+
     return (
         <Form>
             <CalendarDateInput
@@ -23,5 +24,5 @@ function EditableDateInput(props) {
 }
 
 export function DateInput(props) {
-    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} />} />)
+    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />} />)
 }

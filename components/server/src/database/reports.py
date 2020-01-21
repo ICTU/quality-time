@@ -1,13 +1,14 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Optional, Tuple, Union
+from typing import cast, Dict, List, Union
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, Color, MetricId, ReportId, SourceId, Status, SubjectId
+from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
 from .measurements import last_measurements
 
@@ -116,28 +117,6 @@ def changelog(database: Database, nr_changes: int, **uuids):
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
 
 
-def _get_report_uuid(reports, subject_uuid: SubjectId) -> Optional[ReportId]:
-    """Return the uuid of the report that contains the subject with the specified uuid."""
-    return cast(ReportId, [report for report in reports if subject_uuid in report["subjects"]][0]["report_uuid"])
-
-
-def _get_subject_uuid(reports, metric_uuid: MetricId) -> Optional[SubjectId]:
-    """Return the uuid of the subject that has the metric with the specified uuid."""
-    subjects: List[Tuple[SubjectId, Any]] = []
-    for report in reports:
-        subjects.extend(report["subjects"].items())
-    return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
-
-
-def _get_metric_uuid(reports, source_uuid: SourceId) -> Optional[MetricId]:
-    """Return the uuid of the metric that has a source with the specified uuid."""
-    metrics: List[Tuple[MetricId, Any]] = []
-    for report in reports:
-        for subject in report["subjects"].values():
-            metrics.extend(subject["metrics"].items())
-    return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
-
-
 def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None,
              metric_uuid: MetricId = None, source_uuid: SourceId = None):
     """Return applicable report, subject, metric, source, and their uuids and names."""
@@ -148,9 +127,9 @@ def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: Sub
     data.reports = latest_summarized_reports(database)
     data.datamodel = latest_datamodel(database)
     data.source_uuid = source_uuid
-    data.metric_uuid = _get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
-    data.subject_uuid = _get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
-    data.report_uuid = _get_report_uuid(data.reports, data.subject_uuid) if data.subject_uuid else report_uuid
+    data.metric_uuid = get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
+    data.subject_uuid = get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
+    data.report_uuid = get_report_uuid(data.reports, data.subject_uuid) if data.subject_uuid else report_uuid
     data.report = list(filter(lambda report: data.report_uuid == report["report_uuid"], data.reports))[0]
     data.report_name = data.report.get("title") or ""
     if data.subject_uuid:

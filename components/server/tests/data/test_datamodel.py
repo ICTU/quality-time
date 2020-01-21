@@ -7,13 +7,17 @@ import unittest
 def setUpModule():  # pylint: disable=invalid-name
     """Read the data model once for all data model tests."""
     with open("src/data/datamodel.json") as data_model_json:
-        DataModelTest.data_model = json.load(data_model_json)
+        DataModelTestCase.data_model = json.load(data_model_json)
 
 
-class DataModelTest(unittest.TestCase):
-    """Unit tests for the data model."""
+class DataModelTestCase(unittest.TestCase):
+    """Base class for data model unit tests."""
 
     data_model = dict()
+
+
+class DataModelTest(DataModelTestCase):
+    """Unit tests for the data model."""
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
@@ -34,7 +38,15 @@ class DataModelTest(unittest.TestCase):
                         f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
                         f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
 
-    def test_metric_source_parameters(self):
+    def test_source_parameter_names(self):
+        """Test that each source parameter has a name and short name."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_key, parameter_value in source["parameters"].items():
+                for field in ["name", "short_name"]:
+                    error_message = f"Parameter '{parameter_key}' of source '{source_id}' has no {field}"
+                    self.assertTrue(field in parameter_value, error_message)
+
+    def test_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.data_model["metrics"].items():
             for source in metric["sources"]:
@@ -151,6 +163,25 @@ class DataModelTest(unittest.TestCase):
                     f"Parameter {parameter_key} of source {source_id} has api values, but no values.")
                 self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))
 
+    def test_invalid_characters_in_names(self):
+        """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
+        for source in self.data_model["sources"].values():
+            self.assertFalse("." in source["name"])
+        for metric in self.data_model["metrics"].values():
+            self.assertFalse("." in metric["name"])
+
+    def test_validate_on(self):
+        """Test that the list of parameters to validate on are in fact parameters of the source."""
+        for source in self.data_model["sources"].values():
+            parameter_keys = source["parameters"].keys()
+            for parameter_value in source["parameters"].values():
+                for parameter_key in parameter_value.get("validate_on", []):
+                    self.assertTrue(parameter_key in parameter_keys)
+
+
+class DataModelSpecificSourcesTest(DataModelTestCase):
+    """Unit tests for specific sources in the data model."""
+
     def test_quality_time_source_type_parameter(self):
         """Test that the source type parameter of the Quality-time source lists all source types."""
         all_source_names = set(source["name"] for source in self.data_model["sources"].values())
@@ -174,18 +205,3 @@ class DataModelTest(unittest.TestCase):
         quality_time_api_values = set(
             self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items())
         self.assertEqual(all_metric_api_values, quality_time_api_values)
-
-    def test_invalid_characters_in_names(self):
-        """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
-        for source in self.data_model["sources"].values():
-            self.assertFalse("." in source["name"])
-        for metric in self.data_model["metrics"].values():
-            self.assertFalse("." in metric["name"])
-
-    def test_validate_on(self):
-        """Test that the list of parameters to validate on are in fact parameters of the source."""
-        for source in self.data_model["sources"].values():
-            parameter_keys = source["parameters"].keys()
-            for parameter_value in source["parameters"].values():
-                for parameter_key in parameter_value.get("validate_on", []):
-                    self.assertTrue(parameter_key in parameter_keys)

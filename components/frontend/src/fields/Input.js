@@ -3,7 +3,7 @@ import { Form, Label } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 
 export function Input(props) {
-  let { prefix, required, set_value, ...otherProps } = props;
+  let { editableLabel, prefix, required, set_value, ...otherProps } = props;
   const initialValue = props.value || "";
   const [value, setValue] = useState(initialValue);
   useEffect(() => setValue(initialValue), [initialValue]);
@@ -23,6 +23,7 @@ export function Input(props) {
       <ReadOnlyContext.Consumer>{(readOnly) => (
         <Form.Input
           {...fixedProps}
+          label={readOnly ? props.label : editableLabel || props.label}
           onBlur={() => { submit_if_changed() }}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}

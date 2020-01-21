@@ -637,6 +637,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to an Axe report in CSV format or to a zip with Axe reports in CSV format",
+                    "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
@@ -650,6 +651,7 @@
                 },
                 "landing_url": {
                     "name": "URL to Axe report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -659,6 +661,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -668,6 +671,8 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "string",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -677,6 +682,7 @@
                 },
                 "impact": {
                     "name": "Impact levels",
+                    "short_name": "impact levels",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -693,6 +699,7 @@
                 },
                 "violation_type": {
                     "name": "Violation types",
+                    "short_name": "violation types",
                     "type": "multiple_choice",
                     "help_url": "https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md",
                     "mandatory": false,
@@ -828,6 +835,7 @@
             "parameters": {
                 "url": {
                     "name": "URL including organization and project (e.g. https://dev.azure.com/{organization}/{project}",
+                    "short_name": "url",
                     "type": "url",
                     "validate_on": [
                         "private_token"
@@ -846,6 +854,7 @@
                 },
                 "private_token": {
                     "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops",
@@ -862,6 +871,7 @@
                 },
                 "wiql": {
                     "name": "Issue query in WIQL (Work Item Query Language)",
+                    "short_name": "issue query",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
@@ -873,6 +883,7 @@
                 },
                 "file_path": {
                     "name": "File or folder path",
+                    "short_name": "path",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -882,6 +893,7 @@
                 },
                 "repository": {
                     "name": "Repository (name or id)",
+                    "short_name": "repository",
                     "type": "string",
                     "placeholder": "default repository",
                     "mandatory": false,
@@ -893,6 +905,7 @@
                 },
                 "branch": {
                     "name": "Branch",
+                    "short_name": "branch",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "master",
@@ -902,6 +915,7 @@
                 },
                 "branches_to_ignore": {
                     "name": "Branches to ignore (regular expressions or branch names)",
+                    "short_name": "branches to ignore",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory": false,
@@ -913,6 +927,7 @@
                 },
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
+                    "short_name": "number of days since last commit",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -924,6 +939,7 @@
                 },
                 "inactive_job_days": {
                     "name": "Number of days since last build after which to consider pipelines inactive",
+                    "short_name": "number of days since last build",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -935,6 +951,7 @@
                 },
                 "test_result": {
                     "name": "Test result",
+                    "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -956,6 +973,7 @@
                 },
                 "jobs_to_ignore": {
                     "name": "Pipelines to ignore (regular expressions or pipeline names, use <folder>/<pipeline name> for pipelines in folders)",
+                    "short_name": "pipelines to ignore",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
@@ -967,6 +985,7 @@
                 },
                 "failure_type": {
                     "name": "Failure type",
+                    "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1126,6 +1145,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Bandit JSON-report or to a zip with Bandit JSON-reports",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1140,6 +1160,7 @@
                 },
                 "landing_url": {
                     "name": "URL to Bandit report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1150,6 +1171,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1160,6 +1182,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1170,6 +1193,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1184,6 +1208,7 @@
                 },
                 "confidence_levels": {
                     "name": "Confidence levels",
+                    "short_name": "confidence levels",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1233,9 +1258,10 @@
             "parameters": {
                 "date": {
                     "name": "Date",
+                    "short_name": "date",
                     "type": "date",
                     "mandatory": true,
-                    "default_value": "2019-01-01",
+                    "default_value": "2020-01-01",
                     "metrics": [
                         "source_up_to_dateness"
                     ]
@@ -1250,6 +1276,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1264,6 +1291,7 @@
                 },
                 "project": {
                     "name": "Project (name or id)",
+                    "short_name": "project",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1274,6 +1302,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -1284,6 +1313,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": true,
                     "default_value": "",
@@ -1294,6 +1324,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1317,6 +1348,7 @@
             "parameters": {
                 "url": {
                     "name": "GitLab instance URL",
+                    "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
                     "validate_on": [
@@ -1332,6 +1364,7 @@
                 },
                 "project": {
                     "name": "Project (name with namespace or id)",
+                    "short_name": "project",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://docs.gitlab.com/ee/user/project/",
@@ -1345,6 +1378,7 @@
                 },
                 "private_token": {
                     "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "help_url": "https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
@@ -1358,6 +1392,7 @@
                 },
                 "file_path": {
                     "name": "File or folder path",
+                    "short_name": "path",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://docs.gitlab.com/ee/api/repository_files.html",
@@ -1368,6 +1403,7 @@
                 },
                 "branch": {
                     "name": "Branch",
+                    "short_name": "branch",
                     "type": "string",
                     "mandatory": false,
                     "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
@@ -1378,6 +1414,7 @@
                 },
                 "branches_to_ignore": {
                     "name": "Branches to ignore (regular expressions or branch names)",
+                    "short_name": "branches to ignore",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory": false,
@@ -1389,6 +1426,7 @@
                 },
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
+                    "short_name": "number of days since last commit",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -1400,6 +1438,7 @@
                 },
                 "inactive_job_days": {
                     "name": "Number of days without builds after which to consider CI-jobs unused.",
+                    "short_name": "number of days without builds",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -1411,6 +1450,7 @@
                 },
                 "failure_type": {
                     "name": "Failure type",
+                    "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1527,6 +1567,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1542,6 +1583,7 @@
                 },
                 "landing_url": {
                     "name": "URL to a JaCoCo report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1553,6 +1595,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1564,6 +1607,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1583,6 +1627,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1597,6 +1642,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1607,6 +1653,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1617,6 +1664,7 @@
                 },
                 "inactive_days": {
                     "name": "Number of days without builds after which to consider CI-jobs unused.",
+                    "short_name": "number of days without builds",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -1628,6 +1676,7 @@
                 },
                 "jobs_to_ignore": {
                     "name": "Jobs to ignore (regular expressions or job names, use <parent job name>/<child job name> for the names of nested jobs)",
+                    "short_name": "jobs to ignore",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
@@ -1639,6 +1688,7 @@
                 },
                 "failure_type": {
                     "name": "Failure type",
+                    "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1724,6 +1774,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to job",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1738,6 +1789,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1748,6 +1800,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1758,6 +1811,7 @@
                 },
                  "test_result": {
                     "name": "Test result",
+                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -1804,6 +1858,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
@@ -1820,6 +1875,7 @@
                 },
                 "jql": {
                     "name": "Issue query in JQL (Jira Query Language)",
+                    "short_name": "issue query",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html",
@@ -1833,6 +1889,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1845,6 +1902,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1857,6 +1915,7 @@
                 },
                 "manual_test_duration_field": {
                     "name": "Manual test duration field (name or id)",
+                    "short_name": "manual test duration field",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,
@@ -1867,6 +1926,7 @@
                 },
                 "manual_test_execution_frequency_field": {
                     "name": "Manual test execution frequency field (name or id)",
+                    "short_name": "manual test execution frequency field",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": false,
@@ -1877,6 +1937,7 @@
                 },
                 "manual_test_execution_frequency_default": {
                     "name": "Default expected manual test execution frequency (days)",
+                    "short_name": "default expected manual test execution frequency",
                     "type": "integer",
                     "mandatory": true,
                     "min_value": "1",
@@ -1887,6 +1948,7 @@
                 },
                 "story_points_field": {
                     "name": "Story points field (name or id)",
+                    "short_name": "story points field",
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,
@@ -1966,6 +2028,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a JUnit report in XML format or to a zip with JUnit reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1980,6 +2043,7 @@
                 },
                 "landing_url": {
                     "name": "URL to a JUnit report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1990,6 +2054,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2000,6 +2065,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2010,6 +2076,7 @@
                 },
                 "test_result": {
                     "name": "Test result",
+                    "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2057,6 +2124,7 @@
             "parameters": {
                 "number": {
                     "name": "Number",
+                    "short_name": "number",
                     "type": "integer",
                     "mandatory": true,
                     "min_value": "0",
@@ -2099,6 +2167,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a NCover report in HTML format or to a zip with NCover reports in HTML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2114,6 +2183,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2125,6 +2195,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2144,6 +2215,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2157,6 +2229,7 @@
                 },
                 "landing_url": {
                     "name": "URL to an OJAudit report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2166,6 +2239,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2175,6 +2249,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2184,6 +2259,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2236,6 +2312,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2250,6 +2327,7 @@
                 },
                 "landing_url": {
                     "name": "URL to an OpenVAS report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2260,6 +2338,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2270,6 +2349,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2280,6 +2360,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2335,6 +2416,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2349,6 +2431,7 @@
                 },
                 "landing_url": {
                     "name": "URL to OWASP Dependency Check report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2359,6 +2442,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2369,6 +2453,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2379,6 +2464,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2424,10 +2510,10 @@
             "name": "OWASP Dependency Check Jenkins plugin",
             "description": "Jenkins plugin for the OWASP Dependency Check, a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities.",
             "url": "https://plugins.jenkins.io/dependency-check-jenkins-plugin",
-            "parameters" :
-            {
+            "parameters" : {
                 "url" : {
                     "name": "URL to Jenkins job",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2442,6 +2528,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2452,6 +2539,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2462,6 +2550,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2509,6 +2598,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2523,6 +2613,7 @@
                 },
                 "landing_url": {
                     "name": "URL to an OWASP ZAP report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2533,6 +2624,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2543,6 +2635,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2553,6 +2646,7 @@
                 },
                 "risks": {
                     "name": "Risks",
+                    "short_name": "risks",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2614,6 +2708,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2632,6 +2727,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2646,6 +2742,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2660,6 +2757,7 @@
                 },
                 "test_result": {
                     "name": "Test result",
+                    "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2674,6 +2772,7 @@
                 },
                 "thresholds": {
                     "name": "Thresholds",
+                    "short_name": "thresholds",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [
@@ -2721,6 +2820,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Safety report in JSON format or a zip with Safety reports in JSON format.",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -2734,6 +2834,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -2743,6 +2844,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2783,6 +2885,7 @@
             "parameters": {
                 "url": {
                     "name": "Quality-time URL",
+                    "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
                     "default_value": "",
@@ -2792,6 +2895,7 @@
                 },
                 "status": {
                     "name": "Metric status",
+                    "short_name": "metric status",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -2815,6 +2919,7 @@
                 },
                 "reports": {
                     "name": "Report names or identifiers",
+                    "short_name": "reports",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "default_value": "",
@@ -2824,6 +2929,7 @@
                 },
                 "metric_type": {
                     "name": "Metric types",
+                    "short_name": "metric types",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -2889,6 +2995,7 @@
                 },
                 "source_type": {
                     "name": "Source types",
+                    "short_name": "source types",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -2954,6 +3061,7 @@
                 },
                 "tags": {
                     "name": "Tags",
+                    "short_name": "tags",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "default_value": "",
@@ -3019,6 +3127,7 @@
             "parameters": {
                 "url": {
                     "name": "URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -3033,6 +3142,7 @@
                 },
                 "landing_url": {
                     "name": "URL to a Robot Framework report in a human readable format",
+                    "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3043,6 +3153,7 @@
                 },
                 "username": {
                     "name": "Username for basic authentication",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3053,6 +3164,7 @@
                 },
                 "password": {
                     "name": "Password for basic authentication",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -3062,7 +3174,8 @@
                     ]
                 },
                 "test_result": {
-                   "name": "Test result",
+                    "name": "Test result",
+                    "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -3103,6 +3216,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "private_token"
@@ -3126,6 +3240,7 @@
                 },
                 "private_token": {
                     "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/user-token/",
@@ -3147,6 +3262,7 @@
                 },
                 "component": {
                     "name": "Project key",
+                    "short_name": "project key",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -3167,6 +3283,7 @@
                 },
                 "branch": {
                     "name": "Branch (only supported by commercial SonarQube editions)",
+                    "short_name": "branch",
                     "help_url": "https://docs.sonarqube.org/latest/branches/overview/",
                     "type": "string",
                     "mandatory": false,
@@ -3188,6 +3305,7 @@
                 },
                 "lines_to_count": {
                     "name": "Lines to count",
+                    "short_name": "lines to count",
                     "type": "single_choice",
                     "mandatory": false,
                     "default_value": "lines with code",
@@ -3205,6 +3323,7 @@
                 },
                 "test_result": {
                     "name": "Test result",
+                    "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": "",
@@ -3220,6 +3339,7 @@
                 },
                 "commented_out_rules": {
                     "name": "Rules",
+                    "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
@@ -3269,6 +3389,7 @@
                 },
                 "complex_unit_rules": {
                     "name": "Rules",
+                    "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
@@ -3320,6 +3441,7 @@
                 },
                 "many_parameter_rules": {
                     "name": "Rules",
+                    "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
@@ -3358,6 +3480,7 @@
                 },
                 "long_unit_rules": {
                     "name": "Rules",
+                    "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
@@ -3437,6 +3560,7 @@
                 },
                 "severities": {
                     "name": "Severities",
+                    "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/issues/",
@@ -3455,6 +3579,7 @@
                 },
                 "suppression_rules": {
                     "name": "Rules",
+                    "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
@@ -3484,6 +3609,7 @@
                 },
                 "types": {
                     "name": "Types",
+                    "short_name": "types",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
@@ -3682,6 +3808,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "api_key",
@@ -3696,6 +3823,7 @@
                 },
                 "api_key": {
                     "name": "API key",
+                    "short_name": "API key",
                     "type": "string",
                     "mandatory": false,
                     "help_url": "https://trello.com/app-key",
@@ -3707,6 +3835,7 @@
                 },
                 "token": {
                     "name": "Token",
+                    "short_name": "token",
                     "type": "string",
                     "mandatory": false,
                     "help_url": "https://trello.com/app-key",
@@ -3718,6 +3847,7 @@
                 },
                 "board": {
                     "name": "Board (title or id)",
+                    "short_name": "board",
                     "type": "string",
                     "mandatory": true,
                     "help_url": "https://trello.com/1/members/me/boards?fields=name",
@@ -3729,6 +3859,7 @@
                 },
                 "lists_to_ignore": {
                     "name": "Lists to ignore (title or id)",
+                    "short_name": "lists to ignore",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "default_value": [],
@@ -3740,6 +3871,7 @@
                 },
                 "cards_to_count": {
                     "name": "Cards to count",
+                    "short_name": "cards to count",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -3754,6 +3886,7 @@
                 },
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
+                    "short_name": "number of days without activity",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",
@@ -3799,6 +3932,7 @@
             "parameters": {
                 "url": {
                     "name": "URL",
+                    "short_name": "URL",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -3813,6 +3947,7 @@
                 },
                 "board": {
                     "name": "Board (title or id)",
+                    "short_name": "board",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3823,6 +3958,7 @@
                 },
                 "username": {
                     "name": "Username",
+                    "short_name": "username",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3833,6 +3969,7 @@
                 },
                 "password": {
                     "name": "Password",
+                    "short_name": "password",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -3843,6 +3980,7 @@
                 },
                 "lists_to_ignore": {
                     "name": "Lists to ignore (title or id)",
+                    "short_name": "lists to ignore",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
                     "default_value": [],
@@ -3854,6 +3992,7 @@
                 },
                 "cards_to_count": {
                     "name": "Cards to count",
+                    "short_name": "cards to count",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -3868,6 +4007,7 @@
                 },
                 "inactive_days": {
                     "name": "Number of days without activity after which to consider cards inactive",
+                    "short_name": "number of days without activity",
                     "type": "integer",
                     "mandatory": false,
                     "unit": "days",

@@ -1,25 +1,48 @@
 """Unit tests for the source routes."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import call, Mock, patch
 
 import requests
 
 from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy, post_source_new, \
     post_source_parameter
 
-from .fixtures import create_report, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, \
-    SUBJECT_ID2
+from .fixtures import create_report, METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, \
+    SOURCE_ID2, SOURCE_ID3, SOURCE_ID4, SOURCE_ID5, SOURCE_ID6, SOURCE_ID7, SUBJECT_ID, SUBJECT_ID2, SUBJECT_ID3
+
+
+class SourceTestCase(unittest.TestCase):
+    """Common fixtures for the source route unit tests."""
+    def setUp(self):
+        self.url = "https://url"
+        self.database = Mock()
+        self.database.measurements.find.return_value = []
+        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.data_model = dict(
+            _id="id",
+            metrics=dict(metric_type=dict(default_source="source_type")),
+            sources=dict(
+                source_type=dict(
+                    name='Source type',
+                    parameters=dict(
+                        url=dict(type="url", metrics=["metric_type"], default_value=""),
+                        username=dict(type="string", metrics=["metric_type"], default_value=""),
+                        password=dict(type="password", metrics=["metric_type"], default_value=""),
+                        private_token=dict(type="password", metrics=["metric_type"], default_value=""))),
+                new_source_type=dict(parameters=dict())))
+        self.database.datamodels.find_one.return_value = self.data_model
 
 
 @patch("bottle.request")
-class PostSourceAttributeTest(unittest.TestCase):
+class PostSourceAttributeTest(SourceTestCase):
     """Unit tests for the post source attribute route."""
 
     def setUp(self):
+        super().setUp()
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
-            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict()),
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -27,14 +50,9 @@ class PostSourceAttributeTest(unittest.TestCase):
                     name="Subject",
                     metrics={
                         METRIC_ID: dict(
-                            name="Metric", type="type", sources=self.sources)})})
-        self.database = Mock()
+                            name="Metric", type="metric_type", sources=self.sources)})})
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id", metrics=dict(type=dict()), sources=dict(type=dict(name="Type"), new_type=dict(parameters=dict())))
-        self.database.measurements.find.return_value = []
 
     def test_name(self, request):
         """Test that the source name can be changed."""
@@ -49,13 +67,13 @@ class PostSourceAttributeTest(unittest.TestCase):
 
     def test_post_source_type(self, request):
         """Test that the source type can be changed."""
-        request.json = dict(type="new_type")
+        request.json = dict(type="new_source_type")
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
                  description="Jenny changed the type of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from 'type' to 'new_type'."),
+                             "report 'Report' from 'source_type' to 'new_source_type'."),
             self.report["delta"])
 
     def test_post_position(self, request):
@@ -79,37 +97,28 @@ class PostSourceAttributeTest(unittest.TestCase):
 
 
 @patch("bottle.request")
-class PostSourceParameterTest(unittest.TestCase):
+class PostSourceParameterTest(SourceTestCase):
     """Unit tests for the post source parameter route."""
 
     STATUS_CODE = 200
     STATUS_CODE_REASON = "OK"
 
     def setUp(self):
-        self.url = "https://url"
+        super().setUp()
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="type", parameters=dict()),
-            SOURCE_ID2: dict(name="Source 2", type="type", parameters=dict())}
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
-                    metrics={METRIC_ID: dict(name="Metric", type="type", sources=self.sources)})})
-        self.database = Mock()
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
+                    metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)}),
+                SUBJECT_ID2: dict(
+                    name="Subject 2",
+                    metrics={METRIC_ID2: dict(name="Metric 2", type="metric_type", sources={})})})
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
-        self.datamodel = dict(
-            _id="id",
-            metrics=dict(type=dict()),
-            sources=dict(
-                type=dict(
-                    parameters=dict(
-                        url=dict(type="url"), username=dict(type="string"), password=dict(type="password"),
-                        private_token=dict(type="password")))))
-        self.database.datamodels.find_one.return_value = self.datamodel
-        self.database.measurements.find.return_value = []
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
     def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
@@ -169,7 +178,7 @@ class PostSourceParameterTest(unittest.TestCase):
     @patch.object(requests, 'get')
     def test_url_no_url_type(self, mock_get, request):
         """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
-        self.datamodel["sources"]["type"]["parameters"]["url"]["type"] = "string"
+        self.data_model["sources"]["source_type"]["parameters"]["url"]["type"] = "string"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url="unimportant")
         response = post_source_parameter(SOURCE_ID, "url", self.database)
@@ -199,7 +208,7 @@ class PostSourceParameterTest(unittest.TestCase):
     @patch.object(requests, 'get')
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
-        self.datamodel["sources"]["type"]["parameters"]["url"]["validate_on"] = "password"
+        self.data_model["sources"]["source_type"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
         self.sources[SOURCE_ID]['parameters']['url'] = self.url
@@ -228,17 +237,130 @@ class PostSourceParameterTest(unittest.TestCase):
         self.database.reports.insert.assert_not_called()
 
 
-class SourceTest(unittest.TestCase):
+@patch("bottle.request")
+class PostSourceParameterMassEditTest(SourceTestCase):
+    """Unit tests for the mass edit variants of the post source parameter route."""
+
+    def setUp(self):
+        super().setUp()
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID3: dict(name="Source 3", type="source_type", parameters=dict(username="different username")),
+            SOURCE_ID4: dict(name="Source 4", type="different_type", parameters=dict(username="username"))}
+        self.sources2 = {
+            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username="username"))}
+        self.sources3 = {
+            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username="username"))}
+        self.sources4 = {
+            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username="username"))}
+        self.report = dict(
+            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
+            subjects={
+                SUBJECT_ID: dict(
+                    name="Subject",
+                    metrics={
+                        METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources),
+                        METRIC_ID2: dict(name="Metric 2", type="metric_type", sources=self.sources2)}),
+                SUBJECT_ID2: dict(
+                    name="Subject 2",
+                    metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)})})
+        self.report2 = dict(
+            _id=REPORT_ID2, title="Report 2", report_uuid=REPORT_ID2,
+            subjects={
+                SUBJECT_ID3: dict(
+                    name="Subject 3",
+                    metrics={
+                        METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)})})
+        self.database.reports.distinct.return_value = [REPORT_ID, REPORT_ID2]
+        self.database.reports.find_one.side_effect = [self.report, self.report2]
+
+    def test_mass_edit_reports(self, request):
+        """Test that a source parameter can be mass edited."""
+        request.json = dict(username="new username", edit_scope="reports")
+        response = post_source_parameter(SOURCE_ID, "username", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_has_calls([call(self.report), call(self.report2)])
+        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
+        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
+        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
+        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
+        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
+        self.assertEqual("new username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assertEqual("new username", self.sources4[SOURCE_ID7]["parameters"]["username"])
+        self.assertEqual(
+            dict(
+                uuids=[
+                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
+                    METRIC_ID3, SOURCE_ID6, REPORT_ID2, SUBJECT_ID3, METRIC_ID4, SOURCE_ID7],
+                description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                            "in all reports from 'username' to 'new username'."),
+            self.report["delta"])
+
+    def test_mass_edit_report(self, request):
+        """Test that a source parameter can be mass edited."""
+        request.json = dict(username="new username", edit_scope="report")
+        response = post_source_parameter(SOURCE_ID, "username", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
+        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
+        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
+        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
+        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
+        self.assertEqual("new username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assertEqual(
+            dict(
+                uuids=[
+                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
+                    METRIC_ID3, SOURCE_ID6],
+                description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                            "in report 'Report' from 'username' to 'new username'."),
+            self.report["delta"])
+
+    def test_mass_edit_subject(self, request):
+        """Test that a source parameter can be mass edited."""
+        request.json = dict(username="new username", edit_scope="subject")
+        response = post_source_parameter(SOURCE_ID, "username", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
+        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
+        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
+        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
+        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
+        self.assertEqual("username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assertEqual(
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5],
+                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                             "of subject 'Subject' in report 'Report' from 'username' to 'new username'."),
+            self.report["delta"])
+
+    def test_mass_edit_metric(self, request):
+        """Test that a source parameter can be mass edited."""
+        request.json = dict(username="new username", edit_scope="metric")
+        response = post_source_parameter(SOURCE_ID, "username", self.database)
+        self.assertEqual(dict(ok=True), response)
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
+        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
+        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
+        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
+        self.assertEqual("username", self.sources2[SOURCE_ID5]["parameters"]["username"])
+        self.assertEqual("username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assertEqual(
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2],
+                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                             "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to "
+                             "'new username'."),
+            self.report["delta"])
+
+
+class SourceTest(SourceTestCase):
     """Unit tests for adding and deleting sources."""
 
     def setUp(self):
-        self.database = Mock()
-        self.database.measurements.find.return_value = []
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
-        self.database.datamodels.find_one.return_value = dict(
-            _id="",
-            metrics=dict(metric_type=dict(name="Metric type", direction="<", default_source="source_type")),
-            sources=dict(source_type=dict(name="Source type", parameters=dict())))
+        super().setUp()
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report = create_report()
 
