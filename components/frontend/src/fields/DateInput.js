@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Form } from 'semantic-ui-react';
 import { DateInput as CalendarDateInput } from 'semantic-ui-calendar-react';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Input } from './Input';
 
 function EditableDateInput(props) {
-    const [date, setDate] = useState(props.value);
-    useEffect(() => setDate(props.value), [props.value]);
-
     return (
         <Form>
             <CalendarDateInput
@@ -15,9 +12,9 @@ function EditableDateInput(props) {
                 dateFormat="YYYY-MM-DD"
                 disabled={false}
                 label={props.label}
-                onChange={(event, { name, value }) => { setDate(value); if (value !== props.value) { props.set_value(value)}}}
-                error={props.required && date === ""}
-                value={date}
+                onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value)}}}
+                error={props.required && props.value === ""}
+                value={props.value}
             />
         </Form>
     )

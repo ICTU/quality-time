@@ -12,10 +12,15 @@ function sort_options(option_list) {
 
 export function MultipleChoiceInput(props) {
   let { allowAdditions, editableLabel, required, set_value, ...otherProps } = props;
-  const [choices, setChoices] = useState(props.value || []);
-  useEffect(() => setChoices(props.value || []), [props.value]);
+  const choices = props.value || [];
   const [options, setOptions] = useState(props.options);
   useEffect(() => setOptions(props.options), [props.options]);
+  function onChange(event, { value }) {
+    if (value !== props.value) { set_value(value) }
+  }
+  function onAddItem(event, { value }) {
+    setOptions(prev_options => ([value, ...prev_options]))
+  }
   function Dropdown() {
     return (
       <Form.Dropdown
@@ -25,8 +30,8 @@ export function MultipleChoiceInput(props) {
         fluid
         label={editableLabel || props.label}
         multiple
-        onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
-        onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
+        onAddItem={onAddItem}
+        onChange={onChange}
         options={sort_options(options)}
         search
         selection
