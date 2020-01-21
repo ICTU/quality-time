@@ -672,7 +672,6 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
-                    "type": "string",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -685,7 +684,7 @@
                     "short_name": "impact levels",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "placeholder": "all",
                     "values": [
                         "minor",
@@ -703,7 +702,7 @@
                     "type": "multiple_choice",
                     "help_url": "https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "placeholder": "all",
                     "values": [
                         "accesskeys",
@@ -954,7 +953,7 @@
                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "incomplete",
                         "failed",
@@ -988,7 +987,7 @@
                     "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "placeholder": "all",
                     "values": [
                         "canceled",
@@ -1196,7 +1195,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "low",
                         "medium",
@@ -1211,7 +1210,7 @@
                     "short_name": "confidence levels",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "low",
                         "medium",
@@ -1327,7 +1326,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "info",
                         "low",
@@ -1453,7 +1452,7 @@
                     "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "placeholder": "all",
                     "values": [
                         "canceled",
@@ -1691,7 +1690,7 @@
                     "short_name": "failure type",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "placeholder": "all",
                     "values": [
                         "Aborted",
@@ -1814,7 +1813,7 @@
                      "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "failed",
                         "passed",
@@ -2079,7 +2078,7 @@
                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "errored",
                         "failed",
@@ -2262,7 +2261,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "advisory",
                         "incomplete",
@@ -2363,7 +2362,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "log",
                         "low",
@@ -2467,7 +2466,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "low",
                         "medium",
@@ -2553,7 +2552,7 @@
                     "short_name": "severities",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "low",
                         "normal",
@@ -2649,7 +2648,7 @@
                     "short_name": "risks",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "informational",
                         "low",
@@ -2760,7 +2759,7 @@
                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "canceled",
                         "failed",
@@ -2898,7 +2897,7 @@
                     "short_name": "metric status",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "target met (green)",
                         "near target met (yellow)",
@@ -2922,7 +2921,7 @@
                     "short_name": "reports",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "metrics": [
                         "metrics"
                     ]
@@ -3064,7 +3063,7 @@
                     "short_name": "tags",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "metrics": [
                         "metrics"
                     ]
@@ -3178,7 +3177,7 @@
                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "fail",
                         "pass"
@@ -3326,7 +3325,7 @@
                     "short_name": "test result",
                     "type": "multiple_choice",
                     "mandatory": false,
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "errored",
                         "failed",
@@ -3564,7 +3563,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/issues/",
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "info",
                         "minor",
@@ -3613,7 +3612,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
-                    "default_value": "",
+                    "default_value": [],
                     "values": [
                         "code_smell",
                         "bug",
