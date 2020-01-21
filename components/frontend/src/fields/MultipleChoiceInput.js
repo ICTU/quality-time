@@ -16,27 +16,27 @@ export function MultipleChoiceInput(props) {
   useEffect(() => setChoices(props.value || []), [props.value]);
   const [options, setOptions] = useState(props.options);
   useEffect(() => setOptions(props.options), [props.options]);
+  function Dropdown() {
+    return (
+      <Form.Dropdown
+        {...otherProps}
+        allowAdditions={allowAdditions}
+        error={required && choices.length === 0}
+        fluid
+        label={editableLabel || props.label}
+        multiple
+        onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
+        onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
+        options={sort_options(options)}
+        search
+        selection
+        value={choices}
+      />
+    )
+  }
   return (
     <Form>
-      <ReadOnlyOrEditable
-        readOnlyComponent={<Form.Input {...otherProps} />}
-        editableComponent={
-          <Form.Dropdown
-            {...otherProps}
-            allowAdditions={allowAdditions}
-            error={required && choices.length === 0}
-            fluid
-            label={editableLabel || props.label}
-            multiple
-            onAddItem={(event, { value }) => { setOptions(prev_options => ([value, ...prev_options])) }}
-            onChange={(event, { value }) => { setChoices(value); if (value !== props.value) { set_value(value) } }}
-            options={sort_options(options)}
-            search
-            selection
-            value={choices}
-          />
-        }
-      />
+      <ReadOnlyOrEditable readOnlyComponent={<Form.Input {...otherProps} />} editableComponent={<Dropdown />} />
     </Form>
   )
 }
