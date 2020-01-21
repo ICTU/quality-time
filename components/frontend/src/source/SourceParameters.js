@@ -24,20 +24,13 @@ export function SourceParameters(props) {
                         props.source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
                     parameter_unit={all_parameters[parameter_key].unit || props.metric_unit}
                     placeholder={all_parameters[parameter_key].placeholder || ""}
-                    reload={props.reload}
-                    report={props.report}
                     required={all_parameters[parameter_key].mandatory}
-                    source={props.source}
                     source_type_name={props.datamodel.sources[props.source.type].name}
-                    source_uuid={props.source_uuid}
                     warning={props.changed_param_keys ? (props.changed_param_keys.indexOf(parameter_key) !== -1) : false}
+                    {...props}
                 />
             </Grid.Column>
         )
     );
-    return (
-        <>
-            {parameters}
-        </>
-    )
+    return (<>{parameters}</>)
 }

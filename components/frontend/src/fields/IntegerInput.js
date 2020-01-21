@@ -7,7 +7,6 @@ export function IntegerInput(props) {
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
     useEffect(() => setValue(initialValue), [initialValue]);
-
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
             return false
@@ -20,13 +19,11 @@ export function IntegerInput(props) {
         }
         return true
     }
-
     function submit_if_changed_and_valid() {
         if (value !== initialValue && is_valid(value)) {
             props.set_value(value)
         }
     }
-
     const fixedProps = { fluid: true, focus: true, labelPosition: "right", type: "number", width: 16}
     return (
         <Form onSubmit={() => { submit_if_changed_and_valid() }}>
