@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Input } from './Input';
@@ -6,10 +6,7 @@ import { Input } from './Input';
 function StringInputWithSuggestions(props) {
   let { editableLabel, required, options, set_value, value, warning, ...otherProps } = props;
   const [string_options, setOptions] = useState(options);
-  useEffect(() => setOptions(props.options), [props.options]);
   const [search_query, setSearchQuery] = useState(value || '');
-  useEffect(() => setSearchQuery(props.value || ''), [props.value]);
-
   return (
     <Form>
       <Form.Dropdown
