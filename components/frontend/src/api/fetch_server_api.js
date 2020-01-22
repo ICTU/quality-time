@@ -13,5 +13,5 @@ export function fetch_server_api(method, api, body, content_type) {
     options['body'] = JSON.stringify(body)
   }
   return fetch(`/api/${api_version}/${api}`, options).then(
-    (response) => {return content_type ? response.blob() : response.json()});
+    (response) => { return content_type ? response.blob() : response.json() });
 }
