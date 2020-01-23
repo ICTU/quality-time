@@ -30,9 +30,9 @@ export function Metric(props) {
     <Measurement
       measurements={measurements}
       metric_uuid={metric_uuid}
-      fetch_measurement_and_reload={() => {
+      fetch_measurement_and_reload={(response) => {
         fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
-        props.reload();
+        props.reload(response);
       }}
       {...props}
     />
