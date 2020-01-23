@@ -4,6 +4,7 @@ import { Subjects } from '../subject/Subjects';
 import { Tag } from '../widgets/Tag';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
+import { ReadOnlyContext } from '../context/ReadOnly';
 import { set_report_attribute } from '../api/report';
 import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
@@ -26,11 +27,13 @@ function ReportDashboard(props) {
         />
     );
     return (
-        <CardDashboard
-            cards={subject_cards.concat(tag_cards)}
-            initial_layout={props.report.layout || []}
-            save_layout={function (layout) { set_report_attribute(props.report.report_uuid, "layout", layout, props.reload) }}
-        />
+        <ReadOnlyContext.Consumer>{(readOnly) => (
+            <CardDashboard
+                cards={subject_cards.concat(tag_cards)}
+                initial_layout={props.report.layout || []}
+                save_layout={function (layout) { if (!readOnly) { set_report_attribute(props.report.report_uuid, "layout", layout, props.reload) } }}
+            />)}
+        </ReadOnlyContext.Consumer>
     )
 }
 
