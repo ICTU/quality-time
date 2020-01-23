@@ -67,11 +67,30 @@ class App extends Component {
       this.check_session(json)
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
-    this.reload_data_model(report_date);
+    const now = new Date();
+    const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      this.reload_tag_report(report_date)
+      const tag = this.state.report_uuid.slice(4);
+      Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
+        ([data_model, report]) => {
+          this.setState({
+            loading_datamodel: false,
+            loading_report: false,
+            datamodel: data_model,
+            reports: Object.keys(report.subjects).length > 0 ? [report] : [],
+            last_update: now})
+        }).catch(show_error);
     } else {
-      this.reload_reports(report_date)
+      Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
+        ([data_model, reports]) => {
+          this.setState({
+            loading_datamodel: false,
+            loading_report: false,
+            datamodel: data_model,
+            reports: reports.reports,
+            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+            last_update: now})
+        }).catch(show_error);
     }
   }
 
@@ -95,52 +114,6 @@ class App extends Component {
       this.logout();
       show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
-  }
-
-  reload_data_model(report_date) {
-    let self = this;
-    get_datamodel(report_date)
-      .then(function (data_model_json) {
-        self.setState({ loading_datamodel: false, datamodel: data_model_json });
-      }).catch(function () {
-        show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
-      });
-  }
-
-  reload_tag_report(report_date) {
-    const tag = this.state.report_uuid.slice(4);
-    let self = this;
-    get_tag_report(tag, report_date)
-      .then(function (tagreport_json) {
-        const now = new Date();
-        self.setState(
-          {
-            reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
-            loading_report: false,
-            last_update: now
-          }
-        )
-      })
-  }
-
-  reload_reports(report_date) {
-    let self = this;
-    get_reports(report_date)
-      .then(function (report_overview_json) {
-        const now = new Date();
-        self.setState(
-          {
-            reports: report_overview_json.reports,
-            reports_overview: {
-              layout: report_overview_json.layout,
-              subtitle: report_overview_json.subtitle,
-              title: report_overview_json.title
-            },
-            loading_report: false,
-            last_update: now
-          }
-        )
-      })
   }
 
   handleSearchChange(event) {
@@ -230,7 +203,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
-    const props = {reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports};
+    const props = { reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
