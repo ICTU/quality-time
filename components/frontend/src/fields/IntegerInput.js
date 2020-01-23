@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Label } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 
@@ -6,7 +6,6 @@ export function IntegerInput(props) {
     let { editableLabel, prefix, set_value, unit, ...otherProps } = props;
     const initialValue = props.value || 0;
     const [value, setValue] = useState(initialValue)
-    useEffect(() => setValue(initialValue), [initialValue]);
     function is_valid(a_value) {
         if (Number.isNaN(parseInt(a_value))) {
             return false
