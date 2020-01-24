@@ -15,7 +15,7 @@ export function ChangeLog(props) {
         if (props.source_uuid) { uuids.source_uuid = props.source_uuid }
         get_changelog(nrChanges, uuids).then(function (json) {
             if (!didCancel) {
-                setChanges(json.changelog);
+                setChanges(json.changelog || []);
             }
         });
         return () => { didCancel = true; };
