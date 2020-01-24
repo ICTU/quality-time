@@ -1,16 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 import App from './App';
 
-describe("<App/>", () => {
-  beforeAll(() => {
-    global.EventSource = jest.fn(() => ({
-      addEventListener: jest.fn(),
-      close: jest.fn()
-    }))
-  });
+let container;
 
+beforeAll(() => {
+  global.EventSource = jest.fn(() => ({
+    addEventListener: jest.fn(),
+    close: jest.fn()
+  }))
+});
+
+beforeEach(() => {
+  container = document.createElement('div');
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  document.body.removeChild(container);
+  container = null;
+});
+
+it('is loading datamodel and reports', async () => {
+  await act(async () => { ReactDOM.render(<App />, container) });
+  expect(container.querySelectorAll("div.loading").length).toBe(1);
+});
+
+
+describe("<App/>", () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<App />, div);
