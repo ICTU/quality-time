@@ -16,13 +16,13 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
 }
 
 function metric_options(reports, datamodel, current_metric_uuid) {
-    let metric_options = [];
+    let options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
             const subject_name = get_subject_name(subject, datamodel);
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
                 const metric_name = get_metric_name(metric, datamodel);
-                metric_options.push({
+                options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     disabled: metric_uuid === current_metric_uuid,
                     key: metric_uuid,
@@ -32,8 +32,8 @@ function metric_options(reports, datamodel, current_metric_uuid) {
             })
         });
     });
-    metric_options.sort((a, b) => a.text.localeCompare(b.text));
-    return metric_options;
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
 }
 
 export function Source(props) {

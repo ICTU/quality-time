@@ -37,7 +37,8 @@ def change_source_parameter(data, parameter_key: str, old_value, new_value, scop
 
     changed_ids: List[ItemId] = []
     for source, uuids in sources_to_change():
-        if source["type"] == data.source["type"] and source["parameters"].get(parameter_key, "") == old_value:
+        if source["type"] == data.source["type"] and \
+                (source["parameters"].get(parameter_key) or None) == (old_value or None):
             source["parameters"][parameter_key] = new_value
             changed_ids.extend(uuids)
     return list(unique(changed_ids))

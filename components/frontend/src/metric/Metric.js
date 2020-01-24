@@ -11,8 +11,10 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_
   const report_date_parameter = report_date || new Date(3000, 1, 1);
   get_measurements(metric_uuid, report_date_parameter)
     .then(function (json) {
-      setMeasurements(json.measurements);
-      set_last_measurement(metric_uuid, last_measurement(json.measurements));
+      if (json.ok !== false) {
+        setMeasurements(json.measurements);
+        set_last_measurement(metric_uuid, last_measurement(json.measurements));
+      }
     })
 }
 
@@ -30,9 +32,9 @@ export function Metric(props) {
     <Measurement
       measurements={measurements}
       metric_uuid={metric_uuid}
-      fetch_measurement_and_reload={() => {
+      fetch_measurement_and_reload={(response) => {
         fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
-        props.reload();
+        props.reload(response);
       }}
       {...props}
     />

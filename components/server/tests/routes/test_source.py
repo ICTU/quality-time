@@ -31,6 +31,9 @@ class SourceTestCase(unittest.TestCase):
                         password=dict(type="password", metrics=["metric_type"], default_value=""),
                         private_token=dict(type="password", metrics=["metric_type"], default_value=""))),
                 new_source_type=dict(parameters=dict())))
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.database.datamodels.find_one.return_value = self.data_model
 
 
@@ -40,9 +43,6 @@ class PostSourceAttributeTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict()),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -105,9 +105,6 @@ class PostSourceParameterTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -241,19 +238,22 @@ class PostSourceParameterTest(SourceTestCase):
 class PostSourceParameterMassEditTest(SourceTestCase):
     """Unit tests for the mass edit variants of the post source parameter route."""
 
+    UNCHANGED_VALUE = "different username"
+    OLD_VALUE = "username"
+    NEW_VALUE = "new username"
+
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID3: dict(name="Source 3", type="source_type", parameters=dict(username="different username")),
-            SOURCE_ID4: dict(name="Source 4", type="different_type", parameters=dict(username="username"))}
+        self.sources[SOURCE_ID3] = dict(
+            name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
+        self.sources[SOURCE_ID4] = dict(
+            name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
         self.sources2 = {
-            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username="username"))}
+            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))}
         self.sources3 = {
-            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username="username"))}
+            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))}
         self.sources4 = {
-            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username="username"))}
+            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -275,19 +275,24 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.database.reports.distinct.return_value = [REPORT_ID, REPORT_ID2]
         self.database.reports.find_one.side_effect = [self.report, self.report2]
 
+    def assert_value(self, value_sources_mapping):
+        """Assert that the parameters have the correct value."""
+        for value, sources in value_sources_mapping.items():
+            for source in sources:
+                self.assertEqual(value, source["parameters"]["username"])
+
     def test_mass_edit_reports(self, request):
         """Test that a source parameter can be mass edited."""
-        request.json = dict(username="new username", edit_scope="reports")
+        request.json = dict(username=self.NEW_VALUE, edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_has_calls([call(self.report), call(self.report2)])
-        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
-        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
-        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
-        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
-        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
-        self.assertEqual("new username", self.sources3[SOURCE_ID6]["parameters"]["username"])
-        self.assertEqual("new username", self.sources4[SOURCE_ID7]["parameters"]["username"])
+        self.assert_value({
+            self.NEW_VALUE: [
+                self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5],
+                self.sources3[SOURCE_ID6], self.sources4[SOURCE_ID7]],
+            self.OLD_VALUE: [self.sources[SOURCE_ID4]],
+            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
         self.assertEqual(
             dict(
                 uuids=[
@@ -299,16 +304,16 @@ class PostSourceParameterMassEditTest(SourceTestCase):
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""
-        request.json = dict(username="new username", edit_scope="report")
+        request.json = dict(username=self.NEW_VALUE, edit_scope="report")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
-        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
-        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
-        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
-        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
-        self.assertEqual("new username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assert_value({
+            self.NEW_VALUE: [
+                self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5],
+                self.sources3[SOURCE_ID6]],
+            self.OLD_VALUE: [self.sources[SOURCE_ID4]],
+            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
         self.assertEqual(
             dict(
                 uuids=[
@@ -320,16 +325,14 @@ class PostSourceParameterMassEditTest(SourceTestCase):
 
     def test_mass_edit_subject(self, request):
         """Test that a source parameter can be mass edited."""
-        request.json = dict(username="new username", edit_scope="subject")
+        request.json = dict(username=self.NEW_VALUE, edit_scope="subject")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
-        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
-        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
-        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
-        self.assertEqual("new username", self.sources2[SOURCE_ID5]["parameters"]["username"])
-        self.assertEqual("username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assert_value({
+            self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
+            self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources3[SOURCE_ID6]],
+            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5],
                  description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
@@ -338,16 +341,14 @@ class PostSourceParameterMassEditTest(SourceTestCase):
 
     def test_mass_edit_metric(self, request):
         """Test that a source parameter can be mass edited."""
-        request.json = dict(username="new username", edit_scope="metric")
+        request.json = dict(username=self.NEW_VALUE, edit_scope="metric")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual("new username", self.sources[SOURCE_ID]["parameters"]["username"])
-        self.assertEqual("new username", self.sources[SOURCE_ID2]["parameters"]["username"])
-        self.assertEqual("different username", self.sources[SOURCE_ID3]["parameters"]["username"])
-        self.assertEqual("username", self.sources[SOURCE_ID4]["parameters"]["username"])
-        self.assertEqual("username", self.sources2[SOURCE_ID5]["parameters"]["username"])
-        self.assertEqual("username", self.sources3[SOURCE_ID6]["parameters"]["username"])
+        self.assert_value({
+            self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
+            self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
+            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2],
                  description="Jenny changed the username of all sources of type 'Source type' with username 'username' "

@@ -17,7 +17,6 @@ class AuthenticationPluginTest(unittest.TestCase):
         logging.disable()
         self.mock_database = Mock()
         self.success = dict(ok=True)
-        self.failure = dict(ok=False, reason="invalid_session")
         bottle.install(InjectionPlugin(self.mock_database, "database"))
         bottle.install(AuthenticationPlugin())
 
@@ -39,13 +38,13 @@ class AuthenticationPluginTest(unittest.TestCase):
         """Test that the session is invalid when it's expired."""
         self.mock_database.sessions.find_one.return_value = dict(session_expiration_datetime=datetime.min)
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
-        self.assertEqual(self.failure, route.call())
+        self.assertRaises(bottle.HTTPError, route.call)
 
     def test_missing_session(self):
         """Test that the session is invalid when it's missing."""
         self.mock_database.sessions.find_one.return_value = None
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
-        self.assertEqual(self.failure, route.call())
+        self.assertRaises(bottle.HTTPError, route.call)
 
     def test_http_get_routes(self):
         """Test that session ids are not authenticated with non-post routes."""

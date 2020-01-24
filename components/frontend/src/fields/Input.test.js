@@ -29,6 +29,10 @@ describe("<Input />", () => {
     const wrapper = input_wrapper({value: "", required: true});
     expect(wrapper.find("FormInput").prop("error")).toBe(true);
   });
+  it('renders in error state if the warning props is true', () => {
+    const wrapper = input_wrapper({value: "Hello", warning: true});
+    expect(wrapper.find("FormInput").prop("error")).toBe(true);
+  });
   it('submits the value when changed', () => {
     const wrapper = input_wrapper({value: "Hello", set_value: mock_set_value});
     wrapper.find("input").simulate("change", {target: {value: "Ciao"}});

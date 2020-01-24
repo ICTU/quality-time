@@ -18,9 +18,6 @@ describe("<Subjects />", () => {
         expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddButton").prop("item_type")).toStrictEqual("subject");
     });
     it('hides metrics not requiring action', () => {
-        function popup() {
-            return
-        }
         const wrapper = shallow(<Subjects datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />);
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
         mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");

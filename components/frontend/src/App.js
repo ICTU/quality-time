@@ -32,15 +32,14 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, loading_report: true, loading_datamodel: true, user: null, email: null,
-      last_update: new Date(), login_error: false
+      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date(), login_error: false
     };
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
       if (action === "POP") {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
+        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
       }
     });
   }
@@ -50,10 +49,7 @@ class App extends Component {
     const report_uuid = pathname.slice(1, pathname.length);
     this.connect_to_nr_measurements_event_source()
     this.setState(
-      {
-        report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
-        email: localStorage.getItem("email")
-      },
+      { report_uuid: report_uuid, loading: true, user: localStorage.getItem("user"), email: localStorage.getItem("email") },
       () => this.reload());
   }
 
@@ -67,12 +63,48 @@ class App extends Component {
       this.check_session(json)
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
-    this.reload_data_model(report_date);
+    const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      this.reload_tag_report(report_date)
+      this.reload_tag_report(report_date, show_error);
     } else {
-      this.reload_reports(report_date)
+      this.reload_reports(report_date, show_error)
     }
+  }
+
+  reload_tag_report(report_date, show_error) {
+    const tag = this.state.report_uuid.slice(4);
+    Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
+      ([data_model, report]) => {
+        if (data_model.ok === false || report.ok === false) {
+          show_error();
+        } else {
+          const now = new Date();
+          this.setState({
+            loading: false,
+            datamodel: data_model,
+            reports: Object.keys(report.subjects).length > 0 ? [report] : [],
+            last_update: now
+          });
+        }
+      }).catch(show_error);
+  }
+
+  reload_reports(report_date, show_error) {
+    Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
+      ([data_model, reports]) => {
+        if (data_model.ok === false || reports.ok === false) {
+          show_error();
+        } else {
+          const now = new Date();
+          this.setState({
+            loading: false,
+            datamodel: data_model,
+            reports: reports.reports || [],
+            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+            last_update: now
+          })
+        }
+      }).catch(show_error);
   }
 
   show_connection_messages(json) {
@@ -91,56 +123,10 @@ class App extends Component {
   }
 
   check_session(json) {
-    if (json.ok === false && json.reason === "invalid_session") {
+    if (json.ok === false && json.status === 401) {
       this.logout();
       show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
-  }
-
-  reload_data_model(report_date) {
-    let self = this;
-    get_datamodel(report_date)
-      .then(function (data_model_json) {
-        self.setState({ loading_datamodel: false, datamodel: data_model_json });
-      }).catch(function () {
-        show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.")
-      });
-  }
-
-  reload_tag_report(report_date) {
-    const tag = this.state.report_uuid.slice(4);
-    let self = this;
-    get_tag_report(tag, report_date)
-      .then(function (tagreport_json) {
-        const now = new Date();
-        self.setState(
-          {
-            reports: Object.keys(tagreport_json.subjects).length > 0 ? [tagreport_json] : [],
-            loading_report: false,
-            last_update: now
-          }
-        )
-      })
-  }
-
-  reload_reports(report_date) {
-    let self = this;
-    get_reports(report_date)
-      .then(function (report_overview_json) {
-        const now = new Date();
-        self.setState(
-          {
-            reports: report_overview_json.reports,
-            reports_overview: {
-              layout: report_overview_json.layout,
-              subtitle: report_overview_json.subtitle,
-              title: report_overview_json.title
-            },
-            loading_report: false,
-            last_update: now
-          }
-        )
-      })
   }
 
   handleSearchChange(event) {
@@ -151,19 +137,19 @@ class App extends Component {
     const today = new Date();
     const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
     const new_report_date_string = value === today_string ? '' : value;
-    this.setState({ [name]: new_report_date_string, loading_datamodel: true, loading_report: true }, () => this.reload())
+    this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
   }
 
   go_home() {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "", loading_report: true, loading_datamodel: true }, () => this.reload());
+      this.setState({ report_uuid: "", loading: true }, () => this.reload());
     }
   }
 
   open_report(event, report_uuid) {
     event.preventDefault();
-    this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
   }
 
@@ -186,7 +172,7 @@ class App extends Component {
   open_tag_report(event, tag) {
     event.preventDefault();
     const report_uuid = `tag-${tag}`
-    this.setState({ report_uuid: report_uuid, loading_datamodel: true, loading_report: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
   }
 
@@ -230,7 +216,7 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
-    const props = {reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports};
+    const props = { reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
@@ -249,7 +235,7 @@ class App extends Component {
         <SemanticToastContainer />
         <ReadOnlyContext.Provider value={readOnly}>
           <Container fluid className="MainContainer">
-            {this.state.loading_datamodel || this.state.loading_report ?
+            {this.state.loading ?
               <Segment basic placeholder loading size="massive" />
               :
               this.state.report_uuid === "" ?
