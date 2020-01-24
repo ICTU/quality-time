@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -14,7 +14,6 @@ export function MultipleChoiceInput(props) {
   let { allowAdditions, editableLabel, required, set_value, ...otherProps } = props;
   const choices = props.value || [];
   const [options, setOptions] = useState(props.options);
-  useEffect(() => setOptions(props.options), [props.options]);
   function onChange(event, { value }) {
     if (value !== props.value) { set_value(value) }
   }
