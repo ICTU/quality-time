@@ -63,39 +63,48 @@ class App extends Component {
       this.check_session(json)
     }
     const report_date = this.report_date() || new Date(3000, 1, 1);
-    const now = new Date();
     const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
-      const tag = this.state.report_uuid.slice(4);
-      Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
-        ([data_model, report]) => {
-          if (data_model.ok === false || report.ok === false) {
-            show_error();
-          } else {
-            this.setState({
-              loading: false,
-              datamodel: data_model,
-              reports: Object.keys(report.subjects).length > 0 ? [report] : [],
-              last_update: now
-            })
-          }
-        }).catch(show_error);
+      this.reload_tag_report(report_date, show_error);
     } else {
-      Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
-        ([data_model, reports]) => {
-          if (data_model.ok === false || reports.ok === false) {
-            show_error();
-          } else {
-            this.setState({
-              loading: false,
-              datamodel: data_model,
-              reports: reports.reports || [],
-              reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
-              last_update: now
-            })
-          }
-        }).catch(show_error);
+      this.reload_reports(report_date, show_error)
     }
+  }
+
+  reload_tag_report(report_date, show_error) {
+    const tag = this.state.report_uuid.slice(4);
+    Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
+      ([data_model, report]) => {
+        if (data_model.ok === false || report.ok === false) {
+          show_error();
+        } else {
+          const now = new Date();
+          this.setState({
+            loading: false,
+            datamodel: data_model,
+            reports: Object.keys(report.subjects).length > 0 ? [report] : [],
+            last_update: now
+          });
+        }
+      }).catch(show_error);
+  }
+
+  reload_reports(report_date, show_error) {
+    Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
+      ([data_model, reports]) => {
+        if (data_model.ok === false || reports.ok === false) {
+          show_error();
+        } else {
+          const now = new Date();
+          this.setState({
+            loading: false,
+            datamodel: data_model,
+            reports: reports.reports || [],
+            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+            last_update: now
+          })
+        }
+      }).catch(show_error);
   }
 
   show_connection_messages(json) {
