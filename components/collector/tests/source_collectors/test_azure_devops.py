@@ -91,15 +91,16 @@ class AzureDevopsUnmergedBranchesTest(SourceCollectorTestCase):
 
     def test_unmerged_branches(self):
         """Test that the number of unmerged branches is returned."""
+        timestamp = "2019-09-03T20:43:00Z"
         branches = dict(
             value=[
                 dict(name="master", isBaseVersion=True),
                 dict(name="branch", isBaseVersion=False, aheadCount=1,
-                     commit=dict(committer=dict(date="2019-09-03T20:43:00Z"))),
+                     commit=dict(committer=dict(date=timestamp))),
                 dict(name="ignored_branch", isBaseVersion=False, aheadCount=1,
-                     commit=dict(committer=dict(date="2019-09-03T20:43:00Z")))])
+                     commit=dict(committer=dict(date=timestamp)))])
         response = self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
-        expected_age = str(days_ago(parse("2019-09-03T20:43:00Z")))
+        expected_age = str(days_ago(parse(timestamp)))
         self.assert_measurement(
             response,
             value="1",
@@ -120,10 +121,11 @@ class AzureDevopsSourceUpToDatenessTest(SourceCollectorTestCase):
                     file_path="README.md")))
         metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
         repositories = dict(value=[dict(id="id", name="repo")])
-        commits = dict(value=[dict(committer=dict(date="2019-09-03T20:43:00Z"))])
+        timestamp = "2019-09-03T20:43:00Z"
+        commits = dict(value=[dict(committer=dict(date=timestamp))])
         response = self.collect(
             metric, get_request_json_side_effect=[repositories, commits])
-        expected_age = str(days_ago(parse("2019-09-03T20:43:00Z")))
+        expected_age = str(days_ago(parse(timestamp)))
         self.assert_measurement(
             response,
             value=expected_age,

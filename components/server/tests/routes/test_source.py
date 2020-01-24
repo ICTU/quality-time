@@ -31,6 +31,9 @@ class SourceTestCase(unittest.TestCase):
                         password=dict(type="password", metrics=["metric_type"], default_value=""),
                         private_token=dict(type="password", metrics=["metric_type"], default_value=""))),
                 new_source_type=dict(parameters=dict())))
+        self.sources = {
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.database.datamodels.find_one.return_value = self.data_model
 
 
@@ -40,9 +43,6 @@ class PostSourceAttributeTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict()),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict())}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -105,9 +105,6 @@ class PostSourceParameterTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.report = dict(
             _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
             subjects={
@@ -243,11 +240,9 @@ class PostSourceParameterMassEditTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
-            SOURCE_ID3: dict(name="Source 3", type="source_type", parameters=dict(username="different username")),
-            SOURCE_ID4: dict(name="Source 4", type="different_type", parameters=dict(username="username"))}
+        self.sources[SOURCE_ID3] = dict(
+            name="Source 3", type="source_type", parameters=dict(username="different username"))
+        self.sources[SOURCE_ID4] = dict(name="Source 4", type="different_type", parameters=dict(username="username"))
         self.sources2 = {
             SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username="username"))}
         self.sources3 = {
