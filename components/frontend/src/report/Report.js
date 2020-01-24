@@ -10,26 +10,30 @@ import { get_subject_name } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard(props) {
-    const subject_cards = Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
-        <MetricSummaryCard
-            header={get_subject_name(props.report.subjects[subject_uuid], props.datamodel)}
-            key={subject_uuid}
-            onClick={(event) => props.onClick(event, subject_uuid)}
-            {...summary}
-        />
-    );
-    const tag_cards = Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
-        <MetricSummaryCard
-            header={<Tag tag={tag} color={props.tags.includes(tag) ? "blue" : null} />}
-            key={tag}
-            onClick={() => props.setTags(tags => (tags.includes(tag) ? tags.filter((value) => value !== tag) : [tag, ...tags]))}
-            {...summary}
-        />
-    );
+    function subject_cards() {
+        return Object.entries(props.report.summary_by_subject).map(([subject_uuid, summary]) =>
+            <MetricSummaryCard
+                header={get_subject_name(props.report.subjects[subject_uuid], props.datamodel)}
+                key={subject_uuid}
+                onClick={(event) => props.onClick(event, subject_uuid)}
+                {...summary}
+            />
+        );
+    }
+    function tag_cards() {
+        return Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
+            <MetricSummaryCard
+                header={<Tag tag={tag} color={props.tags.includes(tag) ? "blue" : null} />}
+                key={tag}
+                onClick={() => props.setTags(tags => (tags.includes(tag) ? tags.filter((value) => value !== tag) : [tag, ...tags]))}
+                {...summary}
+            />
+        );
+    }
     return (
         <ReadOnlyContext.Consumer>{(readOnly) => (
             <CardDashboard
-                cards={subject_cards.concat(tag_cards)}
+                cards={subject_cards().concat(tag_cards())}
                 initial_layout={props.report.layout || []}
                 save_layout={function (layout) { if (!readOnly) { set_report_attribute(props.report.report_uuid, "layout", layout, props.reload) } }}
             />)}
