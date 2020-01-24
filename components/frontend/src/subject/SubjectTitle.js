@@ -9,15 +9,15 @@ import { copy_subject, delete_subject, set_subject_attribute, move_subject } fro
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 function report_options(reports, current_report_uuid) {
-    let report_options = [];
+    let options = [];
     reports.forEach((report) => {
-        report_options.push({
+        options.push({
             disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
             text: report.title, value: report.report_uuid
         })
     });
-    report_options.sort((a, b) => a.text.localeCompare(b.text));
-    return report_options;
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
 }
 
 export function SubjectTitle(props) {

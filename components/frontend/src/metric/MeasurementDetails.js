@@ -13,11 +13,11 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { get_source_name, get_subject_name } from '../utils';
 
 function subject_options(reports, datamodel, current_subject_uuid) {
-  let subject_options = [];
+  let options = [];
     reports.forEach((report) => {
       Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
         const subject_name = get_subject_name(subject, datamodel);
-        subject_options.push({
+        options.push({
           content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
           disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
           text: report.title + subject_name,
@@ -25,8 +25,8 @@ function subject_options(reports, datamodel, current_subject_uuid) {
         })
       })
     });
-    subject_options.sort((a, b) => a.text.localeCompare(b.text));
-    return subject_options;
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
 }
 
 export function MeasurementDetails(props) {
