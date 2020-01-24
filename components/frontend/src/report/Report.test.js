@@ -3,7 +3,15 @@ import { shallow } from 'enzyme';
 import { Report } from './Report';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
-const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [] } } } } };
+const report = {
+  summary_by_subject: {
+    subject_uuid: {}
+  },
+  summary_by_tag: {},
+  subjects: {
+    subject_uuid: {
+      type: "subject_type", name: "Subject title", metrics: {
+        metric_uuid: { type: "metric_type", tags: [] } } } } };
 
 describe("<Report />", () => {
   it('shows the report', () => {
