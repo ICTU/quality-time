@@ -12,7 +12,7 @@ export function SingleChoiceInput(props) {
         {...otherProps}
         fluid
         label={editableLabel || props.label}
-        onChange={(event, { name, value }) => { if (value !== props.value) { set_value(value) } }}
+        onChange={(event, { value }) => { set_value(value) }}
         options={options}
         search
         selection

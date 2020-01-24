@@ -23,6 +23,10 @@ describe("<DateInput />", () => {
       const wrapper = input_wrapper({value: "2019-09-30"})
       expect(wrapper.find('EditableDateInput').prop("value")).toStrictEqual("2019-09-30");
   });
+  it('renders in error state if a value is missing and required', () => {
+    const wrapper = input_wrapper({value: "", required: true});
+    expect(wrapper.find("DateInput").at(1).prop("error")).toBe(true);
+  });
   it('submits the value when changed', () => {
     const wrapper = input_wrapper({value: "2019-09-30", set_value: mock_set_value})
     wrapper.find("input").simulate("change", {target: {value: "2020-01-02"}});

@@ -14,12 +14,8 @@ export function MultipleChoiceInput(props) {
   let { allowAdditions, editableLabel, required, set_value, ...otherProps } = props;
   const choices = props.value || [];
   const [options, setOptions] = useState(props.options);
-  function onChange(event, { value }) {
-    if (value !== props.value) { set_value(value) }
-  }
-  function onAddItem(event, { value }) {
-    setOptions(prev_options => ([value, ...prev_options]))
-  }
+  function onChange(event, { value }) { set_value(value) }
+  function onAddItem(event, { value }) { setOptions(prev_options => ([value, ...prev_options])) }
   function Dropdown() {
     return (
       <Form.Dropdown
