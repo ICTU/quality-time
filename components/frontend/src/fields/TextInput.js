@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 
 export function TextInput(props) {
   let { editableLabel, required, set_value, ...otherProps } = props;
   const [text, setText] = useState(props.value || '');
-  useEffect(() => setText(props.value || ''), [props.value]);
   return (
     <Form onSubmit={() => { if (text !== (props.value || '')) { props.set_value(text) } }}>
       <ReadOnlyContext.Consumer>{(readOnly) => (
