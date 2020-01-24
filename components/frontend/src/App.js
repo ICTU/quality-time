@@ -73,23 +73,33 @@ class App extends Component {
       const tag = this.state.report_uuid.slice(4);
       Promise.all([get_datamodel(report_date), get_tag_report(tag, report_date)]).then(
         ([data_model, report]) => {
-          this.setState({
-            loading_datamodel: false,
-            loading_report: false,
-            datamodel: data_model,
-            reports: Object.keys(report.subjects).length > 0 ? [report] : [],
-            last_update: now})
+          if (data_model.ok === false || report.ok === false) {
+            show_error();
+          } else {
+            this.setState({
+              loading_datamodel: false,
+              loading_report: false,
+              datamodel: data_model,
+              reports: Object.keys(report.subjects).length > 0 ? [report] : [],
+              last_update: now
+            })
+          }
         }).catch(show_error);
     } else {
       Promise.all([get_datamodel(report_date), get_reports(report_date)]).then(
         ([data_model, reports]) => {
-          this.setState({
-            loading_datamodel: false,
-            loading_report: false,
-            datamodel: data_model,
-            reports: reports.reports,
-            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
-            last_update: now})
+          if (data_model.ok === false || reports.ok === false) {
+            show_error();
+          } else {
+            this.setState({
+              loading_datamodel: false,
+              loading_report: false,
+              datamodel: data_model,
+              reports: reports.reports || [],
+              reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+              last_update: now
+            })
+          }
         }).catch(show_error);
     }
   }
