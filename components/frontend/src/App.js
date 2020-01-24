@@ -32,15 +32,14 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, loading_report: true, loading_datamodel: true, user: null, email: null,
-      last_update: new Date(), login_error: false
+      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date(), login_error: false
     };
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
       if (action === "POP") {
         const pathname = this.history.location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
-        this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
+        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
       }
     });
   }
@@ -50,10 +49,7 @@ class App extends Component {
     const report_uuid = pathname.slice(1, pathname.length);
     this.connect_to_nr_measurements_event_source()
     this.setState(
-      {
-        report_uuid: report_uuid, loading_report: true, loading_datamodel: true, user: localStorage.getItem("user"),
-        email: localStorage.getItem("email")
-      },
+      { report_uuid: report_uuid, loading: true, user: localStorage.getItem("user"), email: localStorage.getItem("email") },
       () => this.reload());
   }
 
@@ -77,8 +73,7 @@ class App extends Component {
             show_error();
           } else {
             this.setState({
-              loading_datamodel: false,
-              loading_report: false,
+              loading: false,
               datamodel: data_model,
               reports: Object.keys(report.subjects).length > 0 ? [report] : [],
               last_update: now
@@ -92,8 +87,7 @@ class App extends Component {
             show_error();
           } else {
             this.setState({
-              loading_datamodel: false,
-              loading_report: false,
+              loading: false,
               datamodel: data_model,
               reports: reports.reports || [],
               reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
@@ -134,19 +128,19 @@ class App extends Component {
     const today = new Date();
     const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
     const new_report_date_string = value === today_string ? '' : value;
-    this.setState({ [name]: new_report_date_string, loading_datamodel: true, loading_report: true }, () => this.reload())
+    this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
   }
 
   go_home() {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "", loading_report: true, loading_datamodel: true }, () => this.reload());
+      this.setState({ report_uuid: "", loading: true }, () => this.reload());
     }
   }
 
   open_report(event, report_uuid) {
     event.preventDefault();
-    this.setState({ report_uuid: report_uuid, loading_report: true, loading_datamodel: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
   }
 
@@ -169,7 +163,7 @@ class App extends Component {
   open_tag_report(event, tag) {
     event.preventDefault();
     const report_uuid = `tag-${tag}`
-    this.setState({ report_uuid: report_uuid, loading_datamodel: true, loading_report: true }, () => this.reload());
+    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     this.history.push(report_uuid);
   }
 
@@ -232,7 +226,7 @@ class App extends Component {
         <SemanticToastContainer />
         <ReadOnlyContext.Provider value={readOnly}>
           <Container fluid className="MainContainer">
-            {this.state.loading_datamodel || this.state.loading_report ?
+            {this.state.loading ?
               <Segment basic placeholder loading size="massive" />
               :
               this.state.report_uuid === "" ?
