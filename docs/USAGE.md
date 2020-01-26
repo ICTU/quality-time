@@ -178,6 +178,10 @@ Quality-time reports can be downloaded as PDF. To create PDFs, Quality-time has 
 
 To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.
 
+By default, Quality-time waits 5 seconds for the report to load before it is exported to PDF. If more time is needed, e.g. in the case of a big report, you can set an increased delay in the report's settings (expand the report title to access the report's settings).
+
 ### API
 
 If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v2/report/<report_uuid>/pdf`. No authorization is needed for this API.
+
+By default, Quality-time waits 5 seconds for the report to load before it is exported to PDF, or whatever delay has been set in the report's settings. If more time is needed, e.g. in the case of a big report, you can increase the delay by adding a delay parameter to the API URL: `http://www.quality-time.example.org/api/v2/report/<report_uuid>/pdf?delay=10`.

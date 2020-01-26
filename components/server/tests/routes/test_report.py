@@ -4,6 +4,8 @@ import unittest
 from unittest.mock import Mock, patch
 from typing import cast
 
+import bottle
+
 from routes.report import (
     delete_report, export_report_as_pdf, get_tag_report, post_report_attribute, post_report_copy, post_report_new,
     post_report_import)
@@ -85,7 +87,30 @@ class ReportTest(unittest.TestCase):
         response = Mock()
         response.content = b"PDF"
         requests_get.return_value = response
-        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid")))
+        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
+        requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=5")
+
+    @patch("requests.get")
+    def test_get_pdf_report_with_extra_delay(self, requests_get):
+        """Test that a PDF version of the report can be retrieved with an extra delay."""
+        self.report["delay"] = 7
+        response = Mock()
+        response.content = b"PDF"
+        requests_get.return_value = response
+        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
+        requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=7")
+
+    @patch("bottle.request")
+    @patch("requests.get")
+    def test_get_pdf_report_via_api_with_extra_delay(self, requests_get, request):
+        """Test that a PDF version of the report can be retrieved with an extra delay."""
+        request.query = bottle.FormsDict(delay="10")
+        response = Mock()
+        response.content = b"PDF"
+        requests_get.return_value = response
+        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
+        requests_get.assert_called_once_with(
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=10")
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
@@ -106,7 +131,7 @@ class ReportTest(unittest.TestCase):
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
         self.maxDiff = None  # pylint: disable=invalid-name
-        request.query = dict(report_date=(date_time := iso_timestamp()))
+        request.query = bottle.FormsDict(report_date=(date_time := iso_timestamp()))
         self.database.datamodels.find_one.return_value = dict(
             _id="id", sources={}, metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = dict(
