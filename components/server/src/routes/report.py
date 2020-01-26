@@ -49,7 +49,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
 @bottle.get("/api/v2/report/<report_uuid>/pdf")
 def export_report_as_pdf(report_uuid: ReportId, database: Database):
     """Download the report as pdf."""
-    if not (delay := bottle.request.query.delay):
+    if not (delay := dict(bottle.request.query).get("delay")):  # pylint: disable=superfluous-parens
         data = get_data(database, report_uuid)
         delay = data.report.get("delay", 5)
     response = requests.get(f"http://renderer:3000/pdf?accessKey=qt&url=http://www/{report_uuid}&delay={delay}")
