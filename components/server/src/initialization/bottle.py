@@ -5,7 +5,7 @@ import bottle
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
 # pylint: disable=unused-import
 from routes import (
-    auth, changelog, datamodel, measurement, metric, report, reports, source, subject)
+    auth, changelog, datamodel, documentation, measurement, metric, report, reports, source, subject)
 
 
 def init_bottle(database: Database) -> None:

@@ -16,70 +16,50 @@ function week_ago_iso_string() {
 }
 
 export function Measurement(props) {
+  function MeasurementValue() {
+    const value = (latest_measurement && latest_measurement[metric_scale] && latest_measurement[metric_scale].value) || "?";
+    const now = new Date();
+    const measurement_timestring = (latest_measurement && latest_measurement.end) || now.toISOString();
+    const start = (latest_measurement && new Date(latest_measurement.start)) || now;
+    const end = (latest_measurement && new Date(latest_measurement.end)) || now;
+    return (
+      <Popup
+        trigger={<span>{value + metric_unit}</span>}
+        flowing hoverable>
+        Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
+      </Popup>
+    )
+  }
+  function measurement_target() {
+    const metric_direction = { "<": "≦", ">": "≧" }[metric.direction || metric_type.direction];
+    const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
+    return `${metric_direction} ${target}${metric_unit} ${metric.accept_debt ? "(debt)" : ""}`
+  }
+  function measurement_sources() {
+    return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
+    metric={metric} source={source} datamodel={props.datamodel} />])
+  }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
   const metric_scale = metric.scale || metric_type.default_scale || "count";
-  var latest_measurement, start, end, value, status, sources, measurement_timestring;
-  if (props.measurements.length === 0) {
-    latest_measurement = null;
-    value = "?";
-    status = null;
-    sources = [];
-    start = new Date();
-    end = new Date();
-    measurement_timestring = end.toISOString();
-  } else {
-    latest_measurement = props.measurements[props.measurements.length - 1];
-    sources = latest_measurement.sources;
-    value = (latest_measurement[metric_scale] && latest_measurement[metric_scale].value) || "?";
-    status = (latest_measurement[metric_scale] && latest_measurement[metric_scale].status) || null;
-    start = new Date(latest_measurement.start);
-    end = new Date(latest_measurement.end);
-    measurement_timestring = latest_measurement.end;
-  }
-  const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
-  const metric_direction = {"<": "≦", ">": "≧"}[metric.direction || metric_type.direction];
+  const latest_measurement = props.measurements.length > 0 ? props.measurements[props.measurements.length - 1] : null;
+  const latest_measurements = props.measurements.filter((measurement) => measurement.end >= week_ago_iso_string());
+  const status = (latest_measurement && latest_measurement[metric_scale] && latest_measurement[metric_scale].status) || null;
+  const sources = (latest_measurement && latest_measurement.sources) || [];
   const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
   const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
   const metric_name = get_metric_name(metric, props.datamodel);
-  const details = <MeasurementDetails
-    measurement={latest_measurement}
-    metric_name={metric_name}
-    scale={metric_scale}
-    unit={metric_unit}
-    {...props}
-  />
+  const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric_scale} unit={metric_unit} {...props} />
   return (
     <TableRowWithDetails id={props.metric_uuid} positive={status === "target_met"} negative={status === "target_not_met"} warning={status === "near_target_met"} active={status === "debt_target_met"} details={details}>
-      <Table.Cell>
-        {metric_name}
-      </Table.Cell>
-      <Table.Cell>
-        <TrendSparkline measurements={props.measurements.filter((measurement) => measurement.end >= week_ago_iso_string())} scale={metric_scale} />
-      </Table.Cell>
-      <Table.Cell>
-        <StatusIcon status={status} />
-      </Table.Cell>
-      <Table.Cell>
-        <Popup
-          trigger={<span>{value + metric_unit}</span>}
-          flowing hoverable>
-          Measured <TimeAgo date={measurement_timestring} /> ({start.toLocaleString()} - {end.toLocaleString()})
-          </Popup>
-      </Table.Cell>
-      <Table.Cell>
-        {metric_direction} {target}{metric_unit} {metric.accept_debt ? "(debt)" : ""}
-      </Table.Cell>
-      <Table.Cell>
-        {sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-          metric={metric} source={source} datamodel={props.datamodel} />])}
-      </Table.Cell>
-      <Table.Cell>
-        <div dangerouslySetInnerHTML={{__html: metric.comment}}/>
-      </Table.Cell>
-      <Table.Cell>
-        {metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}
-      </Table.Cell>
+      <Table.Cell>{metric_name}</Table.Cell>
+      <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric_scale} /></Table.Cell>
+      <Table.Cell><StatusIcon status={status} /></Table.Cell>
+      <Table.Cell><MeasurementValue /></Table.Cell>
+      <Table.Cell>{measurement_target()}</Table.Cell>
+      <Table.Cell>{measurement_sources()}</Table.Cell>
+      <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>
+      <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>
     </TableRowWithDetails>
   )
 }
