@@ -30,7 +30,9 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     old_value = overview.get(reports_attribute)
     overview[reports_attribute] = value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
+    user = sessions.user(database)
     overview["delta"] = dict(
-        description=f"{sessions.user(database)} changed the {reports_attribute} of the reports overview"
+        email=user["email"],
+        description=f"{user['user']} changed the {reports_attribute} of the reports overview"
                     f"{value_change_description}.")
     return insert_new_reports_overview(database, overview)

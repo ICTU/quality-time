@@ -19,12 +19,12 @@ from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 
 
-def create_session(database: Database, username: str) -> None:
+def create_session(database: Database, username: str, email: str) -> None:
     """Generate a new random, secret and unique session id and a session expiration datetime and add it to the
     database and the session cookie."""
     session_id = cast(SessionId, uuid())
     session_expiration_datetime = datetime.now() + timedelta(hours=24)
-    sessions.upsert(database, username, session_id, session_expiration_datetime)
+    sessions.upsert(database, username, email, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
 
 
@@ -110,7 +110,7 @@ def login(database: Database) -> Dict[str, Union[bool, str]]:
     username, password = get_credentials()
     verified, email = verify_user(username, password)
     if verified:
-        create_session(database, username)
+        create_session(database, username, email)
     return dict(ok=verified, email=email)
 
 

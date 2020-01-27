@@ -17,9 +17,10 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data = get_data(database, report_uuid)
     data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid, subject_uuid],
-        description=f"{sessions.user(database)} created a new subject in report '{data.report_name}'.")
+        uuids=[report_uuid, subject_uuid], email=user["email"],
+        description=f"{user['user']} created a new subject in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
@@ -35,10 +36,10 @@ def post_subject_copy(subject_uuid: SubjectId, database: Database):
     """Copy a subject."""
     data = get_data(database, subject_uuid=subject_uuid)
     data.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(data.subject, data.datamodel)
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, subject_copy_uuid],
-        description=f"{sessions.user(database)} copied the subject '{data.subject_name}' in report "
-                    f"'{data.report_name}'.")
+        uuids=[data.report_uuid, data.subject_uuid, subject_copy_uuid], email=user["email"],
+        description=f"{user['user']} copied the subject '{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
@@ -49,10 +50,13 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     target = get_data(database, report_uuid=target_report_uuid)
     target.report["subjects"][subject_uuid] = source.subject
     del source.report["subjects"][subject_uuid]
-    delta_description = f"{sessions.user(database)} moved the subject '{source.subject_name}' from report " \
+    user = sessions.user(database)
+    delta_description = f"{user['user']} moved the subject '{source.subject_name}' from report " \
                         f"'{source.report_name}' to report '{target.report_name}'."
-    source.report["delta"] = dict(uuids=[source.report_uuid, subject_uuid], description=delta_description)
-    target.report["delta"] = dict(uuids=[target_report_uuid, subject_uuid], description=delta_description)
+    source.report["delta"] = dict(
+        uuids=[source.report_uuid, subject_uuid], email=user["email"], description=delta_description)
+    target.report["delta"] = dict(
+        uuids=[target_report_uuid, subject_uuid], email=user["email"], description=delta_description)
     insert_new_report(database, target.report)
     return insert_new_report(database, source.report)
 
@@ -69,10 +73,10 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data = get_data(database, subject_uuid=subject_uuid)
     del data.report["subjects"][subject_uuid]
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, subject_uuid],
-        description=f"{sessions.user(database)} deleted the subject '{data.subject_name}' from report "
-                    f"'{data.report_name}'.")
+        uuids=[data.report_uuid, subject_uuid], email=user["email"],
+        description=f"{user['user']} deleted the subject '{data.subject_name}' from report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
@@ -96,8 +100,9 @@ def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, data
         data.subject[subject_attribute] = value
     if old_value == value:
         return dict(ok=True)  # Nothing to do
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, subject_uuid],
-        description=f"{sessions.user(database)} changed the {subject_attribute} of subject '{data.subject_name}' in "
-                    f"report '{data.report_name}' from '{old_value}' to '{value}'.")
+        uuids=[data.report_uuid, subject_uuid], email=user["email"],
+        description=f"{user['user']} changed the {subject_attribute} of subject "
+                    f"'{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     return insert_new_report(database, data.report)

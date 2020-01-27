@@ -12,7 +12,7 @@ from routes.report import (
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 
-from .fixtures import REPORT_ID, SUBJECT_ID, create_report
+from .fixtures import JENNY, JOHN, REPORT_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -23,7 +23,7 @@ class PostReportAttributeTest(unittest.TestCase):
         self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report
-        self.database.sessions.find_one.return_value = dict(user="John")
+        self.database.sessions.find_one.return_value = JOHN
         self.database.datamodels.find_one.return_value = {}
         self.database.measurements.find.return_value = []
 
@@ -33,7 +33,7 @@ class PostReportAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "title", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID],
+            dict(uuids=[REPORT_ID], email=JOHN["email"],
                  description="John changed the title of report 'Title' from 'Title' to 'New title'."),
             self.report["delta"])
 
@@ -43,7 +43,8 @@ class PostReportAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_report_attribute(REPORT_ID, "layout", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID], description="John changed the layout of report 'Title'."), self.report["delta"])
+            dict(uuids=[REPORT_ID], email=JOHN["email"], description="John changed the layout of report 'Title'."),
+            self.report["delta"])
 
 
 class ReportTest(unittest.TestCase):
@@ -51,7 +52,7 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.database.sessions.find_one.return_value = JENNY
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="Subject type")),
@@ -68,7 +69,8 @@ class ReportTest(unittest.TestCase):
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
         self.assertEqual(
-            dict(uuids=[inserted["report_uuid"]], description="Jenny created a new report."), inserted["delta"])
+            dict(uuids=[inserted["report_uuid"]], email=JENNY["email"], description="Jenny created a new report."),
+            inserted["delta"])
 
     def test_copy_report(self):
         """Test that a report can be copied."""
@@ -78,7 +80,8 @@ class ReportTest(unittest.TestCase):
         inserted_report_uuid = inserted_report["report_uuid"]
         self.assertNotEqual(self.report["report_uuid"], inserted_report_uuid)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, inserted_report_uuid], description="Jenny copied the report 'Report'."),
+            dict(uuids=[REPORT_ID, inserted_report_uuid], email=JENNY["email"],
+                 description="Jenny copied the report 'Report'."),
             inserted_report["delta"])
 
     @patch("requests.get")
@@ -116,7 +119,9 @@ class ReportTest(unittest.TestCase):
         """Test that the report can be deleted."""
         self.assertEqual(dict(ok=True), delete_report(REPORT_ID, self.database))
         inserted = self.database.reports.insert.call_args_list[0][0][0]
-        self.assertEqual(dict(uuids=[REPORT_ID], description="Jenny deleted the report 'Report'."), inserted["delta"])
+        self.assertEqual(
+            dict(uuids=[REPORT_ID], email=JENNY["email"], description="Jenny deleted the report 'Report'."),
+            inserted["delta"])
 
     @patch("bottle.request")
     def test_post_report_import(self, request):

@@ -17,10 +17,10 @@ class SessionsTest(unittest.TestCase):
         database.sessions = MagicMock()
         database.sessions.update = MagicMock()
         self.assertIsNone(
-            sessions.upsert(database=database, username='un', session_id=SessionId('5'),
+            sessions.upsert(database=database, username='un', email="un@example.org", session_id=SessionId('5'),
                             session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99)))
         database.sessions.update.assert_called_with(
-            {'user': 'un'}, {'user': 'un', 'session_id': '5',
+            {'user': 'un'}, {'user': 'un', 'email': 'un@example.org', 'session_id': '5',
                              'session_expiration_datetime': datetime(2019, 10, 18, 19, 22, 5, 99)}, upsert=True)
 
     def test_delete(self):
@@ -66,5 +66,5 @@ class SessionsTest(unittest.TestCase):
         database = MagicMock()
         database.sessions = MagicMock()
         database.sessions.find_one = MagicMock(return_value={"user": "OK"})
-        self.assertEqual('OK', sessions.user(database=database))
+        self.assertEqual('OK', sessions.user(database=database)["user"])
         database.sessions.find_one.assert_called_with({'session_id': 5})

@@ -22,7 +22,8 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.measurements.find.return_value = []
         self.database.datamodels.find_one.return_value = {}
-        self.database.sessions.find_one.return_value = dict(user="John")
+        self.email = "john@example.org"
+        self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 
     def test_post_subject_name(self, request):
         """Test that the subject name can be changed."""
@@ -30,7 +31,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_subject_attribute(SUBJECT_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID],
+            dict(uuids=[REPORT_ID, SUBJECT_ID], email=self.email,
                  description="John changed the name of subject 'subject1' in report 'Report' from 'subject1' to "
                              "'new name'."),
             self.report["delta"])
@@ -42,7 +43,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID2],
+            dict(uuids=[REPORT_ID, SUBJECT_ID2], email=self.email,
                  description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
             self.report["delta"])
 
@@ -53,7 +54,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID],
+            dict(uuids=[REPORT_ID, SUBJECT_ID], email=self.email,
                  description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
             self.report["delta"])
 
@@ -64,7 +65,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID2],
+            dict(uuids=[REPORT_ID, SUBJECT_ID2], email=self.email,
                  description="John changed the position of subject 'subject2' in report 'Report' from '1' to '0'."),
             self.report["delta"])
 
@@ -75,7 +76,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([SUBJECT_ID2, SUBJECT_ID], list(self.report["subjects"].keys()))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID],
+            dict(uuids=[REPORT_ID, SUBJECT_ID], email=self.email,
                  description="John changed the position of subject 'subject1' in report 'Report' from '0' to '1'."),
             self.report["delta"])
 
@@ -99,7 +100,8 @@ class SubjectTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.email = "jenny@example.org"
+        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report = create_report()
         self.database.measurements.find.return_value = []
@@ -114,7 +116,8 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_new_subject(REPORT_ID, self.database))
         subject_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
-            dict(uuids=[REPORT_ID, subject_uuid], description="Jenny created a new subject in report 'Report'."),
+            dict(uuids=[REPORT_ID, subject_uuid], email=self.email,
+                 description="Jenny created a new subject in report 'Report'."),
             self.report["delta"])
 
     def test_copy_subject(self):
@@ -125,7 +128,7 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual(2, len(inserted_subjects))
         subject_copy_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, subject_copy_uuid],
+            dict(uuids=[REPORT_ID, SUBJECT_ID, subject_copy_uuid], email=self.email,
                  description="Jenny copied the subject 'Subject' in report 'Report'."),
             self.report["delta"])
 
@@ -133,7 +136,7 @@ class SubjectTest(unittest.TestCase):
         """Test that a subject can be deleted."""
         self.assertEqual(dict(ok=True), delete_subject(SUBJECT_ID, self.database))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID],
+            dict(uuids=[REPORT_ID, SUBJECT_ID], email=self.email,
                  description="Jenny deleted the subject 'Subject' from report 'Report'."),
             self.report["delta"])
 
@@ -147,6 +150,8 @@ class SubjectTest(unittest.TestCase):
         self.assertEqual((SUBJECT_ID, subject), next(iter(target_report["subjects"].items())))
         expected_description = "Jenny moved the subject 'Subject' from report 'Report' to report 'Target'."
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID], description=expected_description), self.report["delta"])
+            dict(uuids=[REPORT_ID, SUBJECT_ID], email=self.email, description=expected_description),
+            self.report["delta"])
         self.assertEqual(
-            dict(uuids=[REPORT_ID2, SUBJECT_ID], description=expected_description), target_report["delta"])
+            dict(uuids=[REPORT_ID2, SUBJECT_ID], email=self.email, description=expected_description),
+            target_report["delta"])

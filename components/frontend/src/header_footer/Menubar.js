@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import md5 from 'md5';
+import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
 
 function Login(props) {
@@ -12,8 +12,8 @@ function Login(props) {
       <Header content='Login' />
       <Modal.Content>
         <Form error={props.error} warning={!props.error} onSubmit={() => props.login(username, password)}>
-          <Form.Input autoFocus label='Username' name='username' onChange={(event, { name, value }) => setUsername(value)} />
-          <Form.Input type='password' label='Password' name='password' onChange={(event, { name, value }) => setPassword(value)} />
+          <Form.Input autoFocus label='Username' name='username' onChange={(event, { value }) => setUsername(value)} />
+          <Form.Input type='password' label='Password' name='password' onChange={(event, { value }) => setPassword(value)} />
           <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
           <Message warning header='Heads up' content='Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged.' />
           <Form.Button>Submit</Form.Button>
@@ -24,7 +24,7 @@ function Login(props) {
 }
 
 function Logout(props) {
-  const trigger = <><Image avatar src={`https://www.gravatar.com/avatar/${md5(props.email || '')}?d=identicon`} /> {props.user}</>
+  const trigger = <><Avatar email={props.email} /> {props.user}</>
   return (
     <Dropdown
       trigger={trigger}
