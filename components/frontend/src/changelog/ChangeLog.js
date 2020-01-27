@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, Table } from 'semantic-ui-react';
+import { Button, Feed, Form, Icon, Segment } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
 import { get_changelog } from '../api/changelog';
+import { Avatar } from '../widgets/Avatar';
+import './ChangeLog.css';
 
 export function ChangeLog(props) {
     const [changes, setChanges] = useState([]);
@@ -27,34 +29,37 @@ export function ChangeLog(props) {
     if (props.metric_uuid) { scope = "Changes to this metric and its sources" }
     if (props.source_uuid) { scope = "Changes to this source" }
 
-    let rows = [];
-    changes.forEach((change) => rows.push(<Table.Row key={change.timestamp + change.delta}>
-        <Table.Cell>
-            <TimeAgo date={change.timestamp} />, {(new Date(change.timestamp)).toLocaleString()}, <span dangerouslySetInnerHTML={{__html: change.delta}}/>
-        </Table.Cell>
-    </Table.Row>));
+    let events = [];
+    changes.forEach((change) => events.push(
+        <Feed.Event key={change.timestamp + change.delta}>
+            <Feed.Label>
+                <Avatar email={change.email} />
+            </Feed.Label>
+            <Feed.Content>
+                <Feed.Summary>
+                    <span dangerouslySetInnerHTML={{ __html: change.delta }} />
+                    <Feed.Date>
+                        {(new Date(change.timestamp)).toLocaleString()}, <TimeAgo date={change.timestamp} />
+                    </Feed.Date>
+                </Feed.Summary>
+            </Feed.Content>
+        </Feed.Event>));
 
     return (
-        <Table striped size='small'>
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell>
-                        {scope} (most recent first)
-                    </Table.HeaderCell>
-                </Table.Row>
-            </Table.Header>
-            <Table.Body>
-                {rows}
-            </Table.Body>
-            <Table.Footer>
-                <Table.Row>
-                    <Table.HeaderCell>
-                        <Button basic icon primary size='small' onClick={() => setNrChanges(nrChanges+10)}>
-                            <Icon name="refresh" /> Load more changes
-                        </Button>
-                    </Table.HeaderCell>
-                </Table.Row>
-            </Table.Footer>
-        </Table>
+        <Form>
+            <div className="field" style={{marginBottom: "0pt"}}>
+                <label>
+                    {scope} (most recent first)
+                </label>
+            </div>
+            <Segment>
+                <Feed size="small">
+                    {events}
+                </Feed>
+                <Button basic icon primary size='small' onClick={() => setNrChanges(nrChanges + 10)}>
+                    <Icon name="refresh" /> Load more changes
+                </Button>
+            </Segment>
+        </Form>
     )
 }

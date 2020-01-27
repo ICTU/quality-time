@@ -22,6 +22,7 @@ export function TextInput(props) {
             }
           }}
           readOnly={readOnly}
+          style={{marginBottom: "20pt"}}
           value={text}
         />)}
       </ReadOnlyContext.Consumer>

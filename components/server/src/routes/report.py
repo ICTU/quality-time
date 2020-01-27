@@ -27,9 +27,10 @@ def post_report_import(database: Database):
 def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
+    user = sessions.user(database)
     report = dict(
         report_uuid=report_uuid, title="New report", subjects={},
-        delta=dict(uuids=[report_uuid], description=f"{sessions.user(database)} created a new report."))
+        delta=dict(uuids=[report_uuid], email=user["email"], description=f"{user['user']} created a new report."))
     return insert_new_report(database, report)
 
 
@@ -39,9 +40,10 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
     data = get_data(database, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
+    user = sessions.user(database)
     report_copy["delta"] = dict(
-        uuids=[report_uuid, report_copy["report_uuid"]],
-        description=f"{sessions.user(database)} copied the report '{data.report_name}'.")
+        uuids=[report_uuid, report_copy["report_uuid"]], email=user["email"],
+        description=f"{user['user']} copied the report '{data.report_name}'.")
     return insert_new_report(database, report_copy)
 
 
@@ -64,8 +66,10 @@ def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
     data = get_data(database, report_uuid)
     data.report["deleted"] = "true"
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid], description=f"{sessions.user(database)} deleted the report '{data.report_name}'.")
+        uuids=[report_uuid], email=user["email"],
+        description=f"{user['user']} deleted the report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
@@ -78,9 +82,10 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     old_value = data.report.get(report_attribute) or ""
     data.report[report_attribute] = value
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
+    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid],
-        description=f"{sessions.user(database)} changed the {report_attribute} of report '{data.report_name}'"
+        uuids=[report_uuid], email=user["email"],
+        description=f"{user['user']} changed the {report_attribute} of report '{data.report_name}'"
                     f"{value_change_description}.")
     return insert_new_report(database, data.report)
 

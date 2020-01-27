@@ -101,7 +101,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
     sort_order = [("timestamp", pymongo.DESCENDING)]
-    projection = {"delta.description": True, "timestamp": True}
+    projection = {"delta.description": True, "delta.email": True, "timestamp": True}
     delta_filter: Dict[str, Union[Dict, List]] = {"delta": {"$exists": True}}
     changes: List[Change] = []
     if not uuids:

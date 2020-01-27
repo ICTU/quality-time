@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from routes.measurement import get_measurements, post_measurement, set_entity_attribute, stream_nr_measurements
-from .fixtures import create_report, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
+from .fixtures import create_report, JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
 
 
 class GetMeasurementsTest(unittest.TestCase):
@@ -110,7 +110,7 @@ class SetEntityAttributeTest(unittest.TestCase):
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
-        database.sessions.find_one.return_value = dict(user="John")
+        database.sessions.find_one.return_value = JOHN
         measurement = database.measurements.find_one.return_value = dict(
             _id="id", metric_uuid=METRIC_ID, status="red",
             sources=[
@@ -142,7 +142,9 @@ class SetEntityAttributeTest(unittest.TestCase):
                 METRIC_ID, SOURCE_ID, "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
-        self.assertEqual("John changed the attribute of 'entity title' from '' to 'value'.", measurement["delta"])
+        self.assertEqual(
+            dict(description="John changed the attribute of 'entity title' from '' to 'value'.", email=JOHN["email"]),
+            measurement["delta"])
 
 
 class StreamNrMeasurementsTest(unittest.TestCase):

@@ -13,7 +13,8 @@ class ReportsTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        self.database.sessions.find_one.return_value = dict(user="Jenny")
+        self.email = "jenny@example.org"
+        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
 
     @patch("bottle.request")
     def test_post_reports_attribute_title(self, request):
@@ -23,8 +24,9 @@ class ReportsTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
         inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
         self.assertEqual(
-            "Jenny changed the title of the reports overview from 'Reports' to 'All the reports'.",
-            inserted["delta"]["description"])
+            dict(email=self.email,
+                 description="Jenny changed the title of the reports overview from 'Reports' to 'All the reports'."),
+            inserted["delta"])
 
     @patch("bottle.request")
     def test_post_reports_attribute_layout(self, request):
@@ -33,7 +35,8 @@ class ReportsTest(unittest.TestCase):
         request.json = dict(layout=[dict(x=1, y=2)])
         self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
         inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual("Jenny changed the layout of the reports overview.", inserted["delta"]["description"])
+        self.assertEqual(
+            dict(email=self.email, description="Jenny changed the layout of the reports overview."), inserted["delta"])
 
     def test_get_report(self):
         """Test that a report can be retrieved and credentials are hidden."""
