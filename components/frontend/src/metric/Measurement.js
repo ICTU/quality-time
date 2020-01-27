@@ -52,7 +52,7 @@ export function Measurement(props) {
   const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric_scale} unit={metric_unit} {...props} />
   return (
     <TableRowWithDetails id={props.metric_uuid} positive={status === "target_met"} negative={status === "target_not_met"} warning={status === "near_target_met"} active={status === "debt_target_met"} details={details}>
-      <Table.Cell>{metric_name} </Table.Cell>
+      <Table.Cell>{metric_name}</Table.Cell>
       <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric_scale} /></Table.Cell>
       <Table.Cell><StatusIcon status={status} /></Table.Cell>
       <Table.Cell><MeasurementValue /></Table.Cell>
