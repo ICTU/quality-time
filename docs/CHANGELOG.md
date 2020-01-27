@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The front end was still using one version 1 API. Fixes [#947](https://github.com/ICTU/quality-time/issues/947).
 - Retrieving the change log would fail if not all recent changes had a change log entry. Fixes [#949](https://github.com/ICTU/quality-time/issues/949).
 - After changing a value in the UI, Quality-time would briefly show the old value while it was updating the database. Fixes [#954](https://github.com/ICTU/quality-time/issues/954).
+- Documentation API was not reachable. Fixes [#966](https://github.com/ICTU/quality-time/issues/966).
 
 ## [1.3.4] - [2020-01-15]
 
