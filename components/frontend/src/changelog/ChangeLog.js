@@ -5,6 +5,20 @@ import { get_changelog } from '../api/changelog';
 import { Avatar } from '../widgets/Avatar';
 import './ChangeLog.css';
 
+function Event({ description, email, timestamp }) {
+    return (
+        <Feed.Event>
+            <Feed.Label><Avatar email={email} /></Feed.Label>
+            <Feed.Content>
+                <Feed.Summary>
+                    <span dangerouslySetInnerHTML={{ __html: description }} />
+                    <Feed.Date>{(new Date(timestamp)).toLocaleString()}, <TimeAgo date={timestamp} /></Feed.Date>
+                </Feed.Summary>
+            </Feed.Content>
+        </Feed.Event>
+    )
+}
+
 export function ChangeLog(props) {
     const [changes, setChanges] = useState([]);
     const [nrChanges, setNrChanges] = useState(5);
@@ -29,32 +43,17 @@ export function ChangeLog(props) {
     if (props.metric_uuid) { scope = "Changes to this metric and its sources" }
     if (props.source_uuid) { scope = "Changes to this source" }
 
-    let events = [];
-    changes.forEach((change) => events.push(
-        <Feed.Event key={change.timestamp + change.delta}>
-            <Feed.Label>
-                <Avatar email={change.email} />
-            </Feed.Label>
-            <Feed.Content>
-                <Feed.Summary>
-                    <span dangerouslySetInnerHTML={{ __html: change.delta }} />
-                    <Feed.Date>
-                        {(new Date(change.timestamp)).toLocaleString()}, <TimeAgo date={change.timestamp} />
-                    </Feed.Date>
-                </Feed.Summary>
-            </Feed.Content>
-        </Feed.Event>));
-
     return (
         <Form>
-            <div className="field" style={{marginBottom: "0pt"}}>
+            <div className="field" style={{ marginBottom: "0pt" }}>
                 <label>
                     {scope} (most recent first)
                 </label>
             </div>
             <Segment>
                 <Feed size="small">
-                    {events}
+                    {changes.map(change =>
+                       <Event key={change.timestamp + change.delta} description={change.delta} email={change.email} timestamp={change.timestamp} />)}
                 </Feed>
                 <Button basic icon primary size='small' onClick={() => setNrChanges(nrChanges + 10)}>
                     <Icon name="refresh" /> Load more changes
