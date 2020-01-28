@@ -15,9 +15,10 @@ from server_utilities.functions import report_date_time
 def get_reports(database: Database):
     """Return the quality reports."""
     date_time = report_date_time()
+    data_model = latest_datamodel(database)
     overview = latest_reports_overview(database, date_time)
-    overview["reports"] = latest_summarized_reports(database, date_time)
-    hide_credentials(latest_datamodel(database), *overview["reports"])
+    overview["reports"] = latest_summarized_reports(database, data_model, date_time)
+    hide_credentials(data_model, *overview["reports"])
     return overview
 
 

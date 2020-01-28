@@ -6,6 +6,7 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel
+from database.measurements import last_measurements
 from database.reports import get_data, latest_summarized_reports, insert_new_report, summarize_report
 from model.actions import copy_report
 from model.transformations import hide_credentials
@@ -95,13 +96,15 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
-    reports = latest_summarized_reports(database, date_time)
-    hide_credentials(latest_datamodel(database), *reports)
+    data_model = latest_datamodel(database)
+    reports = latest_summarized_reports(database, data_model, date_time)
+    hide_credentials(data_model, *reports)
     subjects = _get_subjects_and_metrics_by_tag(reports, tag)
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
         timestamp=date_time, subjects=subjects)
-    summarize_report(database, tag_report)
+    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
+    summarize_report(tag_report, last_measurements_by_metric_uuid, data_model)
     return tag_report
 
 
