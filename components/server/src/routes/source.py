@@ -85,11 +85,10 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid], email=user["email"],
             description=delta_description)
-        insert_new_report(database, source.report)
         target_uuids.append(target.subject_uuid)
     target.report["delta"] = dict(
         uuids=target_uuids + [target_metric_uuid, source_uuid], email=user["email"], description=delta_description)
-    return insert_new_report(database, target.report)
+    return insert_new_report(database, source.report, target.report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>/source/<source_uuid>")
@@ -164,6 +163,24 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
+    source_description = _source_description(data, edit_scope, parameter_key, old_value)
+    user = sessions.user(database)
+    delta = dict(
+        uuids=changed_ids, email=user["email"],
+        description=f"{user['user']} changed the {parameter_key} of {source_description} "
+                    f"from '{old_value}' to '{new_value}'.")
+    reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
+    for report in reports_to_insert:
+        report["delta"] = delta
+    result = insert_new_report(database, *reports_to_insert)
+
+    if availability_checks := _availability_checks(data, parameter_key):
+        result["availability"] = availability_checks
+    return result
+
+
+def _source_description(data, edit_scope, parameter_key, old_value):
+    """Return the description of the source."""
     source_type_name = data.datamodel["sources"][data.source["type"]]["name"]
     source_description = f"source '{data.source_name}'" if edit_scope == "source" else \
         f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
@@ -172,25 +189,13 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     if edit_scope in ["subject", "metric", "source"]:
         source_description += f" of subject '{data.subject_name}'"
     source_description += " in all reports" if edit_scope == "reports" else f" in report '{data.report_name}'"
-    user = sessions.user(database)
-    data.report["delta"] = dict(
-        uuids=changed_ids, email=user["email"],
-        description=f"{user['user']} changed the {parameter_key} of {source_description} "
-                    f"from '{old_value}' to '{new_value}'.")
-
-    for report in data.reports:
-        if report["report_uuid"] in changed_ids:
-            result = insert_new_report(database, report)
-
-    parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
-    if availability_checks := _availability_checks(parameters, data.source["parameters"], parameter_key, source_uuid):
-        result["availability"] = availability_checks
-    return result
+    return source_description
 
 
-def _availability_checks(
-        parameters, source_parameters, parameter_key: str, source_uuid: SourceId) -> List[Dict[str, Union[str, int]]]:
+def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, int]]]:
     """Check the availability of the URLs."""
+    parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
+    source_parameters = data.source["parameters"]
     url_parameter_keys = [
         key for key, value in parameters.items()
         if value['type'] == 'url' and parameter_key == key or parameter_key in value.get("validate_on", [])]
@@ -201,7 +206,7 @@ def _availability_checks(
             continue
         availability = _check_url_availability(url, source_parameters)
         availability['parameter_key'] = url_parameter_key
-        availability['source_uuid'] = source_uuid
+        availability['source_uuid'] = data.source_uuid
         availability_checks.append(availability)
     return availability_checks
 

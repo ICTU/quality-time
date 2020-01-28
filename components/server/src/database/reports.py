@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from collections import namedtuple
-from typing import cast, Dict, List, Union
+from typing import cast, Any, Dict, List, Union
 
 import pymongo
 from pymongo.database import Database
@@ -77,22 +77,30 @@ def latest_metric(database: Database, metric_uuid: MetricId):
     return None
 
 
-def insert_new_report(database: Database, report):
-    """Insert a new report in the reports collection."""
-    if "_id" in report:
-        del report["_id"]
-    report["timestamp"] = iso_timestamp()
-    database.reports.insert(report)
+def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
+    """Insert one or more new reports in the reports collection."""
+    _prepare_reports_for_insertion(*reports)
+    if len(reports) > 1:
+        database.reports.insert_many(reports, ordered=False)
+    else:
+        database.reports.insert(reports[0])
     return dict(ok=True)
 
 
-def insert_new_reports_overview(database: Database, reports_overview):
+def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    if "_id" in reports_overview:
-        del reports_overview["_id"]
-    reports_overview["timestamp"] = iso_timestamp()
+    _prepare_reports_for_insertion(reports_overview)
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
+
+
+def _prepare_reports_for_insertion(*reports) -> None:
+    """Prepare the report(s) for insertion in the reports collection by removing any ids and setting the timestamp."""
+    now = iso_timestamp()
+    for report in reports:
+        if "_id" in report:
+            del report["_id"]
+        report["timestamp"] = now
 
 
 def changelog(database: Database, nr_changes: int, **uuids):

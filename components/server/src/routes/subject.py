@@ -57,8 +57,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
         uuids=[source.report_uuid, subject_uuid], email=user["email"], description=delta_description)
     target.report["delta"] = dict(
         uuids=[target_report_uuid, subject_uuid], email=user["email"], description=delta_description)
-    insert_new_report(database, target.report)
-    return insert_new_report(database, source.report)
+    return insert_new_report(database, source.report, target.report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>/subject/<subject_uuid>")
