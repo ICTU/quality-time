@@ -85,10 +85,9 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, metric_uuid], email=user["email"],
             description=delta_description)
-        insert_new_report(database, source.report)
         target_uuids = [target.report_uuid, target_subject_uuid, metric_uuid]
     target.report["delta"] = dict(uuids=target_uuids, email=user["email"], description=delta_description)
-    return insert_new_report(database, target.report)
+    return insert_new_report(database, source.report, target.report)
 
 
 @bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")

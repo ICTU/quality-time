@@ -20,9 +20,9 @@ describe("<Subjects />", () => {
     it('hides metrics not requiring action', () => {
         const wrapper = shallow(<Subjects datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />);
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-        mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");
+        mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("FilterHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
-        mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");
+        mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("FilterHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
       });
 });

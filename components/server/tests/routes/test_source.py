@@ -1,7 +1,7 @@
 """Unit tests for the source routes."""
 
 import unittest
-from unittest.mock import call, Mock, patch
+from unittest.mock import Mock, patch
 
 import requests
 
@@ -287,7 +287,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = dict(username=self.NEW_VALUE, edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
-        self.database.reports.insert.assert_has_calls([call(self.report), call(self.report2)])
+        self.database.reports.insert_many.assert_called_once_with((self.report, self.report2), ordered=False)
         self.assert_value({
             self.NEW_VALUE: [
                 self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5],
@@ -302,6 +302,14 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
                             "in all reports from 'username' to 'new username'."),
             self.report["delta"])
+        self.assertEqual(
+            dict(
+                uuids=[
+                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
+                    METRIC_ID3, SOURCE_ID6, REPORT_ID2, SUBJECT_ID3, METRIC_ID4, SOURCE_ID7], email=self.email,
+                description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                            "in all reports from 'username' to 'new username'."),
+            self.report2["delta"])
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""
