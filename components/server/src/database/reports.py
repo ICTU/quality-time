@@ -24,11 +24,12 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
             yield report
 
 
-def latest_summarized_reports(database: Database, max_iso_timestamp: str = ""):
+def latest_summarized_reports(database: Database, data_model, max_iso_timestamp: str = ""):
     """Return all latest reports in the reports collection, including a summary of each report."""
     reports = []
+    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
     for report in latest_reports(database, max_iso_timestamp):
-        summarize_report(database, report)
+        summarize_report(report, last_measurements_by_metric_uuid, data_model)
         reports.append(report)
     return reports
 
@@ -41,15 +42,13 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     return overview or dict()
 
 
-def summarize_report(database: Database, report) -> None:
+def summarize_report(report, last_measurements_by_metric_uuid, data_model) -> None:
     """Add a summary of the measurements to each subject."""
     status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
-    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
-    data_model = latest_datamodel(database)
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
             last_measurement = last_measurements_by_metric_uuid.get(metric_uuid, dict())
@@ -124,8 +123,8 @@ def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: Sub
         "data",
         "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
-    data.reports = latest_summarized_reports(database)
     data.datamodel = latest_datamodel(database)
+    data.reports = latest_summarized_reports(database, data.datamodel)
     data.source_uuid = source_uuid
     data.metric_uuid = get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
     data.subject_uuid = get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
