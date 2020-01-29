@@ -16,7 +16,7 @@ def parse_arguments():
     bump = subprocess.check_output(("bump2version", "--list", "--dry-run", "--allow-dirty", "part"), text=True)
     current_version = [line for line in bump.split("\n") if line.startswith("current_version")][0].split("=")[1]
     parser = argparse.ArgumentParser(description=f'Release Quality-time. Current version is {current_version}.')
-    parser.add_argument('version', choices=('patch', 'minor', 'major'))
+    parser.add_argument('version', choices=('build', 'patch', 'minor', 'major'))
     return parser.parse_args()
 
 
