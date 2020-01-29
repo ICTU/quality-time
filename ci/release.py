@@ -14,7 +14,7 @@ import git
 
 def get_version(current_version: str = None, bump: str = "whatever") -> str:
     """Return the current version or the next version relative to the specified current version."""
-    current_version_args = f"--current-version {current_version} " if current_version else "" 
+    current_version_args = f"--current-version {current_version} " if current_version else ""
     command = f"bump2version --list --dry-run --allow-dirty {current_version_args}{bump}"
     output = subprocess.check_output(command.split(" "), text=True)
     version_type = f"{'new' if current_version else 'current'}_version"
