@@ -29,8 +29,9 @@ def main():
     current_version, bump = parse_arguments()
     if bump.startswith("rc-"):
         bump, pre_bump = bump.split("-")
-        subprocess.run(("bump2version", "--allow-dirty", pre_bump), check=True)
-    subprocess.run(("bump2version", "--allow-dirty", bump), check=True)
+        subprocess.run(("bump2version", "--no-commit", "--no-tag", pre_bump), check=True)
+    delta = f"Bump version: {current_version} → {{new_version}}"
+    subprocess.run(("bump2version", "--message", delta, "--tag-message", delta, bump), check=True)
     subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 
