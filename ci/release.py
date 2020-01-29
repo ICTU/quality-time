@@ -43,9 +43,9 @@ def main():
         intermediate_version = get_next_version(current_version, pre_bump)
         new_version = get_next_version(intermediate_version, bump)
         print(current_version, intermediate_version, new_version)
-        subprocess.run(("bump2version", "--current-version", current_version, "--new-version", new_version, "--allow-dirty", "--no-commit", "--no-tag", bump), check=True)
+        subprocess.run(("bump2version", "--new-version", new_version, "--allow-dirty", "--no-commit", "--no-tag", bump), check=True)
     else:
-        subprocess.run(("bump2version", "--current-version", current_version, "--allow-dirty", "--no-commit", "--no-tag", bump), check=True)
+        subprocess.run(("bump2version", "--allow-dirty", "--no-commit", "--no-tag", bump), check=True)
     #subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 
