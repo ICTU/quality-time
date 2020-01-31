@@ -51,13 +51,12 @@ function ReorderButton(props) {
 }
 
 export function ReorderButtonGroup(props) {
-  var { marginTop, ...otherProps } = props;
   return (
-    <Button.Group style={{ marginTop: marginTop || "0px" }}>
-      <ReorderButton {...otherProps} direction="first" />
-      <ReorderButton {...otherProps} direction="previous" />
-      <ReorderButton {...otherProps} direction="next" />
-      <ReorderButton {...otherProps} direction="last" />
+    <Button.Group style={{ marginTop: "0px" }}>
+      <ReorderButton {...props} direction="first" />
+      <ReorderButton {...props} direction="previous" />
+      <ReorderButton {...props} direction="next" />
+      <ReorderButton {...props} direction="last" />
     </Button.Group>
   )
 }
