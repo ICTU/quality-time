@@ -3,8 +3,28 @@ import { mount, shallow } from 'enzyme';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subject } from './Subject';
 
-const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
-const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [] } } } } };
+const datamodel = {
+  subjects: {
+    subject_type: { name: "Subject type"}
+  },
+  metrics: {
+    metric_type: { name: "Metric type", tags: [] }
+  }
+}
+const report = {
+  subjects: {
+    subject_uuid: {
+      type: "subject_type", name: "Subject title", metrics: {
+        metric_uuid: {
+          type: "metric_type", tags: []
+        },
+        metric_uuidi2: {
+          type: "metric_type", tags: []
+        }
+      }
+    }
+  }
+};
 
 describe("<Subject />", () => {
   it('shows the subject title', () => {
