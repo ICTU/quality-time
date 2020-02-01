@@ -5,7 +5,7 @@ import { SubjectTitle } from './SubjectTitle';
 import { add_metric } from '../api/metric';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton } from '../widgets/Button';
-import { get_metric_name, get_source_name } from '../utils';
+import { get_metric_name, get_metric_target, get_source_name } from '../utils';
 
 export function Subject(props) {
   function handleSort(column) {
@@ -22,12 +22,19 @@ export function Subject(props) {
   const subject = props.report.subjects[props.subject_uuid];
   const last_index = Object.entries(subject.metrics).length - 1;
 
+  function get_last_measurement(metric, metric_uuid) {
+    const measurement = lastMeasurements[metric_uuid];
+    if (measurement) {
+      const scale = metric.scale || props.datamodel.metrics[metric.type].default_scale || "count";
+      return measurement[scale] || {value: measurement.value || "", status: measurement.status || ""};
+    }
+    return {value: "", status: ""}
+  }
+
   function create_metric_components() {
     let metric_components = [];
     Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
-      const metric_type = props.datamodel.metrics[metric.type];
-      const scale = metric.scale || metric_type.default_scale || "count";
-      const status = (lastMeasurements[metric_uuid] && lastMeasurements[metric_uuid][scale] && lastMeasurements[metric_uuid][scale].status) || '';
+      const status = get_last_measurement(metric, metric_uuid).status;
       if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
       if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
       metric_components.push(
@@ -58,13 +65,13 @@ export function Subject(props) {
         return attribute1.localeCompare(attribute2)
       },
       measurement: (m1, m2) => {
-        const attribute1 = (lastMeasurements[m1.props.metric_uuid] && lastMeasurements[m1.props.metric_uuid].value) || '';
-        const attribute2 = (lastMeasurements[m2.props.metric_uuid] && lastMeasurements[m2.props.metric_uuid].value) || '';
+        const attribute1 = get_last_measurement(m1.props.metric, m1.props.metric_uuid).value || "";
+        const attribute2 = get_last_measurement(m2.props.metric, m2.props.metric_uuid).value || "";
         return attribute1.localeCompare(attribute2)
       },
       target: (m1, m2) => {
-        const attribute1 = m1.props.metric.accept_debt ? m1.props.metric.debt_target : m1.props.metric.target;
-        const attribute2 = m2.props.metric.accept_debt ? m2.props.metric.debt_target : m2.props.metric.target;
+        const attribute1 = get_metric_target(m1.props.metric);
+        const attribute2 = get_metric_target(m2.props.metric);
         return attribute1.localeCompare(attribute2)
       },
       comment: (m1, m2) => {
@@ -73,8 +80,8 @@ export function Subject(props) {
         return attribute1.localeCompare(attribute2)
       },
       status: (m1, m2) => {
-        const attribute1 = status_order[(lastMeasurements[m1.props.metric_uuid] && lastMeasurements[m1.props.metric_uuid].status) || ''];
-        const attribute2 = status_order[(lastMeasurements[m2.props.metric_uuid] && lastMeasurements[m2.props.metric_uuid].status) || ''];
+        const attribute1 = status_order[get_last_measurement(m1.props.metric, m1.props.metric_uuid).status || ""];
+        const attribute2 = status_order[get_last_measurement(m2.props.metric, m2.props.metric_uuid).status || ""];
         return attribute1.localeCompare(attribute2)
       },
       source: (m1, m2) => {
