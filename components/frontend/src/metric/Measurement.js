@@ -7,7 +7,7 @@ import { MeasurementDetails } from './MeasurementDetails';
 import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { get_metric_name } from '../utils';
+import { get_metric_name, get_metric_target } from '../utils';
 
 function week_ago_iso_string() {
   let week_ago = new Date();
@@ -32,8 +32,7 @@ export function Measurement(props) {
   }
   function measurement_target() {
     const metric_direction = { "<": "≦", ">": "≧" }[metric.direction || metric_type.direction];
-    const target = metric.accept_debt ? metric.debt_target || 0 : metric.target;
-    return `${metric_direction} ${target}${metric_unit} ${metric.accept_debt ? "(debt)" : ""}`
+    return `${metric_direction} ${get_metric_target(metric)}${metric_unit} ${metric.accept_debt ? "(debt)" : ""}`
   }
   function measurement_sources() {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
