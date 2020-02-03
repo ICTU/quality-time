@@ -84,12 +84,12 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
     def _get_source_responses(self, api_url: URL) -> Responses:
         """Next to the violations, also get the total number of units as basis for the percentage scale."""
         responses = super()._get_source_responses(api_url)
-        url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
-        api_url = URL(
-            f"{url}/api/measures/component?component={component}&metricKeys={self.total_metric}&branch={branch}")
-        return responses + [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
+        total_metric_api_url = URL(
+            f"{api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&branch={branch}")
+        return responses + [
+            requests.get(total_metric_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = super()._parse_source_responses(responses)

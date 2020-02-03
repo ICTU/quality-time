@@ -23,8 +23,7 @@ class AzureDevopsIssues(SourceCollector):
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
 
     def _api_url(self) -> URL:
-        url = super()._api_url()
-        return URL(f"{url}/_apis/wit/wiql?api-version=4.1")
+        return URL(f"{super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
