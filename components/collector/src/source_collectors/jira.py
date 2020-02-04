@@ -25,7 +25,7 @@ class JiraIssues(SourceCollector):
     def _landing_url(self, responses: Responses) -> URL:
         url = super()._landing_url(responses)
         jql = str(self._parameter("jql", quote=True))
-        return URL(f"{url}/issues?jql={jql}")
+        return URL(f"{url}/issues/?jql={jql}")
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         parameter_value = super()._parameter(parameter_key, quote)

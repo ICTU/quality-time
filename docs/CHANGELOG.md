@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Sorting of metrics by measurement value, target value, and status did not work. Fixes [#981](https://github.com/ICTU/quality-time/issues/981).
 - Exporting tag reports to PDF did not work. Fixes [#990](https://github.com/ICTU/quality-time/issues/990). 
+- When using Jira as source for the Issues metric, the URL to Jira in the metrics table would not work properly. Fixes [#991](https://github.com/ICTU/quality-time/issues/991). 
 
 ### Changed
 
