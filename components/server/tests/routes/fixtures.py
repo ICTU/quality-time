@@ -42,7 +42,7 @@ def create_report():
                         type="metric_type",
                         addition="sum",
                         accept_debt=False,
-                        tags=[],
+                        tags=["security"],
                         sources={
                             SOURCE_ID: dict(
                                 type="source_type",

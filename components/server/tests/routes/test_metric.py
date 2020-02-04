@@ -300,7 +300,8 @@ class MetricTest(unittest.TestCase):
             sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
         self.assertEqual(
             {METRIC_ID: dict(
-                report_uuid=REPORT_ID, name="Metric", addition="sum", accept_debt=False, type="metric_type", tags=[],
+                report_uuid=REPORT_ID, name="Metric", addition="sum", accept_debt=False, type="metric_type",
+                tags=["security"],
                 sources=dict(
                     source_uuid=dict(
                         name="Source", type="source_type", parameters=dict(url="https://url", password="password"))))},
