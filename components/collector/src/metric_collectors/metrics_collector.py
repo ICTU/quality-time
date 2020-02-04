@@ -1,6 +1,7 @@
 """Metrics collector."""
 
 from datetime import datetime, timedelta
+import asyncio
 import logging
 import os
 import time
@@ -48,7 +49,7 @@ class MetricsCollector:
         except OSError as reason:
             logging.error("Could not write health check time stamp to %s: %s", filename, reason)
 
-    def start(self) -> NoReturn:
+    async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
         max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
@@ -61,7 +62,7 @@ class MetricsCollector:
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
-            time.sleep(sleep_duration)
+            await asyncio.sleep(sleep_duration)
 
     def fetch_data_model(self, sleep_duration: int) -> JSON:
         """Fetch the data model."""

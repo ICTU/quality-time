@@ -6,13 +6,15 @@ from datetime import datetime
 from typing import Tuple
 from unittest.mock import patch, mock_open, Mock
 
+import aiounittest
+
 import quality_time_collector
 from metric_collectors import MetricsCollector
 from source_collectors import source_collector
 from collector_utilities.type import Entities, Responses, Value
 
 
-class CollectorTest(unittest.TestCase):
+class CollectorTest(aiounittest.AsyncTestCase):
     """Unit tests for the collection methods."""
 
     def setUp(self):
@@ -70,11 +72,12 @@ class CollectorTest(unittest.TestCase):
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid"))
 
+    @patch("asyncio.sleep", Mock(side_effect=RuntimeError))
     @patch("builtins.open", mock_open())
     @patch("time.sleep", Mock(side_effect=RuntimeError))
     @patch("requests.post")
     @patch("requests.get")
-    def test_collect(self, mocked_get, mocked_post):
+    async def test_collect(self, mocked_get, mocked_post):
         """Test the collect method."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
@@ -82,6 +85,8 @@ class CollectorTest(unittest.TestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mocked_get.side_effect = [self.data_model_response, self.metrics_response, Mock()]
         self.assertRaises(RuntimeError, quality_time_collector.collect)
+        with self.assertRaises(RuntimeError):
+            await quality_time_collector.collect()
         mocked_post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
