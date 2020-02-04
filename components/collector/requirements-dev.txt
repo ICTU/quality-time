@@ -6,4 +6,4 @@ nose==1.3.7
 pip==20.0.2
 pylint==2.4.4
 safety==1.8.5
-vulture==1.2
+vulture==1.3
