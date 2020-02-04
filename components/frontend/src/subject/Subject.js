@@ -108,10 +108,10 @@ export function Subject(props) {
       metric_components.reverse()
     }
   }
-  function SortableHeader({ column, label }) {
+  function SortableHeader({ column, label, textAlign }) {
     const sorted = sortColumn === column ? sortDirection : null;
     return (
-      <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted}>
+      <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
         {label}
       </Table.HeaderCell>
     )
@@ -138,7 +138,7 @@ export function Subject(props) {
           <FilterHeader/>
           <SortableHeader column='name' label='Metric' />
           <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
-          <SortableHeader column='status' label='Status' />
+          <SortableHeader column='status' label='Status' textAlign='center' />
           <SortableHeader column='measurement' label='Measurement' />
           <SortableHeader column='target' label='Target' />
           <SortableHeader column='source' label='Source' />

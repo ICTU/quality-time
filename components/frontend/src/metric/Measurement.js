@@ -53,7 +53,7 @@ export function Measurement(props) {
     <TableRowWithDetails id={props.metric_uuid} positive={status === "target_met"} negative={status === "target_not_met"} warning={status === "near_target_met"} active={status === "debt_target_met"} details={details}>
       <Table.Cell>{metric_name}</Table.Cell>
       <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric_scale} /></Table.Cell>
-      <Table.Cell><StatusIcon status={status} /></Table.Cell>
+      <Table.Cell textAlign='center'><StatusIcon status={status} /></Table.Cell>
       <Table.Cell><MeasurementValue /></Table.Cell>
       <Table.Cell>{measurement_target()}</Table.Cell>
       <Table.Cell>{measurement_sources()}</Table.Cell>
