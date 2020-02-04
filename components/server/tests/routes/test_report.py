@@ -94,12 +94,18 @@ class ReportTest(unittest.TestCase):
         requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=5")
 
     @patch("requests.get")
+    def test_get_pdf_tag_report(self, requests_get):
+        """Test that a PDF version of a tag report can be retrieved."""
+        requests_get.return_value = Mock(content=b"PDF")
+        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security"), self.database))
+        requests_get.assert_called_once_with(
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www/tag-security&delay=5")
+
+    @patch("requests.get")
     def test_get_pdf_report_with_extra_delay(self, requests_get):
         """Test that a PDF version of the report can be retrieved with an extra delay."""
         self.report["delay"] = 7
-        response = Mock()
-        response.content = b"PDF"
-        requests_get.return_value = response
+        requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
         requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=7")
 
@@ -108,9 +114,7 @@ class ReportTest(unittest.TestCase):
     def test_get_pdf_report_via_api_with_extra_delay(self, requests_get, request):
         """Test that a PDF version of the report can be retrieved with an extra delay."""
         request.query = bottle.FormsDict(delay="10")
-        response = Mock()
-        response.content = b"PDF"
-        requests_get.return_value = response
+        requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
         requests_get.assert_called_once_with(
             "http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=10")

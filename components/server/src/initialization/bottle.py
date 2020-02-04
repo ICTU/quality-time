@@ -4,7 +4,7 @@ from pymongo.database import Database
 import bottle
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
 # pylint: disable=unused-import
-from routes import (
+from routes import (  # lgtm [py/unused-import]
     auth, changelog, datamodel, documentation, measurement, metric, report, reports, source, subject)
 
 
