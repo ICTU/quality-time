@@ -21,12 +21,12 @@
 | Ready user story points | The number of points of user stories that are ready to implement. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, GitLab, JaCoCo, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, SonarQube, Trello, Wekan |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, GitLab, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, SonarQube, Trello, Wekan |
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Bandit, Checkmarx CxSAST, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Pyupio Safety |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
 | Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, Jenkins test report, JUnit XML report, Performancetest-runner, Robot Framework, SonarQube |
-| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | JaCoCo, NCover, SonarQube |
-| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | JaCoCo, NCover, SonarQube |
+| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
+| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Unmerged branches | The number of branches that have not been merged to master. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
@@ -43,6 +43,7 @@
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | Failed CI-jobs, Unused CI-jobs |
+| [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Jenkins test report](https://plugins.jenkins.io/junit) | A Jenkins job with test results. | Source up-to-dateness, Tests |
 | [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, Ready user story points |
 | [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | Source up-to-dateness, Tests |
