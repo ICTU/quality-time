@@ -412,6 +412,7 @@
                 "cxsast",
                 "gitlab",
                 "jacoco",
+                "jacoco_jenkins_plugin",
                 "jenkins_test_report",
                 "junit",
                 "ncover",
@@ -524,6 +525,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "jacoco",
+                "jacoco_jenkins_plugin",
                 "manual_number",
                 "ncover",
                 "sonarqube",
@@ -549,6 +551,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "jacoco",
+                "jacoco_jenkins_plugin",
                 "manual_number",
                 "ncover",
                 "sonarqube",
@@ -1765,6 +1768,54 @@
                     ]
                 }
             }
+        },
+        "jacoco_jenkins_plugin": {
+            "name": "JaCoCo Jenkins plugin",
+            "description": "A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin.",
+            "url": "https://plugins.jenkins.io/jacoco",
+            "parameters": {
+                "url": {
+                    "name": "URL to job",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                }
+            },
+            "entities": {}
         },
         "jenkins_test_report": {
             "name": "Jenkins test report",
@@ -3006,6 +3057,7 @@
                         "Checkmarx CxSAST",
                         "GitLab",
                         "JaCoCo",
+                        "JaCoCo Jenkins plugin",
                         "Jenkins",
                         "Jenkins test report",
                         "Jira",
@@ -3034,6 +3086,7 @@
                         "Checkmarx CxSAST": "cxsast",
                         "GitLab": "gitlab",
                         "JaCoCo": "jacoco",
+                        "JaCoCo Jenkins plugin": "jacoco_jenkins_plugin",
                         "Jenkins": "jenkins",
                         "Jenkins test report": "jenkins_test_report",
                         "Jira": "jira",

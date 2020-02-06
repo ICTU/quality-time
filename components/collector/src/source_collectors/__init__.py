@@ -7,6 +7,8 @@ from .calendar import CalendarSourceUpToDateness
 from .cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .gitlab import GitLabFailedJobs, GitLabUnusedJobs, GitLabSourceUpToDateness, GitLabUnmergedBranches
 from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
+from .jacoco_jenkins_plugin import (JacocoJenkinsPluginUncoveredBranches, JacocoJenkinsPluginUncoveredLines, \
+    JacocoJenkinsPluginSourceUpToDateness)
 from .jenkins import JenkinsFailedJobs, JenkinsJobs
 from .jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
 from .jira import JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraReadyUserStoryPoints
