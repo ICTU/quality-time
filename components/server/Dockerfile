@@ -5,13 +5,18 @@ LABEL description="Quality-time server"
 
 RUN lxml_run_time_deps='libxml2-dev libxslt-dev' \
   && apt-get update \
+  && apt-get -y upgrade \
   && apt-get install -y --no-install-recommends $lxml_run_time_deps \
+  && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
-COPY src /server
-WORKDIR /server
+RUN useradd --create-home server
+WORKDIR /home/server
+USER server
 
-CMD ["python", "/server/quality_time_server.py"]
+COPY src /home/server
+
+CMD ["python", "/home/server/quality_time_server.py"]

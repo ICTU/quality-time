@@ -35,18 +35,24 @@ services:
       - ${ENV:-dev}.env
     depends_on:
       - server
+    cap_drop:
+      - ALL
   collector:
     image: ictu/quality-time_collector:v1.4.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
       - server
+    cap_drop:
+      - ALL
   server:
     image: ictu/quality-time_server:v1.4.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
       - database
+    cap_drop:
+      - ALL
   database:
     image: mongo
     restart: always
