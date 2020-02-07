@@ -51,10 +51,7 @@ jobs:
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
-      - run:
-          name: Scan images
-          command: |
-            curl -s https://ci-tools.anchore.io/inline_scan-v0.5.0 | bash -s -- -r "ictu/quality-time_frontend:v1.4.0" "ictu/quality-time_server:v1.4.0" "ictu/quality-time_collector:v1.4.0"
+          curl -s https://ci-tools.anchore.io/inline_scan-v0.5.0 | bash -s -- -t 600 -r "ictu/quality-time_frontend:v1.4.0" "ictu/quality-time_server:v1.4.0" "ictu/quality-time_collector:v1.4.0"
       - store_artifacts:
           path: anchore-reports
 
