@@ -7,13 +7,11 @@ from typing import List, Tuple
 from bs4 import BeautifulSoup, Tag
 
 from collector_utilities.type import Entities, Entity, Response, Responses, Value
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import HTMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class PerformanceTestRunnerBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for performancetest runner collectors."""
-
-    file_extensions = ["html"]
+class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for performance test runner collectors."""
 
     @staticmethod
     def _soup(response: Response):
@@ -22,7 +20,7 @@ class PerformanceTestRunnerBaseClass(FileSourceCollector, ABC):  # pylint: disab
 
 
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
-    """Collector for the number of slow transactions in a Performancetest-runner performancetest report."""
+    """Collector for the number of slow transactions in a Performancetest-runner performance test report."""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [self.__entity(transaction) for transaction in self.__slow_transactions(responses)]
@@ -36,7 +34,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
         return dict(key=name, name=name, threshold=threshold)
 
     def __slow_transactions(self, responses: Responses) -> List[Tag]:
-        """Return the slow transactions in the performancetest report."""
+        """Return the slow transactions in the performance test report."""
         thresholds = self._parameter("thresholds")
         slow_transactions: List[Tag] = []
         for response in responses:
@@ -47,7 +45,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 
 
 class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, SourceUpToDatenessCollector):
-    """Collector for the performancetest report age."""
+    """Collector for the performance test report age."""
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:
         datetime_parts = [int(part) for part in self._soup(response).find(id="start_of_the_test").string.split(".")]
@@ -55,7 +53,7 @@ class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, So
 
 
 class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClass):
-    """Collector for the performancetest duration."""
+    """Collector for the performance test duration."""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         durations = []
@@ -67,7 +65,7 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
 
 
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
-    """Collector for the performancetest stability."""
+    """Collector for the performance test stability."""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         trend_breaks = []

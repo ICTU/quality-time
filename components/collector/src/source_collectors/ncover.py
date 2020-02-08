@@ -9,13 +9,11 @@ from typing import Tuple
 from bs4 import BeautifulSoup
 
 from collector_utilities.type import Entities, Response, Responses, Value
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import HTMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class NCoverBase(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for NCover collectors."""
-
-    file_extensions = ["html", "htm"]
 
     @staticmethod
     def _find_script(response: Response, text: str) -> str:

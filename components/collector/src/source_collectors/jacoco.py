@@ -1,22 +1,15 @@
 """Jacoco coverage report collector."""
 
-from abc import ABC
 from datetime import datetime
 from typing import Tuple
 
 from defusedxml import ElementTree
 
 from collector_utilities.type import Entities, Response, Responses, Value
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class JacococBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for Jacoco collectors."""
-
-    file_extensions = ["xml"]
-
-
-class JacocoCoverageBaseClass(JacococBaseClass):
+class JacocoCoverageBaseClass(XMLFileSourceCollector):
     """Base class for Jacoco coverage collectors."""
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
@@ -43,7 +36,7 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
     coverage_type = "branch"
 
 
-class JacocoSourceUpToDateness(JacococBaseClass, SourceUpToDatenessCollector):
+class JacocoSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollector):
     """Collector to collect the Jacoco report age."""
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:

@@ -159,6 +159,24 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         return responses
 
 
+class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for source collectors that retrieve HTML files."""
+
+    file_extensions = ["html", "htm"]
+
+
+class JSONFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for source collectors that retrieve JSON files."""
+
+    file_extensions = ["json"]
+
+
+class XMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for source collectors that retrieve XML files."""
+
+    file_extensions = ["xml"]
+
+
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
