@@ -1,21 +1,15 @@
 """Bandit metrics collector."""
 
-from abc import ABC
 from datetime import datetime
 from typing import Tuple
 
 from dateutil.parser import parse
 
 from collector_utilities.type import Entities, Response, Responses, Value
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import JSONFileSourceCollector, SourceUpToDatenessCollector
 
 
-class BanditBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for Bandit collectors."""
-    file_extensions = ["json"]
-
-
-class BanditSecurityWarnings(BanditBaseClass):
+class BanditSecurityWarnings(JSONFileSourceCollector):
     """Bandit collector for security warnings."""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
@@ -36,7 +30,7 @@ class BanditSecurityWarnings(BanditBaseClass):
         return str(len(entities)), "100", entities
 
 
-class BanditSourceUpToDateness(BanditBaseClass, SourceUpToDatenessCollector):
+class BanditSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):
     """Bandit collector for source up-to-dateness."""
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:

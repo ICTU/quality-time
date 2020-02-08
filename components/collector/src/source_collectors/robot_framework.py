@@ -8,13 +8,11 @@ from dateutil.parser import parse
 
 from collector_utilities.type import Entities, Response, Responses, URL, Value
 from collector_utilities.functions import parse_source_response_xml
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class RobotFrameworkBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Robot Framework collectors."""
-
-    file_extensions = ["xml"]
 
     def _landing_url(self, responses: Responses) -> URL:
         url = str(super()._landing_url(responses))

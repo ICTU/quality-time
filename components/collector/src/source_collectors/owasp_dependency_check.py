@@ -9,15 +9,14 @@ from dateutil.parser import isoparse
 
 from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, URL, Value
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class OWASPDependencyCheckBase(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for OWASP Dependency Check collectors."""
 
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
                          for version in ("2.0", "2.1", "2.2")]
-    file_extensions = ["xml"]
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         responses = super()._get_source_responses(api_url)

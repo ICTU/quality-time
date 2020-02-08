@@ -5,16 +5,14 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from collector_utilities.type import Namespaces, Entities, Entity, Responses, Value
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from .source_collector import FileSourceCollector
+from .source_collector import XMLFileSourceCollector
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 
 
-class OJAuditViolations(FileSourceCollector):
+class OJAuditViolations(XMLFileSourceCollector):
     """Collector to get violations from OJAudit."""
-
-    file_extensions = ["xml"]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

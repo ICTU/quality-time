@@ -3,10 +3,10 @@
 from typing import Final, Tuple
 
 from collector_utilities.type import Entities, Responses, Value
-from .source_collector import FileSourceCollector
+from .source_collector import JSONFileSourceCollector
 
 
-class PyupioSafetySecurityWarnings(FileSourceCollector):
+class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     """Pyup.io Safety collector for security warnings."""
 
     PACKAGE: Final[int] = 0
@@ -14,8 +14,6 @@ class PyupioSafetySecurityWarnings(FileSourceCollector):
     INSTALLED: Final[int] = 2
     VULNERABILITY: Final[int] = 3
     KEY: Final[int] = 4
-
-    file_extensions = ["json"]
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         """Return a list of warnings."""

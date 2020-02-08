@@ -1,6 +1,5 @@
 """JUnit metric collector."""
 
-from abc import ABC
 from datetime import datetime
 from typing import cast, List, Tuple
 
@@ -8,16 +7,10 @@ from dateutil.parser import parse
 
 from collector_utilities.type import Entity, Entities, Response, Responses, Value
 from collector_utilities.functions import parse_source_response_xml
-from .source_collector import FileSourceCollector, SourceUpToDatenessCollector
+from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollector
 
 
-class JUnitBaseClass(FileSourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for JUnit collectors."""
-
-    file_extensions = ["xml"]
-
-
-class JUnitTests(JUnitBaseClass):
+class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
@@ -43,7 +36,7 @@ class JUnitTests(JUnitBaseClass):
         return dict(key=name, name=name, class_name=case_node.get("classname", ""), test_result=case_result)
 
 
-class JUnitSourceUpToDateness(JUnitBaseClass, SourceUpToDatenessCollector):
+class JUnitSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollector):
     """Collector to collect the Junit report age."""
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:
