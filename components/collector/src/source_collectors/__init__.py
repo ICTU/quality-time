@@ -1,5 +1,6 @@
 """Metric collectors per source."""
 
+from .anchore import AnchoreSecurityWarnings, AnchoreSourceUpToDateness
 from .axe_csv import AxeCSVAccessibility
 from .azure_devops import AzureDevopsIssues, AzureDevopsReadyUserStoryPoints
 from .bandit import BanditSecurityWarnings, BanditSourceUpToDateness

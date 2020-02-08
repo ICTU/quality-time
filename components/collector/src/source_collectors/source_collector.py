@@ -22,6 +22,7 @@ class SourceCollector(ABC):
 
     TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
+    API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 
@@ -57,12 +58,12 @@ class SourceCollector(ABC):
         a default landing url."""
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
             return URL(landing_url)
-        url = cast(str, self.__parameters.get("url", "")).rstrip("/")
+        url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
     def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
-        return URL(cast(str, self.__parameters.get("url", "")).rstrip("/"))
+        return URL(cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/"))
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         """Return the parameter value."""

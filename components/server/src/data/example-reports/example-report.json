@@ -124,6 +124,12 @@
                             "parameters": {
                                 "url": "http://testdata:8000/bandit.json"
                             }
+                        },
+                        {
+                            "type": "anchore",
+                            "parameters": {
+                                "url": "http://testdata:8000/anchore-vuln.json"
+                            }
                         }
                     ]
                 },
@@ -156,6 +162,17 @@
                             "type": "openvas",
                             "parameters": {
                                 "url": "http://testdata:8000/openvas-report.xml"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "source_up_to_dateness",
+                    "sources": [
+                        {
+                            "type": "anchore",
+                            "parameters": {
+                                "details_url": "http://testdata:8000/anchore-details.json"
                             }
                         }
                     ]

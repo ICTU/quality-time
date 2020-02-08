@@ -406,6 +406,7 @@
             "near_target": "7",
             "default_source": "sonarqube",
             "sources": [
+                "anchore",
                 "azure_devops",
                 "bandit",
                 "calendar",
@@ -445,6 +446,7 @@
             "near_target": "5",
             "default_source": "owasp_dependency_check",
             "sources": [
+                "anchore",
                 "bandit",
                 "cxsast",
                 "manual_number",
@@ -633,6 +635,123 @@
         }
     },
     "sources": {
+        "anchore": {
+            "name": "Anchore",
+            "description": "Anchore image scan analysis report in JSON format",
+            "url": "https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/",
+            "parameters": {
+                "url": {
+                    "name": "URL to an Anchore vulnerability report in JSON format or to a zip with Anchore reports in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "details_url": {
+                    "name": "URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
+                    "metrics": [
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to Anchore report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                 "severities": {
+                    "name": "Severities",
+                    "short_name": "severities",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "Unknown",
+                        "Negligible",
+                        "Low",
+                        "Medium",
+                        "High",
+                        "Critical"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "CVE",
+                            "key": "cve",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Package",
+                            "key": "package"
+                        },
+                        {
+                            "name": "Fix",
+                            "key": "fix"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "Critical": "negative",
+                                "High": "negative",
+                                "Medium": "warning",
+                                "Low": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "axecsv": {
             "name": "Axe CSV",
             "description": "An Axe accessibility report in CSV format.",
@@ -3050,6 +3169,7 @@
                     "mandatory": false,
                     "default_value": [],
                     "values": [
+                        "Anchore",
                         "Axe CSV",
                         "Azure DevOps Server",
                         "Bandit",
@@ -3079,6 +3199,7 @@
                         "Wekan"
                     ],
                     "api_values": {
+                        "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "Azure DevOps Server": "azure_devops",
                         "Bandit": "bandit",
