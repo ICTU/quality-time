@@ -744,7 +744,7 @@
                             "color": {
                                 "Critical": "negative",
                                 "High": "negative",
-                                "Medium": "warning,",
+                                "Medium": "warning",
                                 "Low": "warning"
                             }
                         }
