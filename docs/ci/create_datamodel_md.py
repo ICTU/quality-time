@@ -6,6 +6,11 @@ import pathlib
 from typing import List
 
 
+TYPE_DESCRIPTION = dict(
+    url="URL", string="String", multiple_choice="Multiple choice", password="Password", integer="Integer", date="Date",
+    single_choice="Single choice", multiple_choice_with_addition="Multiple choice with addition")
+
+
 def data_model():
     """Return the data model."""
     data_model_path = pathlib.Path(__file__).resolve().parent.parent.parent / \
@@ -22,7 +27,7 @@ def markdown_table_row(*cells: str) -> str:
 def markdown_table_header(*column_headers: str) -> str:
     """Return a Markdown table header."""
     headers = markdown_table_row(*column_headers)
-    separator = markdown_table_row(*["-" * len(column_header) for column_header in column_headers])
+    separator = markdown_table_row(*[":" + "-" * (len(column_header)-1) for column_header in column_headers])
     return headers + separator
 
 
@@ -61,6 +66,19 @@ def sources_table(dm, universal_sources: List[str]) -> str:
     return markdown
 
 
+def metric_source_table(dm, metric_key, source_key) -> str:
+    """Return the metric source combination as Markdown table."""
+    markdown = markdown_table_header("Parameter", "Type", "Mandatory")
+    for parameter in dm["sources"][source_key]["parameters"].values():
+        if metric_key in parameter["metrics"]:
+            name = f"[{parameter['name']}]({parameter['help_url']})" if "help_url" in parameter else parameter['name']
+            mandatory = "Yes" if parameter["mandatory"] else "No"
+            type = TYPE_DESCRIPTION[parameter["type"]]
+            markdown += markdown_table_row(name, type, mandatory)
+    markdown += "\n"
+    return markdown
+
+
 def data_model_as_table(dm) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_header("Quality-time data model")
@@ -69,6 +87,12 @@ def data_model_as_table(dm) -> str:
     markdown += markdown_header("Quality-time sources", 2)
     markdown += sources_table(dm, universal_sources)
     markdown += "¹) All metrics can be measured using the 'Manual number' and the 'Random number' source.\n"
+    markdown += markdown_header("Supported metric/source combinations", 2)
+    for metric_key, metric in dm["metrics"].items():
+        for source_key in metric["sources"]:
+            if source_key not in universal_sources:
+                markdown += markdown_header(f"{metric['name']} from {dm['sources'][source_key]['name']}", 3)
+                markdown += metric_source_table(dm, metric_key, source_key)
     return markdown
 
 
