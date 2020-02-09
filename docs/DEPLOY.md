@@ -63,7 +63,7 @@ To configure the frontend container port, set the `FRONTEND_PORT` environment va
 $ export FRONTEND_PORT=6000
 $ cd components/frontend
 $ npm start
-> quality-time-app@0.20.0 start /Users/fniessink/workspace/quality-time/components/frontend
+> quality-time-app@1.5.0 start /Users/fniessink/workspace/quality-time/components/frontend
 > react-scripts start
 ...
 ```
