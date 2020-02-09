@@ -9,7 +9,7 @@ from typing import List
 def data_model():
     """Return the data model."""
     data_model_path = pathlib.Path(__file__).resolve().parent.parent.parent / \
-                      "components" / "server" / "src" / "data" / "datamodel.json"
+        "components" / "server" / "src" / "data" / "datamodel.json"
     with data_model_path.open() as json_data_model:
         return json.load(json_data_model)
 
