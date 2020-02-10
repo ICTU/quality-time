@@ -10,11 +10,20 @@ function nr_metrics_label(nr_metrics) {
 }
 
 export function StatusPieChart(props) {
+    function pie_chart_label() {
+        let label = 'Status pie chart: ' + nr_metrics_text(nr_metrics);
+        if (props.green > 0) { label += `, ${props.green} target met` }
+        if (props.red > 0) { label += `, ${props.green} target not met` }
+        if (props.yellow > 0) { label += `, ${props.yellow} near target` }
+        if (props.grey > 0) { label += `, ${props.grey} with accepted technical debt` }
+        if (props.white > 0) { label += `, ${props.white} with unknown status` }
+        return label
+    }
     const nr_metrics = props.red + props.green + props.yellow + props.grey + props.white;
     const radius = 175;
     const innerRadius = Math.max(60, (radius - 50) - Math.pow(nr_metrics, 1.35));
     return (
-        <svg viewBox="0 0 400 400">
+        <svg viewBox="0 0 400 400" aria-label={pie_chart_label()}>
             <VictoryLabel
                 textAnchor="middle"
                 style={{ fill: "grey", fontFamily: "Arial", fontSize: 30 }}
