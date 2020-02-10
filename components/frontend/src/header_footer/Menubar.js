@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Label, Menu, Message, Modal, Dropdown } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
