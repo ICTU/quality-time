@@ -104,6 +104,41 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.update_one.assert_called_once_with(
             filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01', 'last': True}})
 
+    def test_ignored_measurement_entities_and_failed_measurement(self, request):
+        """Post a measurement where the last successful one has ignored entities."""
+        self.database.measurements.find_one.side_effect = [
+            dict(
+                _id="id1", status=None,
+                sources=[dict(value=None, parse_error=None, connection_error="Error", entities=[])]),
+            dict(
+                _id="id2", status="target_met",
+                sources=[
+                    dict(value="1", parse_error=None, connection_error=None,
+                         entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
+                         entities=[dict(key="entity1")])])]
+        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
+        request.json = dict(metric_uuid=METRIC_ID, sources=sources)
+        new_measurement = dict(
+            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
+            count=dict(status="target_met", value="0"), start="2019-01-01", end="2019-01-01", sources=sources)
+        self.assertEqual(new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
+    def test_all_previous_measurements_were_failed_measurements(self, request):
+        """Post a measurement without a last successful one."""
+        self.database.measurements.find_one.side_effect = [
+            dict(
+                _id="id1",
+                status=None, sources=[dict(value=None, parse_error=None, connection_error="Error", entities=[])]),
+            None]
+        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
+        request.json = dict(metric_uuid=METRIC_ID, sources=sources)
+        new_measurement = dict(
+            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
+            count=dict(status="near_target_met", value="1"), start="2019-01-01", end="2019-01-01", sources=sources)
+        self.assertEqual(new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
 
 class SetEntityAttributeTest(unittest.TestCase):
     """Unit tests for the set entity attribute route."""
