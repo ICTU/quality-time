@@ -1,5 +1,6 @@
 import React from 'react';
 import { Label } from 'semantic-ui-react';
+import "./Tag.css";
 
 export function Tag(props) {
     return (
