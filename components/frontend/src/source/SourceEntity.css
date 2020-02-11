@@ -1,0 +1,23 @@
+tr.positive_status {
+    background-color: rgb(30, 148, 78, 0.15) !important;
+}
+
+tr.negative_status {
+    background-color: rgb(211, 59, 55, 0.2) !important;
+}
+
+tr.warning_status {
+    background-color: rgb(253, 197, 54, 0.15) !important;
+}
+
+tr.active_status {
+    background-color: rgb(150, 150, 150, 0.2) !important;
+}
+
+tr.unknown_status {
+    background-color: rgb(245, 245, 245, 0.15) !important;
+}
+
+td > a {
+    color: rgb(0, 88, 176) !important;
+}

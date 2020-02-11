@@ -3,6 +3,7 @@ import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
+import "./SourceEntity.css";
 
 export function SourceEntity(props) {
   const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(props.status);
@@ -10,14 +11,11 @@ export function SourceEntity(props) {
     return null;
   }
   const style = ignored_entity ? { textDecoration: "line-through" } : {};
-  var positive, negative, warning, active;
+  var status = "unknown_status";
   props.entity_attributes.forEach((entity_attribute) => {
     let cell_contents = props.entity[entity_attribute.key];
     if (entity_attribute.color && entity_attribute.color[cell_contents]) {
-      positive = (entity_attribute.color[cell_contents] === "positive");
-      negative = (entity_attribute.color[cell_contents] === "negative");
-      warning = (entity_attribute.color[cell_contents] === "warning");
-      active = (entity_attribute.color[cell_contents] === "active");
+      status = entity_attribute.color[cell_contents] + '_status';
       return;
     }
   });
@@ -31,15 +29,7 @@ export function SourceEntity(props) {
     status={props.status}
   />;
   return (
-    <TableRowWithDetails
-      active={active}
-      details={details}
-      key={props.entity.key}
-      negative={negative}
-      positive={positive}
-      style={style}
-      warning={warning}
-    >
+    <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
       {props.entity_attributes.map((entity_attribute, col_index) =>
         <Table.Cell key={col_index}>
           <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />

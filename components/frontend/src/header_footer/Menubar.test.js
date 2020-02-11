@@ -1,9 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { mount } from 'enzyme';
 import { Menubar } from './Menubar';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<Menubar report_date_string="2019-10-10" onDate={console.log} />, div);
-  ReactDOM.unmountComponentAtNode(div);
+it('calls the callback on click', () => {
+  const mockCallBack = jest.fn();
+  const wrapper = mount(<Menubar report_date_string="2019-10-10" onDate={console.log} go_home={mockCallBack}/>);
+  wrapper.find("MenuItem").at(0).simulate("click");
+  expect(mockCallBack).toHaveBeenCalled();
 });

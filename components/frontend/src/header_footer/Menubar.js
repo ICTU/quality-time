@@ -39,11 +39,11 @@ export function Menubar(props) {
   return (
     <Menu className="Menubar" fixed='top' inverted>
       <Container fluid>
-        <Menu.Item header onClick={() => props.go_home()}>
-          <Image size='mini' src='/favicon.ico' />
-        </Menu.Item>
-        <Menu.Item>
-          <font size="+3">Quality-time</font>
+        <Menu.Item header onClick={() => props.go_home()} tabIndex={0}>
+          <Image size='mini' src='/favicon.ico' alt="Go home" />
+          <span style={{paddingLeft: "6mm", fontSize: "2em"}}>
+            Quality-time
+          </span>
         </Menu.Item>
         <Menu.Menu position='right'>
           {props.searchable &&
@@ -62,6 +62,7 @@ export function Menubar(props) {
               onChange={props.onDate}
               placeholder={today_string}
               value={props.report_date_string}
+              aria-label="Report date"
             />
           </Menu.Item>
           <Menu.Item>
