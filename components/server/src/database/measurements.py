@@ -17,6 +17,12 @@ def latest_measurement(database: Database, metric_uuid: MetricId):
     return database.measurements.find_one(filter={"metric_uuid": metric_uuid}, sort=[("start", pymongo.DESCENDING)])
 
 
+def latest_successful_measurement(database: Database, metric_uuid: MetricId):
+    """Return the latest successful measurement."""
+    return database.measurements.find_one(
+        filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)])
+
+
 def last_measurements(database: Database):
     """Return the last measurement for each metric."""
     return database.measurements.find(filter=dict(last=True))

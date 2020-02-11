@@ -7,8 +7,8 @@ from typing import cast, Dict, Iterator
 from pymongo.database import Database
 import bottle
 
-from database.measurements import count_measurements, latest_measurement, recent_measurements, insert_new_measurement, \
-    update_measurement_end
+from database.measurements import count_measurements, latest_measurement, latest_successful_measurement, \
+    recent_measurements, insert_new_measurement, update_measurement_end
 from database.reports import latest_metric
 from database import sessions
 from server_utilities.functions import report_date_time
@@ -20,8 +20,13 @@ from server_utilities.type import MetricId, SourceId
 def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
-    if latest := latest_measurement(database, measurement["metric_uuid"]):
-        for latest_source, new_source in zip(latest["sources"], measurement["sources"]):
+    metric_uuid = measurement["metric_uuid"]
+    if latest := latest_measurement(database, metric_uuid):
+        if latest_successful := latest_successful_measurement(database, metric_uuid):
+            latest_sources = latest_successful["sources"]
+        else:
+            latest_sources = latest["sources"]
+        for latest_source, new_source in zip(latest_sources, measurement["sources"]):
             new_entity_keys = set(entity["key"] for entity in new_source.get("entities", []))
             # Copy the user data of entities that still exist in the new measurement
             for entity_key, attributes in latest_source.get("entity_user_data", {}).items():
@@ -31,7 +36,7 @@ def post_measurement(database: Database) -> Dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    metric = latest_metric(database, measurement["metric_uuid"])
+    metric = latest_metric(database, metric_uuid)
     return insert_new_measurement(database, metric, measurement)
 
 
