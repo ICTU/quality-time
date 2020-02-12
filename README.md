@@ -61,10 +61,10 @@ Implemented features so far include:
 - Measurement history is kept in a database, allowing for time travel.
 - Easy report configuration via the UI.
 - Multiple reports in one *Quality-time* instance.
-- The possibility to use HQ as a metric source.
-- Simple/naive LDAP-integration.
+- LDAP-integration.
 - Generic false-positive management.
 - Metric tags can be used to summarize metrics with the same tag across subjects, e.g. to summarize all security metrics.
+- Export of reports to PDF, both via the UI as well as via the API.
 
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
 
