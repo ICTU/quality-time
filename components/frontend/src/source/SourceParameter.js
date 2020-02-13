@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Icon, Popup } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';
@@ -47,11 +47,13 @@ export function SourceParameter(props) {
     });
     return values;
   }
-
-  const label = props.help_url ?
-    <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
-    :
-    props.parameter_name;
+  var label = props.parameter_name;
+  if (props.help_url) {
+    label = <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
+  }
+  if (props.help) {
+    label = <label>{props.parameter_name} <Popup on={['hover', 'focus']} content={props.help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>
+  }
   let parameter_props = {
     editableLabel: <SourceParameterLabel edit_scope={edit_scope} label={label} setEditScope={setEditScope} {...props} />,
     label: label,

@@ -19,6 +19,12 @@ def data_model():
         return json.load(json_data_model)
 
 
+def markdown_link(url: str, anchor: str = None) -> str:
+    """Return a Markdown link."""
+    anchor = anchor or url
+    return f"[{anchor}]({url})"
+
+
 def markdown_table_row(*cells: str) -> str:
     """Return a Markdown table row."""
     return f"| {' | '.join(cells)} |\n"
@@ -68,13 +74,14 @@ def sources_table(dm, universal_sources: List[str]) -> str:
 
 def metric_source_table(dm, metric_key, source_key) -> str:
     """Return the metric source combination as Markdown table."""
-    markdown = markdown_table_header("Parameter", "Type", "Mandatory")
+    markdown = markdown_table_header("Parameter", "Type", "Mandatory", "Help")
     for parameter in dm["sources"][source_key]["parameters"].values():
         if metric_key in parameter["metrics"]:
-            name = f"[{parameter['name']}]({parameter['help_url']})" if "help_url" in parameter else parameter['name']
+            name = parameter['name']
             mandatory = "Yes" if parameter["mandatory"] else "No"
             type = TYPE_DESCRIPTION[parameter["type"]]
-            markdown += markdown_table_row(name, type, mandatory)
+            help = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
+            markdown += markdown_table_row(name, type, mandatory, help)
     markdown += "\n"
     return markdown
 

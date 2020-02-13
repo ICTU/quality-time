@@ -180,6 +180,14 @@ class DataModelTest(DataModelTestCase):
                 for parameter_key in parameter_value.get("validate_on", []):
                     self.assertTrue(parameter_key in parameter_keys)
 
+    def test_source_parameter_help(self):
+        """Test that source parameters have either a help url or a help text, but not both."""
+        for source in self.data_model["sources"].values():
+            for parameter_key, parameter in source["parameters"].items():
+                self.assertFalse(
+                    "help" in parameter and "help_url" in parameter,
+                    f"The parameter '{parameter_key}' of the source '{source['name']}' has both a help and a help_url")
+
 
 class DataModelSpecificSourcesTest(DataModelTestCase):
     """Unit tests for specific sources in the data model."""

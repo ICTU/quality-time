@@ -11,6 +11,7 @@ export function SourceParameters(props) {
         (
             <Grid.Column key={parameter_key} style={{paddingTop: '10px'}}>
                 <SourceParameter
+                    help={all_parameters[parameter_key].help}
                     help_url={all_parameters[parameter_key].help_url}
                     index={index}
                     parameter_key={parameter_key}
