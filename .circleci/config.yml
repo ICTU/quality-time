@@ -49,10 +49,12 @@ jobs:
       - setup_remote_docker
       - run: |
           apk add curl bash
-          cd components/collector && docker build -t ictu/collector:latest .
-          curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/collector:latest"
+          docker build -t ictu/collector:latest components/collector
+          docker build -t ictu/server:latest components/server
+          docker build -t ictu/frontend:latest components/frontend
+          curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/collector:latest" "ictu/server:latest" "ictu/frontend:latest"
       - store_artifacts:
-          path: anchore-reports
+          path: anchore-reports/
       
   application_tests:
     machine: true
