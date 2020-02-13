@@ -41,20 +41,18 @@ jobs:
             npm install
             npm test
 
-  security_tests:
-    machine: true
-    parallelism: 1
+  security_scan:
+    docker:
+      - image: docker:stable
     steps:
       - checkout
       - run: |
-          export ENV=ci
-          export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-          docker-compose build
-          curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/quality-time_frontend:v1.6.0" "ictu/quality-time_server:v1.6.0" "ictu/quality-time_collector:v1.6.0"
+          apk add curl bash
+          cd components/collector && docker build -t ictu/collector:latest .
+          curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/collector:latest"
       - store_artifacts:
           path: anchore-reports
       
-
   application_tests:
     machine: true
     parallelism: 1
@@ -72,7 +70,7 @@ workflows:
     jobs:
       - application_tests:
           context: QualityTime
-      - security_tests:
+      - security_scan:
           context: QualityTime
       - unittest_collector:
           context: QualityTime
