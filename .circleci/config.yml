@@ -46,6 +46,7 @@ jobs:
       - image: docker:stable
     steps:
       - checkout
+      - setup_remote_docker
       - run: |
           apk add curl bash
           cd components/collector && docker build -t ictu/collector:latest .
