@@ -50,9 +50,9 @@ jobs:
       - setup_remote_docker
       - run: |
           apk add curl bash
-          [ "$CIRCLE_NODE_INDEX" = "0" ] && docker build -t ictu/collector:latest components/collector && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/collector:latest"
-          [ "$CIRCLE_NODE_INDEX" = "1" ] && docker build -t ictu/server:latest components/server && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/server:latest"
-          [ "$CIRCLE_NODE_INDEX" = "2" ] && docker build -t ictu/frontend:latest components/frontend && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -p -t 600 -r "ictu/frontend:latest"
+          [ "$CIRCLE_NODE_INDEX" = "0" ] && docker build -t ictu/collector:latest components/collector && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/collector:latest"
+          [ "$CIRCLE_NODE_INDEX" = "1" ] && docker build -t ictu/server:latest components/server && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/server:latest"
+          [ "$CIRCLE_NODE_INDEX" = "2" ] && docker build -t ictu/frontend:latest components/frontend && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/frontend:latest"
       - store_artifacts:
           path: anchore-reports/
       
