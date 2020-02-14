@@ -50,8 +50,11 @@ jobs:
       - setup_remote_docker
       - run: |
           apk add curl bash
-          components=("collector" "server" "frontend")
-          component=${components[$CIRCLE_NODE_INDEX]}
+          case $CIRCLE_NODE_INDEX in
+          	0) component=collector;;
+          	1) component=server;;
+          	2) component=frontend;;
+          esac
           docker build -t ictu/$component:latest components/$component && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/$component:latest"
       - store_artifacts:
           path: anchore-reports/
