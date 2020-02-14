@@ -61,10 +61,16 @@ class DataModelTest(DataModelTestCase):
 
     def test_multiple_choice_parameters(self):
         """Test that multiple choice parameters have both a default value and a list of options."""
-        for source in self.data_model["sources"].values():
-            for parameter in source["parameters"].values():
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_id, parameter in source["parameters"].items():
                 if parameter["type"].startswith("multiple_choice"):
                     self.assertTrue("default_value" in parameter)
+                    if not parameter["default_value"]:
+                        self.assertTrue(
+                            "placeholder" in parameter,
+                            f"Parameter '{parameter_id}' of source '{source_id}' has no placeholder")
+                    if "placeholder" in parameter:
+                        self.assertFalse(parameter["default_value"])
                     self.assertEqual(list, type(parameter["default_value"]))
                     if parameter["type"] == "multiple_choice":
                         self.assertTrue("values" in parameter)
@@ -179,6 +185,14 @@ class DataModelTest(DataModelTestCase):
             for parameter_value in source["parameters"].values():
                 for parameter_key in parameter_value.get("validate_on", []):
                     self.assertTrue(parameter_key in parameter_keys)
+
+    def test_source_parameter_help(self):
+        """Test that source parameters have either a help url or a help text, but not both."""
+        for source in self.data_model["sources"].values():
+            for parameter_key, parameter in source["parameters"].items():
+                self.assertFalse(
+                    "help" in parameter and "help_url" in parameter,
+                    f"The parameter '{parameter_key}' of the source '{source['name']}' has both a help and a help_url")
 
 
 class DataModelSpecificSourcesTest(DataModelTestCase):

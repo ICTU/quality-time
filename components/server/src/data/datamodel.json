@@ -2,11 +2,11 @@
     "scales": {
         "count": {
             "name": "Count",
-            "description": "Counts of objects (e.g. lines of code, violations, complex units)."
+            "description": "Counts of objects (for example, lines of code, violations, complex units)."
         },
         "percentage": {
             "name": "Percentage",
-            "description": "Percentage of objects (e.g. percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
+            "description": "Percentage of objects (for example, percentage of lines of code not covered by tests, percentage of violations that are major, percentage of complex units)."
         }
     },
     "metrics": {
@@ -705,6 +705,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -807,7 +808,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all impact levels",
                     "values": [
                         "minor",
                         "moderate",
@@ -825,7 +826,7 @@
                     "help_url": "https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all violation types",
                     "values": [
                         "accesskeys",
                         "area-alt",
@@ -955,8 +956,9 @@
             "url": "https://azure.microsoft.com/en-us/services/devops/server/",
             "parameters": {
                 "url": {
-                    "name": "URL including organization and project (e.g. https://dev.azure.com/{organization}/{project}",
+                    "name": "URL including organization and project",
                     "short_name": "url",
+                    "help": "URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'.",
                     "type": "url",
                     "validate_on": [
                         "private_token"
@@ -1073,6 +1075,8 @@
                 "test_result": {
                     "name": "Test result",
                     "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -1093,8 +1097,9 @@
                     ]
                 },
                 "jobs_to_ignore": {
-                    "name": "Pipelines to ignore (regular expressions or pipeline names, use <folder>/<pipeline name> for pipelines in folders)",
+                    "name": "Pipelines to ignore (regular expressions or pipeline names)",
                     "short_name": "pipelines to ignore",
+                    "help": "Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
@@ -1108,9 +1113,10 @@
                     "name": "Failure type",
                     "short_name": "failure type",
                     "type": "multiple_choice",
+                    "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all failure types",
                     "values": [
                         "canceled",
                         "failed",
@@ -1316,6 +1322,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -1331,6 +1338,7 @@
                     "name": "Confidence levels",
                     "short_name": "confidence levels",
                     "type": "multiple_choice",
+                    "placeholder": "all confidence levels",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -1375,7 +1383,7 @@
         },
         "calendar": {
             "name": "Calendar date",
-            "description": "Warn when the date is too long ago. Can be used to e.g. warn when it's time for the next security test.",
+            "description": "Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test.",
             "parameters": {
                 "date": {
                     "name": "Date",
@@ -1398,6 +1406,7 @@
                 "url": {
                     "name": "URL",
                     "short_name": "URL",
+                    "help": "URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'.",
                     "type": "url",
                     "validate_on": [
                         "username",
@@ -1447,6 +1456,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -1471,6 +1481,7 @@
                     "name": "GitLab instance URL",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'.",
                     "mandatory": true,
                     "validate_on": [
                         "private_token"
@@ -1573,9 +1584,10 @@
                     "name": "Failure type",
                     "short_name": "failure type",
                     "type": "multiple_choice",
+                    "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all failure types",
                     "values": [
                         "canceled",
                         "failed",
@@ -1750,6 +1762,7 @@
                     "name": "URL",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'.",
                     "validate_on": [
                         "username",
                         "password"
@@ -1796,8 +1809,9 @@
                     ]
                 },
                 "jobs_to_ignore": {
-                    "name": "Jobs to ignore (regular expressions or job names, use <parent job name>/<child job name> for the names of nested jobs)",
+                    "name": "Jobs to ignore (regular expressions or job names)",
                     "short_name": "jobs to ignore",
+                    "help": "Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory":  false,
@@ -1811,9 +1825,10 @@
                     "name": "Failure type",
                     "short_name": "failure type",
                     "type": "multiple_choice",
+                    "help": "Limit which failure types to count as failed.",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all failure types",
                     "values": [
                         "Aborted",
                         "Failure",
@@ -1897,6 +1912,7 @@
                     "name": "URL to job",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job.",
                     "validate_on": [
                         "username",
                         "password"
@@ -1945,6 +1961,7 @@
                     "name": "URL to job",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job.",
                     "validate_on": [
                         "username",
                         "password"
@@ -1980,7 +1997,9 @@
                 },
                  "test_result": {
                     "name": "Test result",
-                     "short_name": "test result",
+                    "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -2029,6 +2048,7 @@
                     "name": "URL",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'.",
                     "mandatory": true,
                     "default_value": "",
                     "validate_on": [
@@ -2107,6 +2127,7 @@
                 "manual_test_execution_frequency_default": {
                     "name": "Default expected manual test execution frequency (days)",
                     "short_name": "default expected manual test execution frequency",
+                    "help": "Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days.",
                     "type": "integer",
                     "mandatory": true,
                     "min_value": "1",
@@ -2246,6 +2267,8 @@
                 "test_result": {
                     "name": "Test result",
                     "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -2430,6 +2453,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -2531,6 +2555,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -2635,6 +2660,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -2721,6 +2747,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -2817,6 +2844,7 @@
                     "name": "Risks",
                     "short_name": "risks",
                     "type": "multiple_choice",
+                    "placeholder": "all risks",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -2927,6 +2955,8 @@
                 "test_result": {
                     "name": "Test result",
                     "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -3056,6 +3086,7 @@
                     "name": "Quality-time URL",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'.",
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
@@ -3067,6 +3098,7 @@
                     "short_name": "metric status",
                     "type": "multiple_choice",
                     "mandatory": false,
+                    "placeholder": "all statuses",
                     "default_value": [],
                     "values": [
                         "target met (green)",
@@ -3090,6 +3122,7 @@
                     "name": "Report names or identifiers",
                     "short_name": "reports",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all reports",
                     "mandatory": false,
                     "default_value": [],
                     "metrics": [
@@ -3100,6 +3133,7 @@
                     "name": "Metric types",
                     "short_name": "metric types",
                     "type": "multiple_choice",
+                    "placeholder": "all metric types",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -3166,6 +3200,7 @@
                     "name": "Source types",
                     "short_name": "source types",
                     "type": "multiple_choice",
+                    "placeholder": "all source types",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -3236,6 +3271,7 @@
                     "name": "Tags",
                     "short_name": "tags",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all tags",
                     "mandatory": false,
                     "default_value": [],
                     "metrics": [
@@ -3349,6 +3385,8 @@
                 "test_result": {
                     "name": "Test result",
                     "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -3391,6 +3429,7 @@
                     "name": "URL",
                     "short_name": "URL",
                     "type": "url",
+                    "help": "URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'.",
                     "validate_on": [
                         "private_token"
                     ],
@@ -3436,6 +3475,7 @@
                 "component": {
                     "name": "Project key",
                     "short_name": "project key",
+                    "help":  "The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
@@ -3480,6 +3520,7 @@
                     "name": "Lines to count",
                     "short_name": "lines to count",
                     "type": "single_choice",
+                    "help": "Either count all lines including lines with comments or only count lines with code, excluding comments.",
                     "mandatory": false,
                     "default_value": "lines with code",
                     "values": [
@@ -3497,7 +3538,9 @@
                 "test_result": {
                     "name": "Test result",
                     "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
                     "type": "multiple_choice",
+                    "placeholder": "all test results",
                     "mandatory": false,
                     "default_value": [],
                     "values": [
@@ -3735,6 +3778,7 @@
                     "name": "Severities",
                     "short_name": "severities",
                     "type": "multiple_choice",
+                    "placeholder": "all severities",
                     "mandatory": false,
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/issues/",
                     "default_value": [],
@@ -3785,6 +3829,7 @@
                     "short_name": "types",
                     "type": "multiple_choice",
                     "mandatory": false,
+                    "placeholder": "all violation types",
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
                     "default_value": [],
                     "values": [
@@ -4048,7 +4093,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all cards",
                     "values": [
                         "inactive",
                         "overdue"
@@ -4169,7 +4214,7 @@
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
-                    "placeholder": "all",
+                    "placeholder": "all cards",
                     "values": [
                         "inactive",
                         "overdue"

@@ -7,9 +7,9 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=coverage)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![BCH compliance](https://bettercodehub.com/edge/badge/ICTU/quality-time?branch=master)](https://bettercodehub.com/)
 
-Quality report software for software development and maintenance. *Quality-time* continuously collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
-Technically, *Quality-time* consists of a Mongo database server, an LDAP server, a API-server written in Python, a metrics data collector also written in Python, and a React frontend. One of its purposes is to become a successor of [HQ](https://github.com/ICTU/quality-report).
+Technically, *Quality-time* consists of a Mongo database server, an API-server written in Python, a metrics data collector component also written in Python, and a React frontend. 
 
 Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured metric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
@@ -61,10 +61,10 @@ Implemented features so far include:
 - Measurement history is kept in a database, allowing for time travel.
 - Easy report configuration via the UI.
 - Multiple reports in one *Quality-time* instance.
-- The possibility to use HQ as a metric source.
-- Simple/naive LDAP-integration.
+- LDAP-integration.
 - Generic false-positive management.
 - Metric tags can be used to summarize metrics with the same tag across subjects, e.g. to summarize all security metrics.
+- Export of reports to PDF, both via the UI as well as via the API.
 
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
 
@@ -90,6 +90,4 @@ Start the containers:
 docker-compose up
 ```
 
-The frontend is served at [http://localhost](http://localhost).
-
-By default, there is one user defined. Use username `admin` and password `admin` to log in.
+The frontend is served at [http://localhost](http://localhost). Use username `admin` and password `admin` to log in.
