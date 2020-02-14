@@ -74,10 +74,11 @@ class CollectorTest(unittest.TestCase):
             metric_uuid=dict(
                 addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
-        with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
-            with patch("requests.post") as post:
-                with patch("time.sleep", side_effect=[RuntimeError]):
-                    self.assertRaises(RuntimeError, quality_time_collector.collect)
+        with patch("builtins.open"):  # To prevent writing the health check date/time file
+            with patch("requests.get", side_effect=[self.data_model_response, self.metrics_response, Mock()]):
+                with patch("requests.post") as post:
+                    with patch("time.sleep", side_effect=[RuntimeError]):
+                        self.assertRaises(RuntimeError, quality_time_collector.collect)
         post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
@@ -127,6 +128,7 @@ class CollectorTest(unittest.TestCase):
 
     def test_fetch_data_model_after_failure(self):
         """Test that that the data model is fetched on the second try."""
-        with patch("requests.get", side_effect=[None, self.data_model_response]):
-            data_model = self.metrics_collector.fetch_data_model(0)
+        with patch("builtins.open"):  # To prevent writing the health check date/time file
+            with patch("requests.get", side_effect=[None, self.data_model_response]):
+                data_model = self.metrics_collector.fetch_data_model(0)
         self.assertEqual(self.data_model, data_model)
