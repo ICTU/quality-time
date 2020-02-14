@@ -11,6 +11,11 @@ TYPE_DESCRIPTION = dict(
     single_choice="Single choice", multiple_choice_with_addition="Multiple choice with addition")
 
 
+def html_escape(text: str) -> str:
+    """Escape < and >."""
+    return text.replace("<", "&lt;").replace(">", "&gt;")
+
+
 def data_model():
     """Return the data model."""
     data_model_path = pathlib.Path(__file__).resolve().parent.parent.parent / \
@@ -27,7 +32,7 @@ def markdown_link(url: str, anchor: str = None) -> str:
 
 def markdown_table_row(*cells: str) -> str:
     """Return a Markdown table row."""
-    return f"| {' | '.join(cells)} |\n"
+    return f"| {' | '.join([html_escape(cell) for cell in cells])} |\n"
 
 
 def markdown_table_header(*column_headers: str) -> str:
@@ -88,10 +93,10 @@ def metric_source_table(dm, metric_key, source_key) -> str:
 
 def data_model_as_table(dm) -> str:
     """Return the data model as Markdown table."""
-    markdown = markdown_header("Quality-time data model")
-    markdown += markdown_header("Quality-time metrics", 2)
+    markdown = markdown_header("Quality-time metrics and sources")
+    markdown += markdown_header("Metrics", 2)
     markdown += metrics_table(dm, universal_sources := ["manual_number", "random"])
-    markdown += markdown_header("Quality-time sources", 2)
+    markdown += markdown_header("Sources", 2)
     markdown += sources_table(dm, universal_sources)
     markdown += "¹) All metrics can be measured using the 'Manual number' and the 'Random number' source.\n"
     markdown += markdown_header("Supported metric/source combinations", 2)

@@ -61,10 +61,16 @@ class DataModelTest(DataModelTestCase):
 
     def test_multiple_choice_parameters(self):
         """Test that multiple choice parameters have both a default value and a list of options."""
-        for source in self.data_model["sources"].values():
-            for parameter in source["parameters"].values():
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_id, parameter in source["parameters"].items():
                 if parameter["type"].startswith("multiple_choice"):
                     self.assertTrue("default_value" in parameter)
+                    if not parameter["default_value"]:
+                        self.assertTrue(
+                            "placeholder" in parameter,
+                            f"Parameter '{parameter_id}' of source '{source_id}' has no placeholder")
+                    if "placeholder" in parameter:
+                        self.assertFalse(parameter["default_value"])
                     self.assertEqual(list, type(parameter["default_value"]))
                     if parameter["type"] == "multiple_choice":
                         self.assertTrue("values" in parameter)

@@ -1,6 +1,6 @@
-# Quality-time data model
+# Quality-time metrics and sources
 
-## Quality-time metrics
+## Metrics
 
 | Name | Description | Default target | Default tags | Sources¹ |
 | :--- | :---------- | :------------- | :----------- | :------- |
@@ -31,7 +31,7 @@
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
 
-## Quality-time sources
+## Sources
 
 | Name | Description | Metrics |
 | :--- | :---------- | :------ |
@@ -39,7 +39,7 @@
 | [Axe CSV](https://github.com/ICTU/axe-reports) | An Axe accessibility report in CSV format. | Accessibility violations |
 | [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Ready user story points, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
-| Calendar date | Warn when the date is too long ago. Can be used to e.g. warn when it's time for the next security test. | Source up-to-dateness |
+| Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | Source up-to-dateness, Test branch coverage, Test line coverage |
@@ -82,7 +82,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -92,7 +92,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -102,7 +102,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -113,24 +113,24 @@
 | :-------- | :--- | :-------- | :--- |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| Pipelines to ignore (regular expressions or pipeline names, use <folder>/<pipeline name> for pipelines in folders) | Multiple choice with addition | No |  |
+| Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 
 ### Failed CI-jobs from Jenkins
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use <parent job name>/<child job name> for the names of nested jobs. |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 
 ### Failed CI-jobs from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. E.g.: 'https://gitlab.com'. |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
@@ -147,7 +147,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
@@ -180,7 +180,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -190,7 +190,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -200,7 +200,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
@@ -210,18 +210,18 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Manual test execution frequency field (name or id) | String | No | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
-| Default expected manual test execution frequency (days) | Integer | Yes |  |
+| Default expected manual test execution frequency (days) | Integer | Yes | Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days. |
 
 ### Many parameters from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -231,7 +231,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| Quality-time URL | URL | Yes |  |
+| Quality-time URL | URL | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
 | Metric status | Multiple choice | No |  |
 | Report names or identifiers | Multiple choice with addition | No |  |
 | Metric types | Multiple choice | No |  |
@@ -266,7 +266,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
@@ -327,7 +327,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
 | Project (name or id) | String | Yes |  |
 | Username for basic authentication | String | Yes |  |
 | Password for basic authentication | Password | Yes |  |
@@ -336,7 +336,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. E.g.: 'https://gitlab.com'. |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | File or folder path | String | Yes | [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html) |
@@ -355,7 +355,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes |  |
+| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 
@@ -363,7 +363,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes |  |
+| URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 
@@ -440,7 +440,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -490,7 +490,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
 | Project (name or id) | String | Yes |  |
 | Username for basic authentication | String | Yes |  |
 | Password for basic authentication | Password | Yes |  |
@@ -547,7 +547,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -561,16 +561,16 @@
 | :-------- | :--- | :-------- | :--- |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from Jenkins test report
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes |  |
+| URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from JUnit XML report
 
@@ -580,7 +580,7 @@
 | URL to a JUnit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from Performancetest-runner
 
@@ -589,7 +589,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from Robot Framework
 
@@ -599,17 +599,17 @@
 | URL to a Robot Framework report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
-| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. E.g. when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Test branch coverage from JaCoCo
 
@@ -624,7 +624,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes |  |
+| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 
@@ -640,7 +640,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -658,7 +658,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes |  |
+| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 
@@ -674,7 +674,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
@@ -693,7 +693,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. E.g.: 'https://gitlab.com'. |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Branches to ignore (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
@@ -706,13 +706,13 @@
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Number of days since last build after which to consider pipelines inactive | Integer | No |  |
-| Pipelines to ignore (regular expressions or pipeline names, use <folder>/<pipeline name> for pipelines in folders) | Multiple choice with addition | No |  |
+| Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 
 ### Unused CI-jobs from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. E.g.: 'https://gitlab.com'. |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
@@ -721,11 +721,11 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
+| URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
-| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use <parent job name>/<child job name> for the names of nested jobs. |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 
 ### Violations from OJAudit
 
@@ -741,7 +741,7 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. E.g.: 'https://sonarcloud.io'. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |

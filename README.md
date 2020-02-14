@@ -7,7 +7,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=coverage)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![BCH compliance](https://bettercodehub.com/edge/badge/ICTU/quality-time?branch=master)](https://bettercodehub.com/)
 
-*Quality-time* is an autamated quality system for software development and maintenance. *Quality-time* continuously collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
 Technically, *Quality-time* consists of a Mongo database server, an API-server written in Python, a metrics data collector component also written in Python, and a React frontend. 
 
@@ -90,6 +90,4 @@ Start the containers:
 docker-compose up
 ```
 
-The frontend is served at [http://localhost](http://localhost).
-
-By default, there is one user defined. Use username `admin` and password `admin` to log in.
+The frontend is served at [http://localhost](http://localhost). Use username `admin` and password `admin` to log in.
