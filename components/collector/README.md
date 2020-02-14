@@ -1,6 +1,12 @@
 # Quality-time collector
 
+## Overview
+
 The collector is responsible for collecting measurement data from sources. It wakes up once every minute and asks the server for a list of all metrics. For each metric, the collector gets the measurement data from each of the metric's sources and posts a new measurement to the server.
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
+
+## Health check
+
+Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
 

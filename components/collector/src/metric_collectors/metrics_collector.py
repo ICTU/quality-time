@@ -38,12 +38,19 @@ class MetricsCollector:
         self.next_fetch: Dict[str, datetime] = dict()
         self.last_parameters: Dict[str, Any] = dict()
 
+    @staticmethod
+    def record_health() -> None:
+        """Record the current date and time in a file to allow for health checks."""
+        with open("health_check.txt", "w") as health_check:
+            health_check.write(datetime.now().isoformat())
+
     def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
         sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         self.data_model = self.fetch_data_model(sleep_duration)
         while True:
+            self.record_health()
             logging.info("Collecting...")
             self.fetch_measurements(measurement_frequency)
             logging.info("Sleeping %ss...", sleep_duration)
@@ -52,6 +59,7 @@ class MetricsCollector:
     def fetch_data_model(self, sleep_duration: int) -> JSON:
         """Fetch the data model."""
         while True:
+            self.record_health()
             logging.info("Loading data model...")
             if data_model := get(URL(f"{self.server_url}/api/v2/datamodel")):
                 return data_model

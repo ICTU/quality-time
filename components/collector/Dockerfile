@@ -12,4 +12,6 @@ USER collector
 
 COPY src /home/collector
 
+HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta; import sys; sys.exit(dt.now() - dt.fromisoformat(open('health_check.txt').read().strip()) > timedelta(seconds=600))"
+
 CMD ["python", "/home/collector/quality_time_collector.py"]
