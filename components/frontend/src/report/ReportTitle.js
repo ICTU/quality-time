@@ -33,7 +33,7 @@ export function ReportTitle(props) {
     }
     function ReportAttributesRow() {
         return (
-            <Grid.Row columns={3}>
+            <Grid.Row columns={2}>
                 <Grid.Column>
                     <StringInput
                         label="Report title"
@@ -47,14 +47,6 @@ export function ReportTitle(props) {
                         set_value={(value) => set_report_attribute(report_uuid, "subtitle", value, props.reload)}
                         value={props.report.subtitle}
                     />
-                </Grid.Column>
-                <Grid.Column>
-                    <IntegerInput
-                        label="Delay before generating PDF"
-                        min="1"
-                        set_value={(value) => set_report_attribute(report_uuid, "delay", value, props.reload)}
-                        unit="second(s)"
-                        value={props.report.delay || 5} />
                 </Grid.Column>
             </Grid.Row>
         )

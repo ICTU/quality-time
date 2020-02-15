@@ -63,7 +63,7 @@ services:
     volumes:
       - "dbdata:/data/db"
   renderer:
-    image: msokk/electron-render-service:1.0.0
+    image: anthonylau/url-to-pdf-api:0.2.0
     env_file:
       - ${ENV:-dev}.env
 volumes:
