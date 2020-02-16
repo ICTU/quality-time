@@ -6,7 +6,6 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { CopyButton, DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { copy_report, delete_report, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { IntegerInput } from '../fields/IntegerInput';
 
 export function ReportTitle(props) {
     const report_uuid = props.report.report_uuid;
