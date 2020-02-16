@@ -63,7 +63,7 @@ services:
     volumes:
       - "dbdata:/data/db"
   renderer:
-    image: anthonylau/url-to-pdf-api:0.2.0
+    image: ictu/url-to-pdf-api:v0.1
     env_file:
       - ${ENV:-dev}.env
 volumes:
