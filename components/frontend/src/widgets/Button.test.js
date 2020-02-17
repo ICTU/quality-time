@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
+import * as report from '../api/report';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
@@ -27,6 +28,35 @@ describe('<DownloadAsPDFButton />', () => {
     it('has the correct label', () => {
         const wrapper = shallow(<DownloadAsPDFButton />);
         expect(wrapper.dive().find("Button").children().at(4).text()).toBe("report as pdf");
+    });
+});
+
+jest.mock("../api/report.js")
+report.get_changelog = jest.fn().mockReturnValue({ then: jest.fn() });
+
+const test_report = {
+    report_uuid: "report_uuid"
+};
+
+describe("<DownloadAsPDFButton/>", () => {
+    it('indicates loading on click', () => {
+        report.get_report_pdf = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+        wrapper.find("button").simulate("click");
+        expect(wrapper.find("button").hasClass("loading")).toBe(true);
+    });
+    it('ignores a second click', () => {
+        report.get_report_pdf = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+        wrapper.find("button").simulate("click");
+        wrapper.find("button").simulate("click");
+        expect(wrapper.find("button").hasClass("loading")).toBe(true);
+    });
+    it('loads the pdf', () => {
+        report.get_report_pdf = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: (callback => callback()) }) });
+        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+        wrapper.find("button").simulate("click");
+        expect(wrapper.find("button").hasClass("loading")).toBe(false);
     });
 });
 

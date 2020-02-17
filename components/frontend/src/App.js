@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Segment } from 'semantic-ui-react';
-import { SemanticToastContainer, toast } from 'react-semantic-toasts';
+import { SemanticToastContainer } from 'react-semantic-toasts';
 import HashLinkObserver from "react-hash-link";
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import './App.css';
@@ -15,17 +15,7 @@ import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
-
-function show_message(type, title, description, icon) {
-  toast({
-    title: title,
-    type: type,
-    icon: icon,
-    size: "large",
-    description: <p>{description}</p>,
-    time: 30000
-  }, () => { }, () => { }, () => { });  // Event handlers are mandatory
-}
+import { show_message } from './utils'
 
 class App extends Component {
   constructor(props) {
