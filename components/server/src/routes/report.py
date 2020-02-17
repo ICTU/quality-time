@@ -1,5 +1,7 @@
 """Report routes."""
 
+import os
+
 import bottle
 import requests
 from pymongo.database import Database
@@ -54,7 +56,8 @@ def export_report_as_pdf(report_uuid: ReportId, database: Database):
     """Download the report as pdf."""
     if not (delay := dict(bottle.request.query).get("delay")):  # pylint: disable=superfluous-parens
         delay = 5 if report_uuid.startswith("tag-") else get_data(database, report_uuid).report.get("delay", 5)
-    response = requests.get(f"http://renderer:3000/pdf?accessKey=qt&url=http://www/{report_uuid}&delay={delay}")
+    port = os.environ.get("PROXY_PORT", "80")
+    response = requests.get(f"http://renderer:3000/pdf?accessKey=qt&url=http://www:{port}/{report_uuid}&delay={delay}")
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content

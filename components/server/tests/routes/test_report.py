@@ -91,7 +91,8 @@ class ReportTest(unittest.TestCase):
         response.content = b"PDF"
         requests_get.return_value = response
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
-        requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=5")
+        requests_get.assert_called_once_with(
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www:80/report_uuid&delay=5")
 
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):
@@ -99,7 +100,7 @@ class ReportTest(unittest.TestCase):
         requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security"), self.database))
         requests_get.assert_called_once_with(
-            "http://renderer:3000/pdf?accessKey=qt&url=http://www/tag-security&delay=5")
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www:80/tag-security&delay=5")
 
     @patch("requests.get")
     def test_get_pdf_report_with_extra_delay(self, requests_get):
@@ -107,7 +108,8 @@ class ReportTest(unittest.TestCase):
         self.report["delay"] = 7
         requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
-        requests_get.assert_called_once_with("http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=7")
+        requests_get.assert_called_once_with(
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www:80/report_uuid&delay=7")
 
     @patch("bottle.request")
     @patch("requests.get")
@@ -117,7 +119,7 @@ class ReportTest(unittest.TestCase):
         requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid"), self.database))
         requests_get.assert_called_once_with(
-            "http://renderer:3000/pdf?accessKey=qt&url=http://www/report_uuid&delay=10")
+            "http://renderer:3000/pdf?accessKey=qt&url=http://www:80/report_uuid&delay=10")
 
     def test_delete_report(self):
         """Test that the report can be deleted."""
