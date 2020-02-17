@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Don't refresh the change log when clicking the "Download report as pdf" button. Fixes [#1015](https://github.com/ICTU/quality-time/issues/1015). 
+
 ## [1.6.0] - [2020-02-12]
 
 ### Changed

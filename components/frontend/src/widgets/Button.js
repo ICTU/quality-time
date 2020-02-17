@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
+import { get_report_pdf } from '../api/report';
+import { show_message } from '../utils'
 
 function ActionButton(props) {
   const { action, icon, item_type, ...other } = props;
@@ -27,8 +29,40 @@ export function DeleteButton(props) {
   return <ActionButton icon='trash' action='Delete' negative floated='right' {...props} />
 }
 
+function download_pdf(report_uuid, callback) {
+  get_report_pdf(report_uuid)
+      .then(response => {
+          if (response.ok === false) {
+              show_message("error", "PDF rendering failed", "HTTP code " + response.status + ": " + response.statusText)
+          } else {
+              let url = window.URL.createObjectURL(response);
+              let a = document.createElement('a');
+              a.href = url;
+              let now = new Date();
+              a.download = `Quality-time-report-${report_uuid}-${now.toISOString()}.pdf`;
+              a.click();
+          }
+      }).finally(() => callback());
+}
+
 export function DownloadAsPDFButton(props) {
-  return <ActionButton icon="file pdf" action='Download' item_type='report as pdf' {...props} />
+  const [loading, setLoading] = useState(false);
+  const { report_uuid, ...otherProps } = props;
+  return (
+      <ActionButton
+          action='Download'
+          icon="file pdf"
+          item_type='report as pdf'
+          loading={loading}
+          onClick={() => {
+              if (!loading) {
+                  setLoading(true);
+                  download_pdf(report_uuid, () => { setLoading(false) })
+              }
+          }}
+          {...otherProps}
+      />
+  )
 }
 
 function ReorderButton(props) {

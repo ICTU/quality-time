@@ -1,50 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { CopyButton, DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
-import { copy_report, delete_report, get_report_pdf, set_report_attribute } from '../api/report';
+import { copy_report, delete_report, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { IntegerInput } from '../fields/IntegerInput';
 
-function download_pdf(report_uuid, callback) {
-    get_report_pdf(report_uuid)
-        .then(pdf => {
-            let url = window.URL.createObjectURL(pdf);
-            let a = document.createElement('a');
-            a.href = url;
-            let now = new Date();
-            a.download = `Quality-time-report-${report_uuid}-${now.toISOString()}.pdf`;
-            a.click();
-        }).finally(() => callback());
-}
-
 export function ReportTitle(props) {
-    const [loading, setLoading] = useState(false);
+    const report_uuid = props.report.report_uuid;
     function ButtonRow() {
         return (
             <Grid.Row>
                 <Grid.Column>
-                    <DownloadAsPDFButton
-                        loading={loading}
-                        onClick={() => {
-                            if (!loading) {
-                                setLoading(true);
-                                download_pdf(props.report.report_uuid, () => { setLoading(false) })
-                            }
-                        }}
-                    />
+                    <DownloadAsPDFButton report_uuid={report_uuid} />
                     <ReadOnlyOrEditable editableComponent={
                         <CopyButton
                             item_type="report"
-                            onClick={() => copy_report(props.report.report_uuid, props.reload)}
+                            onClick={() => copy_report(report_uuid, props.reload)}
                         />}
                     />
                     <ReadOnlyOrEditable editableComponent={
                         <DeleteButton
                             item_type='report'
-                            onClick={() => delete_report(props.report.report_uuid, props.go_home)}
+                            onClick={() => delete_report(report_uuid, props.go_home)}
                         />}
                     />
                 </Grid.Column>
@@ -57,14 +37,14 @@ export function ReportTitle(props) {
                 <Grid.Column>
                     <StringInput
                         label="Report title"
-                        set_value={(value) => set_report_attribute(props.report.report_uuid, "title", value, props.reload)}
+                        set_value={(value) => set_report_attribute(report_uuid, "title", value, props.reload)}
                         value={props.report.title}
                     />
                 </Grid.Column>
                 <Grid.Column>
                     <StringInput
                         label="Report subtitle"
-                        set_value={(value) => set_report_attribute(props.report.report_uuid, "subtitle", value, props.reload)}
+                        set_value={(value) => set_report_attribute(report_uuid, "subtitle", value, props.reload)}
                         value={props.report.subtitle}
                     />
                 </Grid.Column>
@@ -72,7 +52,7 @@ export function ReportTitle(props) {
                     <IntegerInput
                         label="Delay before generating PDF"
                         min="1"
-                        set_value={(value) => set_report_attribute(props.report.report_uuid, "delay", value, props.reload)}
+                        set_value={(value) => set_report_attribute(report_uuid, "delay", value, props.reload)}
                         unit="second(s)"
                         value={props.report.delay || 5} />
                 </Grid.Column>
@@ -83,7 +63,7 @@ export function ReportTitle(props) {
         return (
             <Grid.Row>
                 <Grid.Column>
-                    <ChangeLog report_uuid={props.report.report_uuid} timestamp={props.report.timestamp} />
+                    <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} />
                 </Grid.Column>
             </Grid.Row>
         )
