@@ -58,7 +58,7 @@ describe("<DownloadAsPDFButton/>", () => {
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
     });
     it('stops loading on failure', () => {
-        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ then: (callback => callback({response: {ok: false}})), finally: (callback => callback()) }) });
+        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({then: jest.fn().mockReturnValue({response: {ok: false}, finally: (callback => callback())})});
         const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
         wrapper.find("button").simulate("click");
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
