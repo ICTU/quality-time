@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { mount, shallow } from 'enzyme';
 import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
@@ -37,9 +38,11 @@ const test_report = {
     report_uuid: "report_uuid"
 };
 
+
+
 describe("<DownloadAsPDFButton/>", () => {
     it('indicates loading on click', () => {
-        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
         const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
         wrapper.find("button").simulate("click");
         expect(wrapper.find("button").hasClass("loading")).toBe(true);
@@ -51,16 +54,23 @@ describe("<DownloadAsPDFButton/>", () => {
         wrapper.find("button").simulate("click");
         expect(wrapper.find("button").hasClass("loading")).toBe(true);
     });
-    it('loads the pdf', () => {
-        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ then: (callback => callback()), finally: (callback => callback()) }) });
-        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
-        wrapper.find("button").simulate("click");
+    it('loading is false after returning pdf', async () => {
+        fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue("pdf");
+        window.URL.createObjectURL = jest.fn();
+        let wrapper;
+        await act(async () => {
+            wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+            wrapper.find("button").simulate("click");
+        });
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
     });
-    it('stops loading on failure', () => {
-        fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({then: jest.fn().mockReturnValue({response: {ok: false}, finally: (callback => callback())})});
-        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
-        wrapper.find("button").simulate("click");
+    it('loading is false after receiving error', async () => {
+        fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ok: false});
+        let wrapper;
+        await act(async () => {
+            wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+            wrapper.find("button").simulate("click");
+        });
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
     });
 });
@@ -126,7 +136,7 @@ describe("<ReorderButtonGroup />", () => {
 describe('<MoveButton />', () => {
     it('calls the callback on click', () => {
         const mockCallBack = jest.fn();
-        const wrapper = mount(<MoveButton options={[{key: "1", value: "first", text: "First"}]} onClick={mockCallBack} />);
+        const wrapper = mount(<MoveButton options={[{ key: "1", value: "first", text: "First" }]} onClick={mockCallBack} />);
         wrapper.find("Dropdown").at(0).simulate("click");
         wrapper.find("DropdownItem").at(0).simulate("click");
         expect(mockCallBack).toHaveBeenCalledWith("first");
