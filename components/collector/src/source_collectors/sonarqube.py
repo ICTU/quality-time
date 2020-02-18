@@ -86,7 +86,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         responses = super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_api_url = SourceCollector._api_url(self)
+        base_api_url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}")
