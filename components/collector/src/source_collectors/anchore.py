@@ -5,6 +5,7 @@ from typing import Tuple
 
 from dateutil.parser import parse
 
+from collector_utilities.functions import md5_hash
 from collector_utilities.type import Entities, Response, Responses, Value
 from .source_collector import JSONFileSourceCollector, SourceUpToDatenessCollector
 
@@ -20,7 +21,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
             entities.extend([
                 dict(
-                    key=f'{vulnerability["vuln"]}:{vulnerability["package"]}',
+                    key=md5_hash(f'{vulnerability["vuln"]}:{vulnerability["package"]}'),
                     cve=vulnerability["vuln"],
                     package=vulnerability["package"],
                     severity=vulnerability["severity"],

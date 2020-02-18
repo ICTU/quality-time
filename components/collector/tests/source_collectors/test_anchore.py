@@ -31,7 +31,8 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
         self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
         self.expected_entities = [
             dict(
-                key="CVE-000:package", cve="CVE-000", url="https://cve", fix="None", severity="Low", package="package")]
+                key="1fe53aa1061841cbd9fcdab1179191dc", cve="CVE-000", url="https://cve", fix="None", severity="Low",
+                package="package")]
 
     def test_warnings(self):
         """Test the number of security warnings."""
