@@ -178,7 +178,8 @@ class SetEntityAttributeTest(unittest.TestCase):
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
         self.assertEqual(
-            dict(description="John changed the attribute of 'entity title' from '' to 'value'.", email=JOHN["email"]),
+            dict(description="John changed the attribute of 'entity title' from '' to 'value'.", email=JOHN["email"],
+                 uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID]),
             measurement["delta"])
 
 
