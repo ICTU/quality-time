@@ -9,7 +9,7 @@ import bottle
 
 from database.measurements import count_measurements, latest_measurement, latest_successful_measurement, \
     recent_measurements, insert_new_measurement, update_measurement_end
-from database.reports import latest_metric
+from database.reports import get_data, latest_metric
 from database import sessions
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
@@ -45,6 +45,7 @@ def post_measurement(database: Database) -> Dict:
 def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set an entity attribute."""
+    data = get_data(database, metric_uuid=metric_uuid, source_uuid=source_uuid)
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
@@ -54,11 +55,11 @@ def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_ke
     source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
     user = sessions.user(database)
     measurement["delta"] = dict(
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
         description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
                     f"'{value}'.",
         email=user["email"])
-    metric = latest_metric(database, metric_uuid)
-    return insert_new_measurement(database, metric, measurement)
+    return insert_new_measurement(database, data.metric, measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

@@ -1,7 +1,5 @@
 """Changelog routes."""
 
-from typing import cast
-
 from pymongo.database import Database
 import bottle
 
@@ -12,19 +10,11 @@ from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 def _get_changelog(database: Database, nr_changes: str, **uuids: str):
     """Return the recent most nr_changes changes from the changelog."""
     limit = int(nr_changes)
-    changes = []
-    if "metric_uuid" in uuids:
-        # Older measurements have a string as value for the delta key, newer measurements have a dictionairy with keys
-        # description and email.
-        changes.extend(
-            [dict(delta=change["delta"]["description"] if isinstance(change["delta"], dict) else change["delta"],
-                  email=change["delta"]["email"] if isinstance(change["delta"], dict) else "",
-                  timestamp=change["start"])
-             for change in measurements.changelog(database, cast(MetricId, uuids["metric_uuid"]), limit)])
-    changes.extend(
-        [dict(delta=change["delta"]["description"], email=change["delta"].get("email", ""),
-              timestamp=change["timestamp"])
-         for change in reports.changelog(database, limit, **uuids) if "delta" in change])
+    changes = [
+        dict(
+            delta=item["delta"]["description"], email=item["delta"].get("email", ""),
+            timestamp=item.get("timestamp") or item["start"])
+        for item in measurements.changelog(database, limit, **uuids) + reports.changelog(database, limit, **uuids)]
     return dict(changelog=sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:limit])
 
 
