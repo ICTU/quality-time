@@ -86,8 +86,10 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         responses = super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
+        base_api_url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
-            f"{api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&branch={branch}")
+            f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
+            f"branch={branch}")
         return responses + [
             requests.get(total_metric_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
 
@@ -100,14 +102,14 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 
 
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
-    """SonarQube long methods collector."""
+    """SonarQube complex methods/functions collector."""
 
     rules_parameter = "complex_unit_rules"
     total_metric = "functions"
 
 
 class SonarQubeLongUnits(SonarQubeViolationsWithPercentageScale):
-    """SonarQube long methods collector."""
+    """SonarQube long methods/functions collector."""
 
     rules_parameter = "long_unit_rules"
     total_metric = "functions"
