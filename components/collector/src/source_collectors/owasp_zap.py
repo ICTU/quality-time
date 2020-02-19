@@ -28,7 +28,11 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
             for alert_instance in alert.findall("./instances/instance"):
                 method = alert_instance.findtext("method", default="")
                 uri = hashless(URL(alert_instance.findtext("uri", default="")))
-                key = md5_hash(f"{alert_key}:{method}:{uri}")
+                # We need to add evidence to the key because apparently alert_key, method, and uri can be the same for
+                # different alert instances. Add evidence, when available, to make keys unique. Add without ":" as not
+                # to change the keys of existing entities that don't have evidence.
+                evidence = alert_instance.findtext("evidence", default="")
+                key = md5_hash(f"{alert_key}:{method}:{uri}{evidence}")
                 entities.append(
                     dict(key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk))
         return str(len(entities)), "100", entities
