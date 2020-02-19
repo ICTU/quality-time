@@ -7,7 +7,7 @@ services:
     env_file:
       - ${ENV:-dev}.env
     ports:
-    - "${PROXY_PORT:-80}:${PROXY_PORT:-80}"
+      - "${PROXY_PORT:-80}:${PROXY_PORT:-80}"
     environment:
       CONFIG: |
         :${PROXY_PORT:-80} {
