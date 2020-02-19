@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Use environment variables for both proxy host and port so the renderer uses the right url to get the report. Fixes [#1031](https://github.com/ICTU/quality-time/issues/1031).
 - OWASP ZAP warning keys were not always unique, causing trouble with marking them as false positive. Fixes [#1032](https://github.com/ICTU/quality-time/issues/1032).
+- The Jenkins test report source would not correctly get the number of passed tests from aggregated test reports. Fixes [#1033](http://github.com/ICTU/quality-time/issues/1033).
 
 ## [1.6.1] - [2020-02-18]
 

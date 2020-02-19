@@ -27,6 +27,25 @@ class JenkinsTestReportTest(SourceCollectorTestCase):
                 dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
                 dict(class_name="c2", key="tc2", name="tc2", test_result="passed")])
 
+    def test_nr_of_tests_with_aggregated_report(self):
+        """Test that the number of tests is returned when the test report is an aggregated report."""
+        jenkins_json = dict(
+            childReports=[
+                dict(
+                    result=dict(
+                        failCount=1, passCount=1,
+                        suites=[dict(
+                            cases=[
+                                dict(status="FAILED", name="tc1", className="c1"),
+                                dict(status="PASSED", name="tc2", className="c2")])]))])
+        metric = dict(type="tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=jenkins_json)
+        self.assert_measurement(
+            response, value="2",
+            entities=[
+                dict(class_name="c1", key="tc1", name="tc1", test_result="failed"),
+                dict(class_name="c2", key="tc2", name="tc2", test_result="passed")])
+
     def test_nr_of_passed_tests(self):
         """Test that the number of passed tests is returned."""
         jenkins_json = dict(
