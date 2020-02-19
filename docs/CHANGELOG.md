@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Use environment variables for both proxy host and port so the renderer uses the right url to get the report. Fixes[#1031](https://github.com/ICTU/quality-time/issues/1031).
+- Use environment variables for both proxy host and port so the renderer uses the right url to get the report. Fixes [#1031](https://github.com/ICTU/quality-time/issues/1031).
 
 ## [1.6.1] - [2020-02-18]
 
