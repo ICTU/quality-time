@@ -11,6 +11,10 @@ from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
+TestCase = Dict[str, str]
+Suite = Dict[str, List[TestCase]]
+
+
 class JenkinsTestReportTests(SourceCollector):
     """Collector to get the amount of tests from a Jenkins test report."""
 
@@ -22,22 +26,25 @@ class JenkinsTestReportTests(SourceCollector):
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
-        suites = json.get("suites", [])
         statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
-        value = str(sum(int(json.get(status_count, 0)) for status_count in status_counts))
+        results = [report["result"] for report in json["childReports"]] if "childReports" in json else [json]
+        value = sum(int(result.get(status_count, 0)) for status_count in status_counts for result in results)
+        suites: List[Suite] = []
+        for result in results:
+            suites.extend(result["suites"])
         entities = [
             self.__entity(case) for suite in suites for case in suite.get("cases", [])
             if self.__status(case) in statuses]
-        return value, "100", entities
+        return str(value), "100", entities
 
-    def __entity(self, case) -> Entity:
+    def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
         name = case.get("name", "<nameless test case>")
         return dict(key=name, name=name, class_name=case.get("className", ""), test_result=self.__status(case))
 
     @staticmethod
-    def __status(case) -> str:
+    def __status(case: TestCase) -> str:
         """Return the status of the test case."""
         # The Jenkins test report has three counts: passed, skipped, and failed. Individual test cases
         # can be skipped (indicated by the attribute skipped being "true") and/or have a status that can
