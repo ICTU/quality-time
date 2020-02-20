@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- As the previous rendering component used by Quality-time is no longer maintained, it is replaced with a new component: [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api). Quality-time uses the [ICTU fork](https://github.com/ICTU/url-to-pdf-api) that packages the service as a [Docker container](https://hub.docker.com/repository/docker/ictu/url-to-pdf-api).
+
+### Removed
+
+- Because the new rendering component (see above) waits for network activity to stop before converting a report into PDF, the delay parameter is no longer needed.
+
 ## [1.6.2] - [2020-02-19]
 
 ### Fixed
