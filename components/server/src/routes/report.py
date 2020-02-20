@@ -59,7 +59,7 @@ def export_report_as_pdf(report_uuid: ReportId):
     margins = "&".join([f"pdf.margin.{side}=25" for side in ("top", "bottom", "left", "right")])
     # Set pdf scale to 70% or otherwise the dashboard falls off the page
     options = f"emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&{margins}"
-    response = requests.get(f"http://renderer:3000/pdf?accessKey=qt&url=http://{host}:{port}/{report_uuid}&{options}")
+    response = requests.get(f"http://renderer:9000/api/render?url=http://{host}:{port}/{report_uuid}&{options}")
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content
