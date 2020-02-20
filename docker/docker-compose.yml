@@ -63,7 +63,7 @@ services:
     volumes:
       - "dbdata:/data/db"
   renderer:
-    image: msokk/electron-render-service:1.0.0
+    image: ictu/url-to-pdf-api:v1.0.0
     env_file:
       - ${ENV:-dev}.env
 volumes:

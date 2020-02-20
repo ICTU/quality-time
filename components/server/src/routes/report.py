@@ -52,14 +52,14 @@ def post_report_copy(report_uuid: ReportId, database: Database):
 
 @bottle.get("/api/v1/report/<report_uuid>/pdf")
 @bottle.get("/api/v2/report/<report_uuid>/pdf")
-def export_report_as_pdf(report_uuid: ReportId, database: Database):
+def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as pdf."""
-    if not (delay := dict(bottle.request.query).get("delay")):  # pylint: disable=superfluous-parens
-        delay = 5 if report_uuid.startswith("tag-") else get_data(database, report_uuid).report.get("delay", 5)
     host = os.environ.get("PROXY_HOST", "www")
     port = os.environ.get("PROXY_PORT", "80")
-    response = requests.get(
-        f"http://renderer:3000/pdf?accessKey=qt&url=http://{host}:{port}/{report_uuid}&delay={delay}")
+    margins = "&".join([f"pdf.margin.{side}=25" for side in ("top", "bottom", "left", "right")])
+    # Set pdf scale to 70% or otherwise the dashboard falls off the page
+    options = f"emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&{margins}"
+    response = requests.get(f"http://renderer:9000/api/render?url=http://{host}:{port}/{report_uuid}&{options}")
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content

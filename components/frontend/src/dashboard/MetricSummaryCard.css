@@ -1,0 +1,11 @@
+/* The box shadow gets a grey square background in the PDF, remove it when printing and replace it with a regular
+   border. */
+@media print {
+    .ui.card {
+        border: solid;
+        border-color: #d4d4d5;
+        border-width: 1px;
+        border-radius: .28571429rem;
+        box-shadow: none !important;
+    }
+}

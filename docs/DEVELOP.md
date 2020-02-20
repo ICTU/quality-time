@@ -58,6 +58,7 @@ npm run start
 The frontend is served at [http://localhost:3000](http://localhost:3000).
 
 By default, there are three users defined in the LDAP database:
+
 - User `admin` has password `admin`.
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
@@ -97,4 +98,5 @@ For more information about the custom components, see:
 - [Collector](../components/collector/README.md)
 
 For testing purposes there is also:
+
 - [Test data](../components/testdata/README.md)

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
 import { StatusPieChart } from './StatusPieChart';
+import './MetricSummaryCard.css';
 
 export function MetricSummaryCard(props) {
     return (
