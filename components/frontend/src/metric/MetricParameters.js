@@ -25,13 +25,6 @@ function metric_scale_options(metric_scales, datamodel) {
     return scale_options;
 }
 
-function combine_tags(metric, datamodel) {
-    let tags = new Set();
-    Object.values(datamodel.metrics).forEach((metric) => { metric.tags.forEach((tag) => tags.add(tag)) });
-    metric.tags.forEach((tag) => tags.add(tag));
-    return tags;
-}
-
 export function MetricParameters(props) {
     const metric_type = props.datamodel.metrics[props.metric.type];
     const metric_scale = props.metric.scale || metric_type.default_scale || "count";
@@ -43,7 +36,7 @@ export function MetricParameters(props) {
     const metric_direction = { "≦": "<", "≧": ">", "<": "<", ">": ">" }[props.metric.direction || metric_type.direction];
     const metric_direction_prefix = { "<": "≦", ">": "≧" }[metric_direction];
     const max = metric_scale === "percentage" ? "100" : null;
-    const tags = combine_tags(props.metric, props.datamodel);
+    const tags = Object.keys(props.report.summary_by_tag || {});
     const scale_options = metric_scale_options(metric_type.scales || ["count"], props.datamodel);
     return (
         <>
