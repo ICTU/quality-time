@@ -53,8 +53,8 @@ def summarize_report(report, last_measurements_by_metric_uuid, data_model) -> No
         for metric_uuid, metric in subject.get("metrics", {}).items():
             last_measurement = last_measurements_by_metric_uuid.get(metric_uuid, dict())
             scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-            status = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
-            color = status_color_mapping.get(status, "white")
+            metric["status"] = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
+            color = status_color_mapping.get(metric["status"], "white")
             report["summary"][color] += 1
             report["summary_by_subject"].setdefault(
                 subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
