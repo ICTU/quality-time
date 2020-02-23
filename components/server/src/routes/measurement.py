@@ -7,8 +7,8 @@ from typing import cast, Dict, Iterator
 from pymongo.database import Database
 import bottle
 
-from database.measurements import count_measurements, latest_measurement, latest_successful_measurement, \
-    recent_measurements, insert_new_measurement, update_measurement_end
+from database.measurements import all_measurements, count_measurements, latest_measurement, \
+    latest_successful_measurement, insert_new_measurement, update_measurement_end
 from database.reports import get_data, latest_metric
 from database import sessions
 from server_utilities.functions import report_date_time
@@ -105,7 +105,7 @@ def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
     measurements = []
-    for measurement in recent_measurements(database, metric_uuid, report_date_time()):
+    for measurement in all_measurements(database, metric_uuid, report_date_time()):
         measurement["_id"] = str(measurement["_id"])
         measurements.append(measurement)
     return dict(measurements=measurements)

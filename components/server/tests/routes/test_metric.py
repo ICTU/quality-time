@@ -10,7 +10,7 @@ from .fixtures import JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE
     create_report
 
 
-@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01"))
+@patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))
 @patch("bottle.request")
 class PostMetricAttributeTest(unittest.TestCase):
     """Unit tests for the post metric attribute route."""

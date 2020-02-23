@@ -8,7 +8,7 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel
-from database.measurements import last_measurements
+from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import get_data, latest_summarized_reports, insert_new_report, summarize_report
 from model.actions import copy_report
 from model.transformations import hide_credentials
@@ -107,8 +107,7 @@ def get_tag_report(tag: str, database: Database):
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
         timestamp=date_time, subjects=subjects)
-    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
-    summarize_report(tag_report, last_measurements_by_metric_uuid, data_model)
+    summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
     return tag_report
 
 

@@ -16,10 +16,10 @@ const report = {
     subject_uuid: {
       type: "subject_type", name: "Subject title", metrics: {
         metric_uuid: {
-          type: "metric_type", tags: [], sources: {},
+          type: "metric_type", tags: [], sources: {}, recent_measurements: []
         },
         metric_uuidi2: {
-          type: "metric_type", tags: [], sources: {},
+          type: "metric_type", tags: [], sources: {}, recent_measurements: []
         }
       }
     }

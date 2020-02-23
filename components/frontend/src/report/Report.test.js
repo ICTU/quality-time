@@ -25,7 +25,7 @@ const report = {
   subjects: {
     subject_uuid: {
       type: "subject_type", name: "Subject title", metrics: {
-        metric_uuid: { type: "metric_type", tags: ["tag"] } } } } };
+        metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] } } } } };
 
 describe("<Report />", () => {
   it('shows the report', () => {

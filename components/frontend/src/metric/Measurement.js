@@ -10,12 +10,6 @@ import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { get_metric_name, get_metric_target } from '../utils';
 import "./Measurement.css";
 
-function week_ago_iso_string() {
-  let week_ago = new Date();
-  week_ago.setDate(week_ago.getDate() - 7)
-  return week_ago.toISOString();
-}
-
 export function Measurement(props) {
   function MeasurementValue() {
     const value = (latest_measurement && latest_measurement[metric_scale] && latest_measurement[metric_scale].value) || "?";
@@ -42,8 +36,8 @@ export function Measurement(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
   const metric_scale = metric.scale || metric_type.default_scale || "count";
-  const latest_measurement = props.measurements.length > 0 ? props.measurements[props.measurements.length - 1] : null;
-  const latest_measurements = props.measurements.filter((measurement) => measurement.end >= week_ago_iso_string());
+  const latest_measurements = metric.recent_measurements;
+  const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
   const sources = (latest_measurement && latest_measurement.sources) || [];
   const metric_unit_prefix = metric_scale === "percentage" ? "% " : " ";
   const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;

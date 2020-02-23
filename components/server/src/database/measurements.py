@@ -1,8 +1,8 @@
 """Measurements collection."""
 
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import pymongo
 from pymongo.database import Database
@@ -23,13 +23,21 @@ def latest_successful_measurement(database: Database, metric_uuid: MetricId):
         filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)])
 
 
-def last_measurements(database: Database):
-    """Return the last measurement for each metric."""
-    return database.measurements.find(filter=dict(last=True))
+def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str, days=7):
+    """Return all recent measurements."""
+    min_iso_timestamp = (
+        min([datetime.now(timezone.utc), datetime.fromisoformat(max_iso_timestamp)]) - timedelta(days=days)).isoformat()
+    recent_measurements = database.measurements.find(
+        filter={"end": {"$gt": min_iso_timestamp}, "start": {"$lt": max_iso_timestamp}},
+        sort=[("start", pymongo.ASCENDING)], projection={"_id": False, "sources.entities": False})
+    measurements_by_metric_uuid: Dict[MetricId, List] = {}
+    for measurement in recent_measurements:
+        measurements_by_metric_uuid.setdefault(measurement["metric_uuid"], []).append(measurement)
+    return measurements_by_metric_uuid
 
 
-def recent_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
-    """Return the recent measurements."""
+def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
+    """Return all measurements."""
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 

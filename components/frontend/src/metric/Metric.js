@@ -1,42 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Measurement } from './Measurement';
-import { get_measurements } from '../api/measurement';
 import { get_metric_name } from '../utils';
 
-function last_measurement(measurements) {
-  return measurements && measurements.length > 0 ? measurements[measurements.length - 1] : null;
-}
-
-function fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement) {
-  const report_date_parameter = report_date || new Date(3000, 1, 1);
-  get_measurements(metric_uuid, report_date_parameter)
-    .then(function (json) {
-      if (json.ok !== false) {
-        setMeasurements(json.measurements);
-        set_last_measurement(metric_uuid, last_measurement(json.measurements));
-      }
-    })
-}
-
 export function Metric(props) {
-  const { report_date, metric_uuid, set_last_measurement, search_string } = props;
-  const [measurements, setMeasurements] = useState([]);
-  useEffect(() => {
-    fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement)
-    // eslint-disable-next-line
-  }, [metric_uuid, props.nr_measurements, report_date]);
+  const { search_string } = props;
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_name = get_metric_name(metric, props.datamodel);
   if (search_string && !metric_name.toLowerCase().includes(search_string.toLowerCase())) { return null }
-  return (
-    <Measurement
-      measurements={measurements}
-      metric_uuid={metric_uuid}
-      fetch_measurement_and_reload={(response) => {
-        fetch_measurements(report_date, metric_uuid, setMeasurements, set_last_measurement);
-        props.reload(response);
-      }}
-      {...props}
-    />
-  )
+  return <Measurement {...props} />
 }
