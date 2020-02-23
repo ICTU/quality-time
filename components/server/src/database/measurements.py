@@ -48,11 +48,7 @@ def count_measurements(database: Database) -> int:
 
 def update_measurement_end(database: Database, measurement_id: MeasurementId):
     """Set the end date and time of the measurement to the current date and time."""
-    # Setting last to true shouldn't be necessary in the long run because the last flag is set to true when a new
-    # measurement is added. However, setting it here ensures the measurement collection is updated correctly after the
-    # release of this code. This (setting last to true) was added in the version immediately after v0.5.1.
-    return database.measurements.update_one(
-        filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
 def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) -> Dict:
@@ -67,13 +63,8 @@ def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) 
         status = determine_measurement_status(database, metric, value)
         measurement[scale] = dict(value=value, status=status)
     measurement["start"] = measurement["end"] = iso_timestamp()
-    # Mark this measurement as the most recent one:
-    measurement["last"] = True
-    # And unset the last flag on the previous measurement(s):
-    database.measurements.update_many(
-        filter={"metric_uuid": measurement["metric_uuid"], "last": True}, update={"$unset": {"last": ""}})
     database.measurements.insert_one(measurement)
-    measurement["_id"] = str(measurement["_id"])
+    del measurement["_id"]
     return measurement
 
 

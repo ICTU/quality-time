@@ -86,8 +86,8 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(target="10")
         self.assertEqual(
             dict(
-                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01",
-                count=dict(status=None, value=None), metric_uuid=METRIC_ID, last=True),
+                end="2019-01-01", sources=[], start="2019-01-01", count=dict(status=None, value=None),
+                metric_uuid=METRIC_ID),
             post_metric_attribute(METRIC_ID, "target", self.database))
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], email=JOHN["email"],
@@ -107,7 +107,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(accept_debt=True)
         self.assertEqual(
             dict(
-                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True,
+                end="2019-01-01", sources=[], start="2019-01-01",
                 metric_uuid=METRIC_ID, count=dict(value=None, status=None)),
             post_metric_attribute(METRIC_ID, "accept_debt", self.database))
         self.assertEqual(
@@ -128,7 +128,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(debt_end_date="2019-06-07")
         self.assertEqual(
             dict(
-                _id="measurement_id", end="2019-01-01", sources=[], start="2019-01-01", last=True,
+                end="2019-01-01", sources=[], start="2019-01-01",
                 metric_uuid=METRIC_ID, count=dict(value=None, status=None)),
             post_metric_attribute(METRIC_ID, "debt_end_date", self.database))
         self.assertEqual(
