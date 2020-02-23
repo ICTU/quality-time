@@ -53,8 +53,10 @@ def summarize_report(report, recent_measurements, data_model) -> None:
         for metric_uuid, metric in subject.get("metrics", {}).items():
             recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
             scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
+            metric["scale"] = scale
             last_measurement = recent[-1] if recent else {}
-            metric["status"] = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
+            metric["status"] = last_measurement.get(scale, {}).get("status", last_measurement.get("status"))
+            metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
             color = status_color_mapping.get(metric["status"], "white")
             report["summary"][color] += 1
             report["summary_by_subject"].setdefault(
