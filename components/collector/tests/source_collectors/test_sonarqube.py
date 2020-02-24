@@ -11,6 +11,7 @@ class SonarQubeTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.sources = dict(source_id=dict(type="sonarqube", parameters=dict(url="https://sonar", component="id")))
+        self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
 
     def test_violations(self):
         """Test that the number of violations is returned."""
@@ -62,8 +63,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         json = dict(component=dict(measures=[dict(metric="tests", value="88")]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(
-            response, value="88", landing_url="https://sonar/component_measures?id=id&metric=tests&branch=master")
+        self.assert_measurement(response, value="88", landing_url=self.tests_landing_url)
 
     def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the number of lines to cover are returned."""
@@ -186,9 +186,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(
-            response, value="123", total="123",
-            landing_url="https://sonar/component_measures?id=id&metric=tests&branch=master")
+        self.assert_measurement(response, value="123", total="123", landing_url=self.tests_landing_url)
 
     def test_nr_of_skipped_tests(self):
         """Test that the number of skipped tests is returned."""
@@ -197,9 +195,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(
-            response, value="4", total="123",
-            landing_url="https://sonar/component_measures?id=id&metric=tests&branch=master")
+        self.assert_measurement(response, value="4", total="123", landing_url=self.tests_landing_url)
 
     def test_nr_of_tests_without_tests(self):
         """Test that the collector throws an exception if there are no tests."""
@@ -207,5 +203,4 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="tests", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value=None, total=None, parse_error="KeyError",
-            landing_url="https://sonar/component_measures?id=id&metric=tests&branch=master")
+            response, value=None, total=None, parse_error="KeyError", landing_url=self.tests_landing_url)
