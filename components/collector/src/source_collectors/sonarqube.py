@@ -163,7 +163,8 @@ class SonarQubeMetricsBaseClass(SourceCollector):
         url = super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/component_measures?id={component}&metric={self._metric_keys()}&branch={branch}")
+        metric = self._metric_keys().split(",")[0]
+        return URL(f"{url}/component_measures?id={component}&metric={metric}&branch={branch}")
 
     def _api_url(self) -> URL:
         url = super()._api_url()
@@ -194,12 +195,6 @@ class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     """SonarQube duplicated lines collector."""
 
     metricKeys = "duplicated_lines,lines"
-
-
-class SonarQubeFailedTests(SonarQubeMetricsBaseClass):
-    """SonarQube failed tests collector."""
-
-    metricKeys = "test_failures"
 
 
 class SonarQubeLOC(SonarQubeMetricsBaseClass):

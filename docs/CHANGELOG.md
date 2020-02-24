@@ -12,8 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Fixed
- 
-- Reversed proxy container now waits for server and frontend containers. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
+
+- When using SonarQube as source for duplication, uncovered lines, or uncovered branches, the landing url would be incorrect. Fixes [#1044](https://github.com/ICTU/quality-time/issues/1044).
+- Proxy container now waits for server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
 
 ## [1.7.0] - [2020-02-22]
 
