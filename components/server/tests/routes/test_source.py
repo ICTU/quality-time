@@ -374,6 +374,7 @@ class SourceTest(SourceTestCase):
         super().setUp()
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.reports.find_one.return_value = self.report = create_report()
+        self.target_metric_name = "Target metric"
 
     def test_add_source(self):
         """Test that a new source is added."""
@@ -403,35 +404,38 @@ class SourceTest(SourceTestCase):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
         target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = dict(
-            name="Target metric", type="metric_type", sources={})
+            name=self.target_metric_name, type="metric_type", sources={})
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
-                 description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
-                             "'Report' to metric 'Target metric' of subject 'Subject' in report 'Report'."),
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
+                description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
+                            f"'Report' to metric '{self.target_metric_name}' of subject 'Subject' in report 'Report'."),
             self.report["delta"])
 
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
-        target_metric = dict(name="Target metric", type="metric_type", sources={})
+        target_metric = dict(name=self.target_metric_name, type="metric_type", sources={})
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         self.report["subjects"][SUBJECT_ID2] = target_subject
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
-                 description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
-                             "'Report' to metric 'Target metric' of subject 'Target subject' in report 'Report'."),
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
+                description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
+                            f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in report "
+                            "'Report'."),
             self.report["delta"])
 
     def test_move_source_across_reports(self):
         """Test that a source can be moved to a different metric in a different report."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
-        target_metric = dict(name="Target metric", type="metric_type", sources={})
+        target_metric = dict(name=self.target_metric_name, type="metric_type", sources={})
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         target_report = dict(
             _id="target_report", title="Target report", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject})
@@ -440,8 +444,8 @@ class SourceTest(SourceTestCase):
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         expected_description = "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report " \
-                               "'Report' to metric 'Target metric' of subject 'Target subject' in report 'Target " \
-                               "report'."
+                               f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in " \
+                               "report 'Target report'."
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
                  description=expected_description),
