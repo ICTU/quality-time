@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+ 
+- Reversed proxy container now waits for server and frontend containers. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
+
 ## [1.7.0] - [2020-02-22]
 
 ### Changed
