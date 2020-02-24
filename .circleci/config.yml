@@ -1,34 +1,24 @@
 version: 2
 
 jobs:
-  unittest_collector:
+  unittest_backend:
     docker:
       - image: circleci/python:3.8
+    parallelism: 2
     steps:
       - checkout
-      - run:
-          command: |
-            cd components/collector
-            python -m venv venv
-            . venv/bin/activate
-            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
-            ci/unittest.sh
-            ci/quality.sh
-
-  unittest_server:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          command: |
-            sudo apt-get install libsasl2-dev libldap2-dev libssl-dev
-            cd components/server
-            python -m venv venv
-            . venv/bin/activate
-            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
-            ci/unittest.sh
-            ci/quality.sh
+      - run: |
+          case $CIRCLE_NODE_INDEX in
+          	0) component=collector;;
+          	1) component=server
+                   sudo apt-get install libsasl2-dev libldap2-dev libssl-dev;;
+          esac
+          cd components/$component
+          python -m venv venv
+          . venv/bin/activate
+          pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
+          ci/unittest.sh
+          ci/quality.sh
 
   unittest_frontend:
     docker:
