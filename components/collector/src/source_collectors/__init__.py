@@ -31,7 +31,7 @@ from .quality_time import QualityTimeMetrics
 from .random_number import Random
 from .robot_framework import RobotFrameworkTests, RobotFrameworkSourceUpToDateness
 from .sonarqube import (
-    SonarQubeDuplicatedLines, SonarQubeComplexUnits, SonarQubeCommentedOutCode, SonarQubeFailedTests, SonarQubeLOC,
+    SonarQubeDuplicatedLines, SonarQubeComplexUnits, SonarQubeCommentedOutCode, SonarQubeLOC,
     SonarQubeLongUnits, SonarQubeManyParameters, SonarQubeSourceUpToDateness, SonarQubeSuppressedViolations,
     SonarQubeTests, SonarQubeUncoveredBranches, SonarQubeUncoveredLines, SonarQubeViolations)
 from .trello import TrelloIssues, TrelloSourceUpToDateness
