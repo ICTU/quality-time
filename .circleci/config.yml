@@ -68,9 +68,7 @@ workflows:
           context: QualityTime
       - security_scan:
           context: QualityTime
-      - unittest_collector:
-          context: QualityTime
-      - unittest_server:
+      - unittest_backend:
           context: QualityTime
       - unittest_frontend:
           context: QualityTime
