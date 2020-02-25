@@ -34,6 +34,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The docker-compose YAML file now specifies that the proxy container should wait for the server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
 - The collector would fail if it could not write a timestamp to the health_check.txt file, e.g. due to a permission error. Fixed by writing the health_check.txt file to /tmp instead of the home directory of the default user and by catching and logging any OS errors that may occur. Fixes [#1057](https://github.com/ICTU/quality-time/issues/1057).
 
+### Removed
+
+- Version 1 of the Quality-time API has been removed. Fixes [#1051](https://github.com/ICTU/quality-time/issues/1051).
+
 ## [1.7.0] - [2020-02-22]
 
 ### Changed
@@ -53,7 +57,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Use environment variables for both proxy host and port so the renderer uses the right url to get the report. Fixes [#1031](https://github.com/ICTU/quality-time/issues/1031).
+- Use environment variables for both proxy host and port so the renderer uses the right URL to get the report. Fixes [#1031](https://github.com/ICTU/quality-time/issues/1031).
 - OWASP ZAP warning keys were not always unique, causing trouble with marking them as false positive. Fixes [#1032](https://github.com/ICTU/quality-time/issues/1032).
 - The Jenkins test report source would not correctly get the number of passed tests from aggregated test reports. Fixes [#1033](http://github.com/ICTU/quality-time/issues/1033).
 
@@ -154,7 +158,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add report title to subject names in tag reports so it is clear from which report each subject comes. Fixes [#880](https://github.com/ICTU/quality-time/issues/880).
 - Tag reports could not be exported to PDF. Fixes [#885](https://github.com/ICTU/quality-time/issues/885).
 - Prevent users from entering invalid percentages. Fixes [#888](https://github.com/ICTU/quality-time/issues/888).
-- Fix Checkmarx landing url. Fixes [#919](https://github.com/ICTU/quality-time/issues/919).
+- Fix Checkmarx landing URL. Fixes [#919](https://github.com/ICTU/quality-time/issues/919).
 - Remove plaintext passwords from HTML. Fixes [#921](https://github.com/ICTU/quality-time/issues/921).
 - Marking OWASP ZAP warnings as false positives did not work. Fixes [#922](https://github.com/ICTU/quality-time/issues/922).
 - Remove private tokens from URLs logged by the collector. Fixes [#934](https://github.com/ICTU/quality-time/issues/934).
@@ -223,7 +227,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Fixed
 
-- Use correct API url when accessing Quality-time as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791).
+- Use correct API URL when accessing Quality-time as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791).
 
 ### Added
 
@@ -293,8 +297,8 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- Immediate check of url's accessibility added.  Closes [#478](https://github.com/ICTU/quality-time/issues/478).
-- When measuring unmerged branches, have the metric landing url point to the list of branches in GitLab or Azure DevOps. When measuring the source up-to-dateness of a folder or file in GitLab or Azure DevOps, have the metric landing url point to the folder or file. Closes [#711](https://github.com/ICTU/quality-time/issues/711).
+- Immediate check of URL's accessibility added.  Closes [#478](https://github.com/ICTU/quality-time/issues/478).
+- When measuring unmerged branches, have the metric landing URL point to the list of branches in GitLab or Azure DevOps. When measuring the source up-to-dateness of a folder or file in GitLab or Azure DevOps, have the metric landing URL point to the folder or file. Closes [#711](https://github.com/ICTU/quality-time/issues/711).
 - When SonarQube is the source for a metric, users can now select the branch to use. Note that only the commercial editions of SonarQube support branch analysis. Closes [#712](https://github.com/ICTU/quality-time/issues/712).
 - Subjects can be reordered. Expand a subject title to show the reordering buttons on the lower left-hand side of the subject title panel. The buttons allow one to move a subject to the top of the page, to the previous position, to the next position, and to the bottom of the page. Closes [#716](https://github.com/ICTU/quality-time/issues/716).
 - Allow for filtering accessibility violations from Axe CSV files by impact level. Closes [#730](https://github.com/ICTU/quality-time/issues/730).
@@ -384,7 +388,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Added
 
 - All metrics now have an explicit scale that's either fixed to "Count" or "Percentage", or that can be changed from "Count to "Percentage" and vice versa. Metrics whose scale can be changed: "Duplicated lines", "Metrics", "Test branch coverage", and "Test line coverage". Closes [#504](https://github.com/ICTU/quality-time/issues/504).
-- Added a 'landing url' parameter to some sources so Quality-time can refer users to a human readable version of a machine readable report. For example, you can add an HTML version of a JaCoCo report to a JaCoCo XML report source. Closes [#554](https://github.com/ICTU/quality-time/issues/554).
+- Added a 'landing URL' parameter to some sources so Quality-time can refer users to a human readable version of a machine readable report. For example, you can add an HTML version of a JaCoCo report to a JaCoCo XML report source. Closes [#554](https://github.com/ICTU/quality-time/issues/554).
 
 ## [0.9.1] - [2019-09-10]
 

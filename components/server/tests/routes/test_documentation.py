@@ -17,9 +17,9 @@ class DocumentationTest(unittest.TestCase):
         """Test that the API can be retrieved."""
         api_json = get_api()
         self.assertTrue("/api" in api_json)
-        self.assertTrue(self.login_v1 in api_json)
+        self.assertFalse(self.login_v1 in api_json)
         self.assertTrue(self.login_v2 in api_json)
-        self.assertTrue(self.logout_v1 in api_json)
+        self.assertFalse(self.logout_v1 in api_json)
         self.assertTrue(self.logout_v2 in api_json)
 
     def test_get_api_by_version(self):

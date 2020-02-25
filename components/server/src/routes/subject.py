@@ -11,7 +11,6 @@ from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
 
 
-@bottle.post("/api/v1/report/<report_uuid>/subject/new")
 @bottle.post("/api/v2/subject/new/<report_uuid>")
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
@@ -22,13 +21,6 @@ def post_new_subject(report_uuid: ReportId, database: Database):
         uuids=[report_uuid, subject_uuid], email=user["email"],
         description=f"{user['user']} created a new subject in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/copy")
-def post_subject_copy_v1(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
-    """Copy a subject."""
-    # pylint: disable=unused-argument
-    return post_subject_copy(subject_uuid, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/subject/<subject_uuid>/copy")
@@ -60,13 +52,6 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v1/report/<report_uuid>/subject/<subject_uuid>")
-def delete_subject_v1(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
-    """Delete the subject."""
-    # pylint: disable=unused-argument
-    return delete_subject(subject_uuid, database)  # pragma: nocover
-
-
 @bottle.delete("/api/v2/subject/<subject_uuid>")
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
@@ -77,14 +62,6 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
         uuids=[data.report_uuid, subject_uuid], email=user["email"],
         description=f"{user['user']} deleted the subject '{data.subject_name}' from report '{data.report_name}'.")
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/<subject_attribute>")
-def post_subject_attribute_v1(
-        report_uuid: ReportId, subject_uuid: SubjectId, subject_attribute: str, database: Database):
-    """Set the subject attribute."""
-    # pylint: disable=unused-argument
-    return post_subject_attribute(subject_uuid, subject_attribute, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/subject/<subject_uuid>/attribute/<subject_attribute>")

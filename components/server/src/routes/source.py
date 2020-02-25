@@ -12,14 +12,7 @@ from database.reports import get_data, insert_new_report
 from model.actions import copy_source, move_item
 from model.transformations import change_source_parameter
 from server_utilities.functions import uuid
-from server_utilities.type import EditScope, MetricId, ReportId, SourceId, URL
-
-
-@bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/source/new")
-def post_source_new_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
-    """Add a new source."""
-    # pylint: disable=unused-argument
-    return post_source_new(metric_uuid, database)  # pragma: nocover
+from server_utilities.type import EditScope, MetricId, SourceId, URL
 
 
 @bottle.post("/api/v2/source/new/<metric_uuid>")
@@ -37,13 +30,6 @@ def post_source_new(metric_uuid: MetricId, database: Database):
         description=f"{user['user']} added a new source to metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/copy")
-def post_source_copy_v1(report_uuid: ReportId, source_uuid: SourceId, database: Database):
-    """Copy a source."""
-    # pylint: disable=unused-argument
-    return post_source_copy(source_uuid, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/source/<source_uuid>/copy")
@@ -91,13 +77,6 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v1/report/<report_uuid>/source/<source_uuid>")
-def delete_source_v1(report_uuid: ReportId, source_uuid: SourceId, database: Database):
-    """Delete a source."""
-    # pylint: disable=unused-argument
-    return delete_source(source_uuid, database)  # pragma: nocover
-
-
 @bottle.delete("/api/v2/source/<source_uuid>")
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
@@ -109,13 +88,6 @@ def delete_source(source_uuid: SourceId, database: Database):
                     f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
     del data.metric["sources"][source_uuid]
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/<source_attribute>")
-def post_source_attribute_v1(report_uuid: ReportId, source_uuid: SourceId, source_attribute: str, database: Database):
-    """Set a source attribute."""
-    # pylint: disable=unused-argument
-    return post_source_attribute(source_uuid, source_attribute, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/source/<source_uuid>/attribute/<source_attribute>")
@@ -140,13 +112,6 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     if source_attribute == "type":
         data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/source/<source_uuid>/parameter/<parameter_key>")
-def post_source_parameter_v1(report_uuid: ReportId, source_uuid: SourceId, parameter_key: str, database: Database):
-    """Set a source parameter."""
-    # pylint: disable=unused-argument
-    return post_source_parameter(source_uuid, parameter_key, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/source/<source_uuid>/parameter/<parameter_key>")
