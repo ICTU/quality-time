@@ -39,10 +39,13 @@ class MetricsCollector:
         self.last_parameters: Dict[str, Any] = dict()
 
     @staticmethod
-    def record_health() -> None:
+    def record_health(filename: str = "/tmp/health_check.txt") -> None:
         """Record the current date and time in a file to allow for health checks."""
-        with open("health_check.txt", "w") as health_check:
-            health_check.write(datetime.now().isoformat())
+        try:
+            with open(filename, "w") as health_check:
+                health_check.write(datetime.now().isoformat())
+        except OSError as reason:
+            logging.error("Could not write health check time stamp to %s: %s", filename, reason)
 
     def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
