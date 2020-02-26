@@ -74,7 +74,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
 
     @patch("asyncio.sleep", Mock(side_effect=RuntimeError))
     @patch("builtins.open", mock_open())
-    @patch("time.sleep", Mock(side_effect=RuntimeError))
     @patch("requests.post")
     @patch("requests.get")
     async def test_collect(self, mocked_get, mocked_post):
@@ -84,7 +83,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mocked_get.side_effect = [self.data_model_response, self.metrics_response, Mock()]
-        self.assertRaises(RuntimeError, quality_time_collector.collect)
         with self.assertRaises(RuntimeError):
             await quality_time_collector.collect()
         mocked_post.assert_called_once_with(
