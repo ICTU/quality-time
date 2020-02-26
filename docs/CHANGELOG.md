@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - When using SonarQube as source for duplication, uncovered lines, or uncovered branches, the landing url would be incorrect. Fixes [#1044](https://github.com/ICTU/quality-time/issues/1044).
-- Proxy container now waits for server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
+- The docker-compose YAML file now specifies that the proxy container should wait for the server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
+- The collector would fail if it could not write a timestamp to the health_check.txt file, e.g. due to a permission error. Fixed by writing the health_check.txt file to /tmp instead of the home directory of the default user and by catching and logging any OS errors that may occur. Fixes [#1057](https://github.com/ICTU/quality-time/issues/1057).
 
 ## [1.7.0] - [2020-02-22]
 
