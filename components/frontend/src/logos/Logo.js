@@ -4,7 +4,8 @@ import { Image } from 'semantic-ui-react';
 import Anchore from './anchore.png';
 import Axe from './axe.png';
 import AzureDevops from './azure_devops.png';
-import Bandit from './bandit.png'
+import Bandit from './bandit.png';
+import Composer from './composer.png';
 import Checkmarx from './checkmarx.png';
 import Gitlab from './gitlab.png';
 import JaCoCo from './jacoco.png';
@@ -29,6 +30,7 @@ export function Logo(props) {
         axecsv: Axe,
         azure_devops: AzureDevops,
         bandit: Bandit,
+        composer: Composer,
         cxsast: Checkmarx,
         gitlab: Gitlab,
         jacoco: JaCoCo,

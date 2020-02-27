@@ -93,6 +93,17 @@
                     ]
                 },
                 {
+                    "type": "dependencies",
+                    "sources": [
+                        {
+                            "type": "composer",
+                            "parameters": {
+                                "url": "http://testdata:8000/composer-outdated.json"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "security_warnings",
                     "sources": [
                         {
