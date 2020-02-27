@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Cache data model and other performance improvements. Fixes [#1026](https://github.com/ICTU/quality-time/issues/1026).
+
 ### Added
 
 - A new metric for measuring the number of (outdated) dependencies, and a new source that supports this metric: Composer for PHP. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
