@@ -7,6 +7,7 @@
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
+| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
@@ -40,6 +41,7 @@
 | [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Ready user story points, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
+| [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | Dependencies |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | Source up-to-dateness, Test branch coverage, Test line coverage |
@@ -97,6 +99,16 @@
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+
+### Dependencies from Composer
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a Compose 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports | URL | Yes | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
+| URL to Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Latest version status | Multiple choice | No |  |
 
 ### Duplicated lines from SonarQube
 

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- A new metric for measuring the number of (outdated) dependencies, and a new source that supports this metric: Composer for PHP. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
+
 ## [1.7.1] - [2020-02-26]
 
 ### Fixed

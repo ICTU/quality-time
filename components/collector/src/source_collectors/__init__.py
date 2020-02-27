@@ -5,6 +5,7 @@ from .axe_csv import AxeCSVAccessibility
 from .azure_devops import AzureDevopsIssues, AzureDevopsReadyUserStoryPoints
 from .bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .calendar import CalendarSourceUpToDateness
+from .composer import ComposerDependencies
 from .cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .gitlab import GitLabFailedJobs, GitLabUnusedJobs, GitLabSourceUpToDateness, GitLabUnmergedBranches
 from .jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines

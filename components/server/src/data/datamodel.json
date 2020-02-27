@@ -78,6 +78,29 @@
                 "testability"
             ]
         },
+        "dependencies": {
+            "name": "Dependencies",
+            "description": "The amount of (outdated) dependencies",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
+            "unit": "dependencies",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "10",
+            "default_source": "composer",
+            "sources": [
+                "composer",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
         "duplicated_lines": {
             "name": "Duplicated lines",
             "description": "The amount of lines that are duplicated.",
@@ -1398,6 +1421,121 @@
             },
             "entities": {}
         },
+        "composer": {
+            "name": "Composer",
+            "description": "A Dependency Manager for PHP.",
+            "url": "https://getcomposer.org/",
+            "parameters": {
+                "url": {
+                    "name": "URL to a Compose 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports",
+                    "short_name": "URL",
+                    "type": "url",
+                    "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
+                    "validate_on": [
+                        "username",
+                        "password"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to Composer 'outdated' report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "latest_version_status": {
+                    "name": "Latest version status",
+                    "short_name": "status",
+                    "type": "multiple_choice",
+                    "placeholder": "all statuses",
+                    "help": "Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible.",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "safe update possible",
+                        "up-to-date",
+                        "update possible",
+                        "unknown"
+                    ],
+                    "api_values": {
+                        "safe update possible": "semver-safe-update",
+                        "unknown": "unknown",
+                        "up-to-date": "up-to-date",
+                        "update possible": "update-possible"
+                    },
+                    "metrics": [
+                        "dependencies"
+                    ]
+                }
+            },
+            "entities": {
+                "dependencies": {
+                    "name": "dependency",
+                    "name_plural": "dependencies",
+                    "attributes": [
+                        {
+                            "name": "Package",
+                            "key": "name",
+                            "url": "homepage"
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description"
+                        },
+                        {
+                            "name": "Current version",
+                            "key": "version"
+                        },
+                        {
+                            "name": "Latest version",
+                            "key": "latest"
+                        },
+                        {
+                            "name": "Latest version status",
+                            "key": "latest_status",
+                            "color": {
+                                "up-to-date": "positive",
+                                "semver-safe-update": "warning",
+                                "update-possible": "negative"
+                            }
+                        },
+                        {
+                            "name": "Warning",
+                            "key": "warning"
+                        }
+                    ]
+                }
+            }
+        },
         "cxsast": {
             "name": "Checkmarx CxSAST",
             "description": "Static analysis software to identify security vulnerabilities in both custom code and open source components.",
@@ -2325,6 +2463,7 @@
                         "accessibility",
                         "commented_out_code",
                         "complex_units",
+                        "dependencies",
                         "duplicated_lines",
                         "failed_jobs",
                         "issues",
@@ -2974,6 +3113,7 @@
                     "short_name": "thresholds",
                     "type": "multiple_choice",
                     "mandatory": false,
+                    "placeholder": "all thresholds",
                     "default_value": [
                         "high",
                         "warning"
@@ -3140,6 +3280,7 @@
                         "Accessibility violations",
                         "Commented out code",
                         "Complex units",
+                        "Dependencies",
                         "Duplicated lines",
                         "Failed CI-jobs",
                         "Issues",
@@ -3168,6 +3309,7 @@
                         "Accessibility violations": "accessibility",
                         "Commented out code": "commented_out_code",
                         "Complex units": "complex_units",
+                        "Dependencies": "dependencies",
                         "Duplicated lines": "duplicated_lines",
                         "Failed CI-jobs": "failed_jobs",
                         "Issues": "issues",
@@ -3210,6 +3352,7 @@
                         "Bandit",
                         "Calendar date",
                         "Checkmarx CxSAST",
+                        "Composer",
                         "GitLab",
                         "JaCoCo",
                         "JaCoCo Jenkins plugin",
@@ -3240,6 +3383,7 @@
                         "Bandit": "bandit",
                         "Calendar date": "calendar",
                         "Checkmarx CxSAST": "cxsast",
+                        "Composer": "composer",
                         "GitLab": "gitlab",
                         "JaCoCo": "jacoco",
                         "JaCoCo Jenkins plugin": "jacoco_jenkins_plugin",
@@ -3557,6 +3701,7 @@
                     "name": "Rules",
                     "short_name": "rules",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all rules",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
@@ -3607,6 +3752,7 @@
                     "name": "Rules",
                     "short_name": "rules",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all rules",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
@@ -3660,6 +3806,7 @@
                     "short_name": "rules",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
+                    "placeholder": "all rules",
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
                         "c:S107",
@@ -3698,6 +3845,7 @@
                     "name": "Rules",
                     "short_name": "rules",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all rules",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
@@ -3798,6 +3946,7 @@
                     "name": "Rules",
                     "short_name": "rules",
                     "type": "multiple_choice_with_addition",
+                    "placeholder": "all rules",
                     "mandatory": false,
                     "help_url": "https://rules.sonarsource.com",
                     "default_value": [
@@ -4302,6 +4451,7 @@
                 "accessibility",
                 "commented_out_code",
                 "complex_units",
+                "dependencies",
                 "duplicated_lines",
                 "loc",
                 "many_parameters",
