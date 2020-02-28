@@ -8,7 +8,7 @@ import * as measurement_api from '../api/measurement';
 
 jest.mock("../api/metric.js");
 jest.mock("../api/measurement.js");
-measurement_api.get_measurements.mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }));
+measurement_api.get_measurements.mockImplementation(() => Promise.resolve({ ok: true, measurements: [{ sources: [{}] }] }));
 
 const report = {
     report_uuid: "report_uuid",
