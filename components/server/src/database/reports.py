@@ -10,7 +10,7 @@ from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, Color, MetricId, ReportId, SourceId, Status, SubjectId
 from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
-from .measurements import last_measurements
+from .measurements import recent_measurements_by_metric_uuid
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
@@ -27,9 +27,9 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 def latest_summarized_reports(database: Database, data_model, max_iso_timestamp: str = ""):
     """Return all latest reports in the reports collection, including a summary of each report."""
     reports = []
-    last_measurements_by_metric_uuid = {m["metric_uuid"]: m for m in last_measurements(database)}
+    recent_measurements = recent_measurements_by_metric_uuid(database, max_iso_timestamp or iso_timestamp())
     for report in latest_reports(database, max_iso_timestamp):
-        summarize_report(report, last_measurements_by_metric_uuid, data_model)
+        summarize_report(report, recent_measurements, data_model)
         reports.append(report)
     return reports
 
@@ -42,7 +42,7 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     return overview or dict()
 
 
-def summarize_report(report, last_measurements_by_metric_uuid, data_model) -> None:
+def summarize_report(report, recent_measurements, data_model) -> None:
     """Add a summary of the measurements to each subject."""
     status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
         target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
@@ -51,10 +51,13 @@ def summarize_report(report, last_measurements_by_metric_uuid, data_model) -> No
     report["summary_by_tag"] = {}
     for subject_uuid, subject in report.get("subjects", {}).items():
         for metric_uuid, metric in subject.get("metrics", {}).items():
-            last_measurement = last_measurements_by_metric_uuid.get(metric_uuid, dict())
+            recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
             scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-            status = last_measurement.get(scale, {}).get("status", last_measurement.get("status", None))
-            color = status_color_mapping.get(status, "white")
+            metric["scale"] = scale
+            last_measurement = recent[-1] if recent else {}
+            metric["status"] = last_measurement.get(scale, {}).get("status", last_measurement.get("status"))
+            metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
+            color = status_color_mapping.get(metric["status"], "white")
             report["summary"][color] += 1
             report["summary_by_subject"].setdefault(
                 subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1

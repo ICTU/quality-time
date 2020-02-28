@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown, Icon, Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -9,6 +9,7 @@ import { FocusableTab } from '../widgets/FocusableTab';
 import { ItemActionButtons } from '../widgets/Button';
 import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
+import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { get_source_name, get_subject_name } from '../utils';
 
@@ -29,12 +30,28 @@ function subject_options(reports, datamodel, current_subject_uuid) {
     return options;
 }
 
+function fetch_measurements(report_date, metric_uuid, setMeasurements) {
+  const report_date_parameter = report_date || new Date(3000, 1, 1);
+  get_measurements(metric_uuid, report_date_parameter)
+    .then(function (json) {
+      if (json.ok !== false) {
+        setMeasurements(json.measurements);
+      }
+    })
+}
+
 export function MeasurementDetails(props) {
+  const [measurements, setMeasurements] = useState([]);
+  useEffect(() => {
+    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements)
+    // eslint-disable-next-line
+  }, [props.metric_uuid, props.report_date]);
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
   const panes = [];
-  if (props.measurement) {
-    props.measurement.sources.forEach((source) => {
+  if (measurements.length > 0) {
+    const last_measurement = measurements[measurements.length - 1];
+    last_measurement.sources.forEach((source) => {
       const report_source = metric.sources[source.source_uuid];
       if (!report_source) { return }  // source was deleted, continue
       const nr_entities = (source.entities && source.entities.length) || 0;
@@ -46,12 +63,12 @@ export function MeasurementDetails(props) {
       });
     });
   }
-  if (props.measurements.length > 0) {
+  if (measurements.length > 0) {
     const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
     panes.push(
       {
         menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={unit_name} title={props.metric_name} {...props} /></Tab.Pane>
+        render: () => <Tab.Pane><TrendGraph unit={unit_name} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
       }
     );
   }

@@ -2,6 +2,7 @@
 
 from datetime import datetime, timezone
 from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
+import hashlib
 import re
 import uuid as _uuid
 
@@ -27,6 +28,11 @@ def report_date_time() -> str:
 def uuid() -> ReportId:
     """Return a UUID."""
     return ReportId(str(_uuid.uuid4()))
+
+
+def md5_hash(string: str) -> str:
+    """Return a md5 hash of the string."""
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
 
 
 def sanitize_html(html_text: str) -> str:

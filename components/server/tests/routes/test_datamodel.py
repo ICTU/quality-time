@@ -1,9 +1,12 @@
 """Unit tests for the datamodel routes."""
 
 import unittest
-from unittest.mock import Mock
+from unittest.mock import patch, Mock
+
+import bottle
 
 from routes import datamodel
+from server_utilities.functions import md5_hash
 from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 
 
@@ -15,13 +18,20 @@ class DataModelTest(unittest.TestCase):
 
     def test_get_data_model(self):
         """Test that the data model can be retrieved."""
-        self.database.datamodels.find_one.return_value = dict(_id=123)
-        self.assertEqual(dict(_id="123"), datamodel.get_data_model(self.database))
+        data_model = self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
+        self.assertEqual(data_model, datamodel.get_data_model(self.database))
 
     def test_get_data_model_missing(self):
         """Test that the data model is None if it's not there."""
         self.database.datamodels.find_one.return_value = None
         self.assertEqual({}, datamodel.get_data_model(self.database))
+
+    @patch("bottle.request")
+    def test_get_data_model_unchanged(self, mocked_request):
+        """Test that a 304 is returned when the data model is unchanged."""
+        mocked_request.headers = {"If-None-Match": "W/" + md5_hash("now")}
+        self.database.datamodels.find_one.return_value = dict(_id=123, timestamp="now")
+        self.assertRaises(bottle.HTTPError, datamodel.get_data_model, self.database)
 
     def test_insert_data_model_with_id(self):
         """Test that a new data model can be inserted."""

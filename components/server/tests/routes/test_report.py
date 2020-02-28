@@ -147,5 +147,8 @@ class ReportTest(unittest.TestCase):
                 timestamp=date_time, subjects={
                     SUBJECT_ID: dict(
                         name="Report / Subject",
-                        metrics=dict(metric_with_tag=dict(type="metric_type", tags=["tag"])))}),
+                        metrics=dict(
+                            metric_with_tag=dict(
+                                status=None, value=None, scale="count", recent_measurements=[], type="metric_type",
+                                tags=["tag"])))}),
             get_tag_report("tag", self.database))

@@ -1,8 +1,8 @@
 """Measurements collection."""
 
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import pymongo
 from pymongo.database import Database
@@ -23,13 +23,21 @@ def latest_successful_measurement(database: Database, metric_uuid: MetricId):
         filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)])
 
 
-def last_measurements(database: Database):
-    """Return the last measurement for each metric."""
-    return database.measurements.find(filter=dict(last=True))
+def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str, days=7):
+    """Return all recent measurements."""
+    min_iso_timestamp = (
+        min([datetime.now(timezone.utc), datetime.fromisoformat(max_iso_timestamp)]) - timedelta(days=days)).isoformat()
+    recent_measurements = database.measurements.find(
+        filter={"end": {"$gt": min_iso_timestamp}, "start": {"$lt": max_iso_timestamp}},
+        sort=[("start", pymongo.ASCENDING)], projection={"_id": False, "sources.entities": False})
+    measurements_by_metric_uuid: Dict[MetricId, List] = {}
+    for measurement in recent_measurements:
+        measurements_by_metric_uuid.setdefault(measurement["metric_uuid"], []).append(measurement)
+    return measurements_by_metric_uuid
 
 
-def recent_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
-    """Return the recent measurements."""
+def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
+    """Return all measurements."""
     return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
 
 
@@ -40,11 +48,7 @@ def count_measurements(database: Database) -> int:
 
 def update_measurement_end(database: Database, measurement_id: MeasurementId):
     """Set the end date and time of the measurement to the current date and time."""
-    # Setting last to true shouldn't be necessary in the long run because the last flag is set to true when a new
-    # measurement is added. However, setting it here ensures the measurement collection is updated correctly after the
-    # release of this code. This (setting last to true) was added in the version immediately after v0.5.1.
-    return database.measurements.update_one(
-        filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp(), "last": True}})
+    return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
 def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) -> Dict:
@@ -59,13 +63,8 @@ def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) 
         status = determine_measurement_status(database, metric, value)
         measurement[scale] = dict(value=value, status=status)
     measurement["start"] = measurement["end"] = iso_timestamp()
-    # Mark this measurement as the most recent one:
-    measurement["last"] = True
-    # And unset the last flag on the previous measurement(s):
-    database.measurements.update_many(
-        filter={"metric_uuid": measurement["metric_uuid"], "last": True}, update={"$unset": {"last": ""}})
     database.measurements.insert_one(measurement)
-    measurement["_id"] = str(measurement["_id"])
+    del measurement["_id"]
     return measurement
 
 

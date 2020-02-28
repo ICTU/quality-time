@@ -14,7 +14,9 @@ const report = {
           accept_debt: false,
           tags: [],
           type: "violations",
-          sources: []
+          sources: [],
+          status: null,
+          recent_measurements: [{sources: [{name: "Source", source_uuid: "1"}]}]
         }
       }
     }
@@ -24,7 +26,6 @@ const data_model = { metrics: { violations: { name: "Metric type", direction: "<
 
 it('renders the source', () => {
   const wrapper = mount(<Table><Table.Body><Measurement
-    measurements={[{sources: [{name: "Source", source_uuid: "1"}]}]}
     report={report}
     reports={[report]}
     metric_uuid="metric_uuid"
@@ -35,7 +36,6 @@ it('renders the source', () => {
 
 it('renders the metric name', () => {
   const wrapper = mount(<Table><Table.Body><Measurement
-    measurements={[]}
     report={report}
     reports={[report]}
     metric_uuid="metric_uuid"

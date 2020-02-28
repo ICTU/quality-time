@@ -51,8 +51,8 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.find.return_value = []
         request.json = dict(metric_uuid=METRIC_ID, sources=[])
         new_measurement = dict(
-            _id="measurement_id", metric_uuid=METRIC_ID, sources=[],
-            count=dict(value=None, status=None), start="2019-01-01", end="2019-01-01", last=True)
+            metric_uuid=METRIC_ID, sources=[], count=dict(value=None, status=None),
+            start="2019-01-01", end="2019-01-01")
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -66,27 +66,27 @@ class PostMeasurementTests(unittest.TestCase):
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
         measurement = self.database.measurements.find_one.return_value = dict(
-            _id="id", metric_uuid=METRIC_ID, status="target_met", last=True, sources=[dict(value="0", entities=[])])
+            _id="id", metric_uuid=METRIC_ID, status="target_met", sources=[dict(value="0", entities=[])])
         self.database.measurements.find.return_value = [measurement]
         sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
-            count=dict(status="near_target_met", value="1"), start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
+            start="2019-01-01", end="2019-01-01", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities."""
         measurement = self.database.measurements.find_one.return_value = dict(
-            _id="id", metric_uuid=METRIC_ID, status="target_met", last=True,
+            _id="id", metric_uuid=METRIC_ID, status="target_met",
             sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))])
         self.database.measurements.find.return_value = [measurement]
         sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
-            count=dict(status="near_target_met", value="1"), start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
+            start="2019-01-01", end="2019-01-01", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -102,7 +102,7 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(
-            filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01', 'last': True}})
+            filter={'_id': 'id'}, update={'$set': {'end': '2019-01-01'}})
 
     def test_ignored_measurement_entities_and_failed_measurement(self, request):
         """Post a measurement where the last successful one has ignored entities."""
@@ -119,8 +119,8 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
-            count=dict(status="target_met", value="0"), start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, count=dict(status="target_met", value="0"),
+            start="2019-01-01", end="2019-01-01", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -134,8 +134,8 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            _id="measurement_id", metric_uuid=METRIC_ID, last=True,
-            count=dict(status="near_target_met", value="1"), start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
+            start="2019-01-01", end="2019-01-01", sources=sources)
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 

@@ -22,4 +22,11 @@ def init_database() -> Database:
     initialize_reports_overview(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
+    update_database(database)
     return database
+
+
+def update_database(database: Database) -> None:
+    """Run any update statements."""
+    # Remove the last flag on measurements, introduced after version 1.7.0
+    database.measurements.update_many(filter={"last": True}, update={"$unset": {"last": ""}})
