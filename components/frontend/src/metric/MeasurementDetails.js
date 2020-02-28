@@ -48,7 +48,7 @@ export function MeasurementDetails(props) {
   }, [props.metric_uuid, props.report_date]);
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
-  const panes = [];
+  let panes = [];
   panes.push(
     {
       menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
