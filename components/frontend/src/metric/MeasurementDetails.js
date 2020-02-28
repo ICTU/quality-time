@@ -11,7 +11,7 @@ import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { get_source_name, get_subject_name } from '../utils';
+import { capitalize, get_source_name, get_subject_name } from '../utils';
 
 function subject_options(reports, datamodel, current_subject_uuid) {
   let options = [];
@@ -49,7 +49,26 @@ export function MeasurementDetails(props) {
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
   const panes = [];
+  panes.push(
+    {
+      menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
+      render: () => <Tab.Pane>
+        <MetricParameters metric={metric} {...props} />
+        <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
+      </Tab.Pane>
+    },
+    {
+      menuItem: <Menu.Item key='sources'><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
+      render: () => <Tab.Pane><Sources metric_type={metric.type} sources={metric.sources} {...props} /></Tab.Pane>
+    }
+  );
   if (measurements.length > 0) {
+    panes.push(
+      {
+        menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
+        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit_name)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+      }
+    );
     const last_measurement = measurements[measurements.length - 1];
     last_measurement.sources.forEach((source) => {
       const report_source = metric.sources[source.source_uuid];
@@ -63,30 +82,6 @@ export function MeasurementDetails(props) {
       });
     });
   }
-  if (measurements.length > 0) {
-    const unit_name = props.unit.charAt(0).toUpperCase() + props.unit.slice(1);
-    panes.push(
-      {
-        menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={unit_name} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
-      }
-    );
-  }
-  panes.push(
-    {
-      menuItem: <Menu.Item key='metric'><FocusableTab>{'Metric'}</FocusableTab></Menu.Item>,
-      render: () => <Tab.Pane>
-        <MetricParameters metric={metric} {...props} />
-        <ChangeLog report_uuid={report_uuid} timestamp={props.report.timestamp} metric_uuid={props.metric_uuid} />
-      </Tab.Pane>
-    }
-  );
-  panes.push(
-    {
-      menuItem: <Menu.Item key='sources'><FocusableTab>{'Sources'}</FocusableTab></Menu.Item>,
-      render: () => <Tab.Pane><Sources metric_type={metric.type} sources={metric.sources} {...props} /></Tab.Pane>
-    }
-  );
 
   function Buttons() {
     return (

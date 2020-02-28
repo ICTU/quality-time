@@ -19,11 +19,15 @@ export function get_metric_target(metric) {
 
 export function show_message(type, title, description, icon) {
     toast({
-      title: title,
-      type: type,
-      icon: icon,
-      size: "large",
-      description: <p>{description}</p>,
-      time: 30000
+        title: title,
+        type: type,
+        icon: icon,
+        size: "large",
+        description: <p>{description}</p>,
+        time: 30000
     }, () => { }, () => { }, () => { });  // Event handlers are mandatory
-  }
+}
+
+export function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
