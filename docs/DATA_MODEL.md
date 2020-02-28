@@ -108,7 +108,7 @@
 | URL to Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
-| Latest version status | Multiple choice | No |  |
+| Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
 
 ### Duplicated lines from SonarQube
 
@@ -546,6 +546,7 @@
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Risks | Multiple choice | No |  |
+| Parts of URLs to ignore (regular expressions) | Multiple choice with addition | No | Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported. |
 
 ### Security warnings from Pyupio Safety
 
