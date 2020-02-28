@@ -3001,6 +3001,18 @@
                     "metrics": [
                         "security_warnings"
                     ]
+                },
+                "variable_url_regexp": {
+                    "name": "Parts of URLs to ignore (regular expressions)",
+                    "short_name": "parts of URLs to ignore",
+                    "type": "multiple_choice_with_addition",
+                    "help": "Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported.",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "security_warnings"
+                    ]
                 }
             },
             "entities": {

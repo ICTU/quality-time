@@ -11,11 +11,8 @@ class OWASPZAPTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(sourceid=dict(type="owasp_zap", parameters=dict(url="https://owasp_zap.xml")))
-
-    def test_warnings(self):
-        """Test that the number of security warnings is returned."""
-        xml = """<?xml version="1.0"?>
+        self.sources = dict(source_id=dict(type="owasp_zap", parameters=dict(url="https://owasp_zap.xml")))
+        self.xml = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
             <site name="http://www.hackazon.com" host="www.hackazon.com" port="80" ssl="false">
                 <alerts>
@@ -50,23 +47,39 @@ class OWASPZAPTest(SourceCollectorTestCase):
                 </alerts>
             </site>
         </OWASPZAPReport>"""
+        self.warning_name = "X-Content-Type-Options Header Missing"
+        self.warning_description = "The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'."
+
+    def test_warnings(self):
+        """Test that the number of security warnings is returned."""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_text=xml)
+        response = self.collect(metric, get_request_text=self.xml)
         expected_entities = [
             dict(
                 key=md5_hash("10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg"),
-                name="X-Content-Type-Options Header Missing",
-                description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                name=self.warning_name, description=self.warning_description,
                 location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
                 uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
             dict(
                 key=md5_hash(
                     "10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"),
-                name="X-Content-Type-Options Header Missing",
-                description="The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'.",
+                name=self.warning_name, description=self.warning_description,
                 location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
                 uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg", risk="Low (Medium)")]
         self.assert_measurement(response, value="2", entities=expected_entities)
+
+    def test_variable_url_regexp(self):
+        """Test that parts of URLs can be ignored."""
+        self.sources["source_id"]["parameters"]["variable_url_regexp"] = ["[A-Za-z_]+.jpg"]
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_text=self.xml)
+        expected_entities = [
+            dict(
+                key=md5_hash("10021:16:15:3:GET:http://www.hackazon.com/products_pictures/variable-part-removed"),
+                name=self.warning_name, description=self.warning_description,
+                location="GET http://www.hackazon.com/products_pictures/variable-part-removed",
+                uri="http://www.hackazon.com/products_pictures/variable-part-removed", risk="Low (Medium)")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
