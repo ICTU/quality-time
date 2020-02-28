@@ -9,15 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [1.8.0-rc.1] - [2020-02-28]
+## [Unreleased]
 
 ### Changed
 
-- Cache data model and other performance improvements. Fixes [#1026](https://github.com/ICTU/quality-time/issues/1026).
+- Cache data model and other performance improvements. Note: the proxy settings for the data model API have been updated. See the Caddy configuration in the [docker-compose](../docker/docker-compose.yml). Fixes [#1026](https://github.com/ICTU/quality-time/issues/1026).
 
 ### Added
 
-- A new metric for measuring the number of (outdated) dependencies, and a new source that supports this metric: Composer for PHP. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
+- Allow for specifying variable parts of URLs in OWASP ZAP reports. This makes it possible to mark warnings as false positive even when parts of URLs change between runs of OWASP ZAP. Note: because the way Quality-time keeps track of the warnings has been changed, some OWASP ZAP warnings may need to be marked as false positive again. Closes [#1045](https://github.com/ICTU/quality-time/issues/1045).
+- A new metric for measuring the number of (outdated) dependencies and a new source (Composer for PHP) that supports this metric were added. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
 
 ## [1.7.1] - [2020-02-26]
 
