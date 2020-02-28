@@ -15,7 +15,12 @@ const report = {
                 metric_uuid: {
                     accept_debt: false,
                     tags: [],
-                    type: "violations"
+                    type: "violations",
+                    sources: {
+                        source_uuid: {
+                            entities: []
+                        }
+                    }
                 }
             }
         }
@@ -29,7 +34,7 @@ describe("<MeasurementDetails />", () => {
             <ReadOnlyContext.Provider value={false}>
                 <MeasurementDetails
                     datamodel={{ metrics: { violations: { direction: "<", tags: [] } } }}
-                    measurements={[]}
+                    measurements={[{sources: [{source_uuid: "source_uuid"}]}]}
                     metric_uuid="metric_uuid"
                     report={report}
                     reports={[report]}
