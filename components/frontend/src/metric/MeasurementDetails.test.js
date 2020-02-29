@@ -77,7 +77,7 @@ describe("<MeasurementDetails />", () => {
                         reports={[report]}
                         scale="count"
                         subject_uuid="subject_uuid"
-                        unit_name="unit"
+                        unit="unit"
                     />
                 </ReadOnlyContext.Provider>
             );

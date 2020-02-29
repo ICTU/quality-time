@@ -49,23 +49,21 @@ class OWASPZAPTest(SourceCollectorTestCase):
         </OWASPZAPReport>"""
         self.warning_name = "X-Content-Type-Options Header Missing"
         self.warning_description = "The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'."
+        self.warning_risk = "Low (Medium)"
 
     def test_warnings(self):
         """Test that the number of security warnings is returned."""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=self.xml)
+        url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
+        url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
             dict(
-                key=md5_hash("10021:16:15:3:GET:http://www.hackazon.com/products_pictures/Ray_Ban.jpg"),
-                name=self.warning_name, description=self.warning_description,
-                location="GET http://www.hackazon.com/products_pictures/Ray_Ban.jpg",
-                uri="http://www.hackazon.com/products_pictures/Ray_Ban.jpg", risk="Low (Medium)"),
+                key=md5_hash(f"10021:16:15:3:GET:{url1}"), name=self.warning_name, description=self.warning_description,
+                location=f"GET {url1}", uri=url1, risk=self.warning_risk),
             dict(
-                key=md5_hash(
-                    "10021:16:15:3:GET:http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"),
-                name=self.warning_name, description=self.warning_description,
-                location="GET http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg",
-                uri="http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg", risk="Low (Medium)")]
+                key=md5_hash(f"10021:16:15:3:GET:{url2}"), name=self.warning_name, description=self.warning_description,
+                location=f"GET {url2}", uri=url2, risk=self.warning_risk)]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     def test_variable_url_regexp(self):
@@ -73,12 +71,11 @@ class OWASPZAPTest(SourceCollectorTestCase):
         self.sources["source_id"]["parameters"]["variable_url_regexp"] = ["[A-Za-z_]+.jpg"]
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = self.collect(metric, get_request_text=self.xml)
+        stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             dict(
-                key=md5_hash("10021:16:15:3:GET:http://www.hackazon.com/products_pictures/variable-part-removed"),
-                name=self.warning_name, description=self.warning_description,
-                location="GET http://www.hackazon.com/products_pictures/variable-part-removed",
-                uri="http://www.hackazon.com/products_pictures/variable-part-removed", risk="Low (Medium)")]
+                key=md5_hash(f"10021:16:15:3:GET:{stable_url}"), name=self.warning_name, uri=stable_url,
+                description=self.warning_description, location=f"GET {stable_url}", risk=self.warning_risk)]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     def test_source_up_to_dateness(self):

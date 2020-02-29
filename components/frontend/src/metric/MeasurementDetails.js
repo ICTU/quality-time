@@ -66,7 +66,7 @@ export function MeasurementDetails(props) {
     panes.push(
       {
         menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit_name)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
       }
     );
     const last_measurement = measurements[measurements.length - 1];
