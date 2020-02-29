@@ -3,6 +3,7 @@ import { Grid, Header } from 'semantic-ui-react';
 import { TextInput } from '../fields/TextInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_source_entity_attribute } from '../api/source';
+import { capitalize } from '../utils';
 
 function entity_status_option(status, text, content, subheader) {
   return {
@@ -26,7 +27,7 @@ export function SourceEntityDetails(props) {
       <Grid.Row columns={4}>
         <Grid.Column width={4}>
           <SingleChoiceInput
-            label={`${props.name[0].toUpperCase()}${props.name.slice(1)} status`}
+            label={`${capitalize(props.name)} status`}
             options={entity_status_options(props.name)}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.fetch_measurement_and_reload)}
             value={props.status}
