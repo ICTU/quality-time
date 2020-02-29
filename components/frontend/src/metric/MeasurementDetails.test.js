@@ -10,7 +10,12 @@ import * as measurement_api from '../api/measurement';
 jest.mock("../api/changelog.js");
 jest.mock("../api/metric.js");
 jest.mock("../api/measurement.js");
-measurement_api.get_measurements.mockImplementation(() => Promise.resolve({ ok: true, measurements: [{ sources: [{}] }] }));
+measurement_api.get_measurements.mockImplementation(() => Promise.resolve({
+    ok: true,
+    measurements: [{
+        count: { value: "42" }, start: "2020-02-29T10:25:52.252Z", end: "2020-02-29T11:25:52.252Z", sources: [{}]
+    }]
+}));
 changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
 
 const report = {
@@ -36,11 +41,12 @@ const report = {
 };
 
 const data_model = {
-    sources: {source_type: {parameters: {}}},
-    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } } }
+    sources: { source_type: { parameters: {} } },
+    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } }
+}
 
 describe("<MeasurementDetails />", () => {
-    it('switches tabs', async () => {
+    it('switches to source tab', async () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
@@ -58,6 +64,30 @@ describe("<MeasurementDetails />", () => {
             wrapper.setProps({})  // rerender
         });
         expect(wrapper.find("a.active").text()).toBe("Sources");
+    });
+    it('switches to trend tab', async () => {
+        let wrapper;
+        await act(async () => {
+            wrapper = mount(
+                <ReadOnlyContext.Provider value={false}>
+                    <MeasurementDetails
+                        datamodel={data_model}
+                        metric_uuid="metric_uuid"
+                        report={report}
+                        reports={[report]}
+                        scale="count"
+                        subject_uuid="subject_uuid"
+                        unit_name="unit"
+                    />
+                </ReadOnlyContext.Provider>
+            );
+        });
+        await act(async () => {
+            wrapper.setProps({})  // rerender
+            wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
+            wrapper.find("MenuItem").at(2).simulate('click');
+        });
+        expect(wrapper.find("a.active").text()).toBe("Trend");
     });
     it('calls the callback on click', async () => {
         const mockCallBack = jest.fn();
