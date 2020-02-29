@@ -29,7 +29,7 @@ export function SourceEntityDetails(props) {
           <SingleChoiceInput
             label={`${capitalize(props.name)} status`}
             options={entity_status_options(props.name)}
-            set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.fetch_measurement_and_reload)}
+            set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
             value={props.status}
           />
         </Grid.Column>
@@ -37,7 +37,7 @@ export function SourceEntityDetails(props) {
           <TextInput
             label="Rationale"
             placeholder={`Rationale for ${props.name} status...`}
-            set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.fetch_measurement_and_reload)}
+            set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "rationale", value, props.reload)}
             value={props.rationale}
           />
         </Grid.Column>
