@@ -91,12 +91,17 @@ See [Release README](../ci/README.md).
 
 ## Software components
 
-For more information about the custom components, see:
+![Components](components.png)
 
-- [Server](../components/server/README.md)
-- [Frontend](../components/frontend/README.md)
-- [Collector](../components/collector/README.md)
+Quality-time consists of six components:
 
-For testing purposes there is also:
+- A proxy (Caddy, but can be replaced by another proxy if so desired) routing traffic from and to the user's browser,
+- A [frontend](../components/frontend/README.md) serving the React UI,
+- A renderer to export reports to PDF,
+- A [server](../components/server/README.md) serving the API,
+- A database (Mongo) for storing reports and measurements,
+- A [collector](../components/collector/README.md) to collect the measurements from the sources.
 
-- [Test data](../components/testdata/README.md)
+In addition, a LDAP server is expected to be available to authenticate users.
+
+For testing purposes there is also [test data](../components/testdata/README.md)
