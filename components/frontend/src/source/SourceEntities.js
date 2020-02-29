@@ -57,10 +57,10 @@ export function SourceEntities(props) {
       entity={entity}
       entity_attributes={entity_attributes}
       entity_name={entity_name}
-      fetch_measurement_and_reload={props.fetch_measurement_and_reload}
       hide_ignored_entities={hideIgnoredEntities}
       key={entity.key}
       metric_uuid={props.metric_uuid}
+      reload={props.reload}
       status={
         props.source.entity_user_data && props.source.entity_user_data[entity.key] &&
           props.source.entity_user_data[entity.key].status ? props.source.entity_user_data[entity.key].status : "unconfirmed"}

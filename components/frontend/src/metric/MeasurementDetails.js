@@ -15,19 +15,19 @@ import { capitalize, get_source_name, get_subject_name } from '../utils';
 
 function subject_options(reports, datamodel, current_subject_uuid) {
   let options = [];
-    reports.forEach((report) => {
-      Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const subject_name = get_subject_name(subject, datamodel);
-        options.push({
-          content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
-          disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
-          text: report.title + subject_name,
-          value: subject_uuid
-        })
+  reports.forEach((report) => {
+    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+      const subject_name = get_subject_name(subject, datamodel);
+      options.push({
+        content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
+        disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
+        text: report.title + subject_name,
+        value: subject_uuid
       })
-    });
-    options.sort((a, b) => a.text.localeCompare(b.text));
-    return options;
+    })
+  });
+  options.sort((a, b) => a.text.localeCompare(b.text));
+  return options;
 }
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
@@ -46,6 +46,10 @@ export function MeasurementDetails(props) {
     fetch_measurements(props.report_date, props.metric_uuid, setMeasurements)
     // eslint-disable-next-line
   }, [props.metric_uuid, props.report_date]);
+  function reload() {
+    props.reload();
+    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements)
+  }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const report_uuid = props.report.report_uuid;
   let panes = [];
@@ -66,7 +70,7 @@ export function MeasurementDetails(props) {
     panes.push(
       {
         menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} reload={reload} /></Tab.Pane>
       }
     );
     const last_measurement = measurements[measurements.length - 1];
@@ -78,7 +82,7 @@ export function MeasurementDetails(props) {
       const source_name = get_source_name(report_source, props.datamodel);
       panes.push({
         menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><SourceEntities metric={metric} report_uuid={report_uuid} source={source} {...props} /></Tab.Pane>
+        render: () => <Tab.Pane><SourceEntities metric={metric} report_uuid={report_uuid} source={source} {...props} reload={reload} /></Tab.Pane>
       });
     });
   }
@@ -99,7 +103,7 @@ export function MeasurementDetails(props) {
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
             }}
             options={subject_options(props.reports, props.datamodel, props.subject_uuid)}
-            reorder_header={<Dropdown.Header>Report <Icon name='right chevron'/>Subject</Dropdown.Header>}
+            reorder_header={<Dropdown.Header>Report <Icon name='right chevron' />Subject</Dropdown.Header>}
             slot="row"
           />
         </div>}

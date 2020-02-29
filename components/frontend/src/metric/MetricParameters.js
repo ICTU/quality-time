@@ -92,7 +92,7 @@ export function MetricParameters(props) {
                             options={[
                                 { key: "0", text: `${fewer} is better`, value: "<" },
                                 { key: "1", text: `${more} is better`, value: ">" }]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "direction", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "direction", value, props.reload)}
                             value={metric_direction || "<"}
                         />
                     </Grid.Column>
@@ -113,7 +113,7 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "target", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "target", value, props.reload)}
                             unit={metric_unit}
                             value={props.metric.target}
                         />
@@ -124,7 +124,7 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "near_target", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "near_target", value, props.reload)}
                             unit={metric_unit}
                             value={props.metric.near_target}
                         />
@@ -138,7 +138,7 @@ export function MetricParameters(props) {
                             options={[
                                 { key: true, text: "Yes", value: true },
                                 { key: false, text: "No", value: false }]}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "accept_debt", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "accept_debt", value, props.reload)}
                         />
                     </Grid.Column>
                     <Grid.Column>
@@ -147,7 +147,7 @@ export function MetricParameters(props) {
                             max={max}
                             min="0"
                             prefix={metric_direction_prefix}
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_target", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_target", value, props.reload)}
                             unit={metric_unit}
                             value={props.metric.debt_target}
                         />
@@ -155,7 +155,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <DateInput
                             label="Technical debt end date"
-                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_end_date", value, props.fetch_measurement_and_reload)}
+                            set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_end_date", value, props.reload)}
                             value={props.metric.debt_end_date || ""}
                         />
                     </Grid.Column>
