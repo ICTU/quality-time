@@ -43,7 +43,7 @@ services:
       - server
       - frontend
   frontend:
-    image: ictu/quality-time_frontend:v1.8.0-rc.5
+    image: ictu/quality-time_frontend:v1.8.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
@@ -51,7 +51,7 @@ services:
     cap_drop:
       - ALL
   collector:
-    image: ictu/quality-time_collector:v1.8.0-rc.5
+    image: ictu/quality-time_collector:v1.8.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
@@ -59,7 +59,7 @@ services:
     cap_drop:
       - ALL
   server:
-    image: ictu/quality-time_server:v1.8.0-rc.5
+    image: ictu/quality-time_server:v1.8.0
     env_file:
       - ${ENV:-dev}.env
     depends_on:
