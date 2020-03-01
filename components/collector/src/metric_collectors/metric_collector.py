@@ -2,6 +2,8 @@
 
 from typing import Dict, Final
 
+import aiohttp
+
 from source_collectors.source_collector import SourceCollector
 from collector_utilities.type import Measurement
 
@@ -28,7 +30,8 @@ class MetricCollector:
                     return False
         return bool(sources)
 
-    async def get(self) -> Measurement:
+    async def get(self, session: aiohttp.ClientSession) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
         return dict(
-            sources=[{**await self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
+            sources=[
+                {**await self.collectors[uuid].get(session), "source_uuid": uuid} for uuid in self.metric["sources"]])

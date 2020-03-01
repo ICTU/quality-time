@@ -6,6 +6,7 @@ from typing import cast, Iterator, List, Optional, Set, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
+import aiohttp
 import requests
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
@@ -92,7 +93,7 @@ class GitLabSourceUpToDateness(GitLabBase):
             f"{responses[0].json()['web_url']}/blob/{self._parameter('branch', quote=True)}/"
             f"{self._parameter('file_path', quote=True)}") if responses else super()._landing_url(responses)
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
         recursively."""
 
@@ -100,7 +101,7 @@ class GitLabSourceUpToDateness(GitLabBase):
             """Get the commits of files recursively."""
             tree_api = self._gitlab_api_url(
                 f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
-            tree_response = (await super(GitLabSourceUpToDateness, self)._get_source_responses(tree_api))[0]
+            tree_response = (await super(GitLabSourceUpToDateness, self)._get_source_responses(session, tree_api))[0]
             tree_response.raise_for_status()
             tree = tree_response.json()
             file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
@@ -113,7 +114,7 @@ class GitLabSourceUpToDateness(GitLabBase):
             return commit_responses
 
         # First, get the project info so we can use the web url as landing url
-        responses = await super()._get_source_responses(api_url)
+        responses = await super()._get_source_responses(session, api_url)
         responses[0].raise_for_status()
         # Then, collect the commits
         responses.extend(await get_commits_recursively(str(self._parameter("file_path", quote=True))))

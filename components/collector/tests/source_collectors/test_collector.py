@@ -2,6 +2,8 @@
 
 from unittest.mock import patch, Mock
 
+import aiohttp
+
 from metric_collectors import MetricCollector
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -45,7 +47,8 @@ class CollectorTest(SourceCollectorTestCase):
     async def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
         with patch("requests.get", side_effect=Exception):
-            response = await MetricCollector(self.metric, dict()).get()
+            async with aiohttp.ClientSession() as session:
+                response = await MetricCollector(self.metric, dict()).get(session)
         self.assert_measurement(response, connection_error="Traceback")
 
     async def test_parse_error(self):

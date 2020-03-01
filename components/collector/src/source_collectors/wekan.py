@@ -6,6 +6,7 @@ from typing import cast, Dict, List, Tuple
 
 import cachetools.func
 from dateutil.parser import parse
+import aiohttp
 import requests
 
 from collector_utilities.type import Entity, Entities, Responses, URL, Value
@@ -20,7 +21,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = self._api_url()
         return URL(f"{api_url}/b/{self._board_id(responses[0].json()['token'])}") if responses else api_url
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
         return [requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)]

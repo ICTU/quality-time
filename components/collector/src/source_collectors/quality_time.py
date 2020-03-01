@@ -4,6 +4,8 @@ from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 from urllib import parse
 
+import aiohttp
+
 from collector_utilities.type import Entity, Entities, Measurement, Response, Responses, URL, Value
 from .source_collector import SourceCollector
 
@@ -16,12 +18,13 @@ class QualityTimeMetrics(SourceCollector):
         netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2", "", "")))
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         # First, get the report(s):
-        responses = await super()._get_source_responses(URL(f"{api_url}/reports"))
+        responses = await super()._get_source_responses(session, URL(f"{api_url}/reports"))
         # Then, add the measurements for each of the applicable metrics:
         for _, entity in self.__get_metrics_and_entities(responses[0]):
-            responses.extend(await super()._get_source_responses(URL(f"{api_url}/measurements/{entity['key']}")))
+            responses.extend(
+                await super()._get_source_responses(session, URL(f"{api_url}/measurements/{entity['key']}")))
         return responses
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:

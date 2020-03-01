@@ -4,6 +4,7 @@ from abc import ABC
 from typing import cast, Final, Tuple
 
 from dateutil.parser import parse
+import aiohttp
 import requests
 
 from collector_utilities.type import Entities, Response, Responses, URL, Value
@@ -26,7 +27,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
             return URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={scan_id}&ProjectID={project_id}")
         return api_url
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
@@ -79,8 +80,8 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     STATS_RESPONSE = 3
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        responses = await super()._get_source_responses(api_url)
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+        responses = await super()._get_source_responses(session, api_url)
         token = responses[self.TOKEN_RESPONSE].json()["access_token"]
         scan_id = self._scan_id(responses)
         # Get the statistics of the last scan; this is a single API call:

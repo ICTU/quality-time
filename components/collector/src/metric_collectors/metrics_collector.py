@@ -83,7 +83,7 @@ class MetricsCollector:
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
-            measurement = await collector.get()
+            measurement = await collector.get(session)
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid

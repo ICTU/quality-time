@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import List, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
+import aiohttp
 from dateutil.parser import isoparse
 
 from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, URL, Value
@@ -18,8 +19,8 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
                          for version in ("2.0", "2.1", "2.2")]
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        responses = await super()._get_source_responses(api_url)
+    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+        responses = await super()._get_source_responses(session, api_url)
         for response in responses:
             if not response.encoding:
                 response.encoding = "utf-8"  # Assume UTF-8, detecting encoding on large XML files is very slow.
