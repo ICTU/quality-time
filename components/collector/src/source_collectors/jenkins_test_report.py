@@ -56,7 +56,7 @@ class JenkinsTestReportTests(SourceCollector):
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         test_report_url = URL(f"{api_url}/lastSuccessfulBuild/testReport/api/json")
         job_url = URL(f"{api_url}/lastSuccessfulBuild/api/json")
         return [requests.get(url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())

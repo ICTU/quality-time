@@ -7,7 +7,6 @@ import os
 from typing import cast, Any, Dict, Final, NoReturn
 
 import aiohttp
-import requests
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
@@ -24,10 +23,10 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
         return {}
 
 
-async def post(api: URL, data) -> None:
+async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
     """Post the JSON data to the api url."""
     try:
-        requests.post(api, json=data)
+        await session.post(api, json=data)
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Posting %s to %s failed: %s", data, api, reason)
 
@@ -88,7 +87,7 @@ class MetricsCollector:
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid
-            await post(URL(f"{self.server_url}/api/v2/measurements"), measurement)
+            await post(session, URL(f"{self.server_url}/api/v2/measurements"), measurement)
 
     def __skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""

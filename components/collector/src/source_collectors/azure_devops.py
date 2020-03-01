@@ -25,7 +25,7 @@ class AzureDevopsIssues(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
         auth = self._basic_auth_credentials()
         response = requests.post(api_url, timeout=self.TIMEOUT, auth=auth, json=dict(query=self._parameter("wiql")))

@@ -33,7 +33,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
-    @patch("requests.post")
+    @patch("aiohttp.ClientSession.post")
     @patch("aiohttp.ClientSession.get")
     async def test_fetch_without_sources(self, mocked_get, mocked_post):
         """Test fetching measurement for a metric without sources."""
@@ -47,7 +47,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
             await self.metrics_collector.fetch_measurements(session, 60)
         mocked_post.assert_not_called()
 
-    @patch("requests.post")
+    @patch("aiohttp.ClientSession.post")
     @patch("aiohttp.ClientSession.get", Mock(side_effect=RuntimeError))
     async def test_fetch_with_get_error(self, mocked_post):
         """Test fetching measurement when getting fails."""
@@ -56,7 +56,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mocked_post.assert_not_called()
 
     @patch("requests.get", Mock())
-    @patch("requests.post", side_effect=RuntimeError)
+    @patch("aiohttp.ClientSession.post", side_effect=RuntimeError)
     @patch("aiohttp.ClientSession.get")
     async def test_fetch_with_post_error(self, mocked_get, mocked_post):
         """Test fetching measurement when posting fails."""
@@ -83,7 +83,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
     @patch("asyncio.sleep", Mock(side_effect=RuntimeError))
     @patch("builtins.open", mock_open())
     @patch("requests.get", Mock())
-    @patch("requests.post")
+    @patch("aiohttp.ClientSession.post")
     @patch("aiohttp.ClientSession.get")
     async def test_collect(self, mocked_get, mocked_post):
         """Test the collect method."""
@@ -123,7 +123,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 await self.metrics_collector.fetch_measurements(session, 60)
 
     @patch("requests.get", Mock())
-    @patch("requests.post")
+    @patch("aiohttp.ClientSession.post")
     @patch("aiohttp.ClientSession.get")
     async def test_fetch_twice(self, mocked_get, mocked_post):
         """Test that the metric is skipped on the second fetch."""
@@ -148,7 +148,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
                          connection_error=None, parse_error=None, source_uuid="source_id")],
                 metric_uuid="metric_uuid"))
 
-    @patch("requests.post")
+    @patch("aiohttp.ClientSession.post")
     @patch("aiohttp.ClientSession.get")
     async def test_missing_mandatory_parameter(self, mocked_get, mocked_post):
         """Test that a metric with sources but without a mandatory parameter is skipped."""

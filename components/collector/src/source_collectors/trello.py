@@ -18,7 +18,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _landing_url(self, responses: Responses) -> URL:
         return URL(responses[0].json()["url"] if responses else "https://trello.com")
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"

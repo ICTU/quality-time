@@ -97,9 +97,9 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 
     total_metric = ""  # Subclass responsibility
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Next to the violations, also get the total number of units as basis for the percentage scale."""
-        responses = super()._get_source_responses(api_url)
+        responses = await super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
         base_api_url = SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
@@ -143,10 +143,10 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
         as well as the total number of violations."""
-        responses = super()._get_source_responses(api_url)
+        responses = await super()._get_source_responses(api_url)
         url = SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")

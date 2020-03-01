@@ -16,12 +16,12 @@ class QualityTimeMetrics(SourceCollector):
         netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2", "", "")))
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         # First, get the report(s):
-        responses = super()._get_source_responses(URL(f"{api_url}/reports"))
+        responses = await super()._get_source_responses(URL(f"{api_url}/reports"))
         # Then, add the measurements for each of the applicable metrics:
         for _, entity in self.__get_metrics_and_entities(responses[0]):
-            responses.extend(super()._get_source_responses(URL(f"{api_url}/measurements/{entity['key']}")))
+            responses.extend(await super()._get_source_responses(URL(f"{api_url}/measurements/{entity['key']}")))
         return responses
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:

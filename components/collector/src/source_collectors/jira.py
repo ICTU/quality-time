@@ -33,12 +33,12 @@ class JiraIssues(SourceCollector):
             parameter_value = self._field_ids.get(parameter_value, parameter_value)
         return parameter_value
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         fields_url = URL(f"{super()._api_url()}/rest/api/2/field")
-        response = super()._get_source_responses(fields_url)[0]
+        response = (await super()._get_source_responses(fields_url))[0]
         response.raise_for_status()
         self._field_ids = dict((field["name"], field["id"]) for field in response.json())
-        return super()._get_source_responses(api_url)
+        return await super()._get_source_responses(api_url)
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         url = URL(str(self._parameter("url")))

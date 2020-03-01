@@ -18,8 +18,8 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
                          for version in ("2.0", "2.1", "2.2")]
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
-        responses = super()._get_source_responses(api_url)
+    async def _get_source_responses(self, api_url: URL) -> Responses:
+        responses = await super()._get_source_responses(api_url)
         for response in responses:
             if not response.encoding:
                 response.encoding = "utf-8"  # Assume UTF-8, detecting encoding on large XML files is very slow.

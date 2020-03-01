@@ -30,4 +30,5 @@ class MetricCollector:
 
     async def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
-        return dict(sources=[{**self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
+        return dict(
+            sources=[{**await self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
