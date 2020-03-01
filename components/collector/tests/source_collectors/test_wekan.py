@@ -59,36 +59,36 @@ class WekanIssuesTest(WekanTestCase):
         super().setUp()
         self.metric = dict(type="issues", addition="sum", sources=self.sources)
 
-    def test_issues(self):
+    async def test_issues(self):
         """Test that the number of issues and the individual issues are returned and that archived cards are ignored."""
         self.json[6]["archived"] = True
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value="2", entities=self.entities)
 
-    def test_issues_with_ignored_list(self):
+    async def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
         self.sources["source_id"]["parameters"]["lists_to_ignore"] = ["list2"]
         self.json[6]["archived"] = True
         del self.entities[1]
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value="1", entities=self.entities)
 
-    def test_overdue_issues(self):
+    async def test_overdue_issues(self):
         """Test overdue issues."""
         self.sources["source_id"]["parameters"]["cards_to_count"] = ["overdue"]
         self.entities[0]["due_date"] = self.json[5]["dueAt"] = "2019-01-01"
         self.entities[1]["due_date"] = self.json[8]["dueAt"] = "2019-02-02"
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value="2", entities=self.entities)
 
-    def test_inactive_issues(self):
+    async def test_inactive_issues(self):
         """Test inactive issues."""
         self.sources["source_id"]["parameters"]["cards_to_count"] = ["inactive"]
         self.json[6]["dateLastActivity"] = datetime.now().isoformat()
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value="2", entities=self.entities)
 
@@ -96,10 +96,10 @@ class WekanIssuesTest(WekanTestCase):
 class WekanSourceUpToDatenessTest(WekanTestCase):
     """Unit tests for the Wekan source up-to-dateness collector."""
 
-    def test_age_with_ignored_lists(self):
+    async def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the number of days since the last activity."""
         self.sources["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_side_effect=self.json, post_request_json_return_value=dict(token="token"))
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 1, 1)).days))

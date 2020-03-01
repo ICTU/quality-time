@@ -41,44 +41,44 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         for entity in self.expected_entities:
             entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
 
-    def test_nr_of_issues(self):
+    async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(self.metric, get_request_text=self.csv)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
-    def test_no_issues(self):
+    async def test_no_issues(self):
         """Test zero issues."""
-        response = self.collect(self.metric, get_request_text="")
+        response = await self.collect(self.metric, get_request_text="")
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_filter_by_impact(self):
+    async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.metric["sources"]["source_id"]["parameters"]["impact"] = ["serious", "critical"]
-        response = self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(self.metric, get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
-    def test_filter_by_violation_type(self):
+    async def test_filter_by_violation_type(self):
         """Test that violations can be filtered by violation type."""
         self.metric["sources"]["source_id"]["parameters"]["violation_type"] = \
             ["aria-input-field-name", "area-hidden-focus"]
-        response = self.collect(self.metric, get_request_text=self.csv)
+        response = await self.collect(self.metric, get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
-    def test_zipped_csv(self):
+    async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
         self.metric["sources"]["source_id"]["parameters"]["url"] = "https://axecsv.zip"
         with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_axe_csv:
             for index in range(2):
                 zipped_axe_csv.writestr(f"axe{index}.csv", self.csv)
-        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)
 
-    def test_empty_line(self):
+    async def test_empty_line(self):
         """Test that empty lines are ignored."""
-        response = self.collect(self.metric, get_request_text=self.csv + "\n\n")
+        response = await self.collect(self.metric, get_request_text=self.csv + "\n\n")
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
-    def test_embedded_newlines(self):
+    async def test_embedded_newlines(self):
         """Test that embedded newlines are ignored."""
         violation_with_newline = 'url3,aria-hidden-focus,moderate,help3,html3,"messages3\nsecond line",dom3\n'
         expected_entity = {
@@ -91,5 +91,5 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
             'help': 'help3'
         }
         expected_entity["key"] = md5_hash(",".join(str(value) for value in expected_entity.values()))
-        response = self.collect(self.metric, get_request_text=self.csv + violation_with_newline)
+        response = await self.collect(self.metric, get_request_text=self.csv + violation_with_newline)
         self.assert_measurement(response, value="3", entities=self.expected_entities + [expected_entity])

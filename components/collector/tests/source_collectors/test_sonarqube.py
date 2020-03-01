@@ -13,7 +13,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.sources = dict(source_id=dict(type="sonarqube", parameters=dict(url="https://sonar", component="id")))
         self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
 
-    def test_violations(self):
+    async def test_violations(self):
         """Test that the number of violations is returned."""
         json = dict(
             total="2",
@@ -21,7 +21,7 @@ class SonarQubeTest(SourceCollectorTestCase):
                 dict(key="a", message="a", component="a", severity="INFO", type="BUG"),
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
         metric = dict(type="violations", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
                  url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
@@ -31,11 +31,11 @@ class SonarQubeTest(SourceCollectorTestCase):
             response, value="2", entities=expected_entities,
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master")
 
-    def test_commented_out_code(self):
+    async def test_commented_out_code(self):
         """Test that the number of lines with commented out code is returned."""
         json = dict(total="2")
         metric = dict(type="commented_out_code", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="2", total="100",
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master&rules=abap:S125,apex:S125,"
@@ -44,12 +44,12 @@ class SonarQubeTest(SourceCollectorTestCase):
                         "scala:S125,squid:CommentedOutCodeLine,swift:S125,typescript:S125,"
                         "Web:AvoidCommentedOutCodeCheck,xml:S125")
 
-    def test_complex_units(self):
+    async def test_complex_units(self):
         """Test that the number of lines with commented out code is returned."""
         complex_units_json = dict(total="2")
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="complex_units", addition="sum", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric,
             get_request_json_side_effect=[{}, complex_units_json, functions_json, complex_units_json, functions_json])
         self.assert_measurement(
@@ -60,55 +60,55 @@ class SonarQubeTest(SourceCollectorTestCase):
                         "scala:S3776,squid:MethodCyclomaticComplexity,squid:S3776,typescript:S1541,typescript:S3776,"
                         "vbnet:S1541,vbnet:S3776")
 
-    def test_tests(self):
+    async def test_tests(self):
         """Test that the number of tests is returned."""
         json = dict(component=dict(measures=[dict(metric="tests", value="88")]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="88", landing_url=self.tests_landing_url)
 
-    def test_uncovered_lines(self):
+    async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the number of lines to cover are returned."""
         json = dict(
             component=dict(
                 measures=[dict(metric="uncovered_lines", value="100"), dict(metric="lines_to_cover", value="1000")]))
         metric = dict(type="uncovered_lines", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="100", total="1000",
             landing_url="https://sonar/component_measures?id=id&metric=uncovered_lines&branch=master")
 
-    def test_uncovered_branches(self):
+    async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the number of branches to cover are returned."""
         json = dict(
             component=dict(
                 measures=[
                     dict(metric="uncovered_conditions", value="10"), dict(metric="conditions_to_cover", value="200")]))
         metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="10", total="200",
             landing_url="https://sonar/component_measures?id=id&metric=uncovered_conditions&branch=master")
 
-    def test_duplicated_lines(self):
+    async def test_duplicated_lines(self):
         """Test that the number of duplicated lines and the total number of lines are returned."""
         json = dict(
             component=dict(
                 measures=[
                     dict(metric="duplicated_lines", value="10"), dict(metric="lines", value="100")]))
         metric = dict(type="duplicated_lines", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="10", total="100",
             landing_url="https://sonar/component_measures?id=id&metric=duplicated_lines&branch=master")
 
-    def test_many_parameters(self):
+    async def test_many_parameters(self):
         """Test that the number of functions with too many parameters is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="many_parameters", addition="sum", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric,
             get_request_json_side_effect=[
                 {}, many_parameters_json, functions_json, many_parameters_json, functions_json])
@@ -119,13 +119,13 @@ class SonarQubeTest(SourceCollectorTestCase):
                         "plsql:PlSql.FunctionAndProcedureExcessiveParameters,python:S107,squid:S00107,tsql:S107,"
                         "typescript:S107")
 
-    def test_long_units(self):
+    async def test_long_units(self):
         """Test that the number of long units is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
         long_units_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="long_units", addition="sum", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_side_effect=[{}, long_units_json, functions_json, long_units_json, functions_json])
         self.assert_measurement(
             response, value="2", total="4",
@@ -136,17 +136,17 @@ class SonarQubeTest(SourceCollectorTestCase):
                         "squid:S2972,swift:S104,typescript:S104,typescript:S138,vbnet:S104,vbnet:S138,"
                         "Web:FileLengthCheck,Web:LongJavaScriptCheck")
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test that the number of days since the last analysis is returned."""
         json = dict(analyses=[dict(date="2019-03-29T14:20:15+0100")])
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         timezone_info = timezone(timedelta(hours=1))
         expected_age = (datetime.now(timezone_info) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=timezone_info)).days
         self.assert_measurement(
             response, value=str(expected_age), landing_url="https://sonar/project/activity?id=id&branch=master")
 
-    def test_suppressed_violations(self):
+    async def test_suppressed_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
         violations_json = dict(
             total="1", issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG")])
@@ -156,7 +156,7 @@ class SonarQubeTest(SourceCollectorTestCase):
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL", resolution="WONTFIX")])
         total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
@@ -168,46 +168,46 @@ class SonarQubeTest(SourceCollectorTestCase):
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master&rules=csharpsquid:S1309,"
                         "php:NoSonar,Pylint:I0011,Pylint:I0020,squid:NoSonar,squid:S1309,squid:S1310,squid:S1315")
 
-    def test_loc_returns_ncloc_by_default(self):
+    async def test_loc_returns_ncloc_by_default(self):
         """Test that the number of lines of non-comment code is returned."""
         json = dict(component=dict(measures=[dict(metric="ncloc", value="1234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100",
             landing_url="https://sonar/component_measures?id=id&metric=ncloc&branch=master")
 
-    def test_loc_all_lines(self):
+    async def test_loc_all_lines(self):
         """Test that the number of lines of code is returned."""
         self.sources["source_id"]["parameters"]["lines_to_count"] = "all lines"
         json = dict(component=dict(measures=[dict(metric="lines", value="1234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100",
             landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")
 
-    def test_nr_of_tests(self):
+    async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="123", total="123", landing_url=self.tests_landing_url)
 
-    def test_nr_of_skipped_tests(self):
+    async def test_nr_of_skipped_tests(self):
         """Test that the number of skipped tests is returned."""
         json = dict(
             component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")]))
         self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
         metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="4", total="123", landing_url=self.tests_landing_url)
 
-    def test_nr_of_tests_without_tests(self):
+    async def test_nr_of_tests_without_tests(self):
         """Test that the collector throws an exception if there are no tests."""
         json = dict(component=dict(measures=[]))
         metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value=None, total=None, parse_error="KeyError", landing_url=self.tests_landing_url)
 

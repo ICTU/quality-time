@@ -12,7 +12,7 @@ class OpenVASTest(SourceCollectorTestCase):
         super().setUp()
         self.sources = dict(source_id=dict(type="openvas", parameters=dict(url="https://openvas.xml")))
 
-    def test_warnings(self):
+    async def test_warnings(self):
         """Test that the number of warnings is returned."""
         openvas_xml = """<?xml version="1.0"?>
 <report>
@@ -27,12 +27,12 @@ class OpenVASTest(SourceCollectorTestCase):
     </results>
 </report>"""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_text=openvas_xml)
+        response = await self.collect(metric, get_request_text=openvas_xml)
         expected_entities = [
             dict(key="id", severity="Low", name="Name", description="Description", host="1.2.3.4", port="80/tcp")]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test that the report age in days is returned."""
         openvas_xml = """
 <report extension="xml" type="scan" content_type="text/xml">
@@ -41,6 +41,6 @@ class OpenVASTest(SourceCollectorTestCase):
     <modification_time>2019-04-09T18:05:40Z</modification_time>
 </report>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, get_request_text=openvas_xml)
+        response = await self.collect(metric, get_request_text=openvas_xml)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 4, 9, 17, 56, 14, tzinfo=timezone.utc)).days
         self.assert_measurement(response, value=str(expected_age))

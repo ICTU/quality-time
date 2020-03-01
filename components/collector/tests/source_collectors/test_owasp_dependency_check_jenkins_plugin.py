@@ -15,10 +15,10 @@ class OWASPDependencyCheckJenkinsPluginTest(SourceCollectorTestCase):
                 type="owasp_dependency_check_jenkins_plugin",
                 parameters=dict(url="https://jenkins/job", severities=["critical", "high", "normal"])))
 
-    def test_warnings(self):
+    async def test_warnings(self):
         """Test that the number of security warnings is returned."""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric,
             get_request_json_return_value=dict(
                 warnings=[
@@ -33,10 +33,10 @@ class OWASPDependencyCheckJenkinsPluginTest(SourceCollectorTestCase):
             dict(key="/f4", file_path="/f4", highest_severity="Critical", nr_vulnerabilities=1)]
         self.assert_measurement(response, value="3", entities=expected_entities)
 
-    def test_up_to_dateness(self):
+    async def test_up_to_dateness(self):
         """Test that the source age in days is returned."""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_return_value=dict(timestamp="1565284457173"))
         expected_age = days_ago(datetime.fromtimestamp(1565284457173 / 1000.))
         self.assert_measurement(response, value=str(expected_age))

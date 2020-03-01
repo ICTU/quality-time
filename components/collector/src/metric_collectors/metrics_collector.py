@@ -58,7 +58,7 @@ class MetricsCollector:
             self.record_health()
             logging.info("Collecting...")
             with timer() as collection_timer:
-                self.fetch_measurements(measurement_frequency)
+                await self.fetch_measurements(measurement_frequency)
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
@@ -74,7 +74,7 @@ class MetricsCollector:
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
             time.sleep(sleep_duration)
 
-    def fetch_measurements(self, measurement_frequency: int) -> None:
+    async def fetch_measurements(self, measurement_frequency: int) -> None:
         """Fetch the metrics and their measurements."""
         metrics = get(URL(f"{self.server_url}/api/v2/metrics"))
         for metric_uuid, metric in metrics.items():
@@ -82,7 +82,7 @@ class MetricsCollector:
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
-            measurement = collector.get()
+            measurement = await collector.get()
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid

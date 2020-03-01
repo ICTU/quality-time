@@ -45,28 +45,28 @@ class TrelloIssuesTest(TrelloTestCase):
         self.metric = dict(type="issues", addition="sum", sources=self.sources)
         self.json = [[dict(id="board1", name="Board1")], self.cards, self.cards]
 
-    def test_issues(self):
+    async def test_issues(self):
         """Test that the number of issues and the individual issues are returned."""
-        response = self.collect(self.metric, get_request_json_side_effect=self.json)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="2", entities=self.entities)
 
-    def test_issues_with_ignored_list(self):
+    async def test_issues_with_ignored_list(self):
         """Test that lists can be ignored when counting issues."""
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        response = self.collect(self.metric, get_request_json_side_effect=self.json)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="1", entities=[self.entities[1]])
 
-    def test_overdue_issues(self):
+    async def test_overdue_issues(self):
         """Test overdue issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["overdue"]
-        response = self.collect(self.metric, get_request_json_side_effect=self.json)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="1", entities=[self.entities[1]])
 
-    def test_inactive_issues(self):
+    async def test_inactive_issues(self):
         """Test inactive issues."""
         self.metric["sources"]["source_id"]["parameters"]["cards_to_count"] = ["inactive"]
         self.cards["cards"][0]["dateLastActivity"] = datetime.now().isoformat()
-        response = self.collect(self.metric, get_request_json_side_effect=self.json)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="1", entities=[self.entities[1]])
 
 
@@ -78,13 +78,13 @@ class TrelloSourceUpToDatenessTest(TrelloTestCase):
         self.metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
         self.side_effect = [[dict(id="board1", name="Board1")], self.cards, self.cards]
 
-    def test_age(self):
+    async def test_age(self):
         """Test that the source up to dateness is the number of days since the most recent change."""
-        response = self.collect(self.metric, get_request_json_side_effect=self.side_effect)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.side_effect)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 3, 3)).days))
 
-    def test_age_with_ignored_lists(self):
+    async def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the source up to dateness."""
         self.metric["sources"]["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
-        response = self.collect(self.metric, get_request_json_side_effect=self.side_effect)
+        response = await self.collect(self.metric, get_request_json_side_effect=self.side_effect)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 2, 10)).days))

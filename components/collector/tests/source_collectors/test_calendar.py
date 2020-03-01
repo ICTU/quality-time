@@ -14,13 +14,13 @@ class CalendarSourceUpToDatenessTest(SourceCollectorTestCase):
             type="source_up_to_dateness", addition="max",
             sources=dict(source_uuid=dict(type="calendar", parameters=dict())))
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test the number of days since the user-specified date."""
         self.metric["sources"]["source_uuid"]["parameters"]["date"] = "2019-06-01"
-        response = self.collect(self.metric)
+        response = await self.collect(self.metric)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 6, 1)).days))
 
-    def test_source_up_to_dateness_with_default(self):
+    async def test_source_up_to_dateness_with_default(self):
         """Test the number of days without user-specified date."""
-        response = self.collect(self.metric)
+        response = await self.collect(self.metric)
         self.assert_measurement(response, value=str((datetime.now() - datetime(2020, 1, 1)).days))

@@ -28,6 +28,6 @@ class MetricCollector:
                     return False
         return bool(sources)
 
-    def get(self) -> Measurement:
+    async def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
         return dict(sources=[{**self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])

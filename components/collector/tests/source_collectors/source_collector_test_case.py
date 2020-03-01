@@ -2,14 +2,15 @@
 
 import json
 import pathlib
-import unittest
 from unittest.mock import patch, Mock
+
+import aiounittest
 
 from metric_collectors import MetricCollector
 from collector_utilities.type import Measurement
 
 
-class SourceCollectorTestCase(unittest.TestCase):
+class SourceCollectorTestCase(aiounittest.AsyncTestCase):
     """Base class for source collector unit tests."""
 
     @classmethod
@@ -19,7 +20,7 @@ class SourceCollectorTestCase(unittest.TestCase):
         with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
 
-    def collect(self, metric, *,
+    async def collect(self, metric, *,
                 get_request_json_return_value=None,
                 get_request_json_side_effect=None,
                 get_request_content="",
@@ -46,7 +47,7 @@ class SourceCollectorTestCase(unittest.TestCase):
         with patch("requests.post", return_value=mock_post_request, side_effect=post_request_side_effect):
             with patch("requests.get", return_value=mock_get_request):
                 with patch("requests.delete", return_value=None):
-                    return MetricCollector(metric, self.data_model).get()
+                    return await MetricCollector(metric, self.data_model).get()
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""

@@ -51,10 +51,10 @@ class OWASPZAPTest(SourceCollectorTestCase):
         self.warning_description = "The Anti-MIME-Sniffing header X-Content-Type-Options was not set to 'nosniff'."
         self.warning_risk = "Low (Medium)"
 
-    def test_warnings(self):
+    async def test_warnings(self):
         """Test that the number of security warnings is returned."""
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_text=self.xml)
+        response = await self.collect(metric, get_request_text=self.xml)
         url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
@@ -66,11 +66,11 @@ class OWASPZAPTest(SourceCollectorTestCase):
                 location=f"GET {url2}", uri=url2, risk=self.warning_risk)]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
-    def test_variable_url_regexp(self):
+    async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
         self.sources["source_id"]["parameters"]["variable_url_regexp"] = ["[A-Za-z_]+.jpg"]
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_text=self.xml)
+        response = await self.collect(metric, get_request_text=self.xml)
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             dict(
@@ -78,12 +78,12 @@ class OWASPZAPTest(SourceCollectorTestCase):
                 description=self.warning_description, location=f"GET {stable_url}", risk=self.warning_risk)]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         xml = """<?xml version="1.0"?>
         <OWASPZAPReport version="2.7.0" generated="Thu, 28 Mar 2019 13:20:20">
         </OWASPZAPReport>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = self.collect(metric, get_request_text=xml)
+        response = await self.collect(metric, get_request_text=xml)
         expected_age = (datetime.now() - datetime(2019, 3, 28, 13, 20, 20)).days
         self.assert_measurement(response, value=str(expected_age))

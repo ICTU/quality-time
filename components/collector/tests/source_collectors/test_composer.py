@@ -22,13 +22,13 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
         self.sources = dict(source_id=dict(type="composer", parameters=dict(url="composer.json")))
         self.metric = dict(type="dependencies", sources=self.sources, addition="sum")
 
-    def test_dependencies(self):
+    async def test_dependencies(self):
         """Test that the number of dependencies is returned."""
-        response = self.collect(self.metric, get_request_json_return_value=self.composer_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.composer_json)
         self.assert_measurement(response, value="2", total="2", entities=self.expected_entities)
 
-    def test_dependencies_by_status(self):
+    async def test_dependencies_by_status(self):
         """Test that the number of dependencies can be filtered by status."""
         self.sources["source_id"]["parameters"]["latest_version_status"] = ["safe update possible"]
-        response = self.collect(self.metric, get_request_json_return_value=self.composer_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.composer_json)
         self.assert_measurement(response, value="1", total="2", entities=self.expected_entities[:1])

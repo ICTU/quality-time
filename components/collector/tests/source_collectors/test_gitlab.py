@@ -33,43 +33,43 @@ class GitLabFailedJobsTest(GitLabTestCase):
         super().setUp()
         self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
 
-    def test_nr_of_failed_jobs(self):
+    async def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
-        response = self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
-    def test_nr_of_failed_jobs_without_failed_jobs(self):
+    async def test_nr_of_failed_jobs_without_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         self.gitlab_jobs_json[0]["status"] = "success"
-        response = self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_private_token(self):
+    async def test_private_token(self):
         """Test that the private token is used."""
         self.sources["source_id"]["parameters"]["private_token"] = "token"
-        response = self.collect(self.metric)
+        response = await self.collect(self.metric)
         self.assert_measurement(
             response,
             api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
             parse_error="Traceback")
 
-    def test_ignore_previous_runs_of_jobs(self):
+    async def test_ignore_previous_runs_of_jobs(self):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.insert(
             0,
             dict(id="2", status="success", name="name", stage="stage", created_at="2019-03-31T19:51:39.927Z",
                  web_url="https://gitlab/jobs/2", ref="master"))
-        response = self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="0", entities=[])
 
 
 class GitLabUnusedJobsTest(GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
 
-    def test_nr_of_unused_jobs(self):
+    async def test_nr_of_unused_jobs(self):
         """Test that the number of unused jobs is returned."""
         metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
-        response = self.collect(metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
 
@@ -84,19 +84,19 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
         self.head_response = Mock()
         self.head_response.headers = {"X-Gitlab-Last-Commit-Id": "commit-sha"}
 
-    def test_source_up_to_dateness_file(self):
+    async def test_source_up_to_dateness_file(self):
         """Test that the age of a file in a repo can be measured."""
         with patch("requests.head", return_value=self.head_response):
-            response = self.collect(
+            response = await self.collect(
                 self.metric,
                 get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")])
         self.assert_measurement(
             response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
 
-    def test_source_up_to_dateness_folder(self):
+    async def test_source_up_to_dateness_folder(self):
         """Test that the age of a folder in a repo can be measured."""
         with patch("requests.head", side_effect=[self.head_response, self.head_response]):
-            response = self.collect(
+            response = await self.collect(
                 self.metric,
                 get_request_json_side_effect=[
                     [dict(type="blob", path="file.txt"), dict(type="tree", path="folder")],
@@ -109,7 +109,7 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
 class GitlabUnmergedBranchesTest(GitLabTestCase):
     """Unit tests for the unmerged branches metric."""
 
-    def test_unmerged_branches(self):
+    async def test_unmerged_branches(self):
         """Test that the number of unmerged branches can be measured."""
         metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         gitlab_json = [
@@ -121,7 +121,7 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
             dict(name="active_unmerged_branch", default=False, merged=False,
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
             dict(name="merged_branch", default=False, merged=True)]
-        response = self.collect(metric, get_request_json_return_value=gitlab_json)
+        response = await self.collect(metric, get_request_json_return_value=gitlab_json)
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         expected_entities = [
             dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")]

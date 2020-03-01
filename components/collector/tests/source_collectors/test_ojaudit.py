@@ -11,7 +11,7 @@ class OJAuditTest(SourceCollectorTestCase):
             type="violations", addition="sum",
             sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="https://ojaudit.xml"))))
 
-    def test_violations(self):
+    async def test_violations(self):
         """Test that the number of violations is returned."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
@@ -61,7 +61,7 @@ class OJAuditTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         expected_entities = [
             dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
                  count="1"),
@@ -69,7 +69,7 @@ class OJAuditTest(SourceCollectorTestCase):
                  severity="exception", count="1")]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
-    def test_missing_location(self):
+    async def test_missing_location(self):
         """Test that an exception is raised if the violation location is missing."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
@@ -94,10 +94,10 @@ class OJAuditTest(SourceCollectorTestCase):
     </violation>
   </construct>
 </audit>"""
-        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assertTrue("has no location element" in response["sources"][0]["parse_error"])
 
-    def test_filter_violations(self):
+    async def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>1</violation-count>
@@ -124,10 +124,10 @@ class OJAuditTest(SourceCollectorTestCase):
   </construct>
 </audit>"""
         self.metric["sources"]["source_id"]["parameters"]["severities"] = ["high"]
-        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_ignore_duplicated_violations(self):
+    async def test_ignore_duplicated_violations(self):
         """Test that violations with the same model, message, location, etc. are ignored."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>2</violation-count>
@@ -172,7 +172,7 @@ class OJAuditTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = self.collect(self.metric, get_request_text=ojaudit_xml)
+        response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         expected_entities = [
             dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
                  count="2")]

@@ -34,18 +34,18 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
                 key="1fe53aa1061841cbd9fcdab1179191dc", cve="CVE-000", url="https://cve", fix="None", severity="Low",
                 package="package")]
 
-    def test_warnings(self):
+    async def test_warnings(self):
         """Test the number of security warnings."""
-        response = self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
-    def test_zipped_report(self):
+    async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["url"] = "anchore.zip"
         with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_anchore_report:
             zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
-        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
 
@@ -57,16 +57,16 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
         self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         self.expected_age = (datetime.now(tz=timezone.utc) - datetime(2020, 2, 7, 22, 53, 43, tzinfo=timezone.utc)).days
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = self.collect(self.metric, get_request_json_return_value=self.details_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.details_json)
         self.assert_measurement(response, value=str(self.expected_age))
 
-    def test_zipped_report(self):
+    async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["details_url"] = "anchore.zip"
         with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_anchore_report:
             zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
-        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value=str(self.expected_age))

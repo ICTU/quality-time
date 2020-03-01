@@ -1,7 +1,6 @@
 """Unit tests for the collector main script."""
 
 import logging
-import unittest
 from datetime import datetime
 from typing import Tuple
 from unittest.mock import patch, mock_open, Mock
@@ -38,24 +37,24 @@ class CollectorTest(aiounittest.AsyncTestCase):
 
     @patch("requests.post")
     @patch("requests.get")
-    def test_fetch_without_sources(self, mocked_get, mocked_post):
+    async def test_fetch_without_sources(self, mocked_get, mocked_post):
         """Test fetching measurement for a metric without sources."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(type="metric", addition="sum", sources=dict()))
         mocked_get.return_value = self.metrics_response
-        self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
         mocked_post.assert_not_called()
 
     @patch("requests.post")
     @patch("requests.get", Mock(side_effect=RuntimeError))
-    def test_fetch_with_get_error(self, mocked_post):
+    async def test_fetch_with_get_error(self, mocked_post):
         """Test fetching measurement when getting fails."""
-        self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
         mocked_post.assert_not_called()
 
     @patch("requests.post", side_effect=RuntimeError)
     @patch("requests.get")
-    def test_fetch_with_post_error(self, mocked_get, mocked_post):
+    async def test_fetch_with_post_error(self, mocked_get, mocked_post):
         """Test fetching measurement when posting fails."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
@@ -63,7 +62,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mocked_get.side_effect = [self.metrics_response, Mock()]
         self.metrics_collector.data_model = self.data_model
-        self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
         mocked_post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
@@ -94,18 +93,19 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 metric_uuid="metric_uuid"))
 
     @patch("requests.get")
-    def test_missing_collector(self, mocked_get):
+    async def test_missing_collector(self, mocked_get):
         """Test that an exception is thrown if there's no collector for the source and metric type."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
                 type="metric", addition="sum",
                 sources=dict(missing=dict(type="unknown_source", parameters=dict(url=self.url)))))
         mocked_get.return_value = self.metrics_response
-        self.assertRaises(LookupError, self.metrics_collector.fetch_measurements, 60)
+        with self.assertRaises(LookupError):
+            await self.metrics_collector.fetch_measurements(60)
 
     @patch("requests.post")
     @patch("requests.get")
-    def test_fetch_twice(self, mocked_get, mocked_post):
+    async def test_fetch_twice(self, mocked_get, mocked_post):
         """Test that the metric is skipped on the second fetch."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
@@ -113,8 +113,8 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mocked_get.side_effect = [self.metrics_response, Mock(), self.metrics_response]
         self.metrics_collector.data_model = self.data_model
-        self.metrics_collector.fetch_measurements(60)
-        self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
         mocked_post.assert_called_once_with(
             "http://localhost:5001/api/v2/measurements",
             json=dict(
@@ -125,14 +125,14 @@ class CollectorTest(aiounittest.AsyncTestCase):
 
     @patch("requests.post")
     @patch("requests.get")
-    def test_missing_mandatory_parameter(self, mocked_get, mocked_post):
+    async def test_missing_mandatory_parameter(self, mocked_get, mocked_post):
         """Test that a metric with sources but without a mandatory parameter is skipped."""
         self.metrics_response.json.return_value = dict(
             metric_uuid=dict(
                 type="metric", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))))
         mocked_get.return_value = self.metrics_response
         self.metrics_collector.data_model = self.data_model
-        self.metrics_collector.fetch_measurements(60)
+        await self.metrics_collector.fetch_measurements(60)
         mocked_post.assert_not_called()
 
     @patch("builtins.open", mock_open())

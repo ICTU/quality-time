@@ -40,30 +40,30 @@ class BanditSecurityWarningsTest(BanditTestCase):
                 issue_severity="Low", issue_confidence="Medium",
                 more_info="https://bandit/b106_hardcoded_password_funcarg.html")]
 
-    def test_warnings(self):
+    async def test_warnings(self):
         """Test the number of security warnings."""
-        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
-    def test_warnings_with_high_severity(self):
+    async def test_warnings_with_high_severity(self):
         """Test the number of high severity security warnings."""
         self.sources["source_id"]["parameters"]["severities"] = ["high"]
-        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_warnings_with_high_confidence(self):
+    async def test_warnings_with_high_confidence(self):
         """Test the number of high confidence security warnings."""
         self.sources["source_id"]["parameters"]["confidence_levels"] = ["high"]
-        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="0", entities=[])
 
-    def test_zipped_report(self):
+    async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["url"] = "bandit.zip"
         with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
             zipped_bandit_report.writestr(
                 "bandit.json", json.dumps(self.bandit_json))
-        response = self.collect(self.metric, get_request_content=bytes_io.getvalue())
+        response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
     def test_report_in_gitlab(self):
@@ -76,10 +76,10 @@ class BanditSecurityWarningsTest(BanditTestCase):
 class BanditSourceUpToDatenessTest(BanditTestCase):
     """Unit tests for the source up to dateness metric."""
 
-    def test_source_up_to_dateness(self):
+    async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         bandit_json = dict(generated_at="2019-07-12T07:38:47Z")
-        response = self.collect(metric, get_request_json_return_value=bandit_json)
+        response = await self.collect(metric, get_request_json_return_value=bandit_json)
         expected_age = (datetime.now(tz=timezone.utc) - datetime(2019, 7, 12, 7, 38, 47, tzinfo=timezone.utc)).days
         self.assert_measurement(response, value=str(expected_age))

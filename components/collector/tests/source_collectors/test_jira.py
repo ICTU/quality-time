@@ -30,16 +30,16 @@ class JiraIssuesTest(JiraTestCase):
         super().setUp()
         self.metric = dict(type="issues", addition="sum", sources=self.sources)
 
-    def test_nr_of_issues(self):
+    async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
         issues_json = dict(total=42)
-        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
+        response = await self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
         self.assert_measurement(response, value="42")
 
-    def test_issues(self):
+    async def test_issues(self):
         """Test that the issues are returned."""
         issues_json = dict(total=1, issues=[dict(key="key", id="id", fields=dict(summary="Summary"))])
-        response = self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
+        response = await self.collect(self.metric, get_request_json_side_effect=[self.fields_json, issues_json])
         self.assert_measurement(response, entities=[dict(key="id", summary="Summary", url="https://jira/browse/key")])
 
 
@@ -51,7 +51,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
         self.too_long_ago_summary = "Tested too long ago according to its own desired frequency"
         self.metric = dict(type="manual_test_execution", addition="sum", sources=self.sources)
 
-    def test_nr_of_test_cases(self):
+    async def test_nr_of_test_cases(self):
         """Test that the number of test cases is returned."""
         comment_updated = "2019-10-02T11:07:02.444+0200"
         test_cases_json = dict(
@@ -69,7 +69,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                          comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
                          desired_test_frequency="5",
                          summary=self.too_long_ago_summary))])
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         expected_days = str(days_ago(parse(comment_updated)))
         self.assert_measurement(
@@ -80,7 +80,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 dict(key="id4", summary=self.too_long_ago_summary,
                      url="https://jira/browse/key4", days_untested="10", desired_test_frequency="5")])
 
-    def test_nr_of_test_cases_with_field_name(self):
+    async def test_nr_of_test_cases_with_field_name(self):
         """Test that the number of test cases is returned when the field name for the test frequency is specified
         by name."""
         fields_json = [dict(name="Required test frequency", id="custom_field_001")]
@@ -91,7 +91,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                      fields=dict(
                          comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
                          custom_field_001="5", summary=self.too_long_ago_summary))])
-        response = self.collect(
+        response = await self.collect(
             self.metric, get_request_json_side_effect=[fields_json, test_cases_json])
         self.assert_measurement(
             response, value="1",
@@ -103,14 +103,14 @@ class JiraManualTestExecutionTest(JiraTestCase):
 class JiraReadyUserStoryPointsTest(JiraTestCase):
     """Unit tests for the Jira ready story points collector."""
 
-    def test_nr_story_points(self):
+    async def test_nr_story_points(self):
         """Test that the number of story points is returned."""
         metric = dict(type="ready_user_story_points", addition="sum", sources=self.sources)
         user_stories_json = dict(
             issues=[
                 dict(key="1", id="1", fields=dict(summary="user story 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="user story 2", field=32))])
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_side_effect=[self.fields_json, user_stories_json])
         self.assert_measurement(
             response, value="42",
@@ -122,7 +122,7 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
 class JiraManualTestDurationTest(JiraTestCase):
     """Unit tests for the Jira manual test duration collector."""
 
-    def test_duration(self):
+    async def test_duration(self):
         """Test that the duration is returned."""
         metric = dict(type="manual_test_duration", addition="sum", sources=self.sources)
         test_cases_json = dict(
@@ -130,7 +130,7 @@ class JiraManualTestDurationTest(JiraTestCase):
                 dict(key="1", id="1", fields=dict(summary="test 1", field=10)),
                 dict(key="2", id="2", fields=dict(summary="test 2", field=15)),
                 dict(key="3", id="3", fields=dict(summary="test 3", field=None))])
-        response = self.collect(
+        response = await self.collect(
             metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         self.assert_measurement(
             response, value="25",
