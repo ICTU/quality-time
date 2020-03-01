@@ -14,12 +14,11 @@ from collector_utilities.type import JSON, URL
 from .metric_collector import MetricCollector
 
 
-async def get(api: URL) -> JSON:
+async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
     """Get data from the API url."""
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(api) as response:
-                return cast(JSON, await response.json())
+        async with session.get(api) as response:
+            return cast(JSON, await response.json())
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
         return {}
@@ -55,30 +54,31 @@ class MetricsCollector:
         """Start fetching measurements indefinitely."""
         max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
-        self.data_model = await self.fetch_data_model(max_sleep_duration)
-        while True:
-            self.record_health()
-            logging.info("Collecting...")
-            with timer() as collection_timer:
-                await self.fetch_measurements(measurement_frequency)
-            sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
-            logging.info(
-                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
-            await asyncio.sleep(sleep_duration)
+        async with aiohttp.ClientSession() as session:
+            self.data_model = await self.fetch_data_model(session, max_sleep_duration)
+            while True:
+                self.record_health()
+                logging.info("Collecting...")
+                with timer() as collection_timer:
+                    await self.fetch_measurements(session, measurement_frequency)
+                sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
+                logging.info(
+                    "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
+                await asyncio.sleep(sleep_duration)
 
-    async def fetch_data_model(self, sleep_duration: int) -> JSON:
+    async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
         """Fetch the data model."""
         while True:
             self.record_health()
             logging.info("Loading data model...")
-            if data_model := await get(URL(f"{self.server_url}/api/v2/datamodel")):
+            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel")):
                 return data_model
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
             await asyncio.sleep(sleep_duration)
 
-    async def fetch_measurements(self, measurement_frequency: int) -> None:
+    async def fetch_measurements(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
         """Fetch the metrics and their measurements."""
-        metrics = await get(URL(f"{self.server_url}/api/v2/metrics"))
+        metrics = await get(session, URL(f"{self.server_url}/api/v2/metrics"))
         for metric_uuid, metric in metrics.items():
             if not (collector := MetricCollector(metric, self.data_model)).can_collect():
                 continue
