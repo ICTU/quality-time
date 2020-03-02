@@ -3,5 +3,5 @@ bottle-mongo==0.3.0
 gevent==1.5a3
 lxml==4.5.0
 pymongo==3.10.1
-ldap3==2.6.1
+ldap3==2.7
 requests==2.23.0
