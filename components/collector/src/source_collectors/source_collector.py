@@ -104,8 +104,10 @@ class SourceCollector(ABC):
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        return [
-            requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials(), headers=self._headers())]
+        response = requests.get(
+            api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials(), headers=self._headers())
+        response.raise_for_status()  # FIX duplication with __safely_get_source_responses
+        return [response]
 
     def _headers(self) -> Dict[str, str]:  # pylint: disable=no-self-use
         """Return the headers for the request."""
@@ -118,6 +120,10 @@ class SourceCollector(ABC):
         username = cast(str, self.__parameters.get("username", ""))
         password = cast(str, self.__parameters.get("password", ""))
         return (username, password) if username and password else None
+
+    def _headers(self) -> Dict[str, str]:
+        """Return the headers for the get request."""
+        return {}
 
     async def __safely_parse_source_responses(
             self, responses: Responses) -> Tuple[Value, Value, Entities, ErrorMessage]:

@@ -19,6 +19,13 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     PROJECT_RESPONSE: Final[int] = 1
     SCAN_RESPONSE: Final[int] = 2
 
+    def __init__(self, *args, **kwargs) -> None:
+        self.__token = None
+        super().__init__(*args, **kwargs)
+
+    def _headers(self):
+        return dict(Authorization=f"Bearer {self.__token}") if self.__token else {}
+
     def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
         if len(responses) > self.SCAN_RESPONSE:
@@ -36,10 +43,12 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
             grant_type="password", scope="sast_rest_api", client_id="resource_owner_client",
             client_secret="014DF517-39D1-4453-B7B3-9930C563627C")
         token_response = self._api_post("auth/identity/connect/token", credentials)
-        token = token_response.json()['access_token']
-        project_response = self._api_get(f"projects", token)
+        self.__token = token_response.json()['access_token']
+        project_api = URL(f"{self._api_url()}/cxrestapi/projects")
+        project_response = (await super()._get_source_responses(session, project_api))[0]
         project_id = self.__project_id(project_response)
-        scan_response = self._api_get(f"sast/scans?projectId={project_id}&scanStatus=Finished&last=1", token)
+        scan_api = URL(f"{self._api_url()}/cxrestapi/sast/scans?projectId={project_id}&scanStatus=Finished&last=1")
+        scan_response = (await super()._get_source_responses(session, scan_api))[0]
         return [token_response, project_response, scan_response]
 
     def __project_id(self, project_response: Response) -> str:
@@ -51,13 +60,6 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _scan_id(self, responses: Responses) -> str:
         """Return the scan id."""
         return str(responses[self.SCAN_RESPONSE].json()[0]["id"])
-
-    def _api_get(self, api: str, token: str) -> Response:
-        """Open the API and return the response."""
-        response = requests.get(
-            f"{self._api_url()}/cxrestapi/{api}", headers=dict(Authorization=f"Bearer {token}"), timeout=self.TIMEOUT)
-        response.raise_for_status()
-        return response
 
     def _api_post(self, api: str, data, token: str = None) -> Response:
         """Post to the API and return the response."""
@@ -82,11 +84,10 @@ class CxSASTSecurityWarnings(CxSASTBase):
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         responses = await super()._get_source_responses(session, api_url)
-        token = responses[self.TOKEN_RESPONSE].json()["access_token"]
         scan_id = self._scan_id(responses)
-        # Get the statistics of the last scan; this is a single API call:
-        responses.append(self._api_get(f"sast/scans/{scan_id}/resultsStatistics", token))
-        return responses
+        stats_api = URL(f"{self._api_url()}/cxrestapi/sast/scan/{scan_id}/resultsStatistics")
+        return responses + \
+            await SourceCollector._get_source_responses(self, session, stats_api)  # pylint: disable=protected-access
 
     def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         stats = responses[self.STATS_RESPONSE].json()
