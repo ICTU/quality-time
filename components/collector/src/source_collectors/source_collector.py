@@ -121,7 +121,7 @@ class SourceCollector(ABC):
         password = cast(str, self.__parameters.get("password", ""))
         return (username, password) if username and password else None
 
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> Dict[str, str]:  # pylint: disable=no-self-use
         """Return the headers for the get request."""
         return {}
 

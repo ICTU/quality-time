@@ -2,6 +2,8 @@
 
 from datetime import datetime, timezone
 
+import aiounittest
+
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -25,11 +27,11 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
     async def test_age(self):
         """Test that the age of the last finished scan is returned."""
         get_json = [
-            [dict(name="project", id="id")], [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))],
-            [dict(name="project", id="id")], [dict(id="scan_id")]]
-        post_json = [dict(access_token="token")] * 2
+            [dict(name="project", id="id")], [dict(id="scan_id")],
+            [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))]]
+        post_json = aiounittest.futurized(dict(access_token="token"))
         response = await self.collect(
-            self.metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
+            self.metric, get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.assert_measurement(
             response, value=str(expected_age),
@@ -51,7 +53,8 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(name="project", id="id")], [dict(id=1000)],
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
             [dict(name="project", id="id")], [dict(id="scan_id")]]
-        post_json = [dict(access_token="token")] * 2 + [dict(reportId="1")]
+        post_json = aiounittest.futurized(dict(access_token="token"))
         response = await self.collect(
-            metric, get_request_json_side_effect=get_json, post_request_json_side_effect=post_json)
+            metric, get_request_json_side_effect=get_json,
+            post_request_json_return_value=post_json)
         self.assert_measurement(response, value="10", entities=[])

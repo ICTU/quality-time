@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from unittest.mock import patch, Mock
+from unittest.mock import patch, AsyncMock, Mock
 
 import aiohttp
 import aiounittest
@@ -22,14 +22,13 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
             cls.data_model = json.load(json_data_model)
 
     async def collect(self, metric, *,
-                get_request_json_return_value=None,
-                get_request_json_side_effect=None,
-                get_request_content="",
-                get_request_encoding="",
-                get_request_text="",
-                post_request_side_effect=None,
-                post_request_json_return_value=None,
-                post_request_json_side_effect=None) -> Measurement:
+                      get_request_json_return_value=None,
+                      get_request_json_side_effect=None,
+                      get_request_content="",
+                      get_request_encoding="",
+                      get_request_text="",
+                      post_request_side_effect=None,
+                      post_request_json_return_value=None) -> Measurement:
         """Collect the metric."""
         mock_get_request = Mock()
         if get_request_json_side_effect:
@@ -41,15 +40,15 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
         mock_get_request.content = get_request_content
         mock_get_request.text = get_request_text
         mock_post_request = Mock()
-        if post_request_json_side_effect:
-            mock_post_request.json.side_effect = post_request_json_side_effect
-        else:
-            mock_post_request.json.return_value = post_request_json_return_value
+        mock_post_request.json.return_value = post_request_json_return_value
         with patch("requests.post", return_value=mock_post_request, side_effect=post_request_side_effect):
-            with patch("requests.get", return_value=mock_get_request):
-                with patch("requests.delete", return_value=None):
-                    async with aiohttp.ClientSession() as session:
-                        return await MetricCollector(metric, self.data_model).get(session)
+            with patch(
+                    "aiohttp.ClientSession.post",
+                    AsyncMock(return_value=mock_post_request, side_effect=post_request_side_effect)):
+                with patch("requests.get", return_value=mock_get_request):
+                    with patch("requests.delete", return_value=None):
+                        async with aiohttp.ClientSession() as session:
+                            return await MetricCollector(metric, self.data_model).get(session)
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
