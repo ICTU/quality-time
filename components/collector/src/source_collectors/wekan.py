@@ -2,14 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List, Tuple
+from typing import cast, Dict, List, Optional, Tuple
 
-import cachetools.func
 from dateutil.parser import parse
 import aiohttp
 import requests
 
-from collector_utilities.type import Entity, Entities, Responses, URL, Value
+from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -19,11 +18,12 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     def __init__(self, *args, **kwargs) -> None:
         self.__token = None
+        self._board_id: Optional[str] = None
         super().__init__(*args, **kwargs)
 
     async def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
-        return URL(f"{api_url}/b/{self._board_id()}") if responses else api_url
+        return URL(f"{api_url}/b/{self._board_id}") if responses else api_url
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
@@ -31,9 +31,10 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         timeout = aiohttp.ClientTimeout(self.TIMEOUT)
         response = await session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
         self.__token = (await response.json())["token"]
-        return [response]
+        self._board_id = self.__get_board_id()
+        return [cast(Response, response)]
 
-    def _board_id(self) -> str:
+    def __get_board_id(self) -> str:
         """Return the id of the board specified by the user."""
         api_url = self._api_url()
         user_id = self._get_json(URL(f"{api_url}/api/user"))["_id"]
@@ -50,7 +51,6 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         full_cards = [self._get_json(URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
         return [card for card in full_cards if not self._ignore_card(card)]
 
-    @cachetools.func.ttl_cache(ttl=60)
     def _get_json(self, api_url: URL):
         """Get the JSON from the API url."""
         return requests.get(api_url, timeout=self.TIMEOUT, headers=dict(Authorization=f"Bearer {self.__token}")).json()
@@ -72,7 +72,7 @@ class WekanIssues(WekanBase):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         api_url = self._api_url()
-        board_url = f"{api_url}/api/boards/{self._board_id()}"
+        board_url = f"{api_url}/api/boards/{self._board_id}"
         board_slug = self._get_json(URL(board_url))["slug"]
         entities: Entities = []
         for lst in self._lists(board_url):
@@ -113,7 +113,7 @@ class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        board_url = f"{self._api_url()}/api/boards/{self._board_id()}"
+        board_url = f"{self._api_url()}/api/boards/{self._board_id}"
         board = self._get_json(URL(board_url))
         dates = [board.get("createdAt"), board.get("modifiedAt")]
         for lst in self._lists(board_url):
