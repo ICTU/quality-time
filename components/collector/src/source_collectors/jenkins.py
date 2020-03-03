@@ -16,7 +16,7 @@ class JenkinsJobs(SourceCollector):
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),

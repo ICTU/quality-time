@@ -37,7 +37,7 @@ class AzureDevopsIssues(SourceCollector):
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         return [response, requests.get(work_items_url, timeout=self.TIMEOUT, auth=auth)]
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value = str(len(responses[0].json()["workItems"]))
         entities = [
             dict(
@@ -56,8 +56,8 @@ class AzureDevopsIssues(SourceCollector):
 class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
     """Collector to get ready user story points from Azure Devops Server."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        _, total, entities = super()._parse_source_responses(responses)
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        _, total, entities = await super()._parse_source_responses(responses)
         value = 0
         for entity, work_item in zip(entities, self._work_items(responses)):
             entity["story_points"] = story_points = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
@@ -85,8 +85,8 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         api_url = str(super()._api_url())
         return URL(f"{api_url}/_apis/git/repositories/{self._repository_id()}/stats/branches?api-version=4.1")
 
-    def _landing_url(self, responses: Responses) -> URL:
-        landing_url = str(super()._landing_url(responses))
+    async def _landing_url(self, responses: Responses) -> URL:
+        landing_url = str(await super()._landing_url(responses))
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         return URL(f"{landing_url}/_git/{repository}/branches")
 
@@ -112,8 +112,8 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
         return URL(f"{api_url}/_apis/git/repositories/{repository_id}/commits?{search_criteria}&api-version=4.1")
 
-    def _landing_url(self, responses: Responses) -> URL:
-        landing_url = str(super()._landing_url(responses))
+    async def _landing_url(self, responses: Responses) -> URL:
+        landing_url = str(await super()._landing_url(responses))
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
@@ -129,7 +129,7 @@ class AzureDevopsTests(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         test_results = cast(List[str], self._parameter("test_result"))
         runs = responses[0].json().get("value", [])
         test_count, highest_build_nr_seen = 0, 0
@@ -150,10 +150,10 @@ class AxureDevopsJobs(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/_build")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []
         for job in responses[0].json()["value"]:
             if self._ignore_job(job):

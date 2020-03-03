@@ -2,8 +2,6 @@
 
 from datetime import datetime, timezone
 
-import aiounittest
-
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -29,7 +27,7 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
         get_json = [
             [dict(name="project", id="id")], [dict(id="scan_id")],
             [dict(dateAndTime=dict(finishedOn="2019-01-01T09:06:12+00:00"))]]
-        post_json = aiounittest.futurized(dict(access_token="token"))
+        post_json = dict(access_token="token")
         response = await self.collect(
             self.metric, get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
@@ -53,7 +51,7 @@ class CxSASTSecurityWarningsTest(CxSASTTestCase):
             [dict(name="project", id="id")], [dict(id=1000)],
             dict(highSeverity=1, mediumSeverity=2, lowSeverity=3, infoSeverity=4),
             [dict(name="project", id="id")], [dict(id="scan_id")]]
-        post_json = aiounittest.futurized(dict(access_token="token"))
+        post_json = dict(access_token="token")
         response = await self.collect(
             metric, get_request_json_side_effect=get_json,
             post_request_json_return_value=post_json)

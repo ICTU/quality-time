@@ -15,7 +15,7 @@ class AxeCSVAccessibility(FileSourceCollector):
 
     file_extensions = ["csv"]
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = [
             dict(
                 url=str(row["URL"]), violation_type=row["Violation Type"], impact=row["Impact"],

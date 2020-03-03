@@ -50,11 +50,11 @@ class SourceCollector(ABC):
         """Return the measurement from this source."""
         responses, api_url, connection_error = await self.__safely_get_source_responses(session)
         value, total, entities, parse_error = await self.__safely_parse_source_responses(responses)
-        landing_url = self._landing_url(responses)
+        landing_url = await self._landing_url(responses)
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
 
-    def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
+    async def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
@@ -133,12 +133,12 @@ class SourceCollector(ABC):
         value, total, error = None, None, None
         if responses:
             try:
-                value, total, entities = self._parse_source_responses(responses)
+                value, total, entities = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
                 error = stable_traceback(traceback.format_exc())
         return value, total, entities[:self.MAX_ENTITIES], error
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
         This method can be overridden by collectors to parse the retrieved sources data."""
         # pylint: disable=assignment-from-none,no-self-use,unused-argument
@@ -212,7 +212,7 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for unmerged branches source collectors."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [
             dict(key=branch["name"], name=branch["name"], commit_age=str(days_ago(self._commit_datetime(branch))),
                  commit_date=str(self._commit_datetime(branch).date()))
@@ -231,7 +231,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         return str(days_ago(min(self._parse_source_response_date_time(response) for response in responses))), "100", []
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:

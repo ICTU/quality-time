@@ -26,7 +26,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         return None
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
         return URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}") \
             if responses else api_url
@@ -67,7 +67,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         scan = responses[0].json()[0]
         return str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))), "100", []
 
@@ -80,7 +80,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         stats_api = URL(f"{self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, session, stats_api)  # pylint: disable=protected-access
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         stats = responses[0].json()
         severities = self._parameter("severities")
         return str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)), "100", []

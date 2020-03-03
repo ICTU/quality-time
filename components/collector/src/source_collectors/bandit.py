@@ -12,7 +12,7 @@ from .source_collector import JSONFileSourceCollector, SourceUpToDatenessCollect
 class BanditSecurityWarnings(JSONFileSourceCollector):
     """Bandit collector for security warnings."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
         entities = []

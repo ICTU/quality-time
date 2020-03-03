@@ -27,17 +27,17 @@ class QualityTimeMetrics(SourceCollector):
                 await super()._get_source_responses(session, URL(f"{api_url}/measurements/{entity['key']}")))
         return responses
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         metrics_and_entities = self.__get_metrics_and_entities(responses[0])
-        entities = self.__get_entities(responses[1:], metrics_and_entities)
+        entities = await self.__get_entities(responses[1:], metrics_and_entities)
         return str(len(entities)), str(len(metrics_and_entities)), entities
 
-    def __get_entities(
+    async def __get_entities(
             self, responses: Responses, metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]]) -> Entities:
         """Get the metric entities from the responses."""
         last_measurements = self.__get_last_measurements(responses)
         status_to_count = self._parameter("status")
-        landing_url = self._landing_url(responses)
+        landing_url = await self._landing_url(responses)
         entities: Entities = []
         for metric, entity in metrics_and_entities:
             status, value = self.__get_status_and_value(metric, last_measurements.get(str(entity["key"]), {}))

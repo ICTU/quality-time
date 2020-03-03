@@ -15,7 +15,7 @@ from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollecto
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
         risks = cast(List[str], self._parameter("risks"))

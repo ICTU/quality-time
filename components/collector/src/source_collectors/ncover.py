@@ -29,7 +29,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
 
     coverage_type = "Subclass responsibility"
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         covered, total = 0, 0
         for response in responses:
             script = self._find_script(response, "ncover.execution.stats = ")

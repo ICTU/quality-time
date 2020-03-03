@@ -13,10 +13,10 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]

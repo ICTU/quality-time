@@ -38,7 +38,7 @@ class GitLabJobsBase(GitLabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("jobs")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [
             dict(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
@@ -88,10 +88,10 @@ class GitLabSourceUpToDateness(GitLabBase):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("")
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         return URL(
             f"{responses[0].json()['web_url']}/blob/{self._parameter('branch', quote=True)}/"
-            f"{self._parameter('file_path', quote=True)}") if responses else super()._landing_url(responses)
+            f"{self._parameter('file_path', quote=True)}") if responses else await super()._landing_url(responses)
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
@@ -128,7 +128,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         commit_api_url = self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return requests.get(commit_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]
         value = str(days_ago(max(parse(response.json()["committed_date"]) for response in commit_responses)))
         return value, "100", []
@@ -140,8 +140,8 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     def _api_url(self) -> URL:
         return self._gitlab_api_url("repository/branches")
 
-    def _landing_url(self, responses: Responses) -> URL:
-        return URL(f"{str(super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
+    async def _landing_url(self, responses: Responses) -> URL:
+        return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
     def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and

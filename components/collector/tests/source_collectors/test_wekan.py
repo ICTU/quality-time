@@ -3,6 +3,8 @@
 from datetime import datetime
 from typing import Dict
 
+import aiounittest
+
 from .source_collector_test_case import SourceCollectorTestCase
 
 

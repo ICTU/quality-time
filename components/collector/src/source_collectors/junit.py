@@ -13,7 +13,7 @@ from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollecto
 class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = []
         test_statuses_to_count = cast(List[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")

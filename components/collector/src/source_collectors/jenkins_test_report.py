@@ -25,7 +25,7 @@ class JenkinsTestReportTests(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
@@ -63,7 +63,7 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
         return [requests.get(url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
                 for url in (test_report_url, job_url)]
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
                       if suite.get("timestamp")]
         report_datetime = parse(max(timestamps)) if timestamps else \

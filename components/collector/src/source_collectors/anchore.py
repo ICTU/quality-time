@@ -13,7 +13,7 @@ from .source_collector import JSONFileSourceCollector, SourceUpToDatenessCollect
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
     """Anchore collector for security warnings."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         severities = self._parameter("severities")
         entities = []
         for response in responses:

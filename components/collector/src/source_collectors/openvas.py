@@ -14,7 +14,7 @@ from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollecto
 class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []
         severities = cast(List[str], self._parameter("severities"))
         for response in responses:

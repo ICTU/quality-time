@@ -30,8 +30,8 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
     """Collector to get security warnings from OWASP Dependency Check."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        landing_url = self._landing_url(responses)
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        landing_url = await self._landing_url(responses)
         entities = []
         for response in responses:
             tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)

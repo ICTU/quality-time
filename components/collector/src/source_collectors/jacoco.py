@@ -14,7 +14,7 @@ class JacocoCoverageBaseClass(XMLFileSourceCollector):
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         missed, covered = 0, 0
         for response in responses:
             tree = ElementTree.fromstring(response.text)

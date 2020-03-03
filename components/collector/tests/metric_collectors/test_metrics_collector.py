@@ -21,7 +21,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         class SourceMetric(source_collector.SourceCollector):  # pylint: disable=unused-variable
             """Register a fake collector automatically."""
 
-            def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+            async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
                 return "42", "84", []
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))

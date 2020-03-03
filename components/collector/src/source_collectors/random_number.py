@@ -12,6 +12,6 @@ class Random(LocalSourceCollector):
     MIN: Final[int] = 1
     MAX: Final[int] = 99
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value = random.randint(self.MIN, self.MAX)  # nosec, random generator is not used for security purpose
         return str(value), "100", []

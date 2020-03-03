@@ -14,15 +14,15 @@ from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollecto
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Robot Framework collectors."""
 
-    def _landing_url(self, responses: Responses) -> URL:
-        url = str(super()._landing_url(responses))
+    async def _landing_url(self, responses: Responses) -> URL:
+        url = str(await super()._landing_url(responses))
         return URL(url.replace("output.html", "report.html"))
 
 
 class RobotFrameworkTests(RobotFrameworkBaseClass):
     """Collector for Robot Framework tests."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         count = 0
         entities: Entities = []
         test_results = cast(List[str], self._parameter("test_result"))

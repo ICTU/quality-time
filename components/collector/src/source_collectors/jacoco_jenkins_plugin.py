@@ -11,7 +11,7 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector
 class JacocoJenkinsPluginBaseClass(SourceCollector):
     """Base class for Jacoco Jenkins plugin collectors."""
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/jacoco")
 
 
@@ -23,7 +23,7 @@ class JacocoJenkinsPluginCoverageBaseClass(JacocoJenkinsPluginBaseClass):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/lastSuccessfulBuild/jacoco/api/json")
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         line_coverage = responses[0].json()[f"{self.coverage_type}Coverage"]
         return str(line_coverage["missed"]), str(line_coverage["total"]), []
 

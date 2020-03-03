@@ -17,14 +17,21 @@ from .source_collector import SourceCollector
 class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Wekan collectors."""
 
-    def _landing_url(self, responses: Responses) -> URL:
+    def __init__(self, *args, **kwargs) -> None:
+        self.__token = None
+        super().__init__(*args, **kwargs)
+
+    async def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
-        return URL(f"{api_url}/b/{self._board_id(responses[0].json()['token'])}") if responses else api_url
+        return URL(f"{api_url}/b/{self._board_id((await responses[0].json())['token'])}") if responses else api_url
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
-        return [requests.post(f"{api_url}/users/login", data=credentials, timeout=self.TIMEOUT)]
+        timeout = aiohttp.ClientTimeout(self.TIMEOUT)
+        response = await session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
+        self.__token = (await response.json())["token"]
+        return [response]
 
     def _board_id(self, token) -> str:
         """Return the id of the board specified by the user."""
@@ -63,8 +70,8 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        token = responses[0].json()['token']
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        token = (await responses[0].json())['token']
         api_url = self._api_url()
         board_url = f"{api_url}/api/boards/{self._board_id(token)}"
         board_slug = self._get_json(URL(board_url), token)["slug"]
@@ -106,8 +113,8 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        token = responses[0].json()['token']
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        token = (await responses[0].json())['token']
         board_url = f"{self._api_url()}/api/boards/{self._board_id(token)}"
         board = self._get_json(URL(board_url), token)
         dates = [board.get("createdAt"), board.get("modifiedAt")]

@@ -15,7 +15,7 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     VULNERABILITY: Final[int] = 3
     KEY: Final[int] = 4
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         """Return a list of warnings."""
         entities = []
         for response in responses:

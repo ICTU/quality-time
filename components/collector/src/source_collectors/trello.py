@@ -16,7 +16,7 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Trello collectors."""
 
-    def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: Responses) -> URL:
         return URL(responses[0].json()["url"] if responses else "https://trello.com")
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
@@ -42,7 +42,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}

@@ -9,7 +9,7 @@ from .source_collector import JSONFileSourceCollector
 class ComposerDependencies(JSONFileSourceCollector):
     """Composer collector for dependencies."""
 
-    def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         statuses = self._parameter("latest_version_status")
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:
