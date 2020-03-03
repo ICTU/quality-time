@@ -23,7 +23,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
-        return URL(f"{api_url}/b/{self._board_id((await responses[0].json())['token'])}") if responses else api_url
+        return URL(f"{api_url}/b/{self._board_id()}") if responses else api_url
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
@@ -33,27 +33,27 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self.__token = (await response.json())["token"]
         return [response]
 
-    def _board_id(self, token) -> str:
+    def _board_id(self) -> str:
         """Return the id of the board specified by the user."""
         api_url = self._api_url()
-        user_id = self._get_json(URL(f"{api_url}/api/user"), token)["_id"]
-        boards = self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"), token)
+        user_id = self._get_json(URL(f"{api_url}/api/user"))["_id"]
+        boards = self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"))
         return str([board for board in boards if self._parameter("board") in board.values()][0]["_id"])
 
-    def _lists(self, board_url: str, token: str) -> List:
+    def _lists(self, board_url: str) -> List:
         """Return the lists on the board."""
-        return [lst for lst in self._get_json(URL(f"{board_url}/lists"), token) if not self.__ignore_list(lst)]
+        return [lst for lst in self._get_json(URL(f"{board_url}/lists")) if not self.__ignore_list(lst)]
 
-    def _cards(self, list_url: str, token: str) -> List:
+    def _cards(self, list_url: str) -> List:
         """Return the cards on the board."""
-        cards = self._get_json(URL(f"{list_url}/cards"), token)
-        full_cards = [self._get_json(URL(f"{list_url}/cards/{card['_id']}"), token) for card in cards]
+        cards = self._get_json(URL(f"{list_url}/cards"))
+        full_cards = [self._get_json(URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
         return [card for card in full_cards if not self._ignore_card(card)]
 
     @cachetools.func.ttl_cache(ttl=60)
-    def _get_json(self, api_url: URL, token: str):
+    def _get_json(self, api_url: URL):
         """Get the JSON from the API url."""
-        return requests.get(api_url, timeout=self.TIMEOUT, headers=dict(Authorization=f"Bearer {token}")).json()
+        return requests.get(api_url, timeout=self.TIMEOUT, headers=dict(Authorization=f"Bearer {self.__token}")).json()
 
     def __ignore_list(self, card_list) -> bool:
         """Return whether the list should be ignored."""
@@ -71,13 +71,12 @@ class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        token = (await responses[0].json())['token']
         api_url = self._api_url()
-        board_url = f"{api_url}/api/boards/{self._board_id(token)}"
-        board_slug = self._get_json(URL(board_url), token)["slug"]
+        board_url = f"{api_url}/api/boards/{self._board_id()}"
+        board_slug = self._get_json(URL(board_url))["slug"]
         entities: Entities = []
-        for lst in self._lists(board_url, token):
-            for card in self._cards(f"{board_url}/lists/{lst['_id']}", token):
+        for lst in self._lists(board_url):
+            for card in self._cards(f"{board_url}/lists/{lst['_id']}"):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
         return str(len(entities)), "100", entities
 
@@ -114,12 +113,11 @@ class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        token = (await responses[0].json())['token']
-        board_url = f"{self._api_url()}/api/boards/{self._board_id(token)}"
-        board = self._get_json(URL(board_url), token)
+        board_url = f"{self._api_url()}/api/boards/{self._board_id()}"
+        board = self._get_json(URL(board_url))
         dates = [board.get("createdAt"), board.get("modifiedAt")]
-        for lst in self._lists(board_url, token):
+        for lst in self._lists(board_url):
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             list_url = f"{board_url}/lists/{lst['_id']}"
-            dates.extend([card["dateLastActivity"] for card in self._cards(list_url, token)])
+            dates.extend([card["dateLastActivity"] for card in self._cards(list_url)])
         return str(days_ago(parse(max([date for date in dates if date])))), "100", []
