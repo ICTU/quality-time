@@ -67,7 +67,7 @@ services:
     cap_drop:
       - ALL
   database:
-    image: mongo
+    image: mongo:4.2.3
     restart: always
     env_file:
       - ${ENV:-dev}.env
