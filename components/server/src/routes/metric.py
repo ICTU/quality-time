@@ -10,11 +10,10 @@ from database.datamodels import default_metric_attributes
 from database.reports import get_data, insert_new_report, latest_reports
 from model.actions import copy_metric, move_item
 from server_utilities.functions import uuid, sanitize_html
-from server_utilities.type import MetricId, ReportId, SubjectId
+from server_utilities.type import MetricId, SubjectId
 from .measurement import latest_measurement, insert_new_measurement
 
 
-@bottle.get("/api/v1/metrics")
 @bottle.get("/api/v2/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
@@ -25,13 +24,6 @@ def get_metrics(database: Database):
                 metric["report_uuid"] = report["report_uuid"]
                 metrics[metric_uuid] = metric
     return metrics
-
-
-@bottle.post("/api/v1/report/<report_uuid>/subject/<subject_uuid>/metric/new")
-def post_metric_new_v1(report_uuid: ReportId, subject_uuid: SubjectId, database: Database):
-    """Add a new metric."""
-    # pylint: disable=unused-argument
-    return post_metric_new(subject_uuid, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/metric/new/<subject_uuid>")
@@ -45,13 +37,6 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
         description=f"{user['user']} added a new metric to subject '{data.subject_name}' in report "
                     f"'{data.report_name}'.")
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/copy")
-def post_metric_copy_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
-    """Copy a metric."""
-    # pylint: disable=unused-argument
-    return post_metric_copy(metric_uuid, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/metric/<metric_uuid>/copy")
@@ -90,13 +75,6 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v1/report/<report_uuid>/metric/<metric_uuid>")
-def delete_metric_v1(report_uuid: ReportId, metric_uuid: MetricId, database: Database):
-    """Delete a metric."""
-    # pylint: disable=unused-argument
-    return delete_metric(metric_uuid, database)  # pragma: nocover
-
-
 @bottle.delete("/api/v2/metric/<metric_uuid>")
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
@@ -108,13 +86,6 @@ def delete_metric(metric_uuid: MetricId, database: Database):
                     f"'{data.subject_name}' in report '{data.report_name}'.")
     del data.subject["metrics"][metric_uuid]
     return insert_new_report(database, data.report)
-
-
-@bottle.post("/api/v1/report/<report_uuid>/metric/<metric_uuid>/<metric_attribute>")
-def post_metric_attribute_v1(report_uuid: ReportId, metric_uuid: MetricId, metric_attribute: str, database: Database):
-    """Set the metric attribute."""
-    # pylint: disable=unused-argument
-    return post_metric_attribute(metric_uuid, metric_attribute, database)  # pragma: nocover
 
 
 @bottle.post("/api/v2/metric/<metric_uuid>/attribute/<metric_attribute>")

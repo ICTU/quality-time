@@ -17,7 +17,6 @@ from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import ReportId
 
 
-@bottle.post("/api/v1/report/import")
 @bottle.post("/api/v2/report/import")
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
@@ -25,7 +24,6 @@ def post_report_import(database: Database):
     return import_json_report(database, report)
 
 
-@bottle.post("/api/v1/report/new")
 @bottle.post("/api/v2/report/new")
 def post_report_new(database: Database):
     """Add a new report."""
@@ -37,7 +35,6 @@ def post_report_new(database: Database):
     return insert_new_report(database, report)
 
 
-@bottle.post("/api/v1/report/<report_uuid>/copy")
 @bottle.post("/api/v2/report/<report_uuid>/copy")
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
@@ -50,7 +47,6 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     return insert_new_report(database, report_copy)
 
 
-@bottle.get("/api/v1/report/<report_uuid>/pdf")
 @bottle.get("/api/v2/report/<report_uuid>/pdf")
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as pdf."""
@@ -65,7 +61,6 @@ def export_report_as_pdf(report_uuid: ReportId):
     return response.content
 
 
-@bottle.delete("/api/v1/report/<report_uuid>")
 @bottle.delete("/api/v2/report/<report_uuid>")
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
@@ -78,7 +73,6 @@ def delete_report(report_uuid: ReportId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v1/report/<report_uuid>/<report_attribute>")
 @bottle.post("/api/v2/report/<report_uuid>/attribute/<report_attribute>")
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
@@ -95,7 +89,6 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     return insert_new_report(database, data.report)
 
 
-@bottle.get("/api/v1/tagreport/<tag>")
 @bottle.get("/api/v2/tagreport/<tag>")
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
