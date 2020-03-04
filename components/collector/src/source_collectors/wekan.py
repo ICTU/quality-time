@@ -2,28 +2,38 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List, Optional, Tuple
+from typing import cast, Dict, List, Tuple
 
 from dateutil.parser import parse
 import aiohttp
-import requests
 
 from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
 
+WekanCard = Dict[str, str]
+WekanBoard = Dict[str, str]
+WekanList = Dict[str, str]
+
+
 class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Wekan collectors."""
 
     def __init__(self, *args, **kwargs) -> None:
-        self.__token = None
-        self._board_id: Optional[str] = None
+        self.__token = ""
+        self._board: WekanBoard = {}
+        self._board_url = ""
+        self._lists: List[WekanList] = []
+        self._cards: Dict[str, List[WekanCard]] = {}
         super().__init__(*args, **kwargs)
 
     async def _landing_url(self, responses: Responses) -> URL:
         api_url = self._api_url()
-        return URL(f"{api_url}/b/{self._board_id}") if responses else api_url
+        return URL(f"{api_url}/b/{self._board['_id']}") if responses else api_url
+
+    def _headers(self) -> Dict[str, str]:
+        return dict(Authorization=f"Bearer {self.__token}")
 
     async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
@@ -31,29 +41,36 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         timeout = aiohttp.ClientTimeout(self.TIMEOUT)
         response = await session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
         self.__token = (await response.json())["token"]
-        self._board_id = self.__get_board_id()
+        await self.__get_board(session)
+        await self.__get_lists(session)
+        await self.__get_cards(session)
         return [cast(Response, response)]
 
-    def __get_board_id(self) -> str:
-        """Return the id of the board specified by the user."""
+    async def __get_board(self, session: aiohttp.ClientSession) -> None:
+        """Return the board specified by the user."""
         api_url = self._api_url()
-        user_id = self._get_json(URL(f"{api_url}/api/user"))["_id"]
-        boards = self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"))
-        return str([board for board in boards if self._parameter("board") in board.values()][0]["_id"])
+        user_id = (await self._get_json(session, URL(f"{api_url}/api/user")))["_id"]
+        boards = await self._get_json(session, URL(f"{api_url}/api/users/{user_id}/boards"))
+        self._board = [board for board in boards if self._parameter("board") in board.values()][0]
+        self._board_url = f"{self._api_url()}/api/boards/{self._board['_id']}"
 
-    def _lists(self, board_url: str) -> List:
+    async def __get_lists(self, session: aiohttp.ClientSession) -> None:
         """Return the lists on the board."""
-        return [lst for lst in self._get_json(URL(f"{board_url}/lists")) if not self.__ignore_list(lst)]
+        self._lists = [
+            lst for lst in await self._get_json(session, URL(f"{self._board_url}/lists"))
+            if not self.__ignore_list(lst)]
 
-    def _cards(self, list_url: str) -> List:
-        """Return the cards on the board."""
-        cards = self._get_json(URL(f"{list_url}/cards"))
-        full_cards = [self._get_json(URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
-        return [card for card in full_cards if not self._ignore_card(card)]
+    async def __get_cards(self, session: aiohttp.ClientSession) -> None:
+        """Get the cards for the list."""
+        for lst in self._lists:
+            list_url = f"{self._board_url}/lists/{lst['_id']}"
+            cards = await self._get_json(session, URL(f"{list_url}/cards"))
+            full_cards = [await self._get_json(session, URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
+            self._cards[lst["_id"]] = [card for card in full_cards if not self._ignore_card(card)]
 
-    def _get_json(self, api_url: URL):
+    async def _get_json(self, session: aiohttp.ClientSession, api_url: URL):
         """Get the JSON from the API url."""
-        return requests.get(api_url, timeout=self.TIMEOUT, headers=dict(Authorization=f"Bearer {self.__token}")).json()
+        return (await super()._get_source_responses(session, api_url))[0].json()
 
     def __ignore_list(self, card_list) -> bool:
         """Return whether the list should be ignored."""
@@ -72,11 +89,10 @@ class WekanIssues(WekanBase):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         api_url = self._api_url()
-        board_url = f"{api_url}/api/boards/{self._board_id}"
-        board_slug = self._get_json(URL(board_url))["slug"]
+        board_slug = self._board["slug"]
         entities: Entities = []
-        for lst in self._lists(board_url):
-            for card in self._cards(f"{board_url}/lists/{lst['_id']}"):
+        for lst in self._lists:
+            for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
         return str(len(entities)), "100", entities
 
@@ -113,11 +129,8 @@ class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        board_url = f"{self._api_url()}/api/boards/{self._board_id}"
-        board = self._get_json(URL(board_url))
-        dates = [board.get("createdAt"), board.get("modifiedAt")]
-        for lst in self._lists(board_url):
+        dates = [self._board.get("createdAt"), self._board.get("modifiedAt")]
+        for lst in self._lists:
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
-            list_url = f"{board_url}/lists/{lst['_id']}"
-            dates.extend([card["dateLastActivity"] for card in self._cards(list_url)])
+            dates.extend([card["dateLastActivity"] for card in self._cards.get(lst["_id"], [])])
         return str(days_ago(parse(max([date for date in dates if date])))), "100", []
