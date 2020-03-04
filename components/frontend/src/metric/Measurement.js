@@ -27,7 +27,13 @@ export function Measurement(props) {
   }
   function measurement_target() {
     const metric_direction = { "<": "≦", ">": "≧" }[metric.direction || metric_type.direction];
-    return `${metric_direction} ${get_metric_target(metric)}${metric_unit} ${metric.accept_debt ? "(debt)" : ""}`
+    let debt_end = "";
+    if (metric.debt_end_date) {
+      const end_date = new Date(metric.debt_end_date);
+      debt_end = ` until ${end_date.toLocaleDateString()}`;
+    }
+    const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
+    return `${metric_direction} ${get_metric_target(metric)}${metric_unit}${debt}`
   }
   function measurement_sources() {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
