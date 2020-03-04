@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import { Button, Popup, Table } from 'semantic-ui-react';
 import { SourceEntity } from './SourceEntity';
+import { capitalize } from '../utils';
 
 export function SourceEntities(props) {
   const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
+
+  function sort(column) {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === "ascending" ? "descending" : "ascending")
+    } else {
+      setSortColumn(column)
+    }
+  }
+  function sorted(column) {
+    return column === sortColumn ? sortDirection : null
+  }
 
   const report_source = props.metric.sources[props.source.source_uuid];
   const source_type = report_source.type;
@@ -29,18 +41,10 @@ export function SourceEntities(props) {
           />
         } content={hideIgnoredEntities ? `Show resolved ${entity_name_plural}` : `Hide resolved ${entity_name_plural}`} />
       </Table.HeaderCell>
+      <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
+        {`${capitalize(entity_name)} status`}</Table.HeaderCell>
       {entity_attributes.map((entity_attribute) =>
-        <Table.HeaderCell
-          key={entity_attribute.key}
-          sorted={sortColumn === entity_attribute.key ? sortDirection : null}
-          onClick={() => {
-            if (entity_attribute.key === sortColumn) {
-              setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
-            } else {
-              setSortColumn(entity_attribute.key)
-            }
-          }}
-        >
+        <Table.HeaderCell key={entity_attribute.key} sorted={sorted(entity_attribute.key)} onClick={() => sort(entity_attribute.key)}>
           {entity_attribute.name}
         </Table.HeaderCell>)
       }

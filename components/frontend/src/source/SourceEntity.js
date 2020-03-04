@@ -3,6 +3,7 @@ import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
+import { source_entity_status_name } from './source_entity_status';
 import "./SourceEntity.css";
 
 export function SourceEntity(props) {
@@ -30,10 +31,13 @@ export function SourceEntity(props) {
   />;
   return (
     <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
-      {props.entity_attributes.map((entity_attribute, col_index) =>
-        <Table.Cell key={col_index}>
-          <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
-        </Table.Cell>)}
+      <>
+        <Table.Cell>{source_entity_status_name[props.status]}</Table.Cell>
+        {props.entity_attributes.map((entity_attribute, col_index) =>
+          <Table.Cell key={col_index}>
+            <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
+          </Table.Cell>)}
+      </>
     </TableRowWithDetails>
   );
 }
