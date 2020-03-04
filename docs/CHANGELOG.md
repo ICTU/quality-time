@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Allow for accepting technical debt for a metric that has no sources or failing sources. Closes [#1076](https://github.com/ICTU/quality-time/issues/1076).
+
+### Removed
+
+- Version 1 of the API was removed. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
+
 ## [1.8.1] - [2020-03-03]
 
 ### Fixed

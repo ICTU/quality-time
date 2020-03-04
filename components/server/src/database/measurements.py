@@ -96,14 +96,14 @@ def calculate_measurement_value(sources, addition: Addition, scale: Scale, direc
 
 def determine_measurement_status(database: Database, metric, measurement_value: Optional[str]) -> Optional[Status]:
     """Determine the measurement status."""
+    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
     if measurement_value is None:
-        return None
+        return "debt_target_met" if metric["accept_debt"] and date.today().isoformat() <= debt_end_date else None
     direction = metric.get("direction") or latest_datamodel(database)["metrics"][metric["type"]]["direction"]
     value = int(measurement_value)
     target = int(metric.get("target") or 0)
     near_target = int(metric.get("near_target") or 0)
     debt_target = int(metric.get("debt_target") or 0)
-    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
     better_or_equal = {">": int.__ge__, "<": int.__le__}[direction]
     if better_or_equal(value, target):
         status: Status = "target_met"

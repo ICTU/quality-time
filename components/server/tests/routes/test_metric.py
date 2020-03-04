@@ -108,7 +108,7 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.assertEqual(
             dict(
                 end="2019-01-01", sources=[], start="2019-01-01",
-                metric_uuid=METRIC_ID, count=dict(value=None, status=None)),
+                metric_uuid=METRIC_ID, count=dict(value=None, status="debt_target_met")),
             post_metric_attribute(METRIC_ID, "accept_debt", self.database))
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], email=JOHN["email"],
