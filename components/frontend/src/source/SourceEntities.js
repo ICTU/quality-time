@@ -41,7 +41,7 @@ export function SourceEntities(props) {
           />
         } content={hideIgnoredEntities ? `Show resolved ${entity_name_plural}` : `Hide resolved ${entity_name_plural}`} />
       </Table.HeaderCell>
-      <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status") }>
+      <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
         {`${capitalize(entity_name)} status`}</Table.HeaderCell>
       {entity_attributes.map((entity_attribute) =>
         <Table.HeaderCell key={entity_attribute.key} sorted={sorted(entity_attribute.key)} onClick={() => sort(entity_attribute.key)}>
