@@ -9,7 +9,7 @@ const data_model = {
                 metric_type:
                 {
                     name: "entity name",
-                    attributes: []
+                    attributes: [{key: "1"}, {key: "2"}]
                 }
             }
         }
@@ -48,5 +48,9 @@ describe('<SourceEntities />', () => {
         expect(wrapper.find("TableHeaderCell").at(1).prop("sorted")).toBe("ascending");
         wrapper.find("TableHeaderCell").at(1).simulate("click");
         expect(wrapper.find("TableHeaderCell").at(1).prop("sorted")).toBe("descending");
+        wrapper.find("TableHeaderCell").at(2).simulate("click");
+        expect(wrapper.find("TableHeaderCell").at(2).prop("sorted")).toBe("descending");
+        wrapper.find("TableHeaderCell").at(2).simulate("click");
+        expect(wrapper.find("TableHeaderCell").at(2).prop("sorted")).toBe("ascending");
     })
 });
