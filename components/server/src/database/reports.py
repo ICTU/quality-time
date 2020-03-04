@@ -1,7 +1,8 @@
 """Reports collection."""
 
+from datetime import date
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Union
+from typing import cast, Any, Dict, List, Optional, Union
 
 import pymongo
 from pymongo.database import Database
@@ -55,7 +56,7 @@ def summarize_report(report, recent_measurements, data_model) -> None:
             scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
             metric["scale"] = scale
             last_measurement = recent[-1] if recent else {}
-            metric["status"] = last_measurement.get(scale, {}).get("status", last_measurement.get("status"))
+            metric["status"] = metric_status(metric, last_measurement, scale)
             metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
             color = status_color_mapping.get(metric["status"], "white")
             report["summary"][color] += 1
@@ -63,6 +64,14 @@ def summarize_report(report, recent_measurements, data_model) -> None:
                 subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
             for tag in metric.get("tags", []):
                 report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+
+
+def metric_status(metric, last_measurement, scale) -> Optional[Status]:
+    """Determine the metric status."""
+    if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
+        return cast(Status, status)
+    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
+    return "debt_target_met" if metric.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
 
 
 def latest_report(database: Database, report_uuid: ReportId):
