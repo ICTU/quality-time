@@ -179,7 +179,8 @@ def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, 
 def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict[str, Union[int, str]]:
     """Check the availability of the URL."""
     try:
-        response = requests.get(url, auth=_basic_auth_credentials(source_parameters))
+        response = requests.get(
+            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters))
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
@@ -192,3 +193,8 @@ def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
     if "username" in source_parameters and "password" in source_parameters:
         return source_parameters["username"], source_parameters["password"]
     return None
+
+
+def _headers(source_parameters) -> Dict:
+    """Return the headers for the url-check."""
+    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else dict()

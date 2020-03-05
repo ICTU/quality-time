@@ -671,7 +671,8 @@
                     "default_value": "",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "metrics": [
                         "security_warnings"
@@ -685,7 +686,8 @@
                     "default_value": "",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "metrics": [
                         "source_up_to_dateness"
@@ -716,6 +718,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -789,7 +802,8 @@
                     "default_value": "",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "metrics": [
                         "accessibility"
@@ -818,6 +832,16 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1299,7 +1323,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -1333,6 +1358,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1433,7 +1469,8 @@
                     "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -1465,6 +1502,16 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -1842,7 +1889,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -1879,6 +1927,18 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_lines",
+                        "uncovered_branches"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2360,7 +2420,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2394,6 +2455,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2502,7 +2574,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2535,6 +2608,18 @@
                         "uncovered_branches",
                         "source_up_to_dateness"
                     ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "uncovered_lines",
+                        "uncovered_branches",
+                        "source_up_to_dateness"
+                    ]
                 }
             },
             "entities": {}
@@ -2550,7 +2635,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2581,6 +2667,16 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "violations"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2648,7 +2744,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2682,6 +2779,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2753,7 +2861,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2787,6 +2896,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -2937,7 +3057,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -2971,6 +3092,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -3060,7 +3192,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -3091,6 +3224,21 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "performancetest_duration",
+                        "performancetest_stability",
+                        "scalability",
+                        "slow_transactions",
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -3175,7 +3323,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -3196,6 +3345,16 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
@@ -3496,7 +3655,8 @@
                     "type": "url",
                     "validate_on": [
                         "username",
-                        "password"
+                        "password",
+                        "private_token"
                     ],
                     "mandatory": true,
                     "default_value": "",
@@ -3530,6 +3690,17 @@
                 "password": {
                     "name": "Password for basic authentication",
                     "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
                     "type": "password",
                     "mandatory": false,
                     "default_value": "",
