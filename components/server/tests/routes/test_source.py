@@ -140,7 +140,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=None)
+        mock_get.assert_called_once_with(self.url, auth=None, headers={})
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
                  description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
@@ -171,7 +171,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=('un', 'pwd'))
+        mock_get.assert_called_once_with(self.url, auth=('un', 'pwd'), headers={})
 
     @patch.object(requests, 'get')
     def test_url_no_url_type(self, mock_get, request):
@@ -201,7 +201,7 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=('xxx', ''))
+        mock_get.assert_called_once_with(self.url, auth=('xxx', ''), headers={"Private-Token": "xxx"})
 
     @patch.object(requests, 'get')
     def test_urls_connection_on_update_other_field(self, mock_get, request):

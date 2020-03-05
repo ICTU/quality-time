@@ -28,7 +28,7 @@ class SourceCollectorTestCase(unittest.TestCase):
                 post_request_side_effect=None,
                 post_request_json_return_value=None,
                 post_request_json_side_effect=None) -> Measurement:
-        """Collect the metric. Keep a reference to the collector so it can be queried."""
+        """Collect the metric."""
         mock_get_request = Mock()
         if get_request_json_side_effect:
             mock_get_request.json.side_effect = get_request_json_side_effect

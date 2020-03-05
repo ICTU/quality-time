@@ -102,7 +102,12 @@ class SourceCollector(ABC):
 
     def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        return [requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
+        return [
+            requests.get(api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials(), headers=self._headers())]
+
+    def _headers(self) -> Dict[str, str]:  # pylint: disable=no-self-use
+        """Return the headers for the request."""
+        return dict()
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
@@ -145,6 +150,14 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         for response in responses:
             unzipped_responses.extend(self.__unzip(response))
         return unzipped_responses
+
+    def _headers(self) -> Dict[str, str]:
+        headers = super()._headers()
+        if token := cast(str, self._parameter("private_token")):
+            # GitLab needs this header, see
+            # https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-by-job-id
+            headers["Private-Token"] = token
+        return headers
 
     @classmethod
     def __unzip(cls, response: Response) -> Responses:
