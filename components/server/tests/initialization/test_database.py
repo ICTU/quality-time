@@ -15,6 +15,11 @@ class DatabaseInitTest(unittest.TestCase):
     def setUp(self):
         self.mongo_client = Mock()
         self.database = Mock()
+        self.database.reports.find.return_value = []
+        self.database.datamodels.find_one.return_value = None
+        self.database.reports_overviews.find_one.return_value = None
+        self.database.reports.count_documents.return_value = 0
+        self.database.measurements.count_documents.return_value = 0
         self.mongo_client().quality_time_db = self.database
 
     def tearDown(self):
@@ -33,10 +38,6 @@ class DatabaseInitTest(unittest.TestCase):
 
     def test_init_empty_database(self):
         """Test the initialization of an empty database."""
-        self.database.datamodels.find_one.return_value = None
-        self.database.reports_overviews.find_one.return_value = None
-        self.database.reports.count_documents.return_value = 0
-        self.database.measurements.count_documents.return_value = 0
         self.init_database('{"change": "yes"}')
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert.assert_called_once()
@@ -53,11 +54,24 @@ class DatabaseInitTest(unittest.TestCase):
 
     def test_skip_loading_example_reports(self):
         """Test that loading example reports can be skipped."""
-        self.database.datamodels.find_one.return_value = None
-        self.database.reports_overviews.find_one.return_value = None
-        self.database.reports.count_documents.return_value = 0
-        self.database.measurements.count_documents.return_value = 0
         with patch("src.initialization.database.os.environ.get", Mock(return_value="False")):
             self.init_database('{"change": "yes"}', False)
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert.assert_called_once()
+
+    def test_update_database(self):
+        """Test that some fields are removed."""
+        self.database.reports.find.return_value = [
+            dict(_id="report_uuid", subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict()))))]
+        self.database.reports.count_documents.return_value = 1
+        self.init_database("{}")
+        self.database.reports.update_one.assert_called_once_with(
+            {'_id': 'report_uuid'},
+            update={
+                '$unset': {
+                    'summary': '',
+                    'summary_by_subject': '',
+                    'summary_by_tag': '',
+                    'subjects.subject_uuid.metrics.metric_uuid.recent_measurements': '',
+                    'subjects.subject_uuid.metrics.metric_uuid.status': '',
+                    'subjects.subject_uuid.metrics.metric_uuid.value': ''}})
