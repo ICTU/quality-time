@@ -101,7 +101,7 @@ def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: Sub
         "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
     data.datamodel = latest_datamodel(database)
-    data.reports = list(latest_reports(database, data.datamodel))
+    data.reports = list(latest_reports(database))
     data.source_uuid = source_uuid
     data.metric_uuid = get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
     data.subject_uuid = get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
