@@ -52,8 +52,9 @@ services:
       - ALL
   collector:
     image: ictu/quality-time_collector:v2.0.0-rc.2
-    env_file:
-      - ${ENV:-dev}.env
+    environment:
+      - COLLECTOR_SLEEP_DURATION=60
+      - COLLECTOR_MEASUREMENT_FREQUENCY=900
     depends_on:
       - server
     cap_drop:
@@ -69,13 +70,15 @@ services:
   database:
     image: mongo:4.2.3
     restart: always
-    env_file:
-      - ${ENV:-dev}.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
     volumes:
       - "dbdata:/data/db"
   renderer:
     image: ictu/url-to-pdf-api:v1.0.0
-    env_file:
-      - ${ENV:-dev}.env
+    environment:
+      - ALLOW_HTTP=true
+      - LC_ALL=en_GB.UTF-8
 volumes:
   dbdata:
