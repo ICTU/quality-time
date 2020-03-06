@@ -33,6 +33,19 @@ def create_indexes(database: Database) -> None:
 
 
 def update_database(database: Database) -> None:
-    """Run any update statements."""
-    # Remove the last flag on measurements, introduced after version 1.7.0
+    """Run any update statements. The version numbers below are the versions that were the latest version at the time
+    the update statements were added."""
+
+    # Remove the last flag on measurements [v1.7.0]
     database.measurements.update_many(filter={"last": True}, update={"$unset": {"last": ""}})
+
+    # Remove summary, summary_by_subject, and summary_by_tag written to the reports collection by accident [v1.8.1]
+    # See https://github.com/ICTU/quality-time/issues/1082.
+    reports = database.reports.find({"summary": {"$exists": True}})
+    for report in reports:
+        fields_to_unset = {"summary": "", "summary_by_subject": "", "summary_by_tag": ""}
+        for subject_uuid, subject in report.get("subjects", {}).items():
+            for metric_uuid in subject.get("metrics", {}).keys():
+                for field_name in ["recent_measurements", "status", "scale", "value"]:
+                    fields_to_unset[f"subjects.{subject_uuid}.metrics.{metric_uuid}.{field_name}"] = ""
+        database.reports.update({_id: report["_id"]}, update={"$unset": fields_to_unset})
