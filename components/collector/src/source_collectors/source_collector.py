@@ -109,10 +109,6 @@ class SourceCollector(ABC):
         response.raise_for_status()  # FIX duplication with __safely_get_source_responses
         return [response]
 
-    def _headers(self) -> Dict[str, str]:  # pylint: disable=no-self-use
-        """Return the headers for the request."""
-        return dict()
-
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
         if token := cast(str, self.__parameters.get("private_token", "")):

@@ -66,10 +66,10 @@ class BanditSecurityWarningsTest(BanditTestCase):
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
-    def test_report_in_gitlab(self):
+    async def test_report_in_gitlab(self):
         """Test that a private token can be added to the request header for accessing a report in GitLab."""
         self.sources["source_id"]["parameters"]["private_token"] = "token"
-        response = self.collect(self.metric, get_request_json_return_value=self.bandit_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
 

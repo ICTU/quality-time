@@ -21,7 +21,9 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         super().__init__(*args, **kwargs)
 
     def _headers(self) -> Dict[str, str]:
-        return dict(Authorization=f"Bearer {self.__token}") if self.__token else {}
+        headers = super()._headers()
+        headers["Authorization"] = f"Bearer {self.__token}"
+        return headers
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         return None
