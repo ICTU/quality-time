@@ -1,17 +1,15 @@
 """Reports collection."""
 
-from datetime import date
 from collections import namedtuple
-from typing import cast, Any, Dict, List, Optional, Union
+from typing import cast, Any, Dict, List, Union
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp, unique
-from server_utilities.type import Change, Color, MetricId, ReportId, SourceId, Status, SubjectId
+from server_utilities.type import Change, MetricId, ReportId, SourceId, SubjectId
 from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
-from .measurements import recent_measurements_by_metric_uuid
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
@@ -25,53 +23,12 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
             yield report
 
 
-def latest_summarized_reports(database: Database, data_model, max_iso_timestamp: str = ""):
-    """Return all latest reports in the reports collection, including a summary of each report."""
-    reports = []
-    recent_measurements = recent_measurements_by_metric_uuid(database, max_iso_timestamp or iso_timestamp())
-    for report in latest_reports(database, max_iso_timestamp):
-        summarize_report(report, recent_measurements, data_model)
-        reports.append(report)
-    return reports
-
-
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
     """Return the latest reports overview."""
     timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp or iso_timestamp()})
     if overview := database.reports_overviews.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
         overview["_id"] = str(overview["_id"])
     return overview or dict()
-
-
-def summarize_report(report, recent_measurements, data_model) -> None:
-    """Add a summary of the measurements to each subject."""
-    status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
-        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
-    report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
-    report["summary_by_subject"] = {}
-    report["summary_by_tag"] = {}
-    for subject_uuid, subject in report.get("subjects", {}).items():
-        for metric_uuid, metric in subject.get("metrics", {}).items():
-            recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
-            scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
-            metric["scale"] = scale
-            last_measurement = recent[-1] if recent else {}
-            metric["status"] = metric_status(metric, last_measurement, scale)
-            metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
-            color = status_color_mapping.get(metric["status"], "white")
-            report["summary"][color] += 1
-            report["summary_by_subject"].setdefault(
-                subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-            for tag in metric.get("tags", []):
-                report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
-
-
-def metric_status(metric, last_measurement, scale) -> Optional[Status]:
-    """Determine the metric status."""
-    if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
-        return cast(Status, status)
-    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
-    return "debt_target_met" if metric.get("accept_debt") and date.today().isoformat() <= debt_end_date else None
 
 
 def latest_report(database: Database, report_uuid: ReportId):
@@ -144,7 +101,7 @@ def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: Sub
         "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
         "metric, metric_uuid, metric_name, source, source_uuid, source_name")
     data.datamodel = latest_datamodel(database)
-    data.reports = latest_summarized_reports(database, data.datamodel)
+    data.reports = list(latest_reports(database, data.datamodel))
     data.source_uuid = source_uuid
     data.metric_uuid = get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
     data.subject_uuid = get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid

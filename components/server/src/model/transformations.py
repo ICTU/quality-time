@@ -1,9 +1,10 @@
 """Model transformations."""
 
-from typing import Iterator, List
+from datetime import date
+from typing import cast, Dict, Iterator, List, Optional
 
 from server_utilities.functions import unique
-from server_utilities.type import EditScope, ItemId
+from server_utilities.type import Color, EditScope, ItemId, Status
 from .iterators import sources as iter_sources
 
 
@@ -42,3 +43,34 @@ def change_source_parameter(data, parameter_key: str, old_value, new_value, scop
             source["parameters"][parameter_key] = new_value
             changed_ids.extend(uuids)
     return list(unique(changed_ids))
+
+
+def summarize_report(report, recent_measurements, data_model) -> None:
+    """Add a summary of the measurements to each subject."""
+    status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
+        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
+    report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
+    report["summary_by_subject"] = {}
+    report["summary_by_tag"] = {}
+    for subject_uuid, subject in report.get("subjects", {}).items():
+        for metric_uuid, metric in subject.get("metrics", {}).items():
+            recent = metric["recent_measurements"] = recent_measurements.get(metric_uuid, [])
+            scale = metric.get("scale") or data_model["metrics"][metric["type"]].get("default_scale", "count")
+            metric["scale"] = scale
+            last_measurement = recent[-1] if recent else {}
+            metric["status"] = metric_status(metric, last_measurement, scale)
+            metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
+            color = status_color_mapping.get(metric["status"], "white")
+            report["summary"][color] += 1
+            report["summary_by_subject"].setdefault(
+                subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+            for tag in metric.get("tags", []):
+                report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+
+
+def metric_status(metric, last_measurement, scale) -> Optional[Status]:
+    """Determine the metric status."""
+    if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
+        return cast(Status, status)
+    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
+    return "debt_target_met" if metric.get("accept_debt") and date.today().isoformat() <= debt_end_date else None

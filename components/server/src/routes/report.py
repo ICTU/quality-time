@@ -9,9 +9,9 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import get_data, latest_summarized_reports, insert_new_report, summarize_report
+from database.reports import get_data, latest_reports, insert_new_report
 from model.actions import copy_report
-from model.transformations import hide_credentials
+from model.transformations import hide_credentials, summarize_report
 from initialization.report import import_json_report
 from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import ReportId
@@ -93,13 +93,13 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
 def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
-    data_model = latest_datamodel(database)
-    reports = latest_summarized_reports(database, data_model, date_time)
-    hide_credentials(data_model, *reports)
+    reports = latest_reports(database, date_time)
     subjects = _get_subjects_and_metrics_by_tag(reports, tag)
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
         timestamp=date_time, subjects=subjects)
+    data_model = latest_datamodel(database)
+    hide_credentials(data_model, tag_report)
     summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
     return tag_report
 

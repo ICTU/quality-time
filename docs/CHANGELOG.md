@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show end date of technical debt in the measurement target column. Closes [#1072](https://github.com/ICTU/quality-time/issues/1072).
 - Allow for accepting technical debt for a metric that has no sources or failing sources. Closes [#1076](https://github.com/ICTU/quality-time/issues/1076).
 
+### Fixed
+
+- Don't store server-side generated report summaries in the database. Fixes [#1082](https://github.com/ICTU/quality-time/issues/1082).
+
 ### Removed
 
 - Version 1 of the API was removed. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
