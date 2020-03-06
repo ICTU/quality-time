@@ -48,7 +48,7 @@ def update_database(database: Database) -> None:
         fields_to_unset = {"summary": "", "summary_by_subject": "", "summary_by_tag": ""}
         for subject_uuid, subject in report.get("subjects", {}).items():
             for metric_uuid in subject.get("metrics", {}).keys():
-                for field_name in ["recent_measurements", "status", "scale", "value"]:
+                for field_name in ["recent_measurements", "status", "value"]:
                     fields_to_unset[f"subjects.{subject_uuid}.metrics.{metric_uuid}.{field_name}"] = ""
-        logging.info(f"Updating report {report['_id']} ({index}/{count}): removing {len(fields_to_unset)} fields.")
+        logging.info(f"Updating report {report['_id']} ({index + 1}/{count}): removing {len(fields_to_unset)} fields.")
         database.reports.update_one({"_id": report["_id"]}, update={"$unset": fields_to_unset})

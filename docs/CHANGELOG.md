@@ -20,11 +20,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Don't store server-side generated report summaries in the database. Fixes [#1082](https://github.com/ICTU/quality-time/issues/1082).
+- Don't store server-side generated report summaries in the database. The previously generated report summaries are removed from the database when the server starts, so starting may take longer than normal. Fixes [#1082](https://github.com/ICTU/quality-time/issues/1082).
 
 ### Removed
 
-- Version 1 of the API was removed. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
+- Version 1 of the API has been removed. API version 1 was deprecated since Quality-time v1.3.0. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
 
 ## [1.8.1] - [2020-03-03]
 
@@ -50,10 +50,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When using SonarQube as source for duplication, uncovered lines, or uncovered branches, the landing url would be incorrect. Fixes [#1044](https://github.com/ICTU/quality-time/issues/1044).
 - The docker-compose YAML file now specifies that the proxy container should wait for the server and frontend containers to start. Fixes [#1046](https://github.com/ICTU/quality-time/issues/1046).
 - The collector would fail if it could not write a timestamp to the health_check.txt file, e.g. due to a permission error. Fixed by writing the health_check.txt file to /tmp instead of the home directory of the default user and by catching and logging any OS errors that may occur. Fixes [#1057](https://github.com/ICTU/quality-time/issues/1057).
-
-### Removed
-
-- Version 1 of the Quality-time API has been removed. Fixes [#1051](https://github.com/ICTU/quality-time/issues/1051).
 
 ## [1.7.0] - [2020-02-22]
 
