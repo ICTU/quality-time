@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [2.0.0-rc.2] - [2020-03-06]
+## [Unreleased]
 
 ### Added
 
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - Version 1 of the API has been removed. API version 1 was deprecated since Quality-time v1.3.0. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
+- Remove the Docker environment files and move the environment variables to the docker-compose files to simplify the compositions. Closes [#1063](https://github.com/ICTU/quality-time/issues/1063).
 
 ## [1.8.1] - [2020-03-03]
 
