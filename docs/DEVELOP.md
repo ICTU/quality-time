@@ -93,15 +93,18 @@ See [Release README](../ci/README.md).
 
 ![Components](components.png)
 
-Quality-time consists of six components:
+Quality-time consists of six components. Three standard components:
 
-- A proxy (Caddy, but can be replaced by another proxy if so desired) routing traffic from and to the user's browser,
+- A proxy (we use the [ICTU variant of Caddy](https://github.com/ICTU/caddy), but this can be replaced by another proxy if so desired) routing traffic from and to the user's browser,
+- A database ([Mongo](https://www.mongodb.com)) for storing reports and measurements,
+- A renderer (we use the [ICTU variant of url-to-pdf-api](https://github.com/ICTU/url-to-pdf-api) to export reports to PDF,
+
+And three bespoke components:
+
 - A [frontend](../components/frontend/README.md) serving the React UI,
-- A renderer to export reports to PDF,
 - A [server](../components/server/README.md) serving the API,
-- A database (Mongo) for storing reports and measurements,
 - A [collector](../components/collector/README.md) to collect the measurements from the sources.
 
-In addition, a LDAP server is expected to be available to authenticate users.
+In addition, an LDAP server is expected to be available to authenticate users.
 
-For testing purposes there is also [test data](../components/testdata/README.md)
+For testing purposes there are also [test data](../components/testdata/README.md) and an [LDAP-server](../components/ldap/README.md).

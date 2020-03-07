@@ -13,4 +13,4 @@ RUN npm run build
 
 HEALTHCHECK CMD curl -f http://localhost:${FRONTEND_PORT:-5000}/favicon.ico || exit 1
 
-CMD ["serve", "-s", "build"]
+CMD serve --listen ${FRONTEND_PORT:-5000} --single build

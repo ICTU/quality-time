@@ -25,7 +25,7 @@ Also see:
 - [Supported metrics and sources](docs/DATA_MODEL.md)
 - [Deployment instructions](docs/DEPLOY.md)
 - [Developer manual](docs/DEVELOP.md)
-- [Recent changes](docs/CHANGELOG.md)
+- [Change log](docs/CHANGELOG.md)
 
 ## Screenshots
 

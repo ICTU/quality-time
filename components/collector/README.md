@@ -10,3 +10,13 @@ If a metric has been recently measured and its parameters haven't been changed, 
 
 Every time the collector wakes up, it writes the current date and time in ISO format to the 'health_check.txt' file. This date and time is read by the Docker health check (see the [Dockerfile](Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
 
+## Configuration
+
+The collector uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :---------- | :------------ |
+| SERVER_HOST | server | Hostname of the server. The collector uses this to get the metrics and post the measurements. |
+| SERVER_PORT | 5001 | Port of the server. The collector uses this to get the metrics and post the measurements. |
+| COLLECTOR_SLEEP_DURATION | 60 | The amount of time (in seconds) that the collector sleeps after collecting measurements. |
+| COLLECTOR_MEASUREMENT_FREQUENCY | 900 | The amount of time (in seconds) after which a metric should be measured again. |

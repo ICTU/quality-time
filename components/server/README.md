@@ -2,11 +2,11 @@
 
 ## Example reports
 
-The [`example-reports`](example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. The server [`data` package](src/data/example-reports) contains the example reports.
+The [`example-reports`](src/data/example-reports) are imported when the server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the [section on configuration](#configuration) below.
 
 ## API
 
-API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v[1|2] (all routes for a specific version), and http://www.quality-time.example.org/api/v[1|2]/<route_fragment> (all routes matching a specific text fragment).j
+API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v2 (all routes for a specific version, in this case version 2), and http://www.quality-time.example.org/api/v2/<route_fragment> (all routes matching a specific text fragment).
 
 ## Data model
 
@@ -212,3 +212,20 @@ Data models, reports, and reports overviews are [temporal objects](https://www.m
 ## Health check
 
 The [Dockerfile](Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the server. Officially, this API does not exist, but since the server simply returns an empty JSON file it works for checking the health of the server.
+
+## Configuration
+
+The server uses the following environment variables:
+
+| Name | Default value | Description |
+| :--- | :---------- | :------------ |
+| SERVER_PORT | 5001 | Port of the server. |
+| PROXY_HOST | www | Hostname of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
+| PROXY_PORT | 80 | Port of the proxy. The server uses this to construct URLs to pass to the renderer for exporting reports to PDF. |
+| DATABASE_URL | mongodb://root:root@database:27017 | Mongo database connection URL. |
+| LDAP_URL | ldap://ldap:389 | LDAP connection URL. |
+| LDAP_ROOT_DN | dc=example,dc=org | LDAP root distinguished name. |
+| LDAP_LOOKUP_USER_DN | cn=admin,dc=example,dc=org | LDAP lookup user distinguished name. |
+| LDAP_LOOKUP_USER_PASSWORD | admin | LDAP lookup user password. |
+| LDAP_SEARCH_FILTER | (&#124;(uid=$$username)(cn=$$username)) | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| LOAD_EXAMPLE_REPORTS | True | Whether or not to import example reports in the database on start up. |
