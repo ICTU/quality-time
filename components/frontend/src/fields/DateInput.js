@@ -12,9 +12,10 @@ function EditableDateInput(props) {
                 closable
                 dateFormat="YYYY-MM-DD"
                 disabled={false}
+                error={props.required && props.value === ""}
                 label={props.label}
                 onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value)}}}
-                error={props.required && props.value === ""}
+                placeholder={props.placeholder}
                 value={props.value}
             />
         </Form>
