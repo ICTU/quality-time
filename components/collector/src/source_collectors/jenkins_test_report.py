@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import cast, Dict, Final, List, Tuple
 
 from dateutil.parser import parse
-import requests
 
 from collector_utilities.type import Entity, Entities, Responses, URL, Value
 from collector_utilities.functions import days_ago
@@ -59,8 +58,7 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
     async def _get_source_responses(self, api_url: URL) -> Responses:
         test_report_url = URL(f"{api_url}/lastSuccessfulBuild/testReport/api/json")
         job_url = URL(f"{api_url}/lastSuccessfulBuild/api/json")
-        return [requests.get(url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
-                for url in (test_report_url, job_url)]
+        return await super()._get_source_responses(test_report_url) + await super()._get_source_responses(job_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
