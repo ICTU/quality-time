@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Dict, List, Tuple
 
 from dateutil.parser import isoparse
-import requests
 
 from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 from .source_collector import SourceCollector, SourceUpToDatenessCollector
@@ -106,8 +105,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}")
-        return responses + [
-            requests.get(total_metric_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())]
+        return responses + await super()._get_source_responses(total_metric_api_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = await super()._parse_source_responses(responses)
@@ -152,9 +150,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
-        for issues_api_url in (resolved_issues_api_url, all_issues_api_url):
-            responses.append(requests.get(issues_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials()))
-        return responses
+        return responses + await super()._get_source_responses(
+            resolved_issues_api_url) + await super()._get_source_responses(all_issues_api_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = await super()._parse_source_responses(responses[:-1])
