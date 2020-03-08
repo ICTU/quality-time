@@ -6,7 +6,6 @@ from typing import cast, Iterator, List, Optional, Set, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
-import requests
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import Job, Entities, Response, Responses, URL, Value
@@ -120,10 +119,10 @@ class GitLabSourceUpToDateness(GitLabBase):
     async def __last_commit(self, file_path: str) -> Response:
         files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
-        response = requests.head(files_api_url)
+        response = await self._session.head(files_api_url)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
-        return requests.get(commit_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
+        return (await super()._get_source_responses(commit_api_url))[0]
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]

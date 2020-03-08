@@ -1,7 +1,7 @@
 """Unit tests for the GitLab source."""
 
 from datetime import datetime, timezone
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -86,7 +86,7 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
 
     async def test_source_up_to_dateness_file(self):
         """Test that the age of a file in a repo can be measured."""
-        with patch("requests.head", return_value=self.head_response):
+        with patch("aiohttp.ClientSession.head", AsyncMock(return_value=self.head_response)):
             response = await self.collect(
                 self.metric,
                 get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")])
@@ -95,7 +95,7 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
 
     async def test_source_up_to_dateness_folder(self):
         """Test that the age of a folder in a repo can be measured."""
-        with patch("requests.head", side_effect=[self.head_response, self.head_response]):
+        with patch("aiohttp.ClientSession.head", AsyncMock(side_effect=[self.head_response, self.head_response])):
             response = await self.collect(
                 self.metric,
                 get_request_json_side_effect=[
