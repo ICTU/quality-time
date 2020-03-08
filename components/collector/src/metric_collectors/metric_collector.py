@@ -11,13 +11,13 @@ from collector_utilities.type import Measurement
 class MetricCollector:
     """Base class for collecting measurements from multiple sources for a metric."""
 
-    def __init__(self, metric, datamodel=None) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, datamodel=None) -> None:
         self.metric: Final = metric
         self.datamodel: Final = datamodel
         self.collectors: Dict[str, SourceCollector] = dict()
         for source_uuid, source in self.metric["sources"].items():
             collector_class = SourceCollector.get_subclass(source['type'], self.metric['type'])
-            self.collectors[source_uuid] = collector_class(source, datamodel)
+            self.collectors[source_uuid] = collector_class(session, source, datamodel)
 
     def can_collect(self) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
@@ -30,8 +30,7 @@ class MetricCollector:
                     return False
         return bool(sources)
 
-    async def get(self, session: aiohttp.ClientSession) -> Measurement:
+    async def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
         return dict(
-            sources=[
-                {**await self.collectors[uuid].get(session), "source_uuid": uuid} for uuid in self.metric["sources"]])
+            sources=[{**await self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])

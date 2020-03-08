@@ -27,7 +27,8 @@ class SourceCollector(ABC):
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 
-    def __init__(self, source, datamodel) -> None:
+    def __init__(self, session: aiohttp.ClientSession, source, datamodel) -> None:
+        self._session = session
         self._datamodel: Final = datamodel
         self.__parameters: Final[Dict[str, Union[str, List[str]]]] = source.get("parameters", {})
 
@@ -46,9 +47,9 @@ class SourceCollector(ABC):
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    async def get(self, session: aiohttp.ClientSession) -> Measurement:
+    async def get(self) -> Measurement:
         """Return the measurement from this source."""
-        responses, api_url, connection_error = await self.__safely_get_source_responses(session)
+        responses, api_url, connection_error = await self.__safely_get_source_responses()
         value, total, entities, parse_error = await self.__safely_parse_source_responses(responses)
         landing_url = await self._landing_url(responses)
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
@@ -85,15 +86,14 @@ class SourceCollector(ABC):
             value = cast(str, value).rstrip("/")
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
-    async def __safely_get_source_responses(
-            self, session: aiohttp.ClientSession) -> Tuple[Responses, URL, ErrorMessage]:
+    async def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
         responses: Responses = []
         api_url = URL("")
         error = None
         try:
-            responses = await self._get_source_responses(session, api_url := self._api_url())
+            responses = await self._get_source_responses(api_url := self._api_url())
             for response in responses:
                 response.raise_for_status()
             logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
@@ -102,7 +102,7 @@ class SourceCollector(ABC):
             logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         return responses, api_url, error
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
         response = requests.get(
             api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials(), headers=self._headers())
@@ -146,8 +146,8 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     file_extensions: List[str] = []  # Subclass responsibility
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
-        responses = await super()._get_source_responses(session, api_url)
+    async def _get_source_responses(self, api_url: URL) -> Responses:
+        responses = await super()._get_source_responses(api_url)
         if not api_url.endswith(".zip"):
             return responses
         unzipped_responses = []
@@ -199,7 +199,7 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         fake_response = requests.Response()
         fake_response.status_code = HTTPStatus.OK
         return [fake_response]  # Return a fake response so that the parse methods will be called

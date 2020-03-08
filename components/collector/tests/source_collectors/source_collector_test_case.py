@@ -51,7 +51,7 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
                 with patch("requests.get", return_value=mock_get_request):
                     with patch("requests.delete", return_value=None):
                         async with aiohttp.ClientSession() as session:
-                            return await MetricCollector(metric, self.data_model).get(session)
+                            return await MetricCollector(session, metric, self.data_model).get()
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""

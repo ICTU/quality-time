@@ -26,17 +26,18 @@ class AzureDevopsIssues(SourceCollector):
     def _api_url(self) -> URL:
         return URL(f"{super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
         timeout = aiohttp.ClientTimeout(self.TIMEOUT)
-        response = await session.post(api_url, auth=auth, json=dict(query=self._parameter("wiql")), timeout=timeout)
+        response = await self._session.post(
+            api_url, auth=auth, json=dict(query=self._parameter("wiql")), timeout=timeout)
         ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return [cast(Response, response)]
         ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
         work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
-        work_items = await super()._get_source_responses(session, work_items_url)
+        work_items = await super()._get_source_responses(work_items_url)
         return [cast(Response, response)] + work_items
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:

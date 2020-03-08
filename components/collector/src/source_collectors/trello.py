@@ -5,7 +5,6 @@ from datetime import datetime
 from typing import cast, Tuple
 
 from dateutil.parser import parse
-import aiohttp
 import requests
 
 from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
@@ -19,7 +18,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(responses[0].json()["url"] if responses else "https://trello.com")
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"

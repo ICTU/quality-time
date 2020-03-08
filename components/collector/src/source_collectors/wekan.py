@@ -35,42 +35,42 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _headers(self) -> Dict[str, str]:
         return dict(Authorization=f"Bearer {self.__token}")
 
-    async def _get_source_responses(self, session: aiohttp.ClientSession, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
         timeout = aiohttp.ClientTimeout(self.TIMEOUT)
-        response = await session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
+        response = await self._session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
         self.__token = (await response.json())["token"]
-        await self.__get_board(session)
-        await self.__get_lists(session)
-        await self.__get_cards(session)
+        await self.__get_board()
+        await self.__get_lists()
+        await self.__get_cards()
         return [cast(Response, response)]
 
-    async def __get_board(self, session: aiohttp.ClientSession) -> None:
+    async def __get_board(self) -> None:
         """Return the board specified by the user."""
         api_url = self._api_url()
-        user_id = (await self._get_json(session, URL(f"{api_url}/api/user")))["_id"]
-        boards = await self._get_json(session, URL(f"{api_url}/api/users/{user_id}/boards"))
+        user_id = (await self._get_json(URL(f"{api_url}/api/user")))["_id"]
+        boards = await self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"))
         self._board = [board for board in boards if self._parameter("board") in board.values()][0]
         self._board_url = f"{self._api_url()}/api/boards/{self._board['_id']}"
 
-    async def __get_lists(self, session: aiohttp.ClientSession) -> None:
+    async def __get_lists(self) -> None:
         """Return the lists on the board."""
         self._lists = [
-            lst for lst in await self._get_json(session, URL(f"{self._board_url}/lists"))
+            lst for lst in await self._get_json(URL(f"{self._board_url}/lists"))
             if not self.__ignore_list(lst)]
 
-    async def __get_cards(self, session: aiohttp.ClientSession) -> None:
+    async def __get_cards(self) -> None:
         """Get the cards for the list."""
         for lst in self._lists:
             list_url = f"{self._board_url}/lists/{lst['_id']}"
-            cards = await self._get_json(session, URL(f"{list_url}/cards"))
-            full_cards = [await self._get_json(session, URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
+            cards = await self._get_json(URL(f"{list_url}/cards"))
+            full_cards = [await self._get_json(URL(f"{list_url}/cards/{card['_id']}")) for card in cards]
             self._cards[lst["_id"]] = [card for card in full_cards if not self._ignore_card(card)]
 
-    async def _get_json(self, session: aiohttp.ClientSession, api_url: URL):
+    async def _get_json(self, api_url: URL):
         """Get the JSON from the API url."""
-        return (await super()._get_source_responses(session, api_url))[0].json()
+        return (await super()._get_source_responses(api_url))[0].json()
 
     def __ignore_list(self, card_list) -> bool:
         """Return whether the list should be ignored."""

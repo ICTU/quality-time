@@ -79,11 +79,11 @@ class MetricsCollector:
         """Fetch the metrics and their measurements."""
         metrics = await get(session, URL(f"{self.server_url}/api/v2/metrics"))
         for metric_uuid, metric in metrics.items():
-            if not (collector := MetricCollector(metric, self.data_model)).can_collect():
+            if not (collector := MetricCollector(session, metric, self.data_model)).can_collect():
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
-            measurement = await collector.get(session)
+            measurement = await collector.get()
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
             measurement["metric_uuid"] = metric_uuid
