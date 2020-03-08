@@ -11,8 +11,8 @@ from .source_collector import SourceCollector
 class JenkinsJobs(SourceCollector):
     """Collector to get job counts from Jenkins."""
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 

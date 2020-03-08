@@ -21,8 +21,8 @@ class JenkinsTestReportTests(SourceCollector):
     JENKINS_TEST_REPORT_COUNTS: Final[Dict[str, str]] = dict(
         failed="failCount", passed="passCount", skipped="skipCount")
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()

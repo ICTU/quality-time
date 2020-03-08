@@ -38,8 +38,8 @@ class SonarQubeViolations(SonarQubeCollector):
         landing_url = f"{url}/project/issues?id={component}&resolved=false&branch={branch}"
         return URL(landing_url + self.__rules_url_parameter())
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
         severities = ",".join([severity.upper() for severity in self._parameter("severities")])
@@ -102,7 +102,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         responses = await super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_api_url = SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
+        base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}")
@@ -147,7 +147,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
         as well as the total number of violations."""
         responses = await super()._get_source_responses(api_url)
-        url = SourceCollector._api_url(self)  # pylint: disable=protected-access
+        url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
@@ -182,8 +182,8 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         metric = self._metric_keys().split(",")[0]
         return URL(f"{url}/component_measures?id={component}&metric={metric}&branch={branch}")
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(
@@ -235,8 +235,8 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
 class SonarQubeTests(SonarQubeCollector):
     """SonarQube collector for the tests metric."""
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
         metric_keys = "tests,test_errors,test_failures,skipped_tests"
@@ -270,8 +270,8 @@ class SonarQubeTests(SonarQubeCollector):
 class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollector):
     """SonarQube source up-to-dateness."""
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")

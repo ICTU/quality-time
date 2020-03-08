@@ -63,7 +63,7 @@ class SourceCollector(ABC):
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
-    def _api_url(self) -> URL:
+    async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
         return URL(cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/"))
 
@@ -93,7 +93,7 @@ class SourceCollector(ABC):
         api_url = URL("")
         error = None
         try:
-            responses = await self._get_source_responses(api_url := self._api_url())
+            responses = await self._get_source_responses(api_url := await self._api_url())
             for response in responses:
                 response.raise_for_status()
             logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)

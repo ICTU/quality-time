@@ -10,11 +10,12 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector
 class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
     """OWASP Dependency Check Jenkins plugin security warnings collector."""
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
+    async def _api_url(self) -> URL:
+        api_url = await super()._api_url()
+        return URL(f"{api_url}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
 
     async def _landing_url(self, responses: Responses) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         json = responses[0].json()
@@ -42,8 +43,8 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
 class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceUpToDatenessCollector):
     """Collector to get the age of the OWASP Dependency Check Jenkins plugin report."""
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/api/json")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:
         return datetime.fromtimestamp(float(response.json()["timestamp"]) / 1000.)

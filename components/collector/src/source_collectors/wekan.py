@@ -29,7 +29,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         super().__init__(*args, **kwargs)
 
     async def _landing_url(self, responses: Responses) -> URL:
-        api_url = self._api_url()
+        api_url = await self._api_url()
         return URL(f"{api_url}/b/{self._board['_id']}") if responses else api_url
 
     def _headers(self) -> Dict[str, str]:
@@ -48,11 +48,11 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def __get_board(self) -> None:
         """Return the board specified by the user."""
-        api_url = self._api_url()
+        api_url = await self._api_url()
         user_id = (await self._get_json(URL(f"{api_url}/api/user")))["_id"]
         boards = await self._get_json(URL(f"{api_url}/api/users/{user_id}/boards"))
         self._board = [board for board in boards if self._parameter("board") in board.values()][0]
-        self._board_url = f"{self._api_url()}/api/boards/{self._board['_id']}"
+        self._board_url = f"{api_url}/api/boards/{self._board['_id']}"
 
     async def __get_lists(self) -> None:
         """Return the lists on the board."""
@@ -88,7 +88,7 @@ class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        api_url = self._api_url()
+        api_url = await self._api_url()
         board_slug = self._board["slug"]
         entities: Entities = []
         for lst in self._lists:

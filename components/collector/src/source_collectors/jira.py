@@ -16,8 +16,8 @@ class JiraIssues(SourceCollector):
         super().__init__(*args, **kwargs)
         self._field_ids = {}
 
-    def _api_url(self) -> URL:
-        url = super()._api_url()
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
@@ -34,7 +34,7 @@ class JiraIssues(SourceCollector):
         return parameter_value
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
-        fields_url = URL(f"{super()._api_url()}/rest/api/2/field")
+        fields_url = URL(f"{await super()._api_url()}/rest/api/2/field")
         response = (await super()._get_source_responses(fields_url))[0]
         self._field_ids = dict((field["name"], field["id"]) for field in response.json())
         return await super()._get_source_responses(api_url)

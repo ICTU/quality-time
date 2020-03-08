@@ -16,9 +16,9 @@ from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for GitLab collectors."""
 
-    def _gitlab_api_url(self, api: str) -> URL:
+    async def _gitlab_api_url(self, api: str) -> URL:
         """Return a GitLab API url with private token, if present in the parameters."""
-        url = super()._api_url()
+        url = await super()._api_url()
         project = self._parameter("project", quote=True)
         api_url = f"{url}/api/v4/projects/{project}/{api}"
         sep = "&" if "?" in api_url else "?"
@@ -34,8 +34,8 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class GitLabJobsBase(GitLabBase):
     """Base class for GitLab job collectors."""
 
-    def _api_url(self) -> URL:
-        return self._gitlab_api_url("jobs")
+    async def _api_url(self) -> URL:
+        return await self._gitlab_api_url("jobs")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [
@@ -84,8 +84,8 @@ class GitLabUnusedJobs(GitLabJobsBase):
 class GitLabSourceUpToDateness(GitLabBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
-    def _api_url(self) -> URL:
-        return self._gitlab_api_url("")
+    async def _api_url(self) -> URL:
+        return await self._gitlab_api_url("")
 
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(
@@ -98,7 +98,7 @@ class GitLabSourceUpToDateness(GitLabBase):
 
         async def get_commits_recursively(file_path: str, first_call: bool = True) -> Responses:
             """Get the commits of files recursively."""
-            tree_api = self._gitlab_api_url(
+            tree_api = await self._gitlab_api_url(
                 f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
             tree_response = (await super(GitLabSourceUpToDateness, self)._get_source_responses(tree_api))[0]
             tree = tree_response.json()
@@ -106,7 +106,7 @@ class GitLabSourceUpToDateness(GitLabBase):
             folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
             if not tree and first_call:
                 file_paths = [file_path]
-            commit_responses = [self.__last_commit(file_path) for file_path in file_paths]
+            commit_responses = [await self.__last_commit(file_path) for file_path in file_paths]
             for folder_path in folder_paths:
                 commit_responses.extend(await get_commits_recursively(folder_path, first_call=False))
             return commit_responses
@@ -117,12 +117,12 @@ class GitLabSourceUpToDateness(GitLabBase):
         responses.extend(await get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses
 
-    def __last_commit(self, file_path: str) -> Response:
-        files_api_url = self._gitlab_api_url(
+    async def __last_commit(self, file_path: str) -> Response:
+        files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
         response = requests.head(files_api_url)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
-        commit_api_url = self._gitlab_api_url(f"repository/commits/{last_commit_id}")
+        commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return requests.get(commit_api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
@@ -134,8 +134,8 @@ class GitLabSourceUpToDateness(GitLabBase):
 class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     """Collector class to measure the number of unmerged branches."""
 
-    def _api_url(self) -> URL:
-        return self._gitlab_api_url("repository/branches")
+    async def _api_url(self) -> URL:
+        return await self._gitlab_api_url("repository/branches")
 
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")

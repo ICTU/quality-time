@@ -10,7 +10,6 @@ from typing import cast, Final, List, Tuple
 
 from dateutil.parser import parse
 import aiohttp
-import requests
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import Entities, Job, Response, Responses, URL, Value
@@ -23,8 +22,8 @@ class AzureDevopsIssues(SourceCollector):
     MAX_IDS_PER_WORK_ITEMS_API_CALL: Final[int] = 200  # See
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/_apis/wit/wiql?api-version=4.1")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
@@ -36,7 +35,7 @@ class AzureDevopsIssues(SourceCollector):
         if not ids:
             return [cast(Response, response)]
         ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
-        work_items_url = URL(f"{super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
+        work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         work_items = await super()._get_source_responses(work_items_url)
         return [cast(Response, response)] + work_items
 
@@ -71,22 +70,21 @@ class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
 class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Azure DevOps collectors that work with repositories."""
 
-    def _repository_id(self) -> str:
+    async def _repository_id(self) -> str:
         """Return the repository id belonging to the repository."""
-        api_url = str(super()._api_url())
+        api_url = str(await super()._api_url())
         repository = self._parameter("repository") or api_url.rsplit("/", 1)[-1]
-        repositories_url = f"{api_url}/_apis/git/repositories?api-version=4.1"
-        repositories = requests.get(repositories_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials())
-        repositories.raise_for_status()
-        return str([r for r in repositories.json()["value"] if repository in (r["name"], r["id"])][0]["id"])
+        repositories_url = URL(f"{api_url}/_apis/git/repositories?api-version=4.1")
+        repositories = (await super()._get_source_responses(repositories_url))[0].json()["value"]
+        return str([r for r in repositories if repository in (r["name"], r["id"])][0]["id"])
 
 
 class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRepositoryBase):
     """Collector for unmerged branches."""
 
-    def _api_url(self) -> URL:
-        api_url = str(super()._api_url())
-        return URL(f"{api_url}/_apis/git/repositories/{self._repository_id()}/stats/branches?api-version=4.1")
+    async def _api_url(self) -> URL:
+        api_url = str(await super()._api_url())
+        return URL(f"{api_url}/_apis/git/repositories/{await self._repository_id()}/stats/branches?api-version=4.1")
 
     async def _landing_url(self, responses: Responses) -> URL:
         landing_url = str(await super()._landing_url(responses))
@@ -106,9 +104,9 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
 class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepositoryBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
-    def _api_url(self) -> URL:
-        api_url = str(super()._api_url())
-        repository_id = self._repository_id()
+    async def _api_url(self) -> URL:
+        api_url = str(await super()._api_url())
+        repository_id = await self._repository_id()
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
         search_criteria = \
@@ -129,8 +127,9 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
 class AzureDevopsTests(SourceCollector):
     """Collector for the tests metric."""
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
+    async def _api_url(self) -> URL:
+        api_url = await super()._api_url()
+        return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         test_results = cast(List[str], self._parameter("test_result"))
@@ -150,11 +149,11 @@ class AzureDevopsTests(SourceCollector):
 class AxureDevopsJobs(SourceCollector):
     """Base class for job collectors."""
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
 
     async def _landing_url(self, responses: Responses) -> URL:
-        return URL(f"{super()._api_url()}/_build")
+        return URL(f"{await super()._api_url()}/_build")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []

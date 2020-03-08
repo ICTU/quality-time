@@ -12,7 +12,7 @@ class JacocoJenkinsPluginBaseClass(SourceCollector):
     """Base class for Jacoco Jenkins plugin collectors."""
 
     async def _landing_url(self, responses: Responses) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/jacoco")
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/jacoco")
 
 
 class JacocoJenkinsPluginCoverageBaseClass(JacocoJenkinsPluginBaseClass):
@@ -20,8 +20,8 @@ class JacocoJenkinsPluginCoverageBaseClass(JacocoJenkinsPluginBaseClass):
 
     coverage_type = "subclass responsibility"
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/jacoco/api/json")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/jacoco/api/json")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         line_coverage = responses[0].json()[f"{self.coverage_type}Coverage"]
@@ -43,8 +43,8 @@ class JacocoJenkinsPluginUncoveredBranches(JacocoJenkinsPluginCoverageBaseClass)
 class JacocoJenkinsPluginSourceUpToDateness(JacocoJenkinsPluginBaseClass, SourceUpToDatenessCollector):
     """Collector for the up to dateness of the Jacoco Jenkins plugin coverage report."""
 
-    def _api_url(self) -> URL:
-        return URL(f"{super()._api_url()}/lastSuccessfulBuild/api/json")
+    async def _api_url(self) -> URL:
+        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
 
     def _parse_source_response_date_time(self, response: Response) -> datetime:
         return datetime.fromtimestamp(float(response.json()["timestamp"]) / 1000.)

@@ -20,22 +20,22 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
-        api = f"1/boards/{self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
+        api = f"1/boards/{await self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
-        return [requests.get(self.__url_with_auth(api), timeout=self.TIMEOUT)]
+        return [requests.get(await self.__url_with_auth(api), timeout=self.TIMEOUT)]
 
-    def __board_id(self) -> str:
+    async def __board_id(self) -> str:
         """Return the id of the board specified by the user."""
-        url = self.__url_with_auth("1/members/me/boards?fields=name")
+        url = await self.__url_with_auth("1/members/me/boards?fields=name")
         boards = requests.get(url, timeout=self.TIMEOUT).json()
         return str([board for board in boards if self._parameter("board") in board.values()][0]["id"])
 
-    def __url_with_auth(self, api_part: str) -> str:
+    async def __url_with_auth(self, api_part: str) -> str:
         """Return the authentication URL parameters."""
         sep = "&" if "?" in api_part else "?"
         api_key = self._parameter("api_key")
         token = self._parameter("token")
-        return f"{self._api_url()}/{api_part}{sep}key={api_key}&token={token}"
+        return f"{await self._api_url()}/{api_part}{sep}key={api_key}&token={token}"
 
 
 class TrelloIssues(TrelloBase):

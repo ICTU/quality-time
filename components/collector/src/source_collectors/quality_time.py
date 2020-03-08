@@ -11,8 +11,8 @@ from .source_collector import SourceCollector
 class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
 
-    def _api_url(self) -> URL:
-        parts = parse.urlsplit(super()._api_url())
+    async def _api_url(self) -> URL:
+        parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2", "", "")))
 
