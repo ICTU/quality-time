@@ -8,6 +8,7 @@ function EditableDateInput(props) {
     return (
         <Form>
             <CalendarDateInput
+                clearable
                 closable
                 dateFormat="YYYY-MM-DD"
                 disabled={false}

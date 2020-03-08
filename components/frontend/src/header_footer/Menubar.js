@@ -54,7 +54,8 @@ export function Menubar(props) {
           <Menu.Item>
             <DateInput
               animation="none"  // Work-around for https://github.com/arfedulov/semantic-ui-calendar-react/issues/152
-              closable={true}
+              clearable
+              closable
               iconPosition="left"
               initialDate={today}
               maxDate={today}
