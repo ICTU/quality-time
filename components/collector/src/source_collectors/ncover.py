@@ -16,7 +16,7 @@ class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-meth
     """Base class for NCover collectors."""
 
     @staticmethod
-    def _find_script(response: Response, text: str) -> str:
+    async def _find_script(response: Response, text: str) -> str:
         """Return the script containing the text."""
         for script in BeautifulSoup(response.text, "html.parser").find_all("script", type="text/javascript"):
             if text in script.string:
@@ -32,7 +32,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         covered, total = 0, 0
         for response in responses:
-            script = self._find_script(response, "ncover.execution.stats = ")
+            script = await self._find_script(response, "ncover.execution.stats = ")
             json_string = script.strip()[len('ncover.execution.stats = '):].strip(";")
             coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
             covered += int(coverage["coveredPoints"])
@@ -57,7 +57,7 @@ class NCoverSourceUpToDateness(NCoverBase, SourceUpToDatenessCollector):
     """Collector to collect the NCover report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        script = self._find_script(response, "ncover.createDateTime")
+        script = await self._find_script(response, "ncover.createDateTime")
         match = re.search(r"ncover\.createDateTime = '(\d+)'", script)
         timestamp = match.group(1) if match else ""
         return datetime.fromtimestamp(float(timestamp) / 1000)

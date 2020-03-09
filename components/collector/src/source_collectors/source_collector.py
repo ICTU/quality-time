@@ -165,7 +165,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
             return responses
         unzipped_responses = []
         for response in responses:
-            unzipped_responses.extend(self.__unzip(response))
+            unzipped_responses.extend(await self.__unzip(response))
         return unzipped_responses
 
     def _headers(self) -> Dict[str, str]:
@@ -177,7 +177,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         return headers
 
     @classmethod
-    def __unzip(cls, response: Response) -> Responses:
+    async def __unzip(cls, response: Response) -> Responses:
         """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
         responses = []
         with zipfile.ZipFile(io.BytesIO(response.content)) as response_zipfile:

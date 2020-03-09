@@ -45,14 +45,14 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self.__token = (await token_response.json())['access_token']
         project_api = URL(f"{await self._api_url()}/cxrestapi/projects")
         project_response = (await super()._get_source_responses(project_api))[0]
-        self.__project_id = self.__get_project_id(project_response)
+        self.__project_id = await self.__get_project_id(project_response)
         scan_api = URL(
             f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1")
         scan_response = (await super()._get_source_responses(scan_api))[0]
         self._scan_id = scan_response.json()[0]["id"]
         return [scan_response]
 
-    def __get_project_id(self, project_response: Response) -> str:
+    async def __get_project_id(self, project_response: Response) -> str:
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = self._parameter("project")
         projects = project_response.json()

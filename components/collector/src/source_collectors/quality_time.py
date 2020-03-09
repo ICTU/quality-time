@@ -1,6 +1,5 @@
 """Collector for Quality-time."""
 
-from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 from urllib import parse
 
@@ -11,6 +10,10 @@ from .source_collector import SourceCollector
 class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
 
+    def __init__(self, *args, **kwargs):
+        self.__metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]] = []
+        super().__init__(*args, **kwargs)
+
     async def _api_url(self) -> URL:
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
@@ -20,24 +23,23 @@ class QualityTimeMetrics(SourceCollector):
         # First, get the report(s):
         responses = await super()._get_source_responses(URL(f"{api_url}/reports"))
         # Then, add the measurements for each of the applicable metrics:
-        for _, entity in self.__get_metrics_and_entities(responses[0]):
+        self.__metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
+        for _, entity in self.__metrics_and_entities:
             responses.extend(
                 await super()._get_source_responses(URL(f"{api_url}/measurements/{entity['key']}")))
         return responses
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        metrics_and_entities = self.__get_metrics_and_entities(responses[0])
-        entities = await self.__get_entities(responses[1:], metrics_and_entities)
-        return str(len(entities)), str(len(metrics_and_entities)), entities
+        entities = await self.__get_entities(responses[1:])
+        return str(len(entities)), str(len(self.__metrics_and_entities)), entities
 
-    async def __get_entities(
-            self, responses: Responses, metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]]) -> Entities:
+    async def __get_entities(self, responses: Responses) -> Entities:
         """Get the metric entities from the responses."""
         last_measurements = await self.__get_last_measurements(responses)
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
         entities: Entities = []
-        for metric, entity in metrics_and_entities:
+        for metric, entity in self.__metrics_and_entities:
             status, value = self.__get_status_and_value(metric, last_measurements.get(str(entity["key"]), {}))
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
@@ -71,14 +73,13 @@ class QualityTimeMetrics(SourceCollector):
         scale_data = measurement.get(scale, {})
         return scale_data.get("status") or "unknown", scale_data.get("value")
 
-    @lru_cache(maxsize=2)
-    def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Dict], Entity]]:
+    async def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Dict], Entity]]:
         """Get the relevant metrics from the reports response."""
         tags = set(self._parameter("tags"))
         metric_types = self._parameter("metric_type")
         source_types = set(self._parameter("source_type"))
         metrics_and_entities = []
-        for report in self.__get_reports(response):
+        for report in await self.__get_reports(response):
             for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_uuid, metric in subject.get("metrics", {}).items():
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
@@ -88,7 +89,7 @@ class QualityTimeMetrics(SourceCollector):
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
 
-    def __get_reports(self, response) -> List[Dict[str, Any]]:
+    async def __get_reports(self, response: Response) -> List[Dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         reports = list(response.json()["reports"])
