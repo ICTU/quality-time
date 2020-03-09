@@ -188,7 +188,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         metric_keys = self._metric_keys().split(",")
-        metrics = self.__get_metrics(responses)
+        metrics = await self.__get_metrics(responses)
         value = str(metrics[metric_keys[0]])
         total = str(metrics[metric_keys[1]]) if len(metric_keys) > 1 else "100"
         return value, total, []
@@ -198,7 +198,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return self.metricKeys
 
     @staticmethod
-    def __get_metrics(responses: Responses) -> Dict[str, int]:
+    async def __get_metrics(responses: Responses) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
         measures = responses[0].json()["component"]["measures"]
         return dict((measure["metric"], int(measure["value"])) for measure in measures)
@@ -246,14 +246,14 @@ class SonarQubeTests(SonarQubeCollector):
         return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        tests = self.__nr_of_tests(responses)
+        tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
         total = str(sum(tests[test_result] for test_result in test_results))
         return value, total, []
 
     @staticmethod
-    def __nr_of_tests(responses: Responses) -> Dict[str, int]:
+    async def __nr_of_tests(responses: Responses) -> Dict[str, int]:
         """Return the number of tests by test result."""
         measures = dict(
             (measure["metric"], int(measure["value"])) for measure in responses[0].json()["component"]["measures"])

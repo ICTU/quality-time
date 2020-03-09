@@ -21,12 +21,12 @@ class AxeCSVAccessibility(FileSourceCollector):
                 url=str(row["URL"]), violation_type=row["Violation Type"], impact=row["Impact"],
                 element=row["DOM Element"], page=re.sub(r'http[s]?://[^/]+', '', row['URL']),
                 description=row["Messages"], help=row["Help"])
-            for row in self.__parse_csv(responses)]
+            for row in await self.__parse_csv(responses)]
         for entity in entities:
             entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
         return str(len(entities)), "100", entities
 
-    def __parse_csv(self, responses: Responses) -> List[Dict[str, str]]:
+    async def __parse_csv(self, responses: Responses) -> List[Dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""
         impact_levels = self._parameter("impact")
         violation_types = self._parameter("violation_type")

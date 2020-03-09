@@ -91,7 +91,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         return URL(f"{landing_url}/_git/{repository}/branches")
 
-    def _unmerged_branches(self, responses: Responses) -> List:
+    async def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and

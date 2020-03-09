@@ -33,7 +33,7 @@ class QualityTimeMetrics(SourceCollector):
     async def __get_entities(
             self, responses: Responses, metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]]) -> Entities:
         """Get the metric entities from the responses."""
-        last_measurements = self.__get_last_measurements(responses)
+        last_measurements = await self.__get_last_measurements(responses)
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
         entities: Entities = []
@@ -55,7 +55,7 @@ class QualityTimeMetrics(SourceCollector):
         return entities
 
     @staticmethod
-    def __get_last_measurements(responses: Responses) -> Dict[str, Measurement]:
+    async def __get_last_measurements(responses: Responses) -> Dict[str, Measurement]:
         """Return the last measurements by metric UUID for easy lookup."""
         last_measurements = dict()
         for response in responses:

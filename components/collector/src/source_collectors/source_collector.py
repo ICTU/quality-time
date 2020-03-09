@@ -220,11 +220,11 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         entities = [
             dict(key=branch["name"], name=branch["name"], commit_age=str(days_ago(self._commit_datetime(branch))),
                  commit_date=str(self._commit_datetime(branch).date()))
-            for branch in self._unmerged_branches(responses)]
+            for branch in await self._unmerged_branches(responses)]
         return str(len(entities)), "100", entities
 
     @abstractmethod
-    def _unmerged_branches(self, responses: Responses) -> List:
+    async def _unmerged_branches(self, responses: Responses) -> List:
         """Return the list of unmerged branch."""
 
     @abstractmethod

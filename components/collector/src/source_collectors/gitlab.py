@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Iterator, List, Optional, Set, Tuple
+from typing import cast, List, Optional, Set, Sequence, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
@@ -37,16 +37,18 @@ class GitLabJobsBase(GitLabBase):
         return await self._gitlab_api_url("jobs")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+        jobs = await self.__jobs(responses)
         entities = [
             dict(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
                 stage=job["stage"], build_date=str((build_date := parse(job["created_at"])).date()),
                 build_age=str(days_ago(build_date)))
-            for job in self.__jobs(responses)]
+            for job in jobs]
         return str(len(entities)), "100", entities
 
-    def __jobs(self, responses: Responses) -> Iterator[Job]:
+    async def __jobs(self, responses: Responses) -> Sequence[Job]:
         """Return the jobs to count."""
+        jobs: List[Job] = []
         jobs_seen: Set[Tuple[str, str, str]] = set()
         for response in responses:
             for job in response.json():
@@ -55,7 +57,8 @@ class GitLabJobsBase(GitLabBase):
                     continue
                 jobs_seen.add(job_fingerprint)
                 if self._count_job(job):
-                    yield job
+                    jobs.append(job)
+        return jobs
 
     def _count_job(self, job: Job) -> bool:  # pylint: disable=no-self-use,unused-argument
         """Return whether to count the job."""
@@ -139,7 +142,7 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
-    def _unmerged_branches(self, responses: Responses) -> List:
+    async def _unmerged_branches(self, responses: Responses) -> List:
         return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
                 not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
