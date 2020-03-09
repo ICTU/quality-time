@@ -23,7 +23,7 @@ class OJAuditViolations(XMLFileSourceCollector):
         count = 0
         entities = []
         for response in responses:
-            tree, namespaces = parse_source_response_xml_with_namespace(response)
+            tree, namespaces = await parse_source_response_xml_with_namespace(response)
             entities.extend(self.__violations(tree, namespaces, severities))
             for severity in severities:
                 count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))

@@ -33,7 +33,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
         landing_url = await self._landing_url(responses)
         entities = []
         for response in responses:
-            tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
+            tree, namespaces = await parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
             entities.extend(
                 [self.__parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
                  in self.__vulnerable_dependencies(tree, namespaces)])
@@ -75,6 +75,6 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
 class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase, SourceUpToDatenessCollector):
     """Collector to collect the OWASP Dependency Check report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
-        tree, namespaces = parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        tree, namespaces = await parse_source_response_xml_with_namespace(response, self.allowed_root_tags)
         return isoparse(tree.findtext(".//ns:reportDate", default="", namespaces=namespaces))

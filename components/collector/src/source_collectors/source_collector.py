@@ -236,8 +236,9 @@ class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        return str(days_ago(min(self._parse_source_response_date_time(response) for response in responses))), "100", []
+        return str(
+            days_ago(min([await self._parse_source_response_date_time(response) for response in responses]))), "100", []
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""
         raise NotImplementedError  # pragma: nocover

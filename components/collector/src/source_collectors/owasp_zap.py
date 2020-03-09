@@ -19,7 +19,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         entities: Dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
         risks = cast(List[str], self._parameter("risks"))
-        for alert in self.__alerts(responses, risks):
+        for alert in await self.__alerts(responses, risks):
             alert_key = ":".join(
                 [alert.findtext(id_tag, default="") for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
             name = alert.findtext("name", default="")
@@ -42,11 +42,11 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         return URL(stable_url)
 
     @staticmethod
-    def __alerts(responses: Responses, risks: List[str]) -> List[Element]:
+    async def __alerts(responses: Responses, risks: List[str]) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         alerts = []
         for response in responses:
-            tree = parse_source_response_xml(response)
+            tree = await parse_source_response_xml(response)
             for risk in risks:
                 alerts.extend(tree.findall(f".//alertitem[riskcode='{risk}']"))
         return alerts
@@ -55,5 +55,5 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
 class OWASPZAPSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollector):
     """Collector to collect the OWASP ZAP report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse(parse_source_response_xml(response).get("generated", ""))
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return parse((await parse_source_response_xml(response)).get("generated", ""))

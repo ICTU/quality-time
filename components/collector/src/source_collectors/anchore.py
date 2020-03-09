@@ -36,7 +36,7 @@ class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessColle
 
     API_URL_PARAMETER_KEY = "details_url"
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         details = response.json()
         return parse(details[0]["analyzed_at"]) \
             if isinstance(details, list) and details and "analyzed_at" in details[0] else datetime.now(timezone.utc)

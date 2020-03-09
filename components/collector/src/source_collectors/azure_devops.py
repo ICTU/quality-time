@@ -120,7 +120,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         branch = self._parameter("branch", quote=True)
         return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         return parse(response.json()["value"][0]["committer"]["date"])
 
 

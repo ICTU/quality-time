@@ -18,7 +18,7 @@ class JUnitTests(XMLFileSourceCollector):
         test_statuses_to_count = cast(List[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
         for response in responses:
-            tree = parse_source_response_xml(response)
+            tree = await parse_source_response_xml(response)
             for test_case in tree.findall(".//testcase"):
                 for test_result, junit_status_node in junit_status_nodes.items():
                     if test_case.find(junit_status_node) is not None:
@@ -39,7 +39,7 @@ class JUnitTests(XMLFileSourceCollector):
 class JUnitSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollector):
     """Collector to collect the Junit report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
-        tree = parse_source_response_xml(response)
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        tree = await parse_source_response_xml(response)
         test_suite = tree if tree.tag == "testsuite" else tree.findall("testsuite")[0]
         return parse(test_suite.get("timestamp", ""))

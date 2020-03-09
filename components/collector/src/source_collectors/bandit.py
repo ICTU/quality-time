@@ -33,5 +33,5 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
 class BanditSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):
     """Bandit collector for source up-to-dateness."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         return parse(response.json()["generated_at"])

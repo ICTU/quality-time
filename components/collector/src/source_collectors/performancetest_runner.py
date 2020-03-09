@@ -47,7 +47,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, SourceUpToDatenessCollector):
     """Collector for the performance test report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         datetime_parts = [int(part) for part in self._soup(response).find(id="start_of_the_test").string.split(".")]
         return datetime(*datetime_parts)  # type: ignore
 

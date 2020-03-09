@@ -39,7 +39,7 @@ class JacocoUncoveredBranches(JacocoCoverageBaseClass):
 class JacocoSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollector):
     """Collector to collect the Jacoco report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         tree = ElementTree.fromstring(response.text)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump") if session_info is not None else "0"

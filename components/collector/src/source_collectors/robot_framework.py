@@ -27,7 +27,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
         entities: Entities = []
         test_results = cast(List[str], self._parameter("test_result"))
         for response in responses:
-            tree = parse_source_response_xml(response)
+            tree = await parse_source_response_xml(response)
             stats = tree.findall("statistics/total/stat")[1]
             for test_result in test_results:
                 count += int(stats.get(test_result, 0))
@@ -39,5 +39,5 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass, SourceUpToDatenessCollector):
     """Collector to collect the Robot Framework report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse(parse_source_response_xml(response).get("generated", ""))
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        return parse((await parse_source_response_xml(response)).get("generated", ""))

@@ -56,7 +56,7 @@ class NCoverUncoveredBranches(NCoverCoverageBase):
 class NCoverSourceUpToDateness(NCoverBase, SourceUpToDatenessCollector):
     """Collector to collect the NCover report age."""
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         script = self._find_script(response, "ncover.createDateTime")
         match = re.search(r"ncover\.createDateTime = '(\d+)'", script)
         timestamp = match.group(1) if match else ""

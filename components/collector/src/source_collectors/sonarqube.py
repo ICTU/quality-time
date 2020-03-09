@@ -279,5 +279,5 @@ class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollecto
         branch = self._parameter("branch")
         return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
-    def _parse_source_response_date_time(self, response: Response) -> datetime:
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
         return isoparse(response.json()["analyses"][0]["date"])

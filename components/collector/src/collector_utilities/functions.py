@@ -13,7 +13,7 @@ from defusedxml import ElementTree
 from .type import Namespaces, Response, URL
 
 
-def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
+async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
     """Parse the XML from the source response."""
     tree = cast(Element, ElementTree.fromstring(response.text))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
@@ -21,10 +21,10 @@ def parse_source_response_xml(response: Response, allowed_root_tags: Collection[
     return tree
 
 
-def parse_source_response_xml_with_namespace(
+async def parse_source_response_xml_with_namespace(
         response: Response, allowed_root_tags: Collection[str] = None) -> Tuple[Element, Namespaces]:
     """Parse the XML with namespace from the source response."""
-    tree = parse_source_response_xml(response, allowed_root_tags)
+    tree = await parse_source_response_xml(response, allowed_root_tags)
     # ElementTree has no API to get the namespace so we extract it from the root tag:
     namespaces = dict(ns=tree.tag.split('}')[0][1:])
     return tree, namespaces
