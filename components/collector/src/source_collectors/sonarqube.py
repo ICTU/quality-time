@@ -201,7 +201,10 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     async def __get_metrics(responses: Responses) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
         measures = responses[0].json()["component"]["measures"]
-        return dict((measure["metric"], int(measure["value"])) for measure in measures)
+        # Without the local variable, coverage.py thinks: "line xyz didn't return from function '__get_metrics',
+        # because the return on line xyz wasn't executed"
+        metrics = dict((measure["metric"], int(measure["value"])) for measure in measures)
+        return metrics
 
 
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
