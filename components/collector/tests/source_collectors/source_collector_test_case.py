@@ -39,19 +39,15 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
             mock_get_request.encoding = get_request_encoding
         mock_get_request.content = get_request_content
         mock_get_request.text = get_request_text
-        mock_post_request = Mock()
         mock_async_post_request = AsyncMock()
         mock_async_post_request.raise_for_status = Mock()
-        mock_post_request.json.return_value = post_request_json_return_value
         mock_async_post_request.json.return_value = post_request_json_return_value
-        with patch("requests.post", return_value=mock_post_request, side_effect=post_request_side_effect):
-            with patch(
-                    "aiohttp.ClientSession.post",
-                    AsyncMock(return_value=mock_async_post_request, side_effect=post_request_side_effect)):
-                with patch("requests.get", return_value=mock_get_request):
-                    with patch("requests.delete", return_value=None):
-                        async with aiohttp.ClientSession() as session:
-                            return await MetricCollector(session, metric, self.data_model).get()
+        with patch(
+                "aiohttp.ClientSession.post",
+                AsyncMock(return_value=mock_async_post_request, side_effect=post_request_side_effect)):
+            with patch("requests.get", return_value=mock_get_request):
+                async with aiohttp.ClientSession() as session:
+                    return await MetricCollector(session, metric, self.data_model).get()
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
