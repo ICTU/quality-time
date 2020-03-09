@@ -141,6 +141,19 @@ class SourceCollector(ABC):
         return None, "100", []  # pragma nocover
 
 
+class FakeResponse(requests.Response):  # pylint: disable=too-few-public-methods
+    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
+    status = HTTPStatus.OK
+
+    def __init__(self, raw=None) -> None:
+        super().__init__()
+        self.raw = raw
+
+    @staticmethod
+    def raise_for_status():
+        """Mock the raise for status method."""
+
+
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for source collectors that retrieve files."""
 
@@ -170,11 +183,8 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         with zipfile.ZipFile(io.BytesIO(response.content)) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
             for name in names:
-                unzipped_response = requests.Response()
-                unzipped_response.raw = io.BytesIO(response_zipfile.read(name))
-                unzipped_response.status_code = HTTPStatus.OK
-                responses.append(unzipped_response)
-        return responses
+                responses.append(FakeResponse(io.BytesIO(response_zipfile.read(name))))
+        return cast(Responses, responses)
 
 
 class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -200,9 +210,7 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     data."""
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
-        fake_response = requests.Response()
-        fake_response.status_code = HTTPStatus.OK
-        return [fake_response]  # Return a fake response so that the parse methods will be called
+        return [cast(Response, FakeResponse())]  # Return a fake response so that the parse methods will be called
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
