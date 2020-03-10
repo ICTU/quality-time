@@ -16,8 +16,9 @@ from .metric_collector import MetricCollector
 async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
     """Get data from the API url."""
     try:
-        async with session.get(api) as response:
-            return cast(JSON, await response.json())
+        response = await session.get(api)
+        response.raise_for_status()
+        return cast(JSON, await response.json())
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
         return {}

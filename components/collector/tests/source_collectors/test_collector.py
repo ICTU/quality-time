@@ -46,7 +46,7 @@ class CollectorTest(SourceCollectorTestCase):
 
     async def test_connection_error(self):
         """Test that an error retrieving the data is handled."""
-        with patch("requests.get", side_effect=Exception):
+        with patch("aiohttp.ClientSession.get", side_effect=Exception):
             async with aiohttp.ClientSession() as session:
                 response = await MetricCollector(session, self.metric, dict()).get()
         self.assert_measurement(response, connection_error="Traceback")

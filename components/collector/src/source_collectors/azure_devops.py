@@ -33,11 +33,11 @@ class AzureDevopsIssues(SourceCollector):
             api_url, auth=auth, json=dict(query=self._parameter("wiql")), timeout=timeout)
         ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
         if not ids:
-            return [cast(Response, response)]
+            return [response]
         ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
         work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         work_items = await super()._get_source_responses(work_items_url)
-        return [cast(Response, response)] + work_items
+        return [response] + work_items
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value = str(len((await responses[0].json())["workItems"]))
@@ -46,13 +46,13 @@ class AzureDevopsIssues(SourceCollector):
                 key=str(work_item["id"]), project=work_item["fields"]["System.TeamProject"],
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"], url=work_item["url"])
-            for work_item in self._work_items(responses)]
+            for work_item in await self._work_items(responses)]
         return value, "100", entities
 
     @staticmethod
-    def _work_items(responses: Responses):
+    async def _work_items(responses: Responses):
         """Return the work items, if any."""
-        return responses[1].json()["value"] if len(responses) > 1 else []
+        return (await responses[1].json())["value"] if len(responses) > 1 else []
 
 
 class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
@@ -61,7 +61,7 @@ class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         _, total, entities = await super()._parse_source_responses(responses)
         value = 0
-        for entity, work_item in zip(entities, self._work_items(responses)):
+        for entity, work_item in zip(entities, await self._work_items(responses)):
             entity["story_points"] = story_points = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
             value += 0 if story_points is None else story_points
         return str(round(value)), total, entities
@@ -75,7 +75,7 @@ class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstra
         api_url = str(await super()._api_url())
         repository = self._parameter("repository") or api_url.rsplit("/", 1)[-1]
         repositories_url = URL(f"{api_url}/_apis/git/repositories?api-version=4.1")
-        repositories = (await super()._get_source_responses(repositories_url))[0].json()["value"]
+        repositories = (await (await super()._get_source_responses(repositories_url))[0].json())["value"]
         return str([r for r in repositories if repository in (r["name"], r["id"])][0]["id"])
 
 
@@ -92,7 +92,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         return URL(f"{landing_url}/_git/{repository}/branches")
 
     async def _unmerged_branches(self, responses: Responses) -> List:
-        return [branch for branch in responses[0].json()["value"] if not branch["isBaseVersion"] and
+        return [branch for branch in (await responses[0].json())["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
                 not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
@@ -121,7 +121,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse(response.json()["value"][0]["committer"]["date"])
+        return parse((await response.json())["value"][0]["committer"]["date"])
 
 
 class AzureDevopsTests(SourceCollector):
@@ -133,7 +133,7 @@ class AzureDevopsTests(SourceCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         test_results = cast(List[str], self._parameter("test_result"))
-        runs = responses[0].json().get("value", [])
+        runs = (await responses[0].json()).get("value", [])
         test_count, highest_build_nr_seen = 0, 0
         for run in runs:
             build_nr = int(run.get("build", {}).get("id", "-1"))
@@ -157,7 +157,7 @@ class AxureDevopsJobs(SourceCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = []
-        for job in responses[0].json()["value"]:
+        for job in (await responses[0].json())["value"]:
             if self._ignore_job(job):
                 continue
             name = self.__job_name(job)

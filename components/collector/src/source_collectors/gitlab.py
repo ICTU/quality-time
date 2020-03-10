@@ -51,7 +51,7 @@ class GitLabJobsBase(GitLabBase):
         jobs: List[Job] = []
         jobs_seen: Set[Tuple[str, str, str]] = set()
         for response in responses:
-            for job in response.json():
+            for job in await response.json():
                 job_fingerprint = job["name"], job["stage"], job["ref"]
                 if job_fingerprint in jobs_seen:
                     continue
@@ -90,9 +90,10 @@ class GitLabSourceUpToDateness(GitLabBase):
         return await self._gitlab_api_url("")
 
     async def _landing_url(self, responses: Responses) -> URL:
-        return URL(
-            f"{responses[0].json()['web_url']}/blob/{self._parameter('branch', quote=True)}/"
-            f"{self._parameter('file_path', quote=True)}") if responses else await super()._landing_url(responses)
+        web_url = (await responses[0].json())["web_url"]
+        branch = self._parameter('branch', quote=True)
+        file_path = self._parameter('file_path', quote=True)
+        return URL(f"{web_url}/blob/{branch}/{file_path}") if responses else await super()._landing_url(responses)
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
@@ -103,7 +104,7 @@ class GitLabSourceUpToDateness(GitLabBase):
             tree_api = await self._gitlab_api_url(
                 f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
             tree_response = (await super(GitLabSourceUpToDateness, self)._get_source_responses(tree_api))[0]
-            tree = tree_response.json()
+            tree = await tree_response.json()
             file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
             folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
             if not tree and first_call:
@@ -129,7 +130,7 @@ class GitLabSourceUpToDateness(GitLabBase):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]
-        value = str(days_ago(max(parse(response.json()["committed_date"]) for response in commit_responses)))
+        value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
         return value, "100", []
 
 
@@ -143,7 +144,8 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
     async def _unmerged_branches(self, responses: Responses) -> List:
-        return [branch for branch in responses[0].json() if not branch["default"] and not branch["merged"] and
+        branches = await responses[0].json()
+        return [branch for branch in branches if not branch["default"] and not branch["merged"] and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
                 not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
 

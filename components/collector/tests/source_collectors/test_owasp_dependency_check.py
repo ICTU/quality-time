@@ -106,7 +106,7 @@ AssertionError: The XML root element should be one of \
             </projectInfo>
         </analysis>"""
         metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = await self.collect(metric, get_request_text=xml, get_request_encoding=None)
+        response = await self.collect(metric, get_request_text=xml)
         timezone_info = timezone(timedelta(hours=2))
         expected_age = (datetime.now(timezone_info) - datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info)).days
         self.assert_measurement(response, value=str(expected_age))

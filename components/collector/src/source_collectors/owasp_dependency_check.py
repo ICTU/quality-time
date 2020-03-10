@@ -7,7 +7,7 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, URL, Value
+from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, Value
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
 from .source_collector import XMLFileSourceCollector, SourceUpToDatenessCollector
 
@@ -17,13 +17,6 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
 
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
                          for version in ("2.0", "2.1", "2.2")]
-
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        responses = await super()._get_source_responses(api_url)
-        for response in responses:
-            if not response.encoding:
-                response.encoding = "utf-8"  # Assume UTF-8, detecting encoding on large XML files is very slow.
-        return responses
 
 
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):

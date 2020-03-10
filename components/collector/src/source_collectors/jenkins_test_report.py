@@ -24,7 +24,7 @@ class JenkinsTestReportTests(SourceCollector):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        json = responses[0].json()
+        json = await responses[0].json()
         statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
         results = [report["result"] for report in json["childReports"]] if "childReports" in json else [json]
@@ -61,8 +61,8 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
         return await super()._get_source_responses(test_report_url) + await super()._get_source_responses(job_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        timestamps = [suite.get("timestamp") for suite in responses[0].json().get("suites", [])
+        timestamps = [suite.get("timestamp") for suite in (await responses[0].json()).get("suites", [])
                       if suite.get("timestamp")]
         report_datetime = parse(max(timestamps)) if timestamps else \
-            datetime.fromtimestamp(float(responses[1].json()["timestamp"]) / 1000.)
+            datetime.fromtimestamp(float((await responses[1].json())["timestamp"]) / 1000.)
         return str(days_ago(report_datetime)), "100", []

@@ -6,14 +6,12 @@ from io import StringIO
 from typing import Dict, List, Tuple
 
 from collector_utilities.functions import md5_hash
-from collector_utilities.type import Responses, Value, Entities
-from .source_collector import FileSourceCollector
+from collector_utilities.type import Entities, Responses, Value
+from .source_collector import CSVFileSourceCollector
 
 
-class AxeCSVAccessibility(FileSourceCollector):
+class AxeCSVAccessibility(CSVFileSourceCollector):
     """Collector class to get accessibility violations."""
-
-    file_extensions = ["csv"]
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities: Entities = [
@@ -32,6 +30,6 @@ class AxeCSVAccessibility(FileSourceCollector):
         violation_types = self._parameter("violation_type")
         rows = []
         for response in responses:
-            csv_text = response.text.strip()
+            csv_text = (await response.text()).strip()
             rows.extend(list(csv.DictReader(StringIO(csv_text, newline=""))))
         return [row for row in rows if row["Impact"] in impact_levels and row["Violation Type"] in violation_types]

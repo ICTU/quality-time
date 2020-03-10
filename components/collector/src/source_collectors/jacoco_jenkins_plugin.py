@@ -24,7 +24,7 @@ class JacocoJenkinsPluginCoverageBaseClass(JacocoJenkinsPluginBaseClass):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/jacoco/api/json")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        line_coverage = responses[0].json()[f"{self.coverage_type}Coverage"]
+        line_coverage = (await responses[0].json())[f"{self.coverage_type}Coverage"]
         return str(line_coverage["missed"]), str(line_coverage["total"]), []
 
 
@@ -47,4 +47,4 @@ class JacocoJenkinsPluginSourceUpToDateness(JacocoJenkinsPluginBaseClass, Source
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return datetime.fromtimestamp(float(response.json()["timestamp"]) / 1000.)
+        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.)

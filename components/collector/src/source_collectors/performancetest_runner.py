@@ -16,7 +16,7 @@ class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: d
     @staticmethod
     async def _soup(response: Response):
         """Return the HTML soup."""
-        return BeautifulSoup(response.text, "html.parser")
+        return BeautifulSoup(await response.text(), "html.parser")
 
 
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):

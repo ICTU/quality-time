@@ -18,7 +18,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        json = responses[0].json()
+        json = await responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]
         entities: Dict[str, Entity] = dict()
@@ -47,4 +47,4 @@ class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceUpToDatenessColl
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return datetime.fromtimestamp(float(response.json()["timestamp"]) / 1000.)
+        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.)

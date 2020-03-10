@@ -58,7 +58,7 @@ class SonarQubeViolations(SonarQubeCollector):
         value = 0
         entities: Entities = []
         for response in responses:
-            json = response.json()
+            json = await response.json()
             value += int(json.get("total", 0))
             entities.extend([await self._entity(issue) for issue in json.get("issues", [])])
         return str(value), "100", entities
@@ -111,7 +111,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         value, _, entities = await super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:
-            measures.extend(response.json().get("component", {}).get("measures", []))
+            measures.extend((await response.json()).get("component", {}).get("measures", []))
         return value, str(sum(int(measure["value"]) for measure in measures)), entities
 
 
@@ -155,7 +155,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = await super()._parse_source_responses(responses[:-1])
-        return value, str(responses[-1].json()["total"]), entities
+        return value, str((await responses[-1].json())["total"]), entities
 
     async def _entity(self, issue) -> Entity:
         """Also add the resolution to the entity."""
@@ -200,7 +200,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     @staticmethod
     async def __get_metrics(responses: Responses) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
-        measures = responses[0].json()["component"]["measures"]
+        measures = (await responses[0].json())["component"]["measures"]
         # Without the local variable, coverage.py thinks: "line xyz didn't return from function '__get_metrics',
         # because the return on line xyz wasn't executed"
         metrics = dict((measure["metric"], int(measure["value"])) for measure in measures)
@@ -259,7 +259,8 @@ class SonarQubeTests(SonarQubeCollector):
     async def __nr_of_tests(responses: Responses) -> Dict[str, int]:
         """Return the number of tests by test result."""
         measures = dict(
-            (measure["metric"], int(measure["value"])) for measure in responses[0].json()["component"]["measures"])
+            (measure["metric"], int(measure["value"]))
+            for measure in (await responses[0].json())["component"]["measures"])
         errored = measures.get("test_errors", 0)
         failed = measures.get("test_failures", 0)
         skipped = measures.get("skipped_tests", 0)
@@ -283,4 +284,4 @@ class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollecto
         return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return isoparse(response.json()["analyses"][0]["date"])
+        return isoparse((await response.json())["analyses"][0]["date"])

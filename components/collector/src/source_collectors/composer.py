@@ -13,7 +13,7 @@ class ComposerDependencies(JSONFileSourceCollector):
         statuses = self._parameter("latest_version_status")
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:
-            installed_dependencies.extend(response.json().get("installed", []))
+            installed_dependencies.extend((await response.json()).get("installed", []))
         entities: Entities = [
             dict(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',

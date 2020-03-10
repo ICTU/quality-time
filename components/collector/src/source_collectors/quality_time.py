@@ -61,7 +61,7 @@ class QualityTimeMetrics(SourceCollector):
         """Return the last measurements by metric UUID for easy lookup."""
         last_measurements = dict()
         for response in responses:
-            if measurements := response.json()["measurements"]:
+            if measurements := (await response.json())["measurements"]:
                 last_measurement = measurements[-1]
                 last_measurements[last_measurement["metric_uuid"]] = last_measurement
         return last_measurements
@@ -92,7 +92,7 @@ class QualityTimeMetrics(SourceCollector):
     async def __get_reports(self, response: Response) -> List[Dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
-        reports = list(response.json()["reports"])
+        reports = list((await response.json())["reports"])
         return [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
             if report_titles_or_ids else reports
 

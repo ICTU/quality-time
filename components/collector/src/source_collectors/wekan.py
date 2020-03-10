@@ -7,7 +7,7 @@ from typing import cast, Dict, List, Tuple
 from dateutil.parser import parse
 import aiohttp
 
-from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
+from collector_utilities.type import Entity, Entities, Responses, URL, Value
 from collector_utilities.functions import days_ago
 from .source_collector import SourceCollector
 
@@ -44,7 +44,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         await self.__get_board()
         await self.__get_lists()
         await self.__get_cards()
-        return [cast(Response, response)]
+        return [response]
 
     async def __get_board(self) -> None:
         """Return the board specified by the user."""
@@ -70,7 +70,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def _get_json(self, api_url: URL):
         """Get the JSON from the API url."""
-        return (await super()._get_source_responses(api_url))[0].json()
+        return await (await super()._get_source_responses(api_url))[0].json()
 
     def __ignore_list(self, card_list) -> bool:
         """Return whether the list should be ignored."""

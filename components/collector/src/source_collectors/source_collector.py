@@ -1,6 +1,7 @@
 """Source collector base classes."""
 
 import io
+import json
 import logging
 import traceback
 import urllib
@@ -8,10 +9,9 @@ import zipfile
 from abc import ABC, abstractmethod
 from datetime import datetime
 from http import HTTPStatus
-from typing import cast, Dict, Final, List, Optional, Set, Tuple, Type, Union
+from typing import cast, Any, Dict, Final, List, Optional, Set, Tuple, Type, Union
 
 import aiohttp
-import requests
 
 from collector_utilities.functions import days_ago, tokenless, stable_traceback
 from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
@@ -104,10 +104,13 @@ class SourceCollector(ABC):
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        response = requests.get(
-            api_url, timeout=self.TIMEOUT, auth=self._basic_auth_credentials(), headers=self._headers())
-        response.raise_for_status()  # FIX duplication with __safely_get_source_responses
-        return [response]
+        kwargs: Dict[str, Any] = dict(timeout=aiohttp.ClientTimeout(self.TIMEOUT))
+        credentials = self._basic_auth_credentials()
+        if credentials is not None:
+            kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
+        if headers := self._headers():
+            kwargs["headers"] = headers
+        return [await self._session.get(api_url, **kwargs)]
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
@@ -141,13 +144,21 @@ class SourceCollector(ABC):
         return None, "100", []  # pragma nocover
 
 
-class FakeResponse(requests.Response):  # pylint: disable=too-few-public-methods
+class FakeResponse:  # pylint: disable=too-few-public-methods
     """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
     status = HTTPStatus.OK
 
-    def __init__(self, raw=None) -> None:
+    def __init__(self, contents="") -> None:
         super().__init__()
-        self.raw = raw
+        self.contents = contents
+
+    async def json(self):
+        """Return the JSON version of the contents."""
+        return json.loads(self.contents)
+
+    async def text(self):
+        """Return the text version of the contents."""
+        return self.contents.decode()
 
     @staticmethod
     def raise_for_status():
@@ -180,11 +191,17 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     async def __unzip(cls, response: Response) -> Responses:
         """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
         responses = []
-        with zipfile.ZipFile(io.BytesIO(response.content)) as response_zipfile:
+        with zipfile.ZipFile(io.BytesIO(await response.read())) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
             for name in names:
-                responses.append(FakeResponse(io.BytesIO(response_zipfile.read(name))))
+                responses.append(FakeResponse(response_zipfile.read(name)))
         return cast(Responses, responses)
+
+
+class CSVFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method
+    """Base class for source collectors that retrieve CSV files."""
+
+    file_extensions = ["csv"]
 
 
 class HTMLFileSourceCollector(FileSourceCollector, ABC):  # pylint: disable=abstract-method

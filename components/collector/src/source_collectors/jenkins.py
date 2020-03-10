@@ -22,7 +22,7 @@ class JenkinsJobs(SourceCollector):
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),
                 build_age=str(days_ago(self._build_datetime(job))) if self._build_datetime(job) > datetime.min else "",
                 build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "")
-            for job in self.__jobs(responses[0].json()["jobs"])]
+            for job in self.__jobs((await responses[0].json())["jobs"])]
         return str(len(entities)), "100", entities
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:

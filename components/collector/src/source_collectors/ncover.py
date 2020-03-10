@@ -18,7 +18,7 @@ class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-meth
     @staticmethod
     async def _find_script(response: Response, text: str) -> str:
         """Return the script containing the text."""
-        for script in BeautifulSoup(response.text, "html.parser").find_all("script", type="text/javascript"):
+        for script in BeautifulSoup(await response.text(), "html.parser").find_all("script", type="text/javascript"):
             if text in script.string:
                 return str(script.string)
         return ""  # pragma: nocover

@@ -15,7 +15,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Trello collectors."""
 
     async def _landing_url(self, responses: Responses) -> URL:
-        return URL(responses[0].json()["url"] if responses else "https://trello.com")
+        return URL((await responses[0].json())["url"] if responses else "https://trello.com")
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
@@ -26,7 +26,7 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     async def __board_id(self) -> str:
         """Return the id of the board specified by the user."""
         url = await self.__url_with_auth("1/members/me/boards?fields=name")
-        boards = (await super()._get_source_responses(url))[0].json()
+        boards = await (await super()._get_source_responses(url))[0].json()
         return str([board for board in boards if self._parameter("board") in board.values()][0]["id"])
 
     async def __url_with_auth(self, api_part: str) -> URL:
@@ -41,7 +41,7 @@ class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        json = responses[0].json()
+        json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
@@ -82,7 +82,7 @@ class TrelloSourceUpToDateness(TrelloBase, SourceUpToDatenessCollector):
     """Collector to measure how up-to-date a Trello board is."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        json = response.json()
+        json = await response.json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         dates = [json["dateLastActivity"]] + \

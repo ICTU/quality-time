@@ -17,7 +17,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
         severities = self._parameter("severities")
         entities = []
         for response in responses:
-            json = response.json()
+            json = await response.json()
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
             entities.extend([
                 dict(
@@ -37,6 +37,6 @@ class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessColle
     API_URL_PARAMETER_KEY = "details_url"
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        details = response.json()
+        details = await response.json()
         return parse(details[0]["analyzed_at"]) \
             if isinstance(details, list) and details and "analyzed_at" in details[0] else datetime.now(timezone.utc)

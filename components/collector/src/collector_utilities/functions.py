@@ -15,7 +15,7 @@ from .type import Namespaces, Response, URL
 
 async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
     """Parse the XML from the source response."""
-    tree = cast(Element, ElementTree.fromstring(response.text))
+    tree = cast(Element, ElementTree.fromstring(await response.text()))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
         raise AssertionError(f'The XML root element should be one of "{allowed_root_tags}" but is "{tree.tag}"')
     return tree

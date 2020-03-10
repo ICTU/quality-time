@@ -25,27 +25,25 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
                       get_request_json_return_value=None,
                       get_request_json_side_effect=None,
                       get_request_content="",
-                      get_request_encoding="",
                       get_request_text="",
                       post_request_side_effect=None,
                       post_request_json_return_value=None) -> Measurement:
         """Collect the metric."""
-        mock_get_request = Mock()
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.raise_for_status = Mock()
         if get_request_json_side_effect:
-            mock_get_request.json.side_effect = get_request_json_side_effect
+            mock_async_get_request.json.side_effect = get_request_json_side_effect
         else:
-            mock_get_request.json.return_value = get_request_json_return_value
-        if get_request_encoding != "":
-            mock_get_request.encoding = get_request_encoding
-        mock_get_request.content = get_request_content
-        mock_get_request.text = get_request_text
+            mock_async_get_request.json.return_value = get_request_json_return_value
+        mock_async_get_request.read.return_value = get_request_content
+        mock_async_get_request.text.return_value = get_request_text
         mock_async_post_request = AsyncMock()
         mock_async_post_request.raise_for_status = Mock()
         mock_async_post_request.json.return_value = post_request_json_return_value
-        with patch(
-                "aiohttp.ClientSession.post",
-                AsyncMock(return_value=mock_async_post_request, side_effect=post_request_side_effect)):
-            with patch("requests.get", return_value=mock_get_request):
+        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
+            with patch(
+                    "aiohttp.ClientSession.post",
+                    AsyncMock(return_value=mock_async_post_request, side_effect=post_request_side_effect)):
                 async with aiohttp.ClientSession() as session:
                     return await MetricCollector(session, metric, self.data_model).get()
 

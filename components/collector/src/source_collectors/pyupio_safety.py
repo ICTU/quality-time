@@ -23,5 +23,5 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                 [dict(
                     key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
                     affected=warning[self.AFFECTED], vulnerability=warning[self.VULNERABILITY])
-                 for warning in response.json()])
+                 for warning in await response.json()])
         return str(len(entities)), "100", entities

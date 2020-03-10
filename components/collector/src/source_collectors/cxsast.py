@@ -49,13 +49,13 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         scan_api = URL(
             f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1")
         scan_response = (await super()._get_source_responses(scan_api))[0]
-        self._scan_id = scan_response.json()[0]["id"]
+        self._scan_id = (await scan_response.json())[0]["id"]
         return [scan_response]
 
     async def __get_project_id(self, project_response: Response) -> str:
         """Return the project id that belongs to the project parameter."""
         project_name_or_id = self._parameter("project")
-        projects = project_response.json()
+        projects = await project_response.json()
         return str([project for project in projects if project_name_or_id in (project["name"], project["id"])][0]["id"])
 
     async def __api_post(self, api: str, data) -> aiohttp.ClientResponse:
@@ -70,7 +70,7 @@ class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        scan = responses[0].json()[0]
+        scan = (await responses[0].json())[0]
         return str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))), "100", []
 
 
@@ -83,6 +83,6 @@ class CxSASTSecurityWarnings(CxSASTBase):
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        stats = responses[0].json()
+        stats = await responses[0].json()
         severities = self._parameter("severities")
         return str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)), "100", []

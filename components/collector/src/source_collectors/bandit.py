@@ -25,7 +25,8 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                     issue_severity=warning["issue_severity"].capitalize(),
                     issue_confidence=warning["issue_confidence"].capitalize(),
                     more_info=warning["more_info"])
-                for warning in response.json().get("results", []) if warning["issue_severity"].lower() in severities
+                for warning in (await response.json()).get("results", [])
+                if warning["issue_severity"].lower() in severities
                 and warning["issue_confidence"].lower() in confidence_levels])
         return str(len(entities)), "100", entities
 
@@ -34,4 +35,4 @@ class BanditSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollec
     """Bandit collector for source up-to-dateness."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse(response.json()["generated_at"])
+        return parse((await response.json())["generated_at"])
