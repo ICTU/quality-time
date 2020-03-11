@@ -50,15 +50,17 @@ class MetricsCollector:
 
     def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
-        sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
+        max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
-        self.data_model = self.fetch_data_model(sleep_duration)
+        self.data_model = self.fetch_data_model(max_sleep_duration)
         while True:
             self.record_health()
             logging.info("Collecting...")
             with timer() as collection_timer:
                 self.fetch_measurements(measurement_frequency)
-            logging.info("Collecting took %.1fs. Sleeping %ss...", collection_timer.duration, sleep_duration)
+            sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
+            logging.info(
+                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
             time.sleep(sleep_duration)
 
     def fetch_data_model(self, sleep_duration: int) -> JSON:
