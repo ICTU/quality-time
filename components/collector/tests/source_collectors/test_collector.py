@@ -4,7 +4,9 @@ from unittest.mock import patch, Mock
 
 import aiohttp
 
+from collector_utilities.type import Responses, URL
 from metric_collectors import MetricCollector
+from source_collectors.source_collector import SourceCollector
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -57,3 +59,19 @@ class CollectorTest(SourceCollectorTestCase):
         mock_response.text = "1"
         response = await self.collect(self.metric, get_request_text="1")
         self.assert_measurement(response, parse_error="Traceback")
+
+    async def test_landing_url_error(self):
+        """Test that an error retrieving the data is handled."""
+
+        class FailingLandingUrl(SourceCollector):
+            """Add a landing_url implementation that fails."""
+            async def _api_url(self) -> URL:
+                return "https://api_url"
+
+            async def _landing_url(self, responses: Responses) -> URL:
+                raise NotImplementedError
+
+        with patch("aiohttp.ClientSession.get", side_effect=Exception):
+            async with aiohttp.ClientSession() as session:
+                response = await FailingLandingUrl(session, self.metric, dict()).get()
+        self.assertEqual("https://api_url", response["landing_url"])

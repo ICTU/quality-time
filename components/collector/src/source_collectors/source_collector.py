@@ -51,17 +51,9 @@ class SourceCollector(ABC):
         """Return the measurement from this source."""
         responses, api_url, connection_error = await self.__safely_get_source_responses()
         value, total, entities, parse_error = await self.__safely_parse_source_responses(responses)
-        landing_url = await self._landing_url(responses)
+        landing_url = await self.__safely_parse_landing_url(responses)
         return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
                     connection_error=connection_error, parse_error=parse_error)
-
-    async def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
-        """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
-        a default landing url."""
-        if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
-            return URL(landing_url)
-        url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
-        return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
@@ -142,6 +134,22 @@ class SourceCollector(ABC):
         This method can be overridden by collectors to parse the retrieved sources data."""
         # pylint: disable=assignment-from-none,no-self-use,unused-argument
         return None, "100", []  # pragma nocover
+
+    async def __safely_parse_landing_url(self, responses: Responses) -> URL:
+        """Parse the responses to get the landing url, without failing. This method should not be overridden because
+        it makes sure that the parsing of source data never causes the collector to fail."""
+        try:
+            return await self._landing_url(responses)
+        except Exception:  # pylint: disable=broad-except
+            return await self._api_url()
+
+    async def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
+        """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
+        a default landing url."""
+        if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
+            return URL(landing_url)
+        url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
+        return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
 
 
 class FakeResponse:  # pylint: disable=too-few-public-methods
