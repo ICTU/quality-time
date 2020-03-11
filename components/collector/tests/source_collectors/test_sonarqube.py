@@ -49,7 +49,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         complex_units_json = dict(total="2")
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="complex_units", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[complex_units_json, functions_json] * 2)
+        response = self.collect(
+            metric,
+            get_request_json_side_effect=[{}, complex_units_json, functions_json, complex_units_json, functions_json])
         self.assert_measurement(
             response, value="2", total="4",
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master&rules=csharpsquid:S1541,"
@@ -106,7 +108,10 @@ class SonarQubeTest(SourceCollectorTestCase):
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="many_parameters", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[many_parameters_json, functions_json] * 2)
+        response = self.collect(
+            metric,
+            get_request_json_side_effect=[
+                {}, many_parameters_json, functions_json, many_parameters_json, functions_json])
         self.assert_measurement(
             response, value="2", total="4",
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master&rules=c:S107,csharpsquid:S107,"
@@ -120,7 +125,8 @@ class SonarQubeTest(SourceCollectorTestCase):
         long_units_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         metric = dict(type="long_units", addition="sum", sources=self.sources)
-        response = self.collect(metric, get_request_json_side_effect=[long_units_json, functions_json] * 2)
+        response = self.collect(
+            metric, get_request_json_side_effect=[{}, long_units_json, functions_json, long_units_json, functions_json])
         self.assert_measurement(
             response, value="2", total="4",
             landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master&rules=abap:S104,c:FileLoc,"
@@ -151,7 +157,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = self.collect(
-            metric, get_request_json_side_effect=[violations_json, wont_fix_json, total_violations_json] * 2)
+            metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
                  resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
@@ -204,3 +210,10 @@ class SonarQubeTest(SourceCollectorTestCase):
         response = self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value=None, total=None, parse_error="KeyError", landing_url=self.tests_landing_url)
+
+    def test_nr_of_tests_with_faulty_component(self):
+        """Test that the measurement fails if the component does not exist."""
+        metric = dict(type="tests", addition="sum", sources=self.sources)
+        response = self.collect(metric, get_request_json_return_value=dict(errors=[dict(msg="No such component")]))
+        self.assert_measurement(
+            response, value=None, total=None, connection_error="No such component", landing_url=self.tests_landing_url)

@@ -10,7 +10,23 @@ from collector_utilities.type import URL, Entities, Entity, Response, Responses,
 from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
-class SonarQubeViolations(SourceCollector):
+class SonarQubeCollector(SourceCollector):
+    """Base class for SonarQube collectors."""
+
+    def _get_source_responses(self, api_url: URL) -> Responses:
+        # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
+        # check whether the component specified by the user actually exists before getting the data.
+        url = SourceCollector._api_url(self)
+        component = self._parameter("component")
+        show_component_url = URL(f"{url}/api/components/show?component={component}")
+        response = super()._get_source_responses(show_component_url)[0]
+        json = response.json()
+        if "errors" in json:
+            raise Exception(json["errors"][0]["msg"])
+        return super()._get_source_responses(api_url)
+
+
+class SonarQubeViolations(SonarQubeCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
     rules_parameter = ""  # Subclass responsibility
@@ -86,7 +102,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         responses = super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_api_url = SourceCollector._api_url(self)  # pylint: disable=protected-access
+        base_api_url = SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}")
@@ -152,7 +168,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         return entity
 
 
-class SonarQubeMetricsBaseClass(SourceCollector):
+class SonarQubeMetricsBaseClass(SonarQubeCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
     # Metric keys is a string containing one or two metric keys separated by a comma. The first metric key is used for
@@ -216,7 +232,7 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     metricKeys = "uncovered_conditions,conditions_to_cover"
 
 
-class SonarQubeTests(SourceCollector):
+class SonarQubeTests(SonarQubeCollector):
     """SonarQube collector for the tests metric."""
 
     def _api_url(self) -> URL:
@@ -251,7 +267,7 @@ class SonarQubeTests(SourceCollector):
         return dict(errored=errored, failed=failed, skipped=skipped, passed=passed)
 
 
-class SonarQubeSourceUpToDateness(SourceUpToDatenessCollector):
+class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollector):
     """SonarQube source up-to-dateness."""
 
     def _api_url(self) -> URL:
