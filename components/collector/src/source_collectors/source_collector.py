@@ -21,7 +21,6 @@ class SourceCollector(ABC):
     """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
     measurement data for one specific metric from one specific source."""
 
-    TIMEOUT = 10  # Default timeout of 10 seconds
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
@@ -96,11 +95,12 @@ class SourceCollector(ABC):
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
-        kwargs: Dict[str, Any] = dict(timeout=aiohttp.ClientTimeout(self.TIMEOUT))
+        kwargs: Dict[str, Any] = dict()
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
         if headers := self._headers():
+            kwargs["headers"] = headers
             kwargs["headers"] = headers
         return [await self._session.get(api_url, **kwargs)]
 

@@ -5,7 +5,6 @@ from datetime import datetime
 from typing import cast, Dict, List, Tuple
 
 from dateutil.parser import parse
-import aiohttp
 
 from collector_utilities.type import Entity, Entities, Responses, URL, Value
 from collector_utilities.functions import days_ago
@@ -38,8 +37,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
-        timeout = aiohttp.ClientTimeout(self.TIMEOUT)
-        response = await self._session.post(f"{api_url}/users/login", data=credentials, timeout=timeout)
+        response = await self._session.post(f"{api_url}/users/login", data=credentials)
         self.__token = (await response.json())["token"]
         await self.__get_board()
         await self.__get_lists()

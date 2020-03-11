@@ -60,8 +60,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 
     async def __api_post(self, api: str, data) -> aiohttp.ClientResponse:
         """Post to the API and return the response."""
-        timeout = aiohttp.ClientTimeout(self.TIMEOUT)
-        response = await self._session.post(f"{await self._api_url()}/cxrestapi/{api}", data=data, timeout=timeout)
+        response = await self._session.post(f"{await self._api_url()}/cxrestapi/{api}", data=data)
         response.raise_for_status()
         return response
 
