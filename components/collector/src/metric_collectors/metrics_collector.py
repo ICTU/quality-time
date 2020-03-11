@@ -54,17 +54,19 @@ class MetricsCollector:
         """Start fetching measurements indefinitely."""
         max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(total=120)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             self.data_model = await self.fetch_data_model(session, max_sleep_duration)
-            while True:
-                self.record_health()
-                logging.info("Collecting...")
+        while True:
+            self.record_health()
+            logging.info("Collecting...")
+            async with aiohttp.ClientSession(timeout=timeout) as session:
                 with timer() as collection_timer:
                     await self.fetch_measurements(session, measurement_frequency)
-                sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
-                logging.info(
-                    "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
-                await asyncio.sleep(sleep_duration)
+            sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
+            logging.info(
+                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
+            await asyncio.sleep(sleep_duration)
 
     async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
         """Fetch the data model."""
