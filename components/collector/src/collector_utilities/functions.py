@@ -1,9 +1,10 @@
 """Utility functions."""
 
+import contextlib
 import hashlib
 import re
 import urllib
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import cast, Collection, Pattern, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
@@ -87,3 +88,22 @@ def match_string_or_regular_expression(string: str, strings_and_or_regular_expre
             if string_or_regular_expression == string:
                 return True
     return False
+
+
+class Clock:  # pylint: disable=too-few-public-methods
+    """Class to keep track of time."""
+    def __init__(self):
+        self.start = datetime.now()
+        self.duration = timedelta()
+
+    def stop(self):
+        """Stop the clock."""
+        self.duration = (datetime.now() - self.start).total_seconds()
+
+
+@contextlib.contextmanager
+def timer():
+    """Timer context manager."""
+    clock = Clock()
+    yield clock
+    clock.stop()
