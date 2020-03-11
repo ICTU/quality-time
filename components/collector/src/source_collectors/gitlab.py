@@ -90,10 +90,12 @@ class GitLabSourceUpToDateness(GitLabBase):
         return await self._gitlab_api_url("")
 
     async def _landing_url(self, responses: Responses) -> URL:
+        if not responses:
+            return await super()._landing_url(responses)
         web_url = (await responses[0].json())["web_url"]
         branch = self._parameter('branch', quote=True)
         file_path = self._parameter('file_path', quote=True)
-        return URL(f"{web_url}/blob/{branch}/{file_path}") if responses else await super()._landing_url(responses)
+        return URL(f"{web_url}/blob/{branch}/{file_path}")
 
     async def _get_source_responses(self, api_url: URL) -> Responses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,

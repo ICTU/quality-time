@@ -105,6 +105,11 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
         self.assert_measurement(
             response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
 
+    async def test_landing_url_on_failure(self):
+        """Test that the landing url is the API url when GitLab cannot be reached."""
+        response = await self.collect(self.metric, get_request_json_side_effect=[ConnectionError])
+        self.assert_measurement(response, landing_url="https://gitlab", connection_error="Traceback")
+
 
 class GitlabUnmergedBranchesTest(GitLabTestCase):
     """Unit tests for the unmerged branches metric."""

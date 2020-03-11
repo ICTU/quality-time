@@ -146,7 +146,7 @@ class AzureDevopsTests(SourceCollector):
         return str(test_count), "100", []
 
 
-class AxureDevopsJobs(SourceCollector):
+class AzureDevopsJobs(SourceCollector):
     """Base class for job collectors."""
 
     async def _api_url(self) -> URL:
@@ -193,7 +193,7 @@ class AxureDevopsJobs(SourceCollector):
         return "/".join(job["path"].strip(r"\\").split(r"\\") + [job["name"]]).strip("/")
 
 
-class AzureDevopsFailedJobs(AxureDevopsJobs):
+class AzureDevopsFailedJobs(AzureDevopsJobs):
     """Collector for the failed jobs metric."""
 
     def _ignore_job(self, job: Job) -> bool:
@@ -202,7 +202,7 @@ class AzureDevopsFailedJobs(AxureDevopsJobs):
         return self._latest_build_result(job) not in self._parameter("failure_type")
 
 
-class AzureDevopsUnusedJobs(AxureDevopsJobs):
+class AzureDevopsUnusedJobs(AzureDevopsJobs):
     """Collector for the unused jobs metric."""
 
     def _ignore_job(self, job: Job) -> bool:

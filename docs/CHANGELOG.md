@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The metrics "violations" and "suppressed violations" show zero violations (green status) even though the component has no SonarQube analysis. Fixes [#1090](https://github.com/ICTU/quality-time/issues/1090).
 
+### Changed
+
+- Made the collector collect measurements asynchronously.
+
 ## [2.0.0] - [2020-03-08]
 
 ### Added

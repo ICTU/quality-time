@@ -79,16 +79,23 @@ class MetricsCollector:
     async def fetch_measurements(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
         """Fetch the metrics and their measurements."""
         metrics = await get(session, URL(f"{self.server_url}/api/v2/metrics"))
+        next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
+        tasks = []
         for metric_uuid, metric in metrics.items():
             if not (collector := MetricCollector(session, metric, self.data_model)).can_collect():
                 continue
             if self.__skip(metric_uuid, metric):
                 continue
-            measurement = await collector.get()
             self.last_parameters[metric_uuid] = metric
-            self.next_fetch[metric_uuid] = datetime.now() + timedelta(seconds=measurement_frequency)
-            measurement["metric_uuid"] = metric_uuid
-            await post(session, URL(f"{self.server_url}/api/v2/measurements"), measurement)
+            self.next_fetch[metric_uuid] = next_fetch
+            tasks.append(self.fetch_measurement(session, metric_uuid, collector))
+        await asyncio.gather(*tasks)
+
+    async def fetch_measurement(self, session: aiohttp.ClientSession, metric_uuid, collector) -> None:
+        """Fetch the measurement from the source and post it to the server."""
+        measurement = await collector.get()
+        measurement["metric_uuid"] = metric_uuid
+        await post(session, URL(f"{self.server_url}/api/v2/measurements"), measurement)
 
     def __skip(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric needs to be measured."""
