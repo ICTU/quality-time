@@ -12,17 +12,17 @@ from .source_collector import SourceCollector, SourceUpToDatenessCollector
 class SonarQubeCollector(SourceCollector):
     """Base class for SonarQube collectors."""
 
-    def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, api_url: URL) -> Responses:
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
-        url = SourceCollector._api_url(self)
+        url = await SourceCollector._api_url(self)
         component = self._parameter("component")
         show_component_url = URL(f"{url}/api/components/show?component={component}")
-        response = super()._get_source_responses(show_component_url)[0]
-        json = response.json()
+        response = (await super()._get_source_responses(show_component_url))[0]
+        json = await response.json()
         if "errors" in json:
             raise Exception(json["errors"][0]["msg"])
-        return super()._get_source_responses(api_url)
+        return await super()._get_source_responses(api_url)
 
 
 class SonarQubeViolations(SonarQubeCollector):
