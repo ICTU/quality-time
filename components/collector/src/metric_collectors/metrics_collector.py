@@ -8,6 +8,7 @@ from typing import cast, Any, Dict, Final, NoReturn
 
 import requests
 
+from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
 from .metric_collector import MetricCollector
 
@@ -55,8 +56,9 @@ class MetricsCollector:
         while True:
             self.record_health()
             logging.info("Collecting...")
-            self.fetch_measurements(measurement_frequency)
-            logging.info("Sleeping %ss...", sleep_duration)
+            with timer() as collection_timer:
+                self.fetch_measurements(measurement_frequency)
+            logging.info("Collecting took %.1fs. Sleeping %ss...", collection_timer.duration, sleep_duration)
             time.sleep(sleep_duration)
 
     def fetch_data_model(self, sleep_duration: int) -> JSON:
