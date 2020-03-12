@@ -33,6 +33,13 @@ class CollectorTest(aiounittest.AsyncTestCase):
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
+    async def fetch_measurements(self, mock_async_get_request, number=1):
+        """Fetch the measurements with patched get method."""
+        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
+            async with aiohttp.ClientSession() as session:
+                for _ in range(number):
+                    await self.metrics_collector.fetch_measurements(session, 60)
+
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_without_sources(self, mocked_post):
         """Test fetching measurement for a metric without sources."""
@@ -40,17 +47,13 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
-            async with aiohttp.ClientSession() as session:
-                await self.metrics_collector.fetch_measurements(session, 60)
+        await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_not_called()
 
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_with_get_error(self, mocked_post):
         """Test fetching measurement when getting fails."""
-        with patch("aiohttp.ClientSession.get", Mock(side_effect=RuntimeError)):
-            async with aiohttp.ClientSession() as session:
-                await self.metrics_collector.fetch_measurements(session, 60)
+        await self.fetch_measurements(Mock(side_effect=RuntimeError))
         mocked_post.assert_not_called()
 
     @patch("aiohttp.ClientSession.post", side_effect=RuntimeError)
@@ -64,9 +67,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
-            async with aiohttp.ClientSession() as session:
-                await self.metrics_collector.fetch_measurements(session, 60)
+        await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(
@@ -108,10 +109,8 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
-            async with aiohttp.ClientSession() as session:
-                with self.assertRaises(LookupError):
-                    await self.metrics_collector.fetch_measurements(session, 60)
+        with self.assertRaises(LookupError):
+            await self.fetch_measurements(mock_async_get_request)
 
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_twice(self, mocked_post):
@@ -124,10 +123,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.side_effect = [metrics, metrics]
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
-            async with aiohttp.ClientSession() as session:
-                await self.metrics_collector.fetch_measurements(session, 60)
-                await self.metrics_collector.fetch_measurements(session, 60)
+        await self.fetch_measurements(mock_async_get_request, number=2)
         mocked_post.assert_called_once_with(
             "http://localhost:5001/api/v2/measurements",
             json=dict(
@@ -146,9 +142,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         mock_async_get_request = AsyncMock()
         mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
-            async with aiohttp.ClientSession() as session:
-                await self.metrics_collector.fetch_measurements(session, 60)
+        await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_not_called()
 
     @patch("builtins.open", mock_open())
