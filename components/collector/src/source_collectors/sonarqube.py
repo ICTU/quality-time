@@ -9,6 +9,10 @@ from collector_utilities.type import URL, Entities, Entity, Response, Responses,
 from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
+class SonarQubeException(Exception):
+    """Something went wrong collecting information from SonarQube."""
+
+
 class SonarQubeCollector(SourceCollector):
     """Base class for SonarQube collectors."""
 
@@ -21,7 +25,7 @@ class SonarQubeCollector(SourceCollector):
         response = (await super()._get_source_responses(show_component_url))[0]
         json = await response.json()
         if "errors" in json:
-            raise Exception(json["errors"][0]["msg"])
+            raise SonarQubeException(json["errors"][0]["msg"])
         return await super()._get_source_responses(api_url)
 
 
