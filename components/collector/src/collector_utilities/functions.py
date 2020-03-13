@@ -109,9 +109,9 @@ def timer():
     clock.stop()
 
 
-T = TypeVar("T")
+Item = TypeVar("Item")
 
 
-def group(sequence: Sequence[T], nr_items: int) -> Sequence[Sequence[T]]:
+def group(sequence: Sequence[Item], nr_items: int) -> Sequence[Sequence[Item]]:
     """Group the items in sequence in a sequence of sequences, each with (max) nr_items items."""
     return [sequence[n:n+nr_items] for n in range(0, len(sequence), nr_items)]
