@@ -1,5 +1,7 @@
 """GitLab metric source."""
 
+import asyncio
+import itertools
 from abc import ABC
 from datetime import datetime
 from typing import cast, List, Optional, Set, Sequence, Tuple
@@ -8,7 +10,7 @@ from urllib.parse import quote
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Job, Entities, Response, Responses, URL, Value
+from collector_utilities.type import Job, Entities, Responses, URL, Value
 from .source_collector import SourceCollector, UnmergedBranchesSourceCollector
 
 
@@ -111,10 +113,9 @@ class GitLabSourceUpToDateness(GitLabBase):
             folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
             if not tree and first_call:
                 file_paths = [file_path]
-            commit_responses = [await self.__last_commit(file_path) for file_path in file_paths]
-            for folder_path in folder_paths:
-                commit_responses.extend(await get_commits_recursively(folder_path, first_call=False))
-            return commit_responses
+            commits = [self.__last_commit(file_path) for file_path in file_paths] + \
+                [get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths]
+            return list(itertools.chain(*(await asyncio.gather(*commits))))
 
         # First, get the project info so we can use the web url as landing url
         responses = await super()._get_source_responses(api_url)
@@ -122,13 +123,13 @@ class GitLabSourceUpToDateness(GitLabBase):
         responses.extend(await get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses
 
-    async def __last_commit(self, file_path: str) -> Response:
+    async def __last_commit(self, file_path: str) -> Responses:
         files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
         response = await self._session.head(files_api_url)
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
-        return (await super()._get_source_responses(commit_api_url))[0]
+        return await super()._get_source_responses(commit_api_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]
