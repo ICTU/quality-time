@@ -5,7 +5,7 @@ import hashlib
 import re
 import urllib
 from datetime import datetime, timedelta
-from typing import cast, Collection, Pattern, Sequence, Tuple, TypeVar
+from typing import cast, Collection, Pattern, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -107,11 +107,3 @@ def timer():
     clock = Clock()
     yield clock
     clock.stop()
-
-
-Item = TypeVar("Item")
-
-
-def group(sequence: Sequence[Item], nr_items: int) -> Sequence[Sequence[Item]]:
-    """Group the items in sequence in a sequence of sequences, each with (max) nr_items items."""
-    return [sequence[n:n+nr_items] for n in range(0, len(sequence), nr_items)]

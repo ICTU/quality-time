@@ -9,7 +9,7 @@ from typing import cast, Any, Dict, Final, NoReturn
 
 import aiohttp
 
-from collector_utilities.functions import group, timer
+from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
 from .metric_collector import MetricCollector
 
@@ -63,7 +63,8 @@ class MetricsCollector:
         while True:
             self.record_health()
             logging.info("Collecting...")
-            async with aiohttp.ClientSession(timeout=timeout) as session:
+            async with aiohttp.ClientSession(
+                    timeout=timeout, connector=aiohttp.TCPConnector(limit_per_host=20)) as session:
                 with timer() as collection_timer:
                     await self.fetch_measurements(session, measurement_frequency)
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
@@ -94,8 +95,7 @@ class MetricsCollector:
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = next_fetch
             tasks.append(self.fetch_measurement(session, metric_uuid, collector))
-        for batch in group(tasks, 20):
-            await asyncio.gather(*batch)
+        await asyncio.gather(*tasks)
 
     async def fetch_measurement(self, session: aiohttp.ClientSession, metric_uuid, collector) -> None:
         """Fetch the measurement from the source and post it to the server."""
