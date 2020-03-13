@@ -4,11 +4,12 @@ from datetime import datetime, timedelta
 import asyncio
 import logging
 import os
+import traceback
 from typing import cast, Any, Dict, Final, NoReturn
 
 import aiohttp
 
-from collector_utilities.functions import timer
+from collector_utilities.functions import group, timer
 from collector_utilities.type import JSON, URL
 from .metric_collector import MetricCollector
 
@@ -21,6 +22,7 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
         return cast(JSON, await response.json())
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
+        logging.error(traceback.format_exc())
         return {}
 
 
@@ -30,6 +32,7 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
         await session.post(api, json=data)
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Posting %s to %s failed: %s", data, api, reason)
+        logging.error(traceback.format_exc())
 
 
 class MetricsCollector:
@@ -91,7 +94,8 @@ class MetricsCollector:
             self.last_parameters[metric_uuid] = metric
             self.next_fetch[metric_uuid] = next_fetch
             tasks.append(self.fetch_measurement(session, metric_uuid, collector))
-        await asyncio.gather(*tasks)
+        for batch in group(tasks, 20):
+            await asyncio.gather(*batch)
 
     async def fetch_measurement(self, session: aiohttp.ClientSession, metric_uuid, collector) -> None:
         """Fetch the measurement from the source and post it to the server."""
