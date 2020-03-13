@@ -33,7 +33,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}") \
             if responses else api_url
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
@@ -76,8 +76,8 @@ class CxSASTSourceUpToDateness(CxSASTBase):
 class CxSASTSecurityWarnings(CxSASTBase):
     """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        await super()._get_source_responses(api_url)  # Get token
+    async def _get_source_responses(self, *urls: URL) -> Responses:
+        await super()._get_source_responses(*urls)  # Get token
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 

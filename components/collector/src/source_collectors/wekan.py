@@ -34,10 +34,10 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _headers(self) -> Dict[str, str]:
         return dict(Authorization=f"Bearer {self.__token}")
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
-        response = await self._session.post(f"{api_url}/users/login", data=credentials)
+        response = await self._session.post(f"{urls[0]}/users/login", data=credentials)
         self.__token = (await response.json())["token"]
         await self.__get_board()
         await self.__get_lists()

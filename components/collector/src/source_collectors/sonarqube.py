@@ -16,7 +16,7 @@ class SonarQubeException(Exception):
 class SonarQubeCollector(SourceCollector):
     """Base class for SonarQube collectors."""
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
         url = await SourceCollector._api_url(self)
@@ -26,7 +26,7 @@ class SonarQubeCollector(SourceCollector):
         json = await response.json()
         if "errors" in json:
             raise SonarQubeException(json["errors"][0]["msg"])
-        return await super()._get_source_responses(api_url)
+        return await super()._get_source_responses(*urls)
 
 
 class SonarQubeViolations(SonarQubeCollector):
@@ -100,16 +100,15 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 
     total_metric = ""  # Subclass responsibility
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         """Next to the violations, also get the total number of units as basis for the percentage scale."""
-        responses = await super()._get_source_responses(api_url)
         component = self._parameter("component")
         branch = self._parameter("branch")
         base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
             f"branch={branch}")
-        return responses + await super()._get_source_responses(total_metric_api_url)
+        return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = await super()._parse_source_responses(responses)
@@ -145,17 +144,15 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
         as well as the total number of violations."""
-        responses = await super()._get_source_responses(api_url)
         url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
-        return responses + await super()._get_source_responses(
-            resolved_issues_api_url) + await super()._get_source_responses(all_issues_api_url)
+        return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value, _, entities = await super()._parse_source_responses(responses[:-1])

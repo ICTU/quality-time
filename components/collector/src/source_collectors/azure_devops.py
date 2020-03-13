@@ -25,10 +25,10 @@ class AzureDevopsIssues(SourceCollector):
     async def _api_url(self) -> URL:
         return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         """Override because we need to do a post request and need to separately get the entities."""
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
-        response = await self._session.post(api_url, auth=auth, json=dict(query=self._parameter("wiql")))
+        response = await self._session.post(urls[0], auth=auth, json=dict(query=self._parameter("wiql")))
         ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return [response]

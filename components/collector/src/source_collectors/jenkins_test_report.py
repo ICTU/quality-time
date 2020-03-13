@@ -55,10 +55,10 @@ class JenkinsTestReportTests(SourceCollector):
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        test_report_url = URL(f"{api_url}/lastSuccessfulBuild/testReport/api/json")
-        job_url = URL(f"{api_url}/lastSuccessfulBuild/api/json")
-        return await super()._get_source_responses(test_report_url) + await super()._get_source_responses(job_url)
+    async def _get_source_responses(self, *urls: URL) -> Responses:
+        test_report_url = URL(f"{urls[0]}/lastSuccessfulBuild/testReport/api/json")
+        job_url = URL(f"{urls[0]}/lastSuccessfulBuild/api/json")
+        return await super()._get_source_responses(test_report_url, job_url)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         timestamps = [suite.get("timestamp") for suite in (await responses[0].json()).get("suites", [])

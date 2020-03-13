@@ -1,5 +1,6 @@
 """Source collector base classes."""
 
+import asyncio
 import io
 import json
 import logging
@@ -93,16 +94,16 @@ class SourceCollector(ABC):
             logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         return responses, api_url, error
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        """Open the url. Can be overridden if a post request is needed or multiple requests need to be made."""
+    async def _get_source_responses(self, *urls: URL) -> Responses:
+        """Open the url. Can be overridden if a post request is needed or serial requests need to be made."""
         kwargs: Dict[str, Any] = dict()
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
         if headers := self._headers():
             kwargs["headers"] = headers
-            kwargs["headers"] = headers
-        return [await self._session.get(api_url, **kwargs)]
+        tasks = [self._session.get(url, **kwargs) for url in urls]
+        return list(await asyncio.gather(*tasks))
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
@@ -178,9 +179,9 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     file_extensions: List[str] = []  # Subclass responsibility
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
-        responses = await super()._get_source_responses(api_url)
-        if not api_url.endswith(".zip"):
+    async def _get_source_responses(self, *urls: URL) -> Responses:
+        responses = await super()._get_source_responses(*urls)
+        if not urls[0].endswith(".zip"):
             return responses
         unzipped_responses = []
         for response in responses:
@@ -234,7 +235,7 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 
-    async def _get_source_responses(self, api_url: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> Responses:
         return [cast(Response, FakeResponse())]  # Return a fake response so that the parse methods will be called
 
 

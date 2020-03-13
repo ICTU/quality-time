@@ -159,8 +159,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric, get_request_json_side_effect=[
-                {}, violations_json, wont_fix_json, violations_json, wont_fix_json, total_violations_json])
+            metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
                  resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
