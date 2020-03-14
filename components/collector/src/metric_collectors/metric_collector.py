@@ -1,6 +1,7 @@
 """Collector base class."""
 
-from typing import Dict, Final
+import asyncio
+from typing import Final, List
 
 import aiohttp
 
@@ -11,13 +12,13 @@ from collector_utilities.type import Measurement
 class MetricCollector:
     """Base class for collecting measurements from multiple sources for a metric."""
 
-    def __init__(self, session: aiohttp.ClientSession, metric, datamodel=None) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, data_model=None) -> None:
         self.metric: Final = metric
-        self.datamodel: Final = datamodel
-        self.collectors: Dict[str, SourceCollector] = dict()
-        for source_uuid, source in self.metric["sources"].items():
-            collector_class = SourceCollector.get_subclass(source['type'], self.metric['type'])
-            self.collectors[source_uuid] = collector_class(session, source, datamodel)
+        self.datamodel: Final = data_model
+        self.collectors: List[SourceCollector] = []
+        for source in self.metric["sources"].values():
+            collector_class = SourceCollector.get_subclass(source["type"], self.metric["type"])
+            self.collectors.append(collector_class(session, source, data_model))
 
     def can_collect(self) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
@@ -32,5 +33,7 @@ class MetricCollector:
 
     async def get(self) -> Measurement:
         """Connect to the sources to get and parse the measurements for the metric."""
-        return dict(
-            sources=[{**await self.collectors[uuid].get(), "source_uuid": uuid} for uuid in self.metric["sources"]])
+        measurements = await asyncio.gather(*[collector.get() for collector in self.collectors])
+        for measurement, source_uuid in zip(measurements, self.metric["sources"]):
+            measurement["source_uuid"] = source_uuid
+        return dict(sources=measurements)
