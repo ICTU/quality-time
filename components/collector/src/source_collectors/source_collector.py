@@ -198,11 +198,9 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     @classmethod
     async def __unzip(cls, response: Response) -> Responses:
         """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
-        responses = []
         with zipfile.ZipFile(io.BytesIO(await response.read())) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
-            for name in names:
-                responses.append(FakeResponse(response_zipfile.read(name)))
+            responses = [FakeResponse(response_zipfile.read(name)) for name in names]
         return cast(Responses, responses)
 
 
@@ -261,8 +259,8 @@ class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        return str(
-            days_ago(min([await self._parse_source_response_date_time(response) for response in responses]))), "100", []
+        date_times = await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
+        return str(days_ago(min(date_times))), "100", []
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""
