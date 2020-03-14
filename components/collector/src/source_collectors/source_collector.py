@@ -2,6 +2,7 @@
 
 import asyncio
 import io
+import itertools
 import json
 import logging
 import traceback
@@ -183,10 +184,8 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         responses = await super()._get_source_responses(*urls)
         if not urls[0].endswith(".zip"):
             return responses
-        unzipped_responses = []
-        for response in responses:
-            unzipped_responses.extend(await self.__unzip(response))
-        return unzipped_responses
+        unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
+        return list(itertools.chain(*unzipped_responses))
 
     def _headers(self) -> Dict[str, str]:
         headers = super()._headers()
