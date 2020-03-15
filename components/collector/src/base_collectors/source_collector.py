@@ -84,8 +84,6 @@ class SourceCollector(ABC):
         error = None
         try:
             responses = await self._get_source_responses(api_url := await self._api_url())
-            for response in responses:
-                response.raise_for_status()
             logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
@@ -166,10 +164,6 @@ class FakeResponse:  # pylint: disable=too-few-public-methods
     async def text(self):
         """Return the text version of the contents."""
         return self.contents.decode()
-
-    @staticmethod
-    def raise_for_status():
-        """Mock the raise for status method."""
 
 
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method

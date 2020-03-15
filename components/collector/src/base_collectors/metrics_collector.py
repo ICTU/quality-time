@@ -18,7 +18,6 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
     """Get data from the API url."""
     try:
         response = await session.get(api)
-        response.raise_for_status()
         return cast(JSON, await response.json())
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
@@ -58,13 +57,14 @@ class MetricsCollector:
         max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         timeout = aiohttp.ClientTimeout(total=120)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession(timeout=timeout, raise_for_status=True) as session:
             self.data_model = await self.fetch_data_model(session, max_sleep_duration)
         while True:
             self.record_health()
             logging.info("Collecting...")
             async with aiohttp.ClientSession(
-                    timeout=timeout, connector=aiohttp.TCPConnector(limit_per_host=20)) as session:
+                    timeout=timeout, connector=aiohttp.TCPConnector(limit_per_host=20),
+                    raise_for_status=True) as session:
                 with timer() as collection_timer:
                     await self.collect_metrics(session, measurement_frequency)
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)

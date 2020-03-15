@@ -2,7 +2,7 @@
 
 import json
 import pathlib
-from unittest.mock import patch, AsyncMock, Mock
+from unittest.mock import patch, AsyncMock
 
 import aiohttp
 import aiounittest
@@ -30,7 +30,6 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
                       post_request_json_return_value=None) -> Measurement:
         """Collect the metric."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         if get_request_json_side_effect:
             mock_async_get_request.json.side_effect = get_request_json_side_effect
         else:
@@ -38,7 +37,6 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
         mock_async_get_request.read.return_value = get_request_content
         mock_async_get_request.text.return_value = get_request_text
         mock_async_post_request = AsyncMock()
-        mock_async_post_request.raise_for_status = Mock()
         mock_async_post_request.json.return_value = post_request_json_return_value
         with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
             with patch(

@@ -44,7 +44,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
         """Test fetching measurement for a metric without sources."""
         metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources=dict()))
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
         await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_not_called()
@@ -64,7 +63,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         self.metrics_collector.data_model = self.data_model
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
         await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_called_once_with(
@@ -85,7 +83,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 addition="sum", type="metric",
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.side_effect = [self.data_model, metrics]
         with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
             with self.assertRaises(RuntimeError):
@@ -106,7 +103,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(missing=dict(type="unknown_source", parameters=dict(url=self.url)))))
         self.metrics_collector.data_model = self.data_model
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
         with self.assertRaises(LookupError):
             await self.fetch_measurements(mock_async_get_request)
@@ -120,7 +116,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         self.metrics_collector.data_model = self.data_model
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.side_effect = [metrics, metrics]
         await self.fetch_measurements(mock_async_get_request, number=2)
         mocked_post.assert_called_once_with(
@@ -139,7 +134,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 type="metric", addition="sum", sources=dict(missing=dict(type="source", parameters=dict(url="")))))
         self.metrics_collector.data_model = self.data_model
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.return_value = metrics
         await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_not_called()
@@ -148,7 +142,6 @@ class CollectorTest(aiounittest.AsyncTestCase):
     async def test_fetch_data_model_after_failure(self):
         """Test that the data model is fetched on the second try."""
         mock_async_get_request = AsyncMock()
-        mock_async_get_request.raise_for_status = Mock()
         mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
         with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
             async with aiohttp.ClientSession() as session:
