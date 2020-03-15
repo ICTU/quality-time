@@ -7,7 +7,7 @@ from unittest.mock import patch, AsyncMock, Mock
 import aiohttp
 import aiounittest
 
-from metric_collectors import MetricCollector
+from base_collectors import MetricsCollector
 from collector_utilities.type import Measurement
 
 
@@ -45,7 +45,9 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
                     "aiohttp.ClientSession.post",
                     AsyncMock(return_value=mock_async_post_request, side_effect=post_request_side_effect)):
                 async with aiohttp.ClientSession() as session:
-                    return await MetricCollector(session, metric, self.data_model).get()
+                    collector = MetricsCollector()
+                    collector.data_model = self.data_model
+                    return await collector.collect_sources(session, metric)
 
     def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""

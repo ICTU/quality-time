@@ -5,8 +5,7 @@ from unittest.mock import patch, Mock
 import aiohttp
 
 from collector_utilities.type import Responses, URL
-from metric_collectors import MetricCollector
-from source_collectors.source_collector import SourceCollector
+from base_collectors import SourceCollector
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -45,13 +44,6 @@ class CollectorTest(SourceCollectorTestCase):
         response = await self.collect(self.metric, get_request_text=self.junit_xml, get_request_json_return_value=json)
         self.assert_measurement(response, value="2", url=self.junit_xml, source_index=0)
         self.assert_measurement(response, value="88", url=sonarqube_url, source_index=1)
-
-    async def test_connection_error(self):
-        """Test that an error retrieving the data is handled."""
-        with patch("aiohttp.ClientSession.get", side_effect=Exception):
-            async with aiohttp.ClientSession() as session:
-                response = await MetricCollector(session, self.metric, dict()).get()
-        self.assert_measurement(response, connection_error="Traceback")
 
     async def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
