@@ -4,8 +4,8 @@ import contextlib
 import hashlib
 import re
 import urllib
-from datetime import datetime, timedelta
-from typing import cast, Collection, Pattern, Tuple
+from datetime import datetime
+from typing import cast, Collection, Generator, Pattern, Tuple
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -30,7 +30,7 @@ async def parse_source_response_xml_with_namespace(
     return tree, namespaces
 
 
-Substitution = Tuple[Pattern, str]
+Substitution = Tuple[Pattern[str], str]
 MEMORY_ADDRESS_SUB: Substitution = (re.compile(r" at 0x[0-9abcdef]+>"), ">")
 TOKEN_SUB: Substitution = (re.compile(r"token=[0-9a-zA-Z]+"), "token=<redacted>")
 KEY_SUB: Substitution = (re.compile(r"key=[0-9abcdef]+"), "key=<redacted>")
@@ -92,17 +92,17 @@ def match_string_or_regular_expression(string: str, strings_and_or_regular_expre
 
 class Clock:  # pylint: disable=too-few-public-methods
     """Class to keep track of time."""
-    def __init__(self):
+    def __init__(self) -> None:
         self.start = datetime.now()
-        self.duration = timedelta()
+        self.duration = 0.0
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop the clock."""
         self.duration = (datetime.now() - self.start).total_seconds()
 
 
 @contextlib.contextmanager
-def timer():
+def timer() -> Generator[Clock, None, None]:
     """Timer context manager."""
     clock = Clock()
     yield clock

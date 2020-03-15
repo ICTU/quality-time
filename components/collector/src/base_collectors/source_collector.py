@@ -13,7 +13,7 @@ from typing import cast, Any, Dict, Final, List, Optional, Set, Tuple, Type, Uni
 import aiohttp
 
 from collector_utilities.functions import days_ago, tokenless, stable_traceback
-from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
+from collector_utilities.type import ErrorMessage, Entities, JSON, Measurement, Response, Responses, URL, Value
 
 
 class SourceCollector(ABC):
@@ -60,7 +60,7 @@ class SourceCollector(ABC):
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         """Return the parameter value."""
 
-        def quote_if_needed(parameter_value):
+        def quote_if_needed(parameter_value: str) -> str:
             """Quote the string if needed."""
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
@@ -153,17 +153,17 @@ class FakeResponse:  # pylint: disable=too-few-public-methods
     """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
     status = HTTPStatus.OK
 
-    def __init__(self, contents="") -> None:
+    def __init__(self, contents: bytes = bytes()) -> None:
         super().__init__()
         self.contents = contents
 
-    async def json(self):
+    async def json(self) -> JSON:
         """Return the JSON version of the contents."""
-        return json.loads(self.contents)
+        return cast(JSON, json.loads(self.contents))
 
-    async def text(self):
+    async def text(self) -> str:
         """Return the text version of the contents."""
-        return self.contents.decode()
+        return str(self.contents.decode())
 
 
 class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -185,8 +185,8 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         return str(len(entities)), "100", entities
 
     @abstractmethod
-    async def _unmerged_branches(self, responses: Responses) -> List:
-        """Return the list of unmerged branch."""
+    async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
+        """Return the list of unmerged branches."""
 
     @abstractmethod
     def _commit_datetime(self, branch) -> datetime:

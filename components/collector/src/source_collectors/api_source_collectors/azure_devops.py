@@ -6,7 +6,7 @@ See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-re
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Final, List, Tuple
+from typing import cast, Any, Dict, Final, List, Tuple
 
 from dateutil.parser import parse
 import aiohttp
@@ -89,7 +89,7 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         return URL(f"{landing_url}/_git/{repository}/branches")
 
-    async def _unmerged_branches(self, responses: Responses) -> List:
+    async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
         return [branch for branch in (await responses[0].json())["value"] if not branch["isBaseVersion"] and
                 int(branch["aheadCount"]) > 0 and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and

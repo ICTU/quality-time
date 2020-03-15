@@ -4,7 +4,7 @@ import asyncio
 import itertools
 from abc import ABC
 from datetime import datetime
-from typing import cast, List, Optional, Set, Sequence, Tuple
+from typing import cast, Any, Dict, List, Optional, Set, Sequence, Tuple
 from urllib.parse import quote
 
 from dateutil.parser import parse
@@ -146,7 +146,7 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
-    async def _unmerged_branches(self, responses: Responses) -> List:
+    async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
         branches = await responses[0].json()
         return [branch for branch in branches if not branch["default"] and not branch["merged"] and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
