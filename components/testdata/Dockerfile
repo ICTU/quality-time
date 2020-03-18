@@ -6,4 +6,4 @@ LABEL description="Quality-time testdata"
 WORKDIR /work
 ADD . /work
 
-CMD ["python", "-m", "http.server"]
+CMD ["python", "-u", "-m", "http.server"]

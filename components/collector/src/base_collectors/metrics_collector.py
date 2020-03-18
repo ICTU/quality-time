@@ -11,6 +11,7 @@ import aiohttp
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
+from .cached_client_session import CachedClientSession
 from .source_collector import SourceCollector
 
 
@@ -57,12 +58,12 @@ class MetricsCollector:
         max_sleep_duration = int(os.environ.get("COLLECTOR_SLEEP_DURATION", 60))
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         timeout = aiohttp.ClientTimeout(total=120)
-        async with aiohttp.ClientSession(timeout=timeout, raise_for_status=True) as session:
+        async with CachedClientSession(timeout=timeout, raise_for_status=True) as session:
             self.data_model = await self.fetch_data_model(session, max_sleep_duration)
         while True:
             self.record_health()
             logging.info("Collecting...")
-            async with aiohttp.ClientSession(
+            async with CachedClientSession(
                     timeout=timeout, connector=aiohttp.TCPConnector(limit_per_host=20),
                     raise_for_status=True) as session:
                 with timer() as collection_timer:
