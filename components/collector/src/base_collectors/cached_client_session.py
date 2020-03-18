@@ -16,7 +16,7 @@ class CachedClientSession(aiohttp.ClientSession):
         # collector wakes up (once every minute by default).
         self.__cache = dict()
 
-    async def get(
+    async def get(  # type: ignore
             self, url: StrOrURL, *, allow_redirects: bool = True, **kwargs: Any) -> '_RequestContextManager':
         """Retrieve the url, using a cache."""
         if url in self.__cache:
