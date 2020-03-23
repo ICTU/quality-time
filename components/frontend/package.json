@@ -7,7 +7,7 @@
     "history": "^4.10.1",
     "md5": "^2.2.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0",
+    "react-dom": "^16.13.1",
     "react-grid-layout": "^0.18.3",
     "react-hash-link": "1.0.0",
     "react-scripts": "3.4.0",
