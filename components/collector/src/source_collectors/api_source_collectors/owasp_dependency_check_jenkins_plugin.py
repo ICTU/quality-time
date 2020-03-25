@@ -1,10 +1,9 @@
 """OWASP Dependency Check Jenkins plugin metric collector."""
 
-from datetime import datetime
 from typing import Dict, Tuple
 
-from collector_utilities.type import Entities, Entity, Response, Responses, Value, URL
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Entities, Entity, Responses, Value, URL
+from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
 
 
 class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
@@ -40,11 +39,5 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         return severity1 if severities.index(severity1) >= severities.index(severity2) else severity2
 
 
-class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(SourceUpToDatenessCollector):
+class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(JenkinsPluginSourceUpToDatenessCollector):
     """Collector to get the age of the OWASP Dependency Check Jenkins plugin report."""
-
-    async def _api_url(self) -> URL:
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
-
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.)

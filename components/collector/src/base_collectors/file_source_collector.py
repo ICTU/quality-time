@@ -1,4 +1,4 @@
-"""Source collector base classes."""
+"""File source collector base classes."""
 
 import asyncio
 import io
