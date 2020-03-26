@@ -5,6 +5,7 @@
 - [Logging in and out](#logging-in-and-out)
 - [Configuring quality reports](#configuring-quality-reports)
 - [Notes on specific metrics](#notes-on-specific-metrics)
+- [Notes on specific sources](#notes-on-specific-sources)
 - [Customizing quality reports](#customizing-quality-reports)
 - [Exporting quality reports](#exporting-quality-reports)
 
@@ -151,6 +152,34 @@ The unmerged branches metric reports on the number of branches that have not bee
 The "master"-branch is the default branch in both GitLab and Azure DevOps. This means that a branch is considered unmerged if it has not been merged with master. If you want to use a different branch as default branch, you need to configure this in the source, see the documentation for [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/#default-branch) or [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#change-your-default-branch).
 
 To ignore branches that people are actively working on, use the "Number of days since last commit after which to consider branches inactive"-parameter.
+
+## Notes on specific sources
+
+### GitLab
+
+Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, Quality-time needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to Quality-time. 
+
+There are two scenario's: the source is a build artifact of a GitLab CI pipeline or the source is stored in a GitLab repository.
+
+#### GitLab CI pipeline build artifact
+
+When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch):
+
+    https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?job=<job-name>
+
+The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+
+If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "api" in the private token field.
+
+#### GitLab repository file
+
+When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
+
+    https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?ref=<branch>
+
+The project id can be found under the [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+
+If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_repository" in the private token field.
 
 ## Customizing quality reports
 
