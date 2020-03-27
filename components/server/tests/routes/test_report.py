@@ -126,7 +126,7 @@ class ReportTest(unittest.TestCase):
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
         self.maxDiff = None  # pylint: disable=invalid-name
-        request.query = bottle.FormsDict(report_date=(date_time := iso_timestamp()))
+        request.query = bottle.FormsDict(report_date=iso_timestamp())
         self.database.datamodels.find_one.return_value = dict(
             _id="id", sources={}, metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = dict(
@@ -144,7 +144,7 @@ class ReportTest(unittest.TestCase):
                 summary_by_tag=dict(tag=dict(red=0, green=0, yellow=0, grey=0, white=1)),
                 summary_by_subject={SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)},
                 title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
-                timestamp=date_time, subjects={
+                timestamp=request.query["report_date"], subjects={
                     SUBJECT_ID: dict(
                         name="Report / Subject",
                         metrics=dict(

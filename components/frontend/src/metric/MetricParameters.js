@@ -171,5 +171,5 @@ export function MetricParameters(props) {
                 </Grid.Row>
             </Grid>
         </>
-    )
+    );
 }

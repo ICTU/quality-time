@@ -111,7 +111,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         description=f"{user['user']} changed the {metric_attribute} of metric '{data.metric_name}' "
                     f"of subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'.")
     insert_new_report(database, data.report)
-    if metric_attribute in ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target"):
-        if latest := latest_measurement(database, metric_uuid):
-            return insert_new_measurement(database, data.metric, latest)
+    attributes_impacting_status = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
+    if metric_attribute in attributes_impacting_status and (latest := latest_measurement(database, metric_uuid)):
+        return insert_new_measurement(database, data.metric, latest)
     return dict(ok=True)
