@@ -115,5 +115,5 @@ export function MeasurementDetails(props) {
       <Tab panes={panes} />
       <Buttons />
     </>
-  )
+  );
 }

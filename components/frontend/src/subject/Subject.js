@@ -23,12 +23,12 @@ export function Subject(props) {
   const last_index = Object.entries(subject.metrics).length - 1;
 
   function create_metric_components() {
-    let metric_components = [];
+    let components = [];
     Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
       const status = metric.status;
       if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
       if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
-      metric_components.push(
+      components.push(
         <Metric
           first_metric={index === 0}
           key={metric_uuid}
@@ -39,7 +39,7 @@ export function Subject(props) {
           {...props}
         />)
     });
-    return metric_components
+    return components
   }
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
