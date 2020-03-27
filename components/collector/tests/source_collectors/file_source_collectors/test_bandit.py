@@ -60,7 +60,8 @@ class BanditSecurityWarningsTest(BanditTestCase):
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["url"] = "bandit.zip"
-        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_bandit_report:
             zipped_bandit_report.writestr(
                 "bandit.json", json.dumps(self.bandit_json))
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())

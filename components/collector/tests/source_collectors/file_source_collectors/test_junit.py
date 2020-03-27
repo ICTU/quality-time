@@ -7,12 +7,20 @@ from datetime import datetime
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
-class JUnitTestReportTest(SourceCollectorTestCase):
+class JUnitCollectorTestCase(SourceCollectorTestCase):
+    """Base class for Junit collector unit tests."""
+
+    def setUp(self):
+        super().setUp()
+        self.url = "https://junit.xml"
+        self.sources = dict(source_id=dict(type="junit", parameters=dict(url=self.url)))
+
+
+class JUnitTestReportTest(JUnitCollectorTestCase):
     """Unit tests for the JUnit XML test report metrics."""
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
         self.metric = dict(type="tests", sources=self.sources, addition="sum")
         self.junit_xml = """<testsuites>
         <testsuite>
@@ -44,19 +52,19 @@ class JUnitTestReportTest(SourceCollectorTestCase):
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
         self.sources["source_id"]["parameters"]["url"] = "junit.zip"
-        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_bandit_report:
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_bandit_report:
             zipped_bandit_report.writestr("junit.xml", self.junit_xml)
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="5", entities=self.expected_entities)
 
 
-class JUnitSourceUpToDatenessTest(SourceCollectorTestCase):
+class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        sources = dict(source_id=dict(type="junit", parameters=dict(url="junit.xml")))
-        metric = dict(type="source_up_to_dateness", sources=sources, addition="max")
+        metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         response = await self.collect(
             metric, get_request_text='<?xml version="1.0"?><testsuite timestamp="2009-12-19T17:58:59"></testsuite>')
         expected_age = (datetime.now() - datetime(2009, 12, 19, 17, 58, 59)).days
