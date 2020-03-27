@@ -2,7 +2,8 @@
 
 from typing import Any, Dict, List, NewType, Optional, Union
 
-import requests
+import aiohttp
+
 
 Entity = Dict[str, Union[int, float, str]]  # pylint: disable=invalid-name
 Entities = List[Entity]
@@ -12,7 +13,7 @@ Jobs = List[Job]
 JSON = Dict[str, Any]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
 Measurement = Dict[str, Any]
-Response = requests.Response
+Response = aiohttp.ClientResponse
 Responses = List[Response]
 URL = NewType("URL", str)
 Value = Optional[str]

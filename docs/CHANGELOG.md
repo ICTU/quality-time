@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - The collector wakes up every minute, collects measurement data if necessary, and then pauses for a minute. Have the length of the pause depend on how long the data collection took so that the user does not have to wait too long for a new measurement after changing the configuration of a metric. Closes [#1100](https://github.com/ICTU/quality-time/issues/1100).
+- Made the collector collect measurements asynchronously.
 
 ### Fixed
 
