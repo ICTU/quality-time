@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [2.1.0-rc.1] - [2020-03-11]
+## [Unreleased]
 
 ### Changed
 
-- The collector wakes up every minute, collects measurement data if necessary, and then pauses for a minute. Have the length of the pause depend on how long the data collection took so that the user does not have to wait too long for a new measurement after changing the configuration of a metric. Closes [#1100](https://github.com/ICTU/quality-time/issues/1100).
-- Made the collector collect measurements asynchronously.
+- The collector wakes up every minute, collects measurement data if necessary, and then would pause for a minute. Changed to have the length of the pause depend on how long the data collection took so that the user does not have to wait too long for a new measurement after changing the configuration of a metric. Closes [#1100](https://github.com/ICTU/quality-time/issues/1100).
+- Made the collector collect measurements asynchronously to speed it up.
 
 ### Fixed
 
