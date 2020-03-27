@@ -32,9 +32,14 @@ class CollectorTest(aiounittest.AsyncTestCase):
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
+    @staticmethod
+    def patched_get(mock_async_get_request):
+        """Return a patched version of aiohttp.ClientSession.get()."""
+        return patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request))
+
     async def fetch_measurements(self, mock_async_get_request, number=1):
         """Fetch the measurements with patched get method."""
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
+        with self.patched_get(mock_async_get_request):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
                     await self.metrics_collector.collect_metrics(session, 60)
@@ -84,7 +89,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.data_model, metrics]
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
+        with self.patched_get(mock_async_get_request):
             with self.assertRaises(RuntimeError):
                 await quality_time_collector.collect()
         mocked_post.assert_called_once_with(
@@ -143,7 +148,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
         """Test that the data model is fetched on the second try."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [RuntimeError, self.data_model]
-        with patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request)):
+        with self.patched_get(mock_async_get_request):
             async with aiohttp.ClientSession() as session:
                 data_model = await self.metrics_collector.fetch_data_model(session, 0)
         self.assertEqual(self.data_model, data_model)

@@ -11,6 +11,10 @@ from base_collectors.cached_client_session import CachedClientSession
 class CachedClientSessionTest(aiounittest.AsyncTestCase):
     """Unit tests for the cached client session class."""
 
+    def setUp(self):
+        super().setUp()
+        self.url = "https://url"
+
     async def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         """Fake the session.get method."""
         self.get_calls += 1  # pylint: disable=no-member
@@ -21,7 +25,7 @@ class CachedClientSessionTest(aiounittest.AsyncTestCase):
         """Test that the url is retrieved once."""
         async with CachedClientSession() as session:
             session.get_calls = 0
-            await session.get("https://url")
+            await session.get(self.url)
         self.assertEqual(1, session.get_calls)
 
     @patch("aiohttp.ClientSession.get", new=get)
@@ -29,6 +33,6 @@ class CachedClientSessionTest(aiounittest.AsyncTestCase):
         """Test that the url is retrieved only once."""
         async with CachedClientSession() as session:
             session.get_calls = 0
-            await asyncio.gather(session.get("https://url"), session.get("https://url"))
-            await asyncio.gather(session.get("https://url"), session.get("https://url"))
+            await asyncio.gather(session.get(self.url), session.get(self.url))
+            await asyncio.gather(session.get(self.url), session.get(self.url))
         self.assertEqual(1, session.get_calls)

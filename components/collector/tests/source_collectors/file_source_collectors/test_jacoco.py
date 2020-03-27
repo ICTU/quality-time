@@ -39,7 +39,8 @@ class JaCoCoTest(SourceCollectorTestCase):
         """Test that a zipped report can be read."""
         self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
         metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
-        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_jacoco_report:
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_jacoco_report:
             zipped_jacoco_report.writestr(
                 "jacoco.xml", "<report><counter type='LINE' missed='2' covered='4'/></report>")
         response = await self.collect(metric, get_request_content=bytes_io.getvalue())

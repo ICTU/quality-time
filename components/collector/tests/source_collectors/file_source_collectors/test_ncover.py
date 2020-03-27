@@ -52,7 +52,8 @@ class NCoverTest(SourceCollectorTestCase):
         """Test that the coverage can be read from a zip with NCover reports."""
         self.sources["source_id"]["parameters"]["url"] = "https://report.zip"
         metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
-        with zipfile.ZipFile(bytes_io := io.BytesIO(), mode="w") as zipped_ncover_report:
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_ncover_report:
             zipped_ncover_report.writestr("ncover.html", self.ncover_html)
         response = await self.collect(metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value=f"{17153-14070}", total="17153")
