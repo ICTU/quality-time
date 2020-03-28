@@ -17,8 +17,10 @@ from .source_collector import SourceCollector
 async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
     """Get data from the API url."""
     try:
-        async with session.get(api) as response:
-            return cast(JSON, await response.json())
+        response = await session.get(api)
+        json = cast(JSON, await response.json())
+        response.close()
+        return json
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
         logging.error(traceback.format_exc())
