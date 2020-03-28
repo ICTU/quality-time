@@ -81,8 +81,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
 
     @patch("asyncio.sleep", Mock(side_effect=RuntimeError))
     @patch("builtins.open", mock_open())
-    @patch("aiohttp.ClientSession.post")
-    async def test_collect(self, mocked_post):
+    async def test_collect(self):
         """Test the collect method."""
         metrics = dict(
             metric_uuid=dict(
@@ -90,9 +89,12 @@ class CollectorTest(aiounittest.AsyncTestCase):
                 sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.data_model, metrics]
+        mocked_post = AsyncMock()
+        mocked_post.return_value.close = Mock()
         with self.patched_get(mock_async_get_request):
-            with self.assertRaises(RuntimeError):
-                await quality_time_collector.collect()
+            with patch("aiohttp.ClientSession.post", mocked_post):
+                with self.assertRaises(RuntimeError):
+                    await quality_time_collector.collect()
         mocked_post.assert_called_once_with(
             self.measurement_api_url,
             json=dict(

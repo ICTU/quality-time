@@ -30,7 +30,8 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
 async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
     """Post the JSON data to the api url."""
     try:
-        await session.post(api, json=data)
+        response = await session.post(api, json=data)
+        response.close()
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Posting %s to %s failed: %s", data, api, reason)
         logging.error(traceback.format_exc())
