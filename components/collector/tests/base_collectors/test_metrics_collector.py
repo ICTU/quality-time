@@ -35,6 +35,7 @@ class CollectorTest(aiounittest.AsyncTestCase):
     @staticmethod
     def patched_get(mock_async_get_request):
         """Return a patched version of aiohttp.ClientSession.get()."""
+        mock_async_get_request.close = Mock()
         return patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request))
 
     async def fetch_measurements(self, mock_async_get_request, number=1):

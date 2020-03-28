@@ -11,7 +11,6 @@ import aiohttp
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
-from .cached_client_session import CachedClientSession
 from .source_collector import SourceCollector
 
 
@@ -19,7 +18,9 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
     """Get data from the API url."""
     try:
         response = await session.get(api)
-        return cast(JSON, await response.json())
+        json = cast(JSON, await response.json())
+        response.close()
+        return json
     except Exception as reason:  # pylint: disable=broad-except
         logging.error("Getting data from %s failed: %s", api, reason)
         logging.error(traceback.format_exc())
@@ -63,7 +64,7 @@ class MetricsCollector:
         while True:
             self.record_health()
             logging.info("Collecting...")
-            async with CachedClientSession(
+            async with aiohttp.ClientSession(
                     timeout=timeout, connector=aiohttp.TCPConnector(limit_per_host=20),
                     raise_for_status=True) as session:
                 with timer() as collection_timer:
