@@ -30,6 +30,7 @@ def init_database() -> Database:
 def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.reports.create_index("timestamp")
+    database.measurements.create_index("start")
 
 
 def update_database(database: Database) -> None:
