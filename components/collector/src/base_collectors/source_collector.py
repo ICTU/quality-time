@@ -85,9 +85,12 @@ class SourceCollector(ABC):
         try:
             responses = await self._get_source_responses(api_url := await self._api_url())
             logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
+        except aiohttp.ClientError as reason:
+            error = str(reason)
+            logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
+            logging.error("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         return responses, api_url, error
 
     async def _get_source_responses(self, *urls: URL) -> Responses:

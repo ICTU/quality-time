@@ -16,6 +16,14 @@ from collector_utilities.type import Entities, Responses, Value
 class CollectorTest(aiounittest.AsyncTestCase):
     """Unit tests for the collection methods."""
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        logging.disable(logging.CRITICAL)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        logging.disable(logging.NOTSET)
+
     def setUp(self):
         class SourceMetric(SourceCollector):  # pylint: disable=unused-variable
             """Register a fake collector automatically."""
@@ -27,20 +35,18 @@ class CollectorTest(aiounittest.AsyncTestCase):
         self.metrics_collector = MetricsCollector()
         self.url = "https://url"
         self.measurement_api_url = "http://localhost:5001/api/v2/measurements"
-        logging.disable(logging.CRITICAL)
-
-    def tearDown(self):
-        logging.disable(logging.NOTSET)
 
     @staticmethod
-    def patched_get(mock_async_get_request):
+    def patched_get(mock_async_get_request, side_effect=None):
         """Return a patched version of aiohttp.ClientSession.get()."""
-        mock_async_get_request.close = Mock()
-        return patch("aiohttp.ClientSession.get", AsyncMock(return_value=mock_async_get_request))
+        mock = AsyncMock(side_effect=side_effect) if side_effect else AsyncMock(return_value=mock_async_get_request)
+        if not side_effect:
+            mock_async_get_request.close = Mock()
+        return patch("aiohttp.ClientSession.get", mock)
 
-    async def fetch_measurements(self, mock_async_get_request, number=1):
+    async def fetch_measurements(self, mock_async_get_request, number=1, side_effect=None):
         """Fetch the measurements with patched get method."""
-        with self.patched_get(mock_async_get_request):
+        with self.patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
                     await self.metrics_collector.collect_metrics(session, 60)
@@ -56,9 +62,30 @@ class CollectorTest(aiounittest.AsyncTestCase):
 
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_with_get_error(self, mocked_post):
-        """Test fetching measurement when getting fails."""
+        """Test fetching measurement when getting the metrics fails."""
         await self.fetch_measurements(Mock(side_effect=RuntimeError))
         mocked_post.assert_not_called()
+
+    @patch("aiohttp.ClientSession.post")
+    async def test_fetch_with_client_error(self, mocked_post):
+        """Test fetching measurement when getting measurements fails."""
+        metrics = dict(
+            metric_uuid=dict(
+                addition="sum", type="metric",
+                sources=dict(source_id=dict(type="source", parameters=dict(url=self.url)))))
+        self.metrics_collector.data_model = self.data_model
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.close = Mock()
+        mock_async_get_request.json.return_value = metrics
+        await self.fetch_measurements(
+            None, side_effect=[mock_async_get_request, aiohttp.ClientConnectionError("error")])
+        mocked_post.assert_called_once_with(
+            self.measurement_api_url,
+            json=dict(
+                sources=[
+                    dict(api_url=self.url, landing_url=self.url, value=None, total=None, entities=[],
+                         connection_error="error", parse_error=None, source_uuid="source_id")],
+                metric_uuid="metric_uuid"))
 
     @patch("aiohttp.ClientSession.post", side_effect=RuntimeError)
     async def test_fetch_with_post_error(self, mocked_post):
