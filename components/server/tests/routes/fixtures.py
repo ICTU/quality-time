@@ -41,6 +41,7 @@ def create_report():
                         name="Metric",
                         type="metric_type",
                         addition="sum",
+                        target="0",
                         accept_debt=False,
                         tags=["security"],
                         sources={
