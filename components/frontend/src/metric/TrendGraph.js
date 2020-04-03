@@ -37,13 +37,19 @@ export function TrendGraph(props) {
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[i], x: x1 }, { y: measurement_values[i], x: x2 });
     const green_y = target_values[i];
-    green.push({ y: green_y, x: x1 }, { y: green_y, x: x2 });
-    const yellow_y = Math.max(0, near_target_values[i] - green_y);
-    yellow.push({ y: yellow_y, x: x1 }, { y: yellow_y, x: x2 });
-    const red_y = green_y !== null ? max_y - (yellow_y + green_y) : null;
-    red.push({ y: red_y, x: x1 }, { y: red_y, x: x2 });
+    if (green_y !== null) {
+      green.push({ y: green_y, x: x1 });
+      const yellow_y = Math.max(0, near_target_values[i] - green_y);
+      yellow.push({ y: yellow_y, x: x1 });
+      const red_y = max_y - (yellow_y + green_y);
+      red.push({ y: red_y, x: x1 });
+      if (x1.getTime() !== x2.getTime()) {
+        green.push({ y: green_y, x: x2 });
+        yellow.push({ y: yellow_y, x: x2 });
+        red.push({ y: red_y, x: x2 });
+      }
+    }
   }
-  console.log(measurements, green, yellow, red);
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
   return (
     <VictoryChart
