@@ -7,6 +7,25 @@ function readableNumber(number) {
   return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
+function Background({ data, ...props} ) {
+  return (
+    <VictoryStack {...props} >
+      <VictoryArea
+        data={data.green}
+        interpolation="stepBefore"
+        style={{ data: { fill: "rgb(30,148,78,0.7)", opacity: 0.7, stroke: "rgb(30,148,78)", strokeWidth: 0 } }} />
+      <VictoryArea
+        data={data.yellow}
+        interpolation="stepBefore"
+        style={{ data: { fill: "rgb(253,197,54,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
+      <VictoryArea
+        data={data.red}
+        interpolation="stepBefore"
+        style={{ data: { fill: "rgb(211,59,55,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
+    </VictoryStack>
+  )
+}
+
 export function TrendGraph(props) {
   let measurement_values = [];
   let target_values = [];
@@ -27,9 +46,10 @@ export function TrendGraph(props) {
     const debt_target = (measurement[props.scale] && measurement[props.scale].debt_target) || null;
     debt_target_values.push(debt_target !== null ? Number(debt_target) : null);
   }
-  const max_y = Math.max(20,
+  let max_y = Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
     Math.max(...near_target_values), Math.max(...debt_target_values));
+  if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) {max_y = 100} else { max_y += 20 }
 
   for (i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
@@ -69,20 +89,7 @@ export function TrendGraph(props) {
         label={props.unit}
         style={axisStyle}
         tickFormat={(t) => `${readableNumber(t)}`} />
-      <VictoryStack>
-        <VictoryArea
-          data={green}
-          interpolation="stepBefore"
-          style={{ data: { fill: "rgb(30,148,78,0.7)", opacity: 0.7, stroke: "rgb(30,148,78)", strokeWidth: 0 } }} />
-        <VictoryArea
-          data={yellow}
-          interpolation="stepBefore"
-          style={{ data: { fill: "rgb(253,197,54,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
-        <VictoryArea
-          data={red}
-          interpolation="stepBefore"
-          style={{ data: { fill: "rgb(211,59,55,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
-      </VictoryStack>
+      <Background data={{ green: green, yellow: yellow, red: red }} />
       <VictoryLine
         data={measurements}
         interpolation="stepBefore"
