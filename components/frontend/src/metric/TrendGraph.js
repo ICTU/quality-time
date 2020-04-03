@@ -7,13 +7,17 @@ function readableNumber(number) {
   return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
-function Background({ data, ...props} ) {
+function Background({ data, ...props }) {
   return (
     <VictoryStack {...props} >
       <VictoryArea
         data={data.green}
         interpolation="stepBefore"
         style={{ data: { fill: "rgb(30,148,78,0.7)", opacity: 0.7, stroke: "rgb(30,148,78)", strokeWidth: 0 } }} />
+      <VictoryArea
+        data={data.grey}
+        interpolation="stepBefore"
+        style={{ data: { fill: "rgb(150,150,150,0.7)", opacity: 0.7, stroke: "rgb(150,150,150)", strokeWidth: 0 } }} />
       <VictoryArea
         data={data.yellow}
         interpolation="stepBefore"
@@ -31,10 +35,7 @@ export function TrendGraph(props) {
   let target_values = [];
   let near_target_values = [];
   let debt_target_values = [];
-  let measurements = [];
-  let green = [];
-  let yellow = [];
-  let red = [];
+
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const value = (measurement[props.scale] && measurement[props.scale].value) || null;
@@ -49,8 +50,13 @@ export function TrendGraph(props) {
   let max_y = Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
     Math.max(...near_target_values), Math.max(...debt_target_values));
-  if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) {max_y = 100} else { max_y += 20 }
+  if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) { max_y = 100 } else { max_y += 20 }
 
+  let measurements = [];
+  let green = [];
+  let grey = [];
+  let yellow = [];
+  let red = [];
   for (i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const x1 = new Date(measurement.start);
@@ -59,12 +65,15 @@ export function TrendGraph(props) {
     const green_y = target_values[i];
     if (green_y !== null) {
       green.push({ y: green_y, x: x1 });
-      const yellow_y = Math.max(0, near_target_values[i] - green_y);
+      const grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
+      grey.push({ y: grey_y, x: x1 });
+      const yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
       yellow.push({ y: yellow_y, x: x1 });
-      const red_y = max_y - (yellow_y + green_y);
+      const red_y = max_y - (yellow_y + grey_y + green_y);
       red.push({ y: red_y, x: x1 });
       if (x1.getTime() !== x2.getTime()) {
         green.push({ y: green_y, x: x2 });
+        grey.push({ y: grey_y, x: x2 });
         yellow.push({ y: yellow_y, x: x2 });
         red.push({ y: red_y, x: x2 });
       }
@@ -89,7 +98,7 @@ export function TrendGraph(props) {
         label={props.unit}
         style={axisStyle}
         tickFormat={(t) => `${readableNumber(t)}`} />
-      <Background data={{ green: green, yellow: yellow, red: red }} />
+      <Background data={{ green: green, grey: grey, yellow: yellow, red: red }} />
       <VictoryLine
         data={measurements}
         interpolation="stepBefore"
