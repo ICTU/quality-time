@@ -1,6 +1,7 @@
 """Base class for source collector unit tests."""
 
 import json
+import logging
 import pathlib
 from unittest.mock import patch, AsyncMock
 
@@ -16,10 +17,15 @@ class SourceCollectorTestCase(aiounittest.AsyncTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        logging.disable(logging.CRITICAL)
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
         with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        logging.disable(logging.NOTSET)
 
     async def collect(self, metric, *,
                       get_request_json_return_value=None,
