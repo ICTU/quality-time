@@ -48,39 +48,65 @@ export function TrendGraph(props) {
   let grey = [];
   let yellow = [];
   let red = [];
+  const first_direction = props.measurements.length > 0 ? props.measurements[0][props.scale].direction || "<" : "<";
   for (i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[i], x: x1 }, { y: measurement_values[i], x: x2 });
     let green_y = null;
+    let green_y0 = null;
     let grey_y = null;
+    let grey_y0 = null;
     let yellow_y = null;
+    let yellow_y0 = null;
     var red_y = null;
+    var red_y0 = null;
     if (target_values[i] !== null) {
-      //const direction = measurement[props.scale].direction || "<";
-      green_y = target_values[i];
-      grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
-      yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
-      red_y = max_y - (yellow_y + grey_y + green_y);
-      green.push({ y: green_y, x: x1 });
-      yellow.push({ y: yellow_y, x: x1 });
-      grey.push({ y: grey_y, x: x1 });
-      red.push({ y: red_y, x: x1 });
+      const direction = measurement[props.scale].direction || "<";
+      if (direction === "<") {
+        green_y0 = 0;
+        green_y = target_values[i];
+        grey_y0 = green_y0 + green_y;
+        grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
+        yellow_y0 = grey_y0 + grey_y
+        yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
+        red_y0 = yellow_y0 + yellow_y;
+        red_y = max_y - red_y0;
+      } else {
+        red_y0 = 0;
+        red_y = Math.min(target_values[i], near_target_values[i], debt_target_values[i] === null ? Number.MAX_SAFE_INTEGER : debt_target_values[i]);
+        yellow_y0 = red_y0 + red_y;
+        yellow_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - yellow_y0) : Math.max(0, target_values[i] - near_target_values[i]);
+        grey_y0 = yellow_y0 + yellow_y;
+        grey_y = target_values[i] - (red_y + yellow_y);
+        green_y0 = grey_y0 + grey_y;
+        green_y = max_y - green_y0;
+      }
+      green.push({ y: green_y, y0: green_y0, x: x1 });
+      grey.push({ y: grey_y, y0: grey_y0, x: x1 });
+      yellow.push({ y: yellow_y, y0: yellow_y0, x: x1 });
+      red.push({ y: red_y, y0: red_y0, x: x1 });
       if (x1.getTime() !== x2.getTime()) {
-        green.push({ y: green_y, x: x2 });
-        grey.push({ y: grey_y, x: x2 });
-        yellow.push({ y: yellow_y, x: x2 });
-        red.push({ y: red_y, x: x2 });
+        green.push({ y: green_y, y0: green_y0, x: x2 });
+        grey.push({ y: grey_y, y0: grey_y0, x: x2 });
+        yellow.push({ y: yellow_y, y0: yellow_y0, x: x2 });
+        red.push({ y: red_y, y0: red_y0, x: x2 });
       }
     }
   }
-  var background_data = [
+  var background_data = first_direction === "<" ?
+  [
     { area: green, color: "rgb(30,148,78,0.7)" },
-    { area: grey, color: "rgb(150,150,150,0.7)" },
     { area: yellow, color: "rgb(253,197,54,0.7)" },
+    { area: grey, color: "rgb(150,150,150,0.7)" },
     { area: red, color: "rgb(211,59,55,0.7)" }
-  ]
+  ] : [
+    { area: red, color: "rgb(211,59,55,0.7)" },
+    { area: yellow, color: "rgb(253,197,54,0.7)" },
+    { area: grey, color: "rgb(150,150,150,0.7)" },
+    { area: green, color: "rgb(30,148,78,0.7)" }
+  ];
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
   return (
     <VictoryChart
