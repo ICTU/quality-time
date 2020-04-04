@@ -10,22 +10,13 @@ function readableNumber(number) {
 function Background({ data, ...props }) {
   return (
     <VictoryStack {...props} >
-      <VictoryArea
-        data={data.green}
-        interpolation="stepBefore"
-        style={{ data: { fill: "rgb(30,148,78,0.7)", opacity: 0.7, stroke: "rgb(30,148,78)", strokeWidth: 0 } }} />
-      <VictoryArea
-        data={data.grey}
-        interpolation="stepBefore"
-        style={{ data: { fill: "rgb(150,150,150,0.7)", opacity: 0.7, stroke: "rgb(150,150,150)", strokeWidth: 0 } }} />
-      <VictoryArea
-        data={data.yellow}
-        interpolation="stepBefore"
-        style={{ data: { fill: "rgb(253,197,54,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
-      <VictoryArea
-        data={data.red}
-        interpolation="stepBefore"
-        style={{ data: { fill: "rgb(211,59,55,0.7)", opacity: 0.7, stroke: "rgb(253,197,54)", strokeWidth: 0 } }} />
+      {data.map(({ area, color }) =>
+        <VictoryArea
+          key={color}
+          data={area}
+          interpolation="stepBefore"
+          style={{ data: { fill: color, opacity: 0.7, strokeWidth: 0 } }} />
+      )}
     </VictoryStack>
   )
 }
@@ -62,14 +53,19 @@ export function TrendGraph(props) {
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[i], x: x1 }, { y: measurement_values[i], x: x2 });
-    const green_y = target_values[i];
-    if (green_y !== null) {
+    let green_y = null;
+    let grey_y = null;
+    let yellow_y = null;
+    var red_y = null;
+    if (target_values[i] !== null) {
+      //const direction = measurement[props.scale].direction || "<";
+      green_y = target_values[i];
+      grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
+      yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
+      red_y = max_y - (yellow_y + grey_y + green_y);
       green.push({ y: green_y, x: x1 });
-      const grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
-      grey.push({ y: grey_y, x: x1 });
-      const yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
       yellow.push({ y: yellow_y, x: x1 });
-      const red_y = max_y - (yellow_y + grey_y + green_y);
+      grey.push({ y: grey_y, x: x1 });
       red.push({ y: red_y, x: x1 });
       if (x1.getTime() !== x2.getTime()) {
         green.push({ y: green_y, x: x2 });
@@ -79,6 +75,12 @@ export function TrendGraph(props) {
       }
     }
   }
+  var background_data = [
+    { area: green, color: "rgb(30,148,78,0.7)" },
+    { area: grey, color: "rgb(150,150,150,0.7)" },
+    { area: yellow, color: "rgb(253,197,54,0.7)" },
+    { area: red, color: "rgb(211,59,55,0.7)" }
+  ]
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
   return (
     <VictoryChart
@@ -98,7 +100,7 @@ export function TrendGraph(props) {
         label={props.unit}
         style={axisStyle}
         tickFormat={(t) => `${readableNumber(t)}`} />
-      <Background data={{ green: green, grey: grey, yellow: yellow, red: red }} />
+      <Background data={background_data} />
       <VictoryLine
         data={measurements}
         interpolation="stepBefore"
