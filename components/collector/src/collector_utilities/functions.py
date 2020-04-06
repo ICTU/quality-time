@@ -44,9 +44,9 @@ def stable_traceback(traceback: str) -> str:
     return traceback
 
 
-def tokenless(url: URL) -> URL:
-    """Strip private tokens from the url."""
-    return URL(re.sub(TOKEN_SUB[0], TOKEN_SUB[1], url))
+def tokenless(url: str) -> str:
+    """Strip private tokens from (text with) urls."""
+    return re.sub(TOKEN_SUB[0], TOKEN_SUB[1], url)
 
 
 def hashless(url: URL) -> URL:

@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Make it clear in the user interface and the documentation that Quality-time can be authenticated with Jenkins using a username and API token, in addition to a username and password. Closes [#1125](https://github.com/ICTU/quality-time/issues/1125). 
 
+### Fixed
+
+- Remove private tokens from source error messages and collector logging. Fixes [#1127](https://github.com/ICTU/quality-time/issues/1127).
+
 ## [2.1.1] - [2020-04-03]
 
 ### Fixed

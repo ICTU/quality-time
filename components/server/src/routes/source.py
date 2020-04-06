@@ -11,6 +11,7 @@ from database.datamodels import latest_datamodel, default_source_parameters
 from database.reports import get_data, insert_new_report
 from model.actions import copy_source, move_item
 from model.transformations import change_source_parameter
+from model.queries import is_password_parameter
 from server_utilities.functions import uuid
 from server_utilities.type import EditScope, MetricId, SourceId, URL
 
@@ -125,7 +126,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
     changed_ids = change_source_parameter(data, parameter_key, old_value, new_value, edit_scope)
 
-    if data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]["type"] == "password":
+    if is_password_parameter(data.datamodel, data.source["type"], parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
     source_description = _source_description(data, edit_scope, parameter_key, old_value)
@@ -188,11 +189,11 @@ def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict
 
 def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
     """Return the basic authentication credentials, if any."""
-    if "private_token" in source_parameters:
-        return source_parameters["private_token"], ""
-    if "username" in source_parameters and "password" in source_parameters:
-        return source_parameters["username"], source_parameters["password"]
-    return None
+    if private_token := source_parameters.get("private_token", ""):
+        return private_token, ""
+    username = source_parameters.get("username", "")
+    password = source_parameters.get("password", "")
+    return (username, password) if username and password else None
 
 
 def _headers(source_parameters) -> Dict:

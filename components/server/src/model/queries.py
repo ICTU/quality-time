@@ -25,3 +25,11 @@ def get_metric_uuid(reports, source_uuid: SourceId) -> Optional[MetricId]:
         for subject in report["subjects"].values():
             metrics.extend(subject["metrics"].items())
     return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
+
+
+def is_password_parameter(data_model, source_type: str, parameter: str) -> bool:
+    """Return whether the parameter of the source type is a password."""
+    # If the parameter key can't be found (this can happen when the parameter is removed from the data model),
+    # err on the safe side and assume it was a password type
+    parameter_type = data_model["sources"][source_type]["parameters"].get(parameter, dict(type="password"))["type"]
+    return str(parameter_type) == "password"
