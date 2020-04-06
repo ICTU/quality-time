@@ -6,18 +6,15 @@ from typing import cast, Dict, Iterator, List, Optional
 from server_utilities.functions import unique
 from server_utilities.type import Color, EditScope, ItemId, Status
 from .iterators import sources as iter_sources
+from .queries import is_password_parameter
 
 
 def hide_credentials(data_model, *reports) -> None:
     """Hide the credentials in the reports."""
-    data_model_sources = data_model["sources"]
     for report in reports:
         for _, source in iter_sources(report):
             for parameter_key, parameter_value in source.get("parameters", {}).items():
-                # If the parameter key can't be found (this can happen when the parameter is removed from the data
-                # model), err on the safe side and assume it was a password type
-                if parameter_value and data_model_sources[source["type"]]["parameters"].get(
-                        parameter_key, dict(type="password"))["type"] == "password":
+                if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                     source["parameters"][parameter_key] = "this string replaces credentials"
 
 
