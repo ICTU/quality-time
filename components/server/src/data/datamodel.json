@@ -1984,9 +1984,10 @@
                     ]
                 },
                 "password": {
-                    "name": "Password for basic authentication",
+                    "name": "Password or API token for basic authentication",
                     "short_name": "password",
                     "type": "password",
+                    "help_url": "https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -2136,9 +2137,10 @@
                     ]
                 },
                 "password": {
-                    "name": "Password for basic authentication",
+                    "name": "Password or API token for basic authentication",
                     "short_name": "password",
                     "type": "password",
+                    "help_url": "https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -2183,9 +2185,10 @@
                     ]
                 },
                 "password": {
-                    "name": "Password for basic authentication",
+                    "name": "Password or API token for basic authentication",
                     "short_name": "password",
                     "type": "password",
+                    "help_url": "https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -2992,9 +2995,10 @@
                     ]
                 },
                 "password": {
-                    "name": "Password for basic authentication",
+                    "name": "Password or API token for basic authentication",
                     "short_name": "password",
                     "type": "password",
+                    "help_url": "https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [

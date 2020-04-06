@@ -14,8 +14,10 @@ def hide_credentials(data_model, *reports) -> None:
     for report in reports:
         for _, source in iter_sources(report):
             for parameter_key, parameter_value in source.get("parameters", {}).items():
-                if parameter_value and \
-                        data_model_sources[source["type"]]["parameters"][parameter_key]["type"] == "password":
+                # If the parameter key can't be found (this can happen when the parameter is removed from the data
+                # model), err on the safe side and assume it was a password type
+                if parameter_value and data_model_sources[source["type"]]["parameters"].get(
+                        parameter_key, dict(type="password"))["type"] == "password":
                     source["parameters"][parameter_key] = "this string replaces credentials"
 
 

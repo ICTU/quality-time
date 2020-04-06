@@ -181,6 +181,10 @@ The project id can be found under the [project's general settings](https://docs.
 
 If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) with the scope "read_repository" in the private token field.
 
+### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
+
+To authorize Quality-time for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the user name to which the token belongs.
+
 ## Customizing quality reports
 
 Users can customize quality reports on an individual basis by changing the dashboard layout, by filtering metrics, and by filtering metric entities.
