@@ -10,10 +10,10 @@ function readableNumber(number) {
 function Background({ data, ...props }) {
   return (
     <VictoryStack {...props} >
-      {data.map(({ area, color }) =>
+      {data.map(({ area, color, direction }) =>
         <VictoryArea
-          key={color}
-          data={area}
+          key={color + direction}
+          data={area[direction]}
           interpolation="stepBefore"
           style={{ data: { fill: color, opacity: 0.7, strokeWidth: 0 } }} />
       )}
@@ -27,16 +27,17 @@ export function TrendGraph(props) {
   let near_target_values = [];
   let debt_target_values = [];
 
+  function measurement_attribute_as_number(measurement, field) {
+    const value = (measurement[props.scale] && measurement[props.scale][field]) || null;
+    return value !== null ? Number(value) : null;
+  }
+
   for (var i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
-    const value = (measurement[props.scale] && measurement[props.scale].value) || null;
-    measurement_values.push(value !== null ? Number(value) : null);
-    const target = (measurement[props.scale] && measurement[props.scale].target) || null;
-    target_values.push(target !== null ? Number(target) : null);
-    const near_target = (measurement[props.scale] && measurement[props.scale].near_target) || null;
-    near_target_values.push(near_target !== null ? Number(near_target) : null);
-    const debt_target = (measurement[props.scale] && measurement[props.scale].debt_target) || null;
-    debt_target_values.push(debt_target !== null ? Number(debt_target) : null);
+    measurement_values.push(measurement_attribute_as_number(measurement, "value"));
+    target_values.push(measurement_attribute_as_number(measurement, "target"));
+    near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
+    debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target"));
   }
   let max_y = Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
@@ -44,11 +45,10 @@ export function TrendGraph(props) {
   if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) { max_y = 100 } else { max_y += 20 }
 
   let measurements = [];
-  let green = [];
-  let grey = [];
-  let yellow = [];
-  let red = [];
-  const first_direction = props.measurements.length > 0 ? props.measurements[0][props.scale].direction || "<" : "<";
+  let green = { "<": [], ">": [] };
+  let grey = { "<": [], ">": [] };
+  let yellow = { "<": [], ">": [] };
+  let red = { "<": [], ">": [] };
   for (i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const x1 = new Date(measurement.start);
@@ -83,30 +83,35 @@ export function TrendGraph(props) {
         green_y0 = grey_y0 + grey_y;
         green_y = max_y - green_y0;
       }
-      green.push({ y: green_y, y0: green_y0, x: x1 });
-      grey.push({ y: grey_y, y0: grey_y0, x: x1 });
-      yellow.push({ y: yellow_y, y0: yellow_y0, x: x1 });
-      red.push({ y: red_y, y0: red_y0, x: x1 });
+      green[direction].push({ y: green_y, y0: green_y0, x: x1 });
+      grey[direction].push({ y: grey_y, y0: grey_y0, x: x1 });
+      yellow[direction].push({ y: yellow_y, y0: yellow_y0, x: x1 });
+      red[direction].push({ y: red_y, y0: red_y0, x: x1 });
       if (x1.getTime() !== x2.getTime()) {
-        green.push({ y: green_y, y0: green_y0, x: x2 });
-        grey.push({ y: grey_y, y0: grey_y0, x: x2 });
-        yellow.push({ y: yellow_y, y0: yellow_y0, x: x2 });
-        red.push({ y: red_y, y0: red_y0, x: x2 });
+        green[direction].push({ y: green_y, y0: green_y0, x: x2 });
+        grey[direction].push({ y: grey_y, y0: grey_y0, x: x2 });
+        yellow[direction].push({ y: yellow_y, y0: yellow_y0, x: x2 });
+        red[direction].push({ y: red_y, y0: red_y0, x: x2 });
       }
     }
   }
-  var background_data = first_direction === "<" ?
-  [
-    { area: green, color: "rgb(30,148,78,0.7)" },
-    { area: yellow, color: "rgb(253,197,54,0.7)" },
-    { area: grey, color: "rgb(150,150,150,0.7)" },
-    { area: red, color: "rgb(211,59,55,0.7)" }
-  ] : [
-    { area: red, color: "rgb(211,59,55,0.7)" },
-    { area: yellow, color: "rgb(253,197,54,0.7)" },
-    { area: grey, color: "rgb(150,150,150,0.7)" },
-    { area: green, color: "rgb(30,148,78,0.7)" }
-  ];
+  var background_data = [];
+  if (green["<"].length > 0) {
+    background_data.push(
+      { area: green, color: "rgb(30,148,78,0.7)", direction: "<" },
+      { area: yellow, color: "rgb(253,197,54,0.7)", direction: "<" },
+      { area: grey, color: "rgb(150,150,150,0.7)", direction: "<" },
+      { area: red, color: "rgb(211,59,55,0.7)", direction: "<" }
+    )
+  }
+  if (green[">"].length > 0) {
+    background_data.push(
+      { area: red, color: "rgb(211,59,55,0.7)", direction: ">" },
+      { area: yellow, color: "rgb(253,197,54,0.7)", direction: ">" },
+      { area: grey, color: "rgb(150,150,150,0.7)", direction: ">" },
+      { area: green, color: "rgb(30,148,78,0.7)", direction: ">" }
+    )
+  }
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
   return (
     <VictoryChart
