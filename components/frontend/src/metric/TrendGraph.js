@@ -54,44 +54,40 @@ export function TrendGraph(props) {
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[i], x: x1 }, { y: measurement_values[i], x: x2 });
-    let green_y = null;
-    let green_y0 = null;
-    let grey_y = null;
-    let grey_y0 = null;
-    let yellow_y = null;
-    let yellow_y0 = null;
-    var red_y = null;
-    var red_y0 = null;
+    let green_point = {x: x1};
+    let grey_point = {x: x1};
+    let yellow_point = {x : x1};
+    let red_point = {x: x1};
     if (target_values[i] !== null) {
       const direction = measurement[props.scale].direction || "<";
       if (direction === "<") {
-        green_y0 = 0;
-        green_y = target_values[i];
-        grey_y0 = green_y0 + green_y;
-        grey_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_y) : 0;
-        yellow_y0 = grey_y0 + grey_y
-        yellow_y = Math.max(0, near_target_values[i] - (grey_y + green_y));
-        red_y0 = yellow_y0 + yellow_y;
-        red_y = max_y - red_y0;
+        green_point.y0 = 0;
+        green_point.y = target_values[i];
+        grey_point.y0 = green_point.y0 + green_point.y;
+        grey_point.y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - green_point.y) : 0;
+        yellow_point.y0 = grey_point.y0 + grey_point.y;
+        yellow_point.y = Math.max(0, near_target_values[i] - (grey_point.y + green_point.y));
+        red_point.y0 = yellow_point.y0 + yellow_point.y;
+        red_point.y = max_y - red_point.y0;
       } else {
-        red_y0 = 0;
-        red_y = Math.min(target_values[i], near_target_values[i], debt_target_values[i] === null ? Number.MAX_SAFE_INTEGER : debt_target_values[i]);
-        yellow_y0 = red_y0 + red_y;
-        yellow_y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - yellow_y0) : Math.max(0, target_values[i] - near_target_values[i]);
-        grey_y0 = yellow_y0 + yellow_y;
-        grey_y = target_values[i] - (red_y + yellow_y);
-        green_y0 = grey_y0 + grey_y;
-        green_y = max_y - green_y0;
+        red_point.y0 = 0;
+        red_point.y = Math.min(target_values[i], near_target_values[i], debt_target_values[i] === null ? Number.MAX_SAFE_INTEGER : debt_target_values[i]);
+        yellow_point.y0 = red_point.y0 + red_point.y;
+        yellow_point.y = debt_target_values[i] !== null ? Math.max(0, debt_target_values[i] - yellow_point.y0) : Math.max(0, target_values[i] - near_target_values[i]);
+        grey_point.y0 = yellow_point.y0 + yellow_point.y;
+        grey_point.y = target_values[i] - (red_point.y + yellow_point.y);
+        green_point.y0 = grey_point.y0 + grey_point.y;
+        green_point.y = max_y - green_point.y0;
       }
-      green[direction].push({ y: green_y, y0: green_y0, x: x1 });
-      grey[direction].push({ y: grey_y, y0: grey_y0, x: x1 });
-      yellow[direction].push({ y: yellow_y, y0: yellow_y0, x: x1 });
-      red[direction].push({ y: red_y, y0: red_y0, x: x1 });
+      green[direction].push(green_point);
+      grey[direction].push(grey_point);
+      yellow[direction].push(yellow_point);
+      red[direction].push(red_point);
       if (x1.getTime() !== x2.getTime()) {
-        green[direction].push({ y: green_y, y0: green_y0, x: x2 });
-        grey[direction].push({ y: grey_y, y0: grey_y0, x: x2 });
-        yellow[direction].push({ y: yellow_y, y0: yellow_y0, x: x2 });
-        red[direction].push({ y: red_y, y0: red_y0, x: x2 });
+        green[direction].push({...green_point, x: x2});
+        grey[direction].push({...grey_point, x: x2 });
+        yellow[direction].push({...yellow_point, x: x2});
+        red[direction].push({...red_point, x: x2});
       }
     }
   }
