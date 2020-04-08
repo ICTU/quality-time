@@ -45,10 +45,7 @@ export function TrendGraph(props) {
   if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) { max_y = 100 } else { max_y += 20 }
 
   let measurements = [];
-  let green = { "<": [], ">": [] };
-  let grey = { "<": [], ">": [] };
-  let yellow = { "<": [], ">": [] };
-  let red = { "<": [], ">": [] };
+  let areas = { "<": {green: [], grey: [], yellow: [], red: []}, ">": {green: [], grey: [], yellow: [], red: []}};
   for (i = 0; i < props.measurements.length; i++) {
     const measurement = props.measurements[i];
     const x1 = new Date(measurement.start);
@@ -76,33 +73,27 @@ export function TrendGraph(props) {
         point.green.y0 = point.grey.y0 + point.grey.y;
         point.green.y = max_y - point.green.y0;
       }
-      green[direction].push(point.green);
-      grey[direction].push(point.grey);
-      yellow[direction].push(point.yellow);
-      red[direction].push(point.red);
+      ["green", "grey", "yellow", "red"].forEach((color) => areas[direction][color].push(point[color]));
       if (x1.getTime() !== x2.getTime()) {
-        green[direction].push({...point.green, x: x2});
-        grey[direction].push({...point.grey, x: x2 });
-        yellow[direction].push({...point.yellow, x: x2});
-        red[direction].push({...point.red, x: x2});
+        ["green", "grey", "yellow", "red"].forEach((color) => areas[direction][color].push({...point[color], x: x2}));
       }
     }
   }
   var background_data = [];
-  if (green["<"].length > 0) {
+  if (areas["<"].green.length > 0) {
     background_data.push(
-      { area: green["<"], color: "rgb(30,148,78,0.7)", direction: "<" },
-      { area: yellow["<"], color: "rgb(253,197,54,0.7)", direction: "<" },
-      { area: grey["<"], color: "rgb(150,150,150,0.7)", direction: "<" },
-      { area: red["<"], color: "rgb(211,59,55,0.7)", direction: "<" }
+      { area: areas["<"].green, color: "rgb(30,148,78,0.7)", direction: "<" },
+      { area: areas["<"].yellow, color: "rgb(253,197,54,0.7)", direction: "<" },
+      { area: areas["<"].grey, color: "rgb(150,150,150,0.7)", direction: "<" },
+      { area: areas["<"].red, color: "rgb(211,59,55,0.7)", direction: "<" }
     )
   }
-  if (green[">"].length > 0) {
+  if (areas[">"].green.length > 0) {
     background_data.push(
-      { area: red[">"], color: "rgb(211,59,55,0.7)", direction: ">" },
-      { area: yellow[">"], color: "rgb(253,197,54,0.7)", direction: ">" },
-      { area: grey[">"], color: "rgb(150,150,150,0.7)", direction: ">" },
-      { area: green[">"], color: "rgb(30,148,78,0.7)", direction: ">" }
+      { area: areas[">"].red, color: "rgb(211,59,55,0.7)", direction: ">" },
+      { area: areas[">"].yellow, color: "rgb(253,197,54,0.7)", direction: ">" },
+      { area: areas[">"].grey, color: "rgb(150,150,150,0.7)", direction: ">" },
+      { area: areas[">"].green, color: "rgb(30,148,78,0.7)", direction: ">" }
     )
   }
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
