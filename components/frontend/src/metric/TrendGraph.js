@@ -13,7 +13,7 @@ function Background({ data, ...props }) {
       {data.map(({ area, color, direction }) =>
         <VictoryArea
           key={color + direction}
-          data={area[direction]}
+          data={area}
           interpolation="stepBefore"
           style={{ data: { fill: color, opacity: 0.7, strokeWidth: 0 } }} />
       )}
@@ -91,18 +91,18 @@ export function TrendGraph(props) {
   var background_data = [];
   if (green["<"].length > 0) {
     background_data.push(
-      { area: green, color: "rgb(30,148,78,0.7)", direction: "<" },
-      { area: yellow, color: "rgb(253,197,54,0.7)", direction: "<" },
-      { area: grey, color: "rgb(150,150,150,0.7)", direction: "<" },
-      { area: red, color: "rgb(211,59,55,0.7)", direction: "<" }
+      { area: green["<"], color: "rgb(30,148,78,0.7)", direction: "<" },
+      { area: yellow["<"], color: "rgb(253,197,54,0.7)", direction: "<" },
+      { area: grey["<"], color: "rgb(150,150,150,0.7)", direction: "<" },
+      { area: red["<"], color: "rgb(211,59,55,0.7)", direction: "<" }
     )
   }
   if (green[">"].length > 0) {
     background_data.push(
-      { area: red, color: "rgb(211,59,55,0.7)", direction: ">" },
-      { area: yellow, color: "rgb(253,197,54,0.7)", direction: ">" },
-      { area: grey, color: "rgb(150,150,150,0.7)", direction: ">" },
-      { area: green, color: "rgb(30,148,78,0.7)", direction: ">" }
+      { area: red[">"], color: "rgb(211,59,55,0.7)", direction: ">" },
+      { area: yellow[">"], color: "rgb(253,197,54,0.7)", direction: ">" },
+      { area: grey[">"], color: "rgb(150,150,150,0.7)", direction: ">" },
+      { area: green[">"], color: "rgb(30,148,78,0.7)", direction: ">" }
     )
   }
   const axisStyle = { axisLabel: { padding: 30, fontSize: 11 }, tickLabels: { fontSize: 8 } };
