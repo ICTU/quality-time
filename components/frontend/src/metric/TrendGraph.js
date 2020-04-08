@@ -27,8 +27,8 @@ export function TrendGraph(props) {
   let near_target_values = [];
   let debt_target_values = [];
 
-  function measurement_attribute_as_number(measurement, field) {
-    const value = (measurement[props.scale] && measurement[props.scale][field]) || null;
+  function measurement_attribute_as_number(measurement, field, default_value = null) {
+    const value = (measurement[props.scale] && measurement[props.scale][field]) || default_value;
     return value !== null ? Number(value) : null;
   }
 
@@ -36,7 +36,9 @@ export function TrendGraph(props) {
     measurement_values.push(measurement_attribute_as_number(measurement, "value"));
     target_values.push(measurement_attribute_as_number(measurement, "target"));
     near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
-    debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target"));
+    const direction = measurement[props.scale].direction || "<";
+    const default_debt_value = direction === "<" ? 0 : Math.MAX_SAFE_INTEGER;
+    debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target", default_debt_value));
   });
   let max_y = Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
@@ -44,12 +46,11 @@ export function TrendGraph(props) {
   if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) { max_y = 100 } else { max_y += 20 }
 
   // The colors of the background areas in the right order for "<" metrics, where lower values are better, and for
-  // ">" metrics, where higher values are better
+  // ">" metrics, where higher values are better:
   const colors = { "<": ["green", "yellow", "grey", "red"], ">": ["red", "yellow", "grey", "green"] };
-  // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below
+  // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below:
   let areas = { "<": { green: [], grey: [], yellow: [], red: [] }, ">": { green: [], grey: [], yellow: [], red: [] } };
-  // The measurement values (x, y)
-  let measurements = [];
+  let measurements = [];  // The measurement values (x, y)
   props.measurements.forEach((measurement, index) => {
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
