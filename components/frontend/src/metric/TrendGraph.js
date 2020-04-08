@@ -27,8 +27,8 @@ export function TrendGraph(props) {
   let near_target_values = [];
   let debt_target_values = [];
 
-  function measurement_attribute_as_number(measurement, field, default_value = null) {
-    const value = (measurement[props.scale] && measurement[props.scale][field]) || default_value;
+  function measurement_attribute_as_number(measurement, field) {
+    const value = (measurement[props.scale] && measurement[props.scale][field]) || null;
     return value !== null ? Number(value) : null;
   }
 
@@ -36,9 +36,7 @@ export function TrendGraph(props) {
     measurement_values.push(measurement_attribute_as_number(measurement, "value"));
     target_values.push(measurement_attribute_as_number(measurement, "target"));
     near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
-    const direction = measurement[props.scale].direction || "<";
-    const default_debt_value = direction === "<" ? 0 : Math.MAX_SAFE_INTEGER;
-    debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target", default_debt_value));
+    debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target"));
   });
   let max_y = Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
