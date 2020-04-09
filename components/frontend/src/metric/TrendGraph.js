@@ -60,14 +60,14 @@ export function TrendGraph(props) {
         point.green.y0 = 0;
         point.green.y = target_values[index];
         point.grey.y0 = point.green.y0 + point.green.y;
-        point.grey.y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point.green.y) : 0;
+        point.grey.y = Math.max(0, (debt_target_values[index] ?? 0) - point.grey.y0);
         point.yellow.y0 = point.grey.y0 + point.grey.y;
         point.yellow.y = Math.max(0, near_target_values[index] - (point.grey.y + point.green.y));
         point.red.y0 = point.yellow.y0 + point.yellow.y;
         point.red.y = max_y - point.red.y0;
       } else {
         point.red.y0 = 0;
-        point.red.y = Math.min(target_values[index], near_target_values[index], debt_target_values[index] === null ? Number.MAX_SAFE_INTEGER : debt_target_values[index]);
+        point.red.y = Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER);
         point.yellow.y0 = point.red.y0 + point.red.y;
         point.yellow.y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point.yellow.y0) : Math.max(0, target_values[index] - near_target_values[index]);
         point.grey.y0 = point.yellow.y0 + point.yellow.y;
