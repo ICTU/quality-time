@@ -45,7 +45,7 @@ export function TrendGraph(props) {
 
   // The colors of the background areas in the right order for "<" metrics, where lower values are better, and for
   // ">" metrics, where higher values are better:
-  const colors = { "<": ["green", "yellow", "grey", "red"], ">": ["red", "yellow", "grey", "green"] };
+  const colors = { "<": ["green", "grey", "yellow", "red"], ">": ["red", "yellow", "grey", "green"] };
   // The areas for each direction and each color. The lists will be filled with points (x, y0, and y) below:
   let areas = { "<": { green: [], grey: [], yellow: [], red: [] }, ">": { green: [], grey: [], yellow: [], red: [] } };
   let measurements = [];  // The measurement values (x, y)
@@ -57,24 +57,19 @@ export function TrendGraph(props) {
     if (target_values[index] !== null) {
       const direction = measurement[props.scale].direction || "<";
       if (direction === "<") {
-        point.green.y0 = 0;
         point.green.y = target_values[index];
-        point.grey.y0 = point.green.y0 + point.green.y;
-        point.grey.y = Math.max(0, (debt_target_values[index] ?? 0) - point.grey.y0);
-        point.yellow.y0 = point.grey.y0 + point.grey.y;
+        point.grey.y = Math.max(0, (debt_target_values[index] ?? 0) - point.green.y);
         point.yellow.y = Math.max(0, near_target_values[index] - (point.grey.y + point.green.y));
-        point.red.y0 = point.yellow.y0 + point.yellow.y;
-        point.red.y = max_y - point.red.y0;
       } else {
-        point.red.y0 = 0;
         point.red.y = Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER);
-        point.yellow.y0 = point.red.y0 + point.red.y;
-        point.yellow.y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point.yellow.y0) : Math.max(0, target_values[index] - near_target_values[index]);
-        point.grey.y0 = point.yellow.y0 + point.yellow.y;
+        point.yellow.y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point.red.y) : Math.max(0, target_values[index] - near_target_values[index]);
         point.grey.y = target_values[index] - (point.red.y + point.yellow.y);
-        point.green.y0 = point.grey.y0 + point.grey.y;
-        point.green.y = max_y - point.green.y0;
       }
+      point[colors[direction][3]].y = max_y - (point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y);
+      point[colors[direction][0]].y0 = 0;
+      point[colors[direction][1]].y0 = point[colors[direction][0]].y;
+      point[colors[direction][2]].y0 = point[colors[direction][0]].y + point[colors[direction][1]].y;
+      point[colors[direction][3]].y0 = point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y;
       colors[direction].forEach((color) => areas[direction][color].push(point[color]));
       if (x1.getTime() !== x2.getTime()) {
         colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
