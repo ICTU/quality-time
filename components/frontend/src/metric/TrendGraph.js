@@ -57,11 +57,16 @@ export function TrendGraph(props) {
     let point = { green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
     const values = { "<": [target_values[index], debt_target_values[index] ?? 0, near_target_values[index], max_y], ">": [near_target_values[index], debt_target_values[index] ?? 0, target_values[index], max_y] };
     const direction = measurement[props.scale].direction || "<";
-    point[colors[direction][0]].y = direction === "<" ? target_values[index] : Math.min(near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER, target_values[index]);
-    point[colors[direction][1]].y = Math.max(0, values[direction][1] - point[colors[direction][0]].y);
-    point[colors[direction][2]].y = Math.max(0, values[direction][2] - (point[colors[direction][0]].y + point[colors[direction][1]].y));
-    point[colors[direction][3]].y = Math.max(0, values[direction][3] - (point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y));
-    let y_sum = 0;
+
+    let y = direction === "<" ? target_values[index] : Math.min(near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER, target_values[index]);
+    let y_sum = y;
+    colors[direction].forEach((color, index) => {
+      point[color].y = y;
+      y = Math.max(0, values[direction][index+1] - y_sum);
+      y_sum += y;
+    });
+
+    y_sum = 0;
     colors[direction].forEach((color) => {
       point[color].y0 = y_sum;
       y_sum += point[color].y;
