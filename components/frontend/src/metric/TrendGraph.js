@@ -53,24 +53,19 @@ export function TrendGraph(props) {
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
-    if (target_values[index] === null) { return }
+    if (target_values[index] === null) { return }  // Old measurements don't have target, near target and debt values
     let point = { green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
-    const values = { "<": [target_values[index], debt_target_values[index] ?? 0, near_target_values[index], max_y], ">": [near_target_values[index], debt_target_values[index] ?? 0, target_values[index], max_y] };
+    const values = { "<": [debt_target_values[index] ?? 0, near_target_values[index], max_y], ">": [debt_target_values[index] ?? 0, target_values[index], max_y] };
     const direction = measurement[props.scale].direction || "<";
 
     let y = direction === "<" ? target_values[index] : Math.min(near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER, target_values[index]);
-    let y_sum = y;
+    let y0 = 0;
     colors[direction].forEach((color, index) => {
+      point[color].y0 = y0;
       point[color].y = y;
-      y = Math.max(0, values[direction][index+1] - y_sum);
-      y_sum += y;
-    });
-
-    y_sum = 0;
-    colors[direction].forEach((color) => {
-      point[color].y0 = y_sum;
-      y_sum += point[color].y;
       areas[direction][color].push(point[color]);
+      y0 += y;
+      y = Math.max(0, values[direction][index] - y0);
     });
     if (x1.getTime() !== x2.getTime()) {
       colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
