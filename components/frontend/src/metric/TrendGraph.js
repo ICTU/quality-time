@@ -54,17 +54,17 @@ export function TrendGraph(props) {
     const x2 = new Date(measurement.end);
     measurements.push({ y: measurement_values[index], x: x1 }, { y: measurement_values[index], x: x2 });
     let point = { green: { x: x1 }, grey: { x: x1 }, yellow: { x: x1 }, red: { x: x1 } };
+    const values = { "<": [target_values[index], debt_target_values[index], near_target_values[index]], ">": [near_target_values[index], debt_target_values[index], target_values[index]] };
     if (target_values[index] !== null) {
       const direction = measurement[props.scale].direction || "<";
       if (direction === "<") {
         point.green.y = target_values[index];
         point.grey.y = Math.max(0, (debt_target_values[index] ?? 0) - point.green.y);
-        point.yellow.y = Math.max(0, near_target_values[index] - (point.grey.y + point.green.y));
       } else {
         point.red.y = Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER);
         point.yellow.y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point.red.y) : Math.max(0, target_values[index] - near_target_values[index]);
-        point.grey.y = target_values[index] - (point.red.y + point.yellow.y);
       }
+      point[colors[direction][2]].y = Math.max(0, values[direction][2] - (point[colors[direction][0]].y + point[colors[direction][1]].y));
       point[colors[direction][3]].y = max_y - (point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y);
       point[colors[direction][0]].y0 = 0;
       point[colors[direction][1]].y0 = point[colors[direction][0]].y;
