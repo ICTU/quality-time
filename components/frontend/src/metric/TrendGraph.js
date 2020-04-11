@@ -59,7 +59,7 @@ export function TrendGraph(props) {
       const direction = measurement[props.scale].direction || "<";
       if (direction === "<") {
         point[colors[direction][0]].y = target_values[index];
-        point[colors[direction][1]].y = Math.max(0, debt_target_values[index] - point[colors[direction][0]].y);
+        point[colors[direction][1]].y = Math.max(0, values[direction][1] - point[colors[direction][0]].y);
       } else {
         point[colors[direction][0]].y = Math.min(target_values[index], near_target_values[index], debt_target_values[index] ?? Number.MAX_SAFE_INTEGER);
         point[colors[direction][1]].y = debt_target_values[index] !== null ? Math.max(0, debt_target_values[index] - point[colors[direction][0]].y) : Math.max(0, target_values[index] - near_target_values[index]);
