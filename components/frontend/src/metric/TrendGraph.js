@@ -65,11 +65,12 @@ export function TrendGraph(props) {
       point[colors[direction][1]].y = Math.max(0, values[direction][1] - point[colors[direction][0]].y);
       point[colors[direction][2]].y = Math.max(0, values[direction][2] - (point[colors[direction][0]].y + point[colors[direction][1]].y));
       point[colors[direction][3]].y = max_y - (point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y);
-      point[colors[direction][0]].y0 = 0;
-      point[colors[direction][1]].y0 = point[colors[direction][0]].y;
-      point[colors[direction][2]].y0 = point[colors[direction][0]].y + point[colors[direction][1]].y;
-      point[colors[direction][3]].y0 = point[colors[direction][0]].y + point[colors[direction][1]].y + point[colors[direction][2]].y;
-      colors[direction].forEach((color) => areas[direction][color].push(point[color]));
+      let y_sum = 0;
+      colors[direction].forEach((color) => {
+        point[color].y0 = y_sum;
+        y_sum += point[color].y;
+        areas[direction][color].push(point[color]);
+      });
       if (x1.getTime() !== x2.getTime()) {
         colors[direction].forEach((color) => areas[direction][color].push({ ...point[color], x: x2 }));
       }
