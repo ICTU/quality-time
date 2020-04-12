@@ -31,3 +31,16 @@ export function show_message(type, title, description, icon) {
 export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function nice_number(number) {
+    let rounded_numbers = [20, 50, 100];
+    do {
+        for (var rounded_number of rounded_numbers) {
+            if (number <= ((4 * rounded_number) / 5)) {
+                return rounded_number
+            }
+        }
+        rounded_numbers = rounded_numbers.map((value) => { return value * 10 });
+    }
+    while (true);
+}

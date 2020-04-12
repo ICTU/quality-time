@@ -1,5 +1,6 @@
 import React from 'react';
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack } from 'victory';
+import { nice_number } from '../utils';
 
 function readableNumber(number) {
   var scale = ['', 'k', 'm'];
@@ -38,10 +39,9 @@ export function TrendGraph(props) {
     near_target_values.push(measurement_attribute_as_number(measurement, "near_target"));
     debt_target_values.push(measurement_attribute_as_number(measurement, "debt_target"));
   });
-  let max_y = Math.max(
+  let max_y = nice_number(Math.max(
     Math.max(...measurement_values), Math.max(...target_values),
-    Math.max(...near_target_values), Math.max(...debt_target_values));
-  if (max_y < 18) { max_y = 20 } else if (max_y < 45) { max_y = 50 } else if (max_y < 90) { max_y = 100 } else { max_y += 20 }
+    Math.max(...near_target_values), Math.max(...debt_target_values)));
 
   // The colors of the background areas in the right order for "<" metrics, where lower values are better, and for
   // ">" metrics, where higher values are better:
