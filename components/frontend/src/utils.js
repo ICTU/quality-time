@@ -44,3 +44,9 @@ export function nice_number(number) {
     }
     while (true);
 }
+
+export function scaled_number(number) {
+    var scale = ['', 'k', 'm'];
+    var exponent = Math.floor(Math.log(number) / Math.log(1000));
+    return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
+}

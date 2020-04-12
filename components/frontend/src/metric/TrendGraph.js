@@ -1,12 +1,6 @@
 import React from 'react';
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme, VictoryArea, VictoryStack } from 'victory';
-import { nice_number } from '../utils';
-
-function readableNumber(number) {
-  var scale = ['', 'k', 'm'];
-  var exponent = Math.floor(Math.log(number) / Math.log(1000));
-  return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
-}
+import { nice_number, scaled_number } from '../utils';
 
 function Background({ data, ...props }) {
   return (
@@ -109,7 +103,7 @@ export function TrendGraph(props) {
         domain={[0, max_y]}
         label={props.unit}
         style={axisStyle}
-        tickFormat={(t) => `${readableNumber(t)}`} />
+        tickFormat={(t) => `${scaled_number(t)}`} />
       <Background data={background_data} />
       <VictoryLine
         data={measurements}
