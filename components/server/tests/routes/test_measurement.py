@@ -51,8 +51,8 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.find.return_value = []
         request.json = dict(metric_uuid=METRIC_ID, sources=[])
         new_measurement = dict(
-            metric_uuid=METRIC_ID, sources=[], count=dict(value=None, status=None),
-            start="2019-01-01", end="2019-01-01")
+            metric_uuid=METRIC_ID, sources=[], start="2019-01-01", end="2019-01-01",
+            count=dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -71,8 +71,9 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
-            start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
+            count=dict(
+                status="near_target_met", value="1", target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -85,8 +86,9 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[dict(key="b")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
-            start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
+            count=dict(
+                status="near_target_met", value="1", target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -119,8 +121,8 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            metric_uuid=METRIC_ID, count=dict(status="target_met", value="0"),
-            start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
+            count=dict(status="target_met", value="0", target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -134,8 +136,9 @@ class PostMeasurementTests(unittest.TestCase):
         sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
-            metric_uuid=METRIC_ID, count=dict(status="near_target_met", value="1"),
-            start="2019-01-01", end="2019-01-01", sources=sources)
+            metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
+            count=dict(
+                status="near_target_met", value="1", target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -160,14 +163,6 @@ class SetEntityAttributeTest(unittest.TestCase):
         database.measurements.insert_one = insert_one
         database.reports = Mock()
         database.reports.distinct.return_value = [REPORT_ID]
-        database.reports.find_one.return_value = dict(
-            _id="id", report_uuid=REPORT_ID,
-            subjects={
-                SUBJECT_ID: dict(
-                    metrics={
-                        METRIC_ID: dict(
-                            type="metric_type", target="0", near_target="10", debt_target="0", accept_debt=False,
-                            scale="count", addition="sum", direction="<", tags=[])})})
         database.reports.find_one.return_value = create_report()
         database.datamodels = Mock()
         database.datamodels.find_one.return_value = dict(

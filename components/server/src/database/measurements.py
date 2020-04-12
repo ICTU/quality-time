@@ -57,11 +57,15 @@ def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) 
         del measurement["_id"]
     data_model = latest_datamodel(database)
     metric_type = data_model["metrics"][metric["type"]]
+    metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
     direction = metric.get("direction") or metric_type["direction"]
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
         status = determine_measurement_status(database, metric, value)
-        measurement[scale] = dict(value=value, status=status)
+        measurement[scale] = dict(value=value, status=status, direction=direction)
+        for target in ("target", "near_target", "debt_target"):
+            measurement[scale][target] = metric.get(target, metric_type.get(target)) if scale == metric_scale \
+                else measurement.get(scale, {}).get(target)
     measurement["start"] = measurement["end"] = iso_timestamp()
     database.measurements.insert_one(measurement)
     del measurement["_id"]
