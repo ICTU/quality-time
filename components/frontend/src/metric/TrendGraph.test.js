@@ -13,3 +13,9 @@ it('renders measurements without crashing', () => {
   ReactDOM.render(<TrendGraph measurements={[{count: {value: "1"}, start: "2019-09-29", end: "2019-09-30"}]} scale="count" />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
+
+it('renders measurements with targets without crashing', () => {
+  const div = document.createElement('div');
+  ReactDOM.render(<TrendGraph measurements={[{count: {value: "1", target_value: "10", near_target_value: "20"}, start: "2019-09-29", end: "2019-09-30"}]} scale="count" />, div);
+  ReactDOM.unmountComponentAtNode(div);
+});
