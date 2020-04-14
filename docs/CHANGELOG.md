@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [2.2.0-rc.1] - [2020-04-13]
+## [Unreleased]
 
 ### Added
 
-- Trend graphs show the target, near target, and technical debt target (if present) as background colors. Note that the background colors only become visible after a metric's measurement value changes or one of its target values is edited. Closes [#1087](https://github.com/ICTU/quality-time/issues/1087).
+- Trend graphs show the target, near target, and technical debt target (if technical debt is accepted) as background colors. Note that the background colors only become visible after a metric's measurement value changes or one of its target values is edited. Closes [#1087](https://github.com/ICTU/quality-time/issues/1087).
 
 ### Changed
 
