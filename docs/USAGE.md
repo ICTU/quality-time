@@ -4,10 +4,23 @@
 
 - [Logging in and out](#logging-in-and-out)
 - [Configuring quality reports](#configuring-quality-reports)
+  - [Configuring reports](#configuring-reports)
+  - [Configuring subjects](#configuring-subjects)
+  - [Configuring metrics](#configuring-metrics)
+  - [Configuring sources](#configuring-sources)
 - [Notes on specific metrics](#notes-on-specific-metrics)
+  - [Metrics](#metrics)
+  - [Unmerged branches](#unmerged-branches)
 - [Notes on specific sources](#notes-on-specific-sources)
+  - [GitLab](#gitlab)
+  - [Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin](#jenkins-jenkins-test-report-jacoco-jenkins-plugin-and-owasp-dependency-check-jenkins-plugin)
 - [Customizing quality reports](#customizing-quality-reports)
+  - [Customizing dashboards](#customizing-dashboards)
+  - [Filtering metrics by tag](#filtering-metrics-by-tag)
+  - [Filtering metrics by status](#filtering-metrics-by-status)
 - [Exporting quality reports](#exporting-quality-reports)
+  - [Manually](#manually)
+  - [API](#api)
 
 ## Logging in and out
 
@@ -33,27 +46,31 @@ Each *Quality-time* instance can serve multiple quality reports. A quality repor
 
 > You need to be logged in to be able to edit quality reports.
 
-### Adding reports
+### Configuring reports
+
+#### Adding reports
 
 To add a new report, be sure to be logged in and click the "Add report" button on the home page. This will create a new empty report. Click the report card in the dashboard to navigate to it.
 
-### Editing reports
+#### Editing reports
 
 To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields.
 
 ![Editing report screenshot](screenshots/editing_report.png)
 
-### Deleting reports
+#### Deleting reports
 
 To delete a report expand the report header and click the "Delete report" button. The report and all its subjects is deleted.
 
 > Be careful, there's no way to undo your action via the user interface.
 
-### Adding subjects
+### Configuring subjects
+
+#### Adding subjects
 
 Each quality report consists of "subjects". Subjects are the things being measured by *Quality-time*. A subject can be a software product or component, a software process, or whatever you like. To add a new subject, be sure you are logged in and are on a report page. Click the "Add subject" button to add a new subject. The subject is added to the report dashboard.
 
-### Editing subjects
+#### Editing subjects
 
 To change the subject type and name expand the subject header if it's not already expanded. The subject type can be changed by means of the "Subject type" dropdown.
 
@@ -63,13 +80,15 @@ To change the subject type and name expand the subject header if it's not alread
 
 To change the name of the subject, simply type the new name in the "Subject name" field and hit enter.
 
-### Deleting subjects
+#### Deleting subjects
 
 To delete a subject expand the subject header and click the "Delete subject" button. The subject and all its metrics is deleted.
 
 > Be careful, there's no way to undo your action via the user interface.
 
-### Adding metrics
+### Configuring metrics
+
+#### Adding metrics
 
 To add a metric to a subject, hit the "Add metric" button.
 
@@ -77,7 +96,7 @@ To add a metric to a subject, hit the "Add metric" button.
 
 *Quality-time* adds a metric to the report that you can next configure. It's immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
 
-### Editing metrics
+#### Editing metrics
 
 After you've added a metric, the metric is visible in the subject's metric table. You can change the metric configuration in the metric tab.
 
@@ -99,17 +118,19 @@ The "Metric target" determines at what value a measurement is below or above tar
 
 If a metric doesn't meet the target value, but your team isn't able to fix the situation in the short run, you can accept the deviation as *technical debt*. Set the "Accept technical debt?" field to "Yes" and enter the value you're accepting for the time being in the "Metric debt target" field. If you want to pay off the debt before a certain date, this can be registered in the "Metric debt end date" field. The rationale for accepting technical debt can be entered in the "Comment" field.
 
-### Reordering metrics
+#### Reordering metrics
 
 To reorder metrics, expand the metric in the metric table and use the buttons on the lower left hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by e.g. name or status.
 
-### Deleting metrics
+#### Deleting metrics
 
 To delete a metric, expand the metric in the metric table and click the "Delete metric" button. The metric and its sources are deleted.
 
 > Be careful, there's no way to undo your action via the user interface.
 
-### Adding sources
+### Configuring sources
+
+#### Adding sources
 
 To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type.
 
@@ -117,7 +138,7 @@ To add a source to a metric, expand the metric in the metric table and then clic
 
 If you add multiple sources for one metric the measurement values of each source are combined to get one measurement value for the metric. Usually this means adding up the values, but for some metrics this doesn't make sense and the minimum or maximum value of the sources is used as the metric value.
 
-### Editing sources
+#### Editing sources
 
 After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. SonarQube supports the commented out code metric type, but GitLab does not so GitLab is not shown.
 
@@ -129,7 +150,7 @@ The parameters that sources need differ per source type. Most sources need a URL
 
 Source parameter (URL's, user names, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
 
-### Deleting sources
+#### Deleting sources
 
 To delete a metric's source, expand the metric in the metric table, select the "Sources" tab and click the "Delete source" button. The source is deleted and no longer used to measure the metric.
 
