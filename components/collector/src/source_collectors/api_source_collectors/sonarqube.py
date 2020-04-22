@@ -5,8 +5,8 @@ from typing import Dict, List, Tuple
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 
 
 class SonarQubeException(Exception):
