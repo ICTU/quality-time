@@ -46,7 +46,9 @@ class SonarQubeViolations(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         severities = ",".join([severity.upper() for severity in self._parameter("severities")])
-        types = ",".join([violation_type.upper() for violation_type in self._parameter("types")])
+        types = ",".join(
+            [violation_type.upper() for violation_type in self._parameter("types")
+             if violation_type != "security_hotspot"])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
@@ -57,6 +59,22 @@ class SonarQubeViolations(SonarQubeCollector):
         """Return the rules url parameter, if any."""
         rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
         return f"&rules={','.join(rules)}" if rules else ""
+
+    async def _get_source_responses(self, *urls: URL) -> Responses:
+        """Override to manipulate the issues urls. Add an extra call to the issues API for security hotspots, if the
+        user wants to see security hotspots. This is needed because the issues API only returns security hotspots if
+        the severity parameter is not passed (see https://community.sonarsource.com/t/23326). If only security hotspots
+        need to retrieved, the first call to retrieve bugs, vulnerabilities and code smells can be skipped."""
+        types = self._parameter("types")
+        api_urls = [] if ["security_hotspot"] == types else list(urls)
+        if "security_hotspot" in types:
+            url = await super()._api_url()
+            component = self._parameter("component")
+            branch = self._parameter("branch")
+            api_urls.append(
+                URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&types=SECURITY_HOTSPOT&"
+                    f"branch={branch}"))
+        return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         value = 0
@@ -80,7 +98,7 @@ class SonarQubeViolations(SonarQubeCollector):
             key=issue["key"],
             url=await self.__issue_landing_url(issue["key"]),
             message=issue["message"],
-            severity=issue["severity"].lower(),
+            severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
             component=issue["component"])
 
@@ -202,10 +220,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     async def __get_metrics(responses: Responses) -> Dict[str, int]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
-        # Without the local variable, coverage.py thinks: "line xyz didn't return from function '__get_metrics',
-        # because the return on line xyz wasn't executed"
-        metrics = dict((measure["metric"], int(measure["value"])) for measure in measures)
-        return metrics
+        return dict((measure["metric"], int(measure["value"])) for measure in measures)
 
 
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
