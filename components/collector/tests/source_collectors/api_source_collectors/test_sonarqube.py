@@ -10,7 +10,9 @@ class SonarQubeTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="sonarqube", parameters=dict(url="https://sonar", component="id")))
+        self.sources = dict(
+            source_id=dict(
+                type="sonarqube", parameters=dict(url="https://sonar", component="id", types=["bug", "code_smell"])))
         self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
 
     async def test_violations(self):
@@ -26,6 +28,42 @@ class SonarQubeTest(SourceCollectorTestCase):
             dict(component="a", key="a", message="a", severity="info", type="bug",
                  url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
             dict(component="b", key="b", message="b", severity="major", type="code_smell",
+                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+        self.assert_measurement(
+            response, value="2", entities=expected_entities,
+            landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master")
+
+    async def test_security_hotspots(self):
+        """Test that the number of security hotspots is returned."""
+        self.sources["source_id"]["parameters"]["types"] = ["security_hotspot"]
+        json = dict(
+            total="2",
+            issues=[
+                dict(key="a", message="a", component="a", type="SECURITY_HOTSPOT"),
+                dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
+        metric = dict(type="violations", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        expected_entities = [
+            dict(component="a", key="a", message="a", severity="no severity", type="security_hotspot",
+                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+            dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
+                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+        self.assert_measurement(
+            response, value="2", entities=expected_entities,
+            landing_url="https://sonar/project/issues?id=id&resolved=false&branch=master")
+
+    async def test_bugs_and_security_hotspots(self):
+        """Test that the number of bugs and security hotspots is returned."""
+        self.sources["source_id"]["parameters"]["types"] = ["bug", "security_hotspot"]
+        bug_json = dict(total="1", issues=[dict(key="a", message="a", component="a", severity="MAJOR", type="BUG")])
+        hotspot_json = dict(total="1", issues=[dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
+        metric = dict(type="violations", addition="sum", sources=self.sources)
+        response = await self.collect(
+            metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
+        expected_entities = [
+            dict(component="a", key="a", message="a", severity="major", type="bug",
+                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+            dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
                  url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
         self.assert_measurement(
             response, value="2", entities=expected_entities,
