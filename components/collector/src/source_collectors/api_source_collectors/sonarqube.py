@@ -67,7 +67,7 @@ class SonarQubeViolations(SonarQubeCollector):
         need to retrieved, the first call to retrieve bugs, vulnerabilities and code smells can be skipped."""
         types = self._parameter("types")
         api_urls = [] if ["security_hotspot"] == types else list(urls)
-        if "security_hotspot" in types:
+        if self.rules_parameter == "" and "security_hotspot" in types:
             url = await super()._api_url()
             component = self._parameter("component")
             branch = self._parameter("branch")
