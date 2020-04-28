@@ -32,7 +32,7 @@ class OJAuditViolations(XMLFileSourceCollector):
     def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""
         models = self.__model_file_paths(tree, namespaces)
-        violation_elements = tree.findall(f".//ns:violation", namespaces)
+        violation_elements = tree.findall(".//ns:violation", namespaces)
         violations = [self.__violation(element, namespaces, models, severities) for element in violation_elements]
         # Discard duplicated violations (where self.__violation() returned None) and add the duplication count
         return [{**violation, "count": str(self.violation_counts[str(violation["key"])])}
