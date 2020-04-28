@@ -9,7 +9,7 @@ import bottle
 
 from database.measurements import all_measurements, count_measurements, latest_measurement, \
     latest_successful_measurement, insert_new_measurement, update_measurement_end
-from database.reports import get_data, latest_metric
+from database.reports import latest_metric, SourceData
 from database import sessions
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
@@ -43,7 +43,7 @@ def post_measurement(database: Database) -> Dict:
 def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set an entity attribute."""
-    data = get_data(database, metric_uuid=metric_uuid, source_uuid=source_uuid)
+    data = SourceData(database, source_uuid)
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
