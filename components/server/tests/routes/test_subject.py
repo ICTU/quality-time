@@ -17,11 +17,12 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database = Mock()
         self.report = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
-            subjects={SUBJECT_ID: dict(name="subject1"), SUBJECT_ID2: dict(name="subject2")})
+            subjects={SUBJECT_ID: dict(name="subject1"), SUBJECT_ID2: dict(type="subject_type")})
         self.database.reports.find_one.return_value = self.report
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = {}
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id", subjects=dict(subject_type=dict(name="subject2")))
         self.email = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 

@@ -1,6 +1,6 @@
 """Reports collection."""
 
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import cast, Any, Dict, List, Union
 
 import pymongo
@@ -93,28 +93,85 @@ def changelog(database: Database, nr_changes: int, **uuids):
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
 
 
-def get_data(database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None,
-             metric_uuid: MetricId = None, source_uuid: SourceId = None):
-    """Return applicable report, subject, metric, source, and their uuids and names."""
-    data = namedtuple(
-        "data",
-        "datamodel, reports, report, report_uuid, report_name, subject, subject_uuid, subject_name, "
-        "metric, metric_uuid, metric_name, source, source_uuid, source_name")
-    data.datamodel = latest_datamodel(database)
-    data.reports = list(latest_reports(database))
-    data.source_uuid = source_uuid
-    data.metric_uuid = get_metric_uuid(data.reports, data.source_uuid) if data.source_uuid else metric_uuid
-    data.subject_uuid = get_subject_uuid(data.reports, data.metric_uuid) if data.metric_uuid else subject_uuid
-    data.report_uuid = get_report_uuid(data.reports, data.subject_uuid) if data.subject_uuid else report_uuid
-    data.report = list(filter(lambda report: data.report_uuid == report["report_uuid"], data.reports))[0]
-    data.report_name = data.report.get("title") or ""
-    if data.subject_uuid:
-        data.subject = data.report["subjects"][data.subject_uuid]
-        data.subject_name = data.subject.get("name") or data.datamodel["subjects"][data.subject["type"]]["name"]
-    if data.metric_uuid:
-        data.metric = data.subject["metrics"][data.metric_uuid]
-        data.metric_name = data.metric.get("name") or data.datamodel["metrics"][data.metric["type"]]["name"]
-    if data.source_uuid:
-        data.source = data.metric["sources"][data.source_uuid]
-        data.source_name = data.source.get("name") or data.datamodel["sources"][data.source["type"]]["name"]
-    return data
+@dataclass
+class Data:
+    """Class to hold all data relevant to a specific report, subject, metric or source."""
+    def __init__(self, database: Database) -> None:
+        self.datamodel = latest_datamodel(database)
+        self.reports = list(latest_reports(database))
+        self.get_uuid()
+        self.get_data()
+
+    def get_uuid(self) -> None:
+        """Determine the UUID of the entity."""
+
+    def get_data(self) -> None:
+        """Get the data."""
+
+    def name(self, entity: str) -> str:
+        """Return the name of the entity."""
+        instance = getattr(self, entity)
+        return instance.get("name") or str(self.datamodel[f"{entity}s"][instance["type"]]["name"])
+
+
+class ReportData(Data):
+    """Class to hold data about a specific report."""
+    def __init__(self, database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None) -> None:
+        self.report_uuid = report_uuid
+        self.subject_uuid = subject_uuid
+        super().__init__(database)
+
+    def get_uuid(self) -> None:
+        self.report_uuid = get_report_uuid(self.reports, self.subject_uuid) if self.subject_uuid else self.report_uuid
+        super().get_uuid()
+
+    def get_data(self) -> None:
+        super().get_data()
+        self.report = list(filter(lambda report: self.report_uuid == report["report_uuid"], self.reports))[0]
+        self.report_name = self.report.get("title") or ""
+
+
+class SubjectData(ReportData):
+    """Class to hold data about a specific subject."""
+    def __init__(self, database: Database, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
+        self.subject_uuid = subject_uuid
+        self.metric_uuid = metric_uuid
+        super().__init__(database, subject_uuid=subject_uuid)
+
+    def get_uuid(self) -> None:
+        self.subject_uuid = get_subject_uuid(self.reports, self.metric_uuid) if self.metric_uuid else self.subject_uuid
+        super().get_uuid()
+
+    def get_data(self) -> None:
+        super().get_data()
+        self.subject = self.report["subjects"][self.subject_uuid] if self.subject_uuid else {}
+        self.subject_name = self.name("subject")
+
+
+class MetricData(SubjectData):
+    """Class to hold data about a specific metric."""
+    def __init__(self, database: Database, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
+        self.metric_uuid = metric_uuid
+        self.source_uuid = source_uuid
+        super().__init__(database, metric_uuid=metric_uuid)
+
+    def get_uuid(self) -> None:
+        self.metric_uuid = get_metric_uuid(self.reports, self.source_uuid) if self.source_uuid else self.metric_uuid
+        super().get_uuid()
+
+    def get_data(self) -> None:
+        super().get_data()
+        self.metric = self.subject["metrics"][self.metric_uuid] if self.metric_uuid else {}
+        self.metric_name = self.name("metric")
+
+
+class SourceData(MetricData):
+    """Class to hold data about a specific source."""
+    def __init__(self, database: Database, source_uuid: SourceId) -> None:
+        self.source_uuid = source_uuid
+        super().__init__(database, source_uuid=source_uuid)
+
+    def get_data(self) -> None:
+        super().get_data()
+        self.source = self.metric["sources"][self.source_uuid]
+        self.source_name = self.name("source")

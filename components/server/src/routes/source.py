@@ -8,18 +8,18 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel, default_source_parameters
-from database.reports import get_data, insert_new_report
+from database.reports import insert_new_report, MetricData, SourceData
 from model.actions import copy_source, move_item
 from model.transformations import change_source_parameter
 from model.queries import is_password_parameter
 from server_utilities.functions import uuid
-from server_utilities.type import EditScope, MetricId, SourceId, URL
+from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId, URL
 
 
 @bottle.post("/api/v2/source/new/<metric_uuid>")
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
-    data = get_data(database, metric_uuid=metric_uuid)
+    data = MetricData(database, metric_uuid)
     data_model = latest_datamodel(database)
     metric_type = data.metric["type"]
     source_type = data_model["metrics"][metric_type]["default_source"]
@@ -36,7 +36,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
 @bottle.post("/api/v2/source/<source_uuid>/copy")
 def post_source_copy(source_uuid: SourceId, database: Database):
     """Copy a source."""
-    data = get_data(database, source_uuid=source_uuid)
+    data = SourceData(database, source_uuid)
     data.metric["sources"][(source_copy_uuid := uuid())] = copy_source(data.source, data.datamodel)
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -50,15 +50,16 @@ def post_source_copy(source_uuid: SourceId, database: Database):
 @bottle.post("/api/v2/source/<source_uuid>/move/<target_metric_uuid>")
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
-    source = get_data(database, source_uuid=source_uuid)
-    target = get_data(database, metric_uuid=target_metric_uuid)
+    source = SourceData(database, source_uuid)
+    target = MetricData(database, target_metric_uuid)
     user = sessions.user(database)
     delta_description = f"{user['user']} moved the source '{source.source_name}' from metric " \
                         f"'{source.metric_name}' of subject '{source.subject_name}' in report '{source.report_name}' " \
                         f"to metric '{target.metric_name}' of subject '{target.subject_name}' in report " \
                         f"'{target.report_name}'."
     target.metric["sources"][source_uuid] = source.source
-    target_uuids = [target.report_uuid]
+    target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = \
+        [target.report_uuid]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
@@ -81,7 +82,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 @bottle.delete("/api/v2/source/<source_uuid>")
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
-    data = get_data(database, source_uuid=source_uuid)
+    data = SourceData(database, source_uuid)
     user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid], email=user["email"],
@@ -94,7 +95,7 @@ def delete_source(source_uuid: SourceId, database: Database):
 @bottle.post("/api/v2/source/<source_uuid>/attribute/<source_attribute>")
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
-    data = get_data(database, source_uuid=source_uuid)
+    data = SourceData(database, source_uuid)
     value = dict(bottle.request.json)[source_attribute]
     old_value: Any
     if source_attribute == "position":
@@ -118,7 +119,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 @bottle.post("/api/v2/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
-    data = get_data(database, source_uuid=source_uuid)
+    data = SourceData(database, source_uuid)
     new_value = dict(bottle.request.json)[parameter_key]
     old_value = data.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:

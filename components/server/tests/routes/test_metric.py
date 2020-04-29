@@ -315,5 +315,5 @@ class MetricTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], email=JOHN["email"],
-                 description=f"John deleted metric 'Metric' from subject 'Subject' in report 'Report'."),
+                 description="John deleted metric 'Metric' from subject 'Subject' in report 'Report'."),
             self.report["delta"])
