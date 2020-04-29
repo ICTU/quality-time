@@ -52,7 +52,8 @@ def copy_report(report, data_model):
 
 def move_item(data, new_position: Position, item_type: Literal["metric", "source", "subject"]) -> Tuple[int, int]:
     """Change the item position."""
-    container = dict(subject=data.report, metric=data.subject, source=data.metric)[item_type]
+    # Use lambda's for lazy evaluation of the data accessors:
+    container = dict(subject=lambda: data.report, metric=lambda: data.subject, source=lambda: data.metric)[item_type]()
     items = container[item_type + "s"]
     nr_items = len(items)
     item_to_move = getattr(data, item_type)

@@ -99,7 +99,11 @@ class Data:
     def __init__(self, database: Database) -> None:
         self.datamodel = latest_datamodel(database)
         self.reports = list(latest_reports(database))
+        self.get_uuid()
         self.get_data()
+
+    def get_uuid(self) -> None:
+        """Determine the UUID of the entity."""
 
     def get_data(self) -> None:
         """Get the data."""
@@ -112,35 +116,36 @@ class Data:
 
 class ReportData(Data):
     """Class to hold data about a specific report."""
-    def __init__(self, database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
+    def __init__(self, database: Database, report_uuid: ReportId = None, subject_uuid: SubjectId = None) -> None:
         self.report_uuid = report_uuid
         self.subject_uuid = subject_uuid
-        self.metric_uuid = metric_uuid
-        self.source_uuid = source_uuid
         super().__init__(database)
+
+    def get_uuid(self) -> None:
+        self.report_uuid = get_report_uuid(self.reports, self.subject_uuid) if self.subject_uuid else self.report_uuid
+        super().get_uuid()
 
     def get_data(self) -> None:
         super().get_data()
-        self.metric_uuid = get_metric_uuid(self.reports, self.source_uuid) if self.source_uuid else self.metric_uuid
-        self.subject_uuid = get_subject_uuid(self.reports, self.metric_uuid) if self.metric_uuid else self.subject_uuid
-        self.report_uuid = get_report_uuid(self.reports, self.subject_uuid) if self.subject_uuid else self.report_uuid
         self.report = list(filter(lambda report: self.report_uuid == report["report_uuid"], self.reports))[0]
         self.report_name = self.report.get("title") or ""
 
 
 class SubjectData(ReportData):
     """Class to hold data about a specific subject."""
-    def __init__(self, database: Database, subject_uuid: SubjectId = None, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
+    def __init__(self, database: Database, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
         self.subject_uuid = subject_uuid
         self.metric_uuid = metric_uuid
-        self.source_uuid = source_uuid
-        super().__init__(database, subject_uuid=subject_uuid, metric_uuid=metric_uuid, source_uuid=source_uuid)
+        super().__init__(database, subject_uuid=subject_uuid)
+
+    def get_uuid(self) -> None:
+        self.subject_uuid = get_subject_uuid(self.reports, self.metric_uuid) if self.metric_uuid else self.subject_uuid
+        super().get_uuid()
 
     def get_data(self) -> None:
         super().get_data()
         self.subject = self.report["subjects"][self.subject_uuid] if self.subject_uuid else {}
         self.subject_name = self.name("subject")
-        self.metric: Dict[str, Any] = {}
 
 
 class MetricData(SubjectData):
@@ -148,7 +153,11 @@ class MetricData(SubjectData):
     def __init__(self, database: Database, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
         self.metric_uuid = metric_uuid
         self.source_uuid = source_uuid
-        super().__init__(database, metric_uuid=metric_uuid, source_uuid=source_uuid)
+        super().__init__(database, metric_uuid=metric_uuid)
+
+    def get_uuid(self) -> None:
+        self.metric_uuid = get_metric_uuid(self.reports, self.source_uuid) if self.source_uuid else self.metric_uuid
+        super().get_uuid()
 
     def get_data(self) -> None:
         super().get_data()
