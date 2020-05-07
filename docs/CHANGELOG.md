@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Pin Python Docker base images down to patch level.
+
 ## [2.2.2] - [2020-04-22]
 
 ### Fixed
