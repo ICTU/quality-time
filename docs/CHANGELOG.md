@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Turn on asyncio debug mode in the collector component to see if we can find the cause of the exception reported in issue [#1154](https://github.com/ICTU/quality-time/issues/1154).
+
 ## [2.2.3-rc.1] - [2020-05-07]
 
 ### Changed
