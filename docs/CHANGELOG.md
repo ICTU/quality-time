@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+- Let asyncio.gather return exceptions in an attempt to prevent that the futures created under the hood by aiohttp are not awaited. 
+
 ## [2.2.3-rc.2] - [2020-05-08]
 
 ### Changed
