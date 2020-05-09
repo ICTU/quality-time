@@ -22,8 +22,8 @@ class QualityTimeMetrics(SourceCollector):
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
         entities: Entities = []
         for metric, entity in metrics_and_entities:
-            recent_measurements = cast(List[Measurement], metric.get("recent_measurements", [{}]))
-            status, value = self.__get_status_and_value(metric, recent_measurements[-1])
+            recent_measurements = cast(List[Measurement], metric.get("recent_measurements", []))
+            status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
                 entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"

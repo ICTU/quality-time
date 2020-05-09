@@ -35,7 +35,7 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                                     ]),
                                 m3=dict(
                                     tags=["security"], scale="count", type="violations", target="3",
-                                    sources=dict(s3=dict(type="sonarqube"))),
+                                    recent_measurements=[], sources=dict(s3=dict(type="sonarqube"))),
                                 m4=dict(
                                     tags=["security"], scale="count", type="violations", target="4",
                                     sources=dict(s4=dict(type="junit"))),
