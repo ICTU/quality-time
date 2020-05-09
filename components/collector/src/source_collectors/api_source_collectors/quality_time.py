@@ -1,6 +1,6 @@
 """Collector for Quality-time."""
 
-from typing import Any, Dict, List, Tuple
+from typing import cast, Any, Dict, List, Tuple
 from urllib import parse
 
 from collector_utilities.type import Entity, Entities, Measurement, Response, Responses, URL, Value
@@ -10,35 +10,20 @@ from base_collectors import SourceCollector
 class QualityTimeMetrics(SourceCollector):
     """Collector to get the "metrics" metric from Quality-time."""
 
-    def __init__(self, *args, **kwargs):
-        self.__metrics_and_entities: List[Tuple[Dict[str, Dict], Entity]] = []
-        super().__init__(*args, **kwargs)
-
     async def _api_url(self) -> URL:
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2", "", "")))
-
-    async def _get_source_responses(self, *urls: URL) -> Responses:
-        # First, get the report(s):
-        responses = await super()._get_source_responses(URL(f"{urls[0]}/reports"))
-        # Then, add the measurements for each of the applicable metrics:
-        self.__metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        measurement_urls = [URL(f"{urls[0]}/measurements/{entity['key']}") for _, entity in self.__metrics_and_entities]
-        return responses + await super()._get_source_responses(*measurement_urls)
+        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2/reports", "", "")))
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        entities = await self.__get_entities(responses[1:])
-        return str(len(entities)), str(len(self.__metrics_and_entities)), entities
-
-    async def __get_entities(self, responses: Responses) -> Entities:
         """Get the metric entities from the responses."""
-        last_measurements = await self.__get_last_measurements(responses)
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
+        metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
         entities: Entities = []
-        for metric, entity in self.__metrics_and_entities:
-            status, value = self.__get_status_and_value(metric, last_measurements.get(str(entity["key"]), {}))
+        for metric, entity in metrics_and_entities:
+            recent_measurements = cast(List[Measurement], metric.get("recent_measurements", [{}]))
+            status, value = self.__get_status_and_value(metric, recent_measurements[-1])
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
                 entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
@@ -52,17 +37,7 @@ class QualityTimeMetrics(SourceCollector):
                 target = metric.get("target") or self._datamodel["metrics"][metric["type"]]["target"]
                 entity["target"] = f"{direction} {target} {unit}"
                 entities.append(entity)
-        return entities
-
-    @staticmethod
-    async def __get_last_measurements(responses: Responses) -> Dict[str, Measurement]:
-        """Return the last measurements by metric UUID for easy lookup."""
-        last_measurements = dict()
-        for response in responses:
-            if measurements := (await response.json())["measurements"]:
-                last_measurement = measurements[-1]
-                last_measurements[last_measurement["metric_uuid"]] = last_measurement
-        return last_measurements
+        return str(len(entities)), str(len(metrics_and_entities)), entities
 
     @staticmethod
     def __get_status_and_value(metric, measurement: Measurement) -> Tuple[str, Value]:

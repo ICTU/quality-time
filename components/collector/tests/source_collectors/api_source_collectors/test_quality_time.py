@@ -25,10 +25,14 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                             metrics=dict(
                                 m1=dict(
                                     tags=["security"], scale="count", type="violations", target="1",
-                                    sources=dict(s1=dict(type="sonarqube"))),
+                                    sources=dict(s1=dict(type="sonarqube")), recent_measurements=[
+                                        dict(count=dict(status="target_met", value="0"))
+                                    ]),
                                 m2=dict(
                                     tags=["security"], scale="count", type="violations", target="2",
-                                    sources=dict(s2=dict(type="sonarqube"))),
+                                    sources=dict(s2=dict(type="sonarqube")), recent_measurements=[
+                                        dict(count=dict(status="target_not_met", value="20"))
+                                    ]),
                                 m3=dict(
                                     tags=["security"], scale="count", type="violations", target="3",
                                     sources=dict(s3=dict(type="sonarqube"))),
@@ -43,16 +47,13 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                                     sources=dict(s6=dict(type="sonarqube"))))))),
                 dict(
                     title="R2", report_uuid="r2")])
-        measurements1 = dict(measurements=[dict(metric_uuid="m1", count=dict(status="target_met", value="0"))])
-        measurements2 = dict(measurements=[dict(metric_uuid="m2", count=dict(status="target_not_met", value="20"))])
-        measurements3 = dict(measurements=[])
-        response = await self.collect(
-            metric, get_request_json_side_effect=[reports, measurements1, measurements2, measurements3])
+        response = await self.collect(metric, get_request_json_return_value=reports)
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
         self.assert_measurement(
-            response, value="1", total="3", api_url="https://quality-time/api/v2", landing_url="https://quality-time",
+            response, value="1", total="3", api_url="https://quality-time/api/v2/reports",
+            landing_url="https://quality-time",
             entities=[
                 dict(
                     key="m2", report="R1", subject="S1", metric="Violations", report_url="https://quality-time/r1",
