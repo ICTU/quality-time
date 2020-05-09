@@ -79,20 +79,16 @@ class SourceCollector(ABC):
     async def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
+        responses: Responses = []
         api_url = URL("")
         error = None
         try:
             responses = await self._get_source_responses(api_url := await self._api_url())
-            for response in responses:
-                if isinstance(response, Exception):
-                    raise response
             logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
         except aiohttp.ClientError as reason:
-            responses = []
             error = tokenless(str(reason))
             logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         except Exception as reason:  # pylint: disable=broad-except
-            responses = []
             error = stable_traceback(traceback.format_exc())
             logging.error("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
         return responses, api_url, error
@@ -106,7 +102,7 @@ class SourceCollector(ABC):
         if headers := self._headers():
             kwargs["headers"] = headers
         tasks = [self._session.get(url, **kwargs) for url in urls]
-        return list(await asyncio.gather(*tasks, return_exceptions=True))
+        return list(await asyncio.gather(*tasks))
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
