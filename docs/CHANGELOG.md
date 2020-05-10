@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.2.3] - [2020-05-10]
 
+### Fixed
+
 - When using Quality-time as source for the Metrics metric, a timeout could occur due to Quality-time unnecessarily retrieving all measurements (it only needs the most recent ones). Fixes [#1154](https://github.com/ICTU/quality-time/issues/1154).
 
 ## [2.2.2] - [2020-04-22]
