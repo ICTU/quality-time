@@ -35,10 +35,11 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
     function onLayoutChange(new_layout) {
-        if (JSON.stringify(new_layout) !== JSON.stringify(layout)) {
-            setLayout(new_layout);
+        if (new_layout.length === layout.length && JSON.stringify(new_layout) !== JSON.stringify(layout)) {
+            // Only save the layout if it was changed by rearranging cards
             save_layout(new_layout)
         }
+        setLayout(new_layout);
     }
     function onDragStart(current_layout, oldItem, newItem, placeholder, event) {
         setDragging(true);
