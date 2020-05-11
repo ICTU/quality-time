@@ -19,7 +19,7 @@ describe("<CardDashboard />", () => {
             <ReadOnlyContext.Provider value={false}>
                 <CardDashboard
                     cards={[<MetricSummaryCard red={1} green={2} yellow={1} white={0} grey={0} />]}
-                    initial_layout={[]}
+                    initial_layout={[{h: 6, w: 4, x: 0, y: 0}]}
                     save_layout={mockCallBack}
                 />
             </ReadOnlyContext.Provider>
