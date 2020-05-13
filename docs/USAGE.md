@@ -166,6 +166,8 @@ After adding Quality-time as a source to a "Metrics"-metric, one can configure w
 
 ![Editing Quality-time source screenshot](screenshots/editing_quality_time_source.png)
 
+Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics and the number of red metrics increases from five to six, the "Metrics" value will go from give to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
+
 ### Unmerged branches
 
 The unmerged branches metric reports on the number of branches that have not been merged back to the default branch in the version control system. Currently, GitLab and Azure DevOps can be configured as source for this metric.
@@ -178,7 +180,7 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 ### GitLab
 
-Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, Quality-time needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to Quality-time. 
+Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, Quality-time needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to Quality-time.
 
 There are two scenario's: the source is a build artifact of a GitLab CI pipeline or the source is stored in a GitLab repository.
 
