@@ -16,7 +16,7 @@
     "semantic-ui-calendar-react": "^0.15.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
-    "victory": "^34.3.5"
+    "victory": "^34.3.6"
   },
   "scripts": {
     "start": "react-scripts start",
