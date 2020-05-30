@@ -127,7 +127,7 @@ class AzureDevopsTests(SourceCollector):
 
     async def _api_url(self) -> URL:
         api_url = await super()._api_url()
-        return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.1")
+        return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$top=1&api-version=5.0")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         test_results = cast(List[str], self._parameter("test_result"))
