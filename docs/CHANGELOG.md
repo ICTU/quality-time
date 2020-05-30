@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Quality-time was using the 5.1 version of the Azure DevOps API to get the number of tests for the 'tests' metric causing Quality-time to not work with Azure DevOps Server 2019. Fixed by using the 5.0 version of the API that also returns the required data. Fixes [#1182](https://github.com/ICTU/quality-time/issues/1182).
+
 ## [2.2.4] - [2020-05-11]
 
 ### Fixed
