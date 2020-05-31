@@ -62,7 +62,6 @@ class MetricsCollector:
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         timeout = aiohttp.ClientTimeout(total=120)
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=True) as session:
-            await self.wait_for_server(session, 10)
             self.data_model = await self.fetch_data_model(session, max_sleep_duration)
         while True:
             self.record_health()
@@ -77,23 +76,17 @@ class MetricsCollector:
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
             await asyncio.sleep(sleep_duration)
 
-    async def wait_for_server(self, session: aiohttp.ClientSession, sleep_duration: int):
-        """Wait for the server to become available."""
-        while True:
-            self.record_health()
-            logging.info("Checking server availability...")
-            if await get(session, URL(f"{self.server_url}/api"), log=False):
-                return
-            logging.warning("Server not available, trying again in %ss...", sleep_duration)
-            await asyncio.sleep(sleep_duration)
-
     async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
         """Fetch the data model."""
+        # The first attempt is likely to fail because the collector starts up faster than the server,
+        # so don't log tracebacks on the first attempt
+        first_attempt = True
         while True:
             self.record_health()
             logging.info("Loading data model...")
-            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel")):
+            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel"), log=not first_attempt):
                 return data_model
+            first_attempt = False
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
             await asyncio.sleep(sleep_duration)
 

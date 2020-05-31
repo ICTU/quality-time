@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Quality-time was using the 5.1 version of the Azure DevOps API to get the number of tests for the 'tests' metric causing Quality-time to not work with Azure DevOps Server 2019. Fixed by using the 5.0 version of the API that also returns the required data. Fixes [#1182](https://github.com/ICTU/quality-time/issues/1182).
+- Don't log a traceback the first time the collector component attempts to download the data model from the server component and fails. As the collector typically starts up faster than the server, one failed attempt is to be expected. Fixes [#1187](https://github.com/ICTU/quality-time/issues/1187).
 
 ## [2.2.4] - [2020-05-11]
 
