@@ -1,19 +1,19 @@
 """Unit tests for the collector main script."""
 
 import logging
+import unittest
 from datetime import datetime
 from typing import Tuple
 from unittest.mock import patch, mock_open, AsyncMock, Mock
 
 import aiohttp
-import aiounittest
 
 import quality_time_collector
 from base_collectors import MetricsCollector, SourceCollector
 from collector_utilities.type import Entities, Responses, Value
 
 
-class CollectorTest(aiounittest.AsyncTestCase):
+class CollectorTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the collection methods."""
 
     @classmethod
