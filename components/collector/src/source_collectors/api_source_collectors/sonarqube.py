@@ -33,6 +33,7 @@ class SonarQubeViolations(SonarQubeCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
     rules_parameter = ""  # Subclass responsibility
+    types_parameter = "types"
 
     async def _landing_url(self, responses: Responses) -> URL:
         url = await super()._landing_url(responses)
@@ -47,7 +48,7 @@ class SonarQubeViolations(SonarQubeCollector):
         branch = self._parameter("branch")
         severities = ",".join([severity.upper() for severity in self._parameter("severities")])
         types = ",".join(
-            [violation_type.upper() for violation_type in self._parameter("types")
+            [violation_type.upper() for violation_type in self._parameter(self.types_parameter)
              if violation_type != "security_hotspot"])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
@@ -65,7 +66,7 @@ class SonarQubeViolations(SonarQubeCollector):
         user wants to see security hotspots. This is needed because the issues API only returns security hotspots if
         the severity parameter is not passed (see https://community.sonarsource.com/t/23326). If only security hotspots
         need to retrieved, the first call to retrieve bugs, vulnerabilities and code smells can be skipped."""
-        types = self._parameter("types")
+        types = self._parameter(self.types_parameter)
         api_urls = [] if ["security_hotspot"] == types else list(urls)
         if self.rules_parameter == "" and "security_hotspot" in types:
             url = await super()._api_url()
@@ -101,6 +102,14 @@ class SonarQubeViolations(SonarQubeCollector):
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
             component=issue["component"])
+
+
+class SonarQubeSecurityWarnings(SonarQubeViolations):
+    """SonarQube security warnings. The security warnings are a subset of the violation types (vulnerabilities and
+    security hotspots). That the user can only pick those two violation types is determined by the data model, so no
+    code changes are needed."""
+
+    types_parameter = "security_types"
 
 
 class SonarQubeCommentedOutCode(SonarQubeViolations):
