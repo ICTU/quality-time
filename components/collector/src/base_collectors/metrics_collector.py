@@ -14,7 +14,7 @@ from collector_utilities.type import JSON, URL
 from .source_collector import SourceCollector
 
 
-async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
+async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSON:
     """Get data from the API url."""
     try:
         response = await session.get(api)
@@ -22,8 +22,9 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
         response.close()
         return json
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Getting data from %s failed: %s", api, reason)
-        logging.error(traceback.format_exc())
+        if log:
+            logging.error("Getting data from %s failed: %s", api, reason)
+            logging.error(traceback.format_exc())
         return {}
 
 
@@ -61,6 +62,7 @@ class MetricsCollector:
         measurement_frequency = int(os.environ.get("COLLECTOR_MEASUREMENT_FREQUENCY", 15 * 60))
         timeout = aiohttp.ClientTimeout(total=120)
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=True) as session:
+            await self.wait_for_server(session, 10)
             self.data_model = await self.fetch_data_model(session, max_sleep_duration)
         while True:
             self.record_health()
@@ -73,6 +75,16 @@ class MetricsCollector:
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
+            await asyncio.sleep(sleep_duration)
+
+    async def wait_for_server(self, session: aiohttp.ClientSession, sleep_duration: int):
+        """Wait for the server to become available."""
+        while True:
+            self.record_health()
+            logging.info("Checking server availability...")
+            if await get(session, URL(f"{self.server_url}/api"), log=False):
+                return
+            logging.warning("Server not available, trying again in %ss...", sleep_duration)
             await asyncio.sleep(sleep_duration)
 
     async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
