@@ -100,6 +100,12 @@
                             "parameters": {
                                 "url": "http://testdata:8000/composer-outdated.json"
                             }
+                        },
+                        {
+                            "type": "pip",
+                            "parameters": {
+                                "url": "http://testdata:8000/pip-outdated.json"
+                            }
                         }
                     ]
                 },

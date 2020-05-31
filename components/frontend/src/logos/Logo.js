@@ -17,6 +17,7 @@ import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
 import OWASPZAP from './owasp_zap.png';
+import Python from './python.png';
 import Pyupio from './pyupio.png';
 import QualityTime from './quality_time.png';
 import RobotFramework from './robot_framework.png';
@@ -44,6 +45,7 @@ export function Logo(props) {
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,
         owasp_zap: OWASPZAP,
+        pip: Python,
         pyupio_safety: Pyupio,
         quality_time: QualityTime,
         robot_framework: RobotFramework,
