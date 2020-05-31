@@ -14,7 +14,7 @@ from collector_utilities.type import JSON, URL
 from .source_collector import SourceCollector
 
 
-async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
+async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSON:
     """Get data from the API url."""
     try:
         response = await session.get(api)
@@ -22,8 +22,9 @@ async def get(session: aiohttp.ClientSession, api: URL) -> JSON:
         response.close()
         return json
     except Exception as reason:  # pylint: disable=broad-except
-        logging.error("Getting data from %s failed: %s", api, reason)
-        logging.error(traceback.format_exc())
+        if log:
+            logging.error("Getting data from %s failed: %s", api, reason)
+            logging.error(traceback.format_exc())
         return {}
 
 
@@ -77,11 +78,15 @@ class MetricsCollector:
 
     async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
         """Fetch the data model."""
+        # The first attempt is likely to fail because the collector starts up faster than the server,
+        # so don't log tracebacks on the first attempt
+        first_attempt = True
         while True:
             self.record_health()
             logging.info("Loading data model...")
-            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel")):
+            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel"), log=not first_attempt):
                 return data_model
+            first_attempt = False
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
             await asyncio.sleep(sleep_duration)
 
