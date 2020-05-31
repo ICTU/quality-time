@@ -23,7 +23,7 @@
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
 | Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, GitLab, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, SonarQube, Trello, Wekan |
-| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Pyupio Safety |
+| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Pyupio Safety, SonarQube |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
 | Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, Jenkins test report, JUnit XML report, Performancetest-runner, Robot Framework, SonarQube |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
@@ -62,7 +62,7 @@
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | Source up-to-dateness, Tests |
-| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Source up-to-dateness, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
+| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
 
@@ -77,6 +77,7 @@
 | URL to Axe report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Impact levels | Multiple choice | No |  |
 | Violation types | Multiple choice | No | [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) |
 
@@ -108,6 +109,7 @@
 | URL to Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
 
 ### Duplicated lines from SonarQube
@@ -134,7 +136,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 
@@ -257,6 +259,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Performancetest stability from Performancetest-runner
 
@@ -265,6 +268,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Ready user story points from Azure DevOps Server
 
@@ -291,6 +295,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Slow transactions from Performancetest-runner
 
@@ -299,6 +304,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Thresholds | Multiple choice | No |  |
 
 ### Source up-to-dateness from Anchore
@@ -309,6 +315,7 @@
 | URL to Anchore report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from Azure DevOps Server
 
@@ -328,6 +335,7 @@
 | URL to Bandit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from Calendar date
 
@@ -362,6 +370,7 @@
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from JaCoCo Jenkins plugin
 
@@ -369,7 +378,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from Jenkins test report
 
@@ -377,7 +386,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from JUnit XML report
 
@@ -387,6 +396,7 @@
 | URL to a JUnit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from NCover
 
@@ -395,6 +405,7 @@
 | URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from Robot Framework
 
@@ -404,6 +415,7 @@
 | URL to a Robot Framework report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from OpenVAS
 
@@ -413,6 +425,7 @@
 | URL to an OpenVAS report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from OWASP Dependency Check
 
@@ -422,6 +435,7 @@
 | URL to OWASP Dependency Check report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from OWASP Dependency Check Jenkins plugin
 
@@ -429,7 +443,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to Jenkins job | URL | Yes |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from OWASP ZAP
 
@@ -439,6 +453,7 @@
 | URL to an OWASP ZAP report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from Performancetest-runner
 
@@ -447,6 +462,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Source up-to-dateness from SonarQube
 
@@ -485,6 +501,7 @@
 | URL to Anchore report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
 
 ### Security warnings from Bandit
@@ -495,6 +512,7 @@
 | URL to Bandit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
 | Confidence levels | Multiple choice | No |  |
 
@@ -516,6 +534,7 @@
 | URL to an OpenVAS report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
 
 ### Security warnings from OWASP Dependency Check
@@ -526,6 +545,7 @@
 | URL to OWASP Dependency Check report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
 
 ### Security warnings from OWASP Dependency Check Jenkins plugin
@@ -534,7 +554,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to Jenkins job | URL | Yes |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Severities | Multiple choice | No |  |
 
 ### Security warnings from OWASP ZAP
@@ -545,6 +565,7 @@
 | URL to an OWASP ZAP report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Risks | Multiple choice | No |  |
 | Parts of URLs to ignore (regular expressions) | Multiple choice with addition | No | Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported. |
 
@@ -555,6 +576,18 @@
 | URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+
+### Security warnings from SonarQube
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
+| Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
+| Security issue types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
 
 ### Suppressed violations from SonarQube
 
@@ -582,7 +615,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from JUnit XML report
@@ -593,6 +626,7 @@
 | URL to a JUnit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from Performancetest-runner
@@ -602,6 +636,7 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from Robot Framework
@@ -612,6 +647,7 @@
 | URL to a Robot Framework report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
 ### Tests from SonarQube
@@ -632,6 +668,7 @@
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Test branch coverage from JaCoCo Jenkins plugin
 
@@ -639,7 +676,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Test branch coverage from NCover
 
@@ -648,6 +685,7 @@
 | URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Test branch coverage from SonarQube
 
@@ -666,6 +704,7 @@
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Test line coverage from JaCoCo Jenkins plugin
 
@@ -673,7 +712,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Test line coverage from NCover
 
@@ -682,6 +721,7 @@
 | URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Test line coverage from SonarQube
 
@@ -736,7 +776,7 @@
 | :-------- | :--- | :-------- | :--- |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 
@@ -748,6 +788,7 @@
 | URL to an OJAudit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
 
 ### Violations from SonarQube

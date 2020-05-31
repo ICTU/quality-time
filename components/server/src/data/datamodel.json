@@ -478,7 +478,8 @@
                 "owasp_dependency_check_jenkins_plugin",
                 "owasp_zap",
                 "pyupio_safety",
-                "random"
+                "random",
+                "sonarqube"
             ],
             "tags": [
                 "security"
@@ -3773,6 +3774,7 @@
                         "many_parameters",
                         "loc",
                         "long_units",
+                        "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3795,6 +3797,7 @@
                         "many_parameters",
                         "loc",
                         "long_units",
+                        "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3817,6 +3820,7 @@
                         "many_parameters",
                         "loc",
                         "long_units",
+                        "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -3839,6 +3843,7 @@
                         "many_parameters",
                         "loc",
                         "long_units",
+                        "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
                         "tests",
@@ -4125,6 +4130,7 @@
                         "blocker"
                     ],
                     "metrics": [
+                        "security_warnings",
                         "suppressed_violations",
                         "violations"
                     ]
@@ -4177,6 +4183,22 @@
                     "metrics": [
                         "suppressed_violations",
                         "violations"
+                    ]
+                },
+                "security_types": {
+                    "name": "Security issue types",
+                    "short_name": "types",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "placeholder": "all security issue types",
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
+                    "default_value": [],
+                    "values": [
+                        "vulnerability",
+                        "security_hotspot"
+                    ],
+                    "metrics": [
+                        "security_warnings"
                     ]
                 }
             },
@@ -4268,6 +4290,34 @@
                 "long_units": {
                     "name": "violation",
                     "name_plural": "violations",
+                    "attributes": [
+                        {
+                            "name": "Message",
+                            "key": "message"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "blocker": "negative",
+                                "critical": "negative",
+                                "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "key": "type"
+                        },
+                        {
+                            "name": "Component",
+                            "key": "component",
+                            "url": "url"
+                        }
+                    ]
+                },
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
                     "attributes": [
                         {
                             "name": "Message",
