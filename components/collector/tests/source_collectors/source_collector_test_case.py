@@ -3,16 +3,16 @@
 import json
 import logging
 import pathlib
+import unittest
 from unittest.mock import patch, AsyncMock
 
 import aiohttp
-import aiounittest
 
 from base_collectors import MetricsCollector
 from collector_utilities.type import Measurement
 
 
-class SourceCollectorTestCase(aiounittest.AsyncTestCase):
+class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     """Base class for source collector unit tests."""
 
     @classmethod
