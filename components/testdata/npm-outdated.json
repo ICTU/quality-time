@@ -1,0 +1,31 @@
+{
+  "react": {
+    "wanted": "16.13.1",
+    "latest": "16.13.1",
+    "location": ""
+  },
+  "react-dom": {
+    "current": "16.12.0",
+    "wanted": "16.13.1",
+    "latest": "16.13.1",
+    "location": ""
+  },
+  "react-grid-layout": {
+    "current": "0.18.1",
+    "wanted": "0.18.3",
+    "latest": "0.18.3",
+    "location": ""
+  },
+  "react-scripts": {
+    "current": "3.4.0",
+    "wanted": "3.4.1",
+    "latest": "3.4.1",
+    "location": ""
+  },
+  "victory": {
+    "current": "34.1.1",
+    "wanted": "34.3.9",
+    "latest": "34.3.9",
+    "location": ""
+  }
+}
