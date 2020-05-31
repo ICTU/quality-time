@@ -95,6 +95,7 @@
             "sources": [
                 "composer",
                 "manual_number",
+                "pip",
                 "random"
             ],
             "tags": [
@@ -3315,6 +3316,79 @@
                         }
                     ]
                 }
+            }
+        },
+        "pip": {
+            "name": "pip",
+            "description": "pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes.",
+            "url": "https://pip.pypa.io/en/stable/",
+            "parameters": {
+                "url": {
+                    "name": "URL to a pip-outdated report in JSON format ('pip list --outdated --format json') or a zip with pip-outdated reports in JSON format.",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                }
+            },
+            "entities": {
+               "dependencies": {
+                    "name": "dependency",
+                    "name_plural": "dependencies",
+                    "attributes": [
+                        {
+                            "name": "Package",
+                            "key": "name",
+                            "url": "homepage"
+                        },
+                        {
+                            "name": "Current version",
+                            "key": "version"
+                        },
+                        {
+                            "name": "Latest version",
+                            "key": "latest"
+                        }
+                    ]
+                } 
             }
         },
         "pyupio_safety": {

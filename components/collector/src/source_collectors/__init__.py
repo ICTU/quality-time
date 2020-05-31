@@ -36,6 +36,7 @@ from .file_source_collectors.performancetest_runner import (
     PerformanceTestRunnerPerformanceTestDuration, PerformanceTestRunnerPerformanceTestStability,
     PerformanceTestRunnerScalability, PerformanceTestRunnerSlowTransactions, PerformanceTestRunnerSourceUpToDateness,
     PerformanceTestRunnerTests)
+from .file_source_collectors.pip import PipDependencies
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 from .file_source_collectors.robot_framework import RobotFrameworkTests, RobotFrameworkSourceUpToDateness
 

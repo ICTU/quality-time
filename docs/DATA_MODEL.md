@@ -7,7 +7,7 @@
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
-| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer |
+| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, pip |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
@@ -58,6 +58,7 @@
 | [OWASP Dependency Check Jenkins plugin](https://plugins.jenkins.io/dependency-check-jenkins-plugin) | Jenkins plugin for the OWASP Dependency Check, a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
 | [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project) | The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested. | Source up-to-dateness, Security warnings |
 | [Performancetest-runner](https://github.com/ICTU/performancetest-runner) | An open source tool to run performancetests and create performancetest reports. | Performancetest duration, Performancetest stability, Scalability, Slow transactions, Source up-to-dateness, Tests |
+| [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | Dependencies |
 | [Pyupio Safety](https://github.com/pyupio/safety) | Safety checks Python dependencies for known security vulnerabilities. | Security warnings |
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
@@ -111,6 +112,15 @@
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
+
+### Dependencies from pip
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a pip-outdated report in JSON format ('pip list --outdated --format json') or a zip with pip-outdated reports in JSON format. | URL | Yes |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Duplicated lines from SonarQube
 
