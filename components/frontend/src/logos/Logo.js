@@ -7,12 +7,13 @@ import AzureDevops from './azure_devops.png';
 import Bandit from './bandit.png';
 import Composer from './composer.png';
 import Checkmarx from './checkmarx.png';
-import Gitlab from './gitlab.png';
+import GitLab from './gitlab.png';
 import JaCoCo from './jacoco.png';
 import Jenkins from './jenkins.png';
 import Jira from './jira.png';
 import Junit from './junit.png';
 import NCover from './ncover.png';
+import npm from './npm.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
 import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
@@ -33,7 +34,7 @@ export function Logo(props) {
         bandit: Bandit,
         composer: Composer,
         cxsast: Checkmarx,
-        gitlab: Gitlab,
+        gitlab: GitLab,
         jacoco: JaCoCo,
         jacoco_jenkins_plugin: JaCoCo,
         jenkins: Jenkins,
@@ -41,6 +42,7 @@ export function Logo(props) {
         jira: Jira,
         junit: Junit,
         ncover: NCover,
+        npm: npm,
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
         owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,

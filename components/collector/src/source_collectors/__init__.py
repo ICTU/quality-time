@@ -27,6 +27,7 @@ from .file_source_collectors.composer import ComposerDependencies
 from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
 from .file_source_collectors.ncover import NCoverSourceUpToDateness
+from .file_source_collectors.npm import NpmDependencies
 from .file_source_collectors.ojaudit import OJAuditViolations
 from .file_source_collectors.openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
 from .file_source_collectors.owasp_dependency_check import (
