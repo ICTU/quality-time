@@ -91,10 +91,11 @@
             "direction": "<",
             "target": "0",
             "near_target": "10",
-            "default_source": "composer",
+            "default_source": "npm",
             "sources": [
                 "composer",
                 "manual_number",
+                "npm",
                 "pip",
                 "random"
             ],
@@ -2629,6 +2630,82 @@
             },
             "entities": {}
         },
+        "npm": {
+            "name": "npm",
+            "description": "npm is a package manager for the JavaScript programming language.",
+            "url": "https://docs.npmjs.com/",
+            "parameters": {
+                "url": {
+                    "name": "URL to a npm-outdated report in JSON format ('npm outdated --json') or a zip with npm-outdated reports in JSON format.",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                }
+            },
+            "entities": {
+               "dependencies": {
+                    "name": "dependency",
+                    "name_plural": "dependencies",
+                    "attributes": [
+                        {
+                            "name": "Package",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Current version",
+                            "key": "current"
+                        },
+                        {
+                            "name": "Wanted version",
+                            "key": "wanted"
+                        },
+                        {
+                            "name": "Latest version",
+                            "key": "latest"
+                        }
+                    ]
+                } 
+            }
+        },
         "ojaudit": {
             "name": "OJAudit",
             "description": "An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules.",
@@ -3612,6 +3689,7 @@
                         "JUnit XML report",
                         "Manual number",
                         "NCover",
+                        "npm",
                         "OJAudit",
                         "OpenVAS",
                         "OWASP Dependency Check",
@@ -3644,6 +3722,7 @@
                         "JUnit XML report": "junit",
                         "Manual number": "manual_number",
                         "NCover": "ncover",
+                        "npm": "npm",
                         "OJAudit": "ojaudit",
                         "OpenVAS": "openvas",
                         "OWASP Dependency Check": "owasp_dependency_check",

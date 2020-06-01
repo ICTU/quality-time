@@ -7,7 +7,7 @@
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
-| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, pip |
+| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, npm, pip |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
@@ -52,6 +52,7 @@
 | [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | Source up-to-dateness, Tests |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | Source up-to-dateness, Test branch coverage, Test line coverage |
+| [npm](https://www.npmjs.com/) | npm (originally short for Node Package Manager) is a package manager for the JavaScript programming language. | Dependencies |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
 | [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | Source up-to-dateness, Security warnings |
 | [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
@@ -112,6 +113,15 @@
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
+
+### Dependencies from npm
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a npm-outdated report in JSON format ('npm outdated --json') or a zip with npm-outdated reports in JSON format. | URL | Yes |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Dependencies from pip
 
