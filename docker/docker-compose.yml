@@ -41,7 +41,7 @@ services:
       - server
       - frontend
   frontend:
-    image: ictu/quality-time_frontend:v2.3.0-rc.1
+    image: ictu/quality-time_frontend:v2.3.0
     environment:
       - FRONTEND_PORT=5000
     depends_on:
@@ -49,7 +49,7 @@ services:
     cap_drop:
       - ALL
   collector:
-    image: ictu/quality-time_collector:v2.3.0-rc.1
+    image: ictu/quality-time_collector:v2.3.0
     environment:
       - SERVER_PORT=5001
       - SERVER_HOST=server
@@ -60,7 +60,7 @@ services:
     cap_drop:
       - ALL
   server:
-    image: ictu/quality-time_server:v2.3.0-rc.1
+    image: ictu/quality-time_server:v2.3.0
     environment:
       - SERVER_PORT=5001
       - PROXY_HOST=www
