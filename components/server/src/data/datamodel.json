@@ -1482,7 +1482,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Composer 'outdated' report in a human readable format",
+                    "name": "URL to a Composer 'outdated' report in a human readable format",
                     "short_name": "URL",
                     "type": "string",
                     "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
@@ -2636,15 +2636,27 @@
             "url": "https://docs.npmjs.com/",
             "parameters": {
                 "url": {
-                    "name": "URL to a npm-outdated report in JSON format ('npm outdated --json') or a zip with npm-outdated reports in JSON format.",
+                    "name": "URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format.",
                     "short_name": "URL",
                     "type": "url",
+                    "help_url": "https://docs.npmjs.com/cli-commands/outdated.html",
                     "validate_on": [
                         "username",
                         "password",
                         "private_token"
                     ],
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to npm 'outdated' report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "help_url": "https://docs.npmjs.com/cli-commands/outdated.html",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "dependencies"
@@ -3401,15 +3413,27 @@
             "url": "https://pip.pypa.io/en/stable/",
             "parameters": {
                 "url": {
-                    "name": "URL to a pip-outdated report in JSON format ('pip list --outdated --format json') or a zip with pip-outdated reports in JSON format.",
+                    "name": "URL to a pip 'outdated' report in JSON format ('pip list --outdated --format json') or a zip with pip 'outdated' reports in JSON format.",
                     "short_name": "URL",
                     "type": "url",
+                    "help_url": "https://pip.pypa.io/en/stable/reference/pip_list/",
                     "validate_on": [
                         "username",
                         "password",
                         "private_token"
                     ],
                     "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "dependencies"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to pip 'outdated' report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "help_url": "https://pip.pypa.io/en/stable/reference/pip_list/",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "dependencies"

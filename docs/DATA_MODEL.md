@@ -52,7 +52,7 @@
 | [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | Source up-to-dateness, Tests |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | Source up-to-dateness, Test branch coverage, Test line coverage |
-| [npm](https://www.npmjs.com/) | npm (originally short for Node Package Manager) is a package manager for the JavaScript programming language. | Dependencies |
+| [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | Dependencies |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
 | [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | Source up-to-dateness, Security warnings |
 | [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
@@ -108,7 +108,7 @@
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | URL to a Compose 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports | URL | Yes | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
-| URL to Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
+| URL to a Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
@@ -118,7 +118,8 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a npm-outdated report in JSON format ('npm outdated --json') or a zip with npm-outdated reports in JSON format. | URL | Yes |  |
+| URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format. | URL | Yes | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
+| URL to npm 'outdated' report in a human readable format | String | No | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
@@ -127,7 +128,8 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a pip-outdated report in JSON format ('pip list --outdated --format json') or a zip with pip-outdated reports in JSON format. | URL | Yes |  |
+| URL to a pip 'outdated' report in JSON format ('pip list --outdated --format json') or a zip with pip 'outdated' reports in JSON format. | URL | Yes | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
+| URL to pip 'outdated' report in a human readable format | String | No | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
