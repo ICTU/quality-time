@@ -12,7 +12,7 @@ from database import sessions
 from routes import auth
 
 
-USERNAME = "jodoe"
+USERNAME = "john-doe"
 PASSWORD = "secret"
 
 

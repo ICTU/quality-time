@@ -60,7 +60,7 @@ def check_password(ssha_ldap_salted_password, password):
 def get_credentials() -> Tuple[str, str]:
     """Return the credentials from the request."""
     credentials = dict(bottle.request.json)
-    unsafe_characters = re.compile(r"[^\w ]+", re.UNICODE)
+    unsafe_characters = re.compile(r"[^\w\- ]+", re.UNICODE)
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
     password = credentials.get("password", "no password given")
     return username, password
