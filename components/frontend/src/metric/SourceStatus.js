@@ -8,7 +8,7 @@ export function SourceStatus(props) {
   const source = props.metric.sources[props.source_uuid];
   const source_name = get_source_name(source, props.datamodel);
   function source_label() {
-    return (props.source.landing_url ? <a href={props.source.landing_url}>{source_name}</a> : source_name)
+    return (props.source.landing_url ? <a href={props.source.landing_url} target='_blank'>{source_name}</a> : source_name)
   }
   if (props.source.connection_error || props.source.parse_error) {
     return (
