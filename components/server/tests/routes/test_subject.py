@@ -123,14 +123,14 @@ class SubjectTest(unittest.TestCase):
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""
-        self.assertEqual(dict(ok=True), post_subject_copy(SUBJECT_ID, self.database))
+        self.assertEqual(dict(ok=True), post_subject_copy(SUBJECT_ID, REPORT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))
         subject_copy_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, subject_copy_uuid], email=self.email,
-                 description="Jenny copied the subject 'Subject' in report 'Report'."),
+            dict(uuids=[REPORT_ID, subject_copy_uuid], email=self.email,
+                 description="Jenny copied the subject 'Subject' from report 'Report' to report 'Report'."),
             self.report["delta"])
 
     def test_delete_subject(self):

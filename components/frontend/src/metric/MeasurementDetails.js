@@ -7,28 +7,11 @@ import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ItemActionButtons } from '../widgets/Button';
-import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
 import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { capitalize, get_source_name, get_subject_name } from '../utils';
-
-function subject_options(reports, datamodel, current_subject_uuid) {
-  let options = [];
-  reports.forEach((report) => {
-    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-      const subject_name = get_subject_name(subject, datamodel);
-      options.push({
-        content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
-        disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
-        text: report.title + subject_name,
-        value: subject_uuid
-      })
-    })
-  });
-  options.sort((a, b) => a.text.localeCompare(b.text));
-  return options;
-}
+import { subject_options } from '../menu_options';
+import { capitalize, get_source_name } from '../utils';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
   const report_date_parameter = report_date || new Date(3000, 1, 1);

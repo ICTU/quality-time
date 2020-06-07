@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
-import { add_subject } from '../api/subject';
+import { add_subject, copy_subject } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddButton } from '../widgets/Button';
+import { AddOrCopyButton } from '../widgets/Button';
+import { subject_options } from '../menu_options';
 
 function useDelayedRender() {
   const [visible, setVisible] = useState(false);
@@ -31,7 +32,13 @@ export function Subjects(props) {
       )}
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
-          <AddButton item_type={"subject"} onClick={() => add_subject(props.report.report_uuid, props.reload)} />
+          <AddOrCopyButton
+            item_type={"subject"}
+            onChange={
+              (source_subject_uuid) => copy_subject(source_subject_uuid, props.report.report_uuid, props.reload)}
+            onClick={() => add_subject(props.report.report_uuid, props.reload)}
+            options={subject_options(props.reports, props.datamodel)}
+          />
         </Segment>}
       />
     </>

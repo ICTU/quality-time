@@ -34,7 +34,7 @@ export function SubjectTitle(props) {
                             item_type="subject"
                             first_item={props.first_subject}
                             last_item={props.last_subject}
-                            onCopy={() => copy_subject(subject_uuid, props.reload)}
+                            onCopy={() => copy_subject(subject_uuid, props.report.report_uuid, props.reload)}
                             onDelete={() => delete_subject(subject_uuid, props.reload)}
                             onMove={(target_report_uuid) => {
                                 move_subject(subject_uuid, target_report_uuid, props.reload)

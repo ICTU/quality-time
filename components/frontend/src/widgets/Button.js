@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
 import { get_report_pdf } from '../api/report';
 import { show_message } from '../utils'
+import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
   const { action, icon, item_type, ...other } = props;
@@ -109,6 +110,32 @@ export function MoveButton(props) {
         text={`Move ${item_type} to`}
         {...otherProps} />
     </Button>
+  )
+}
+
+export function AddOrCopyButton(props) {
+  var { item_type, onChange, onClick, options } = props;
+  var breadcrumb;
+  if (item_type === 'subject')  {
+    breadcrumb = <ItemBreadcrumb size='tiny' report="copy from report" subject="subject" />
+  }
+  return (
+    <Button.Group basic icon primary>
+      <Dropdown
+        basic
+        className='button icon'
+        disabled={options.length === 0}
+        floating
+        header={<Dropdown.Header>{breadcrumb}</Dropdown.Header>}
+        options={options}
+        onChange={(event, { value }) => onChange(value)}
+        scrolling
+        selectOnBlur={false}
+        selectOnNavigation={false}
+        trigger={<React.Fragment/>}
+      />
+      <AddButton onClick={onClick} item_type={item_type} />
+    </Button.Group>
   )
 }
 

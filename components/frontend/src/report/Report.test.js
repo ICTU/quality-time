@@ -29,7 +29,7 @@ const report = {
 
 describe("<Report />", () => {
   it('shows the report', () => {
-    const wrapper = mount(<Report datamodel={datamodel} report={report} />);
+    const wrapper = mount(<Report datamodel={datamodel} reports={[report]} report={report} />);
     expect(wrapper.find("ReportTitle").prop("report")).toBe(report)
   });
   it('shows an error message if there is no report', () => {

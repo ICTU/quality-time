@@ -4,8 +4,8 @@ export function add_subject(report_uuid, reload) {
   return fetch_server_api('post', `subject/new/${report_uuid}`, {}).then(reload)
 }
 
-export function copy_subject(subject_uuid, reload) {
-  return fetch_server_api('post', `subject/${subject_uuid}/copy`, {}).then(reload)
+export function copy_subject(subject_uuid, report_uuid, reload) {
+  return fetch_server_api('post', `subject/${subject_uuid}/copy/${report_uuid}`, {}).then(reload)
 }
 
 export function move_subject(subject_uuid, report_uuid, reload) {

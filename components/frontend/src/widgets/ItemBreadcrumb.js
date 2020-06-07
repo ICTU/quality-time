@@ -3,7 +3,7 @@ import { Breadcrumb } from 'semantic-ui-react';
 
 export function ItemBreadcrumb(props) {
     return (
-        <Breadcrumb>
+        <Breadcrumb size={props.size || 'small'}>
             <Breadcrumb.Section>{props.report}</Breadcrumb.Section>
             <Breadcrumb.Divider icon='right chevron' />
             <Breadcrumb.Section>{props.subject}</Breadcrumb.Section>
