@@ -2,6 +2,18 @@ import React from 'react';
 import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
 import { get_subject_name } from './utils';
 
+export function report_options(reports, current_report_uuid) {
+    let options = [];
+    reports.forEach((report) => {
+        options.push({
+            disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
+            text: report.title, value: report.report_uuid
+        })
+    });
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
+}
+
 export function subject_options(reports, datamodel, current_subject_uuid) {
     let options = [];
     reports.forEach((report) => {

@@ -6,19 +6,8 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ItemActionButtons } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { copy_subject, delete_subject, set_subject_attribute, move_subject } from '../api/subject';
+import { report_options } from '../menu_options';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-
-function report_options(reports, current_report_uuid) {
-    let options = [];
-    reports.forEach((report) => {
-        options.push({
-            disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
-            text: report.title, value: report.report_uuid
-        })
-    });
-    options.sort((a, b) => a.text.localeCompare(b.text));
-    return options;
-}
 
 export function SubjectTitle(props) {
     const current_subject_type = props.datamodel.subjects[props.subject.type] || { name: "Unknown subject type", description: "No description" };

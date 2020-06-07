@@ -115,9 +115,9 @@ export function MoveButton(props) {
 
 export function AddOrCopyButton(props) {
   var { item_type, onChange, onClick, options } = props;
-  var breadcrumb;
-  if (item_type === 'subject')  {
-    breadcrumb = <ItemBreadcrumb size='tiny' report="copy from report" subject="subject" />
+  var breadcrumb_props = {report: "copy existing report"};
+  if (item_type === 'subject') {
+    breadcrumb_props.subject = 'subject';
   }
   return (
     <Button.Group basic icon primary>
@@ -126,7 +126,7 @@ export function AddOrCopyButton(props) {
         className='button icon'
         disabled={options.length === 0}
         floating
-        header={<Dropdown.Header>{breadcrumb}</Dropdown.Header>}
+        header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props}/></Dropdown.Header>}
         options={options}
         onChange={(event, { value }) => onChange(value)}
         scrolling

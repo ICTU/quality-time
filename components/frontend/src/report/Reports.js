@@ -3,10 +3,11 @@ import { Message, Segment } from 'semantic-ui-react';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Tag } from '../widgets/Tag';
-import { add_report, set_reports_attribute } from '../api/report';
+import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddButton } from '../widgets/Button';
+import { AddOrCopyButton } from '../widgets/Button';
+import { report_options } from '../menu_options';
 
 function ReportsDashboard(props) {
   var tag_counts = {};
@@ -54,7 +55,9 @@ export function Reports(props) {
       <ReportsDashboard layout={props.reports_overview.layout} {...props} />
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
-          <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />
+          <AddOrCopyButton item_type={"report"} onClick={() => add_report(props.reload)}
+          onChange={(source_report_uuid) => copy_report(source_report_uuid, props.reload)}
+          options={report_options(props.reports)} />
         </Segment>
       }
       />
