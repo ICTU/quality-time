@@ -54,7 +54,7 @@ export function Source(props) {
                             item_type='source'
                             first_item={props.first_source}
                             last_item={props.last_source}
-                            onCopy={() => copy_source(props.source_uuid, props.reload)}
+                            onCopy={() => copy_source(props.source_uuid, props.metric_uuid, props.reload)}
                             onDelete={() => delete_source(props.source_uuid, props.reload)}
                             onMove={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
                             onReorder={(direction) => {
