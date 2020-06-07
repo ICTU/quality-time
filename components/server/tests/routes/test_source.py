@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy, post_source_new, \
-    post_source_parameter
+from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy_v3, \
+    post_source_new, post_source_parameter
 
 from .fixtures import create_report, METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, \
     SOURCE_ID2, SOURCE_ID3, SOURCE_ID4, SOURCE_ID5, SOURCE_ID6, SOURCE_ID7, SUBJECT_ID, SUBJECT_ID2, SUBJECT_ID3
@@ -389,15 +389,15 @@ class SourceTest(SourceTestCase):
 
     def test_copy_source(self):
         """Test that a source can be copied."""
-        self.assertEqual(dict(ok=True), post_source_copy(SOURCE_ID, self.database))
+        self.assertEqual(dict(ok=True), post_source_copy_v3(SOURCE_ID, METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source_uuid, copied_source = list(
             self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items())[1]
         self.assertEqual("Source (copy)", copied_source["name"])
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, copied_source_uuid], email=self.email,
-                 description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' in report "
-                             "'Report'."),
+            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, copied_source_uuid], email=self.email,
+                 description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report "
+                             "'Report' to metric 'Metric' of subject 'Subject' in report 'Report'."),
             self.report["delta"])
 
     def test_move_source_within_subject(self):

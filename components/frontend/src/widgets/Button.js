@@ -116,8 +116,14 @@ export function MoveButton(props) {
 export function AddOrCopyButton(props) {
   var { item_type, onChange, onClick, options } = props;
   var breadcrumb_props = {report: "copy existing report"};
-  if (item_type === 'subject') {
+  if (item_type !== 'report') {
     breadcrumb_props.subject = 'subject';
+    if (item_type !== 'subject') {
+      breadcrumb_props.metric = 'metric';
+      if (item_type !== 'metric') {
+        breadcrumb_props.source = 'source';
+      }
+    }
   }
   return (
     <Button.Group basic icon primary>

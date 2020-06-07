@@ -4,8 +4,8 @@ export function add_metric(subject_uuid, reload) {
     fetch_server_api('post', `metric/new/${subject_uuid}`, {}).then(reload)
 }
 
-export function copy_metric(metric_uuid, reload) {
-    return fetch_server_api('post', `metric/${metric_uuid}/copy`, {}).then(reload)
+export function copy_metric(metric_uuid, subject_uuid, reload) {
+    return fetch_server_api('post', `metric/${metric_uuid}/copy/${subject_uuid}`, {}).then(reload)
 }
 
 export function move_metric(metric_uuid, subject_uuid, reload) {

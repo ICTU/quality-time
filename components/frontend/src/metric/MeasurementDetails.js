@@ -78,7 +78,7 @@ export function MeasurementDetails(props) {
             item_type="metric"
             first_item={props.first_metric}
             last_item={props.last_metric}
-            onCopy={() => copy_metric(props.metric_uuid, props.reload)}
+            onCopy={() => copy_metric(props.metric_uuid, props.subject_uuid, props.reload)}
             onDelete={() => delete_metric(props.metric_uuid, props.reload)}
             onMove={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
             onReorder={(direction) => {

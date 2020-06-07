@@ -1,6 +1,27 @@
 import React from 'react';
 import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
-import { get_subject_name } from './utils';
+import { get_metric_name, get_subject_name } from './utils';
+
+export function metric_options(reports, datamodel, current_metric_uuid) {
+    let options = [];
+    reports.forEach((report) => {
+        Object.values(report.subjects).forEach((subject) => {
+            const subject_name = get_subject_name(subject, datamodel);
+            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                const metric_name = get_metric_name(metric, datamodel);
+                options.push({
+                    content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
+                    disabled: metric_uuid === current_metric_uuid,
+                    key: metric_uuid,
+                    text: report.title + subject_name + metric_name,
+                    value: metric_uuid
+                })
+            })
+        });
+    });
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
+}
 
 export function report_options(reports, current_report_uuid) {
     let options = [];

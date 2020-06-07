@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Open the source links in separate window. Closes [#1203](https://github.com/ICTU/quality-time/issues/1203).
+- To support adding reports, subjects, metrics, and sources by copying an existing report, subject, metric, or source, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>.
 
 ### Fixed
 

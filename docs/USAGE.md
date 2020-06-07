@@ -238,4 +238,4 @@ To manually download a PDF version of a report, navigate to the report and expan
 
 ### API
 
-If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v2/report/<report_uuid>/pdf`. No authorization is needed for this API.
+If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.

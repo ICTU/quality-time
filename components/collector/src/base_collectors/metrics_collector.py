@@ -40,6 +40,8 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
 
 class MetricsCollector:
     """Collect measurements for all metrics."""
+    API_VERSION = "v3"
+
     def __init__(self) -> None:
         self.server_url: Final[URL] = \
             URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
@@ -81,10 +83,11 @@ class MetricsCollector:
         # The first attempt is likely to fail because the collector starts up faster than the server,
         # so don't log tracebacks on the first attempt
         first_attempt = True
+        data_model_url = URL(f"{self.server_url}/api/{self.API_VERSION}/datamodel")
         while True:
             self.record_health()
-            logging.info("Loading data model...")
-            if data_model := await get(session, URL(f"{self.server_url}/api/v2/datamodel"), log=not first_attempt):
+            logging.info("Loading data model from %s...", data_model_url)
+            if data_model := await get(session, data_model_url, log=not first_attempt):
                 return data_model
             first_attempt = False
             logging.warning("Loading data model failed, trying again in %ss...", sleep_duration)
@@ -92,7 +95,7 @@ class MetricsCollector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
         """Collect measurements for all metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/api/v2/metrics"))
+        metrics = await get(session, URL(f"{self.server_url}/api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
         tasks = [self.collect_metric(session, metric_uuid, metric, next_fetch)
                  for metric_uuid, metric in metrics.items() if self.__can_and_should_collect(metric_uuid, metric)]
@@ -105,7 +108,7 @@ class MetricsCollector:
         self.next_fetch[metric_uuid] = next_fetch
         measurement = await self.collect_sources(session, metric)
         measurement["metric_uuid"] = metric_uuid
-        await post(session, URL(f"{self.server_url}/api/v2/measurements"), measurement)
+        await post(session, URL(f"{self.server_url}/api/{self.API_VERSION}/measurements"), measurement)
 
     async def collect_sources(self, session: aiohttp.ClientSession, metric):
         """Collect the measurements from the metric's sources."""

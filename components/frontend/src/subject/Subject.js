@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Button, Popup, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
-import { add_metric } from '../api/metric';
+import { add_metric, copy_metric } from '../api/metric';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddButton } from '../widgets/Button';
+import { AddOrCopyButton } from '../widgets/Button';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
+import { metric_options } from '../menu_options';
 
 export function Subject(props) {
   function handleSort(column) {
@@ -143,12 +144,17 @@ export function Subject(props) {
         <Table.Footer>
           <Table.Row>
             <Table.HeaderCell colSpan='9'>
-              <AddButton
+              <AddOrCopyButton
                 item_type={"metric"}
+                onChange={(source_metric_uuid) => {
+                  setSortColumn(null);
+                  copy_metric(source_metric_uuid, props.subject_uuid, props.reload);
+                }}
                 onClick={() => {
                   setSortColumn(null);
                   add_metric(props.subject_uuid, props.reload);
                 }}
+                options={metric_options(props.reports, props.datamodel)}
               />
             </Table.HeaderCell>
           </Table.Row>

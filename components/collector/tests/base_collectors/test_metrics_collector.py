@@ -34,7 +34,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_collector = MetricsCollector()
         self.url = "https://url"
-        self.measurement_api_url = "http://localhost:5001/api/v2/measurements"
+        self.measurement_api_url = "http://localhost:5001/api/v3/measurements"
 
     @staticmethod
     def patched_get(mock_async_get_request, side_effect=None):
@@ -154,7 +154,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [metrics, metrics]
         await self.fetch_measurements(mock_async_get_request, number=2)
         mocked_post.assert_called_once_with(
-            "http://localhost:5001/api/v2/measurements",
+            "http://localhost:5001/api/v3/measurements",
             json=dict(
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
