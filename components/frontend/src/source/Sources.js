@@ -1,9 +1,10 @@
 import React from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Source } from './Source';
-import { add_source } from '../api/source';
+import { add_source, copy_source } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddButton } from '../widgets/Button';
+import { AddOrCopyButton } from '../widgets/Button';
+import { source_options } from '../menu_options';
 
 export function Sources(props) {
     const measurement_sources = props.measurement ? props.measurement.sources : [];
@@ -21,9 +22,11 @@ export function Sources(props) {
         return (
             <ReadOnlyOrEditable editableComponent={
                 <Segment vertical>
-                    <AddButton
-                        item_type={"source"}
+                    <AddOrCopyButton
+                        item_type="source"
+                        onChange={(source_uuid) => copy_source(source_uuid, props.metric_uuid, props.reload)}
                         onClick={() => add_source(props.metric_uuid, props.reload)}
+                        options={source_options(props.reports, props.datamodel)}
                     />
                 </Segment>}
             />

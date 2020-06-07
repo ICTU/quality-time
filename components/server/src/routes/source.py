@@ -41,7 +41,7 @@ def post_source_copy_v2(source_uuid: SourceId, database: Database):  # pragma: n
     post_source_copy_v3(source_uuid, data.metric_uuid, database)
 
 
-@bottle.post("/api/v2/source/<source_uuid>/copy/<metric_uuid>")
+@bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
 def post_source_copy_v3(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
     source = SourceData(database, source_uuid)

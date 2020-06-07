@@ -13,6 +13,12 @@ export function ItemBreadcrumb(props) {
                         <>
                             <Breadcrumb.Divider icon='right chevron' />
                             <Breadcrumb.Section>{props.metric}</Breadcrumb.Section>
+                            {props.source &&
+                                <>
+                                    <Breadcrumb.Divider icon='right chevron' />
+                                    <Breadcrumb.Section>{props.source}</Breadcrumb.Section>
+                                </>
+                            }
                         </>
                     }
                 </>

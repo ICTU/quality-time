@@ -1,6 +1,6 @@
 import React from 'react';
 import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
-import { get_metric_name, get_subject_name } from './utils';
+import { get_metric_name, get_source_name, get_subject_name } from './utils';
 
 export function metric_options(reports, datamodel, current_metric_uuid) {
     let options = [];
@@ -29,6 +29,30 @@ export function report_options(reports, current_report_uuid) {
         options.push({
             disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
             text: report.title, value: report.report_uuid
+        })
+    });
+    options.sort((a, b) => a.text.localeCompare(b.text));
+    return options;
+}
+
+export function source_options(reports, datamodel, current_source_uuid) {
+    let options = [];
+    reports.forEach((report) => {
+        Object.values(report.subjects).forEach((subject) => {
+            const subject_name = get_subject_name(subject, datamodel);
+            Object.values(subject.metrics).forEach((metric) => {
+                const metric_name = get_metric_name(metric, datamodel);
+                Object.entries(metric.sources).forEach(([source_uuid, source]) => {
+                    const source_name = get_source_name(source, datamodel);
+                    options.push({
+                        content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} source={source_name} />,
+                        disabled: source_uuid === current_source_uuid,
+                        key: source_uuid,
+                        text: report.title + subject_name + metric_name + source_name,
+                        value: source_uuid
+                    })
+                })
+            })
         })
     });
     options.sort((a, b) => a.text.localeCompare(b.text));
