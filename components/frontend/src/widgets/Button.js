@@ -5,25 +5,35 @@ import { show_message } from '../utils'
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 function ActionButton(props) {
-  const { action, icon, item_type, ...other } = props;
+  const { action, icon, item_type, popup, position, ...other } = props;
+  const button = <Button basic icon primary {...other} ><Icon name={icon} /> {action} {item_type}</Button>;
   return (
-    <Button
-      basic
-      icon
-      primary
-      {...other}
-    >
-      <Icon name={icon} /> {action} {item_type}
-    </Button>
+    popup ?
+      <Popup
+        content={popup}
+        position={position || 'top left'}
+        trigger={button}
+      /> :
+      button
   )
 }
 
 export function AddButton(props) {
-  return <ActionButton icon='plus' action='Add' {...props} />
+  return <ActionButton icon='plus' action='Add' popup={`Add a new ${props.item_type}`} {...props} />
 }
 
 export function DeleteButton(props) {
-  return <ActionButton icon='trash' action='Delete' negative floated='right' {...props} />
+  return (
+    <ActionButton
+      action='Delete'
+      floated='right'
+      icon='trash'
+      negative
+      popup={`Delete this ${props.item_type}. Careful, this can't be undone!`}
+      position='top right'
+      {...props}
+    />
+  )
 }
 
 function download_pdf(report_uuid, callback) {
@@ -105,18 +115,22 @@ function ActionAndItemPickerButton(props) {
     }
   }
   return (
-    <Dropdown
-      basic
-      className='button icon primary'
-      disabled={options.length === 0}
-      floating
-      header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
-      options={options}
-      onChange={(event, { value }) => onChange(value)}
-      scrolling
-      selectOnBlur={false}
-      selectOnNavigation={false}
-      trigger={<><Icon name={icon} /> {`${action} ${item_type} `}</>}
+    <Popup
+      content={`${action} an existing ${item_type} here`}
+      trigger={
+        <Dropdown
+          basic
+          className='button icon primary'
+          disabled={options.length === 0}
+          floating
+          header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
+          options={options}
+          onChange={(event, { value }) => onChange(value)}
+          scrolling
+          selectOnBlur={false}
+          selectOnNavigation={false}
+          trigger={<><Icon name={icon} /> {`${action} ${item_type} `}</>}
+        />}
     />
   )
 }
