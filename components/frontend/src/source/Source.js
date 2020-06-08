@@ -1,14 +1,13 @@
 import React from 'react';
-import { Dropdown, Grid, Header, Icon, Message } from 'semantic-ui-react';
+import { Grid, Header, Icon, Message } from 'semantic-ui-react';
 import { SourceType } from './SourceType';
 import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { ItemActionButtons } from '../widgets/Button';
-import { copy_source, delete_source, move_source, set_source_attribute } from '../api/source';
+import { delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { metric_options } from '../menu_options';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
@@ -54,14 +53,10 @@ export function Source(props) {
                             item_type='source'
                             first_item={props.first_source}
                             last_item={props.last_source}
-                            onCopy={() => copy_source(props.source_uuid, props.metric_uuid, props.reload)}
                             onDelete={() => delete_source(props.source_uuid, props.reload)}
-                            onMove={(metric_uuid) => move_source(props.source_uuid, metric_uuid, props.reload)}
                             onReorder={(direction) => {
                                 set_source_attribute(props.source_uuid, "position", direction, props.reload)
                             }}
-                            options={metric_options(props.reports, props.datamodel, props.metric_uuid)}
-                            reorder_header={<Dropdown.Header>Report <Icon name='right chevron' />Subject <Icon name='right chevron' />Metric</Dropdown.Header>}
                         />
                     </Grid.Column>
                 </Grid.Row>}

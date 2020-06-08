@@ -2,16 +2,16 @@ import React from 'react';
 import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
 import { get_metric_name, get_source_name, get_subject_name } from './utils';
 
-export function metric_options(reports, datamodel, current_metric_uuid) {
+export function metric_options(reports, datamodel, current_subject_uuid) {
     let options = [];
     reports.forEach((report) => {
-        Object.values(report.subjects).forEach((subject) => {
+        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+            if (subject_uuid === current_subject_uuid) { return }
             const subject_name = get_subject_name(subject, datamodel);
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
                 const metric_name = get_metric_name(metric, datamodel);
                 options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
-                    disabled: metric_uuid === current_metric_uuid,
                     key: metric_uuid,
                     text: report.title + subject_name + metric_name,
                     value: metric_uuid

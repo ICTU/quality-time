@@ -5,8 +5,7 @@ import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ItemActionButtons } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { copy_subject, delete_subject, set_subject_attribute, move_subject } from '../api/subject';
-import { report_options } from '../menu_options';
+import { delete_subject, set_subject_attribute } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SubjectTitle(props) {
@@ -23,16 +22,10 @@ export function SubjectTitle(props) {
                             item_type="subject"
                             first_item={props.first_subject}
                             last_item={props.last_subject}
-                            onCopy={() => copy_subject(subject_uuid, props.report.report_uuid, props.reload)}
                             onDelete={() => delete_subject(subject_uuid, props.reload)}
-                            onMove={(target_report_uuid) => {
-                                move_subject(subject_uuid, target_report_uuid, props.reload)
-                            }}
                             onReorder={(direction) => {
                                 set_subject_attribute(subject_uuid, "position", direction, props.reload)
                             }}
-                            options={report_options(props.reports, props.report.report_uuid)}
-                            reorder_header="Report"
                         />
                     </Grid.Column>
                 </Grid.Row>}

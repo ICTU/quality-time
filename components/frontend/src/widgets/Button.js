@@ -92,85 +92,50 @@ export function ReorderButtonGroup(props) {
   )
 }
 
-export function MoveToButton(props) {
-  var { item_type, onClick, ...otherProps } = props;
+function ActionAndItemPickerButton(props) {
+  var { action, item_type, onChange, options, icon } = props;
+  var breadcrumb_props = { report: "report" };
+  if (item_type !== 'report') {
+    breadcrumb_props.subject = 'subject';
+    if (item_type !== 'subject') {
+      breadcrumb_props.metric = 'metric';
+      if (item_type !== 'metric') {
+        breadcrumb_props.source = 'source';
+      }
+    }
+  }
   return (
-    <Button basic icon primary>
-      <Icon name="shuffle" />&nbsp;
-      <Dropdown
-        basic
-        onChange={(event, { value }) => onClick(value)}
-        scrolling
-        selectOnBlur={false}
-        selectOnNavigation={false}
-        text={`Move ${item_type} to`}
-        {...otherProps} />
-    </Button>
+    <Dropdown
+      basic
+      className='button icon primary'
+      disabled={options.length === 0}
+      floating
+      header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
+      options={options}
+      onChange={(event, { value }) => onChange(value)}
+      scrolling
+      selectOnBlur={false}
+      selectOnNavigation={false}
+      trigger={<><Icon name={icon} /> {`${action} ${item_type} `}</>}
+    />
   )
 }
 
 export function CopyButton(props) {
-  var { item_type, onChange, options } = props;
-  var breadcrumb_props = { report: "report" };
-  if (item_type !== 'report') {
-    breadcrumb_props.subject = 'subject';
-    if (item_type !== 'subject') {
-      breadcrumb_props.metric = 'metric';
-      if (item_type !== 'metric') {
-        breadcrumb_props.source = 'source';
-      }
-    }
-  }
   return (
-    <Dropdown
-      basic
-      className='button icon primary'
-      disabled={options.length === 0}
-      floating
-      header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
-      options={options}
-      onChange={(event, { value }) => onChange(value)}
-      scrolling
-      selectOnBlur={false}
-      selectOnNavigation={false}
-      trigger={<><Icon name='copy' /> {`Copy ${item_type} `}</>}
-    />
+    <ActionAndItemPickerButton {...props} action="Copy" icon="copy" />
   )
 }
 
 export function MoveButton(props) {
-  var { item_type, onChange, options } = props;
-  var breadcrumb_props = { report: "report" };
-  if (item_type !== 'report') {
-    breadcrumb_props.subject = 'subject';
-    if (item_type !== 'subject') {
-      breadcrumb_props.metric = 'metric';
-      if (item_type !== 'metric') {
-        breadcrumb_props.source = 'source';
-      }
-    }
-  }
   return (
-    <Dropdown
-      basic
-      className='button icon primary'
-      disabled={options.length === 0}
-      floating
-      header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
-      options={options}
-      onChange={(event, { value }) => onChange(value)}
-      scrolling
-      selectOnBlur={false}
-      selectOnNavigation={false}
-      trigger={<><Icon name='shuffle' /> {`Move ${item_type} `}</>}
-    />
+    <ActionAndItemPickerButton {...props} action="Move" icon="shuffle" />
   )
 }
 
 export function ItemActionButtons(props) {
   return (
     <>
-      <MoveToButton item_type={props.item_type} onClick={props.onMove} options={props.options} header={props.reorder_header} />
       <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot || "position"} />
       <DeleteButton item_type={props.item_type} onClick={props.onDelete} />
     </>

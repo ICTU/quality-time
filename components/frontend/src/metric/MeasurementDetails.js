@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, Icon, Tab, Menu } from 'semantic-ui-react';
+import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
@@ -7,10 +7,9 @@ import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { ItemActionButtons } from '../widgets/Button';
-import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
+import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { subject_options } from '../menu_options';
 import { capitalize, get_source_name } from '../utils';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
@@ -78,15 +77,11 @@ export function MeasurementDetails(props) {
             item_type="metric"
             first_item={props.first_metric}
             last_item={props.last_metric}
-            onCopy={() => copy_metric(props.metric_uuid, props.subject_uuid, props.reload)}
             onDelete={() => delete_metric(props.metric_uuid, props.reload)}
-            onMove={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
             onReorder={(direction) => {
               props.stop_sort();
               set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
             }}
-            options={subject_options(props.reports, props.datamodel, props.subject_uuid)}
-            reorder_header={<Dropdown.Header>Report <Icon name='right chevron' />Subject</Dropdown.Header>}
             slot="row"
           />
         </div>}
