@@ -19,7 +19,7 @@ function ActionButton(props) {
 }
 
 export function AddButton(props) {
-  return <ActionButton icon='plus' action='Add' popup={`Add a new ${props.item_type}`} {...props} />
+  return <ActionButton icon='plus' action='Add' popup={`Add a new ${props.item_type} here`} {...props} />
 }
 
 export function DeleteButton(props) {
@@ -73,7 +73,7 @@ export function DownloadAsPDFButton(props) {
 }
 
 function ReorderButton(props) {
-  const label = `Move ${props.moveable} to the ${props.direction} ${props.slot}`;
+  const label = `Move ${props.moveable} to the ${props.direction} ${props.slot || 'position'}`;
   const icon = { "first": "double up", "last": "double down", "previous": "up", "next": "down" }[props.direction];
   const disabled = (props.first && (props.direction === "first" || props.direction === "previous")) ||
     (props.last && (props.direction === "last" || props.direction === "next"));
@@ -150,7 +150,7 @@ export function MoveButton(props) {
 export function ItemActionButtons(props) {
   return (
     <>
-      <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot || "position"} />
+      <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot} />
       <DeleteButton item_type={props.item_type} onClick={props.onDelete} />
     </>
   )

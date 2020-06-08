@@ -155,7 +155,7 @@ export function Subject(props) {
                   setSortColumn(null);
                   copy_metric(source_metric_uuid, props.subject_uuid, props.reload);
                 }}
-                options={metric_options(props.reports, props.datamodel)}
+                options={metric_options(props.reports, props.datamodel, subject.type)}
               />
               <MoveButton
                 item_type="metric"
@@ -163,7 +163,7 @@ export function Subject(props) {
                   setSortColumn(null);
                   move_metric(source_metric_uuid, props.subject_uuid, props.reload);
                 }}
-                options={metric_options(props.reports, props.datamodel, props.subject_uuid)}
+                options={metric_options(props.reports, props.datamodel, subject.type, props.subject_uuid)}
               />
             </Table.HeaderCell>
           </Table.Row>

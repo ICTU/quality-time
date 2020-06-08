@@ -2,13 +2,15 @@ import React from 'react';
 import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
 import { get_metric_name, get_source_name, get_subject_name } from './utils';
 
-export function metric_options(reports, datamodel, current_subject_uuid) {
+export function metric_options(reports, datamodel, current_subject_type, current_subject_uuid) {
+    const subject_metrics = datamodel.subjects[current_subject_type].metrics;
     let options = [];
     reports.forEach((report) => {
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
             if (subject_uuid === current_subject_uuid) { return }
             const subject_name = get_subject_name(subject, datamodel);
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+                if (!subject_metrics.includes(metric.type)) { return }
                 const metric_name = get_metric_name(metric, datamodel);
                 options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
@@ -35,7 +37,8 @@ export function report_options(reports, current_report_uuid) {
     return options;
 }
 
-export function source_options(reports, datamodel, current_metric_uuid) {
+export function source_options(reports, datamodel, current_metric_type, current_metric_uuid) {
+    const metric_sources = datamodel.metrics[current_metric_type].sources;
     let options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
@@ -44,6 +47,7 @@ export function source_options(reports, datamodel, current_metric_uuid) {
                 if (metric_uuid === current_metric_uuid) { return }
                 const metric_name = get_metric_name(metric, datamodel);
                 Object.entries(metric.sources).forEach(([source_uuid, source]) => {
+                    if (!metric_sources.includes(source.type)) { return }
                     const source_name = get_source_name(source, datamodel);
                     options.push({
                         content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} source={source_name} />,
