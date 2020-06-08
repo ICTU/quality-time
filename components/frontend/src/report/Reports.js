@@ -6,7 +6,7 @@ import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddOrCopyButton } from '../widgets/Button';
+import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../menu_options';
 
 function ReportsDashboard(props) {
@@ -55,7 +55,8 @@ export function Reports(props) {
       <ReportsDashboard layout={props.reports_overview.layout} {...props} />
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
-          <AddOrCopyButton item_type={"report"} onClick={() => add_report(props.reload)}
+          <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />
+          <CopyButton item_type={"report"} onClick={() => add_report(props.reload)}
           onChange={(source_report_uuid) => copy_report(source_report_uuid, props.reload)}
           options={report_options(props.reports)} />
         </Segment>

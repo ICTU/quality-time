@@ -4,7 +4,7 @@ import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { add_metric, copy_metric } from '../api/metric';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { AddOrCopyButton } from '../widgets/Button';
+import { CopyButton, AddButton } from '../widgets/Button';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
 import { metric_options } from '../menu_options';
 
@@ -144,7 +144,12 @@ export function Subject(props) {
         <Table.Footer>
           <Table.Row>
             <Table.HeaderCell colSpan='9'>
-              <AddOrCopyButton
+              <AddButton item_type="metric" onClick={() => {
+                  setSortColumn(null);
+                  add_metric(props.subject_uuid, props.reload);
+                }}
+              />
+              <CopyButton
                 item_type={"metric"}
                 onChange={(source_metric_uuid) => {
                   setSortColumn(null);

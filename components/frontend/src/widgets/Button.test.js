@@ -1,20 +1,13 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount, shallow } from 'enzyme';
-import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
+import { AddButton, DeleteButton, DownloadAsPDFButton, MoveToButton, ReorderButtonGroup } from './Button';
 import * as fetch_server_api from '../api/fetch_server_api';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
         const wrapper = shallow(<AddButton item_type="foo" />);
         expect(wrapper.dive().find("Button").children().at(4).text()).toBe("foo");
-    });
-});
-
-describe('<CopyButton />', () => {
-    it('has the correct label', () => {
-        const wrapper = shallow(<CopyButton item_type="baz" />);
-        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("baz");
     });
 });
 
@@ -133,10 +126,10 @@ describe("<ReorderButtonGroup />", () => {
     });
 })
 
-describe('<MoveButton />', () => {
+describe('<MoveToButton />', () => {
     it('calls the callback on click', () => {
         const mockCallBack = jest.fn();
-        const wrapper = mount(<MoveButton options={[{ key: "1", value: "first", text: "First" }]} onClick={mockCallBack} />);
+        const wrapper = mount(<MoveToButton options={[{ key: "1", value: "first", text: "First" }]} onClick={mockCallBack} />);
         wrapper.find("Dropdown").at(0).simulate("click");
         wrapper.find("DropdownItem").at(0).simulate("click");
         expect(mockCallBack).toHaveBeenCalledWith("first");

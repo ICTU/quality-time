@@ -14,6 +14,6 @@ describe("<SubjectTitle />", () => {
           </ReadOnlyContext.Provider>
       );
       wrapper.find("Header").simulate("click");
-      expect(wrapper.find("CopyButton").length).toBe(1);
+      expect(wrapper.find("DeleteButton").length).toBe(1);
   });
 });

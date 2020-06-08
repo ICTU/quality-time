@@ -15,7 +15,7 @@ describe("<Subjects />", () => {
         const wrapper = shallow(<ReadOnlyContext.Provider value={false}>
             <Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} />
         </ReadOnlyContext.Provider>);
-        expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddOrCopyButton").prop("item_type")).toStrictEqual("subject");
+        expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddButton").prop("item_type")).toStrictEqual("subject");
     });
     it('hides metrics not requiring action', () => {
         const wrapper = shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} subject_uuid="subject_uuid" tags={[]} />);
