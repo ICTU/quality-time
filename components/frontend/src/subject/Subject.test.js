@@ -5,7 +5,7 @@ import { Subject } from './Subject';
 
 const datamodel = {
   subjects: {
-    subject_type: { name: "Subject type" }
+    subject_type: { name: "Subject type", metrics: ["metric_type"] }
   },
   metrics: {
     metric_type: { name: "Metric type", tags: [] }
