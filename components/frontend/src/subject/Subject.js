@@ -125,7 +125,7 @@ export function Subject(props) {
     return (
       <Table.Header>
         <Table.Row>
-          <FilterHeader/>
+          <FilterHeader />
           <SortableHeader column='name' label='Metric' />
           <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
           <SortableHeader column='status' label='Status' textAlign='center' />
@@ -145,9 +145,9 @@ export function Subject(props) {
           <Table.Row>
             <Table.HeaderCell colSpan='9'>
               <AddButton item_type="metric" onClick={() => {
-                  setSortColumn(null);
-                  add_metric(props.subject_uuid, props.reload);
-                }}
+                setSortColumn(null);
+                add_metric(props.subject_uuid, props.reload);
+              }}
               />
               <CopyButton
                 item_type="metric"

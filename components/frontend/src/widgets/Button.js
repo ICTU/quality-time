@@ -29,7 +29,7 @@ export function DeleteButton(props) {
       floated='right'
       icon='trash'
       negative
-      popup={`Delete this ${props.item_type}. Careful, this can't be undone!`}
+      popup={`Delete this ${props.item_type}. Careful, this can only be undone by a system administrator!`}
       position='top right'
       {...props}
     />
