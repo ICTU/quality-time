@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Open the source links in separate window. Closes [#1203](https://github.com/ICTU/quality-time/issues/1203).
 
+### Fixed
+
+- Reenable environment variables to set a proxy to be used by the collector. See https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
+
 ## [2.3.1] - [2020-06-02]
 
 ### Fixed

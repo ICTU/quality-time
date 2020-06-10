@@ -68,3 +68,13 @@ To configure the sleep duration and the measurement frequency, set the `COLLECTO
       - COLLECTOR_SLEEP_DURATION=30
       - COLLECTOR_MEASUREMENT_FREQUENCY=600
 ```
+
+To configure a proxy for the collector to use, set the `HTTP_PROXY` or `HTTPS_PROXY` environment variable, for example:
+
+```yaml
+  collector:
+    environment:
+      - HTTP_PROXY="http://proxy.com"
+```
+
+See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
