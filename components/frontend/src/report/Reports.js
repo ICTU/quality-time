@@ -58,7 +58,7 @@ export function Reports(props) {
           <AddButton item_type={"report"} onClick={() => add_report(props.reload)} />
           <CopyButton item_type={"report"} onClick={() => add_report(props.reload)}
           onChange={(source_report_uuid) => copy_report(source_report_uuid, props.reload)}
-          options={report_options(props.reports)} />
+          get_options={() => report_options(props.reports)} />
         </Segment>
       }
       />

@@ -26,12 +26,12 @@ export function Sources(props) {
                     <CopyButton
                         item_type="source"
                         onChange={(source_uuid) => copy_source(source_uuid, props.metric_uuid, props.reload)}
-                        options={source_options(props.reports, props.datamodel, props.metric_type)}
+                        get_options={() => source_options(props.reports, props.datamodel, props.metric_type)}
                     />
                     <MoveButton
                         item_type="source"
                         onChange={(source_uuid) => move_source(source_uuid, props.metric_uuid, props.reload)}
-                        options={source_options(props.reports, props.datamodel, props.metric_type, props.metric_uuid)}
+                        get_options={() => source_options(props.reports, props.datamodel, props.metric_type, props.metric_uuid)}
                     />
                 </Segment>}
             />

@@ -103,7 +103,10 @@ export function ReorderButtonGroup(props) {
 }
 
 function ActionAndItemPickerButton(props) {
-  var { action, item_type, onChange, options, icon } = props;
+  const [options_loaded, setOptionsLoaded] = useState(false);
+  const [options, setOptions] = useState([]);
+
+  var { action, item_type, onChange, get_options, icon } = props;
   var breadcrumb_props = { report: "report" };
   if (item_type !== 'report') {
     breadcrumb_props.subject = 'subject';
@@ -121,11 +124,11 @@ function ActionAndItemPickerButton(props) {
         <Dropdown
           basic
           className='button icon primary'
-          disabled={options.length === 0}
           floating
           header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
           options={options}
           onChange={(event, { value }) => onChange(value)}
+          onOpen={() => { if (!options_loaded) { setOptions(get_options()); setOptionsLoaded(true); } }}
           scrolling
           selectOnBlur={false}
           selectOnNavigation={false}

@@ -36,12 +36,12 @@ export function Subjects(props) {
           <CopyButton
             item_type="subject"
             onChange={(source_subject_uuid) => copy_subject(source_subject_uuid, props.report.report_uuid, props.reload)}
-            options={subject_options(props.reports, props.datamodel)}
+            get_options={() => subject_options(props.reports, props.datamodel)}
           />
           <MoveButton
             item_type="subject"
             onChange={(source_subject_uuid) => move_subject(source_subject_uuid, props.report.report_uuid, props.reload)}
-            options={subject_options(props.reports, props.datamodel, props.report.report_uuid)}
+            get_options={() => subject_options(props.reports, props.datamodel, props.report.report_uuid)}
           />
         </Segment>}
       />
