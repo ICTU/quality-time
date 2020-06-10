@@ -25,13 +25,10 @@ export function metric_options(reports, datamodel, current_subject_type, current
     return options;
 }
 
-export function report_options(reports, current_report_uuid) {
+export function report_options(reports) {
     let options = [];
     reports.forEach((report) => {
-        options.push({
-            disabled: report.report_uuid === current_report_uuid, key: report.report_uuid,
-            text: report.title, value: report.report_uuid
-        })
+        options.push({ key: report.report_uuid, text: report.title, value: report.report_uuid })
     });
     options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
@@ -66,17 +63,17 @@ export function source_options(reports, datamodel, current_metric_type, current_
 export function subject_options(reports, datamodel, current_report_uuid) {
     let options = [];
     reports.forEach((report) => {
-      if (report.report_uuid === current_report_uuid) { return }
-      Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const subject_name = get_subject_name(subject, datamodel);
-        options.push({
-          content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
-          key: subject_uuid,
-          text: report.title + subject_name,
-          value: subject_uuid
+        if (report.report_uuid === current_report_uuid) { return }
+        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+            const subject_name = get_subject_name(subject, datamodel);
+            options.push({
+                content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
+                key: subject_uuid,
+                text: report.title + subject_name,
+                value: subject_uuid
+            })
         })
-      })
     });
     options.sort((a, b) => a.text.localeCompare(b.text));
     return options;
-  }
+}
