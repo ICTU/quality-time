@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Reenable environment variables to set a proxy to be used by the collector. See https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
+- The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between Quality-time and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
+- Reenable environment variables to set a proxy to be used by the collector. See the [deployment documentation](DEPLOY.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
 
 ## [2.3.1] - [2020-06-02]
 
