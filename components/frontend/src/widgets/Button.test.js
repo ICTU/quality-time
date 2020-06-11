@@ -37,6 +37,18 @@ describe('<CopyButton />', () => {
             expect(mockCallBack).toHaveBeenCalledWith("1");
         });
     });
+    it('loads the options just once', () => {
+        item_types.forEach((item_type) => {
+            const mockCallBack = jest.fn();
+            let get_options_called = 0;
+            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { get_options_called++; return [{key: "1", text: "Report", value: "1"}] }} />);
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            expect(get_options_called).toBe(1);
+        });
+    });
 });
 
 describe('<MoveButton />', () => {
