@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItemBreadcrumb } from './widgets/ItemBreadcrumb';
+import { ItemBreadcrumb } from './ItemBreadcrumb';
 import { metric_options, report_options, source_options, subject_options } from './menu_options';
 
 it('contains the reports', () => {
@@ -23,7 +23,7 @@ it('contains the metrics, except for the excluded subject', () => {
                 report_uuid: "report2", title: "A", subjects: {
                     subject1: {
                         name: "S1", type: "subject_type",
-                        metrics: { metric1: { name: "M1", type: "metric_type" } }
+                        metrics: { metric1: { name: "M1", type: "metric_type" }, metric2: { name: "M2", type: "other_metric_type" } }
                     }
                 }
             }], { subjects: { subject_type: { metrics: ["metric_type"] } } }, "subject_type", "subject2")).toStrictEqual(
@@ -40,7 +40,12 @@ it('contains the sources, except for the excluded metric', () => {
                         name: "S1", type: "subject_type",
                         metrics: {
                             metric1: { name: "M1", type: "metric_type", sources: [] },
-                            metric2: { name: "M2", type: "metric_type", sources: { source1: { name: "S1", type: "source_type" } } }
+                            metric2: {
+                                name: "M2", type: "metric_type", sources: {
+                                    source1: { name: "S1", type: "source_type" },
+                                    source2: { name: "S2", type: "other_source_type" }
+                                }
+                            }
                         }
                     }
                 }

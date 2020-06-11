@@ -4,7 +4,7 @@ import { Source } from './Source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_source, copy_source, move_source } from '../api/source';
-import { source_options } from '../menu_options';
+import { source_options } from '../widgets/menu_options';
 
 export function Sources(props) {
     const measurement_sources = props.measurement ? props.measurement.sources : [];

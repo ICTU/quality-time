@@ -7,7 +7,7 @@ import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsTitle } from './ReportsTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { AddButton, CopyButton } from '../widgets/Button';
-import { report_options } from '../menu_options';
+import { report_options } from '../widgets/menu_options';
 
 function ReportsDashboard(props) {
   var tag_counts = {};

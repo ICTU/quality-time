@@ -6,7 +6,7 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_metric, copy_metric, move_metric } from '../api/metric';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
-import { metric_options } from '../menu_options';
+import { metric_options } from '../widgets/menu_options';
 
 export function Subject(props) {
   function handleSort(column) {

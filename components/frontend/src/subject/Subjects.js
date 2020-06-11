@@ -4,7 +4,7 @@ import { Subject } from './Subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
-import { subject_options } from '../menu_options';
+import { subject_options } from '../widgets/menu_options';
 
 function useDelayedRender() {
   const [visible, setVisible] = useState(false);
