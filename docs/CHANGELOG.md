@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Moved the Copy and Move buttons to be next to the Add buttons, making the UI more consistent. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](../docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
+- Moved the Copy and Move buttons next to the Add buttons, making the UI more consistent. This also allows the user to copy an existing item to the right position in one go, instead of having to copy and then move it. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](../docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
 
 ## [2.3.2] - [2020-06-10]
 

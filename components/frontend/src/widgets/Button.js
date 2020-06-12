@@ -149,12 +149,3 @@ export function MoveButton(props) {
     <ActionAndItemPickerButton {...props} action="Move" icon="shuffle" />
   )
 }
-
-export function ItemActionButtons(props) {
-  return (
-    <>
-      <ReorderButtonGroup first={props.first_item} last={props.last_item} moveable={props.item_type} onClick={props.onReorder} slot={props.slot} />
-      <DeleteButton item_type={props.item_type} onClick={props.onDelete} />
-    </>
-  )
-}

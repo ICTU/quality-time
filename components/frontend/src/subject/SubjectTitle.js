@@ -3,7 +3,7 @@ import { Grid, Header } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { SubjectType } from './SubjectType';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { ItemActionButtons } from '../widgets/Button';
+import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { delete_subject, set_subject_attribute } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -18,15 +18,10 @@ export function SubjectTitle(props) {
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
                     <Grid.Column>
-                        <ItemActionButtons
-                            item_type="subject"
-                            first_item={props.first_subject}
-                            last_item={props.last_subject}
-                            onDelete={() => delete_subject(subject_uuid, props.reload)}
-                            onReorder={(direction) => {
-                                set_subject_attribute(subject_uuid, "position", direction, props.reload)
-                            }}
-                        />
+                        <ReorderButtonGroup
+                            first={props.first_subject} last={props.last_subject} moveable="subject"
+                            onClick={(direction) => { set_subject_attribute(subject_uuid, "position", direction, props.reload) }} />
+                        <DeleteButton item_type="subject" onClick={() => delete_subject(subject_uuid, props.reload)} />
                     </Grid.Column>
                 </Grid.Row>}
             />

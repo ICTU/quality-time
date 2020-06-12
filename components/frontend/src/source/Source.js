@@ -5,7 +5,7 @@ import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { ItemActionButtons } from '../widgets/Button';
+import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -49,15 +49,9 @@ export function Source(props) {
             <ReadOnlyOrEditable editableComponent={
                 <Grid.Row>
                     <Grid.Column>
-                        <ItemActionButtons
-                            item_type='source'
-                            first_item={props.first_source}
-                            last_item={props.last_source}
-                            onDelete={() => delete_source(props.source_uuid, props.reload)}
-                            onReorder={(direction) => {
-                                set_source_attribute(props.source_uuid, "position", direction, props.reload)
-                            }}
-                        />
+                        <ReorderButtonGroup first={props.first_source} last={props.last_source} moveable="source"
+                            onClick={(direction) => { set_source_attribute(props.source_uuid, "position", direction, props.reload) }} />
+                        <DeleteButton item_type="source" onClick={() => delete_source(props.source_uuid, props.reload)} />
                     </Grid.Column>
                 </Grid.Row>}
             />

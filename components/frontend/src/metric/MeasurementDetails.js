@@ -6,7 +6,7 @@ import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { ItemActionButtons } from '../widgets/Button';
+import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
@@ -73,17 +73,10 @@ export function MeasurementDetails(props) {
     return (
       <ReadOnlyOrEditable editableComponent={
         <div style={{ marginTop: "20px" }}>
-          <ItemActionButtons
-            item_type="metric"
-            first_item={props.first_metric}
-            last_item={props.last_metric}
-            onDelete={() => delete_metric(props.metric_uuid, props.reload)}
-            onReorder={(direction) => {
-              props.stop_sort();
-              set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
-            }}
-            slot="row"
-          />
+          <ReorderButtonGroup
+            first={props.first_metric} last={props.last_metric} moveable="metric" slot="row"
+            onClick={(direction) => { props.stop_sort(); set_metric_attribute(props.metric_uuid, "position", direction, props.reload) }} />
+          <DeleteButton item_type="metric" onClick={() => delete_metric(props.metric_uuid, props.reload)} />
         </div>}
       />
     )
