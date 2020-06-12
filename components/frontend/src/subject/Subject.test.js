@@ -64,14 +64,17 @@ describe("<Subject />", () => {
       expect(table_header_cell(index).prop("sorted")).toBe(null);
     }
   });
+  function click_metric(wrapper, button) {
+    wrapper.find(button).find("div.button").simulate('click');
+    wrapper.find(button).find("DropdownItem").at(0).simulate("click");
+  }
   it('copies a metric when the copy button is clicked and a metric is selected', () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const wrapper = mount(
       <ReadOnlyContext.Provider value={false}>
         <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>);
-    wrapper.find("CopyButton").find("div.button").simulate('click');
-    wrapper.find("CopyButton").find("DropdownItem").at(0).simulate("click");
+    click_metric(wrapper, "CopyButton");
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
   });
   it('moves a metric when the move button is clicked and a metric is selected', () => {
@@ -80,8 +83,7 @@ describe("<Subject />", () => {
       <ReadOnlyContext.Provider value={false}>
         <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>);
-    wrapper.find("MoveButton").find("div.button").simulate('click');
-    wrapper.find("MoveButton").find("DropdownItem").at(0).simulate("click");
+    click_metric(wrapper, "MoveButton");
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});
   });
 });
