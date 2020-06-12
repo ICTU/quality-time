@@ -23,11 +23,6 @@ function source_wrapper() {
 
 describe('<Source />', () => {
     beforeEach(() => { source.set_source_entity_attribute = jest.fn(); });
-    it('invokes the callback on clicking copy', () => {
-        const wrapper = source_wrapper();
-        wrapper.find("CopyButton").at(0).simulate("click");
-        expect(source_api.copy_source).toHaveBeenCalled();
-    });
     it('invokes the callback on clicking delete', () => {
         const wrapper = source_wrapper();
         wrapper.find("DeleteButton").at(0).simulate("click");

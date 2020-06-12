@@ -17,6 +17,7 @@ from server_utilities.type import EditScope, MetricId, ReportId, SourceId, Subje
 
 
 @bottle.post("/api/v2/source/new/<metric_uuid>")
+@bottle.post("/api/v3/source/new/<metric_uuid>")
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     data = MetricData(database, metric_uuid)
@@ -34,20 +35,30 @@ def post_source_new(metric_uuid: MetricId, database: Database):
 
 
 @bottle.post("/api/v2/source/<source_uuid>/copy")
-def post_source_copy(source_uuid: SourceId, database: Database):
-    """Copy a source."""
+def post_source_copy_v2(source_uuid: SourceId, database: Database):  # pragma: no cover
+    """Add a copy of the source to the source's metric (removed in v3)."""
     data = SourceData(database, source_uuid)
-    data.metric["sources"][(source_copy_uuid := uuid())] = copy_source(data.source, data.datamodel)
+    post_source_copy_v3(source_uuid, data.metric_uuid, database)
+
+
+@bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
+def post_source_copy_v3(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
+    """Add a copy of the source to the metric (new in v3)."""
+    source = SourceData(database, source_uuid)
+    target = MetricData(database, metric_uuid)
+    target.metric["sources"][(source_copy_uuid := uuid())] = copy_source(source.source, source.datamodel)
     user = sessions.user(database)
-    data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid, source_copy_uuid],
-        email=user["email"],
-        description=f"{user['user']} copied the source '{data.source_name}' of metric "
-                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    target.report["delta"] = dict(
+        uuids=[target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid], email=user["email"],
+        description=f"{user['user']} copied the source '{source.source_name}' of metric "
+                    f"'{source.metric_name}' of subject '{source.subject_name}' from report '{source.report_name}' to "
+                    f"metric '{target.metric_name}' of subject '{target.subject_name}' in report "
+                    f"'{target.report_name}'.")
+    return insert_new_report(database, target.report)
 
 
 @bottle.post("/api/v2/source/<source_uuid>/move/<target_metric_uuid>")
+@bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>")
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
     source = SourceData(database, source_uuid)
@@ -80,6 +91,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
 
 
 @bottle.delete("/api/v2/source/<source_uuid>")
+@bottle.delete("/api/v3/source/<source_uuid>")
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     data = SourceData(database, source_uuid)
@@ -93,6 +105,7 @@ def delete_source(source_uuid: SourceId, database: Database):
 
 
 @bottle.post("/api/v2/source/<source_uuid>/attribute/<source_attribute>")
+@bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>")
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     data = SourceData(database, source_uuid)
@@ -117,6 +130,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 
 
 @bottle.post("/api/v2/source/<source_uuid>/parameter/<parameter_key>")
+@bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = SourceData(database, source_uuid)

@@ -110,7 +110,7 @@ describe("<MeasurementDetails />", () => {
         expect(mockCallBack).toHaveBeenCalled();
         expect(measurement_api.get_measurements).toHaveBeenCalled();
     });
-    it('calls the callback on copy', async () => {
+    it('calls the callback on delete', async () => {
         let wrapper;
         await act(async () => {
             wrapper = mount(
@@ -124,8 +124,8 @@ describe("<MeasurementDetails />", () => {
                     />
                 </ReadOnlyContext.Provider>
             );
-            wrapper.find("CopyButton").simulate("click");
+            wrapper.find("DeleteButton").simulate("click");
         });
-        expect(metric_api.copy_metric).toHaveBeenCalled();
+        expect(metric_api.delete_metric).toHaveBeenCalled();
     });
 });

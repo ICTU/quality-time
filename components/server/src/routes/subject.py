@@ -12,6 +12,7 @@ from server_utilities.type import ReportId, SubjectId
 
 
 @bottle.post("/api/v2/subject/new/<report_uuid>")
+@bottle.post("/api/v3/subject/new/<report_uuid>")
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     data = ReportData(database, report_uuid)
@@ -24,18 +25,28 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 
 
 @bottle.post("/api/v2/subject/<subject_uuid>/copy")
-def post_subject_copy(subject_uuid: SubjectId, database: Database):
-    """Copy a subject."""
-    data = SubjectData(database, subject_uuid)
-    data.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(data.subject, data.datamodel)
+def post_subject_copy_v2(subject_uuid: SubjectId, database: Database):  # pragma: no cover
+    """Add a copy of the subject to the subject's report (removed in v3)."""
+    subject = SubjectData(database, subject_uuid)
+    post_subject_copy_v3(subject_uuid, subject.report_uuid, database)
+
+
+@bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>")
+def post_subject_copy_v3(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
+    """Add a copy of the subject to the report (new in v3)."""
+    source = SubjectData(database, subject_uuid)
+    target = ReportData(database, report_uuid)
+    target.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(source.subject, source.datamodel)
     user = sessions.user(database)
-    data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, subject_copy_uuid], email=user["email"],
-        description=f"{user['user']} copied the subject '{data.subject_name}' in report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    target.report["delta"] = dict(
+        uuids=[target.report_uuid, subject_copy_uuid], email=user["email"],
+        description=f"{user['user']} copied the subject '{source.subject_name}' from report " \
+                    f"'{source.report_name}' to report '{target.report_name}'.")
+    return insert_new_report(database, target.report)
 
 
 @bottle.post("/api/v2/subject/<subject_uuid>/move/<target_report_uuid>")
+@bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>")
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
     source = SubjectData(database, subject_uuid)
@@ -53,6 +64,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
 
 
 @bottle.delete("/api/v2/subject/<subject_uuid>")
+@bottle.delete("/api/v3/subject/<subject_uuid>")
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     data = SubjectData(database, subject_uuid)
@@ -65,6 +77,7 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 
 
 @bottle.post("/api/v2/subject/<subject_uuid>/attribute/<subject_attribute>")
+@bottle.post("/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>")
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
     value = dict(bottle.request.json)[subject_attribute]

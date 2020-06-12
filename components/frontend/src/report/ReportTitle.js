@@ -3,8 +3,8 @@ import { Grid } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { CopyButton, DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
-import { copy_report, delete_report, set_report_attribute } from '../api/report';
+import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { delete_report, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function ReportTitle(props) {
@@ -14,12 +14,6 @@ export function ReportTitle(props) {
             <Grid.Row>
                 <Grid.Column>
                     <DownloadAsPDFButton report_uuid={report_uuid} />
-                    <ReadOnlyOrEditable editableComponent={
-                        <CopyButton
-                            item_type="report"
-                            onClick={() => copy_report(report_uuid, props.reload)}
-                        />}
-                    />
                     <ReadOnlyOrEditable editableComponent={
                         <DeleteButton
                             item_type='report'

@@ -8,17 +8,17 @@ const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subjec
 
 describe("<Subjects />", () => {
     it('shows the subjects', () => {
-        const wrapper = shallow(<Subjects datamodel={datamodel} report={report} tags={[]} />);
+        const wrapper = shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} />);
         expect(wrapper.find("Subject").length).toBe(1);
     });
     it('shows the add subject button when editable', () => {
         const wrapper = shallow(<ReadOnlyContext.Provider value={false}>
-            <Subjects datamodel={datamodel} report={report} tags={[]} />
+            <Subjects datamodel={datamodel} reports={[report]} report={report} tags={[]} />
         </ReadOnlyContext.Provider>);
         expect(wrapper.find("Subjects").dive().find("ReadOnlyOrEditable").dive().find("ContextConsumer").dive().find("AddButton").prop("item_type")).toStrictEqual("subject");
     });
     it('hides metrics not requiring action', () => {
-        const wrapper = shallow(<Subjects datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />);
+        const wrapper = shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} subject_uuid="subject_uuid" tags={[]} />);
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
         mount(wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("FilterHeader").dive().find("Popup").prop("trigger")).find("button").simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);

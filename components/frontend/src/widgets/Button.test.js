@@ -6,22 +6,65 @@ import * as fetch_server_api from '../api/fetch_server_api';
 
 describe('<AddButton />', () => {
     it('has the correct label', () => {
-        const wrapper = shallow(<AddButton item_type="foo" />);
-        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("foo");
-    });
-});
-
-describe('<CopyButton />', () => {
-    it('has the correct label', () => {
-        const wrapper = shallow(<CopyButton item_type="baz" />);
-        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("baz");
+        const wrapper = mount(<AddButton item_type="foo" />);
+        expect(wrapper.find("button").children().at(4).text()).toBe("foo");
     });
 });
 
 describe('<DeleteButton />', () => {
     it('has the correct label', () => {
-        const wrapper = shallow(<DeleteButton item_type="bar" />);
-        expect(wrapper.dive().find("Button").children().at(4).text()).toBe("bar");
+        const wrapper = mount(<DeleteButton item_type="bar" />);
+        expect(wrapper.find("button").children().at(4).text()).toBe("bar");
+    });
+});
+
+const item_types = ["report", "subject", "metric", "source"];
+
+describe('<CopyButton />', () => {
+    it('has the correct label', () => {
+        item_types.forEach((item_type) => {
+            const wrapper = mount(<CopyButton item_type={item_type} />);
+            expect(wrapper.find("div.button").children().at(2).text()).toBe(`Copy ${item_type} `);
+        });
+    });
+    it('can be used to select an item', () => {
+        item_types.forEach((item_type) => {
+            const mockCallBack = jest.fn();
+            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{key: "1", text: "Report", value: "1"}] }} />);
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            expect(mockCallBack).toHaveBeenCalledWith("1");
+        });
+    });
+    it('loads the options just once', () => {
+        item_types.forEach((item_type) => {
+            const mockCallBack = jest.fn();
+            let get_options_called = 0;
+            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { get_options_called++; return [{key: "1", text: "Report", value: "1"}] }} />);
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            expect(get_options_called).toBe(1);
+        });
+    });
+});
+
+describe('<MoveButton />', () => {
+    it('has the correct label', () => {
+        item_types.forEach((item_type) => {
+            const wrapper = mount(<MoveButton item_type={item_type} />);
+            expect(wrapper.find("div.button").children().at(2).text()).toBe(`Move ${item_type} `);
+        });
+    });
+    it('can be used to select an item', () => {
+        item_types.forEach((item_type) => {
+            const mockCallBack = jest.fn();
+            const wrapper = mount(<MoveButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{key: "1", text: "Report", value: "1"}] }} />);
+            wrapper.find("div.button").simulate("click");
+            wrapper.find("DropdownItem").simulate("click");
+            expect(mockCallBack).toHaveBeenCalledWith("1");
+        });
     });
 });
 
@@ -37,7 +80,6 @@ jest.mock("../api/fetch_server_api.js")
 const test_report = {
     report_uuid: "report_uuid"
 };
-
 
 
 describe("<DownloadAsPDFButton/>", () => {
@@ -65,7 +107,7 @@ describe("<DownloadAsPDFButton/>", () => {
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
     });
     it('loading is false after receiving error', async () => {
-        fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ok: false});
+        fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false });
         let wrapper;
         await act(async () => {
             wrapper = mount(<DownloadAsPDFButton report={test_report} />);
@@ -132,13 +174,3 @@ describe("<ReorderButtonGroup />", () => {
         expect(mockCallBack).not.toHaveBeenCalled();
     });
 })
-
-describe('<MoveButton />', () => {
-    it('calls the callback on click', () => {
-        const mockCallBack = jest.fn();
-        const wrapper = mount(<MoveButton options={[{ key: "1", value: "first", text: "First" }]} onClick={mockCallBack} />);
-        wrapper.find("Dropdown").at(0).simulate("click");
-        wrapper.find("DropdownItem").at(0).simulate("click");
-        expect(mockCallBack).toHaveBeenCalledWith("first");
-    });
-});

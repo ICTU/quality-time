@@ -11,6 +11,7 @@ from server_utilities.functions import report_date_time
 
 
 @bottle.get("/api/v2/reports")
+@bottle.get("/api/v3/reports")
 def get_reports(database: Database):
     """Return the quality reports."""
     date_time = report_date_time()
@@ -26,6 +27,7 @@ def get_reports(database: Database):
 
 
 @bottle.post("/api/v2/reports/attribute/<reports_attribute>")
+@bottle.post("/api/v3/reports/attribute/<reports_attribute>")
 def post_reports_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     value = dict(bottle.request.json)[reports_attribute]

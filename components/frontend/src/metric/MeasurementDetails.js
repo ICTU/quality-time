@@ -1,34 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, Icon, Tab, Menu } from 'semantic-ui-react';
+import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
 import { MetricParameters } from './MetricParameters';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { ItemActionButtons } from '../widgets/Button';
-import { ItemBreadcrumb } from '../widgets/ItemBreadcrumb';
-import { copy_metric, delete_metric, move_metric, set_metric_attribute } from '../api/metric';
+import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
+import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { capitalize, get_source_name, get_subject_name } from '../utils';
-
-function subject_options(reports, datamodel, current_subject_uuid) {
-  let options = [];
-  reports.forEach((report) => {
-    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-      const subject_name = get_subject_name(subject, datamodel);
-      options.push({
-        content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
-        disabled: subject_uuid === current_subject_uuid, key: subject_uuid,
-        text: report.title + subject_name,
-        value: subject_uuid
-      })
-    })
-  });
-  options.sort((a, b) => a.text.localeCompare(b.text));
-  return options;
-}
+import { capitalize, get_source_name } from '../utils';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
   const report_date_parameter = report_date || new Date(3000, 1, 1);
@@ -91,21 +73,10 @@ export function MeasurementDetails(props) {
     return (
       <ReadOnlyOrEditable editableComponent={
         <div style={{ marginTop: "20px" }}>
-          <ItemActionButtons
-            item_type="metric"
-            first_item={props.first_metric}
-            last_item={props.last_metric}
-            onCopy={() => copy_metric(props.metric_uuid, props.reload)}
-            onDelete={() => delete_metric(props.metric_uuid, props.reload)}
-            onMove={(subject_uuid) => move_metric(props.metric_uuid, subject_uuid, props.reload)}
-            onReorder={(direction) => {
-              props.stop_sort();
-              set_metric_attribute(props.metric_uuid, "position", direction, props.reload)
-            }}
-            options={subject_options(props.reports, props.datamodel, props.subject_uuid)}
-            reorder_header={<Dropdown.Header>Report <Icon name='right chevron' />Subject</Dropdown.Header>}
-            slot="row"
-          />
+          <ReorderButtonGroup
+            first={props.first_metric} last={props.last_metric} moveable="metric" slot="row"
+            onClick={(direction) => { props.stop_sort(); set_metric_attribute(props.metric_uuid, "position", direction, props.reload) }} />
+          <DeleteButton item_type="metric" onClick={() => delete_metric(props.metric_uuid, props.reload)} />
         </div>}
       />
     )

@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy, \
+from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy_v3, \
     post_move_metric
 
 from .fixtures import JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, \
@@ -251,13 +251,14 @@ class MetricTest(unittest.TestCase):
 
     def test_copy_metric(self):
         """Test that a metric can be copied."""
-        self.assertEqual(dict(ok=True), post_metric_copy(METRIC_ID, self.database))
+        self.assertEqual(dict(ok=True), post_metric_copy_v3(METRIC_ID, SUBJECT_ID, self.database))
         self.database.reports.insert.assert_called_once()
         inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
         self.assertEqual(2, len(inserted_metrics))
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], email=JOHN["email"],
-                 description="John copied the metric 'Metric' of subject 'Subject' in report 'Report'."),
+            dict(uuids=[REPORT_ID, SUBJECT_ID, list(inserted_metrics.keys())[1]], email=JOHN["email"],
+                 description="John copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject "
+                 "'Subject' in report 'Report'."),
             self.report["delta"])
 
     def test_move_metric_within_report(self):

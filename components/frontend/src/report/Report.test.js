@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { Report } from './Report';
 
-const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
+const datamodel = { subjects: { subject_type: { name: "Subject type", metrics: ['metric_type'] } }, metrics: { metric_type: { tags: [] } } }
 const report = {
   summary_by_subject: {
     subject_uuid: {
@@ -25,11 +25,15 @@ const report = {
   subjects: {
     subject_uuid: {
       type: "subject_type", name: "Subject title", metrics: {
-        metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] } } } } };
+        metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] }
+      }
+    }
+  }
+};
 
 describe("<Report />", () => {
   it('shows the report', () => {
-    const wrapper = mount(<Report datamodel={datamodel} report={report} />);
+    const wrapper = mount(<Report datamodel={datamodel} reports={[report]} report={report} />);
     expect(wrapper.find("ReportTitle").prop("report")).toBe(report)
   });
   it('shows an error message if there is no report', () => {

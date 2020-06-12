@@ -15,6 +15,7 @@ from .measurement import latest_measurement, insert_new_measurement
 
 
 @bottle.get("/api/v2/metrics")
+@bottle.get("/api/v3/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
     metrics: Dict[str, Any] = {}
@@ -27,6 +28,7 @@ def get_metrics(database: Database):
 
 
 @bottle.post("/api/v2/metric/new/<subject_uuid>")
+@bottle.post("/api/v3/metric/new/<subject_uuid>")
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     data = SubjectData(database, subject_uuid)
@@ -40,19 +42,29 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 
 
 @bottle.post("/api/v2/metric/<metric_uuid>/copy")
-def post_metric_copy(metric_uuid: MetricId, database: Database):
-    """Copy a metric."""
-    data = MetricData(database, metric_uuid)
-    data.subject["metrics"][uuid()] = copy_metric(data.metric, data.datamodel)
+def post_metric_copy_v2(metric_uuid: MetricId, database: Database):  # pragma: no cover
+    """Add a copy of the metric to the metric's subject (removed in v3)."""
+    metric = MetricData(database, metric_uuid)
+    post_metric_copy_v3(metric_uuid, metric.subject_uuid, database)
+
+
+@bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
+def post_metric_copy_v3(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
+    """Add a copy of the metric to the subject (new in v3)."""
+    source = MetricData(database, metric_uuid)
+    target = SubjectData(database, subject_uuid)
+    target.subject["metrics"][(metric_copy_uuid := uuid())] = copy_metric(source.metric, source.datamodel)
     user = sessions.user(database)
-    data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid], email=user["email"],
-        description=f"{user['user']} copied the metric '{data.metric_name}' of subject "
-                    f"'{data.subject_name}' in report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    target.report["delta"] = dict(
+        uuids=[target.report_uuid, target.subject_uuid, metric_copy_uuid], email=user["email"],
+        description=f"{user['user']} copied the metric '{source.metric_name}' of subject "
+                    f"'{source.subject_name}' from report '{source.report_name}' to subject '{target.subject_name}' "
+                    f"in report '{target.report_name}'.")
+    return insert_new_report(database, target.report)
 
 
 @bottle.post("/api/v2/metric/<metric_uuid>/move/<target_subject_uuid>")
+@bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
     source = MetricData(database, metric_uuid)
@@ -76,6 +88,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 
 
 @bottle.delete("/api/v2/metric/<metric_uuid>")
+@bottle.delete("/api/v3/metric/<metric_uuid>")
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     data = MetricData(database, metric_uuid)
@@ -89,6 +102,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
 
 
 @bottle.post("/api/v2/metric/<metric_uuid>/attribute/<metric_attribute>")
+@bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>")
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]

@@ -1,4 +1,4 @@
-export const api_version = 'v2'
+export const api_version = 'v3'
 
 export function fetch_server_api(method, api, body, content_type) {
   let options = {

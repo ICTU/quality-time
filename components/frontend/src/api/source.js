@@ -4,8 +4,8 @@ export function add_source(metric_uuid, reload) {
     return fetch_server_api('post', `source/new/${metric_uuid}`, {}).then(reload)
 }
 
-export function copy_source(source_uuid, reload) {
-    return fetch_server_api('post', `source/${source_uuid}/copy`, {}).then(reload)
+export function copy_source(source_uuid, metric_uuid, reload) {
+    return fetch_server_api('post', `source/${source_uuid}/copy/${metric_uuid}`, {}).then(reload)
 }
 
 export function move_source(source_uuid, metric_uuid, reload) {

@@ -8,6 +8,7 @@ from server_utilities.functions import md5_hash, report_date_time
 
 
 @bottle.get("/api/v2/datamodel")
+@bottle.get("/api/v3/datamodel")
 def get_data_model(database: Database):
     """Return the data model."""
     data_model = latest_datamodel(database, report_date_time())
