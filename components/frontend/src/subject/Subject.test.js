@@ -2,6 +2,9 @@ import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subject } from './Subject';
+import * as fetch_server_api from '../api/fetch_server_api';
+
+jest.mock("../api/fetch_server_api.js")
 
 const datamodel = {
   subjects: {
@@ -14,12 +17,19 @@ const datamodel = {
 const report = {
   subjects: {
     subject_uuid: {
-      type: "subject_type", name: "Subject title", metrics: {
+      type: "subject_type", name: "Subject 1 title", metrics: {
         metric_uuid: {
-          type: "metric_type", tags: [], sources: {}, recent_measurements: []
+          name: "M1", type: "metric_type", tags: [], sources: {}, recent_measurements: []
         },
         metric_uuidi2: {
-          type: "metric_type", tags: [], sources: {}, recent_measurements: []
+          name: "M2", type: "metric_type", tags: [], sources: {}, recent_measurements: []
+        }
+      }
+    },
+    subject_uuid2: {
+      type: "subject_type", name: "Subject 2 title", metrics: {
+        metric_uuid3: {
+          name: "M3", type: "metric_type", tags: [], sources: {}, recent_measurements: []
         }
       }
     }
@@ -53,5 +63,25 @@ describe("<Subject />", () => {
       table_header_cell(index).simulate("click");
       expect(table_header_cell(index).prop("sorted")).toBe(null);
     }
+  });
+  it('copies a metric when the copy button is clicked and a metric is selected', () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    const wrapper = mount(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
+      </ReadOnlyContext.Provider>);
+    wrapper.find("CopyButton").find("div.button").simulate('click');
+    wrapper.find("CopyButton").find("DropdownItem").at(0).simulate("click");
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
+  });
+  it('moves a metric when the move button is clicked and a metric is selected', () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    const wrapper = mount(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
+      </ReadOnlyContext.Provider>);
+    wrapper.find("MoveButton").find("div.button").simulate('click');
+    wrapper.find("MoveButton").find("DropdownItem").at(0).simulate("click");
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});
   });
 });

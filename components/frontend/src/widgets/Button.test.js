@@ -2,7 +2,6 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount, shallow } from 'enzyme';
 import { AddButton, CopyButton, DeleteButton, DownloadAsPDFButton, MoveButton, ReorderButtonGroup } from './Button';
-import { report_options } from './menu_options';
 import * as fetch_server_api from '../api/fetch_server_api';
 
 describe('<AddButton />', () => {
