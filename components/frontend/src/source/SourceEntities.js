@@ -6,9 +6,11 @@ import { capitalize } from '../utils';
 export function SourceEntities(props) {
   const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
   const [sortColumn, setSortColumn] = useState(null);
+  const [columnType, setColumnType] = useState('text');
   const [sortDirection, setSortDirection] = useState('ascending');
 
-  function sort(column) {
+  function sort(column, column_type) {
+    setColumnType(column_type || 'text');
     if (column === sortColumn) {
       setSortDirection(sortDirection === "ascending" ? "descending" : "ascending")
     } else {
@@ -44,14 +46,15 @@ export function SourceEntities(props) {
       <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
         {`${capitalize(entity_name)} status`}</Table.HeaderCell>
       {entity_attributes.map((entity_attribute) =>
-        <Table.HeaderCell key={entity_attribute.key} sorted={sorted(entity_attribute.key)} onClick={() => sort(entity_attribute.key)}>
+        <Table.HeaderCell key={entity_attribute.key} sorted={sorted(entity_attribute.key)} onClick={() => sort(entity_attribute.key, entity_attribute.type)}>
           {entity_attribute.name}
         </Table.HeaderCell>)
       }
     </Table.Row>
   let entities = Array.from(props.source.entities);
   if (sortColumn !== null) {
-    entities.sort((a, b) => a[sortColumn] < b[sortColumn] ? -1 : 1)
+    const parse = columnType === "integer" ? (value) => parseInt(value, 10) : (value) => value;
+    entities.sort((a, b) => parse(a[sortColumn]) < parse(b[sortColumn]) ? -1 : 1)
     if (sortDirection === 'descending') {
       entities.reverse()
     }
