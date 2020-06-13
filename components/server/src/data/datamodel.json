@@ -1211,7 +1211,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -1241,7 +1242,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -1255,11 +1257,13 @@
                         },
                         {
                             "name": "Date of most recent commit",
-                            "key": "commit_date"
+                            "key": "commit_date",
+                            "type": "date"
                         },
                         {
                             "name": "Age of most recent commit (in days)",
-                            "key": "commit_age"
+                            "key": "commit_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -1309,7 +1313,8 @@
                         },
                         {
                             "name": "Story points",
-                            "key": "story_points"
+                            "key": "story_points",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -1820,7 +1825,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -1834,11 +1840,13 @@
                         },
                         {
                             "name": "Date of most recent commit",
-                            "key": "commit_date"
+                            "key": "commit_date",
+                            "type": "date"
                         },
                         {
                             "name": "Age of most recent commit (in days)",
-                            "key": "commit_age"
+                            "key": "commit_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -1875,7 +1883,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -2069,7 +2078,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -2099,7 +2109,8 @@
                         },
                         {
                             "name": "Age of most recent build (in days)",
-                            "key": "build_age"
+                            "key": "build_age",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -2375,7 +2386,8 @@
                         },
                         {
                             "name": "Duration (minutes)",
-                            "key": "duration"
+                            "key": "duration",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -2390,11 +2402,13 @@
                         },
                         {
                             "name": "Days since last test",
-                            "key": "days_untested"
+                            "key": "days_untested",
+                            "type": "integer"
                         },
                         {
                             "name": "Desired test frequency (days)",
-                            "key": "desired_test_frequency"
+                            "key": "desired_test_frequency",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -2409,7 +2423,8 @@
                         },
                         {
                             "name": "Points",
-                            "key": "points"
+                            "key": "points",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -2715,7 +2730,7 @@
                             "key": "latest"
                         }
                     ]
-                } 
+                }
             }
         },
         "ojaudit": {
@@ -2821,7 +2836,8 @@
                         },
                         {
                             "name": "Number of occurrences",
-                            "key": "count"
+                            "key": "count",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -3048,7 +3064,8 @@
                         },
                         {
                             "name": "Number of vulnerabilities",
-                            "key": "nr_vulnerabilities"
+                            "key": "nr_vulnerabilities",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -3135,7 +3152,8 @@
                         },
                         {
                             "name": "Number of vulnerabilities",
-                            "key": "nr_vulnerabilities"
+                            "key": "nr_vulnerabilities",
+                            "type": "integer"
                         }
                     ]
                 }
@@ -3489,7 +3507,7 @@
                             "key": "latest"
                         }
                     ]
-                } 
+                }
             }
         },
         "pyupio_safety": {
@@ -3811,11 +3829,13 @@
                         },
                         {
                             "name": "Measurement",
-                            "key": "measurement"
+                            "key": "measurement",
+                            "type": "integer"
                         },
                         {
                             "name": "Target",
-                            "key": "target"
+                            "key": "target",
+                            "type": "integer"
                         }
                     ]
                 }
