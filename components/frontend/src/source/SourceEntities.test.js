@@ -9,7 +9,7 @@ const data_model = {
                 metric_type:
                 {
                     name: "entity name",
-                    attributes: [{key: "1"}, {key: "2"}]
+                    attributes: [{key: "1"}, {key: "2", type: "integer"}]
                 }
             }
         }
