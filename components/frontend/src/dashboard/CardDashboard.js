@@ -35,7 +35,7 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
     function onLayoutChange(new_layout) {
-        if (new_layout.length === layout.length && JSON.stringify(new_layout) !== JSON.stringify(layout)) {
+        if (dragging && new_layout.length === layout.length && JSON.stringify(new_layout) !== JSON.stringify(layout)) {
             // Only save the layout if it was changed by rearranging cards
             save_layout(new_layout)
         }
