@@ -13,46 +13,33 @@ describe("<CardDashboard />", () => {
 });
 
 describe("<CardDashboard />", () => {
-    it('saves the layout after drag', async () => {
-        let wrapper;
-        let mockCallBack = jest.fn();
+    let mockCallback, wrapper;
+    beforeEach(async () => {
+        mockCallback = jest.fn();
         await act(async () => {
             wrapper = mount(
                 <ReadOnlyContext.Provider value={false}>
                     <CardDashboard
                         cards={[<MetricSummaryCard red={1} green={2} yellow={1} white={0} grey={0} />]}
                         initial_layout={[{ h: 6, w: 4, x: 0, y: 0 }]}
-                        save_layout={mockCallBack}
+                        save_layout={mockCallback}
                     />
                 </ReadOnlyContext.Provider>
             );
             wrapper.find("ReactGridLayout").at(0).prop("onDragStart")({}, {}, {}, {}, { clientX: 0, clientY: 0 });
             wrapper.setProps({})  // rerender
         });
+    });
+    it('saves the layout after drag', async () => {
         await act(async () => {
             wrapper.find("ReactGridLayout").at(0).prop("onLayoutChange")([{h: 6, w: 4, x: 200, y: 200}]);
         });
-        expect(mockCallBack).toHaveBeenCalled();
+        expect(mockCallback).toHaveBeenCalled();
     });
     it('does not save the layout after click', async () => {
-        let wrapper;
-        let mockCallBack = jest.fn();
-        await act(async () => {
-            wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
-                    <CardDashboard
-                        cards={[<MetricSummaryCard red={1} green={2} yellow={1} white={0} grey={0} />]}
-                        initial_layout={[{ h: 6, w: 4, x: 0, y: 0 }]}
-                        save_layout={mockCallBack}
-                    />
-                </ReadOnlyContext.Provider>
-            );
-            wrapper.find("ReactGridLayout").at(0).prop("onDragStart")({}, {}, {}, {}, { clientX: 100, clientY: 100 });
-            wrapper.setProps({})  // rerender
-        });
         await act(async () => {
             wrapper.find("div.react-draggable").at(0).simulate("click");
         });
-        expect(mockCallBack).not.toHaveBeenCalled();
+        expect(mockCallback).not.toHaveBeenCalled();
     });
 });
