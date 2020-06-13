@@ -9,7 +9,7 @@ const data_model = {
                 metric_type:
                 {
                     name: "entity name",
-                    attributes: [{key: "1"}, {key: "2", type: "integer"}]
+                    attributes: [{key: "attribute", type: "integer"}]
                 }
             }
         }
@@ -29,10 +29,16 @@ const source = {
     source_uuid: "source_uuid",
     entities: [
         {
-            key: "1"
+            key: "1",
+            attribute: "1"
         },
         {
-            key: "2"
+            key: "2",
+            attribute: "3"
+        },
+        {
+            key: "3",
+            attribute: "2"
         }
     ]
 }
