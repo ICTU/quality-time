@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Reordering items or changing the type of a metric would sometimes fail because Quality-time would also try to save the layout of the dashboard. Fixed by only saving the dashboard layout when the user deliberately changes the layout by dragging a card. Fixes [#1160](https://github.com/ICTU/quality-time/issues/1160).
 - Columns with numbers in the source entity views were incorrectly sorted as text. Fixes [#1196](https://github.com/ICTU/quality-time/issues/1196).
+- Collecting unmerged branches using Azure DevOps as source would fail if the project name contained spaces and the user did not specify a repository. Quality-time would fail to find the default repository because it would use the URL-quoted project name to look for it, instead of the unquoted project name. Fixes [#1224](https://github.com/ICTU/quality-time/issues/1224).
 
 ## [2.3.2] - [2020-06-10]
 
