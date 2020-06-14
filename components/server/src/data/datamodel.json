@@ -4892,10 +4892,13 @@
                 "duplicated_lines",
                 "issues",
                 "loc",
+                "manual_test_duration",
+                "manual_test_execution",
                 "many_parameters",
                 "long_units",
                 "performancetest_duration",
                 "performancetest_stability",
+                "ready_user_story_points",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",
@@ -4904,6 +4907,7 @@
                 "tests",
                 "uncovered_branches",
                 "uncovered_lines",
+                "unmerged_branches",
                 "violations"
             ]
         }
