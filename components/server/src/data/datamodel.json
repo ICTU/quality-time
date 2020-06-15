@@ -187,6 +187,7 @@
             "near_target": "35000",
             "default_source": "sonarqube",
             "sources": [
+                "cloc",
                 "manual_number",
                 "random",
                 "sonarqube"
@@ -1465,6 +1466,100 @@
                 }
             },
             "entities": {}
+        },
+        "cloc": {
+            "name": "cloc",
+            "description": "cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages",
+            "url": "https://github.com/AlDanial/cloc",
+            "parameters": {
+                "url": {
+                    "name": "URL to a cloc report in JSON format or to a zip with cloc reports in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "loc"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a cloc report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "loc"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "loc"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "loc"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "loc"
+                    ]
+                }
+            },
+            "entities": {
+                "loc": {
+                    "name": "language",
+                    "name_plural": "languages",
+                    "attributes": [
+                        {
+                            "name": "Language",
+                            "key": "language"
+                        },
+                        {
+                            "name": "Number of files",
+                            "key": "nr_files",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Number of blank lines",
+                            "key": "blank",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Number of comment lines",
+                            "key": "comment",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Number of code lines",
+                            "key": "code",
+                            "type": "integer"
+                        }
+                    ]
+                }
+            }
         },
         "composer": {
             "name": "Composer",
@@ -3723,6 +3818,7 @@
                         "Bandit",
                         "Calendar date",
                         "Checkmarx CxSAST",
+                        "cloc",
                         "Composer",
                         "GitLab",
                         "JaCoCo",
@@ -3756,6 +3852,7 @@
                         "Bandit": "bandit",
                         "Calendar date": "calendar",
                         "Checkmarx CxSAST": "cxsast",
+                        "cloc": "cloc",
                         "Composer": "composer",
                         "GitLab": "gitlab",
                         "JaCoCo": "jacoco",
