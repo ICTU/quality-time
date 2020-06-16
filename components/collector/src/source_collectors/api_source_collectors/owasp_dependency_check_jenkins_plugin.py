@@ -25,12 +25,12 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
             priority = warning["priority"].lower()
             file_path = warning["fileName"]
             if file_path in entities:
-                entities[file_path]["nr_vulnerabilities"] = int(entities[file_path]["nr_vulnerabilities"]) + 1
+                entities[file_path]["nr_vulnerabilities"] = str(int(entities[file_path]["nr_vulnerabilities"]) + 1)
                 entities[file_path]["highest_severity"] = \
                     self.__highest_severity(str(entities[file_path]["highest_severity"]).lower(), priority).capitalize()
             else:
                 entities[file_path] = dict(
-                    key=file_path, file_path=file_path, highest_severity=priority.capitalize(), nr_vulnerabilities=1)
+                    key=file_path, file_path=file_path, highest_severity=priority.capitalize(), nr_vulnerabilities="1")
         return str(len(entities)), "100", list(entities.values())
 
     def __highest_severity(self, severity1: str, severity2: str) -> str:

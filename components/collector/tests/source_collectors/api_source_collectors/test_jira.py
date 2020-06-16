@@ -115,8 +115,8 @@ class JiraReadyUserStoryPointsTest(JiraTestCase):
         self.assert_measurement(
             response, value="42",
             entities=[
-                dict(key="1", summary="user story 1", url="https://jira/browse/1", points=10.0),
-                dict(key="2", summary="user story 2", url="https://jira/browse/2", points=32.0)])
+                dict(key="1", summary="user story 1", url="https://jira/browse/1", points="10.0"),
+                dict(key="2", summary="user story 2", url="https://jira/browse/2", points="32.0")])
 
 
 class JiraManualTestDurationTest(JiraTestCase):
@@ -135,5 +135,5 @@ class JiraManualTestDurationTest(JiraTestCase):
         self.assert_measurement(
             response, value="25",
             entities=[
-                dict(duration=10.0, key="1", summary="test 1", url="https://jira/browse/1"),
-                dict(duration=15.0, key="2", summary="test 2", url="https://jira/browse/2")])
+                dict(duration="10.0", key="1", summary="test 1", url="https://jira/browse/1"),
+                dict(duration="15.0", key="2", summary="test 2", url="https://jira/browse/2")])

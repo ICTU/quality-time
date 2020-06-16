@@ -2424,7 +2424,7 @@
                         {
                             "name": "Points",
                             "key": "points",
-                            "type": "integer"
+                            "type": "float"
                         }
                     ]
                 }

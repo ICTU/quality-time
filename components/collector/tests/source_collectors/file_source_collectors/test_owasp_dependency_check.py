@@ -40,7 +40,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_text=xml)
         expected_entities = [
             dict(key="12345", url="https://owasp_dependency_check.html#l1_12345",
-                 highest_severity="Medium", nr_vulnerabilities=2,
+                 highest_severity="Medium", nr_vulnerabilities="2",
                  file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
@@ -65,7 +65,7 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_text=xml)
         expected_entities = [
             dict(key="12345", url="https://owasp_dependency_check.html#l1_12345",
-                 highest_severity="Low", nr_vulnerabilities=1,
+                 highest_severity="Low", nr_vulnerabilities="1",
                  file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js")]
         self.assert_measurement(response, value="1", entities=expected_entities)
 

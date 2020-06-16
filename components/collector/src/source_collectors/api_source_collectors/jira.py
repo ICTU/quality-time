@@ -103,7 +103,7 @@ class JiraFieldSumBase(JiraIssues):
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
-        entity[self.entity_key] = cast(float, self.__value_of_field_to_sum(issue))
+        entity[self.entity_key] = str(cast(float, self.__value_of_field_to_sum(issue)))
         return entity
 
     def _include_issue(self, issue: Dict) -> bool:

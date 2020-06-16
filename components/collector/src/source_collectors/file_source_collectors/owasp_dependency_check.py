@@ -55,7 +55,7 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckBase):
                 highest_severity = severity
                 break
         return dict(key=key, file_path=file_path, highest_severity=highest_severity.capitalize(),
-                    url=entity_landing_url, nr_vulnerabilities=len(vulnerabilities))
+                    url=entity_landing_url, nr_vulnerabilities=str(len(vulnerabilities)))
 
     def __vulnerabilities(self, element: Element, namespaces: Namespaces) -> List[Element]:
         """Return the vulnerabilities that have one of the severities specified in the parameters."""
