@@ -1,11 +1,11 @@
 """Quality-time specific types."""
 
-from typing import Any, Dict, List, NewType, Optional, Union
+from typing import Any, Dict, List, NewType, Optional
 
 import aiohttp
 
 
-Entity = Dict[str, Union[int, float, str]]  # pylint: disable=invalid-name
+Entity = Dict[str, str]  # pylint: disable=invalid-name
 Entities = List[Entity]
 ErrorMessage = Optional[str]
 Job = Dict[str, Any]

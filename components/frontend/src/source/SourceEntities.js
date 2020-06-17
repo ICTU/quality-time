@@ -53,7 +53,11 @@ export function SourceEntities(props) {
     </Table.Row>
   let entities = Array.from(props.source.entities);
   if (sortColumn !== null) {
-    const parse = columnType === "integer" ? (value) => parseInt(value, 10) : (value) => value;
+    const parse = {
+      "integer": (value) => parseInt(value, 10),
+      "float": (value) => parseFloat(value),
+      "text": (value) => value
+    }[columnType];
     entities.sort((a, b) => parse(a[sortColumn]) < parse(b[sortColumn]) ? -1 : 1)
     if (sortDirection === 'descending') {
       entities.reverse()
