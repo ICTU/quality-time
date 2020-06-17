@@ -64,17 +64,13 @@ describe('<SourceEntities />', () => {
             wrapper.find("TableHeaderCell").at(columnIndex).simulate("click");
         }
         const wrapper = mount(<SourceEntities datamodel={data_model} metric={metric} source={source} />);
-        sortColumn(1);
-        expectSorting(1, true, {0: "1", 2: "3", 4: "2"});
-        sortColumn(1);
-        expectSorting(1, false, {0: "2", 2: "3", 4: "1"});
-        sortColumn(2);
-        expectSorting(2, false, {0: "3", 2: "2", 4: "1"});
         sortColumn(2);
         expectSorting(2, true, {0: "1", 2: "2", 4: "3"});
-        sortColumn(3);
-        expectSorting(3, true, {1: "0.1", 3: "0.2", 5: "0.3"});
+        sortColumn(2);
+        expectSorting(2, false, {0: "3", 2: "2", 4: "1"});
         sortColumn(3);
         expectSorting(3, false, {1: "0.3", 3: "0.2", 5: "0.1"});
+        sortColumn(3);
+        expectSorting(3, true, {1: "0.1", 3: "0.2", 5: "0.3"});
     })
 });
