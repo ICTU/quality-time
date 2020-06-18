@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy_v3, \
     post_move_metric
 
-from .fixtures import JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, \
+from ..fixtures import JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, \
     create_report
 
 

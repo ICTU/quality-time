@@ -28,24 +28,6 @@ class DataModelTest(DataModelTestCase):
         for metric in self.data_model["metrics"].values():
             self.assertTrue(len(metric["sources"]) >= 1)
 
-    def test_source_parameter_metrics(self):
-        """Test that the metrics listed for source parameters are metrics supported by the source."""
-        for source_id, source in self.data_model["sources"].items():
-            for parameter_key, parameter_value in source["parameters"].items():
-                for metric in parameter_value["metrics"]:
-                    self.assertTrue(
-                        source_id in self.data_model["metrics"][metric]["sources"],
-                        f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
-                        f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
-
-    def test_source_parameter_names(self):
-        """Test that each source parameter has a name and short name."""
-        for source_id, source in self.data_model["sources"].items():
-            for parameter_key, parameter_value in source["parameters"].items():
-                for field in ["name", "short_name"]:
-                    error_message = f"Parameter '{parameter_key}' of source '{source_id}' has no {field}"
-                    self.assertTrue(field in parameter_value, error_message)
-
     def test_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
         for metric_id, metric in self.data_model["metrics"].items():
@@ -59,57 +41,15 @@ class DataModelTest(DataModelTestCase):
                 self.assertTrue(
                     metric_id in parameter_metrics, f"No parameters for metric '{metric_id}' in source '{source}'")
 
-    def test_multiple_choice_parameters(self):
-        """Test that multiple choice parameters have both a default value and a list of options."""
-        for source_id, source in self.data_model["sources"].items():
-            for parameter_id, parameter in source["parameters"].items():
-                if parameter["type"].startswith("multiple_choice"):
-                    self.assertTrue("default_value" in parameter)
-                    self.assertTrue(
-                        "placeholder" in parameter,
-                        f"Parameter {parameter_id} of source {source_id} has no placeholder")
-                    self.assertEqual(list, type(parameter["default_value"]))
-                    if parameter["type"] == "multiple_choice":
-                        self.assertTrue("values" in parameter)
-
     def test_addition(self):
         """Test each metric had its addition defined correctly."""
         for metric in self.data_model["metrics"].values():
             self.assertTrue(metric["addition"] in ("max", "min", "sum"))
 
-    def test_mandatory_parameters(self):
-        """Test that each metric has a mandatory field with true or false value."""
-        for source_id, source in self.data_model["sources"].items():
-            for parameter_id, parameter_values in source["parameters"].items():
-                self.assertTrue(
-                    "mandatory" in parameter_values,
-                    f"The parameter '{parameter_id}' of source '{source_id}' has no 'mandatory' field")
-                self.assertTrue(
-                    parameter_values["mandatory"] in (True, False),
-                    f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
-                    "true nor false")
-
     def test_default_source(self):
         """Test that each metric has a default source, and that the default source is listed as possible source."""
         for metric in self.data_model["metrics"].values():
             self.assertTrue(metric["default_source"] in metric["sources"])
-
-    def test_entity_attributes(self):
-        """Test that entities have the required attributes."""
-        for source_id, source in self.data_model["sources"].items():
-            for entity_key, entity_value in source["entities"].items():
-                self.assertTrue("name" in entity_value.keys())
-                self.assertTrue("name_plural" in entity_value.keys(), f"No 'name_plural' in {source_id}.{entity_key}")
-
-    def test_colors(self):
-        """Test that the color values are correct."""
-        for source_id, source in self.data_model["sources"].items():
-            for entity_key, entity_value in source["entities"].items():
-                for attribute in entity_value["attributes"]:
-                    for color_value in attribute.get("color", {}).values():
-                        self.assertTrue(
-                            color_value in ("active", "error", "negative", "positive", "warning"),
-                            f"Color {color_value} of {source_id}.{entity_key} is not correct")
 
     def test_metrics_belong_to_at_least_one_subject(self):
         """Test that each metric belongs to at least one subject."""
@@ -119,14 +59,6 @@ class DataModelTest(DataModelTestCase):
                     break
             else:  # pragma: nocover
                 self.fail(f"Metric {metric} not listed in any subject.")
-
-    def test_sources_with_landing_url(self):
-        """Test that the the sources with landing url also have url."""
-        for source in self.data_model["sources"]:
-            if "landing_url" in self.data_model["sources"][source]["parameters"]:
-                self.assertTrue(
-                    "url" in self.data_model["sources"][source]["parameters"],
-                    f"Source '{source}' has the 'landing_url' parameter, but not the 'url' parameter.")
 
     def test_metric_direction(self):
         """Test that all metrics have a valid direction."""
@@ -156,6 +88,36 @@ class DataModelTest(DataModelTestCase):
             else:  # pragma: nocover
                 self.fail(f"Scale {scale} not used for any metric.")
 
+
+class DataModelSourcesTest(DataModelTestCase):
+    """Unit tests for sources in the data model."""
+
+    def test_sources_with_landing_url(self):
+        """Test that the the sources with landing url also have url."""
+        for source in self.data_model["sources"]:
+            if "landing_url" in self.data_model["sources"][source]["parameters"]:
+                self.assertTrue(
+                    "url" in self.data_model["sources"][source]["parameters"],
+                    f"Source '{source}' has the 'landing_url' parameter, but not the 'url' parameter.")
+
+    def test_source_parameter_metrics(self):
+        """Test that the metrics listed for source parameters are metrics supported by the source."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_key, parameter_value in source["parameters"].items():
+                for metric in parameter_value["metrics"]:
+                    self.assertTrue(
+                        source_id in self.data_model["metrics"][metric]["sources"],
+                        f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
+                        f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
+
+    def test_source_parameter_names(self):
+        """Test that each source parameter has a name and short name."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_key, parameter_value in source["parameters"].items():
+                for field in ["name", "short_name"]:
+                    error_message = f"Parameter '{parameter_key}' of source '{source_id}' has no {field}"
+                    self.assertTrue(field in parameter_value, error_message)
+
     def test_parameter_api_values(self):
         """Test that the api values are only used for single or multiple choice parameters and that the keys match with
         the possible regular values. The api values are the values used in the source."""
@@ -167,6 +129,31 @@ class DataModelTest(DataModelTestCase):
                     "values" in parameter,
                     f"Parameter {parameter_key} of source {source_id} has api values, but no values.")
                 self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))
+
+    def test_multiple_choice_parameters(self):
+        """Test that multiple choice parameters have both a default value and a list of options."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_id, parameter in source["parameters"].items():
+                if parameter["type"].startswith("multiple_choice"):
+                    self.assertTrue("default_value" in parameter)
+                    self.assertTrue(
+                        "placeholder" in parameter,
+                        f"Parameter {parameter_id} of source {source_id} has no placeholder")
+                    self.assertEqual(list, type(parameter["default_value"]))
+                    if parameter["type"] == "multiple_choice":
+                        self.assertTrue("values" in parameter)
+
+    def test_mandatory_parameters(self):
+        """Test that each metric has a mandatory field with true or false value."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_id, parameter_values in source["parameters"].items():
+                self.assertTrue(
+                    "mandatory" in parameter_values,
+                    f"The parameter '{parameter_id}' of source '{source_id}' has no 'mandatory' field")
+                self.assertTrue(
+                    parameter_values["mandatory"] in (True, False),
+                    f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
+                    "true nor false")
 
     def test_invalid_characters_in_names(self):
         """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
@@ -190,6 +177,33 @@ class DataModelTest(DataModelTestCase):
                 self.assertFalse(
                     "help" in parameter and "help_url" in parameter,
                     f"The parameter '{parameter_key}' of the source '{source['name']}' has both a help and a help_url")
+
+    def test_entity_attributes(self):
+        """Test that entities have the required attributes."""
+        for source_id, source in self.data_model["sources"].items():
+            for entity_key, entity_value in source["entities"].items():
+                self.assertTrue("name" in entity_value.keys())
+                self.assertTrue("name_plural" in entity_value.keys(), f"No 'name_plural' in {source_id}.{entity_key}")
+
+    def test_colors(self):
+        """Test that the color values are correct."""
+        for source_id, source in self.data_model["sources"].items():
+            for entity_key, entity_value in source["entities"].items():
+                for attribute in entity_value["attributes"]:
+                    for color_value in attribute.get("color", {}).values():
+                        self.assertTrue(
+                            color_value in ("active", "error", "negative", "positive", "warning"),
+                            f"Color {color_value} of {source_id}.{entity_key} is not correct")
+
+    def test_measured_attribute(self):
+        """Test that the measured attribute is actually a key of an entity attribute and has a computable type."""
+        for source in self.data_model["sources"].values():
+            for entities in source["entities"].values():
+                if measured_attribute := entities.get("measured_attribute"):
+                    self.assertIn(measured_attribute, [attribute["key"] for attribute in entities["attributes"]])
+                    for attribute in entities["attributes"]:
+                        if measured_attribute == attribute["key"]:
+                            self.assertIn(attribute["type"], ["integer", "float"])
 
 
 class DataModelSpecificSourcesTest(DataModelTestCase):

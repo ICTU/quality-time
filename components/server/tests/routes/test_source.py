@@ -8,7 +8,7 @@ import requests
 from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy_v3, \
     post_source_new, post_source_parameter
 
-from .fixtures import create_report, METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, \
+from ..fixtures import create_report, METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, \
     SOURCE_ID2, SOURCE_ID3, SOURCE_ID4, SOURCE_ID5, SOURCE_ID6, SOURCE_ID7, SUBJECT_ID, SUBJECT_ID2, SUBJECT_ID3
 
 

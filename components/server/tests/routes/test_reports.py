@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from routes.reports import get_reports, post_reports_attribute
 
-from .fixtures import create_report, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from ..fixtures import create_report, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 class ReportsTest(unittest.TestCase):

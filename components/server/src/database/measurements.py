@@ -8,7 +8,8 @@ import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Addition, Direction, MeasurementId, MetricId, Scale, Status
+from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
+from model.queries import get_measured_attribute, get_attribute_type
 from .datamodels import latest_datamodel
 
 
@@ -60,8 +61,8 @@ def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) 
     metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
     direction = metric.get("direction") or metric_type["direction"]
     for scale in metric_type["scales"]:
-        value = calculate_measurement_value(measurement["sources"], metric["addition"], scale, direction)
-        status = determine_measurement_status(database, metric, value)
+        value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
+        status = determine_measurement_status(metric, direction, value)
         measurement[scale] = dict(value=value, status=status, direction=direction)
         for target in ("target", "near_target", "debt_target"):
             measurement[scale][target] = metric.get(target, metric_type.get(target)) if scale == metric_scale \
@@ -72,43 +73,62 @@ def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) 
     return measurement
 
 
-def calculate_measurement_value(sources, addition: Addition, scale: Scale, direction: Direction) -> Optional[str]:
+def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
 
-    def percentage(numerator: int, denominator: int) -> int:
+    def percentage(numerator: int, denominator: int, direction: Direction) -> int:
         """Return the rounded percentage: numerator / denominator * 100%."""
         if denominator == 0:
             return 0 if direction == "<" else 100
         return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
-    def nr_entities_to_ignore(source) -> int:
-        """Return the number of entities marked as fixed, false positive or won't fix."""
-        entities = source.get("entity_user_data", {}).values()
-        return len([entity for entity in entities if entity.get("status") in ("fixed", "false_positive", "wont_fix")])
+    def value_of_entities_to_ignore(source) -> int:
+        """Return the value of the ignored entities, i.e. entities that have marked as fixed, false positive or
+        won't fix. If the entities have a measured attribute, return the sum of the measured attributes of the ignored
+        entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
+        user story points, the source entities are user stories and the measured attribute is the amount of story
+        points of each user story."""
+        entities = source.get("entity_user_data", {}).items()
+        ignored_entities = [
+            entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
+        source_type = metric["sources"][source["source_uuid"]]["type"]
+        if attribute := get_measured_attribute(data_model, metric["type"], source_type):
+            entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
+            attribute_type = get_attribute_type(entity, attribute)
+            convert = dict(float=float, integer=int)[attribute_type]
+            value = sum(
+                convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
+        else:
+            value = len(ignored_entities)
+        return int(value)
 
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
-    values = [int(source["value"]) - nr_entities_to_ignore(source) for source in sources]
+    values = [int(source["value"]) - value_of_entities_to_ignore(source) for source in sources]
+    addition = metric["addition"]
     add = dict(max=max, min=min, sum=sum)[addition]
     if scale == "percentage":
+        metric_type = data_model["metrics"][metric["type"]]
+        direction = metric.get("direction") or metric_type["direction"]
         totals = [int(source["total"]) for source in sources]
         if addition == "sum":
             values, totals = [sum(values)], [sum(totals)]
-        values = [percentage(value, total) for value, total in zip(values, totals)]
+        values = [percentage(value, total, direction) for value, total in zip(values, totals)]
     return str(add(values))  # type: ignore
 
 
-def determine_measurement_status(database: Database, metric, measurement_value: Optional[str]) -> Optional[Status]:
+def determine_measurement_status(metric, direction: Direction, measurement_value: Optional[str]) -> Optional[Status]:
     """Determine the measurement status."""
     debt_end_date = metric.get("debt_end_date", date.max.isoformat())
     if measurement_value is None:
+        # Allow for accepted debt even if there is no measurement yet so that the fact that a metric does not have a
+        # source can be accepted as technical debt
         return "debt_target_met" if metric["accept_debt"] and date.today().isoformat() <= debt_end_date else None
-    direction = metric.get("direction") or latest_datamodel(database)["metrics"][metric["type"]]["direction"]
-    value = int(measurement_value)
-    target = int(metric.get("target") or 0)
-    near_target = int(metric.get("near_target") or 0)
-    debt_target = int(metric.get("debt_target") or 0)
-    better_or_equal = {">": int.__ge__, "<": int.__le__}[direction]
+    value = float(measurement_value)
+    target = float(metric.get("target") or 0)
+    near_target = float(metric.get("near_target") or 0)
+    debt_target = float(metric.get("debt_target") or 0)
+    better_or_equal = {">": float.__ge__, "<": float.__le__}[direction]
     if better_or_equal(value, target):
         status: Status = "target_met"
     elif metric["accept_debt"] and date.today().isoformat() <= debt_end_date and better_or_equal(value, debt_target):
