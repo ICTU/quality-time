@@ -1293,6 +1293,7 @@
                 "ready_user_story_points": {
                     "name": "user story",
                     "name_plural": "user stories",
+                    "measured_attribute": "story_points",
                     "attributes": [
                         {
                             "name": "Project",
@@ -2415,6 +2416,7 @@
                 "ready_user_story_points": {
                     "name": "user story",
                     "name_plural": "user stories",
+                    "measured_attribute": "points",
                     "attributes": [
                         {
                             "name": "Summary",

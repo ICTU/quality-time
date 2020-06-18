@@ -12,7 +12,7 @@ from routes.report import (
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 
-from .fixtures import JENNY, JOHN, REPORT_ID, SUBJECT_ID, create_report
+from ..fixtures import JENNY, JOHN, REPORT_ID, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")

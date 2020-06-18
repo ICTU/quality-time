@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from routes.measurement import get_measurements, post_measurement, set_entity_attribute, stream_nr_measurements
-from .fixtures import create_report, JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
+from ..fixtures import create_report, JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
 
 
 class GetMeasurementsTest(unittest.TestCase):
@@ -33,11 +33,12 @@ class PostMeasurementTests(unittest.TestCase):
                         METRIC_ID: dict(
                             name="name", type="metric_type", scale="count", addition="sum", direction="<", target="0",
                             near_target="10", debt_target=None, accept_debt=False, tags=[],
-                            sources={SOURCE_ID: dict()})})})
+                            sources={SOURCE_ID: dict(type="junit")})})})
         self.database.reports.find_one.return_value = report
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.datamodels.find_one.return_value = dict(
-            _id="", metrics=dict(metric_type=dict(direction="<", scales=["count"])))
+            _id="", metrics=dict(metric_type=dict(direction="<", scales=["count"])),
+            sources=dict(junit=dict(entities=dict())))
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
@@ -66,9 +67,11 @@ class PostMeasurementTests(unittest.TestCase):
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
         measurement = self.database.measurements.find_one.return_value = dict(
-            _id="id", metric_uuid=METRIC_ID, status="target_met", sources=[dict(value="0", entities=[])])
+            _id="id", metric_uuid=METRIC_ID, status="target_met",
+            sources=[dict(source_uuid=SOURCE_ID, value="0", entities=[])])
         self.database.measurements.find.return_value = [measurement]
-        sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[])]
+        sources = [
+            dict(source_uuid=SOURCE_ID, value="1", total=None, parse_error=None, connection_error=None, entities=[])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
             metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
@@ -81,9 +84,13 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a measurement whose value is the same, but with different entities."""
         measurement = self.database.measurements.find_one.return_value = dict(
             _id="id", metric_uuid=METRIC_ID, status="target_met",
-            sources=[dict(value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))])
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="1", entities=[dict(key="a")],
+                     entity_user_data=dict(a="attributes"))])
         self.database.measurements.find.return_value = [measurement]
-        sources = [dict(value="1", total=None, parse_error=None, connection_error=None, entities=[dict(key="b")])]
+        sources = [
+            dict(source_uuid=SOURCE_ID, value="1", total=None, parse_error=None, connection_error=None,
+                 entities=[dict(key="b")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
             metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
@@ -111,14 +118,17 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.find_one.side_effect = [
             dict(
                 _id="id1", status=None,
-                sources=[dict(value=None, parse_error=None, connection_error="Error", entities=[])]),
+                sources=[
+                    dict(source_uuid=SOURCE_ID, value=None, parse_error=None, connection_error="Error", entities=[])]),
             dict(
                 _id="id2", status="target_met",
                 sources=[
-                    dict(value="1", parse_error=None, connection_error=None,
+                    dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None,
                          entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
                          entities=[dict(key="entity1")])])]
-        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
+        sources = [
+            dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None,
+                 entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
             metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
@@ -131,9 +141,13 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.measurements.find_one.side_effect = [
             dict(
                 _id="id1",
-                status=None, sources=[dict(value=None, parse_error=None, connection_error="Error", entities=[])]),
+                status=None,
+                sources=[
+                    dict(source_uuid=SOURCE_ID, value=None, parse_error=None, connection_error="Error", entities=[])]),
             None]
-        sources = [dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])]
+        sources = [
+            dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None,
+                 entities=[dict(key="entity1")])]
         request.json = dict(metric_uuid=METRIC_ID, sources=sources)
         new_measurement = dict(
             metric_uuid=METRIC_ID, start="2019-01-01", end="2019-01-01", sources=sources,
@@ -166,10 +180,10 @@ class SetEntityAttributeTest(unittest.TestCase):
         database.reports.find_one.return_value = create_report()
         database.datamodels = Mock()
         database.datamodels.find_one.return_value = dict(
-            _id=123, metrics=dict(metric_type=dict(direction="<", scales=["count"])))
+            _id=123, metrics=dict(metric_type=dict(direction="<", scales=["count"])),
+            sources=dict(source_type=dict(entities={})))
         with patch("bottle.request", Mock(json=dict(attribute="value"))):
-            measurement = set_entity_attribute(
-                METRIC_ID, SOURCE_ID, "entity_key", "attribute", database)
+            measurement = set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", "attribute", database)
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
         self.assertEqual(dict(attribute="value"), entity)
         self.assertEqual(

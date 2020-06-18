@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 from routes.changelog import get_changelog, get_report_changelog, get_subject_changelog, get_metric_changelog, \
     get_source_changelog
-from .fixtures import JENNY, REPORT_ID, METRIC_ID, SOURCE_ID, SUBJECT_ID
+from ..fixtures import JENNY, REPORT_ID, METRIC_ID, SOURCE_ID, SUBJECT_ID
 
 
 class ChangeLogTest(unittest.TestCase):
