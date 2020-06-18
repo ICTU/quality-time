@@ -2,13 +2,13 @@
 
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp
-from server_utilities.type import Addition, Direction, MeasurementId, MetricId, Scale, Status
+from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
 from model.queries import get_measured_attribute, get_attribute_type
 from .datamodels import latest_datamodel
 
@@ -82,7 +82,7 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
             return 0 if direction == "<" else 100
         return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
-    def value_of_entities_to_ignore(source) -> Union[float, int]:
+    def value_of_entities_to_ignore(source) -> int:
         """Return the value of the ignored entities, i.e. entities that have marked as fixed, false positive or
         won't fix. If the entities have a measured attribute, return the sum of the measured attributes of the ignored
         entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
@@ -100,7 +100,7 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
                 convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
         else:
             value = len(ignored_entities)
-        return value
+        return int(value)
 
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None

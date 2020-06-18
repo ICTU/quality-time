@@ -1,7 +1,6 @@
 """Test the measurements collection."""
 
 import unittest
-from unittest import mock
 
 from database.measurements import calculate_measurement_value, determine_measurement_status
 from ..fixtures import SOURCE_ID, SOURCE_ID2
