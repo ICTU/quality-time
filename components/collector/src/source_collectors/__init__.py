@@ -32,7 +32,7 @@ from .file_source_collectors.npm import NpmDependencies
 from .file_source_collectors.ojaudit import OJAuditViolations
 from .file_source_collectors.openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
 from .file_source_collectors.owasp_dependency_check import (
-    OWASPDependencyCheckSecurityWarnings, OWASPDependencyCheckSourceUpToDateness)
+    OWASPDependencyCheckDependencies, OWASPDependencyCheckSecurityWarnings, OWASPDependencyCheckSourceUpToDateness)
 from .file_source_collectors.owasp_zap import OWASPZAPSecurityWarnings, OWASPZAPSourceUpToDateness
 from .file_source_collectors.performancetest_runner import (
     PerformanceTestRunnerPerformanceTestDuration, PerformanceTestRunnerPerformanceTestStability,
