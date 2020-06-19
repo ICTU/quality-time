@@ -21,7 +21,7 @@ class ClocTest(SourceCollectorTestCase):
             dict(key="JavaScript", language="JavaScript", nr_files="1", blank="2", comment="0", code="30")]
         metric = dict(type="loc", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_json_return_value=self.cloc_json)
-        self.assert_measurement(response, value="90", total="90", entities=expected_entities)
+        self.assert_measurement(response, value="90", total="100", entities=expected_entities)
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
@@ -29,4 +29,4 @@ class ClocTest(SourceCollectorTestCase):
         expected_entities = [dict(key="Python", language="Python", nr_files="1", blank="5", comment="10", code="60")]
         metric = dict(type="loc", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_json_return_value=self.cloc_json)
-        self.assert_measurement(response, value="60", total="60", entities=expected_entities)
+        self.assert_measurement(response, value="60", total="100", entities=expected_entities)

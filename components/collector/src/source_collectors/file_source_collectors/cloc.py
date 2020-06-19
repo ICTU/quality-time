@@ -21,4 +21,4 @@ class ClocLOC(JSONFileSourceCollector):
                     entities.append(
                         dict(key=key, language=key, blank=str(value["blank"]), comment=str(value["comment"]),
                              code=str(value["code"]), nr_files=str(value["nFiles"])))
-        return str(loc), str(loc), entities
+        return str(loc), "100", entities
