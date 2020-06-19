@@ -1526,12 +1526,25 @@
                     "metrics": [
                         "loc"
                     ]
+                },
+                "languages_to_ignore": {
+                    "name": "Languages to ignore (regular expressions or language names)",
+                    "short_name": "languages to ignore",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://github.com/AlDanial/cloc#recognized-languages-",
+                    "default_value": [],
+                    "metrics": [
+                        "loc"
+                    ]
                 }
             },
             "entities": {
                 "loc": {
                     "name": "language",
                     "name_plural": "languages",
+                    "measured_attribute": "code",
                     "attributes": [
                         {
                             "name": "Language",
