@@ -7,6 +7,17 @@
             "type": "software",
             "metrics": [
                 {
+                    "type": "loc",
+                    "sources": [
+                        {
+                            "type": "cloc",
+                            "parameters": {
+                                "url": "http://testdata:8000/cloc.json"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "tests",
                     "sources": [
                         {

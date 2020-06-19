@@ -11,7 +11,7 @@
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
-| Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube |
+| Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | cloc, SonarQube |
 | Long units | The amount of units (functions, methods, files) that are too long. | ≦ 0 long units | maintainability | SonarQube |
 | Manual test duration | The duration of the manual test in minutes | ≦ 0 minutes | test quality | Jira |
 | Manual test execution | Measure the number of manual test cases that have not been tested on time. | ≦ 0 manual test cases | test quality | Jira |
@@ -41,6 +41,7 @@
 | [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Ready user story points, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
+| [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages | Size (LOC) |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | Dependencies |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
@@ -211,6 +212,17 @@
 | Lists to ignore (title or id) | Multiple choice with addition | No |  |
 | Cards to count | Multiple choice | No |  |
 | Number of days without activity after which to consider cards inactive | Integer | No |  |
+
+### Size (LOC) from cloc
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a cloc report in JSON format or to a zip with cloc reports in JSON format | URL | Yes |  |
+| URL to a cloc report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+| Languages to ignore (regular expressions or language names) | Multiple choice with addition | No | [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-) |
 
 ### Size (LOC) from SonarQube
 
