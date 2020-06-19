@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to wont't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
 - The `git clone` URL in the [README.md](README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
 - When using the OWASP Dependency Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
+- The trend sparkline graphs, showing the trend over the last week, would always use the full width, even when there was less than a week of data. Fixes [#1241](https://github.com/ICTU/quality-time/issues/1241).
 
 ## [2.3.2] - [2020-06-10]
 
