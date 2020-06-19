@@ -7,7 +7,7 @@
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
-| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, npm, pip |
+| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, npm, OWASP Dependency Check, pip |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
 | Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
@@ -56,7 +56,7 @@
 | [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | Dependencies |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
 | [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | Source up-to-dateness, Security warnings |
-| [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
+| [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Dependencies, Source up-to-dateness, Security warnings |
 | [OWASP Dependency Check Jenkins plugin](https://plugins.jenkins.io/dependency-check-jenkins-plugin) | Jenkins plugin for the OWASP Dependency Check, a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
 | [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project) | The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested. | Source up-to-dateness, Security warnings |
 | [Performancetest-runner](https://github.com/ICTU/performancetest-runner) | An open source tool to run performancetests and create performancetest reports. | Performancetest duration, Performancetest stability, Scalability, Slow transactions, Source up-to-dateness, Tests |
@@ -121,6 +121,16 @@
 | :-------- | :--- | :-------- | :--- |
 | URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format. | URL | Yes | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
 | URL to npm 'outdated' report in a human readable format | String | No | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+
+### Dependencies from OWASP Dependency Check
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
+| URL to OWASP Dependency Check report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
