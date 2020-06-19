@@ -9,16 +9,19 @@ export function TrendSparkline(props) {
     const y = value !== null ? Number(value) : null;
     const x1 = new Date(measurement.start);
     const x2 = new Date(measurement.end);
-    measurements.push({y: y, x: x1});
-    measurements.push({y: y, x: x2});
+    measurements.push({ y: y, x: x1 });
+    measurements.push({ y: y, x: x2 });
   }
+  const now = new Date();
+  let week_ago = new Date();
+  week_ago.setDate(week_ago.getDate() - 7);
   return (
-    <VictoryGroup theme={VictoryTheme.material} scale={{ x: "time", y: "linear" }} height={60} padding={0}>
+    <VictoryGroup theme={VictoryTheme.material} scale={{ x: "time", y: "linear" }} domain={{ x: [week_ago, now] }} height={60} padding={0}>
       <VictoryLine data={measurements} interpolation="stepBefore" style={{
         data: {
           stroke: "black", strokeWidth: 3
         }
-      }}/>
+      }} />
     </VictoryGroup>
   )
 }
