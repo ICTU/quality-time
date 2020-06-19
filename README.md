@@ -9,7 +9,7 @@
 
 *Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as Gitlab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
-Technically, *Quality-time* consists of a Mongo database server, an API-server written in Python, a metrics data collector component also written in Python, and a React frontend. 
+Technically, *Quality-time* consists of a Mongo database server, an API-server written in Python, a metrics data collector component also written in Python, and a React frontend.
 
 Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured metric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
@@ -75,7 +75,7 @@ For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/iss
 Clone this repository:
 
 ```console
-git clone git@github.com:ICTU/quality-time.git
+git clone https://github.com/ICTU/quality-time.git
 ```
 
 Build the containers:
