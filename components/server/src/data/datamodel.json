@@ -1148,6 +1148,18 @@
                         "tests"
                     ]
                 },
+                "test_run_names_to_include": {
+                    "name": "Names of test runs to include (regular expressions or test run names)",
+                    "short_name": "test run names",
+                    "help": "Limit which test runs to include by test run name",
+                    "placeholder": "all test run names",
+                    "type": "multiple_choice_with_addition",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "tests"
+                    ]
+                },
                 "jobs_to_ignore": {
                     "name": "Pipelines to ignore (regular expressions or pipeline names)",
                     "short_name": "pipelines to ignore",

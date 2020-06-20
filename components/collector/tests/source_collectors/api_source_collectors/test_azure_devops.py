@@ -128,14 +128,16 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         self.sources["source_id"]["test_result"] = []
+        self.sources["source_id"]["parameters"]["test_run_names_to_include"] = ["A"]
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(
             metric, get_request_json_return_value=dict(
                 value=[
-                    dict(build=dict(id="1"), passedTests=2),
-                    dict(build=dict(id="2"), passedTests=2, notApplicableTests=1),
-                    dict(build=dict(id="1"), passedTests=4),
-                    dict(build=dict(id="2"), passedTests=1)]))
+                    dict(name="A", build=dict(id="1"), passedTests=2),
+                    dict(name="A", build=dict(id="2"), passedTests=2, notApplicableTests=1),
+                    dict(name="A", build=dict(id="1"), passedTests=4),
+                    dict(name="A", build=dict(id="2"), passedTests=1),
+                    dict(name="B", build=dict(id="3"), passedTests=5)]))
         self.assert_measurement(response, value="4")
 
     async def test_nr_of_failed_tests(self):
