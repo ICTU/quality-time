@@ -33,7 +33,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
         return str(len(entities)), "100", entities
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> List[Element]:  # pylint: disable=no-self-use
-        """Return the enumerated dependencies."""
+        """Return the dependencies."""
         return tree.findall(".//ns:dependency", namespaces)
 
     def _parse_entity(  # pylint: disable=no-self-use
