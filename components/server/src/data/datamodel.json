@@ -96,6 +96,7 @@
                 "composer",
                 "manual_number",
                 "npm",
+                "owasp_dependency_check",
                 "pip",
                 "random"
             ],
@@ -3087,6 +3088,7 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
+                        "dependencies",
                         "security_warnings",
                         "source_up_to_dateness"
                     ]
@@ -3098,6 +3100,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "dependencies",
                         "security_warnings",
                         "source_up_to_dateness"
                     ]
@@ -3109,6 +3112,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "dependencies",
                         "security_warnings",
                         "source_up_to_dateness"
                     ]
@@ -3120,6 +3124,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "dependencies",
                         "security_warnings",
                         "source_up_to_dateness"
                     ]
@@ -3131,6 +3136,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "dependencies",
                         "security_warnings",
                         "source_up_to_dateness"
                     ]
@@ -3176,6 +3182,17 @@
                             "name": "Number of vulnerabilities",
                             "key": "nr_vulnerabilities",
                             "type": "integer"
+                        }
+                    ]
+                },
+                "dependencies": {
+                    "name": "dependency",
+                    "name_plural": "dependencies",
+                    "attributes": [
+                        {
+                            "name": "File path",
+                            "key": "file_path",
+                            "url": "url"
                         }
                     ]
                 }

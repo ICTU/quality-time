@@ -83,6 +83,30 @@ AssertionError: The XML root element should be one of \
 "{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"
 """)
 
+    async def test_dependencies(self):
+        """Test that the dependencies are returned."""
+        xml = """<?xml version="1.0"?>
+        <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
+            <dependency isVirtual="false">
+                <sha1>9999</sha1>
+                <fileName>jquery.min.js</fileName>
+                <filePath>/home/jenkins/workspace/hackazon/js/jquery.min.js</filePath>
+                <vulnerabilities>
+                    <vulnerability source="NVD">
+                        <cvssV2>
+                            <severity>LOW</severity>
+                        </cvssV2>
+                    </vulnerability>
+                </vulnerabilities>
+            </dependency>
+        </analysis>"""
+        metric = dict(type="dependencies", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_text=xml)
+        expected_entities = [
+            dict(key="9999", url="https://owasp_dependency_check.html#l1_9999",
+                 file_path="/home/jenkins/workspace/hackazon/js/jquery.min.js")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
+
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         xml = """<?xml version="1.0"?>

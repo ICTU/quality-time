@@ -119,6 +119,12 @@
                             }
                         },
                         {
+                            "type": "owasp_dependency_check",
+                            "parameters": {
+                                "url": "http://testdata:8000/dependency-check-report.xml"
+                            }
+                        },
+                        {
                             "type": "pip",
                             "parameters": {
                                 "url": "http://testdata:8000/pip-outdated.json"
