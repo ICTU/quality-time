@@ -135,8 +135,11 @@ class AzureDevopsTests(SourceCollector):
         test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
         runs = (await responses[0].json()).get("value", [])
         test_count = 0
+        test_runs = []
         for test_run_name in test_run_names_to_include:
+            highest_build_test_count = 0
             highest_build_nr_seen = 0
+            highest_build_nr_test_runs: Entities = []
             for run in runs:
                 if test_run_name != "all" and not match_string_or_regular_expression(run["name"], test_run_name):
                     continue
@@ -145,9 +148,21 @@ class AzureDevopsTests(SourceCollector):
                     continue
                 if build_nr > highest_build_nr_seen:
                     highest_build_nr_seen = build_nr
-                    test_count = 0
-                test_count += sum(run.get(test_result, 0) for test_result in test_results)
-        return str(test_count), "100", []
+                    highest_build_nr_test_runs = []
+                    highest_build_test_count = 0
+                highest_build_test_count += sum(run.get(test_result, 0) for test_result in test_results)
+                highest_build_nr_test_runs.append(
+                    dict(key=run["id"], name=run.get("name", "Unknown test run name"), state=run.get("state", ""),
+                         build_id=str(build_nr), url=run.get("webAccessUrl", ""),
+                         started_date=run.get("startedDate", ""), completed_date=run.get("completedDate", ""),
+                         incomplete_tests=str(run.get("incompleteTests", 0)),
+                         not_applicable_tests=str(run.get("notApplicableTests", 0)),
+                         passed_tests=str(run.get("passedTests", 0)),
+                         unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
+                         total_tests=str(run.get("totalTests", 0))))
+            test_count += highest_build_test_count
+            test_runs.extend(highest_build_nr_test_runs)
+        return str(test_count), "100", test_runs
 
 
 class AzureDevopsJobs(SourceCollector):

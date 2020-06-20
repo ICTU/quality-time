@@ -1230,6 +1230,60 @@
                         }
                     ]
                 },
+                "tests": {
+                    "name": "test run",
+                    "name_plural": "test runs",
+                    "attributes": [
+                        {
+                            "name": "Test run name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Test run state",
+                            "key": "state"
+                        },
+                        {
+                            "name": "Build id",
+                            "key": "build_id"
+                        },
+                        {
+                            "name": "Started date",
+                            "key": "started_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Completed date",
+                            "key": "completed_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Incomplete tests",
+                            "key": "incomplete_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Not applicable tests",
+                            "key": "not_applicable_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Passed tests",
+                            "key": "passed_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Failed tests",
+                            "key": "unanalyzed_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Total tests",
+                            "key": "total_tests",
+                            "type": "integer"
+                        }
+                    ]
+                },
                 "unused_jobs": {
                     "name": "unused pipeline",
                     "name_plural": "unused pipelines",
