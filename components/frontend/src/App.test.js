@@ -62,4 +62,16 @@ describe("<App/>", () => {
     expect(wrapper.find('Container').find('Report').exists()).toBe(true);
     expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
   });
+
+  it('sets the dashboard to visible on go home', () => {
+    const wrapper = shallow(<App />);
+    wrapper.instance().go_home();
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+  });
+
+  it('scrolls the dashboard into view', () => {
+    const wrapper = shallow(<App />);
+    wrapper.instance().go_dashboard(new Event('click'));
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+  });
 });
