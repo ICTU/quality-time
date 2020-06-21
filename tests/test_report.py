@@ -48,7 +48,7 @@ class OpenReportTest(unittest.TestCase):
 
     def login(self):
         """Login the default admin user."""
-        self.driver.find_element_by_class_name("button").click()
+        self.driver.find_element_by_xpath('//button[text()="Login"]').click()
         login_form = self.driver.find_element_by_class_name("form")
         login_form.find_element_by_name("username").send_keys("admin")
         login_form.find_element_by_name("password").send_keys("admin")
@@ -70,8 +70,7 @@ class OpenReportTest(unittest.TestCase):
     def test_login_and_logout(self):
         """Test that the admin user can login and logout."""
         self.login()
-        logout_button = self.driver.find_element_by_class_name("button")
-        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Logout admin"))
+        logout_button = self.driver.find_element_by_xpath('//button[text()="Logout admin"]')
         logout_button.click()
         self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Login"))
 
