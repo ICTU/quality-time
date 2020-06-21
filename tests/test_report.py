@@ -74,7 +74,7 @@ class OpenReportTest(unittest.TestCase):
         logout_dropdown.click()
         logout_menu_item = self.driver.find_element_by_class_name("selected.item")
         logout_menu_item.click()
-        self.assertTrue(self.driver.find_element_by_xpath('//button[text()="Login"]')
+        self.assertTrue(self.driver.find_element_by_xpath('//button[text()="Login"]'))
 
     def test_add_report(self):
         """Test that a logged in user can add a report."""
