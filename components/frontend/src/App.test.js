@@ -65,12 +65,13 @@ describe("<App/>", () => {
 
   it('sets the dashboard to visible on go home', () => {
     const wrapper = shallow(<App />);
+    wrapper.instance().open_report(new Event('click'), "report_uuid");
     wrapper.instance().go_home();
     expect(wrapper.state('dashboard_visible')).toBe(true);
   });
 
   it('scrolls the dashboard into view', () => {
-    const wrapper = shallow(<App />);
+    const wrapper = shallow(<App id="dashboard"/>);
     wrapper.instance().go_dashboard(new Event('click'));
     expect(wrapper.state('dashboard_visible')).toBe(true);
   });
