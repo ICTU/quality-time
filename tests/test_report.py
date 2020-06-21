@@ -70,9 +70,11 @@ class OpenReportTest(unittest.TestCase):
     def test_login_and_logout(self):
         """Test that the admin user can login and logout."""
         self.login()
-        logout_button = self.driver.find_element_by_xpath('//button[text()="Logout admin"]')
-        logout_button.click()
-        self.assertTrue(expect.text_to_be_present_in_element(logout_button, "Login"))
+        logout_dropdown = self.driver.find_element_by_class_name("dropdown")
+        logout_dropdown.click()
+        logout_menu_item = self.driver.find_element_by_class_name("selected.item")
+        logout_menu_item.click()
+        self.assertTrue(self.driver.find_element_by_xpath('//button[text()="Login"]')
 
     def test_add_report(self):
         """Test that a logged in user can add a report."""
