@@ -31,6 +31,7 @@ function ReportsDashboard(props) {
       cards={report_cards.concat(tag_cards)}
       initial_layout={props.layout || []}
       save_layout={function (layout) { set_reports_attribute("layout", layout, props.reload) }}
+      set_dashboard_visible={props.set_dashboard_visible}
     />
   )
 }
@@ -46,7 +47,7 @@ export function Reports(props) {
     )
   }
   return (
-    <>
+    <div id="dashboard">
       <ReportsTitle
         reload={props.reload}
         subtitle={props.reports_overview.subtitle}
@@ -62,6 +63,6 @@ export function Reports(props) {
         </Segment>
       }
       />
-    </>
+    </div>
   )
 }

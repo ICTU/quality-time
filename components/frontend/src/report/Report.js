@@ -36,6 +36,7 @@ function ReportDashboard(props) {
                 cards={subject_cards().concat(tag_cards())}
                 initial_layout={props.report.layout || []}
                 save_layout={function (layout) { if (!readOnly) { set_report_attribute(props.report.report_uuid, "layout", layout, props.reload) } }}
+                set_dashboard_visible={props.set_dashboard_visible}
             />)}
         </ReadOnlyContext.Consumer>
     )
@@ -67,7 +68,7 @@ export function Report(props) {
         return <ReportErrorMessage report_date={props.report_date} />
     }
     return (
-        <>
+        <div id="dashboard">
             <ReportTitle {...props} />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
@@ -76,6 +77,6 @@ export function Report(props) {
                 {...props}
             />
             <Subjects tags={tags} {...props} />
-        </>
+        </div>
     )
 }

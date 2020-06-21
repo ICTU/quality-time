@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
@@ -28,7 +28,7 @@ function Logout(props) {
   return (
     <Dropdown
       trigger={trigger}
-      options={[{key: "logout", text: "Logout", icon: "log out", onClick: props.logout}]}
+      options={[{ key: "logout", text: "Logout", icon: "log out", onClick: props.logout }]}
     />
   )
 }
@@ -39,12 +39,19 @@ export function Menubar(props) {
   return (
     <Menu className="Menubar" fixed='top' inverted>
       <Container fluid>
-        <Menu.Item header onClick={() => props.go_home()} tabIndex={0}>
-          <Image size='mini' src='/favicon.ico' alt="Go home" />
-          <span style={{paddingLeft: "6mm", fontSize: "2em"}}>
-            Quality-time
-          </span>
-        </Menu.Item>
+        <Popup content="Go to reports overview" trigger={
+          <Menu.Item header onClick={() => props.go_home()} tabIndex={0}>
+            <>
+              <Image size='mini' src='/favicon.ico' alt="Go home" />
+              <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
+            </>
+          </Menu.Item>}
+        />
+        <Popup content="Scroll to dashboard" trigger={
+          <Menu.Item>
+            <Button disabled={props.dashboard_visible} inverted icon="arrow circle up" onClick={(e) => props.go_dashboard(e)} />
+          </Menu.Item>}
+        />
         <Menu.Menu position='right'>
           {props.searchable &&
             <Menu.Item>
