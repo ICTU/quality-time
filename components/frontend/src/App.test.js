@@ -70,9 +70,17 @@ describe("<App/>", () => {
     expect(wrapper.state('dashboard_visible')).toBe(true);
   });
 
-  it('scrolls the dashboard into view', () => {
-    const wrapper = shallow(<App id="dashboard"/>);
+  it('does not crash scrolling if there is no dashboard', () => {
+    const wrapper = shallow(<App />);
     wrapper.instance().go_dashboard(new Event('click'));
     expect(wrapper.state('dashboard_visible')).toBe(true);
+  });
+  it('scrolls the dashboard', () => {
+    const spy = jest.fn();
+    Object.defineProperty(global.document, 'getElementById', { value: spy });
+    const wrapper = shallow(<App />);
+    wrapper.instance().go_dashboard(new Event('click'));
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+    expect(spy).toHaveBeenCalled()
   });
 });
