@@ -75,12 +75,15 @@ describe("<App/>", () => {
     wrapper.instance().go_dashboard(new Event('click'));
     expect(wrapper.state('dashboard_visible')).toBe(true);
   });
+
   it('scrolls the dashboard', () => {
-    const spy = jest.fn();
-    Object.defineProperty(global.document, 'getElementById', { value: spy });
+    const scrollIntoView = jest.fn();
+    scrollIntoView.mockImplementation(() => { return { scrollIntoView: jest.fn() } });
+    Object.defineProperty(global.document, 'getElementById', { value: scrollIntoView });
+    Object.defineProperty(global.window, 'scrollBy', { value: jest.fn() });
     const wrapper = shallow(<App />);
     wrapper.instance().go_dashboard(new Event('click'));
     expect(wrapper.state('dashboard_visible')).toBe(true);
-    expect(spy).toHaveBeenCalled()
+    expect(scrollIntoView).toHaveBeenCalled()
   });
 });
