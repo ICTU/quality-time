@@ -1,12 +1,43 @@
 # Releasing *Quality-time*
 
-To release *Quality-time*, follow these steps (in the project root folder):
+## Preparation
+
+Make sure the [CHANGELOG.md](../docs/CHANGELOG.md) is up to date and has an "[Unreleased]" section at the top.
+
+Make sure the [DATA_MODEL.md](../docs/DATA_MODEL.md) is up to date by running `python docs/ci/create_datamodel_md.py && git diff docs/DATA_MODEL.md`.
+
+Make sure you have the release prequisites installed:
 
 ```console
 python3 -m venv venv
 . venv/bin/activate
 pip install -r requirements-dev.txt
-ci/release.py major|minor|patch
+```
+
+## Pick the release type
+
+Check the [current most recent release](https://github.com/ICTU/quality-time/releases). There are two scenario's:
+
+1. the current most recent release is a major (e.g. v2.0.0), minor (e.g. v2.3.0), or patch (e.g. v2.3.2) release, or
+2. the current most recent release is a release candidate (e.g. v2.4.0-rc.2).
+
+In the first scenario, you have the following options:
+
+- If the next release only contains bug fixes, you'll be creating a `patch` release. If you want to create a release candidate first, you'll be creating a `rc-patch` release.
+- If the next release contains non-breaking changes (and optionally bug fixes), you'll be creating a `minor` release. If you want to create a release candidate first, you'll be creating a `rc-minor` release.
+- If the next release contains backwards incompatible changes (and optionally other changes and bug fixes), you'll be creating a `major` release. If you want to create a release candidate first, you'll be creating a `rc-major` release.
+
+In the second scenario, you have two options:
+
+- You can create another release candidate (`rc`).
+- You can create the major, minor, or patch release that you have been releasing the candidate(s) for (`drop-rc`).
+
+## Create the release
+
+To release *Quality-time*, issue the release command (in the project root folder) using the type of release you picked:
+
+```console
+python ci/release.py major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
 ```
 
 The `release.py` script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to Github. The [Travis CI](https://travis-ci.org/ICTU/quality-time) pipeline will then run the tests and, if the tests are successful, build the Docker containers and push them to [Docker Hub](https://cloud.docker.com/u/ictu/repository/list?name=quality-time&namespace=ictu).
