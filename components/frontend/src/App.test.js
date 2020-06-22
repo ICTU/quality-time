@@ -62,4 +62,28 @@ describe("<App/>", () => {
     expect(wrapper.find('Container').find('Report').exists()).toBe(true);
     expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
   });
+
+  it('sets the dashboard to visible on go home', () => {
+    const wrapper = shallow(<App />);
+    wrapper.instance().open_report(new Event('click'), "report_uuid");
+    wrapper.instance().go_home();
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+  });
+
+  it('does not crash scrolling if there is no dashboard', () => {
+    const wrapper = shallow(<App />);
+    wrapper.instance().go_dashboard(new Event('click'));
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+  });
+
+  it('scrolls the dashboard', () => {
+    const scrollIntoView = jest.fn();
+    scrollIntoView.mockImplementation(() => { return { scrollIntoView: jest.fn() } });
+    Object.defineProperty(global.document, 'getElementById', { value: scrollIntoView });
+    Object.defineProperty(global.window, 'scrollBy', { value: jest.fn() });
+    const wrapper = shallow(<App />);
+    wrapper.instance().go_dashboard(new Event('click'));
+    expect(wrapper.state('dashboard_visible')).toBe(true);
+    expect(scrollIntoView).toHaveBeenCalled()
+  });
 });
