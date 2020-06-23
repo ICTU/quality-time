@@ -2,11 +2,7 @@
 
 ## Preparation
 
-Make sure the [CHANGELOG.md](../docs/CHANGELOG.md) is up to date and has an "[Unreleased]" section at the top.
-
-Make sure the [DATA_MODEL.md](../docs/DATA_MODEL.md) is up to date by running `python docs/ci/create_datamodel_md.py && git diff docs/DATA_MODEL.md`.
-
-Make sure you have the release prequisites installed:
+Make sure you have the dependencies for the release script installed:
 
 ```console
 python3 -m venv venv
@@ -31,6 +27,14 @@ In the second scenario, you have two options:
 
 - You can create another release candidate (`rc`).
 - You can create the major, minor, or patch release that you have been releasing the candidate(s) for (`drop-rc`).
+
+## Check the preconditions
+
+The release script will check a number of preconditions before actually creating the release. To check the preconditions without releasing, invoke the release script as follows:
+
+```console
+python ci/release.py --check-preconditions-only major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
+```
 
 ## Create the release
 
