@@ -15,6 +15,7 @@ class SonarQubeTest(SourceCollectorTestCase):
                 type="sonarqube", parameters=dict(url="https://sonar", component="id", types=["bug", "code_smell"])))
         self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
+        self.issue_landing_url = "https://sonar/project/issues?id=id&issues={0}&open={0}&branch=master"
 
     async def test_violations(self):
         """Test that the number of violations is returned."""
@@ -27,9 +28,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
-                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+                 url=self.issue_landing_url.format("a")),
             dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+                 url=self.issue_landing_url.format("b"))]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_security_hotspots(self):
@@ -44,9 +45,9 @@ class SonarQubeTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         expected_entities = [
             dict(component="a", key="a", message="a", severity="no severity", type="security_hotspot",
-                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+                 url=self.issue_landing_url.format("a")),
             dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
-                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+                 url=self.issue_landing_url.format("b"))]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_bugs_and_security_hotspots(self):
@@ -59,9 +60,9 @@ class SonarQubeTest(SourceCollectorTestCase):
             metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
         expected_entities = [
             dict(component="a", key="a", message="a", severity="major", type="bug",
-                 url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+                 url=self.issue_landing_url.format("a")),
             dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
-                 url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+                 url=self.issue_landing_url.format("b"))]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_commented_out_code(self):
@@ -192,9 +193,9 @@ class SonarQubeTest(SourceCollectorTestCase):
             metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
         expected_entities = [
             dict(component="a", key="a", message="a", severity="info", type="bug",
-                 resolution="", url="https://sonar/project/issues?id=id&issues=a&open=a&branch=master"),
+                 resolution="", url=self.issue_landing_url.format("a")),
             dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 resolution="won't fix", url="https://sonar/project/issues?id=id&issues=b&open=b&branch=master")]
+                 resolution="won't fix", url=self.issue_landing_url.format("b"))]
         self.assert_measurement(
             response, value="2", total="4", entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
