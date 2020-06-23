@@ -6,8 +6,8 @@ from collector_utilities.type import Entity
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
-class SonarQubeTest(SourceCollectorTestCase):
-    """Unit tests for the SonarQube metrics."""
+class SonarQubeTestCase(SourceCollectorTestCase):
+    """Base class for the SonarQube metrics unit tests."""
 
     def setUp(self):
         super().setUp()
@@ -27,16 +27,22 @@ class SonarQubeTest(SourceCollectorTestCase):
             entity["resolution"] = resolution
         return entity
 
+
+class SonarQubeViolationsTest(SonarQubeTestCase):
+    """Unit tests for the SonarQube violations metric."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="violations", addition="sum", sources=self.sources)
+
     async def test_violations(self):
         """Test that the number of violations is returned."""
-        self.maxDiff = None
         json = dict(
             total="2",
             issues=[
                 dict(key="a", message="a", component="a", severity="INFO", type="BUG"),
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
-        metric = dict(type="violations", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         expected_entities = [self.entity("a", "bug", "info"), self.entity("b", "code_smell", "major")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
@@ -48,8 +54,7 @@ class SonarQubeTest(SourceCollectorTestCase):
             issues=[
                 dict(key="a", message="a", component="a", type="SECURITY_HOTSPOT"),
                 dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        metric = dict(type="violations", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         expected_entities = [self.entity("a", "security_hotspot"), self.entity("b", "security_hotspot")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
@@ -58,11 +63,50 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.sources["source_id"]["parameters"]["types"] = ["bug", "security_hotspot"]
         bug_json = dict(total="1", issues=[dict(key="a", message="a", component="a", severity="MAJOR", type="BUG")])
         hotspot_json = dict(total="1", issues=[dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        metric = dict(type="violations", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
+            self.metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
         expected_entities = [self.entity("a", "bug", "major"), self.entity("b", "security_hotspot")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
+
+
+class SonarQubeTestsTest(SonarQubeTestCase):
+    """Unit tests for the SonarQube tests metric."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="tests", addition="sum", sources=self.sources)
+
+    async def test_nr_of_tests(self):
+        """Test that the number of tests is returned."""
+        json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
+        response = await self.collect(self.metric, get_request_json_return_value=json)
+        self.assert_measurement(response, value="123", total="123", landing_url=self.tests_landing_url)
+
+    async def test_nr_of_skipped_tests(self):
+        """Test that the number of skipped tests is returned."""
+        json = dict(
+            component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")]))
+        self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
+        response = await self.collect(self.metric, get_request_json_return_value=json)
+        self.assert_measurement(response, value="4", total="123", landing_url=self.tests_landing_url)
+
+    async def test_nr_of_tests_without_tests(self):
+        """Test that the collector throws an exception if there are no tests."""
+        json = dict(component=dict(measures=[]))
+        response = await self.collect(self.metric, get_request_json_return_value=json)
+        self.assert_measurement(
+            response, value=None, total=None, parse_error="KeyError", landing_url=self.tests_landing_url)
+
+    async def test_nr_of_tests_with_faulty_component(self):
+        """Test that the measurement fails if the component does not exist."""
+        response = await self.collect(
+            self.metric, get_request_json_return_value=dict(errors=[dict(msg="No such component")]))
+        self.assert_measurement(
+            response, value=None, total=None, connection_error="No such component", landing_url=self.tests_landing_url)
+
+
+class SonarQubeMetricsTest(SonarQubeTestCase):
+    """Unit tests for the other SonarQube metrics."""
 
     async def test_commented_out_code(self):
         """Test that the number of lines with commented out code is returned."""
@@ -214,35 +258,3 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.assert_measurement(
             response, value="1234", total="100",
             landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")
-
-    async def test_nr_of_tests(self):
-        """Test that the number of tests is returned."""
-        json = dict(component=dict(measures=[dict(metric="tests", value="123")]))
-        metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(response, value="123", total="123", landing_url=self.tests_landing_url)
-
-    async def test_nr_of_skipped_tests(self):
-        """Test that the number of skipped tests is returned."""
-        json = dict(
-            component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")]))
-        self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
-        metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(response, value="4", total="123", landing_url=self.tests_landing_url)
-
-    async def test_nr_of_tests_without_tests(self):
-        """Test that the collector throws an exception if there are no tests."""
-        json = dict(component=dict(measures=[]))
-        metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
-        self.assert_measurement(
-            response, value=None, total=None, parse_error="KeyError", landing_url=self.tests_landing_url)
-
-    async def test_nr_of_tests_with_faulty_component(self):
-        """Test that the measurement fails if the component does not exist."""
-        metric = dict(type="tests", addition="sum", sources=self.sources)
-        response = await self.collect(
-            metric, get_request_json_return_value=dict(errors=[dict(msg="No such component")]))
-        self.assert_measurement(
-            response, value=None, total=None, connection_error="No such component", landing_url=self.tests_landing_url)
