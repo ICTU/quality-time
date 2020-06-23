@@ -22,7 +22,7 @@ def get_version() -> str:
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
 
 
-def parse_arguments() -> Tuple[str, str]:
+def parse_arguments() -> Tuple[str, str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     parser = argparse.ArgumentParser(description=f"Release Quality-time. Current version is {current_version}.")
@@ -30,7 +30,10 @@ def parse_arguments() -> Tuple[str, str]:
     allowed_bumps = ("rc-patch", "rc-minor", "rc-major", "patch", "minor", "major")
     bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
     parser.add_argument("bump", choices=bumps)
-    return current_version, parser.parse_args().bump
+    parser.add_argument(
+        "-c", "--check-preconditions-only", action="store_true", help="only check the preconditions and then exit")
+    arguments = parser.parse_args()
+    return current_version, arguments.bump, arguments.check_preconditions_only
 
 
 def check_preconditions(bump: str):
@@ -41,6 +44,9 @@ def check_preconditions(bump: str):
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
+    os.system("python3 docs/ci/create_datamodel_md.py")
+    if repo.is_dirty(path="docs/DATA_MODEL.md"):
+        messages.append("The generated data model documentation is not up-to-date, please commit docs/DATA_MODEL.md.")
     with pathlib.Path("docs/CHANGELOG.md").open() as changelog:
         changelog_text = changelog.read()
     if "[Unreleased]" not in changelog_text:
@@ -54,11 +60,13 @@ def check_preconditions(bump: str):
         sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
 
 
-def main():
+def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump2version to update CHANGELOG.md
-    current_version, bump = parse_arguments()
+    current_version, bump, check_preconditions_only = parse_arguments()
     check_preconditions(bump)
+    if check_preconditions_only:
+        return
     commands = []
     if bump.startswith("rc-"):
         rc_bump, non_rc_bump = bump.split("-")
