@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta, timezone
 
+from collector_utilities.type import Entity
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -17,8 +18,18 @@ class SonarQubeTest(SourceCollectorTestCase):
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
         self.issue_landing_url = "https://sonar/project/issues?id=id&issues={0}&open={0}&branch=master"
 
+    def entity(self, component: str, entity_type: str, severity: str = "no severity", resolution: str = None) -> Entity:
+        """Create an entity."""
+        entity = dict(
+            component=component, key=component, message=component, severity=severity, type=entity_type,
+            url=self.issue_landing_url.format(component))
+        if resolution is not None:
+            entity["resolution"] = resolution
+        return entity
+
     async def test_violations(self):
         """Test that the number of violations is returned."""
+        self.maxDiff = None
         json = dict(
             total="2",
             issues=[
@@ -26,11 +37,7 @@ class SonarQubeTest(SourceCollectorTestCase):
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
         metric = dict(type="violations", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
-        expected_entities = [
-            dict(component="a", key="a", message="a", severity="info", type="bug",
-                 url=self.issue_landing_url.format("a")),
-            dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 url=self.issue_landing_url.format("b"))]
+        expected_entities = [self.entity("a", "bug", "info"), self.entity("b", "code_smell", "major")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_security_hotspots(self):
@@ -43,11 +50,7 @@ class SonarQubeTest(SourceCollectorTestCase):
                 dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
         metric = dict(type="violations", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
-        expected_entities = [
-            dict(component="a", key="a", message="a", severity="no severity", type="security_hotspot",
-                 url=self.issue_landing_url.format("a")),
-            dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
-                 url=self.issue_landing_url.format("b"))]
+        expected_entities = [self.entity("a", "security_hotspot"), self.entity("b", "security_hotspot")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_bugs_and_security_hotspots(self):
@@ -58,11 +61,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="violations", addition="sum", sources=self.sources)
         response = await self.collect(
             metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
-        expected_entities = [
-            dict(component="a", key="a", message="a", severity="major", type="bug",
-                 url=self.issue_landing_url.format("a")),
-            dict(component="b", key="b", message="b", severity="no severity", type="security_hotspot",
-                 url=self.issue_landing_url.format("b"))]
+        expected_entities = [self.entity("a", "bug", "major"), self.entity("b", "security_hotspot")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
     async def test_commented_out_code(self):
@@ -191,11 +190,7 @@ class SonarQubeTest(SourceCollectorTestCase):
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = await self.collect(
             metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
-        expected_entities = [
-            dict(component="a", key="a", message="a", severity="info", type="bug",
-                 resolution="", url=self.issue_landing_url.format("a")),
-            dict(component="b", key="b", message="b", severity="major", type="code_smell",
-                 resolution="won't fix", url=self.issue_landing_url.format("b"))]
+        expected_entities = [self.entity("a", "bug", "info", ""), self.entity("b", "code_smell", "major", "won't fix")]
         self.assert_measurement(
             response, value="2", total="4", entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
