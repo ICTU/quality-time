@@ -22,8 +22,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date(), login_error: false,
-      dashboard_visible: true
+      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date(), login_error: false
     };
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
@@ -134,7 +133,7 @@ class App extends Component {
   go_home() {
     if (this.history.location.pathname !== "/") {
       this.history.push("/");
-      this.setState({ report_uuid: "", loading: true, dashboard_visible: true }, () => this.reload());
+      this.setState({ report_uuid: "", loading: true }, () => this.reload());
     }
   }
 
@@ -221,7 +220,6 @@ class App extends Component {
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
         <Menubar
-          dashboard_visible={this.state.dashboard_visible}
           email={this.state.email}
           go_dashboard={(e) => this.go_dashboard(e)}
           go_home={() => this.go_home()}
@@ -242,7 +240,6 @@ class App extends Component {
               :
               this.state.report_uuid === "" ?
                 <Reports
-                  set_dashboard_visible={(visible) => this.setState({dashboard_visible: visible})}
                   open_report={(e, r) => this.open_report(e, r)}
                   open_tag_report={(e, t) => this.open_tag_report(e, t)}
                   reports_overview={this.state.reports_overview}
@@ -250,7 +247,6 @@ class App extends Component {
                 />
                 :
                 <Report
-                  set_dashboard_visible={(visible) => this.setState({dashboard_visible: visible})}
                   datamodel={this.state.datamodel}
                   go_home={() => this.go_home()}
                   nr_measurements={this.state.nr_measurements}

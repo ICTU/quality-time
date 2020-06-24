@@ -49,7 +49,7 @@ export function Menubar(props) {
         />
         <Popup content="Scroll to dashboard" trigger={
           <Menu.Item>
-            <Button disabled={props.dashboard_visible} inverted icon="arrow circle up" onClick={(e) => props.go_dashboard(e)} />
+            <Button inverted icon="arrow circle up" onClick={(e) => props.go_dashboard(e)} />
           </Menu.Item>}
         />
         <Menu.Menu position='right'>

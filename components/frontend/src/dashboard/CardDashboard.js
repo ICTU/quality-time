@@ -1,5 +1,5 @@
-import React, { createRef, useState } from 'react';
-import { Ref, Segment, Visibility } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Segment } from 'semantic-ui-react';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { ReadOnlyContext } from '../context/ReadOnly';
 
@@ -29,12 +29,11 @@ function card_divs(cards, cols, isDragging, card_width = 4, card_height = 6) {
     return divs;
 }
 
-export function CardDashboard({ cards, initial_layout, save_layout, set_dashboard_visible }) {
+export function CardDashboard({ cards, initial_layout, save_layout }) {
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
     const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
-    const contextRef = createRef();
     function onLayoutChange(new_layout) {
         if (dragging && new_layout.length === layout.length && JSON.stringify(new_layout) !== JSON.stringify(layout)) {
             // Only save the layout if it was changed by rearranging cards
@@ -60,26 +59,22 @@ export function CardDashboard({ cards, initial_layout, save_layout, set_dashboar
     const cols = 32;
     const divs = card_divs(cards, cols, isDragging);
     return (
-        <Ref innerRef={contextRef}>
-            <Visibility onUpdate={(e, { calculations }) => set_dashboard_visible(calculations.topVisible)}>
-                <Segment>
-                    <ReadOnlyContext.Consumer>{(readOnly) => (
-                        <ReactGridLayout
-                            cols={cols}
-                            compactType={null}
-                            isDraggable={!readOnly}
-                            layout={layout}
-                            onDragStart={onDragStart}
-                            onDragStop={onDragStop}
-                            onLayoutChange={onLayoutChange}
-                            preventCollision={true}
-                            rowHeight={24}
-                        >
-                            {divs}
-                        </ReactGridLayout>)}
-                    </ReadOnlyContext.Consumer>
-                </Segment>
-            </Visibility>
-        </Ref>
+        <Segment>
+            <ReadOnlyContext.Consumer>{(readOnly) => (
+                <ReactGridLayout
+                    cols={cols}
+                    compactType={null}
+                    isDraggable={!readOnly}
+                    layout={layout}
+                    onDragStart={onDragStart}
+                    onDragStop={onDragStop}
+                    onLayoutChange={onLayoutChange}
+                    preventCollision={true}
+                    rowHeight={24}
+                >
+                    {divs}
+                </ReactGridLayout>)}
+            </ReadOnlyContext.Consumer>
+        </Segment>
     )
 }
