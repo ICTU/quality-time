@@ -31,7 +31,6 @@ function ReportsDashboard(props) {
       cards={report_cards.concat(tag_cards)}
       initial_layout={props.layout || []}
       save_layout={function (layout) { set_reports_attribute("layout", layout, props.reload) }}
-      set_dashboard_visible={props.set_dashboard_visible}
     />
   )
 }

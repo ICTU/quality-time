@@ -11,7 +11,7 @@ it('calls the go-home callback on click', () => {
 
 it('calls the scroll-to-dashboard callback on click', () => {
   const mockCallBack = jest.fn();
-  const wrapper = mount(<Menubar report_date_string="2019-10-10" onDate={console.log} go_dashboard={mockCallBack} dashboard_visible={false} />);
+  const wrapper = mount(<Menubar report_date_string="2019-10-10" onDate={console.log} go_dashboard={mockCallBack} />);
   wrapper.find("Button").at(0).simulate("click");
   expect(mockCallBack).toHaveBeenCalled();
 });
