@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Don't disable the 'scroll to dashboard' button when the dashboard is visible. This requires listening for scroll events which makes scrolling of big reports slow. Fixes [#1260](https://github.com/ICTU/quality-time/issues/1260).
+- Don't disable the 'scroll to dashboard' button when the dashboard is visible. This requires listening for scroll events which makes scrolling of big reports slow and causes other user interface issues like dropdown menu's not working. Fixes [#1260](https://github.com/ICTU/quality-time/issues/1260) and [#1261](https://github.com/ICTU/quality-time/issues/1261).
 
 ## [2.4.0] - [2020-06-23]
 
