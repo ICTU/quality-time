@@ -12,7 +12,7 @@ from .api_source_collectors.jira import (
     JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraReadyUserStoryPoints)
 from .api_source_collectors.owasp_dependency_check_jenkins_plugin import (
     OWASPDependencyCheckJenkinsPluginSecurityWarnings, OWASPDependencyCheckJenkinsPluginSourceUpToDateness)
-from .api_source_collectors.quality_time import QualityTimeMetrics
+from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
 from .api_source_collectors.sonarqube import (
     SonarQubeDuplicatedLines, SonarQubeComplexUnits, SonarQubeCommentedOutCode, SonarQubeLOC, SonarQubeLongUnits,
     SonarQubeManyParameters, SonarQubeSourceUpToDateness, SonarQubeSuppressedViolations, SonarQubeTests,
