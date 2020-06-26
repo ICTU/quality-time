@@ -451,6 +451,7 @@
                 "owasp_dependency_check_jenkins_plugin",
                 "owasp_zap",
                 "performancetest_runner",
+                "quality_time",
                 "sonarqube",
                 "trello",
                 "wekan"
@@ -3792,7 +3793,8 @@
                     "mandatory": true,
                     "default_value": "",
                     "metrics": [
-                        "metrics"
+                        "metrics",
+                        "source_up_to_dateness"
                     ]
                 },
                 "status": {
@@ -3828,7 +3830,8 @@
                     "mandatory": false,
                     "default_value": [],
                     "metrics": [
-                        "metrics"
+                        "metrics",
+                        "source_up_to_dateness"
                     ]
                 },
                 "metric_type": {

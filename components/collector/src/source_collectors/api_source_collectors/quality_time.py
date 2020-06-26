@@ -1,19 +1,37 @@
 """Collector for Quality-time."""
 
+from datetime import datetime
 from typing import cast, Any, Dict, List, Tuple
 from urllib import parse
 
+from dateutil.parser import parse as parse_datetime
+
 from collector_utilities.type import Entity, Entities, Measurement, Response, Responses, URL, Value
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceUpToDatenessCollector
 
 
-class QualityTimeMetrics(SourceCollector):
-    """Collector to get the "metrics" metric from Quality-time."""
+class QualityTimeCollector(SourceCollector):
+    """Base collector for Quality-time metrics."""
 
     async def _api_url(self) -> URL:
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
         return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2/reports", "", "")))
+
+    async def _get_reports(self, response: Response) -> List[Dict[str, Any]]:
+        """Get the relevant reports from the reports response."""
+        report_titles_or_ids = set(self._parameter("reports"))
+        reports = list((await response.json())["reports"])
+        reports = [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
+            if report_titles_or_ids else reports
+        if not reports:
+            raise ValueError(
+                "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else ""))
+        return reports
+
+
+class QualityTimeMetrics(QualityTimeCollector):
+    """Collector to get the "metrics" metric from Quality-time."""
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         """Get the metric entities from the responses."""
@@ -52,7 +70,7 @@ class QualityTimeMetrics(SourceCollector):
         metric_types = self._parameter("metric_type")
         source_types = set(self._parameter("source_type"))
         metrics_and_entities = []
-        for report in await self.__get_reports(response):
+        for report in await self._get_reports(response):
             for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_uuid, metric in subject.get("metrics", {}).items():
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
@@ -61,13 +79,6 @@ class QualityTimeMetrics(SourceCollector):
                         entity = dict(key=metric_uuid, report=report["title"], subject=subject["name"])
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
-
-    async def __get_reports(self, response: Response) -> List[Dict[str, Any]]:
-        """Get the relevant reports from the reports response."""
-        report_titles_or_ids = set(self._parameter("reports"))
-        reports = list((await response.json())["reports"])
-        return [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
-            if report_titles_or_ids else reports
 
     @staticmethod
     def __metric_is_to_be_measured(metric, metric_types, source_types, tags) -> bool:
@@ -78,3 +89,16 @@ class QualityTimeMetrics(SourceCollector):
             return False
         metric_source_types = {source["type"] for source in metric.get("sources", {}).values()}
         return not (source_types and (source_types & metric_source_types) == set())
+
+
+class QualityTimeSourceUpToDateness(QualityTimeCollector, SourceUpToDatenessCollector):
+    """Collector to get the "source up-to-dateness" metric from Quality-time."""
+
+    async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        measurement_dates = []
+        for report in await self._get_reports(response):
+            for subject in report.get("subjects", {}).values():
+                for metric in subject.get("metrics", {}).values():
+                    if recent_measurements := metric.get("recent_measurements", []):
+                        measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))
+        return min(measurement_dates, default=datetime.min)
