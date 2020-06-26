@@ -13,11 +13,13 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
+        self.url = "https://quality-time"
+        self.api_url = f"{self.url}/api/v2/reports"
         self.sources = dict(
             source_id=dict(
                 type="quality_time",
                 parameters=dict(
-                    url="https://quality-time/", reports=["r1"], status=["target not met (red)"], tags=["security"],
+                    url=self.url, reports=["r1"], status=["target not met (red)"], tags=["security"],
                     metric_type=["tests", "violations"], source_type=["sonarqube"])))
         self.reports = dict(
             reports=[
@@ -64,13 +66,12 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
         self.assert_measurement(
-            response, value="1", total="3", api_url="https://quality-time/api/v2/reports",
-            landing_url="https://quality-time",
+            response, value="1", total="3", api_url=self.api_url, landing_url=self.url,
             entities=[
                 dict(
-                    key="m2", report="R1", subject="S1", metric="Violations", report_url="https://quality-time/r1",
-                    subject_url="https://quality-time/r1#s1", metric_url="https://quality-time/r1#m2",
-                    measurement="20 violations", target="≦ 2 violations", status="target_not_met")])
+                    key="m2", report="R1", subject="S1", metric="Violations", report_url=f"{self.url}/r1",
+                    subject_url=f"{self.url}/r1#s1", metric_url=f"{self.url}/r1#m2", measurement="20 violations",
+                    target="≦ 2 violations", status="target_not_met")])
 
     async def test_nr_of_metrics_without_reports(self):
         """Test that the number of metrics is returned."""
@@ -78,8 +79,8 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         metric = dict(type="metrics", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_json_return_value=dict(reports=[]))
         self.assert_measurement(
-            response, value=None, total=None, api_url="https://quality-time/api/v2/reports",
-            parse_error="No reports found", landing_url="https://quality-time", entities=[])
+            response, value=None, total=None, api_url=self.api_url, parse_error="No reports found",
+            landing_url=self.url, entities=[])
 
     async def test_nr_of_metrics_without_correct_report(self):
         """Test that the number of metrics is returned."""
@@ -87,8 +88,8 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         metric = dict(type="metrics", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_json_return_value=self.reports)
         self.assert_measurement(
-            response, value=None, total=None, api_url="https://quality-time/api/v2/reports",
-            parse_error="No reports found with title or id", landing_url="https://quality-time", entities=[])
+            response, value=None, total=None, api_url=self.api_url, parse_error="No reports found with title or id",
+            landing_url=self.url, entities=[])
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness of all reports can be measured."""
@@ -97,8 +98,7 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_json_return_value=self.reports)
         expected_age = days_ago(parse("2020-06-24T07:53:17+00:00"))
         self.assert_measurement(
-            response, value=str(expected_age), total="100", api_url="https://quality-time/api/v2/reports",
-            landing_url="https://quality-time", entities=[])
+            response, value=str(expected_age), total="100", api_url=self.api_url, landing_url=self.url, entities=[])
 
     async def test_source_up_to_dateness_report(self):
         """Test that the source up-to-dateness of a specific report can be measured."""
@@ -107,5 +107,4 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
         response = await self.collect(metric, get_request_json_return_value=self.reports)
         expected_age = days_ago(datetime.min)
         self.assert_measurement(
-            response, value=str(expected_age), total="100", api_url="https://quality-time/api/v2/reports",
-            landing_url="https://quality-time", entities=[])
+            response, value=str(expected_age), total="100", api_url=self.api_url, landing_url=self.url, entities=[])
