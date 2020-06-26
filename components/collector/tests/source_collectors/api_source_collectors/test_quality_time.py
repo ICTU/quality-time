@@ -72,6 +72,24 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                     subject_url="https://quality-time/r1#s1", metric_url="https://quality-time/r1#m2",
                     measurement="20 violations", target="≦ 2 violations", status="target_not_met")])
 
+    async def test_nr_of_metrics_without_reports(self):
+        """Test that the number of metrics is returned."""
+        self.sources["source_id"]["parameters"]["reports"] = []
+        metric = dict(type="metrics", sources=self.sources, addition="sum")
+        response = await self.collect(metric, get_request_json_return_value=dict(reports=[]))
+        self.assert_measurement(
+            response, value=None, total=None, api_url="https://quality-time/api/v2/reports",
+            parse_error="No reports found", landing_url="https://quality-time", entities=[])
+
+    async def test_nr_of_metrics_without_correct_report(self):
+        """Test that the number of metrics is returned."""
+        self.reports["reports"].pop(0)
+        metric = dict(type="metrics", sources=self.sources, addition="sum")
+        response = await self.collect(metric, get_request_json_return_value=self.reports)
+        self.assert_measurement(
+            response, value=None, total=None, api_url="https://quality-time/api/v2/reports",
+            parse_error="No reports found with title or id", landing_url="https://quality-time", entities=[])
+
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness of all reports can be measured."""
         self.sources["source_id"]["parameters"]["reports"] = []

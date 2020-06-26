@@ -22,8 +22,12 @@ class QualityTimeCollector(SourceCollector):
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         reports = list((await response.json())["reports"])
-        return [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
+        reports = [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
             if report_titles_or_ids else reports
+        if not reports:
+            raise ValueError(
+                "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else ""))
+        return reports
 
 
 class QualityTimeMetrics(QualityTimeCollector):
