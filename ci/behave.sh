@@ -14,7 +14,7 @@ coverage run --rcfile=../../.coveragerc-behave --branch --parallel-mode --concur
 deactivate
 cd ../..
 sleep 5  # Give server time to start up
-coverage run --rcfile=.coveragerc-behave --branch --parallel-mode -m behave --format null tests/features
+coverage run --rcfile=.coveragerc-behave --branch --parallel-mode -m behave tests/features  # --format null
 kill -s TERM `pgrep -n -f quality_time_server.py`  # Stop the server so the coverage is written
 mv components/server/.coverage.* .
 coverage combine
