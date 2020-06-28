@@ -11,7 +11,7 @@ def before_all(context):
     """Create a shortcut for to get an API."""
     def get():
         """Get the API."""
-        result = requests.get(f"http://localhost/api/v3/{context.api}")
+        result = requests.get(f"http://localhost:5001/api/v3/{context.api}")
         return result.json()
     context.get = get
 

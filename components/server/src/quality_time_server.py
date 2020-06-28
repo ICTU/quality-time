@@ -21,5 +21,5 @@ def serve() -> None:  # pragma: nocover
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logging.getLogger())  # nosec
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover-behave
     serve()
