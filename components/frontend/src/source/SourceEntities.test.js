@@ -10,7 +10,11 @@ const data_model = {
                 {
                     name: "entity name",
                     attributes: [
-                        { key: "integer", type: "integer" }, { key: "float", type: "float" }, { key: "text", type: "text" }
+                        { key: "integer", type: "integer" },
+                        { key: "float", type: "float" },
+                        { key: "text", type: "text" },
+                        { key: "date", type: "date" },
+                        { key: "datetime", type: "datetime" }
                     ]
                 }
             }
@@ -34,19 +38,25 @@ const source = {
             key: "1",
             integer: "1",
             float: "0.3",
-            text: "C"
+            text: "C",
+            date: "01-01-2000",
+            datetime: "2000-01-01T10:00:00Z"
         },
         {
             key: "2",
             integer: "3",
             float: "0.2",
-            text: "B"
+            text: "B",
+            date: "01-01-2002",
+            datetime: "2002-01-01T10:00:00Z"
         },
         {
             key: "3",
             integer: "2",
             float: "0.1",
-            text: "A"
+            text: "A",
+            date: "01-01-2001",
+            datetime: "2001-01-01T10:00:00Z"
         }
     ]
 }
@@ -69,16 +79,24 @@ describe('<SourceEntities />', () => {
         }
         const wrapper = mount(<SourceEntities datamodel={data_model} metric={metric} source={source} />);
         sortColumn(2);
-        expectSorting(2, true, { 0: "1", 3: "2", 6: "3" });
+        expectSorting(2, true, { 0: "1", 5: "2", 10: "3" });
         sortColumn(2);
-        expectSorting(2, false, { 0: "3", 3: "2", 6: "1" });
+        expectSorting(2, false, { 0: "3", 5: "2", 10: "1" });
         sortColumn(3);
-        expectSorting(3, false, { 1: "0.3", 4: "0.2", 7: "0.1" });
+        expectSorting(3, false, { 1: "0.3", 6: "0.2", 11: "0.1" });
         sortColumn(3);
-        expectSorting(3, true, { 1: "0.1", 4: "0.2", 7: "0.3" });
+        expectSorting(3, true, { 1: "0.1", 6: "0.2", 11: "0.3" });
         sortColumn(4);
-        expectSorting(4, true, { 2: "A", 5: "B", 8: "C" });
+        expectSorting(4, true, { 2: "A", 7: "B", 12: "C" });
         sortColumn(4);
-        expectSorting(4, false, { 2: "C", 5: "B", 8: "A" });
+        expectSorting(4, false, { 2: "C", 7: "B", 12: "A" });
+        sortColumn(5);
+        expectSorting(5, false, { 3: "1-1-2002", 8: "1-1-2001", 13: "1-1-2000" });
+        sortColumn(5);
+        expectSorting(5, true, { 3: "1-1-2000", 8: "1-1-2001", 13: "1-1-2002" });
+        sortColumn(6);
+        expectSorting(6, true, { 4: "1-1-2000 11:00:00", 9: "1-1-2001 11:00:00", 14: "1-1-2002 11:00:00" });
+        sortColumn(6);
+        expectSorting(6, false, { 4: "1-1-2002 11:00:00", 9: "1-1-2001 11:00:00", 14: "1-1-2000 11:00:00" });
     })
 });
