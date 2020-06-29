@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [2.5.0-rc.1] - [2020-06-29]
+## [Unreleased]
+
+### Fixed
+
+- Sorting the unmerged branches by date of last commit would crash the UI. Fixes [#1270](https://github.com/ICTU/quality-time/issues/1270).
 
 ### Added
 
