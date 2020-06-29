@@ -95,14 +95,17 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
         branches = dict(
             value=[
                 dict(name="master", isBaseVersion=True),
-                dict(name="branch", isBaseVersion=False, aheadCount=1, commit=dict(committer=dict(date=timestamp))),
+                dict(name="branch", isBaseVersion=False, aheadCount=1,
+                     commit=dict(committer=dict(date=timestamp), url="https://commit")),
                 dict(name="ignored_branch", isBaseVersion=False, aheadCount=1,
                      commit=dict(committer=dict(date=timestamp)))])
         response = await self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
         expected_age = str(days_ago(parse(timestamp)))
         self.assert_measurement(
             response, value="1", landing_url=self.landing_url,
-            entities=[dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03")])
+            entities=[
+                dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03",
+                     url="https://commit")])
 
 
 class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):

@@ -99,6 +99,9 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committer"]["date"])
 
+    def _branch_landing_url(self, branch) -> URL:
+        return URL(branch["commit"]["url"])
+
 
 class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepositoryBase):
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""

@@ -183,7 +183,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         entities = [
             dict(key=branch["name"], name=branch["name"], commit_age=str(days_ago(self._commit_datetime(branch))),
-                 commit_date=str(self._commit_datetime(branch).date()))
+                 commit_date=str(self._commit_datetime(branch).date()), url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
         return str(len(entities)), "100", entities
 
@@ -194,6 +194,10 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
     @abstractmethod
     def _commit_datetime(self, branch) -> datetime:
         """Return the date and time of the last commit on the branch."""
+
+    @abstractmethod
+    def _branch_landing_url(self, branch) -> URL:
+        """Return the landing url of the branch."""
 
 
 class SourceUpToDatenessCollector(SourceCollector):

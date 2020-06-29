@@ -1322,7 +1322,8 @@
                     "attributes": [
                         {
                             "name": "Branch name",
-                            "key": "name"
+                            "key": "name",
+                            "url": "url"
                         },
                         {
                             "name": "Date of most recent commit",
@@ -2013,7 +2014,8 @@
                     "attributes": [
                         {
                             "name": "Branch name",
-                            "key": "name"
+                            "key": "name",
+                            "url": "url"
                         },
                         {
                             "name": "Date of most recent commit",

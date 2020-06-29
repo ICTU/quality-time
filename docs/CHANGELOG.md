@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Quality-time can be used as source for the 'soure up-to-dateness' metric. Closes [#1227](https://github.com/ICTU/quality-time/issues/1227).
+- Have unmerged branches in Quality-time link to the branches in GitLab or Azure DevOps. Closes [#1268](https://github.com/ICTU/quality-time/issues/1268).
 
 ## [2.4.1] - [2020-06-25]
 
