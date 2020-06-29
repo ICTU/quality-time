@@ -120,6 +120,7 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         gitlab_json = [
             dict(name="master", default=True, merged=False),
             dict(name="unmerged_branch", default=False, merged=False,
+                 web_url="https://gitlab/namespace/project/-/tree/unmerged_branch",
                  commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
             dict(name="ignored_branch", default=False, merged=False,
                  commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
@@ -129,6 +130,7 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         response = await self.collect(metric, get_request_json_return_value=gitlab_json)
         expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         expected_entities = [
-            dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02")]
+            dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02",
+                 url="https://gitlab/namespace/project/-/tree/unmerged_branch")]
         self.assert_measurement(
             response, value="1", entities=expected_entities, landing_url="https://gitlab/namespace/project/-/branches")

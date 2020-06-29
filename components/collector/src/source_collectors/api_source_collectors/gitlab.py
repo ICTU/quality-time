@@ -154,3 +154,6 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committed_date"])
+
+    def _branch_landing_url(self, branch) -> URL:
+        return URL(branch["web_url"])
