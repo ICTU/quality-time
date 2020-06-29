@@ -91,12 +91,12 @@ describe('<SourceEntities />', () => {
         sortColumn(4);
         expectSorting(4, false, { 2: "C", 7: "B", 12: "A" });
         sortColumn(5);
-        expectSorting(5, false, { 3: "1-1-2002", 8: "1-1-2001", 13: "1-1-2000" });
+        expectSorting(5, false, { 0: "3", 5: "2", 10: "1" });
         sortColumn(5);
-        expectSorting(5, true, { 3: "1-1-2000", 8: "1-1-2001", 13: "1-1-2002" });
+        expectSorting(5, true, { 0: "1", 5: "2", 10: "3" });
         sortColumn(6);
-        expectSorting(6, true, { 4: "1-1-2000 11:00:00", 9: "1-1-2001 11:00:00", 14: "1-1-2002 11:00:00" });
+        expectSorting(6, true, { 0: "1", 5: "2", 10: "3" });
         sortColumn(6);
-        expectSorting(6, false, { 4: "1-1-2002 11:00:00", 9: "1-1-2001 11:00:00", 14: "1-1-2000 11:00:00" });
+        expectSorting(6, false, { 0: "3", 5: "2", 10: "1" });
     })
 });
