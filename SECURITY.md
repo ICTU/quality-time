@@ -1,5 +1,9 @@
 # Security Policy
 
+## Current status
+
+Quality-time has not been hardened yet. We advise against running Quality-time internet-facing or in an otherwise untrusted environment.
+
 ## Supported Versions
 
 Only the latest version of Quality-time is currently being supported with security updates.
