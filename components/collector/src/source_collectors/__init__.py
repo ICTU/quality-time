@@ -24,6 +24,8 @@ from .file_source_collectors.anchore import AnchoreSecurityWarnings, AnchoreSour
 from .file_source_collectors.axe_csv import AxeCSVAccessibility
 from .file_source_collectors.bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .file_source_collectors.cloc import ClocLOC
+from .file_source_collectors.cobertura import (
+    CoberturaUncoveredBranches, CoberturaUncoveredLines, CoberturaSourceUpToDateness)
 from .file_source_collectors.composer import ComposerDependencies
 from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
