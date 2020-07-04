@@ -5,6 +5,7 @@ import Anchore from './anchore.png';
 import Axe from './axe.png';
 import AzureDevops from './azure_devops.png';
 import Bandit from './bandit.png';
+import Cobertura from './cobertura.png';
 import Composer from './composer.png';
 import Checkmarx from './checkmarx.png';
 import GitLab from './gitlab.png';
@@ -32,6 +33,7 @@ export function Logo(props) {
         axecsv: Axe,
         azure_devops: AzureDevops,
         bandit: Bandit,
+        cobertura: Cobertura,
         composer: Composer,
         cxsast: Checkmarx,
         gitlab: GitLab,
