@@ -437,6 +437,7 @@
                 "azure_devops",
                 "bandit",
                 "calendar",
+                "cobertura",
                 "cxsast",
                 "gitlab",
                 "jacoco",
@@ -555,6 +556,7 @@
             "near_target": "100",
             "default_source": "sonarqube",
             "sources": [
+                "cobertura",
                 "jacoco",
                 "jacoco_jenkins_plugin",
                 "manual_number",
@@ -581,6 +583,7 @@
             "near_target": "100",
             "default_source": "sonarqube",
             "sources": [
+                "cobertura",
                 "jacoco",
                 "jacoco_jenkins_plugin",
                 "manual_number",
@@ -1642,6 +1645,79 @@
                     ]
                 }
             }
+        },
+        "cobertura": {
+            "name": "Cobertura",
+            "description": "Cobertura is a free Java tool that calculates the percentage of code accessed by tests.",
+            "url": "https://cobertura.github.io/cobertura/",
+            "parameters": {
+                "url": {
+                    "name": "URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a Cobertura report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "uncovered_branches",
+                        "uncovered_lines"
+                    ]
+                }
+            },
+            "entities": {}
         },
         "composer": {
             "name": "Composer",
@@ -3920,6 +3996,7 @@
                         "Calendar date",
                         "Checkmarx CxSAST",
                         "cloc",
+                        "Cobertura",
                         "Composer",
                         "GitLab",
                         "JaCoCo",
@@ -3954,6 +4031,7 @@
                         "Calendar date": "calendar",
                         "Checkmarx CxSAST": "cxsast",
                         "cloc": "cloc",
+                        "Cobertura": "cobertura",
                         "Composer": "composer",
                         "GitLab": "gitlab",
                         "JaCoCo": "jacoco",
