@@ -1,4 +1,4 @@
-# Quality-time frontend
+# *Quality-time* frontend
 
 ## Overview
 
@@ -12,6 +12,6 @@ As a health check, the favicon is downloaded.
 
 The frontend uses the following environment variables:
 
-| Name | Default value | Description | 
+| Name | Default value | Description |
 | :--- | :---------- | :------------ |
 | FRONTEND_PORT | 5000 | The port the frontend listens on. |

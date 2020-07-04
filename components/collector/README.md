@@ -1,4 +1,4 @@
-# Quality-time collector
+# *Quality-time* collector
 
 ## Overview
 

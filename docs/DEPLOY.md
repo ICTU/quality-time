@@ -4,7 +4,7 @@ Quality-time consists of containers that together form the application: a proxy 
 
 ## Docker-composition
 
-This document assumes docker-compose is used to deploy the containers. The docker folder of this repo contains different compose files for running Quality-time in development and continuous integration mode, see the [docker folder](../docker). You can use these compose files as basis for your own deployment configuration.
+This document assumes docker-compose is used to deploy the containers. The docker folder of this repo contains different compose files for running *Quality-time* in development and continuous integration mode, see the [docker folder](../docker). You can use these compose files as basis for your own deployment configuration.
 
 ## Configuring LDAP
 

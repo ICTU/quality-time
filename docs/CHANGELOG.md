@@ -17,8 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Quality-time can be used as source for the 'soure up-to-dateness' metric. Closes [#1227](https://github.com/ICTU/quality-time/issues/1227).
-- Have unmerged branches in Quality-time link to the branches in GitLab or Azure DevOps. Closes [#1268](https://github.com/ICTU/quality-time/issues/1268).
+- *Quality-time* can be used as source for the 'soure up-to-dateness' metric. Closes [#1227](https://github.com/ICTU/quality-time/issues/1227).
+- Have unmerged branches in *Quality-time* link to the branches in GitLab or Azure DevOps. Closes [#1268](https://github.com/ICTU/quality-time/issues/1268).
+- Documentation on how to add metrics and sources to *Quality-time*. Closes [#1273](https://github.com/ICTU/quality-time/issues/1273).
 
 ## [2.4.1] - [2020-06-25]
 
@@ -41,9 +42,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Reordering items or changing the type of a metric would sometimes fail because Quality-time would also try to save the layout of the dashboard. Fixed by only saving the dashboard layout when the user deliberately changes the layout by dragging a card. Fixes [#1160](https://github.com/ICTU/quality-time/issues/1160).
+- Reordering items or changing the type of a metric would sometimes fail because *Quality-time* would also try to save the layout of the dashboard. Fixed by only saving the dashboard layout when the user deliberately changes the layout by dragging a card. Fixes [#1160](https://github.com/ICTU/quality-time/issues/1160).
 - Columns with numbers in the source entity views were incorrectly sorted as text. Fixes [#1196](https://github.com/ICTU/quality-time/issues/1196).
-- Collecting unmerged branches using Azure DevOps as source would fail if the project name contained spaces and the user did not specify a repository. Quality-time would fail to find the default repository because it would use the URL-quoted project name to look for it, instead of the unquoted project name. Fixes [#1224](https://github.com/ICTU/quality-time/issues/1224).
+- Collecting unmerged branches using Azure DevOps as source would fail if the project name contained spaces and the user did not specify a repository. *Quality-time* would fail to find the default repository because it would use the URL-quoted project name to look for it, instead of the unquoted project name. Fixes [#1224](https://github.com/ICTU/quality-time/issues/1224).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab didn't work. Fixes [#1230](https://github.com/ICTU/quality-time/issues/1230).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to wont't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
 - The `git clone` URL in the [README.md](README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
@@ -58,7 +59,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between Quality-time and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
+- The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between *Quality-time* and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
 - Reenable environment variables to set a proxy to be used by the collector. See the [deployment documentation](DEPLOY.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
 
 ## [2.3.1] - [2020-06-02]
@@ -71,12 +72,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- SonarQube can be used as source for the 'security warnings' metric. Quality-time collects the vulnerabilities and/or security hotspots. Closes [#1136](https://github.com/ICTU/quality-time/issues/1136).
+- SonarQube can be used as source for the 'security warnings' metric. *Quality-time* collects the vulnerabilities and/or security hotspots. Closes [#1136](https://github.com/ICTU/quality-time/issues/1136).
 - npm-outdated and pip-outdated JSON reports can be used as source for the 'dependencies' metric. Partially implements [#1065](https://github.com/ICTU/quality-time/issues/1065).
 
 ### Fixed
 
-- Quality-time was using the 5.1 version of the Azure DevOps API to get the number of tests for the 'tests' metric causing Quality-time to not work with Azure DevOps Server 2019. Fixed by using the 5.0 version of the API that also returns the required data. Fixes [#1182](https://github.com/ICTU/quality-time/issues/1182).
+- *Quality-time* was using the 5.1 version of the Azure DevOps API to get the number of tests for the 'tests' metric causing *Quality-time* to not work with Azure DevOps Server 2019. Fixed by using the 5.0 version of the API that also returns the required data. Fixes [#1182](https://github.com/ICTU/quality-time/issues/1182).
 - Don't log a traceback the first time the collector component attempts to download the data model from the server component and fails. As the collector typically starts up faster than the server, one failed attempt is to be expected. Fixes [#1187](https://github.com/ICTU/quality-time/issues/1187).
 
 ## [2.2.4] - [2020-05-11]
@@ -89,7 +90,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- When using Quality-time as source for the Metrics metric, a timeout could occur due to Quality-time unnecessarily retrieving all measurements (it only needs the most recent ones). Fixes [#1154](https://github.com/ICTU/quality-time/issues/1154).
+- When using *Quality-time* as source for the Metrics metric, a timeout could occur due to *Quality-time* unnecessarily retrieving all measurements (it only needs the most recent ones). Fixes [#1154](https://github.com/ICTU/quality-time/issues/1154).
 
 ## [2.2.2] - [2020-04-22]
 
@@ -101,7 +102,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- [When requesting issues with a severity from SonarQube, SonarQube will not return security hotspots because security hotspots don't have a severity](https://community.sonarsource.com/t/23326). Quality-time incorrectly assumed security hotspots would always be returned regardless of the specified severities. Fixed by making a separate call to the SonarQube issues API if necessary to retrieve the security hotspots. Fixes [#1135](https://github.com/ICTU/quality-time/issues/1135).
+- [When requesting issues with a severity from SonarQube, SonarQube will not return security hotspots because security hotspots don't have a severity](https://community.sonarsource.com/t/23326). *Quality-time* incorrectly assumed security hotspots would always be returned regardless of the specified severities. Fixed by making a separate call to the SonarQube issues API if necessary to retrieve the security hotspots. Fixes [#1135](https://github.com/ICTU/quality-time/issues/1135).
 
 ## [2.2.0] - [2020-04-14]
 
@@ -111,7 +112,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Make it clear in the user interface and the documentation that Quality-time can be authenticated with Jenkins using a username and API token, in addition to a username and password. Closes [#1125](https://github.com/ICTU/quality-time/issues/1125).
+- Make it clear in the user interface and the documentation that *Quality-time* can be authenticated with Jenkins using a username and API token, in addition to a username and password. Closes [#1125](https://github.com/ICTU/quality-time/issues/1125).
 
 ### Fixed
 
@@ -150,7 +151,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- Version 1 of the API has been removed. API version 1 was deprecated since Quality-time v1.3.0. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
+- Version 1 of the API has been removed. API version 1 was deprecated since *Quality-time* v1.3.0. Closes [#1051](https://github.com/ICTU/quality-time/issues/1051).
 - Remove the Docker environment files and move the environment variables to the docker-compose files to simplify the compositions. Closes [#1063](https://github.com/ICTU/quality-time/issues/1063).
 
 ## [1.8.1] - [2020-03-03]
@@ -167,7 +168,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Allow for specifying variable parts of URLs in OWASP ZAP reports. This makes it possible to mark warnings as false positive even when parts of URLs change between runs of OWASP ZAP. Note: because the way Quality-time keeps track of the warnings has been changed, some OWASP ZAP warnings may need to be marked as false positive again. Closes [#1045](https://github.com/ICTU/quality-time/issues/1045).
+- Allow for specifying variable parts of URLs in OWASP ZAP reports. This makes it possible to mark warnings as false positive even when parts of URLs change between runs of OWASP ZAP. Note: because the way *Quality-time* keeps track of the warnings has been changed, some OWASP ZAP warnings may need to be marked as false positive again. Closes [#1045](https://github.com/ICTU/quality-time/issues/1045).
 - A new metric for measuring the number of (outdated) dependencies and a new source (Composer for PHP) that supports this metric were added. Closes [#1056](https://github.com/ICTU/quality-time/issues/1056).
 
 ## [1.7.1] - [2020-02-26]
@@ -182,7 +183,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- As the previous rendering component used by Quality-time is no longer maintained, it is replaced with a new component: [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api). Quality-time uses the [ICTU fork](https://github.com/ICTU/url-to-pdf-api) that packages the service as a [Docker container](https://hub.docker.com/repository/docker/ictu/url-to-pdf-api).
+- As the previous rendering component used by *Quality-time* is no longer maintained, it is replaced with a new component: [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api). *Quality-time* uses the [ICTU fork](https://github.com/ICTU/url-to-pdf-api) that packages the service as a [Docker container](https://hub.docker.com/repository/docker/ictu/url-to-pdf-api).
 
 ### Fixed
 
@@ -250,7 +251,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The front end was still using one version 1 API. Fixes [#947](https://github.com/ICTU/quality-time/issues/947).
 - Retrieving the change log would fail if not all recent changes had a change log entry. Fixes [#949](https://github.com/ICTU/quality-time/issues/949).
-- After changing a value in the UI, Quality-time would briefly show the old value while it was updating the database. Fixes [#954](https://github.com/ICTU/quality-time/issues/954).
+- After changing a value in the UI, *Quality-time* would briefly show the old value while it was updating the database. Fixes [#954](https://github.com/ICTU/quality-time/issues/954).
 - Documentation API was not reachable. Fixes [#966](https://github.com/ICTU/quality-time/issues/966).
 
 ## [1.3.4] - [2020-01-15]
@@ -351,11 +352,11 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Fixed
 
-- The Quality-time source still used port 5001 to access the Quality-time API. Fixes [#806](https://github.com/ICTU/quality-time/issues/806).
+- The *Quality-time* source still used port 5001 to access the *Quality-time* API. Fixes [#806](https://github.com/ICTU/quality-time/issues/806).
 
 ### Added
 
-- Allow for filtering metrics by metric type and source type in the Quality-time source. Closes [#808](https://github.com/ICTU/quality-time/issues/808).
+- Allow for filtering metrics by metric type and source type in the *Quality-time* source. Closes [#808](https://github.com/ICTU/quality-time/issues/808).
 
 ## [0.19.1] - [2019-11-19]
 
@@ -367,7 +368,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Fixed
 
-- Use correct API URL when accessing Quality-time as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791).
+- Use correct API URL when accessing *Quality-time* as source. Fixes [#791](https://github.com/ICTU/quality-time/issues/791).
 
 ### Added
 
@@ -409,7 +410,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Added
 
 - Allow for ignoring Jenkins jobs by name or regular expression. Closes [#747](https://github.com/ICTU/quality-time/issues/747).
-- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. Quality-time will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, JUnit XML reports, NCover HTML reports, OJAudit XML reports, OpenVAS XML reports, OWASP Dependency Check XML reports, OWASP ZAP XML reports, Performancetest-runner HTML reports, Pyup.io Safety JSON reports, and Robot Framework XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
+- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. *Quality-time* will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, JUnit XML reports, NCover HTML reports, OJAudit XML reports, OpenVAS XML reports, OWASP Dependency Check XML reports, OWASP ZAP XML reports, Performancetest-runner HTML reports, Pyup.io Safety JSON reports, and Robot Framework XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
 
 ## [0.15.0] - [2019-10-30]
 
@@ -455,7 +456,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- Quality-time now counts the unmerged branches against the default branch in GitLab or Azure DevOps instead of assuming that the master branch is the default branch. Closes [#699](https://github.com/ICTU/quality-time/issues/699).
+- *Quality-time* now counts the unmerged branches against the default branch in GitLab or Azure DevOps instead of assuming that the master branch is the default branch. Closes [#699](https://github.com/ICTU/quality-time/issues/699).
 
 ### Changed
 
@@ -474,7 +475,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Changed
 
-- Quality-time now uses Python 3.8 for the collector and server components. Closes [#684](https://github.com/ICTU/quality-time/issues/684).
+- *Quality-time* now uses Python 3.8 for the collector and server components. Closes [#684](https://github.com/ICTU/quality-time/issues/684).
 
 ## [0.12.1] - [2019-10-14]
 
@@ -493,7 +494,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Removed
 
-- Quality-time no longer collects detail information about security warnings from Checkmarx; the Checkmarx API is too complex, resulting in fragile interaction between Quality-time and Checkmarx. See [#670](https://github.com/ICTU/quality-time/issues/672).
+- *Quality-time* no longer collects detail information about security warnings from Checkmarx; the Checkmarx API is too complex, resulting in fragile interaction between *Quality-time* and Checkmarx. See [#670](https://github.com/ICTU/quality-time/issues/672).
 
 ## [0.11.0] - [2019-10-07]
 
@@ -528,7 +529,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Added
 
 - All metrics now have an explicit scale that's either fixed to "Count" or "Percentage", or that can be changed from "Count to "Percentage" and vice versa. Metrics whose scale can be changed: "Duplicated lines", "Metrics", "Test branch coverage", and "Test line coverage". Closes [#504](https://github.com/ICTU/quality-time/issues/504).
-- Added a 'landing URL' parameter to some sources so Quality-time can refer users to a human readable version of a machine readable report. For example, you can add an HTML version of a JaCoCo report to a JaCoCo XML report source. Closes [#554](https://github.com/ICTU/quality-time/issues/554).
+- Added a 'landing URL' parameter to some sources so *Quality-time* can refer users to a human readable version of a machine readable report. For example, you can add an HTML version of a JaCoCo report to a JaCoCo XML report source. Closes [#554](https://github.com/ICTU/quality-time/issues/554).
 
 ## [0.9.1] - [2019-09-10]
 
@@ -548,7 +549,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - Checkmarx internal server error solved. Fixes [#468](https://github.com/ICTU/quality-time/issues/468).
 - Use a consistent style for labels of input fields. Fixes [#579](https://github.com/ICTU/quality-time/issues/579).
-- Added Quality-time logo to the Quality-time source. Fixes [#580](https://github.com/ICTU/quality-time/issues/580).
+- Added *Quality-time* logo to the *Quality-time* source. Fixes [#580](https://github.com/ICTU/quality-time/issues/580).
 - When adding HQ as source for the accessibility metric, show the URL and metric id parameters. Fixes [#587](https://github.com/ICTU/quality-time/issues/587).
 - The layout of the reports overview dashboard would be reset after visiting a tag report. Fixes [#588](https://github.com/ICTU/quality-time/issues/588).
 - Tag report donut charts were always white. Fixes [#589](https://github.com/ICTU/quality-time/issues/589).
@@ -636,7 +637,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Fixed
 
 - Add performance test stability and scalability metrics to the example report. Fixes [#447](https://github.com/ICTU/quality-time/issues/447).
-- Set up a new LDAP connection for each authentication in an attempt to prevent a "Broken pipe" between Quality-time and the LDAP-server. Fixes [#469](https://github.com/ICTU/quality-time/issues/469).
+- Set up a new LDAP connection for each authentication in an attempt to prevent a "Broken pipe" between *Quality-time* and the LDAP-server. Fixes [#469](https://github.com/ICTU/quality-time/issues/469).
 
 ## [0.4.1] - [2019-07-08]
 

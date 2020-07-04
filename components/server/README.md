@@ -1,4 +1,4 @@
-# Quality-time server
+# *Quality-time* server
 
 ## Example reports
 
@@ -200,14 +200,14 @@ The `subjects` part of the data model is an object where the keys are the subjec
 }
 ```
 
-The `name` is the default name of the subject. The `description` describes the subject type. The list of `metrics` contains the metrics that make the most sense for the subject type, but that information isn't used at the moment.
+The `name` is the default name of the subject. The `description` describes the subject type. The list of `metrics` contains the metrics that make the most sense for the subject type, and is used for filtering the list of metrics in the dropdown menu of the buttons for moving and copying metrics.
 
 ## Database collections
 
-*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`. 
-The server component is the only component that directly interacts with the database. The server [`database` package](src/database) contains the code for interacting with the collections. 
+*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
+The server component is the only component that directly interacts with the database. The server [`database` package](src/database) contains the code for interacting with the collections.
 
-Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time. 
+Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the server to retrieve the documents as they were at a specific moment in time.
 
 ## Health check
 
