@@ -162,9 +162,9 @@ To delete a metric's source, expand the metric in the metric table, select the "
 
 One special metric type is "Metrics". It counts the number of metrics in a quality report. This makes it possible to create 'meta'-reports that for example measure the number of security metrics that don't meet their target.
 
-After adding Quality-time as a source to a "Metrics"-metric, one can configure which statuses to count and which metrics to consider by filtering on report names or identifiers, on metric types, on source types, and on tags.
+After adding *Quality-time* as a source to a "Metrics"-metric, one can configure which statuses to count and which metrics to consider by filtering on report names or identifiers, on metric types, on source types, and on tags.
 
-![Editing Quality-time source screenshot](screenshots/editing_quality_time_source.png)
+![Editing *Quality-time* source screenshot](screenshots/editing_quality_time_source.png)
 
 Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
 
@@ -180,7 +180,7 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 ### GitLab
 
-Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, Quality-time needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to Quality-time.
+Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
 
 There are two scenario's: the source is a build artifact of a GitLab CI pipeline or the source is stored in a GitLab repository.
 
@@ -206,7 +206,7 @@ If the repository is private, you also need to enter an [personal access token](
 
 ### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
 
-To authorize Quality-time for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the user name to which the token belongs.
+To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the user name to which the token belongs.
 
 ## Customizing quality reports
 
@@ -214,7 +214,7 @@ Users can customize quality reports on an individual basis by changing the dashb
 
 ### Customizing dashboards
 
-Both the reports dashboard on the Quality-time landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
+Both the reports dashboard on the *Quality-time* landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
 
 ### Filtering metrics by tag
 
@@ -228,9 +228,9 @@ Each metric table has a button on the top left hand side that can clicked to hid
 
 ## Exporting quality reports
 
-Quality-time reports can be downloaded as PDF. To create PDFs, Quality-time has a rendering service included to convert the HTML report into PDF.
+*Quality-time* reports can be downloaded as PDF. To create PDFs, *Quality-time* has a rendering service included to convert the HTML report into PDF.
 
-As Quality-time has to open the report in a (headless) browser and load all the metrics, creating the PDF can take some time. Especially for big reports.
+As *Quality-time* has to open the report in a (headless) browser and load all the metrics, creating the PDF can take some time. Especially for big reports.
 
 ### Manually
 
