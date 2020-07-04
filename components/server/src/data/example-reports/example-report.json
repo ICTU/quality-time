@@ -111,6 +111,12 @@
                             "parameters": {
                                 "url": "http://testdata:8000/ncover-report.html"
                             }
+                        },
+                        {
+                            "type": "cobertura",
+                            "parameters": {
+                                "url": "http://testdata:8000/cobertura.xml"
+                            }
                         }
                     ]
                 },
