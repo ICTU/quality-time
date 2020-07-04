@@ -202,6 +202,8 @@ class ClocLOC(JSONFileSourceCollector):
 
 Most collector classes are bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
 
+##### Unit tests
+
 To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](../components/collector/tests), for example:
 
 ```python
@@ -228,6 +230,33 @@ class ClocTest(SourceCollectorTestCase):
 Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
 
 In the case of file collectors, also add an example file to the [test data component](../components/testdata/README.md).
+
+To run the unit tests:
+
+```console
+cd components/collector
+ci/unittest.sh
+```
+
+You should get 100% line and branch coverage.
+
+##### Quality checks
+
+To run the quality checks:
+
+```console
+cd components/collector
+ci/quality.sh
+```
+
+Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](../components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
+
+```console
+ci/quality.sh
+src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
+```
+
+Add "Cloc*" to the `NAMES_TO_IGNORE` in [components/collector/ci/quality.sh](../components/collector/ci/quality.sh) to suppress Vulture's warning.
 
 #### Adding a logo for the new source to the frontend
 
