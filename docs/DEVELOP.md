@@ -112,7 +112,7 @@ For testing purposes there are also [test data](../components/testdata/README.md
 
 ## Adding metrics and sources
 
-*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](../components/server/src/data/datamodel.json) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, besides changing the data model, no coding is needed to add a new metric, and only the [collector](../components/collector/README.md) component will need to be augmented to support a new source.
+*Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](../components/server/src/data/datamodel.json) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, besides changing the data model, no coding is needed to add a new metric, besides augmenting the [collector](../components/collector/README.md) component to parse the source data and optionally adding a logo to the [frontend](../components/frontend/README.md) component.
 
 ### Adding new metrics
 
@@ -228,3 +228,7 @@ class ClocTest(SourceCollectorTestCase):
 Note that the `ClocTest` class is a subclass of `SourceCollectorTestCase` which provides us with helper methods to make it easier to mock sources (`SourceCollectorTestCase.collect()`) and test results (`SourceCollectorTestCase.assert_measurement()`).
 
 In the case of file collectors, also add an example file to the [test data component](../components/testdata/README.md).
+
+#### Adding a logo for the new source to the frontend
+
+Add a small png file of the logo in [`components/frontend/src/logos`](../components/frontend/src/logos) and update the [Logo.js](../components/frontend/src/logos/Logo.js) file.

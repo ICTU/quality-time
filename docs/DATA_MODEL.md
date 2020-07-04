@@ -22,12 +22,12 @@
 | Ready user story points | The number of points of user stories that are ready to implement. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, GitLab, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, Quality-time, SonarQube, Trello, Wekan |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Cobertura, Checkmarx CxSAST, GitLab, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, Quality-time, SonarQube, Trello, Wekan |
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Pyupio Safety, SonarQube |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
 | Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, Jenkins test report, JUnit XML report, Performancetest-runner, Robot Framework, SonarQube |
-| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
-| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
+| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
+| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Unmerged branches | The number of branches that have not been merged to master. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
@@ -42,6 +42,7 @@
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
 | [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages | Size (LOC) |
+| [Cobertura](https://cobertura.github.io/cobertura/) | Cobertura is a free Java tool that calculates the percentage of code accessed by tests. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | Dependencies |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
@@ -387,6 +388,16 @@
 | :-------- | :--- | :-------- | :--- |
 | Date | Date | Yes |  |
 
+### Source up-to-dateness from Cobertura
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
+| URL to a Cobertura report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+
 ### Source up-to-dateness from Checkmarx CxSAST
 
 | Parameter | Type | Mandatory | Help |
@@ -712,6 +723,16 @@
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 
+### Test branch coverage from Cobertura
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
+| URL to a Cobertura report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+
 ### Test branch coverage from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
@@ -747,6 +768,16 @@
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+
+### Test line coverage from Cobertura
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
+| URL to a Cobertura report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 
 ### Test line coverage from JaCoCo
 
