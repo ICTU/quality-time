@@ -33,7 +33,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
         covered, total = 0, 0
         for response in responses:
             script = await self._find_script(response, "ncover.execution.stats = ")
-            json_string = script.strip()[len('ncover.execution.stats = '):].strip(";")
+            json_string = script.strip().removeprefix('ncover.execution.stats = ').strip(";")
             coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
             covered += int(coverage["coveredPoints"])
             total += int(coverage["coveragePoints"])

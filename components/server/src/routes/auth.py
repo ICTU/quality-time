@@ -41,14 +41,13 @@ def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> Non
     bottle.response.set_cookie("session_id", session_id, **options)
 
 
-def check_password(ssha_ldap_salted_password, password):
-    """Checks the OpenLDAP tagged digest against the given password"""
-
-    if ssha_ldap_salted_password[:6] != b'{SSHA}':  # pragma: no cover-behave
+def check_password(ssha_ldap_salted_password, password) -> bool:
+    """Checks the OpenLDAP tagged digest against the given password."""
+    ssha_prefix = b'{SSHA}'
+    if not ssha_ldap_salted_password.startswith(ssha_prefix):  # pragma: no cover-behave
         logging.warning("Only SSHA LDAP password digest supported!")
         raise exceptions.LDAPInvalidAttributeSyntaxResult
-
-    digest_salt_b64 = ssha_ldap_salted_password[6:]  # strip {SSHA}
+    digest_salt_b64 = ssha_ldap_salted_password.removeprefix(ssha_prefix)
     digest_salt = base64.b64decode(digest_salt_b64)
     digest = digest_salt[:20]
     salt = digest_salt[20:]

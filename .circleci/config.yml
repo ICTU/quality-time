@@ -3,7 +3,7 @@ version: 2
 jobs:
   unittest_backend:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.9.0-buster
     parallelism: 3
     steps:
       - checkout
@@ -17,6 +17,7 @@ jobs:
           cd components/$component
           python -m venv venv
           . venv/bin/activate
+          pip install wheel
           pip install --progress-bar off -r requirements.txt -r requirements-dev.txt
           ci/unittest.sh
           ci/quality.sh
@@ -42,11 +43,11 @@ jobs:
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.0-browsers ci/test.sh
 
   integration_tests:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/python:3.9.0-buster
       - image: osixia/openldap:1.4.0
       - image: ictu/url-to-pdf-api:v1.0.0
         environment:

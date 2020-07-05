@@ -1,4 +1,4 @@
-FROM python:3.8.5-slim-buster
+FROM python:3.9.0-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time server"

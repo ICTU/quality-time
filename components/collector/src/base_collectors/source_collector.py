@@ -152,7 +152,7 @@ class SourceCollector(ABC):
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
             return URL(landing_url)
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
-        return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
+        return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method

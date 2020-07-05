@@ -1,4 +1,4 @@
-name: Collector 
+name: Collector
 
 on: [push]
 
@@ -8,15 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: '3.9.0'
     - name: Install dependencies
       run: |
+        sudo apt-get install libxml2-dev libxslt-dev python-dev
         cd components/collector
         python -m pip install --upgrade pip
+        python -m pip install wheel
         pip install -r requirements.txt -r requirements-dev.txt
     - name: Test
       run: |
