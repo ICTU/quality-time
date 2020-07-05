@@ -12,7 +12,8 @@
                         {
                             "type": "cloc",
                             "parameters": {
-                                "url": "http://testdata:8000/cloc.json"
+                                "url": "http://testdata:8000/reports/cloc/cloc.json",
+                                "landing_url": "http://localhost:8000/reports/cloc/cloc.json"
                             }
                         }
                     ]
@@ -23,13 +24,15 @@
                         {
                             "type": "junit",
                             "parameters": {
-                                "url": "http://testdata:8000/junit-report.xml"
+                                "url": "http://testdata:8000/reports/junit/junit-report.xml",
+                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html"
                             }
                         },
                         {
                             "type": "robot_framework",
                             "parameters": {
-                                "url": "http://testdata:8000/robot-framework-report/output.xml"
+                                "url": "http://testdata:8000/reports/robot-framework/output.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
                             }
                         }
                     ]
@@ -40,13 +43,15 @@
                         {
                             "type": "junit",
                             "parameters": {
-                                "url": "http://testdata:8000/junit-report.xml"
+                                "url": "http://testdata:8000/reports/junit/junit-report.xml",
+                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html"
                             }
                         },
                         {
                             "type": "robot_framework",
                             "parameters": {
-                                "url": "http://testdata:8000/robot-framework-report/output.xml"
+                                "url": "http://testdata:8000/reports/robot-framework/output.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
                             }
                         }
                     ]
@@ -57,19 +62,22 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://testdata:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
                             }
                         },
                         {
                             "type": "ncover",
                             "parameters": {
-                                "url": "http://testdata:8000/ncover-report.html"
+                                "url": "http://testdata:8000/reports/ncover/ncover-report.html",
+                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
                             }
                         },
                         {
                             "type": "cobertura",
                             "parameters": {
-                                "url": "http://testdata:8000/cobertura.xml"
+                                "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
                             }
                         }
                     ]
@@ -80,19 +88,22 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://testdata:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
                             }
                         },
                         {
                             "type": "ncover",
                             "parameters": {
-                                "url": "http://testdata:8000/ncover-report.html"
+                                "url": "http://testdata:8000/reports/ncover/ncover-report.html",
+                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
                             }
                         },
                         {
                             "type": "cobertura",
                             "parameters": {
-                                "url": "http://testdata:8000/cobertura.xml"
+                                "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
                             }
                         }
                     ]
@@ -103,19 +114,22 @@
                         {
                             "type": "jacoco",
                             "parameters": {
-                                "url": "http://testdata:8000/jacoco-report.xml"
+                                "url": "http://testdata:8000/reports/jacoco/jacoco-report.xml",
+                                "landing_url": "http://localhost:8000/reports/jacoco/jacoco-report.html"
                             }
                         },
                         {
                             "type": "ncover",
                             "parameters": {
-                                "url": "http://testdata:8000/ncover-report.html"
+                                "url": "http://testdata:8000/reports/ncover/ncover-report.html",
+                                "landing_url": "http://localhost:8000/reports/ncover/ncover-report.html"
                             }
                         },
                         {
                             "type": "cobertura",
                             "parameters": {
-                                "url": "http://testdata:8000/cobertura.xml"
+                                "url": "http://testdata:8000/reports/cobertura/cobertura.xml",
+                                "landing_url": "http://localhost:8000/reports/cobertura/cobertura.xml"
                             }
                         }
                     ]
@@ -126,25 +140,29 @@
                         {
                             "type": "composer",
                             "parameters": {
-                                "url": "http://testdata:8000/composer-outdated.json"
+                                "url": "http://testdata:8000/reports/composer/composer-outdated.json",
+                                "landing_url": "http://localhost:8000/reports/composer/composer-outdated.json"
                             }
                         },
                         {
                             "type": "npm",
                             "parameters": {
-                                "url": "http://testdata:8000/npm-outdated.json"
+                                "url": "http://testdata:8000/reports/npm/npm-outdated.json",
+                                "landing_url": "http://localhost:8000/reports/npm/npm-outdated.json"
                             }
                         },
                         {
                             "type": "owasp_dependency_check",
                             "parameters": {
-                                "url": "http://testdata:8000/dependency-check-report.xml"
+                                "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
                             }
                         },
                         {
                             "type": "pip",
                             "parameters": {
-                                "url": "http://testdata:8000/pip-outdated.json"
+                                "url": "http://testdata:8000/reports/pip/pip-outdated.json",
+                                "landing_url": "http://localhost:8000/reports/pip/pip-outdated.json"
                             }
                         }
                     ]
@@ -155,37 +173,43 @@
                         {
                             "type": "owasp_dependency_check",
                             "parameters": {
-                                "url": "http://testdata:8000/dependency-check-report.xml"
+                                "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
                             }
                         },
                         {
                             "type": "owasp_zap",
                             "parameters": {
-                                "url": "http://testdata:8000/zap-report.xml"
+                                "url": "http://testdata:8000/reports/owasp-zap/zap-report.xml",
+                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html"
                             }
                         },
                         {
                             "type": "openvas",
                             "parameters": {
-                                "url": "http://testdata:8000/openvas-report.xml"
+                                "url": "http://testdata:8000/reports/openvas/openvas-report.xml",
+                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html"
                             }
                         },
                         {
                             "type": "pyupio_safety",
                             "parameters": {
-                                "url": "http://testdata:8000/pyupio_safety.json"
+                                "url": "http://testdata:8000/reports/pyupio_safety/pyupio_safety.json",
+                                "landing_url": "http://localhost:8000/reports/pyupio_safety/pyupio_safety.json"
                             }
                         },
                         {
                             "type": "bandit",
                             "parameters": {
-                                "url": "http://testdata:8000/bandit.json"
+                                "url": "http://testdata:8000/reports/bandit/bandit.json",
+                                "landing_url": "http://localhost:8000/reports/bandit/bandit.json"
                             }
                         },
                         {
                             "type": "anchore",
                             "parameters": {
-                                "url": "http://testdata:8000/anchore-vuln.json"
+                                "url": "http://testdata:8000/reports/anchore/anchore-vuln.json",
+                                "landing_url": "http://localhost:8000/reports/anchore/anchore-vuln.json"
                             }
                         }
                     ]
@@ -196,40 +220,29 @@
                         {
                             "type": "owasp_dependency_check",
                             "parameters": {
-                                "url": "http://testdata:8000/dependency-check-report.xml"
+                                "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
+                                "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html"
                             }
-                        }
-                    ]
-                },
-                {
-                    "type": "source_up_to_dateness",
-                    "sources": [
+                        },
                         {
                             "type": "owasp_zap",
                             "parameters": {
-                                "url": "http://testdata:8000/zap-report.xml"
+                                "url": "http://testdata:8000/reports/owasp-zap/zap-report.xml",
+                                "landing_url": "http://localhost:8000/reports/owasp-zap/zap-report.html"
                             }
-                        }
-                    ]
-                },
-                {
-                    "type": "source_up_to_dateness",
-                    "sources": [
+                        },
                         {
                             "type": "openvas",
                             "parameters": {
-                                "url": "http://testdata:8000/openvas-report.xml"
+                                "url": "http://testdata:8000/reports/openvas/openvas-report.xml",
+                                "landing_url": "http://localhost:8000/reports/openvas/openvas-report.html"
                             }
-                        }
-                    ]
-                },
-                {
-                    "type": "source_up_to_dateness",
-                    "sources": [
+                        },
                         {
                             "type": "anchore",
                             "parameters": {
-                                "details_url": "http://testdata:8000/anchore-details.json"
+                                "details_url": "http://testdata:8000/reports/anchore/anchore-details.json",
+                                "landing_url": "http://localhost:8000/reports/anchore/anchore-details.json"
                             }
                         }
                     ]
@@ -255,7 +268,8 @@
                         {
                             "type": "ojaudit",
                             "parameters": {
-                                "url": "http://testdata:8000/ojaudit-report.xml"
+                                "url": "http://testdata:8000/reports/ojaudit/ojaudit-report.xml",
+                                "landing_url": "http://localhost:8000/reports/ojaudit/ojaudit-report.html"
                             }
                         }
                     ]
@@ -266,7 +280,8 @@
                         {
                             "type": "performancetest_runner",
                             "parameters": {
-                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
                             }
                         }
                     ]
@@ -277,7 +292,8 @@
                         {
                             "type": "performancetest_runner",
                             "parameters": {
-                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
                             }
                         }
                     ]
@@ -288,7 +304,8 @@
                         {
                             "type": "performancetest_runner",
                             "parameters": {
-                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
                             }
                         }
                     ]
@@ -299,7 +316,8 @@
                         {
                             "type": "performancetest_runner",
                             "parameters": {
-                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
                             }
                         }
                     ]
@@ -312,7 +330,20 @@
                         {
                             "type": "performancetest_runner",
                             "parameters": {
-                                "url": "http://testdata:8000/performancetest-runner-loadtestreport.html"
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "accessibility",
+                    "sources": [
+                        {
+                            "type": "axecsv",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/axe/public-axe-results.csv",
+                                "landing_url": "http://localhost:8000/reports/axe/public-axe-results.csv"
                             }
                         }
                     ]
