@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [2.5.0-rc.2] - [2020-07-04]
+## [Unreleased]
 
 ### Fixed
 
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- *Quality-time* can be used as source for the 'soure up-to-dateness' metric. Closes [#1227](https://github.com/ICTU/quality-time/issues/1227).
+- *Quality-time* can be used as source for the 'source up-to-dateness' metric. Closes [#1227](https://github.com/ICTU/quality-time/issues/1227).
 - Have unmerged branches in *Quality-time* link to the branches in GitLab or Azure DevOps. Closes [#1268](https://github.com/ICTU/quality-time/issues/1268).
 - Documentation on how to add metrics and sources to *Quality-time*. Closes [#1273](https://github.com/ICTU/quality-time/issues/1273).
 - Add Cobertura coverage reports as source for the coverage metrics. Closes [#1275](https://github.com/ICTU/quality-time/issues/1275).
