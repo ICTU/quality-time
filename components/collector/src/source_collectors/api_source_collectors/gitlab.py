@@ -156,4 +156,4 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
         return parse(branch["commit"]["committed_date"])
 
     def _branch_landing_url(self, branch) -> URL:
-        return URL(branch["web_url"])
+        return URL(branch.get("web_url", ""))

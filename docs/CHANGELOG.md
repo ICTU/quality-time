@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Older GitLab versions don't return a `web_url` as part of the `repository/branches` API, be prepared. Fixes [#1280](https://github.com/ICTU/quality-time/issues/1280).
+
 ## [2.5.0] - [2020-07-05]
 
 ### Fixed
