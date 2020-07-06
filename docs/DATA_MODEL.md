@@ -28,7 +28,7 @@
 | Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, Jenkins test report, JUnit XML report, Performancetest-runner, Robot Framework, SonarQube |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
-| Unmerged branches | The number of branches that have not been merged to master. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
+| Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
 

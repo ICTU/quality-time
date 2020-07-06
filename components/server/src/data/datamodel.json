@@ -597,7 +597,7 @@
         },
         "unmerged_branches": {
             "name": "Unmerged branches",
-            "description": "The number of branches that have not been merged to master.",
+            "description": "The number of branches that have not been merged to the default branch.",
             "scales": [
                 "count"
             ],
