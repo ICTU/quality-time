@@ -7,11 +7,11 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import default_metric_attributes
+from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import insert_new_report, latest_reports, MetricData, SubjectData
 from model.actions import copy_metric, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, SubjectId
-from .measurement import latest_measurement, insert_new_measurement
 
 
 @bottle.get("/api/v2/metrics")
