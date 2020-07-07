@@ -119,7 +119,7 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
 
 def determine_measurement_status(metric, direction: Direction, measurement_value: Optional[str]) -> Optional[Status]:
     """Determine the measurement status."""
-    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
+    debt_end_date = metric.get("debt_end_date") or date.max.isoformat()
     if measurement_value is None:
         # Allow for accepted debt even if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Removing the end date of accepted technical debt would not correctly update the metric status. Fixes [#1284](https://github.com/ICTU/quality-time/issues/1284).
+
 ## [2.5.1] - [2020-07-06]
 
 ### Fixed

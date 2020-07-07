@@ -40,12 +40,20 @@ class DetermineMeasurementStatusTest(unittest.TestCase):
             "target_not_met", determine_measurement_status(metric, "<", "35"))
 
     def test_debt_past_end_date(self):
-        """Test a measurement with experide debt."""
+        """Test a measurement with expired debt."""
         metric = dict(
             type="metric_type", target="20", near_target="25", debt_target="30", accept_debt=True,
             debt_end_date="2019-06-10")
         self.assertEqual(
             "target_not_met", determine_measurement_status(metric, "<", "29"))
+
+    def test_debt_end_date_removed(self):
+        """Test a measurement with the technical end date reset."""
+        metric = dict(
+            type="metric_type", target="20", near_target="25", debt_target="30", accept_debt=True,
+            debt_end_date="")
+        self.assertEqual(
+            "debt_target_met", determine_measurement_status(metric, "<", "29"))
 
     def test_green_with_debt(self):
         """Test a measurement with debt, better than the target."""
