@@ -82,7 +82,10 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
         count = 0
         statuses = self._parameter("test_result")
         for response in responses:
-            count += sum([int((await self._soup(response)).find(id=status).string) for status in statuses])
+            soup = await self._soup(response)
+            for status in statuses:
+                if status_td := soup.find(id=status):
+                    count += int(status_td.string)
         return str(count), "100", []
 
 

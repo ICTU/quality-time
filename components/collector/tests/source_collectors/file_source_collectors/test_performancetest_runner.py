@@ -83,22 +83,26 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
     async def test_tests(self):
         """Test that the number of performancetest transactions is returned."""
         html = '<html><table class="config">' \
-            '<tr><td class="name">Success</td><td id="success">670</td></tr>' \
-            '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
-            '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
+            '<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>'\
+            '<tr><td class="name">Transactions success</td><td id="success">1240</td></tr>' \
+            '<tr><td class="name">Transactions failed</td><td id="failed">10</td></tr>' \
+            '</table></html>'
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="712")
+        self.assert_measurement(response, value="1250")
 
     async def test_failed_tests(self):
         """Test that the number of failed performancetest transactions is returned."""
         html = '<html><table class="config">' \
-            '<tr><td class="name">Failed</td><td id="failed">37</td></tr>' \
-            '<tr><td class="name">Canceled</td><td id="canceled">5</td></tr></table></html>'
+            '<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>' \
+            '<tr><td class="name">Transactions success</td><td id="success">1240</td></tr>' \
+            '<tr><td class="name">Transactions failed</td><td id="failed">10</td></tr>' \
+            '</table></html>'
+        # We also pass an obsolete status ("canceled") to test that obsolete statuses are ignored:
         self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="42")
+        self.assert_measurement(response, value="10")
 
 
 class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
