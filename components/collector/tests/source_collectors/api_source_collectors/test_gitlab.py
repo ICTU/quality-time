@@ -62,14 +62,53 @@ class GitLabFailedJobsTest(GitLabTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="0", entities=[])
 
+    async def test_ignore_job_by_name(self):
+        """Test that jobs can be ignored by name."""
+        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
+        self.gitlab_jobs_json.append(
+            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="master"))
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
+
+    async def test_ignore_job_by_ref(self):
+        """Test that jobs can be ignored by ref."""
+        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
+        self.gitlab_jobs_json.append(
+            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="develop"))
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
+
 
 class GitLabUnusedJobsTest(GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
 
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
+
     async def test_nr_of_unused_jobs(self):
         """Test that the number of unused jobs is returned."""
-        metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_json_return_value=self.gitlab_jobs_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
+
+    async def test_ignore_job_by_name(self):
+        """Test that jobs can be ignored by name."""
+        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
+        self.gitlab_jobs_json.append(
+            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="master"))
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities)
+
+    async def test_ignore_job_by_ref(self):
+        """Test that jobs can be ignored by ref."""
+        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
+        self.gitlab_jobs_json.append(
+            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job", ref="develop"))
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)
 
 

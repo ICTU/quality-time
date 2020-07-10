@@ -181,7 +181,9 @@
 | GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Branches and tags to ignore (regular expressions, branch names or tag names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. |
 
 ### Issues from Azure DevOps Server
 
@@ -851,7 +853,9 @@
 | GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Branches and tags to ignore (regular expressions, branch names or tag names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. |
 
 ### Unused CI-jobs from Jenkins
 
