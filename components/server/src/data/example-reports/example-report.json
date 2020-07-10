@@ -275,6 +275,19 @@
                     ]
                 },
                 {
+                    "type": "tests",
+                    "name": "Number of performance tests",
+                    "sources": [
+                        {
+                            "type": "performancetest_runner",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/performancetest-runner/loadtestreport.html",
+                                "landing_url": "http://localhost:8000/reports/performancetest-runner/loadtestreport.html"
+                            }
+                        }
+                    ]
+                },
+                {
                     "type": "slow_transactions",
                     "sources": [
                         {
