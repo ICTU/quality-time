@@ -3645,7 +3645,6 @@
                     "mandatory": false,
                     "default_value": [],
                     "values": [
-                        "canceled",
                         "failed",
                         "success"
                     ],
