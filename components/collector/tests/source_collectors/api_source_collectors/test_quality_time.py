@@ -14,7 +14,7 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
     def setUp(self):
         super().setUp()
         self.url = "https://quality-time"
-        self.api_url = f"{self.url}/api/v2/reports"
+        self.api_url = f"{self.url}/api/v3/reports"
         self.sources = dict(
             source_id=dict(
                 type="quality_time",

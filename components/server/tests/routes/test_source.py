@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy_v3, \
+from routes.source import delete_source, post_move_source, post_source_attribute, post_source_copy, \
     post_source_new, post_source_parameter
 
 from ..fixtures import create_report, METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, \
@@ -389,7 +389,7 @@ class SourceTest(SourceTestCase):
 
     def test_copy_source(self):
         """Test that a source can be copied."""
-        self.assertEqual(dict(ok=True), post_source_copy_v3(SOURCE_ID, METRIC_ID, self.database))
+        self.assertEqual(dict(ok=True), post_source_copy(SOURCE_ID, METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source_uuid, copied_source = list(
             self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items())[1]
