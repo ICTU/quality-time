@@ -29,7 +29,32 @@ class GitLabTestCase(SourceCollectorTestCase):
                  build_age=build_age, build_date="2019-03-31", build_status="failed")]
 
 
-class GitLabFailedJobsTest(GitLabTestCase):
+class CommonGitLabJobsTestsMixin:
+    """Unit tests that should succeed for both the unused jobs metric as well as the failed jobs metric."""
+
+    async def test_ignore_job_by_name(self):
+        """Test that jobs can be ignored by name."""
+        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
+
+    async def test_ignore_job_by_ref(self):
+        """Test that jobs can be ignored by ref."""
+        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
+
+    async def test_private_token(self):
+        """Test that the private token is used."""
+        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        response = await self.collect(self.metric)
+        self.assert_measurement(
+            response,
+            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
+            parse_error="Traceback")
+
+
+class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab failed jobs metric."""
 
     def setUp(self):
@@ -48,15 +73,6 @@ class GitLabFailedJobsTest(GitLabTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="0", entities=[])
 
-    async def test_private_token(self):
-        """Test that the private token is used."""
-        self.sources["source_id"]["parameters"]["private_token"] = "token"
-        response = await self.collect(self.metric)
-        self.assert_measurement(
-            response,
-            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
-            parse_error="Traceback")
-
     async def test_ignore_previous_runs_of_jobs(self):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.insert(
@@ -66,20 +82,8 @@ class GitLabFailedJobsTest(GitLabTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])
 
-    async def test_ignore_job_by_name(self):
-        """Test that jobs can be ignored by name."""
-        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
-    async def test_ignore_job_by_ref(self):
-        """Test that jobs can be ignored by ref."""
-        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
-
-
-class GitLabUnusedJobsTest(GitLabTestCase):
+class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
 
     def setUp(self):
@@ -90,18 +94,6 @@ class GitLabUnusedJobsTest(GitLabTestCase):
         """Test that the number of unused jobs is returned."""
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
-
-    async def test_ignore_job_by_name(self):
-        """Test that jobs can be ignored by name."""
-        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
-
-    async def test_ignore_job_by_ref(self):
-        """Test that jobs can be ignored by ref."""
-        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
