@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When using GitLab as source for the 'unused jobs' or 'failed jobs' metrics, allow for ignoring jobs/pipelines by name, by branch, and by tag. Closes [#1288](https://github.com/ICTU/quality-time/issues/1288).
+
 ## [2.5.2] - [2020-07-10]
 
 ### Fixed

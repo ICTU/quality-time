@@ -17,32 +17,32 @@ class GitLabTestCase(SourceCollectorTestCase):
                     url="https://gitlab/", project="namespace/project", file_path="file", branch="branch",
                     inactive_days="7", branches_to_ignore=["ignored_.*"])))
         self.gitlab_jobs_json = [
-            dict(id="1", status="failed", name="name", stage="stage", created_at="2019-03-31T19:50:39.927Z",
-                 web_url="https://gitlab/job", ref="master")]
+            dict(id="1", status="failed", name="job1", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job1", ref="master"),
+            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
+                 web_url="https://gitlab/job2", ref="develop")]
         build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         self.expected_entities = [
-            dict(
-                key="1", name="name", stage="stage", branch="master", url="https://gitlab/job",
-                build_age=build_age, build_date="2019-03-31", build_status="failed")]
+            dict(key="1", name="job1", stage="stage", branch="master", url="https://gitlab/job1",
+                 build_age=build_age, build_date="2019-03-31", build_status="failed"),
+            dict(key="2", name="job2", stage="stage", branch="develop", url="https://gitlab/job2",
+                 build_age=build_age, build_date="2019-03-31", build_status="failed")]
 
 
-class GitLabFailedJobsTest(GitLabTestCase):
-    """Unit tests for the GitLab failed jobs metric."""
+class CommonGitLabJobsTestsMixin:
+    """Unit tests that should succeed for both the unused jobs metric as well as the failed jobs metric."""
 
-    def setUp(self):
-        super().setUp()
-        self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
-
-    async def test_nr_of_failed_jobs(self):
-        """Test that the number of failed jobs is returned."""
+    async def test_ignore_job_by_name(self):
+        """Test that jobs can be ignored by name."""
+        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
-    async def test_nr_of_failed_jobs_without_failed_jobs(self):
-        """Test that the number of failed jobs is returned."""
-        self.gitlab_jobs_json[0]["status"] = "success"
+    async def test_ignore_job_by_ref(self):
+        """Test that jobs can be ignored by ref."""
+        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
     async def test_private_token(self):
         """Test that the private token is used."""
@@ -53,24 +53,47 @@ class GitLabFailedJobsTest(GitLabTestCase):
             api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
             parse_error="Traceback")
 
+
+class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
+    """Unit tests for the GitLab failed jobs metric."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
+
+    async def test_nr_of_failed_jobs(self):
+        """Test that the number of failed jobs is returned."""
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_nr_of_failed_jobs_without_failed_jobs(self):
+        """Test that the number of failed jobs is returned."""
+        for job in self.gitlab_jobs_json:
+            job["status"] = "success"
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="0", entities=[])
+
     async def test_ignore_previous_runs_of_jobs(self):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.insert(
             0,
-            dict(id="2", status="success", name="name", stage="stage", created_at="2019-03-31T19:51:39.927Z",
+            dict(id="3", status="success", name="job1", stage="stage", created_at="2019-03-31T19:51:39.927Z",
                  web_url="https://gitlab/jobs/2", ref="master"))
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])
 
 
-class GitLabUnusedJobsTest(GitLabTestCase):
+class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
+
+    def setUp(self):
+        super().setUp()
+        self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
 
     async def test_nr_of_unused_jobs(self):
         """Test that the number of unused jobs is returned."""
-        metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):

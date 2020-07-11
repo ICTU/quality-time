@@ -62,9 +62,10 @@ class GitLabJobsBase(GitLabBase):
                     jobs.append(job)
         return jobs
 
-    def _count_job(self, job: Job) -> bool:  # pylint: disable=no-self-use,unused-argument
+    def _count_job(self, job: Job) -> bool:
         """Return whether to count the job."""
-        raise NotImplementedError  # pragma: nocover
+        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore")) and \
+            not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
 
 
 class GitLabFailedJobs(GitLabJobsBase):
@@ -73,7 +74,7 @@ class GitLabFailedJobs(GitLabJobsBase):
     def _count_job(self, job: Job) -> bool:
         """Return whether the job has failed."""
         failure_types = list(self._parameter("failure_type"))
-        return job["status"] in failure_types
+        return super()._count_job(job) and job["status"] in failure_types
 
 
 class GitLabUnusedJobs(GitLabJobsBase):
@@ -82,7 +83,7 @@ class GitLabUnusedJobs(GitLabJobsBase):
     def _count_job(self, job: Job) -> bool:
         """Return whether the job is unused."""
         max_days = int(cast(str, self._parameter("inactive_job_days")))
-        return days_ago(parse(job["created_at"])) > max_days
+        return super()._count_job(job) and days_ago(parse(job["created_at"])) > max_days
 
 
 class GitLabSourceUpToDateness(GitLabBase):

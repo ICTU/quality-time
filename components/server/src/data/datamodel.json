@@ -2003,6 +2003,19 @@
                         "unmerged_branches"
                     ]
                 },
+                "refs_to_ignore": {
+                    "name": "Branches and tags to ignore (regular expressions, branch names or tag names)",
+                    "short_name": "branches and tags to ignore",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "default_value": [],
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
                 "inactive_days": {
                     "name": "Number of days since last commit after which to consider branches inactive",
                     "short_name": "number of days since last commit",
@@ -2043,6 +2056,19 @@
                     "metrics": [
                         "failed_jobs"
                     ]
+                },
+                "jobs_to_ignore": {
+                    "name": "Jobs to ignore (regular expressions or job names)",
+                    "short_name": "jobs to ignore",
+                    "help": "Jobs to ignore can be specified by job name or by regular expression.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory":  false,
+                    "default_value": [],
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
                 }
             },
             "entities": {
@@ -2060,7 +2086,7 @@
                             "key": "stage"
                         },
                         {
-                            "name": "Branch name",
+                            "name": "Branch or tag",
                             "key": "branch"
                         },
                         {
@@ -2119,7 +2145,7 @@
                             "key": "stage"
                         },
                         {
-                            "name": "Branch name",
+                            "name": "Branch or tag",
                             "key": "branch"
                         },
                         {
