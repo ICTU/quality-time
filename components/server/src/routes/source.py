@@ -16,7 +16,6 @@ from server_utilities.functions import uuid
 from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId, URL
 
 
-@bottle.post("/api/v2/source/new/<metric_uuid>")
 @bottle.post("/api/v3/source/new/<metric_uuid>")
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
@@ -34,15 +33,8 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/source/<source_uuid>/copy")
-def post_source_copy_v2(source_uuid: SourceId, database: Database):  # pragma: no cover
-    """Add a copy of the source to the source's metric (removed in v3)."""
-    data = SourceData(database, source_uuid)
-    post_source_copy_v3(source_uuid, data.metric_uuid, database)
-
-
 @bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
-def post_source_copy_v3(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
+def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
     """Add a copy of the source to the metric (new in v3)."""
     source = SourceData(database, source_uuid)
     target = MetricData(database, metric_uuid)
@@ -57,7 +49,6 @@ def post_source_copy_v3(source_uuid: SourceId, metric_uuid: MetricId, database: 
     return insert_new_report(database, target.report)
 
 
-@bottle.post("/api/v2/source/<source_uuid>/move/<target_metric_uuid>")
 @bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>")
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
@@ -90,7 +81,6 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v2/source/<source_uuid>")
 @bottle.delete("/api/v3/source/<source_uuid>")
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
@@ -104,7 +94,6 @@ def delete_source(source_uuid: SourceId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/source/<source_uuid>/attribute/<source_attribute>")
 @bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>")
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
@@ -129,7 +118,6 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/source/<source_uuid>/parameter/<parameter_key>")
 @bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>")
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""

@@ -11,7 +11,6 @@ from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
 
 
-@bottle.post("/api/v2/subject/new/<report_uuid>")
 @bottle.post("/api/v3/subject/new/<report_uuid>")
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
@@ -24,15 +23,8 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/subject/<subject_uuid>/copy")
-def post_subject_copy_v2(subject_uuid: SubjectId, database: Database):  # pragma: no cover
-    """Add a copy of the subject to the subject's report (removed in v3)."""
-    subject = SubjectData(database, subject_uuid)
-    post_subject_copy_v3(subject_uuid, subject.report_uuid, database)
-
-
 @bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>")
-def post_subject_copy_v3(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
+def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
     source = SubjectData(database, subject_uuid)
     target = ReportData(database, report_uuid)
@@ -45,7 +37,6 @@ def post_subject_copy_v3(subject_uuid: SubjectId, report_uuid: ReportId, databas
     return insert_new_report(database, target.report)
 
 
-@bottle.post("/api/v2/subject/<subject_uuid>/move/<target_report_uuid>")
 @bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>")
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
@@ -63,7 +54,6 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v2/subject/<subject_uuid>")
 @bottle.delete("/api/v3/subject/<subject_uuid>")
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
@@ -76,7 +66,6 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/subject/<subject_uuid>/attribute/<subject_attribute>")
 @bottle.post("/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>")
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""

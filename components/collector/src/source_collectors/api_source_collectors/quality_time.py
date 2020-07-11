@@ -16,7 +16,7 @@ class QualityTimeCollector(SourceCollector):
     async def _api_url(self) -> URL:
         parts = parse.urlsplit(await super()._api_url())
         netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v2/reports", "", "")))
+        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
 
     async def _get_reports(self, response: Response) -> List[Dict[str, Any]]:
         """Get the relevant reports from the reports response."""

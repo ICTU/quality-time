@@ -103,7 +103,6 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
     return True, email
 
 
-@bottle.post("/api/v2/login")
 @bottle.post("/api/v3/login")
 def login(database: Database) -> Dict[str, Union[bool, str]]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
@@ -114,7 +113,6 @@ def login(database: Database) -> Dict[str, Union[bool, str]]:
     return dict(ok=verified, email=email)
 
 
-@bottle.post("/api/v2/logout")
 @bottle.post("/api/v3/logout")
 def logout(database: Database) -> Dict[str, bool]:
     """Log the user out."""

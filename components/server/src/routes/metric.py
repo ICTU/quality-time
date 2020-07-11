@@ -14,7 +14,6 @@ from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, SubjectId
 
 
-@bottle.get("/api/v2/metrics")
 @bottle.get("/api/v3/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
@@ -27,7 +26,6 @@ def get_metrics(database: Database):
     return metrics
 
 
-@bottle.post("/api/v2/metric/new/<subject_uuid>")
 @bottle.post("/api/v3/metric/new/<subject_uuid>")
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
@@ -41,15 +39,8 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/metric/<metric_uuid>/copy")
-def post_metric_copy_v2(metric_uuid: MetricId, database: Database):  # pragma: no cover
-    """Add a copy of the metric to the metric's subject (removed in v3)."""
-    metric = MetricData(database, metric_uuid)
-    post_metric_copy_v3(metric_uuid, metric.subject_uuid, database)
-
-
 @bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
-def post_metric_copy_v3(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
+def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
     source = MetricData(database, metric_uuid)
     target = SubjectData(database, subject_uuid)
@@ -63,7 +54,6 @@ def post_metric_copy_v3(metric_uuid: MetricId, subject_uuid: SubjectId, database
     return insert_new_report(database, target.report)
 
 
-@bottle.post("/api/v2/metric/<metric_uuid>/move/<target_subject_uuid>")
 @bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
@@ -87,7 +77,6 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     return insert_new_report(database, source.report, target.report)
 
 
-@bottle.delete("/api/v2/metric/<metric_uuid>")
 @bottle.delete("/api/v3/metric/<metric_uuid>")
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
@@ -101,7 +90,6 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     return insert_new_report(database, data.report)
 
 
-@bottle.post("/api/v2/metric/<metric_uuid>/attribute/<metric_attribute>")
 @bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>")
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
