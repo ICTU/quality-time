@@ -10,7 +10,7 @@ trap "kill 0" EXIT  # Kill server on Ctrl-C
 coverage erase
 cd components/server
 . venv/bin/activate
-coverage run --rcfile=../../.coveragerc-behave --branch --parallel-mode --concurrency=gevent src/quality_time_server.py &
+coverage run --rcfile=../../.coveragerc-behave --branch --parallel-mode --concurrency=gevent src/quality_time_server.py > /dev/null 2>&1 &
 deactivate
 cd ../..
 sleep 5  # Give server time to start up
