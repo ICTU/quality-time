@@ -3,8 +3,6 @@
 from asserts import assert_equal
 from behave import when, then
 
-import requests
-
 
 @given("a logged-in client")
 def logged_in_client(context):
