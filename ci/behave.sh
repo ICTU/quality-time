@@ -9,6 +9,7 @@
 trap "kill 0" EXIT  # Kill server on Ctrl-C
 coverage erase
 cd components/server || exit
+coverage erase
 . venv/bin/activate
 export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START="../../.coveragerc-behave"

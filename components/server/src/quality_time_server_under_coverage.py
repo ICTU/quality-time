@@ -9,6 +9,7 @@ cov = coverage.process_startup()
 # pylint: disable=wrong-import-order,wrong-import-position
 
 import signal
+import sys
 
 from quality_time_server import serve
 
@@ -16,6 +17,7 @@ from quality_time_server import serve
 def signal_handler(*args):
     if cov:
         cov.save()
+    sys.exit()
 
 
 if __name__ == "__main__":  # pragma: no cover-behave
