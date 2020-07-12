@@ -1,12 +1,19 @@
 Feature: report
+  Creating, editing, and removing reports
+
+  Background: the client is logged in
+    Given a logged-in client
 
   Scenario: add report
-    Given a logged-in client
-    When the client creates a new report
-    Then the server returns OK
-    
+    When the client creates a report
+    Then the report title is "New report"
+
   Scenario: delete report
-    Given a logged-in client
-    When the client creates a new report
-    And the client deletes the new report
-    Then the server returns OK
+    Given a report
+    When the client deletes the report
+    Then the report does not exist
+
+  Scenario: change report title
+    When the client creates a report
+    And the client changes the report title to "New title"
+    Then the report title is "New title"
