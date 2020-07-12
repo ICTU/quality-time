@@ -11,13 +11,14 @@ coverage erase
 cd components/server || exit
 . venv/bin/activate
 export LOAD_EXAMPLE_REPORTS=False
-coverage run --rcfile=../../.coveragerc-behave --concurrency=gevent src/quality_time_server.py > /tmp/quality_time_server.log 2>&1 &
+export COVERAGE_PROCESS_START="../../.coveragerc-behave"
+python src/quality_time_server_under_coverage.py > /tmp/quality_time_server.log 2>&1 &
 deactivate
 cd ../..
 sleep 5  # Give server time to start up
 coverage run --rcfile=.coveragerc-behave -m behave tests/features  # --format null
-kill -s TERM "$(pgrep -n -f quality_time_server.py)"  # Stop the server so the coverage is written
-sleep 2  # Give coverage time to write the data
+kill -s TERM "$(pgrep -n -f src/quality_time_server_under_coverage.py)"
+sleep 2  # Give the server time to write the coverage data
 coverage combine --rcfile=.coveragerc-behave . components/server
 coverage html --rcfile=.coveragerc-behave --directory build/features-coverage
 coverage report --rcfile=.coveragerc-behave --fail-under=100 --skip-covered
