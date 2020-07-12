@@ -2,6 +2,8 @@
 omit =
     venv/**/*
     .venv/**/*
+branch = True
+parallel = True
 
 [report]
 # Regexes for lines to exclude from consideration
