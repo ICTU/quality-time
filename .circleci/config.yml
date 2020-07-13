@@ -57,8 +57,8 @@ jobs:
       - run: |
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-          docker-compose build && docker-compose up -d database ldap
-          docker run -it -w `pwd` -v `pwd`:`pwd` circleci/python:3.8-browsers ci/behave.sh
+          docker-compose up -d database ldap
+          docker run -it -w `pwd` -v `pwd`:`pwd` circleci/python:3.8 ci/behave.sh
 
   application_tests:
     machine: true

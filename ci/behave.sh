@@ -7,11 +7,16 @@
 # so we can discover dead code in the tests.
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
+python3 -m venv venv
+. venv/bin/activate
+pip --quiet install --progress-bar off -r requirements-dev.txt
 export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
 coverage erase
 cd components/server || exit
-coverage erase
+python3 -m venv venv
 . venv/bin/activate
+pip --quiet install --progress-bar off -r requirements.txt
+coverage erase
 export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
 python tests/quality_time_server_under_coverage.py > /tmp/quality_time_server.log 2>&1 &
