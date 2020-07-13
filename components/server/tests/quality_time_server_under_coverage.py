@@ -1,15 +1,15 @@
 """Quality-time server."""
 
-from gevent import monkey  # pylint: disable=import-error
-monkey.patch_all()
+# pylint: disable=wrong-import-order,wrong-import-position
+# pragma: no cover-behave
 
 import coverage
 cov = coverage.process_startup()
 
-# pylint: disable=wrong-import-order,wrong-import-position
+import sys
+sys.path.insert(0, "src")
 
 import signal
-import sys
 
 from quality_time_server import serve
 
@@ -20,6 +20,6 @@ def signal_handler(*args):
     sys.exit()
 
 
-if __name__ == "__main__":  # pragma: no cover-behave
+if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
     serve()
