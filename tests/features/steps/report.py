@@ -19,6 +19,13 @@ def add_report(context):
     context.report_uuid = context.result["new_report_uuids"][0]
 
 
+@when("the client copies the report")
+def copy_report(context):
+    """Copy the report."""
+    context.result = context.post(f"report/{context.report_uuid}/copy")
+    context.report_uuid = context.result["new_report_uuids"][0]
+
+
 @when("the client deletes the report")
 def delete_report(context):
     """Delete the report."""
