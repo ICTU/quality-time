@@ -14,7 +14,8 @@ import signal
 from quality_time_server import serve
 
 
-def signal_handler(*args):
+def signal_handler(*args):  # pylint: disable=unused-argument
+    """Save the coverage data on receiving a SIGTERM."""
     if cov:
         cov.save()
     sys.exit()

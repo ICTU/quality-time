@@ -32,7 +32,9 @@ def post_report_new(database: Database):
     report = dict(
         report_uuid=report_uuid, title="New report", subjects={},
         delta=dict(uuids=[report_uuid], email=user["email"], description=f"{user['user']} created a new report."))
-    return insert_new_report(database, report)
+    result = insert_new_report(database, report)
+    result["new_report_uuid"] = report_uuid
+    return result
 
 
 @bottle.post("/api/v3/report/<report_uuid>/copy")
@@ -44,7 +46,9 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     report_copy["delta"] = dict(
         uuids=[report_uuid, report_copy["report_uuid"]], email=user["email"],
         description=f"{user['user']} copied the report '{data.report_name}'.")
-    return insert_new_report(database, report_copy)
+    result = insert_new_report(database, report_copy)
+    result["new_report_uuid"] = report_copy["report_uuid"]
+    return result
 
 
 @bottle.get("/api/v3/report/<report_uuid>/pdf")

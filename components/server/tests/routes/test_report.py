@@ -64,7 +64,7 @@ class ReportTest(unittest.TestCase):
 
     def test_add_report(self):
         """Test that a report can be added."""
-        self.assertEqual(dict(ok=True), post_report_new(self.database))
+        self.assertTrue(post_report_new(self.database)["ok"])
         self.database.reports.insert.assert_called_once()
         inserted = self.database.reports.insert.call_args_list[0][0][0]
         self.assertEqual("New report", inserted["title"])
@@ -74,7 +74,7 @@ class ReportTest(unittest.TestCase):
 
     def test_copy_report(self):
         """Test that a report can be copied."""
-        self.assertEqual(dict(ok=True), post_report_copy(REPORT_ID, self.database))
+        self.assertTrue(post_report_copy(REPORT_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once()
         inserted_report = self.database.reports.insert.call_args[0][0]
         inserted_report_uuid = inserted_report["report_uuid"]

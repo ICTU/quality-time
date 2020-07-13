@@ -53,7 +53,7 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
         database.reports.insert_many(reports, ordered=False)
     else:
         database.reports.insert(reports[0])
-    return dict(ok=True, new_report_uuids=[report["report_uuid"] for report in reports])
+    return dict(ok=True)
 
 
 def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:

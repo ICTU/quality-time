@@ -7,35 +7,32 @@ from behave import when, then
 @given("a logged-in client")
 def logged_in_client(context):
     """Log in the client."""
-    result = context.post("login", dict(username="admin", password="admin"))
-    assert_equal(dict(ok=True, email=""), result)
+    context.post("login", dict(username="admin", password="admin"))
 
 
 @given("a report")
 @when("the client creates a report")
 def add_report(context):
     """Add a report."""
-    context.result = context.post("report/new")
-    context.report_uuid = context.result["new_report_uuids"][0]
+    context.report_uuid = context.post("report/new")["new_report_uuid"]
 
 
 @when("the client copies the report")
 def copy_report(context):
     """Copy the report."""
-    context.result = context.post(f"report/{context.report_uuid}/copy")
-    context.report_uuid = context.result["new_report_uuids"][0]
+    context.report_uuid = context.post(f"report/{context.report_uuid}/copy")["new_report_uuid"]
 
 
 @when("the client deletes the report")
 def delete_report(context):
     """Delete the report."""
-    context.result = context.delete(f"report/{context.report_uuid}")
+    context.delete(f"report/{context.report_uuid}")
 
 
 @when('the client changes the report {attribute} to "{value}"')
 def change_report_attribute(context, attribute, value):
     """Change the report attribute to value."""
-    context.result = context.post(f"report/{context.report_uuid}/attribute/{attribute}", json={attribute: value})
+    context.post(f"report/{context.report_uuid}/attribute/{attribute}", json={attribute: value})
 
 
 @then('the report {attribute} is "{value}"')
