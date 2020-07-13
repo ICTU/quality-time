@@ -19,6 +19,12 @@ Feature: subject
     When the client copies the subject
     Then the subject name is "CI-environment (copy)"
 
+  Scenario: move subject
+    Given a subject
+    And a report
+    When the client moves the subject to the report
+    Then the report contains the subject
+
   Scenario: change subject name
     Given a subject
     When the client changes the subject name to "New name"

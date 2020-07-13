@@ -1,6 +1,6 @@
 """Test the subject feature."""
 
-from asserts import assert_equal, assert_false
+from asserts import assert_equal, assert_false, assert_true
 from behave import when, then
 
 
@@ -15,6 +15,12 @@ def add_subject(context):
 def copy_subject(context):
     """Copy the subject."""
     context.subject_uuid = context.post(f"subject/{context.subject_uuid}/copy/{context.report_uuid}")["new_subject_uuid"]
+
+
+@when("the client moves the subject to the report")
+def move_subject(context):
+    """Move the subject."""
+    context.post(f"subject/{context.subject_uuid}/move/{context.report_uuid}")
 
 
 @when("the client deletes the subject")
@@ -43,3 +49,10 @@ def check_subject_does_not_exist(context):
     reports = context.get("reports")
     report = [report for report in reports["reports"] if report["report_uuid"] == context.report_uuid][0]
     assert_false(context.subject_uuid in report["subjects"])
+
+
+@then("the report contains the subject")
+def check_report_contains_subject(context):
+    reports = context.get("reports")
+    report = [report for report in reports["reports"] if report["report_uuid"] == context.report_uuid][0]
+    assert_true(context.subject_uuid in report["subjects"])
