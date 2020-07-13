@@ -84,7 +84,7 @@ npm run test
 
 ### Quality checks
 
-To run mypy, pylint, and some other security and quality checks:
+To run mypy, pylint, and some other security and quality checks on the backend components:
 
 ```console
 cd components/server  # or components/collector
@@ -93,19 +93,14 @@ ci/quality.sh
 
 ### Integration tests
 
-To run the integration tests (these currently mainly hit the server and the database), start the database and ldap components:
+To run the integration tests (these currently only test the server, the database, and the ldap components), start the database and ldap components and then run the feature tests:
 
 ```console
-docker-compose up ldap database  # And optionally mongo-express
-```
-
-And then run the feature tests:
-
-```console
+docker-compose up -d ldap database  # And optionally mongo-express
 ci/behave.sh
 ```
 
-The shell script will start the server under coverage and then run the behave [feature tests](../tests/features).
+The `behave.sh` shell script will start the server under coverage and then run the behave [feature tests](../tests/features).
 
 ## Release
 

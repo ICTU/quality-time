@@ -48,7 +48,18 @@ jobs:
           docker build -t ictu/$component:latest components/$component && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/$component:latest"
       - store_artifacts:
           path: anchore-reports/
-      
+
+  integration_tests:
+    machine: true
+    parallelism: 1
+    steps:
+      - checkout
+      - run: |
+          export ENV=ci
+          export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
+          docker-compose build && docker-compose up -d database ldap
+          docker run -it -w `pwd` -v `pwd`:`pwd` circleci/python:3.8-browsers ci/behave.sh
+
   application_tests:
     machine: true
     parallelism: 1
@@ -65,6 +76,8 @@ workflows:
   build_test:
     jobs:
       - application_tests:
+          context: QualityTime
+      - integration_tests:
           context: QualityTime
       - security_scan:
           context: QualityTime
