@@ -7,12 +7,7 @@
 # so we can discover dead code in the tests.
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
-python3 -m venv venv
-. venv/bin/activate
-echo $PATH
-pip --quiet install --progress-bar off -r requirements-dev.txt
 export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
-coverage erase
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate
@@ -23,7 +18,11 @@ export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
 python tests/quality_time_server_under_coverage.py > /tmp/quality_time_server.log 2>&1 &
 deactivate
 cd ../..
-sleep 5  # Give server time to start up
+python3 -m venv venv
+. venv/bin/activate
+pip --quiet install --progress-bar off -r requirements-dev.txt
+coverage erase
+sleep 3  # Give server time to start up
 coverage run -m behave tests/features  # --format null
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
