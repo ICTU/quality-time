@@ -11,7 +11,7 @@ export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
 cd components/server || exit
 python3 -m venv venv
 . venv/bin/activate
-pip --quiet install --progress-bar off -r requirements.txt
+pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
 coverage erase
 export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
