@@ -9,8 +9,8 @@
 trap "kill 0" EXIT  # Kill server on Ctrl-C
 python3 -m venv venv
 . venv/bin/activate
+echo $PATH
 pip --quiet install --progress-bar off -r requirements-dev.txt
-ls -la venv/bin
 export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
 coverage erase
 cd components/server || exit
