@@ -1,6 +1,7 @@
 """Code to run before and after certain events during testing."""
 
 import time
+from typing import Dict
 
 import requests
 
@@ -34,6 +35,7 @@ def before_all(context):
         return result.json()
 
     context.session_id = None
+    context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
     context.delete = delete

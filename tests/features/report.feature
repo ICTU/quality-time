@@ -9,12 +9,12 @@ Feature: report
     Then the report title is "New report"
 
   Scenario: delete report
-    Given a report
+    Given an existing report
     When the client deletes the report
     Then the report does not exist
 
   Scenario: copy report
-    Given a report
+    Given an existing report
     When the client copies the report
     Then the report title is "New report (copy)"
 

@@ -378,7 +378,7 @@ class SourceTest(SourceTestCase):
 
     def test_add_source(self):
         """Test that a new source is added."""
-        self.assertEqual(dict(ok=True), post_source_new(METRIC_ID, self.database))
+        self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once_with(self.report)
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         self.assertEqual(
@@ -389,7 +389,7 @@ class SourceTest(SourceTestCase):
 
     def test_copy_source(self):
         """Test that a source can be copied."""
-        self.assertEqual(dict(ok=True), post_source_copy(SOURCE_ID, METRIC_ID, self.database))
+        self.assertTrue(post_source_copy(SOURCE_ID, METRIC_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source_uuid, copied_source = list(
             self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items())[1]
