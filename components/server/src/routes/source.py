@@ -74,7 +74,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
             target_uuids.append(source.subject_uuid)
         target_uuids.extend([target.subject_uuid, source.metric_uuid])
     else:
-        # Source is move from one report to another, update both
+        # Source is moved from one report to another, update both
         del source.metric["sources"][source_uuid]
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid], email=user["email"],
