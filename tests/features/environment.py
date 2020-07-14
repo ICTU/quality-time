@@ -17,21 +17,20 @@ def before_all(context):
 
     def get(api):
         """Get the resource."""
-        result = requests.get(f"{BASE_API_URL}/{api}")
-        return result.json()
+        return requests.get(f"{BASE_API_URL}/{api}").json()
 
     def post(api, json=None):
         """Post the resource."""
         result = requests.post(f"{BASE_API_URL}/{api}", json=json, cookies=cookies())
         if "session_id" in result.cookies:
             context.session_id = result.cookies["session_id"]
-        time.sleep(1)  # Give the server time to process our request
+        time.sleep(1)  # Give server and database time to process the previous request
         return result.json()
 
     def delete(api):
         """Delete the resource."""
         result = requests.delete(f"{BASE_API_URL}/{api}", cookies=cookies())
-        time.sleep(1)  # Give the server time to process our request
+        time.sleep(1)  # Give server and database time to process the previous request
         return result.json()
 
     context.session_id = None

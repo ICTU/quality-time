@@ -1,7 +1,7 @@
 """Test the subject feature."""
 
 from asserts import assert_equal, assert_false, assert_true
-from behave import when, then
+from behave import given, when, then
 
 
 @given("a subject")
@@ -53,6 +53,7 @@ def check_subject_does_not_exist(context):
 
 @then("the report contains the subject")
 def check_report_contains_subject(context):
+    """Check that the report contains the subject."""
     reports = context.get("reports")
     report = [report for report in reports["reports"] if report["report_uuid"] == context.report_uuid][0]
     assert_true(context.subject_uuid in report["subjects"])
