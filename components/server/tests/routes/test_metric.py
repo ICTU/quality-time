@@ -243,7 +243,7 @@ class MetricTest(unittest.TestCase):
 
     def test_add_metric(self):
         """Test that a metric can be added."""
-        self.assertEqual(dict(ok=True), post_metric_new(SUBJECT_ID, self.database))
+        self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
         self.assertEqual(
             dict(uuids=[REPORT_ID, SUBJECT_ID, list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]],
                  email=JOHN["email"], description="John added a new metric to subject 'Subject' in report 'Report'."),
@@ -251,7 +251,7 @@ class MetricTest(unittest.TestCase):
 
     def test_copy_metric(self):
         """Test that a metric can be copied."""
-        self.assertEqual(dict(ok=True), post_metric_copy(METRIC_ID, SUBJECT_ID, self.database))
+        self.assertTrue(post_metric_copy(METRIC_ID, SUBJECT_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once()
         inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
         self.assertEqual(2, len(inserted_metrics))

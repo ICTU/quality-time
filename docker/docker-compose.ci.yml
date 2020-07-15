@@ -13,6 +13,9 @@ services:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:
       - ldap
+  database:
+    ports:
+      - "27017:27017"
   ldap:
     build: ../components/ldap
     ports:

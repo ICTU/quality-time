@@ -1,0 +1,16 @@
+[run]
+omit =
+    venv/**/*
+    .venv/**/*
+branch = True
+parallel = True
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    pragma: no cover
+    pragma: no cover-behave
+    raise NotImplementedError
+omit =
+    components/server/venv/**/*
+    components/server/.venv/**/*

@@ -48,7 +48,7 @@ jobs:
           docker build -t ictu/$component:latest components/$component && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/$component:latest"
       - store_artifacts:
           path: anchore-reports/
-      
+
   application_tests:
     machine: true
     parallelism: 1
@@ -60,11 +60,53 @@ jobs:
           docker-compose build && docker-compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
 
+  integration_tests:
+    docker:
+      - image: circleci/python:3.8
+      - image: osixia/openldap:1.4.0
+      - image: mongo:4.2.3
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root
+    steps:
+      - checkout
+      - run:
+          working_directory: components/server
+          command: |
+            mkdir -p /tmp/log
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
+      - run:
+          background: true
+          working_directory: components/server
+          command: |
+            . venv/bin/activate
+            export COVERAGE_PROCESS_START=../../.coveragerc-behave
+            export LOAD_EXAMPLE_REPORTS=False
+            python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
+      - run:
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip --quiet install --progress-bar off -r requirements-dev.txt
+            export COVERAGE_RCFILE=.coveragerc-behave
+            coverage run -m behave tests/features
+            kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
+            sleep 2  # Give the server time to write the coverage data
+            coverage combine . components/server
+            coverage html --directory build/features-coverage
+            coverage report --fail-under=62 --skip-covered
+      - store_artifacts:
+          path: /tmp/log
+
 workflows:
   version: 2
   build_test:
     jobs:
       - application_tests:
+          context: QualityTime
+      - integration_tests:
           context: QualityTime
       - security_scan:
           context: QualityTime

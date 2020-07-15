@@ -30,7 +30,9 @@ def post_source_new(metric_uuid: MetricId, database: Database):
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid], email=user["email"],
         description=f"{user['user']} added a new source to metric '{data.metric_name}' of subject "
                     f"'{data.subject_name}' in report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    result = insert_new_report(database, data.report)
+    result["new_source_uuid"] = source_uuid
+    return result
 
 
 @bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
@@ -46,7 +48,9 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
                     f"'{source.metric_name}' of subject '{source.subject_name}' from report '{source.report_name}' to "
                     f"metric '{target.metric_name}' of subject '{target.subject_name}' in report "
                     f"'{target.report_name}'.")
-    return insert_new_report(database, target.report)
+    result = insert_new_report(database, target.report)
+    result["new_source_uuid"] = source_copy_uuid
+    return result
 
 
 @bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>")
@@ -70,7 +74,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
             target_uuids.append(source.subject_uuid)
         target_uuids.extend([target.subject_uuid, source.metric_uuid])
     else:
-        # Source is move from one report to another, update both
+        # Source is moved from one report to another, update both
         del source.metric["sources"][source_uuid]
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid], email=user["email"],

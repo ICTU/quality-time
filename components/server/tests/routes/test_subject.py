@@ -114,7 +114,7 @@ class SubjectTest(unittest.TestCase):
 
     def test_add_subject(self):
         """Test that a subject can be added."""
-        self.assertEqual(dict(ok=True), post_new_subject(REPORT_ID, self.database))
+        self.assertTrue(post_new_subject(REPORT_ID, self.database)["ok"])
         subject_uuid = list(self.report["subjects"].keys())[1]
         self.assertEqual(
             dict(uuids=[REPORT_ID, subject_uuid], email=self.email,
@@ -123,7 +123,7 @@ class SubjectTest(unittest.TestCase):
 
     def test_copy_subject(self):
         """Test that a subject can be copied."""
-        self.assertEqual(dict(ok=True), post_subject_copy(SUBJECT_ID, REPORT_ID, self.database))
+        self.assertTrue(post_subject_copy(SUBJECT_ID, REPORT_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once()
         inserted_subjects = self.database.reports.insert.call_args[0][0]["subjects"]
         self.assertEqual(2, len(inserted_subjects))

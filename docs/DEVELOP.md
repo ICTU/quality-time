@@ -66,17 +66,13 @@ By default, there are three users defined in the LDAP database:
 
 ## Test
 
-To run the unit tests and measure unit test coverage, change directory into the component folders, e.g.:
+### Unit tests
+
+To run the unit tests and measure unit test coverage of the backend components:
 
 ```console
 cd components/server  # or components/collector
 ci/unittest.sh
-```
-
-To run mypy and pylint:
-
-```console
-ci/quality.sh
 ```
 
 To run the frontend unit tests:
@@ -85,6 +81,26 @@ To run the frontend unit tests:
 cd compontents/frontend
 npm run test
 ```
+
+### Quality checks
+
+To run mypy, pylint, and some other security and quality checks on the backend components:
+
+```console
+cd components/server  # or components/collector
+ci/quality.sh
+```
+
+### Integration tests
+
+To run the integration tests (these currently only test the server, the database, and the ldap components), start the database and ldap components and then run the feature tests:
+
+```console
+docker-compose up -d ldap database  # And optionally mongo-express
+ci/behave.sh
+```
+
+The `behave.sh` shell script will start the server under coverage and then run the behave [feature tests](../tests/features).
 
 ## Release
 

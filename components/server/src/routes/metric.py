@@ -36,7 +36,9 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid], email=user["email"],
         description=f"{user['user']} added a new metric to subject '{data.subject_name}' in report "
                     f"'{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    result = insert_new_report(database, data.report)
+    result["new_metric_uuid"] = metric_uuid
+    return result
 
 
 @bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
@@ -51,7 +53,9 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
         description=f"{user['user']} copied the metric '{source.metric_name}' of subject "
                     f"'{source.subject_name}' from report '{source.report_name}' to subject '{target.subject_name}' "
                     f"in report '{target.report_name}'.")
-    return insert_new_report(database, target.report)
+    result = insert_new_report(database, target.report)
+    result["new_metric_uuid"] = metric_copy_uuid
+    return result
 
 
 @bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
