@@ -69,7 +69,27 @@ jobs:
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
+
+      - run:
+          working_directory: components/server
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
+            export LOAD_EXAMPLE_REPORTS=False
+            python tests/quality_time_server_under_coverage.py
+          background: true
+
+      -run:
+        - command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip --quiet install --progress-bar off -r requirements-dev.txt
+            coverage erase
+            coverage run -m behave tests/features
+            coverage combine . components/server
+            coverage html --directory build/features-coverage
+            coverage report --fail-under=62 --skip-covered
 
 workflows:
   version: 2
