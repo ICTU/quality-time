@@ -73,9 +73,9 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
+            pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
             export LOAD_EXAMPLE_REPORTS=False
-            python tests/quality_time_server_under_coverage.py
+            python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
             sleep 10
@@ -87,6 +87,8 @@ jobs:
             coverage combine . components/server
             coverage html --directory build/features-coverage
             coverage report --fail-under=62 --skip-covered
+      - store_artifacts:
+          path: /tmp/log
 
 workflows:
   version: 2
