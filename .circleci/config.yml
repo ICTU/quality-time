@@ -62,7 +62,7 @@ jobs:
 
   integration_tests:
     docker:
-      image:
+      - image:
         - circleci/python:3.8
         - mongo:4.2.3
         - osixia/openldap:1.3.0
