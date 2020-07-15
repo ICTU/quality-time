@@ -16,13 +16,13 @@ coverage erase
 export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
 python tests/quality_time_server_under_coverage.py & # > /tmp/quality_time_server.log 2>&1 &
+sleep 3  # Give server time to start up
 deactivate
 cd ../..
 python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements-dev.txt
 coverage erase
-sleep 3  # Give server time to start up
 coverage run -m behave tests/features  # --format null
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
