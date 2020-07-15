@@ -69,7 +69,6 @@ jobs:
           export ENV=ci
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-
       - run:
           working_directory: components/server
           command: |
@@ -79,8 +78,7 @@ jobs:
             export LOAD_EXAMPLE_REPORTS=False
             python tests/quality_time_server_under_coverage.py
           background: true
-
-      -run:
+      - run:
         - command: |
             python3 -m venv venv
             . venv/bin/activate
