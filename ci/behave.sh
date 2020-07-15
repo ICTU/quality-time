@@ -15,7 +15,7 @@ pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.t
 coverage erase
 export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
-python tests/quality_time_server_under_coverage.py & # > /tmp/quality_time_server.log 2>&1 &
+nohup bash -c "python tests/quality_time_server_under_coverage.py &" # > /tmp/quality_time_server.log 2>&1 &
 sleep 3  # Give server time to start up
 deactivate
 cd ../..
