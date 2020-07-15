@@ -83,6 +83,11 @@ jobs:
           command: |
             . venv/bin/activate
             export LOAD_EXAMPLE_REPORTS=False
+            export LDAP_URL=ldap://localhost:389
+            export LDAP_ROOT_DN=dc=example,dc=org
+            export LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
+            export LDAP_LOOKUP_USER_PASSWORD=admin
+            export LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
