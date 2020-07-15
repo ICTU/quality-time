@@ -62,6 +62,7 @@ jobs:
 
   integration_tests:
     machine: true
+    image: ubuntu-1604:202007-01
     parallelism: 1
     steps:
       - checkout
