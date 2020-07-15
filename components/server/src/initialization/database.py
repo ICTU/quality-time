@@ -15,10 +15,10 @@ def init_database() -> Database:
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
     database = pymongo.MongoClient(database_url).quality_time_db
     logging.info("Connected to database: %s", database)
-    create_indexes(database)
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
     logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
+    create_indexes(database)
     import_datamodel(database)
     initialize_reports_overview(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
