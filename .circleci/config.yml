@@ -68,18 +68,22 @@ jobs:
     steps:
       - checkout
       - run:
-          background: true
           working_directory: components/server
           command: |
             mkdir -p /tmp/log
             python3 -m venv venv
             . venv/bin/activate
             pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
+      - run:
+          background: true
+          working_directory: components/server
+          command: |
+            . venv/bin/activate
             export LOAD_EXAMPLE_REPORTS=False
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
-            sleep 10
+            sleep 30
             python3 -m venv venv
             . venv/bin/activate
             pip --quiet install --progress-bar off -r requirements-dev.txt
