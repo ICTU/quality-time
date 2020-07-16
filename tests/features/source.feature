@@ -53,9 +53,11 @@ Feature: source
     Then the source name is "Source"
 
   Scenario: change source type
-    Given an existing source
+    Given an existing metric with type "unmerged_branches"
+    Given an existing source with type "gitlab"
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"
+    And the source parameter "inactive_days" is "7"
 
   Scenario: change source position
     Given an existing source with name "A"

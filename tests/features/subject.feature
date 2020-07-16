@@ -30,6 +30,11 @@ Feature: subject
     When the client changes the subject name to "New name"
     Then the subject name is "New name"
 
+  Scenario: change subject name to the same value
+    Given an existing subject with name "Subject"
+    When the client changes the subject name to "Subject"
+    Then the subject name is "Subject"
+
   Scenario: change subject position
     Given an existing subject with name "A"
     And an existing subject with name "B"

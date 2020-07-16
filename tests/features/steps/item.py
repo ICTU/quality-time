@@ -46,9 +46,8 @@ def change_item_attribute(context, item, attribute, value):
     context.post(f"{item}/{context.uuid[item]}/attribute/{attribute}", json={attribute: value})
 
 
-@then('the {item} {attribute} is "{value}"')
-def check_item_attribute(context, item, attribute, value):
-    """Check that the item attribute equals value."""
+def get_item(context, item):
+    """Return the item instance of type item."""
     reports = context.get("reports")
     item_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     if item != "report":
@@ -57,7 +56,19 @@ def check_item_attribute(context, item, attribute, value):
             item_instance = item_instance["metrics"][context.uuid["metric"]]
             if item != "metric":
                 item_instance = item_instance["sources"][context.uuid["source"]]
-    assert_equal(value, item_instance[attribute])
+    return item_instance
+
+
+@then('the source parameter "{parameter}" is "{value}"')
+def check_source_parameter(context, parameter, value):
+    """Check that the source parameter equals value."""
+    assert_equal(value, get_item(context, "source")["parameters"][parameter])
+
+
+@then('the {item} {attribute} is "{value}"')
+def check_item_attribute(context, item, attribute, value):
+    """Check that the item attribute equals value."""
+    assert_equal(value, get_item(context, item)[attribute])
 
 
 @then("the {item} does not exist")
