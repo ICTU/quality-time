@@ -96,7 +96,7 @@ jobs:
             sleep 2  # Give the server time to write the coverage data
             coverage combine . components/server
             coverage html --directory build/features-coverage
-            coverage report --fail-under=62 --skip-covered
+            coverage report --fail-under=65 --skip-covered
       - store_artifacts:
           path: /tmp/log
 

@@ -48,12 +48,18 @@ Feature: source
     Then the source name is "New name"
 
   Scenario: change source name to the same value
-    Given an existing source
+    Given an existing source with name "Source"
     When the client changes the source name to "Source"
-    And the client changes the source name to "Source"
     Then the source name is "Source"
 
   Scenario: change source type
     Given an existing source
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"
+
+  Scenario: change source position
+    Given an existing source with name "A"
+    And an existing source with name "B"
+    When the client changes the source position to "first"
+    Then the metric's first source has name "B"
+    And the metric's last source has name "A"
