@@ -20,9 +20,15 @@ Feature: metric
     When the client copies the metric
     Then the metric name is "Accessibility violations (copy)"
 
-  Scenario: move metric
+  Scenario: move metric to another report
     Given an existing metric
     And an existing report
+    And an existing subject
+    When the client moves the metric to the subject
+    Then the subject contains the metric
+
+  Scenario: move metric within report
+    Given an existing metric
     And an existing subject
     When the client moves the metric to the subject
     Then the subject contains the metric
@@ -31,3 +37,20 @@ Feature: metric
     Given an existing metric
     When the client changes the metric name to "New name"
     Then the metric name is "New name"
+
+  Scenario: change metric name to the same value
+    Given an existing metric with name "Metric"
+    When the client changes the metric name to "Metric"
+    Then the metric name is "Metric"
+
+  Scenario: change metric position
+    Given an existing metric with name "A"
+    And an existing metric with name "B"
+    When the client changes the metric position to "first"
+    Then the subject's first metric has name "B"
+    And the subject's last metric has name "A"
+
+  Scenario: sanitize html
+    Given an existing metric
+    When the client changes the metric comment to "Text<script>alert("Danger")</script>"
+    Then the metric comment is "Text"

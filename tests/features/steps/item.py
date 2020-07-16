@@ -5,14 +5,17 @@ from behave import given, when, then
 
 
 @given("an existing {item}")
+@given('an existing {item} with {attribute} "{value}"')
 @when("the client creates a {item}")
-def add_item(context, item):
-    """Add an item."""
+def add_item(context, item, attribute=None, value=None):
+    """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
     container = dict(source="metric", metric="subject", subject="report").get(item)
     if container:
         api += f"/{context.uuid[container]}"
     context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
+    if attribute and value:
+        context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
 
 
 @when("the client copies the {item}")
@@ -43,9 +46,8 @@ def change_item_attribute(context, item, attribute, value):
     context.post(f"{item}/{context.uuid[item]}/attribute/{attribute}", json={attribute: value})
 
 
-@then('the {item} {attribute} is "{value}"')
-def check_item_attribute(context, item, attribute, value):
-    """Check that the item attribute equals value."""
+def get_item(context, item):
+    """Return the item instance of type item."""
     reports = context.get("reports")
     item_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     if item != "report":
@@ -54,7 +56,19 @@ def check_item_attribute(context, item, attribute, value):
             item_instance = item_instance["metrics"][context.uuid["metric"]]
             if item != "metric":
                 item_instance = item_instance["sources"][context.uuid["source"]]
-    assert_equal(value, item_instance[attribute])
+    return item_instance
+
+
+@then('the source parameter "{parameter}" is "{value}"')
+def check_source_parameter(context, parameter, value):
+    """Check that the source parameter equals value."""
+    assert_equal(value, get_item(context, "source")["parameters"][parameter])
+
+
+@then('the {item} {attribute} is "{value}"')
+def check_item_attribute(context, item, attribute, value):
+    """Check that the item attribute equals value."""
+    assert_equal(value, get_item(context, item)[attribute])
 
 
 @then("the {item} does not exist")
@@ -72,13 +86,25 @@ def check_item_does_not_exist(context, item):
     assert_false(context.uuid[item] in uuids)
 
 
-@then("the {container} contains the {item}")
-def check_container_contains_item(context, container, item):
-    """Check that the container contains the item."""
+def get_container(context, container):
+    """Return the container."""
     reports = context.get("reports")
     container_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
     if container != "report":
         container_instance = container_instance["subjects"][context.uuid["subject"]]
         if container != "subject":
             container_instance = container_instance["metrics"][context.uuid["metric"]]
-    assert_true(context.uuid[item] in container_instance[f"{item}s"])
+    return container_instance
+
+
+@then("the {container} contains the {item}")
+def check_container_contains_item(context, container, item):
+    """Check that the container contains the item."""
+    assert_true(context.uuid[item] in get_container(context, container)[f"{item}s"])
+
+
+@then('''the {container}'s {position} {item} has {attribute} "{value}"''')
+def check_item_order(context, container, position, item, attribute, value):
+    """Check that the container item at position has an attribute with the specified value."""
+    index = dict(first=0, last=-1)[position]
+    assert_equal(value, list(get_container(context, container)[f"{item}s"].values())[index][attribute])
