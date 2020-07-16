@@ -31,3 +31,10 @@ Feature: metric
     Given an existing metric
     When the client changes the metric name to "New name"
     Then the metric name is "New name"
+
+  Scenario: change metric position
+    Given an existing metric with name "A"
+    And an existing metric with name "B"
+    When the client changes the metric position to "first"
+    Then the subject's first metric has name "B"
+    And the subject's last metric has name "A"

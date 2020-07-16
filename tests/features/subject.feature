@@ -29,3 +29,10 @@ Feature: subject
     Given an existing subject
     When the client changes the subject name to "New name"
     Then the subject name is "New name"
+
+  Scenario: change subject position
+    Given an existing subject with name "A"
+    And an existing subject with name "B"
+    When the client changes the subject position to "first"
+    Then the report's first subject has name "B"
+    And the report's last subject has name "A"
