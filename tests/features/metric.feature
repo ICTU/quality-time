@@ -49,3 +49,8 @@ Feature: metric
     When the client changes the metric position to "first"
     Then the subject's first metric has name "B"
     And the subject's last metric has name "A"
+
+  Scenario: sanitize html
+    Given an existing metric
+    When the client changes the metric comment to "Text<script>alert("Danger")</script>"
+    Then the metric comment is "Text"
