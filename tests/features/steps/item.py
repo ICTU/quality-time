@@ -6,8 +6,9 @@ from behave import given, when, then
 
 @given("an existing {item}")
 @given('an existing {item} with {attribute} "{value}"')
+@given('an existing {item} with {attribute} "{value}" and parameter {parameter} "{parameter_value}"')
 @when("the client creates a {item}")
-def add_item(context, item, attribute=None, value=None):
+def add_item(context, item, attribute=None, value=None, parameter=None, parameter_value=None):
     """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
     container = dict(source="metric", metric="subject", subject="report").get(item)
@@ -16,6 +17,8 @@ def add_item(context, item, attribute=None, value=None):
     context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
     if attribute and value:
         context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
+    if parameter and parameter_value:
+        context.execute_steps(f'when the client changes the source parameter {parameter} to "{parameter_value}"')
 
 
 @when("the client copies the {item}")
@@ -40,22 +43,31 @@ def delete_subject(context, item):
     context.delete(f"{item}/{context.uuid[item]}")
 
 
+@when('the client changes the source parameter {parameter} to "{value}"')
+def change_source_parameter(context, parameter, value):
+    """Change the source parameter to value."""
+    context.post(f"source/{context.uuid['source']}/parameter/{parameter}", json={parameter: value})
+
+
 @when('the client changes the {item} {attribute} to "{value}"')
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
-    context.post(f"{item}/{context.uuid[item]}/attribute/{attribute}", json={attribute: value})
+    item_fragment = "reports" if item == "reports" else f"{item}/{context.uuid[item]}"
+    context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
 
 
 def get_item(context, item):
     """Return the item instance of type item."""
-    reports = context.get("reports")
-    item_instance = [report for report in reports["reports"] if report["report_uuid"] == context.uuid["report"]][0]
-    if item != "report":
-        item_instance = item_instance["subjects"][context.uuid["subject"]]
-        if item != "subject":
-            item_instance = item_instance["metrics"][context.uuid["metric"]]
-            if item != "metric":
-                item_instance = item_instance["sources"][context.uuid["source"]]
+    item_instance = context.get("reports")
+    if item != "reports":
+        item_instance = [
+            report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]][0]
+        if item != "report":
+            item_instance = item_instance["subjects"][context.uuid["subject"]]
+            if item != "subject":
+                item_instance = item_instance["metrics"][context.uuid["metric"]]
+                if item != "metric":
+                    item_instance = item_instance["sources"][context.uuid["source"]]
     return item_instance
 
 

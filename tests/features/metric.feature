@@ -52,5 +52,5 @@ Feature: metric
 
   Scenario: sanitize html
     Given an existing metric
-    When the client changes the metric comment to "Text<script>alert("Danger")</script>"
+    When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"

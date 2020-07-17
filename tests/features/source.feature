@@ -65,3 +65,18 @@ Feature: source
     When the client changes the source position to "first"
     Then the metric's first source has name "B"
     And the metric's last source has name "A"
+
+  Scenario: change source parameter
+    Given an existing source with type "axecsv"
+    When the client changes the source parameter url to "https://axe.csv"
+    Then the source parameter "url" is "https://axe.csv"
+
+  Scenario: change source parameter to the same value
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client changes the source parameter url to "https://axe.csv"
+    Then the source parameter "url" is "https://axe.csv"
+
+  Scenario: change source password parameter
+    Given an existing source with type "axecsv"
+    When the client changes the source parameter password to "secret"
+    Then the source parameter "password" is "this string replaces credentials"
