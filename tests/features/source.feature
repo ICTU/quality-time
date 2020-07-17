@@ -57,7 +57,7 @@ Feature: source
     Given an existing source with type "gitlab"
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"
-    And the source parameter "inactive_days" is "7"
+    And the source parameter inactive_days is "7"
 
   Scenario: change source position
     Given an existing source with name "A"
@@ -65,3 +65,18 @@ Feature: source
     When the client changes the source position to "first"
     Then the metric's first source has name "B"
     And the metric's last source has name "A"
+
+  Scenario: change source parameter
+    Given an existing source with type "axecsv"
+    When the client changes the source parameter url to "https://axe.csv"
+    Then the source parameter url is "https://axe.csv"
+
+  Scenario: change source parameter to the same value
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client changes the source parameter url to "https://axe.csv"
+    Then the source parameter url is "https://axe.csv"
+
+  Scenario: change source password parameter
+    Given an existing source with type "axecsv"
+    When the client changes the source parameter password to "secret"
+    Then the source parameter password is "this string replaces credentials"

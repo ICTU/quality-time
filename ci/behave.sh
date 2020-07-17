@@ -28,4 +28,4 @@ kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server
 coverage html --directory build/features-coverage
-coverage report --fail-under=64 --skip-covered
+coverage report --fail-under=74 --skip-covered
