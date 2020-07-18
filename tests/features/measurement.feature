@@ -20,3 +20,10 @@ Feature: measurement
     Given an existing source
     When the collector measures "100"
     Then the metric status is "target_not_met"
+
+  Scenario: the metric is measured, doesn't meet the target, and it's accepted as technical debt
+    Given an existing source
+    When the collector measures "100"
+    And the client changes the metric accept_debt to "True"
+    And the client changes the metric debt_target to "100"
+    Then the metric status is "debt_target_met"
