@@ -86,7 +86,7 @@ def check_sources_parameter(context, parameter, container, value):
     elif container == "subject":
         subject = get_item(context, "subject")
         metrics = subject["metrics"].values()
-    elif container == "report":
+    else:
         report = get_item(context, "report")
         subjects = report["subjects"].values()
         metrics = [metric for subject in subjects for metric in subject["metrics"].values()]

@@ -9,6 +9,18 @@ def get_metrics(context):
     context.metrics = context.get("metrics")
 
 
+@when('the collector measures "{number}"')
+def measure(context, number):
+    """Post the measurement."""
+    context.post(
+        "measurements",
+        json=dict(
+            metric_uuid=context.uuid["metric"],
+            sources=[
+                dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
+                     total="100")]))
+
+
 @then("the metric needs to be measured")
 def check_metrics(context):
     """Check that the metric needs to be measured."""
