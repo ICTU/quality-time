@@ -12,13 +12,15 @@ def get_metrics(context):
 @when('the collector measures "{number}"')
 def measure(context, number):
     """Post the measurement."""
+    entities = [
+        dict(key=row["key"], value=row["value"], notes=row["notes"]) for row in context.table] if context.table else []
     context.post(
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total="100")]))
+                     total="100", entities=entities)]))
 
 
 @then("the metric needs to be measured")
@@ -28,6 +30,8 @@ def check_metrics(context):
 
 
 @then("the metric has one measurement")
-def check_nr_of_measurements(context):
+@then("the metric has {count} measurements")
+def check_nr_of_measurements(context, count="one"):
     """Check that the metric has the expected number of measurements."""
-    assert_equal(1, len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
+    expected_number = dict(one=1, two=2).get(count, count)
+    assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))

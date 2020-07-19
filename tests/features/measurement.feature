@@ -33,3 +33,23 @@ Feature: measurement
     When the collector measures "0"
     And the collector measures "0"
     Then the metric has one measurement
+
+  Scenario: when entities are unchanged a new measurement is not added
+    Given an existing source
+    When the collector measures "1"
+      | key | value | notes |
+      | 1   | 1     | foo   |
+    And the collector measures "1"
+      | key | value | notes |
+      | 1   | 1     | foo   |
+    Then the metric has one measurement
+
+  Scenario: when entities are changed a new measurement is added
+    Given an existing source
+    When the collector measures "1"
+      | key | value | notes |
+      | 1   | 1     | foo   |
+    And the collector measures "1"
+      | key | value | notes |
+      | 1   | 1     | bar   |
+    Then the metric has two measurements
