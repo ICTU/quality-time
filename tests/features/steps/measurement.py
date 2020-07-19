@@ -1,6 +1,6 @@
 """Step implementations for measurement."""
 
-from asserts import assert_true
+from asserts import assert_equal, assert_true
 
 
 @when("the collector gets the metrics to measure")
@@ -25,3 +25,9 @@ def measure(context, number):
 def check_metrics(context):
     """Check that the metric needs to be measured."""
     assert_true(context.uuid["metric"] in context.metrics.keys())
+
+
+@then("the metric has one measurement")
+def check_nr_of_measurements(context):
+    """Check that the metric has the expected number of measurements."""
+    assert_equal(1, len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))

@@ -27,3 +27,9 @@ Feature: measurement
     And the client changes the metric accept_debt to "True"
     And the client changes the metric debt_target to "100"
     Then the metric status is "debt_target_met"
+
+  Scenario: a measurement that's unchanged is updated
+    Given an existing source
+    When the collector measures "0"
+    And the collector measures "0"
+    Then the metric has one measurement
