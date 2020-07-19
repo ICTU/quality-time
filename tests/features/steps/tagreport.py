@@ -1,6 +1,6 @@
 """Step implementations for tag reports."""
 
-from asserts import assert_equal
+from asserts import assert_equal, assert_true
 
 
 @when('the client gets the tag report for the tag "{tag}"')
@@ -15,7 +15,9 @@ def check_tag_report_is_empty(context):
     assert_equal({}, context.tag_report["subjects"])
 
 
-@then('the tag report has one metric with tag "{tag}"')
+@then('the tag report with tag "{tag}" has only metrics with said tag')
 def check_tag_report(context, tag):
     """Check that the tag report has the expected contents."""
-    assert_equal("bla", context.tag_report["subjects"])
+    for subject in context.tag_report["subjects"].values():
+        for metric in subject["metrics"].values():
+            assert_true(tag in metric["tags"])

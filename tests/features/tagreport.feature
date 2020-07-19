@@ -14,4 +14,4 @@ Feature: tag reports
   Scenario: tag reports only contain metrics with the specified tag
     Given an existing metric with tags "tag_report_test"
     When the client gets the tag report for the tag "tag_report_test"
-    Then the tag report has one metric with tag "tag_report_test"
+    Then the tag report with tag "tag_report_test" has only metrics with said tag
