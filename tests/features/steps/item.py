@@ -54,7 +54,10 @@ def change_source_parameter(context, parameter, value, scope="source"):
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
     item_fragment = "reports" if item == "reports" else f"{item}/{context.uuid[item]}"
-    value = dict(true=True, false=False).get(value.lower(), value)
+    if attribute == "tags":
+        value = value.split(", ")
+    else:
+        value = dict(true=True, false=False).get(value.lower(), value)
     context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
 
 
