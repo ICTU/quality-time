@@ -128,13 +128,14 @@ class ReportTest(unittest.TestCase):
         self.maxDiff = None  # pylint: disable=invalid-name
         request.query = bottle.FormsDict(report_date=iso_timestamp())
         self.database.datamodels.find_one.return_value = dict(
-            _id="id", sources={}, metrics=dict(metric_type=dict(default_scale="count")))
+            _id="id", sources={}, subjects=dict(subject_type=dict(name="Subject")),
+            metrics=dict(metric_type=dict(default_scale="count")))
         self.database.reports.find_one.return_value = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={
                 "subject_without_metrics": dict(metrics=dict()),
                 SUBJECT_ID: dict(
-                    name="Subject",
+                    type="subject_type",
                     metrics=dict(
                         metric_with_tag=dict(type="metric_type", tags=["tag"]),
                         metric_without_tag=dict(type="metric_type", tags=["other tag"])))})
@@ -146,7 +147,7 @@ class ReportTest(unittest.TestCase):
                 title='Report for tag "tag"', subtitle="Note: tag reports are read-only", report_uuid="tag-tag",
                 timestamp=request.query["report_date"], subjects={
                     SUBJECT_ID: dict(
-                        name="Report / Subject",
+                        name="Report / Subject", type="subject_type",
                         metrics=dict(
                             metric_with_tag=dict(
                                 status=None, value=None, scale="count", recent_measurements=[], type="metric_type",

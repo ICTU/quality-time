@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- When opening a tag report containing a subject without a name, the UI would complain that the server is unavailable. Fixes [#1309](https://github.com/ICTU/quality-time/issues/1309).
+
 ### Added
 
 - When using GitLab as source for the 'unused jobs' or 'failed jobs' metrics, allow for ignoring jobs/pipelines by name, by branch, and by tag. Closes [#1288](https://github.com/ICTU/quality-time/issues/1288).
