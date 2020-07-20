@@ -31,6 +31,8 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     value = dict(bottle.request.json)[reports_attribute]
     overview = latest_reports_overview(database)
     old_value = overview.get(reports_attribute)
+    if value == old_value:
+        return dict(ok=True)  # Nothing to do
     overview[reports_attribute] = value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
     user = sessions.user(database)

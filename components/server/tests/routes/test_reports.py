@@ -29,6 +29,14 @@ class ReportsTest(unittest.TestCase):
             inserted["delta"])
 
     @patch("bottle.request")
+    def test_post_reports_attribute_title_unchanged(self, request):
+        """Test that the reports (overview) attribute is not changed if the new value is equal to the old value."""
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
+        request.json = dict(title="Reports")
+        self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
+        self.database.reports_overviews.insert.assert_not_called()
+
+    @patch("bottle.request")
     def test_post_reports_attribute_layout(self, request):
         """Test that a reports (overview) layout can be changed."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports")
