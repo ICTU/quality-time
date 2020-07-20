@@ -1,7 +1,6 @@
 """Quality-time server."""
 
 # pylint: disable=wrong-import-order,wrong-import-position
-# pragma: no cover-behave
 
 import coverage
 cov = coverage.process_startup()
