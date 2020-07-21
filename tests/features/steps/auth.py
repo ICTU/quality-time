@@ -1,6 +1,6 @@
 """Steps for authentication."""
 
-from asserts import assert_equal
+from asserts import assert_equal, assert_false
 from behave import given, then
 
 
@@ -14,6 +14,18 @@ def logged_in_client(context):
 def logged_out_client(context):
     """Log out the client."""
     context.post("logout")
+
+
+@when("the client tries to log in with incorrect credentials")
+def log_in_with_incorrect_credentials(context):
+    """Try to log in with incorrect credentials."""
+    context.response = context.post("login", dict(username="admin", password="wrong"))
+
+
+@then("the server tells the client the credentials are incorrect")
+def check_invalid_credentials(context):
+    """Check that the server responded that the credentials are invalid."""
+    assert_false(context.response["ok"])
 
 
 @then("the server tells the client to log in")
