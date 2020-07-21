@@ -53,3 +53,12 @@ Feature: measurement
       | key | value | notes |
       | 1   | 1     | bar   |
     Then the metric has two measurements
+
+  Scenario: mark an entity as false positive
+    Given an existing source
+    When the collector measures "1"
+      | key | value | notes |
+      | 1   | 1     | foo   |
+    Then the metric status is "near_target_met"
+    When the client sets the status of entity 1 to "false_positive"
+    Then the metric status is "target_met"

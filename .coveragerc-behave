@@ -14,3 +14,4 @@ exclude_lines =
 omit =
     components/server/venv/**/*
     components/server/.venv/**/*
+    components/server/tests/quality_time_server_under_coverage.py

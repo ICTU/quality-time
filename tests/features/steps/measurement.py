@@ -23,6 +23,14 @@ def measure(context, number):
                      total="100", entities=entities)]))
 
 
+@when('the client sets the {attribute} of entity {key} to "{value}"')
+def set_entity_attribute(context, attribute, key, value):
+    """Set the entity attribute to the specified value."""
+    context.post(
+        f"measurement/{context.uuid['metric']}/source/{context.uuid['source']}/entity/{key}/{attribute}",
+        json={attribute: value})
+
+
 @then("the metric needs to be measured")
 def check_metrics(context):
     """Check that the metric needs to be measured."""
