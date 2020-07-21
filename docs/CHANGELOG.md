@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - *Quality-time* now uses version 3 of the *Quality-time* API to read data from other *Quality-time* instances for the 'metrics' metric. This means that the source-*Quality-time* needs to be at least version 2.4.0. Closes [#1208](https://github.com/ICTU/quality-time/issues/1208).
+- Upgrade Python to version 3.8.5. Closes [#1314](https://github.com/ICTU/quality-time/issues/1314).
 
 ### Removed
 
