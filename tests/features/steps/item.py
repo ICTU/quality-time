@@ -8,12 +8,16 @@ from behave import given, when, then
 @given('an existing {item} with {attribute} "{value}"')
 @given('an existing {item} with {attribute} "{value}" and parameter {parameter} "{parameter_value}"')
 @when("the client creates a {item}")
+@when("the client tries to create a {item}")
 def add_item(context, item, attribute=None, value=None, parameter=None, parameter_value=None):
     """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
     container = dict(source="metric", metric="subject", subject="report").get(item)
     if container:
         api += f"/{context.uuid[container]}"
+    if "tries to" in context.step.name:
+        context.response = context.post(api)
+        return
     context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
     if attribute and value:
         context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')

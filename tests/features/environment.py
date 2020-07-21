@@ -22,20 +22,27 @@ def before_all(context):
 
     def post(api, json=None):
         """Post the resource."""
-        result = requests.post(f"{BASE_API_URL}/{api}", json=json, cookies=cookies())
-        if "session_id" in result.cookies:
-            context.session_id = result.cookies["session_id"]
+        response = requests.post(f"{BASE_API_URL}/{api}", json=json, cookies=cookies())
+        if not response.ok:
+            return response
+        if "session_id" in response.cookies:
+            context.session_id = response.cookies["session_id"]
         time.sleep(1)  # Give server and database time to process the previous request
-        return result.json()
+        return response.json()
 
     def delete(api):
         """Delete the resource."""
-        result = requests.delete(f"{BASE_API_URL}/{api}", cookies=cookies())
+        response = requests.delete(f"{BASE_API_URL}/{api}", cookies=cookies())
         time.sleep(1)  # Give server and database time to process the previous request
-        return result.json()
+        return response.json()
 
     context.session_id = None
     context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
     context.delete = delete
+
+
+def before_step(context, step):
+    """Make the step available in the context."""
+    context.step = step
