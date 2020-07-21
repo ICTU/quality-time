@@ -1,4 +1,4 @@
-FROM python:3.8.3-slim-buster
+FROM python:3.8.5-slim-buster
 
 LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time collector"
