@@ -18,7 +18,8 @@ def before_all(context):
 
     def get(api):
         """Get the resource."""
-        return requests.get(f"{BASE_API_URL}/{api}").json()
+        response = requests.get(f"{BASE_API_URL}/{api}")
+        return response.json() if response.headers['Content-Type'] == "application/json" else response
 
     def post(api, json=None):
         """Post the resource."""

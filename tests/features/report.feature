@@ -22,3 +22,8 @@ Feature: report
     When the client creates a report
     And the client changes the report title to "New title"
     Then the report title is "New title"
+
+  Scenario: export report as pdf
+    When the client creates a report
+    And the client downloads the report as pdf
+    Then the client receives the pdf

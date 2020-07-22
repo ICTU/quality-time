@@ -93,14 +93,14 @@ ci/quality.sh
 
 ### Integration tests
 
-To run the integration tests (these currently only test the server, the database, and the ldap components), start the database and ldap components and then run the feature tests:
+To run the integration tests (these currently test all components except the collector), start the following components and then run the feature tests:
 
 ```console
-docker-compose up -d ldap database  # And optionally mongo-express
+docker-compose up -d ldap database renderer www frontend server  # And optionally mongo-express
 ci/behave.sh
 ```
 
-The `behave.sh` shell script will start the server under coverage and then run the behave [feature tests](../tests/features).
+The `behave.sh` shell script will start a server under coverage and then run the behave [feature tests](../tests/features).
 
 ## Release
 

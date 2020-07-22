@@ -64,6 +64,7 @@ jobs:
     docker:
       - image: circleci/python:3.8
       - image: osixia/openldap:1.4.0
+      - image: ictu/url-to-pdf-api:v1.0.0
       - image: mongo:4.2.3
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
@@ -84,6 +85,7 @@ jobs:
             . venv/bin/activate
             export COVERAGE_PROCESS_START=../../.coveragerc-behave
             export LOAD_EXAMPLE_REPORTS=False
+            export RENDERER_HOST=localhost
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |

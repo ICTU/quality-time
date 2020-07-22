@@ -44,3 +44,6 @@ services:
       - "3890:80"
     depends_on:
       - ldap
+  renderer:
+    ports:
+      - "9000:9000"
