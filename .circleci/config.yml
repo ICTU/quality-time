@@ -65,6 +65,8 @@ jobs:
       - image: circleci/python:3.8
       - image: osixia/openldap:1.4.0
       - image: ictu/url-to-pdf-api:v1.0.0
+      - image: ictu/quality-time_frontend:v2.5.2
+      - image: ictu/quality-time_server:v2.5.2
       - image: mongo:4.2.3
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
