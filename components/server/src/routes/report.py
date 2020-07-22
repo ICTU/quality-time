@@ -21,7 +21,9 @@ from server_utilities.type import ReportId
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
-    return import_json_report(database, report)
+    result = import_json_report(database, report)
+    result["new_report_uuid"] = report["report_uuid"]
+    return result
 
 
 @bottle.post("/api/v3/report/new")

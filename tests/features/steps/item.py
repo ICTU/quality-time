@@ -103,7 +103,7 @@ def check_sources_parameter(context, parameter, container, value):
             assert_equal(value, source["parameters"][parameter])
 
 
-@then('''the parameter {parameter} of all sources is "{value}"''')
+@then('the parameter {parameter} of all sources is "{value}"')
 def check_all_sources_parameter(context, parameter, value):
     """Check that all sources have a parameter with the specified value."""
     for report in context.get("reports")["reports"]:
