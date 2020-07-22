@@ -21,3 +21,6 @@ services:
     ports:
       - "389:389"
       - "636:636"
+  renderer:
+    ports:
+      - "9000:9000"

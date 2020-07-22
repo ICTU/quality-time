@@ -21,7 +21,9 @@ from server_utilities.type import ReportId
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
-    return import_json_report(database, report)
+    result = import_json_report(database, report)
+    result["new_report_uuid"] = report["report_uuid"]
+    return result
 
 
 @bottle.post("/api/v3/report/new")
@@ -54,12 +56,16 @@ def post_report_copy(report_uuid: ReportId, database: Database):
 @bottle.get("/api/v3/report/<report_uuid>/pdf")
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as pdf."""
-    host = os.environ.get("PROXY_HOST", "www")
-    port = os.environ.get("PROXY_PORT", "80")
+    renderer_host = os.environ.get("RENDERER_HOST", "renderer")
+    renderer_port = os.environ.get("RENDERER_PORT", "9000")
+    render_url = f"http://{renderer_host}:{renderer_port}/api/render"
+    proxy_host = os.environ.get("PROXY_HOST", "www")
+    proxy_port = os.environ.get("PROXY_PORT", "80")
+    report_url = f"http://{proxy_host}:{proxy_port}/{report_uuid}"
     margins = "&".join([f"pdf.margin.{side}=25" for side in ("top", "bottom", "left", "right")])
     # Set pdf scale to 70% or otherwise the dashboard falls off the page
     options = f"emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&{margins}"
-    response = requests.get(f"http://renderer:9000/api/render?url=http://{host}:{port}/{report_uuid}&{options}")
+    response = requests.get(f"{render_url}?url={report_url}&{options}")
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content

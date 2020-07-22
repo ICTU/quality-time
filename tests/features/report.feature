@@ -22,3 +22,37 @@ Feature: report
     When the client creates a report
     And the client changes the report title to "New title"
     Then the report title is "New title"
+
+  Scenario: export report as pdf
+    When the client creates a report
+    And the client downloads the report as pdf
+    Then the client receives the pdf
+
+  Scenario: import report
+    When the client imports a report
+      """
+      {
+        "title": "Imported report",
+        "report_uuid": "imported_report",
+        "subjects": [
+          {
+            "name": "Imported subject",
+            "type": "software",
+            "metrics": [
+              {
+                "type": "violations",
+                "sources": [
+                  {
+                    "type": "sonarqube",
+                    "parameters": {
+                      "url": "https://sonarcloud.io"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      """
+    Then the report title is "Imported report"

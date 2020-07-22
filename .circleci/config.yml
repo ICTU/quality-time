@@ -64,6 +64,11 @@ jobs:
     docker:
       - image: circleci/python:3.8
       - image: osixia/openldap:1.4.0
+      - image: ictu/url-to-pdf-api:v1.0.0
+        environment:
+          ALLOW_HTTP: true
+          LC_ALL: en_GB.UTF-8
+      - image: ictu/quality-time_frontend:v2.5.2
       - image: mongo:4.2.3
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
@@ -84,6 +89,9 @@ jobs:
             . venv/bin/activate
             export COVERAGE_PROCESS_START=../../.coveragerc-behave
             export LOAD_EXAMPLE_REPORTS=False
+            export RENDERER_HOST=localhost
+            export PROXY_HOST=localhost
+            export PROXY_PORT=5000
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
@@ -96,7 +104,7 @@ jobs:
             sleep 2  # Give the server time to write the coverage data
             coverage combine . components/server
             coverage html --directory build/features-coverage
-            coverage report --fail-under=88 --skip-covered
+            coverage report --fail-under=92 --skip-covered
       - store_artifacts:
           path: /tmp/log
 
