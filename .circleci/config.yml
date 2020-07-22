@@ -65,6 +65,9 @@ jobs:
       - image: circleci/python:3.8
       - image: osixia/openldap:1.4.0
       - image: ictu/url-to-pdf-api:v1.0.0
+        environment:
+          ALLOW_HTTP: true
+          LC_ALL: en_GB.UTF-8
       - image: ictu/quality-time_frontend:v2.5.2
       - image: mongo:4.2.3
         environment:
