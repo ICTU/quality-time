@@ -88,6 +88,8 @@ jobs:
             export COVERAGE_PROCESS_START=../../.coveragerc-behave
             export LOAD_EXAMPLE_REPORTS=False
             export RENDERER_HOST=localhost
+            export PROXY_HOST=localhost
+            export PROXY_PORT=3000
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
