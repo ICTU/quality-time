@@ -6,3 +6,4 @@ gitpython==3.1.7
 pip==20.1.1
 requests==2.24.0
 selenium==3.141.0
+sseclient==0.0.26
