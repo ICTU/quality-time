@@ -6,9 +6,6 @@ from typing import Dict
 import requests
 
 
-BASE_API_URL = "http://localhost:5001/api/v3"
-
-
 def before_all(context):
     """Create shortcuts to send requests to the server API."""
 
@@ -18,12 +15,12 @@ def before_all(context):
 
     def get(api):
         """Get the resource."""
-        response = requests.get(f"{BASE_API_URL}/{api}")
+        response = requests.get(f"{context.base_api_url}/{api}")
         return response.json() if response.headers['Content-Type'] == "application/json" else response
 
     def post(api, json=None):
         """Post the resource."""
-        response = requests.post(f"{BASE_API_URL}/{api}", json=json, cookies=cookies())
+        response = requests.post(f"{context.base_api_url}/{api}", json=json, cookies=cookies())
         if not response.ok:
             return response
         if "session_id" in response.cookies:
@@ -33,10 +30,11 @@ def before_all(context):
 
     def delete(api):
         """Delete the resource."""
-        response = requests.delete(f"{BASE_API_URL}/{api}", cookies=cookies())
+        response = requests.delete(f"{context.base_api_url}/{api}", cookies=cookies())
         time.sleep(1)  # Give server and database time to process the previous request
         return response.json()
 
+    context.base_api_url = "http://localhost:5001/api/v3"
     context.session_id = None
     context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
