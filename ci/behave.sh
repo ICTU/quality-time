@@ -24,9 +24,10 @@ python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements-dev.txt
 coverage erase
-coverage run -m behave "${1:-tests/features}"  # --format null
+coverage run -m behave --junit --junit-directory build "${1:-tests/features}"  # --format null
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server
+coverage xml -o build/features-coverage.xml
 coverage html --directory build/features-coverage
 coverage report --fail-under=92 --skip-covered
