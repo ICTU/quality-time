@@ -83,7 +83,6 @@ def changelog(database: Database, nr_changes: int, **uuids):
     if not uuids:
         changes.extend(database.reports_overviews.find(
             filter=delta_filter, sort=sort_order, limit=nr_changes*2, projection=projection))
-        print(changes)
     old_report_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     new_report_delta_filter = {"delta.uuids": {"$in": list(uuids.values())}}
     delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
