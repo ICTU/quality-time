@@ -116,6 +116,7 @@ def check_all_sources_parameter(context, parameter, value):
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
     """Check that the item attribute equals value."""
+    value = None if value == "None" else value
     assert_equal(value, get_item(context, item)[attribute])
 
 

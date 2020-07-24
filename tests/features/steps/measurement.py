@@ -27,6 +27,18 @@ def measure(context, number):
                      total="100", entities=entities)]))
 
 
+@when("the collector encounters a parse error")
+def parse_error(context):
+    """Post the parse error."""
+    context.post(
+        "measurements",
+        json=dict(
+            metric_uuid=context.uuid["metric"],
+            sources=[
+                dict(source_uuid=context.uuid["source"], parse_error="Parse error", connection_error=None, value=None,
+                     total=None, entities=[])]))
+
+
 @when('the client sets the {attribute} of entity {key} to "{value}"')
 def set_entity_attribute(context, attribute, key, value):
     """Set the entity attribute to the specified value."""
