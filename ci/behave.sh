@@ -30,4 +30,4 @@ sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server
 coverage xml -o build/features-coverage.xml
 coverage html --directory build/features-coverage
-coverage report --fail-under=94 --skip-covered
+coverage report --fail-under=95 --skip-covered

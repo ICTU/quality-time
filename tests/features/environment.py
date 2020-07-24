@@ -13,10 +13,10 @@ def before_all(context):
         """Return the cookies."""
         return dict(session_id=context.session_id) if context.session_id else dict()
 
-    def get(api):
+    def get(api, headers=None):
         """Get the resource."""
-        response = requests.get(f"{context.base_api_url}/{api}")
-        return response.json() if response.headers['Content-Type'] == "application/json" else response
+        response = requests.get(f"{context.base_api_url}/{api}", headers=headers)
+        return response.json() if response.headers.get('Content-Type') == "application/json" else response
 
     def post(api, json=None):
         """Post the resource."""
@@ -36,6 +36,7 @@ def before_all(context):
 
     context.base_api_url = "http://localhost:5001/api/v3"
     context.session_id = None
+    context.response = None
     context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post
