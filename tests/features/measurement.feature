@@ -5,7 +5,7 @@ Feature: measurement
     Given a logged-in client
     And an existing report
     And an existing subject
-    And an existing metric
+    And an existing metric with type "complex_units"
 
   Scenario: the metric has no source
     When the collector gets the metrics to measure
