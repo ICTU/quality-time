@@ -117,3 +117,11 @@ def check_item_order(context, container, position, item, attribute, value):
     """Check that the container item at position has an attribute with the specified value."""
     index = dict(first=0, last=-1)[position]
     assert_equal(value, list(get_container(context, container)[f"{item}s"].values())[index][attribute])
+
+
+@then("the {container} contains {number} {children}")
+def check_nr_children(context, container, number, children):
+    """Check that the container has the expected number of child items."""
+    container_instance = get_container(context, container)
+    children = children if children.endswith("s") else children + "s"
+    assert_equal(number, str(len(container_instance[children])))

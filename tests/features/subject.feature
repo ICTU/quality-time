@@ -19,6 +19,13 @@ Feature: subject
     When the client copies the subject
     Then the subject name is "CI-environment (copy)"
 
+  Scenario: copy subject with metric
+    Given an existing subject
+    And an existing metric
+    When the client copies the subject
+    Then the subject name is "CI-environment (copy)"
+    And the subject contains 1 metric
+
   Scenario: move subject
     Given an existing subject
     And an existing report

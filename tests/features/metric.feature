@@ -20,6 +20,13 @@ Feature: metric
     When the client copies the metric
     Then the metric name is "Accessibility violations (copy)"
 
+  Scenario: copy metric with source
+    Given an existing metric
+    And an existing source
+    When the client copies the metric
+    Then the metric name is "Accessibility violations (copy)"
+    And the metric contains 1 source
+
   Scenario: move metric to another report
     Given an existing metric
     And an existing report
