@@ -13,7 +13,6 @@ python3 -m venv venv
 . venv/bin/activate
 pip --quiet install --progress-bar off -r requirements.txt -r requirements-dev.txt
 coverage erase
-export LOAD_EXAMPLE_REPORTS=False
 export COVERAGE_PROCESS_START=$COVERAGE_RCFILE
 export RENDERER_HOST=localhost
 python tests/quality_time_server_under_coverage.py &> /tmp/quality_time_server.log &
@@ -30,4 +29,4 @@ sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server
 coverage xml -o build/features-coverage.xml
 coverage html --directory build/features-coverage
-coverage report --fail-under=95 --skip-covered
+coverage report --fail-under=96 --skip-covered

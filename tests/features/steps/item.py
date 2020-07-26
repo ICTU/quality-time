@@ -16,13 +16,13 @@ def add_item(context, item, attribute=None, value=None, parameter=None, paramete
     if container:
         api += f"/{context.uuid[container]}"
     if "tries to" in context.step.name:
-        context.response = context.post(api)
+        context.post(api)
         return
     context.uuid[item] = context.post(api)[f"new_{item}_uuid"]
     if attribute and value:
         context.execute_steps(f'when the client changes the {item} {attribute} to "{value}"')
     if parameter and parameter_value:
-        context.execute_steps(f'when the client changes the source parameter {parameter} to "{parameter_value}"')
+        context.execute_steps(f'when the client sets the source parameter {parameter} to "{parameter_value}"')
 
 
 @when("the client copies the {item}")
@@ -42,16 +42,9 @@ def move_item(context, item, container):
 
 
 @when("the client deletes the {item}")
-def delete_subject(context, item):
+def delete_item(context, item):
     """Delete the item."""
     context.delete(f"{item}/{context.uuid[item]}")
-
-
-@when('the client changes the source parameter {parameter} to "{value}"')
-@when('the client changes the source parameter {parameter} to "{value}" with scope "{scope}"')
-def change_source_parameter(context, parameter, value, scope="source"):
-    """Change the source parameter to value."""
-    context.post(f"source/{context.uuid['source']}/parameter/{parameter}", json={parameter: value, "edit_scope": scope})
 
 
 @when('the client changes the {item} {attribute} to "{value}"')
@@ -78,39 +71,6 @@ def get_item(context, item):
                 if item != "metric":
                     item_instance = item_instance["sources"][context.uuid["source"]]
     return item_instance
-
-
-@then('the source parameter {parameter} is "{value}"')
-def check_source_parameter(context, parameter, value):
-    """Check that the source parameter equals value."""
-    assert_equal(value, get_item(context, "source")["parameters"][parameter])
-
-
-@then('''the parameter {parameter} of the {container}'s sources is "{value}"''')
-def check_sources_parameter(context, parameter, container, value):
-    """Check that all sources within the container have a parameter with the specified value."""
-    if container == "metric":
-        metrics = [get_item(context, "metric")]
-    elif container == "subject":
-        subject = get_item(context, "subject")
-        metrics = subject["metrics"].values()
-    else:
-        report = get_item(context, "report")
-        subjects = report["subjects"].values()
-        metrics = [metric for subject in subjects for metric in subject["metrics"].values()]
-    for metric in metrics:
-        for source in metric["sources"].values():
-            assert_equal(value, source["parameters"][parameter])
-
-
-@then('the parameter {parameter} of all sources is "{value}"')
-def check_all_sources_parameter(context, parameter, value):
-    """Check that all sources have a parameter with the specified value."""
-    for report in context.get("reports")["reports"]:
-        for subject in report["subjects"].values():
-            for metric in subject["metrics"].values():
-                for source in metric["sources"].values():
-                    assert_equal(value, source["parameters"][parameter])
 
 
 @then('the {item} {attribute} is "{value}"')

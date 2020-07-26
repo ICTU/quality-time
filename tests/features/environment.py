@@ -15,12 +15,12 @@ def before_all(context):
 
     def get(api, headers=None):
         """Get the resource."""
-        response = requests.get(f"{context.base_api_url}/{api}", headers=headers)
+        context.response = response = requests.get(f"{context.base_api_url}/{api}", headers=headers)
         return response.json() if response.headers.get('Content-Type') == "application/json" else response
 
     def post(api, json=None):
         """Post the resource."""
-        response = requests.post(f"{context.base_api_url}/{api}", json=json, cookies=cookies())
+        context.response = response = requests.post(f"{context.base_api_url}/{api}", json=json, cookies=cookies())
         if not response.ok:
             return response
         if "session_id" in response.cookies:
@@ -30,7 +30,7 @@ def before_all(context):
 
     def delete(api):
         """Delete the resource."""
-        response = requests.delete(f"{context.base_api_url}/{api}", cookies=cookies())
+        context.response = response = requests.delete(f"{context.base_api_url}/{api}", cookies=cookies())
         time.sleep(1)  # Give server and database time to process the previous request
         return response.json()
 

@@ -88,7 +88,6 @@ jobs:
           command: |
             . venv/bin/activate
             export COVERAGE_PROCESS_START=../../.coveragerc-behave
-            export LOAD_EXAMPLE_REPORTS=False
             export RENDERER_HOST=localhost
             export PROXY_HOST=localhost
             export PROXY_PORT=5000
@@ -104,7 +103,7 @@ jobs:
             sleep 2  # Give the server time to write the coverage data
             coverage combine . components/server
             coverage html --directory build/features-coverage
-            coverage report --fail-under=95 --skip-covered
+            coverage report --fail-under=96 --skip-covered
       - store_artifacts:
           path: /tmp/log
 
