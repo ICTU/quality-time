@@ -68,8 +68,8 @@ Feature: source
 
   Scenario: change source parameter
     Given an existing source with type "axecsv"
-    When the client sets the source parameter url to "https://axe.csv"
-    Then the source parameter url equals "https://axe.csv" and the availability status code equals "-1"
+    When the client sets the source parameter url to "http://github.com"
+    Then the source parameter url equals "http://github.com" and the availability status code equals "200"
 
   Scenario: change source parameter to the same value
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
@@ -80,3 +80,8 @@ Feature: source
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter password to "secret"
     Then the source parameter password equals "this string replaces credentials" and the availability status code equals "-1"
+
+  Scenario: change source token parameter
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client sets the source parameter private_token to "secret"
+    Then the source parameter private_token equals "this string replaces credentials" and the availability status code equals "-1"
