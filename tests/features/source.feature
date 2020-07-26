@@ -85,3 +85,8 @@ Feature: source
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter private_token to "secret"
     Then the source parameter private_token equals "this string replaces credentials" and the availability status code equals "-1"
+
+  Scenario: when the client clears the url, no availability check is done
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client sets the source parameter url to "None"
+    Then the source parameter url equals "None" and the availability status code equals "None"

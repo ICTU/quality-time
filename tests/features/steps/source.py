@@ -10,6 +10,7 @@ from item import get_item
 @when('the client sets the source parameter {parameter} to "{value}" with scope "{scope}"')
 def change_source_parameter(context, parameter, value, scope="source"):
     """Change the source parameter to value."""
+    value = "" if value == "None" else value
     context.post(f"source/{context.uuid['source']}/parameter/{parameter}", json={parameter: value, "edit_scope": scope})
 
 
@@ -18,6 +19,7 @@ def check_source_parameter(context, parameter, value, status_code):
     """Check that the source parameter equals value."""
     post_response = context.response.json()
     source = get_item(context, "source")
+    value = "" if value == "None" else value
     assert_equal(value, source["parameters"][parameter])
     if status_code == "None":
         assert_false("availability" in post_response)
