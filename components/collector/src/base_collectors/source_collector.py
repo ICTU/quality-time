@@ -160,7 +160,7 @@ class FakeResponse:  # pylint: disable=too-few-public-methods
         super().__init__()
         self.contents = contents
 
-    async def json(self) -> JSON:
+    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
         """Return the JSON version of the contents."""
         return cast(JSON, json.loads(self.contents))
 
