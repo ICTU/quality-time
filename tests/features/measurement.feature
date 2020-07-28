@@ -21,6 +21,18 @@ Feature: measurement
     When the collector measures "100"
     Then the metric status is "target_not_met"
 
+  Scenario: the metric has a percentage scale
+    Given an existing metric with type "scalability"
+    And an existing source with type "performancetest_runner"
+    When the collector measures "50"
+    Then the metric status is "near_target_met"
+
+  Scenario: the metric has a percentage scale and measures total 0
+    Given an existing metric with type "scalability"
+    And an existing source with type "performancetest_runner"
+    When the collector measures "0" with total "0"
+    Then the metric status is "target_met"
+
   Scenario: the metric is measured but an error happens
     Given an existing source
     When the collector encounters a parse error

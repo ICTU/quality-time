@@ -14,14 +14,13 @@ def get_metrics(context):
 
 
 @when('the collector measures "{number}"')
-def measure(context, number):
+@when('the collector measures "{number}" with total "{total}"')
+def measure(context, number, total="100"):
     """Post the measurement."""
     entities = []
     if context.table:
         for row in context.table:
-            entity = dict()
-            for heading in context.table.headings:
-                entity[heading] = row[heading]
+            entity = dict((heading, row[heading]) for heading in context.table.headings)
             entities.append(entity)
     context.post(
         "measurements",
@@ -29,7 +28,7 @@ def measure(context, number):
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total="100", entities=entities)]))
+                     total=total, entities=entities)]))
 
 
 @when("the collector encounters a parse error")
