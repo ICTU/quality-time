@@ -38,7 +38,7 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         """Override because we want to do a post request to login."""
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
         response = await self._session.post(f"{urls[0]}/users/login", data=credentials)
-        self.__token = (await response.json(content_type=None))["token"]
+        self.__token = (await response.json())["token"]
         await self.__get_board()
         await self.__get_lists()
         await self.__get_cards()

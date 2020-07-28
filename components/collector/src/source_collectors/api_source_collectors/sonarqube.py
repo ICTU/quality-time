@@ -23,7 +23,7 @@ class SonarQubeCollector(SourceCollector):
         component = self._parameter("component")
         show_component_url = URL(f"{url}/api/components/show?component={component}")
         response = (await super()._get_source_responses(show_component_url))[0]
-        json = await response.json(content_type=None)
+        json = await response.json()
         if "errors" in json:
             raise SonarQubeException(json["errors"][0]["msg"])
         return await super()._get_source_responses(*urls)
@@ -81,7 +81,7 @@ class SonarQubeViolations(SonarQubeCollector):
         value = 0
         entities: Entities = []
         for response in responses:
-            json = await response.json(content_type=None)
+            json = await response.json()
             value += int(json.get("total", 0))
             entities.extend([await self._entity(issue) for issue in json.get("issues", [])])
         return str(value), "100", entities
@@ -141,7 +141,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         value, _, entities = await super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:
-            measures.extend((await response.json(content_type=None)).get("component", {}).get("measures", []))
+            measures.extend((await response.json()).get("component", {}).get("measures", []))
         return value, str(sum(int(measure["value"]) for measure in measures)), entities
 
 
@@ -309,4 +309,4 @@ class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollecto
         return URL(f"{url}/project/activity?id={component}&branch={branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return isoparse((await response.json(content_type=None))["analyses"][0]["date"])
+        return isoparse((await response.json())["analyses"][0]["date"])

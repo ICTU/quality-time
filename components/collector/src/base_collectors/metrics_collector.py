@@ -18,7 +18,7 @@ async def get(session: aiohttp.ClientSession, api: URL, log: bool = True) -> JSO
     """Get data from the API url."""
     try:
         response = await session.get(api)
-        json = cast(JSON, await response.json(content_type=None))
+        json = cast(JSON, await response.json())
         response.close()
         return json
     except Exception as reason:  # pylint: disable=broad-except

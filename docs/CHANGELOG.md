@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - When opening a tag report containing a subject without a name, the UI would complain that the server is unavailable. Fixes [#1309](https://github.com/ICTU/quality-time/issues/1309).
-- [placeholder]
+- Parse JSON files even if the source web server doesn't set the content-type header to application/json. Fixes [#1325](https://github.com/ICTU/quality-time/issues/1325).
 
 ### Added
 
