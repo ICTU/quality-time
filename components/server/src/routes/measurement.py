@@ -20,7 +20,7 @@ def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
     metric_uuid = measurement["metric_uuid"]
-    if not (metric := latest_metric(database, metric_uuid)):
+    if not (metric := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
     if latest := latest_measurement(database, metric_uuid):
         if latest_successful := latest_successful_measurement(database, metric_uuid):
