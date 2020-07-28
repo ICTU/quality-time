@@ -1,4 +1,5 @@
 [run]
+branch = True
 dynamic_context = test_function
 omit =
     venv/**/*
@@ -10,3 +11,13 @@ omit =
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
+fail_under = 100
+skip_covered = True
+
+[html]
+directory = build/unittest-coverage
+show_contexts = True
+
+[xml]
+output = build/unittest-coverage.xml
+

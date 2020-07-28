@@ -27,6 +27,6 @@ coverage run -m behave "${1:-tests/features}"
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server
-coverage xml -o build/features-coverage.xml
-coverage html --directory build/features-coverage
-coverage report --fail-under=97 --skip-covered
+coverage xml
+coverage html
+coverage report
