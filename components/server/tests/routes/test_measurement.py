@@ -24,7 +24,7 @@ class PostMeasurementTests(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        report = dict(
+        self.report = dict(
             _id="id", report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID2: dict(),
@@ -34,7 +34,7 @@ class PostMeasurementTests(unittest.TestCase):
                             name="name", type="metric_type", scale="count", addition="sum", direction="<", target="0",
                             near_target="10", debt_target=None, accept_debt=False, tags=[],
                             sources={SOURCE_ID: dict(type="junit")})})})
-        self.database.reports.find_one.return_value = report
+        self.database.reports.find_one.return_value = self.report
         self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.datamodels.find_one.return_value = dict(
             _id="", metrics=dict(metric_type=dict(direction="<", scales=["count"])),
@@ -155,6 +155,14 @@ class PostMeasurementTests(unittest.TestCase):
                 status="near_target_met", value="1", target="0", near_target="10", debt_target=None, direction="<"))
         self.assertEqual(new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
+
+    def test_deleted_metric(self, request):
+        """Post an measurement for a deleted metric."""
+        self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
+        self.report["subjects"][SUBJECT_ID]["metrics"] = dict()
+        request.json = dict(metric_uuid=METRIC_ID, sources=[])
+        self.assertEqual(dict(ok=False), post_measurement(self.database))
+        self.database.measurements.update_one.assert_not_called()
 
 
 class SetEntityAttributeTest(unittest.TestCase):

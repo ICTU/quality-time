@@ -28,6 +28,12 @@ Feature: measurement
     When the collector measures "0"
     Then the metric status is "target_met"
 
+  Scenario: the metric is measured but deleted while being measured
+    Given an existing source
+    When the client deletes the metric
+    And the collector measures "100"
+    Then the metric has no measurements
+
   Scenario: the metric is not measured and this is accepted as technical debt (e.g. because there's no source yet)
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"

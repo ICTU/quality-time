@@ -80,7 +80,7 @@ def check_metrics(context):
 @then("the metric has {count} measurements")
 def check_nr_of_measurements(context, count="one"):
     """Check that the metric has the expected number of measurements."""
-    expected_number = dict(one=1, two=2).get(count, count)
+    expected_number = dict(no=0, one=1, two=2).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 
 

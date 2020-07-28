@@ -20,6 +20,8 @@ def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
     metric_uuid = measurement["metric_uuid"]
+    if not (metric := latest_metric(database, metric_uuid)):
+        return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
     if latest := latest_measurement(database, metric_uuid):
         if latest_successful := latest_successful_measurement(database, metric_uuid):
             latest_sources = latest_successful["sources"]
@@ -35,7 +37,6 @@ def post_measurement(database: Database) -> Dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    metric = latest_metric(database, metric_uuid)
     return insert_new_measurement(database, metric, measurement)
 
 
