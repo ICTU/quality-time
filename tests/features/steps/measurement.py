@@ -16,8 +16,13 @@ def get_metrics(context):
 @when('the collector measures "{number}"')
 def measure(context, number):
     """Post the measurement."""
-    entities = [
-        dict(key=row["key"], value=row["value"], notes=row["notes"]) for row in context.table] if context.table else []
+    entities = []
+    if context.table:
+        for row in context.table:
+            entity = dict()
+            for heading in context.table.headings:
+                entity[heading] = row[heading]
+            entities.append(entity)
     context.post(
         "measurements",
         json=dict(
