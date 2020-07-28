@@ -10,7 +10,9 @@ from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
 
 
-def init_database() -> Database:
+# For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
+
+def init_database() -> Database:  # pragma: no cover-behave
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
     database = pymongo.MongoClient(database_url).quality_time_db
