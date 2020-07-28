@@ -15,7 +15,7 @@ class ClocLOC(JSONFileSourceCollector):
         entities = []
         languages_to_ignore = self._parameter("languages_to_ignore")
         for response in responses:
-            for key, value in (await response.json()).items():
+            for key, value in (await response.json(content_type=None)).items():
                 if key not in ("header", "SUM") and not match_string_or_regular_expression(key, languages_to_ignore):
                     loc += value["code"]
                     entities.append(
