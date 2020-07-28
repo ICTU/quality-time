@@ -25,6 +25,8 @@ Feature: measurement
     Given an existing source
     When the collector encounters a parse error
     Then the metric status is "None"
+    When the collector measures "0"
+    Then the metric status is "target_met"
 
   Scenario: the metric is not measured and this is accepted as technical debt (e.g. because there's no source yet)
     When the client changes the metric accept_debt to "True"
@@ -76,5 +78,20 @@ Feature: measurement
     When the collector measures "120"
       | key | story_points |
       | 1   | 100          |
+      | 2   | 20           |
+    Then the metric status is "target_not_met"
+
+  Scenario: an entity marked as false positive disappears on the next measurement
+    Given an existing metric with type "ready_user_story_points"
+    Given an existing source with type "azure_devops"
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    Then the metric status is "target_met"
+    When the client sets the status of entity 1 to "false_positive"
+    Then the metric status is "target_not_met"
+    When the collector measures "20"
+      | key | story_points |
       | 2   | 20           |
     Then the metric status is "target_not_met"
