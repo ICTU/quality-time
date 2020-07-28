@@ -1,10 +1,23 @@
 [run]
+branch = True
+dynamic_context = test_function
 omit =
     venv/**/*
     .venv/**/*
+    /home/travis/virtualenv/*
 
 [report]
 # Regexes for lines to exclude from consideration
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
+fail_under = 100
+skip_covered = True
+
+[html]
+directory = build/unittest-coverage
+show_contexts = True
+
+[xml]
+output = build/unittest-coverage.xml
+

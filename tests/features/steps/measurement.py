@@ -10,21 +10,25 @@ from sseclient import SSEClient
 @when("the collector gets the metrics to measure")
 def get_metrics(context):
     """Get the metrics to measure from the server."""
-    context.metrics = context.get("metrics")
+    context.get("metrics")
 
 
 @when('the collector measures "{number}"')
-def measure(context, number):
+@when('the collector measures "{number}" with total "{total}"')
+def measure(context, number, total="100"):
     """Post the measurement."""
-    entities = [
-        dict(key=row["key"], value=row["value"], notes=row["notes"]) for row in context.table] if context.table else []
+    entities = []
+    if context.table:
+        for row in context.table:
+            entity = dict((heading, row[heading]) for heading in context.table.headings)
+            entities.append(entity)
     context.post(
         "measurements",
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total="100", entities=entities)]))
+                     total=total, entities=entities)]))
 
 
 @when("the collector encounters a parse error")
@@ -68,14 +72,14 @@ def skip_update(context):
 @then("the metric needs to be measured")
 def check_metrics(context):
     """Check that the metric needs to be measured."""
-    assert_true(context.uuid["metric"] in context.metrics.keys())
+    assert_true(context.uuid["metric"] in context.response.json().keys())
 
 
 @then("the metric has one measurement")
 @then("the metric has {count} measurements")
 def check_nr_of_measurements(context, count="one"):
     """Check that the metric has the expected number of measurements."""
-    expected_number = dict(one=1, two=2).get(count, count)
+    expected_number = dict(no=0, one=1, two=2).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 
 

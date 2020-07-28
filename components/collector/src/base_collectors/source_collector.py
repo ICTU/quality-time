@@ -133,7 +133,7 @@ class SourceCollector(ABC):
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
         This method can be overridden by collectors to parse the retrieved sources data."""
         # pylint: disable=assignment-from-none,no-self-use,unused-argument
-        return None, "100", []  # pragma nocover
+        return None, "100", []  # pragma: no cover
 
     async def __safely_parse_landing_url(self, responses: Responses) -> URL:
         """Parse the responses to get the landing url, without failing. This method should not be overridden because
@@ -209,4 +209,4 @@ class SourceUpToDatenessCollector(SourceCollector):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""
-        raise NotImplementedError  # pragma: nocover
+        raise NotImplementedError  # pragma: no cover

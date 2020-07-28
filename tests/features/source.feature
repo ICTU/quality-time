@@ -57,7 +57,7 @@ Feature: source
     Given an existing source with type "gitlab"
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"
-    And the source parameter inactive_days is "7"
+    And the source parameter inactive_days equals "7" and the availability status code equals "None"
 
   Scenario: change source position
     Given an existing source with name "A"
@@ -68,15 +68,25 @@ Feature: source
 
   Scenario: change source parameter
     Given an existing source with type "axecsv"
-    When the client changes the source parameter url to "https://axe.csv"
-    Then the source parameter url is "https://axe.csv"
+    When the client sets the source parameter url to "http://github.com"
+    Then the source parameter url equals "http://github.com" and the availability status code equals "200"
 
   Scenario: change source parameter to the same value
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
-    When the client changes the source parameter url to "https://axe.csv"
-    Then the source parameter url is "https://axe.csv"
+    When the client sets the source parameter url to "https://axe.csv"
+    Then the source parameter url equals "https://axe.csv" and the availability status code equals "None"
 
   Scenario: change source password parameter
-    Given an existing source with type "axecsv"
-    When the client changes the source parameter password to "secret"
-    Then the source parameter password is "this string replaces credentials"
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client sets the source parameter password to "secret"
+    Then the source parameter password equals "this string replaces credentials" and the availability status code equals "-1"
+
+  Scenario: change source token parameter
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client sets the source parameter private_token to "secret"
+    Then the source parameter private_token equals "this string replaces credentials" and the availability status code equals "-1"
+
+  Scenario: when the client clears the url, no availability check is done
+    Given an existing source with type "axecsv" and parameter url "https://axe.csv"
+    When the client sets the source parameter url to "None"
+    Then the source parameter url equals "None" and the availability status code equals "None"

@@ -12,12 +12,15 @@ from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
 
 
+TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
+
+
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
     for report_uuid in database.reports.distinct("report_uuid"):
         report = database.reports.find_one(
             filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
-            sort=[("timestamp", pymongo.DESCENDING)])
+            sort=TIMESTAMP_DESCENDING)
         if report and "deleted" not in report:
             report["_id"] = str(report["_id"])
             yield report
@@ -26,14 +29,15 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
     """Return the latest reports overview."""
     timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp or iso_timestamp()})
-    if overview := database.reports_overviews.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
+    overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
+    if overview:  # pragma: no cover-behave
         overview["_id"] = str(overview["_id"])
     return overview or dict()
 
 
 def latest_report(database: Database, report_uuid: ReportId):
     """Return the latest report for the specified report uuid."""
-    return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
+    return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=TIMESTAMP_DESCENDING)
 
 
 def latest_metric(database: Database, metric_uuid: MetricId):
@@ -76,18 +80,17 @@ def changelog(database: Database, nr_changes: int, **uuids):
     """Return the changelog, narrowed to a single report, subject, metric, or source if so required.
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
-    sort_order = [("timestamp", pymongo.DESCENDING)]
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
     delta_filter: Dict[str, Union[Dict, List]] = {"delta": {"$exists": True}}
     changes: List[Change] = []
     if not uuids:
         changes.extend(database.reports_overviews.find(
-            filter=delta_filter, sort=sort_order, limit=nr_changes*2, projection=projection))
+            filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes*2, projection=projection))
     old_report_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     new_report_delta_filter = {"delta.uuids": {"$in": list(uuids.values())}}
     delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
     changes.extend(database.reports.find(
-        filter=delta_filter, sort=sort_order, limit=nr_changes*2, projection=projection))
+        filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes*2, projection=projection))
     changes = sorted(changes, reverse=True, key=lambda change: change["timestamp"])
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]

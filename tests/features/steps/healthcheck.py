@@ -13,10 +13,10 @@ def healthy_server(context):
 @when("a client checks the server health")
 def get_health(context):
     """Get health status."""
-    context.result = context.get("health")
+    context.get("health")
 
 
 @then("the server answers")
 def check_health(context):
     """Check the server health."""
-    assert_equal({}, context.result)
+    assert_equal({}, context.response.json())

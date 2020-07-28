@@ -18,6 +18,13 @@ Feature: report
     When the client copies the report
     Then the report title is "New report (copy)"
 
+  Scenario: copy report with subject
+    Given an existing report
+    And an existing subject
+    When the client copies the report
+    Then the report title is "New report (copy)"
+    And the report contains 1 subject
+
   Scenario: change report title
     When the client creates a report
     And the client changes the report title to "New title"

@@ -44,7 +44,7 @@ def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> Non
 def check_password(ssha_ldap_salted_password, password):
     """Checks the OpenLDAP tagged digest against the given password"""
 
-    if ssha_ldap_salted_password[:6] != b'{SSHA}':
+    if ssha_ldap_salted_password[:6] != b'{SSHA}':  # pragma: no cover-behave
         logging.warning("Only SSHA LDAP password digest supported!")
         raise exceptions.LDAPInvalidAttributeSyntaxResult
 
@@ -82,7 +82,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
     try:
         ldap_server = Server(ldap_url, get_info=ALL)
         with Connection(ldap_server, user=ldap_lookup_user_dn, password=ldap_lookup_user_password) as lookup_connection:
-            if not lookup_connection.bind():
+            if not lookup_connection.bind():  # pragma: no cover-behave
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
             lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword', 'mail'])
@@ -94,7 +94,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
                 logging.info("LDAP salted password check for %s succeeded", user(username, email))
             else:
                 raise exceptions.LDAPInvalidCredentialsResult
-        else:
+        else:  # pragma: no cover-behave
             with Connection(ldap_server, user=username, password=password, auto_bind=True):
                 logging.info("LDAP bind for %s succeeded", user(username, email))
     except Exception as reason:  # pylint: disable=broad-except

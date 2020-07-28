@@ -21,7 +21,7 @@ class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-meth
         for script in BeautifulSoup(await response.text(), "html.parser").find_all("script", type="text/javascript"):
             if text in script.string:
                 return str(script.string)
-        return ""  # pragma: nocover
+        return ""  # pragma: no cover
 
 
 class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method

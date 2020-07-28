@@ -1,6 +1,7 @@
 """Step implementations for changelogs."""
 
 from asserts import assert_equal
+from behave import then
 
 
 @then("the {item} changelog reads")

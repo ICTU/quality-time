@@ -9,7 +9,7 @@ from behave import then, when
 @when("the client downloads the report as pdf")
 def download_report_as_pdf(context):
     """Download the report as pdf."""
-    context.response = context.get(f"report/{context.uuid['report']}/pdf")
+    context.get(f"report/{context.uuid['report']}/pdf")
 
 
 @when("the client imports a report")
