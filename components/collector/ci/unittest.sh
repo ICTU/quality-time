@@ -5,7 +5,8 @@
 # Turn off dev mode until aiohttp gets fixed or there's a way to suppress warnings in third party code
 # export PYTHONDEVMODE=1
 export PYTHONPATH=src:$PYTHONPATH
-coverage run --omit=*venv/*,/home/travis/virtualenv/* --branch -m unittest --quiet
+export COVERAGE_RCFILE=../../.coveragerc
+coverage run --branch -m unittest --quiet
 coverage xml -o build/unittest-coverage.xml
-coverage html --directory build/unittest-coverage
-coverage report --fail-under=100 --skip-covered
+coverage html --directory build/unittest-coverage --show-contexts
+coverage report --skip-covered --fail-under=100

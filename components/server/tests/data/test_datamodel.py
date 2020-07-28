@@ -57,7 +57,7 @@ class DataModelTest(DataModelTestCase):
             for subject in self.data_model["subjects"].values():
                 if metric in subject["metrics"]:
                     break
-            else:  # pragma: nocover
+            else:  # pragma: no cover
                 self.fail(f"Metric {metric} not listed in any subject.")
 
     def test_metric_direction(self):
@@ -85,7 +85,7 @@ class DataModelTest(DataModelTestCase):
             for metric in self.data_model["metrics"].values():
                 if scale in metric.get("scales", []):
                     break
-            else:  # pragma: nocover
+            else:  # pragma: no cover
                 self.fail(f"Scale {scale} not used for any metric.")
 
 

@@ -1,7 +1,9 @@
 [run]
+dynamic_context = test_function
 omit =
     venv/**/*
     .venv/**/*
+    /home/travis/virtualenv/*
 
 [report]
 # Regexes for lines to exclude from consideration
