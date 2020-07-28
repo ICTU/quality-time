@@ -12,7 +12,7 @@ class PipDependencies(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:
-            installed_dependencies.extend(await response.json())
+            installed_dependencies.extend(await response.json(content_type=None))
         entities: Entities = [
             dict(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',

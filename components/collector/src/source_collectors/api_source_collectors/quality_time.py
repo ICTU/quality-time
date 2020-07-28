@@ -21,7 +21,7 @@ class QualityTimeCollector(SourceCollector):
     async def _get_reports(self, response: Response) -> List[Dict[str, Any]]:
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
-        reports = list((await response.json())["reports"])
+        reports = list((await response.json(content_type=None))["reports"])
         reports = [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
             if report_titles_or_ids else reports
         if not reports:

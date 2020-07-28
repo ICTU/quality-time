@@ -13,4 +13,4 @@ class JenkinsPluginSourceUpToDatenessCollector(SourceUpToDatenessCollector):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return datetime.fromtimestamp(float((await response.json())["timestamp"]) / 1000.)
+        return datetime.fromtimestamp(float((await response.json(content_type=None))["timestamp"]) / 1000.)

@@ -30,7 +30,7 @@ class AzureDevopsIssues(SourceCollector):
         """Override because we need to do a post request and need to separately get the entities."""
         auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
         response = await self._session.post(urls[0], auth=auth, json=dict(query=self._parameter("wiql")))
-        ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
+        ids = [str(work_item["id"]) for work_item in (await response.json(content_type=None)).get("workItems", [])]
         if not ids:
             return [response]
         ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
@@ -123,7 +123,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse((await response.json())["value"][0]["committer"]["date"])
+        return parse((await response.json(content_type=None))["value"][0]["committer"]["date"])
 
 
 class AzureDevopsTests(SourceCollector):

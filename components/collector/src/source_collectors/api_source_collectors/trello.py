@@ -82,7 +82,7 @@ class TrelloSourceUpToDateness(TrelloBase, SourceUpToDatenessCollector):
     """Collector to measure how up-to-date a Trello board is."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        json = await response.json()
+        json = await response.json(content_type=None)
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         dates = [json["dateLastActivity"]] + \

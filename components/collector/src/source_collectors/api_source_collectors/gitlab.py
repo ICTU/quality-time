@@ -53,7 +53,7 @@ class GitLabJobsBase(GitLabBase):
         jobs: List[Job] = []
         jobs_seen: Set[Tuple[str, str, str]] = set()
         for response in responses:
-            for job in await response.json():
+            for job in await response.json(content_type=None):
                 job_fingerprint = job["name"], job["stage"], job["ref"]
                 if job_fingerprint in jobs_seen:
                     continue
@@ -134,7 +134,7 @@ class GitLabSourceUpToDateness(GitLabBase):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         commit_responses = responses[1:]
-        value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
+        value = str(days_ago(max([parse((await response.json(content_type=None))["committed_date"]) for response in commit_responses])))
         return value, "100", []
 
 

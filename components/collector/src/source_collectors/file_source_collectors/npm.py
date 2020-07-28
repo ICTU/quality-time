@@ -12,7 +12,7 @@ class NpmDependencies(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         installed_dependencies: Dict[str, Dict[str, str]] = {}
         for response in responses:
-            installed_dependencies.update(await response.json())
+            installed_dependencies.update(await response.json(content_type=None))
         entities: Entities = [
             dict(
                 key=f'{dependency}@{versions.get("current", "?")}', name=dependency,
