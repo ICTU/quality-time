@@ -42,9 +42,18 @@ Feature: subject
     When the client changes the subject name to "Subject"
     Then the subject name is "Subject"
 
-  Scenario: change subject position
+  Scenario: change subject position to first
     Given an existing subject with name "A"
     And an existing subject with name "B"
+    And an existing subject with name "C"
     When the client changes the subject position to "first"
-    Then the report's first subject has name "B"
-    And the report's last subject has name "A"
+    Then the report's first subject has name "C"
+    And the report's last subject has name "B"
+
+  Scenario: change subject position to last
+    Given an existing subject with name "A"
+    And an existing subject with name "B"
+    And an existing subject with name "C"
+    When the client changes the subject position to "last"
+    Then the report's first subject has name "A"
+    And the report's last subject has name "C"
