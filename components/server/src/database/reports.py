@@ -35,9 +35,9 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     return overview or dict()
 
 
-def latest_report(database: Database, report_uuid: ReportId):
-    """Return the latest report for the specified report uuid."""
-    return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=TIMESTAMP_DESCENDING)
+def report_exists(database: Database, report_uuid: ReportId):
+    """Return whether a report with the specified report uuid exists."""
+    return report_uuid in database.reports.distinct("report_uuid")
 
 
 def latest_metric(database: Database, metric_uuid: MetricId):
@@ -52,7 +52,9 @@ def latest_metric(database: Database, metric_uuid: MetricId):
 
 def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_reports_for_insertion(*reports)
+    _prepare_documents_for_insertion(*reports, latest=True)
+    report_uuids = [report["report_uuid"] for report in reports]
+    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "$exists": "last"}, {"$unset": "last"})
     if len(reports) > 1:
         database.reports.insert_many(reports, ordered=False)
     else:
@@ -62,18 +64,20 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
 
 def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    _prepare_reports_for_insertion(reports_overview)
+    _prepare_documents_for_insertion(reports_overview)
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
 
 
-def _prepare_reports_for_insertion(*reports) -> None:
-    """Prepare the report(s) for insertion in the reports collection by removing any ids and setting the timestamp."""
+def _prepare_documents_for_insertion(*documents, **extra_attributes) -> None:
+    """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    for report in reports:
-        if "_id" in report:
-            del report["_id"]
-        report["timestamp"] = now
+    for document in documents:
+        if "_id" in document:
+            del document["_id"]
+        document["timestamp"] = now
+        for key, value in extra_attributes.items():
+            document[key] = value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
