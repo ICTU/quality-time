@@ -52,9 +52,10 @@ def latest_metric(database: Database, metric_uuid: MetricId):
 
 def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_documents_for_insertion(*reports, latest=True)
+    _prepare_documents_for_insertion(*reports, last=True)
     report_uuids = [report["report_uuid"] for report in reports]
-    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "$exists": "last"}, {"$unset": "last"})
+    database.reports.update_many(
+        {"report_uuid": {"$in": report_uuids}, "last": {"$exists": True}}, {"$unset": {"last": ""}})
     if len(reports) > 1:
         database.reports.insert_many(reports, ordered=False)
     else:
