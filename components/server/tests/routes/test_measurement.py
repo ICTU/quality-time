@@ -34,8 +34,7 @@ class PostMeasurementTests(unittest.TestCase):
                             name="name", type="metric_type", scale="count", addition="sum", direction="<", target="0",
                             near_target="10", debt_target=None, accept_debt=False, tags=[],
                             sources={SOURCE_ID: dict(type="junit")})})})
-        self.database.reports.find_one.return_value = self.report
-        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find.return_value = [self.report]
         self.database.datamodels.find_one.return_value = dict(
             _id="", metrics=dict(metric_type=dict(direction="<", scales=["count"])),
             sources=dict(junit=dict(entities=dict())))
@@ -184,8 +183,7 @@ class SetEntityAttributeTest(unittest.TestCase):
 
         database.measurements.insert_one = insert_one
         database.reports = Mock()
-        database.reports.distinct.return_value = [REPORT_ID]
-        database.reports.find_one.return_value = create_report()
+        database.reports.find.return_value = [create_report()]
         database.datamodels = Mock()
         database.datamodels.find_one.return_value = dict(
             _id=123, metrics=dict(metric_type=dict(direction="<", scales=["count"])),

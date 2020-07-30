@@ -29,8 +29,7 @@ class PostMetricAttributeTest(unittest.TestCase):
                             sources={SOURCE_ID: dict()}),
                         METRIC_ID2: dict(name="name2", type="old_type")})})
         self.database = Mock()
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
         self.database.datamodels.find_one.return_value = dict(
@@ -229,8 +228,8 @@ class MetricTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report = create_report()
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
         self.database.datamodels.find_one.return_value = dict(
@@ -280,7 +279,7 @@ class MetricTest(unittest.TestCase):
         target_subject = dict(name="Target", metrics={})
         target_report = dict(
             _id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject})
-        self.database.reports.find_one.side_effect = [self.report, target_report]
+        self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))

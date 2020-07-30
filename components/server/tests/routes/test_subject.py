@@ -18,8 +18,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.report = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={SUBJECT_ID: dict(name="subject1"), SUBJECT_ID2: dict(type="subject_type")})
-        self.database.reports.find_one.return_value = self.report
-        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.datamodels.find_one.return_value = dict(
             _id="id", subjects=dict(subject_type=dict(name="subject2")))
@@ -103,8 +102,8 @@ class SubjectTest(unittest.TestCase):
         self.database = Mock()
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report = create_report()
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
@@ -145,7 +144,7 @@ class SubjectTest(unittest.TestCase):
         """Test that a subject can be moved to another report."""
         subject = self.report["subjects"][SUBJECT_ID]
         target_report = dict(_id="target_report", title="Target", report_uuid=REPORT_ID2, subjects={})
-        self.database.reports.find_one.side_effect = [self.report, target_report]
+        self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_subject(SUBJECT_ID, REPORT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"])
         self.assertEqual((SUBJECT_ID, subject), next(iter(target_report["subjects"].items())))

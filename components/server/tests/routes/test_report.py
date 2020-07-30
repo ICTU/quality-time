@@ -21,8 +21,7 @@ class PostReportAttributeTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.report = dict(_id="id", report_uuid=REPORT_ID, title="Title")
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find.return_value = [self.report]
         self.database.sessions.find_one.return_value = JOHN
         self.database.datamodels.find_one.return_value = {}
         self.database.measurements.find.return_value = []
@@ -58,8 +57,8 @@ class ReportTest(unittest.TestCase):
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(metric_type=dict(name="Metric type")),
             sources=dict(source_type=dict(name="Source type")))
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report = create_report()
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
 
     def test_add_report(self):
@@ -130,7 +129,7 @@ class ReportTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = dict(
             _id="id", sources={}, subjects=dict(subject_type=dict(name="Subject")),
             metrics=dict(metric_type=dict(default_scale="count")))
-        self.database.reports.find_one.return_value = dict(
+        self.database.reports.find.return_value = [dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={
                 "subject_without_metrics": dict(metrics=dict()),
@@ -138,7 +137,7 @@ class ReportTest(unittest.TestCase):
                     type="subject_type",
                     metrics=dict(
                         metric_with_tag=dict(type="metric_type", tags=["tag"]),
-                        metric_without_tag=dict(type="metric_type", tags=["other tag"])))})
+                        metric_without_tag=dict(type="metric_type", tags=["other tag"])))})]
         self.assertDictEqual(
             dict(
                 summary=dict(red=0, green=0, yellow=0, grey=0, white=1),

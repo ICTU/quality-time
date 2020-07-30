@@ -17,13 +17,11 @@ TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
-    for report_uuid in database.reports.distinct("report_uuid"):
-        report = database.reports.find_one(
-            filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
-            sort=TIMESTAMP_DESCENDING)
-        if report and "deleted" not in report:
-            report["_id"] = str(report["_id"])
-            yield report
+    for report in database.reports.find(
+            {"last": True, "deleted": {"$exists": False},
+             "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}}):
+        report["_id"] = str(report["_id"])
+        yield report
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
