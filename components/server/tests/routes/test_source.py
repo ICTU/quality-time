@@ -52,8 +52,7 @@ class PostSourceAttributeTest(SourceTestCase):
                     metrics={
                         METRIC_ID: dict(
                             name="Metric", type="metric_type", sources=self.sources)})})
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find.return_value = [self.report]
 
     def test_name(self, request):
         """Test that the source name can be changed."""
@@ -115,8 +114,7 @@ class PostSourceParameterTest(SourceTestCase):
                 SUBJECT_ID2: dict(
                     name="Subject 2",
                     metrics={METRIC_ID2: dict(name="Metric 2", type="metric_type", sources={})})})
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report
+        self.database.reports.find.return_value = [self.report]
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
     def assert_url_check(self, response, status_code: int = None, status_code_reason: str = None):
@@ -273,8 +271,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                     name="Subject 3",
                     metrics={
                         METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)})})
-        self.database.reports.distinct.return_value = [REPORT_ID, REPORT_ID2]
-        self.database.reports.find_one.side_effect = [self.report, self.report2]
+        self.database.reports.find.return_value = [self.report, self.report2]
 
     def assert_value(self, value_sources_mapping):
         """Assert that the parameters have the correct value."""
@@ -372,8 +369,8 @@ class SourceTest(SourceTestCase):
 
     def setUp(self):
         super().setUp()
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = self.report = create_report()
+        self.report = create_report()
+        self.database.reports.find.return_value = [self.report]
         self.target_metric_name = "Target metric"
 
     def test_add_source(self):
@@ -439,7 +436,7 @@ class SourceTest(SourceTestCase):
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         target_report = dict(
             _id="target_report", title="Target report", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject})
-        self.database.reports.find_one.side_effect = [self.report, target_report]
+        self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))

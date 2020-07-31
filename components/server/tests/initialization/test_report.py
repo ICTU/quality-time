@@ -13,7 +13,7 @@ class ReportInitTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.database = Mock()
-        self.database.reports.find_one.return_value = None
+        self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="name", description="")),
@@ -42,7 +42,7 @@ class ReportInitTest(unittest.TestCase):
 
     def test_import_is_skipped(self):
         """Test that a report isn't imported when it's already in the database."""
-        self.database.reports.find_one.return_value = True
+        self.database.reports.distinct.return_value = ["id"]
         self.import_report(self.report_json)
         self.database.reports.insert.assert_not_called()
 

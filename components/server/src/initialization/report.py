@@ -7,7 +7,7 @@ import pathlib
 from pymongo.database import Database
 
 from database.datamodels import default_subject_attributes, default_metric_attributes, default_source_parameters
-from database.reports import latest_report, insert_new_report, latest_reports_overview, insert_new_reports_overview
+from database.reports import insert_new_report, latest_reports_overview, insert_new_reports_overview, report_exists
 from server_utilities.functions import uuid
 
 
@@ -24,7 +24,7 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
     """Read the report and store it in the database."""
     with filename.open() as json_report:
         imported_report = json.load(json_report)
-    if latest_report(database, imported_report["report_uuid"]):
+    if report_exists(database, imported_report["report_uuid"]):
         logging.info("Skipping import of %s; it already exists", filename)
         return
     import_json_report(database, imported_report)

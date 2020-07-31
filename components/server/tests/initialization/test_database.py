@@ -16,6 +16,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.mongo_client = Mock()
         self.database = Mock()
         self.database.reports.find.return_value = []
+        self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = None
         self.database.reports_overviews.find_one.return_value = None
         self.database.reports.count_documents.return_value = 0
@@ -58,3 +59,10 @@ class DatabaseInitTest(unittest.TestCase):
             self.init_database('{"change": "yes"}', False)
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert.assert_called_once()
+
+    def test_add_last_flag_to_reports(self):
+        """Test that the last flag is added to reports."""
+        self.database.reports.distinct.return_value = ["report_uuid"]
+        self.database.reports.find_one.return_value = {"_id": "1"}
+        self.init_database("{}")
+        self.database.reports.update_many.assert_called_once()

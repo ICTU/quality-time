@@ -68,17 +68,21 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
                         f"'{source.subject_name}' in report '{source.report_name}' to subject " \
                         f"'{target.subject_name}' in report '{target.report_name}'."
     target.subject["metrics"][metric_uuid] = source.metric
+    reports_to_insert = [target.report]
     if target.report_uuid == source.report_uuid:
+        # Metric is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][metric_uuid]
         target_uuids = [target.report_uuid, source.subject_uuid, target_subject_uuid, metric_uuid]
     else:
+        # Metric is moved from one report to another, update both
+        reports_to_insert.append(source.report)
         del source.subject["metrics"][metric_uuid]
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, metric_uuid], email=user["email"],
             description=delta_description)
         target_uuids = [target.report_uuid, target_subject_uuid, metric_uuid]
     target.report["delta"] = dict(uuids=target_uuids, email=user["email"], description=delta_description)
-    return insert_new_report(database, source.report, target.report)
+    return insert_new_report(database, *reports_to_insert)
 
 
 @bottle.delete("/api/v3/metric/<metric_uuid>")

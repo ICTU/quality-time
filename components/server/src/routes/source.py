@@ -66,6 +66,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     target.metric["sources"][source_uuid] = source.source
     target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = \
         [target.report_uuid]
+    reports_to_insert = [target.report]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
         del target.report["subjects"][source.subject_uuid]["metrics"][source.metric_uuid]["sources"][source_uuid]
@@ -75,6 +76,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         target_uuids.extend([target.subject_uuid, source.metric_uuid])
     else:
         # Source is moved from one report to another, update both
+        reports_to_insert.append(source.report)
         del source.metric["sources"][source_uuid]
         source.report["delta"] = dict(
             uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid], email=user["email"],
@@ -82,7 +84,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         target_uuids.append(target.subject_uuid)
     target.report["delta"] = dict(
         uuids=target_uuids + [target_metric_uuid, source_uuid], email=user["email"], description=delta_description)
-    return insert_new_report(database, source.report, target.report)
+    return insert_new_report(database, *reports_to_insert)
 
 
 @bottle.delete("/api/v3/source/<source_uuid>")

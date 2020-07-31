@@ -25,10 +25,23 @@ def init_database() -> Database:  # pragma: no cover-behave
     initialize_reports_overview(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
+    add_last_flag_to_reports(database)
     return database
 
 
 def create_indexes(database: Database) -> None:
     """Create any indexes."""
+    database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
     database.measurements.create_index("start")
+
+
+def add_last_flag_to_reports(database: Database) -> None:
+    """Add last flag to all reports."""
+    # Introduced when the most recent version of Quality-time was 2.5.2.
+    report_ids = []
+    for report_uuid in database.reports.distinct("report_uuid"):
+        report = database.reports.find_one(
+            filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
+        report_ids.append(report["_id"])
+    database.reports.update_many({"_id": {"$in": report_ids}}, {"$set": {"last": True}})

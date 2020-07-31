@@ -12,18 +12,20 @@ from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
 
 
+# Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
+# Filters:
+DOES_EXIST = {"$exists": True}
+DOES_NOT_EXIST = {"$exists": False}
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
-    for report_uuid in database.reports.distinct("report_uuid"):
-        report = database.reports.find_one(
-            filter={"report_uuid": report_uuid, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}},
-            sort=TIMESTAMP_DESCENDING)
-        if report and "deleted" not in report:
-            report["_id"] = str(report["_id"])
-            yield report
+    for report in database.reports.find(
+            {"last": True, "deleted": DOES_NOT_EXIST,
+             "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}}):
+        report["_id"] = str(report["_id"])
+        yield report
 
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
@@ -35,9 +37,9 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     return overview or dict()
 
 
-def latest_report(database: Database, report_uuid: ReportId):
-    """Return the latest report for the specified report uuid."""
-    return database.reports.find_one(filter={"report_uuid": report_uuid}, sort=TIMESTAMP_DESCENDING)
+def report_exists(database: Database, report_uuid: ReportId):
+    """Return whether a report with the specified report uuid exists."""
+    return report_uuid in database.reports.distinct("report_uuid")
 
 
 def latest_metric(database: Database, metric_uuid: MetricId):
@@ -52,7 +54,9 @@ def latest_metric(database: Database, metric_uuid: MetricId):
 
 def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_reports_for_insertion(*reports)
+    _prepare_documents_for_insertion(*reports, last=True)
+    report_uuids = [report["report_uuid"] for report in reports]
+    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
     if len(reports) > 1:
         database.reports.insert_many(reports, ordered=False)
     else:
@@ -62,18 +66,20 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
 
 def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    _prepare_reports_for_insertion(reports_overview)
+    _prepare_documents_for_insertion(reports_overview)
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
 
 
-def _prepare_reports_for_insertion(*reports) -> None:
-    """Prepare the report(s) for insertion in the reports collection by removing any ids and setting the timestamp."""
+def _prepare_documents_for_insertion(*documents, **extra_attributes) -> None:
+    """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    for report in reports:
-        if "_id" in report:
-            del report["_id"]
-        report["timestamp"] = now
+    for document in documents:
+        if "_id" in document:
+            del document["_id"]
+        document["timestamp"] = now
+        for key, value in extra_attributes.items():
+            document[key] = value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
@@ -81,7 +87,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
-    delta_filter: Dict[str, Union[Dict, List]] = {"delta": {"$exists": True}}
+    delta_filter: Dict[str, Union[Dict, List]] = {"delta": DOES_EXIST}
     changes: List[Change] = []
     if not uuids:
         changes.extend(database.reports_overviews.find(
