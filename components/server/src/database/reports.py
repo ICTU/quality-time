@@ -12,13 +12,17 @@ from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 from .datamodels import latest_datamodel
 
 
+# Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
+# Filters:
+DOES_EXIST = {"$exists": True}
+DOES_NOT_EXIST = {"$exists": False}
 
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
     for report in database.reports.find(
-            {"last": True, "deleted": {"$exists": False},
+            {"last": True, "deleted": DOES_NOT_EXIST,
              "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}}):
         report["_id"] = str(report["_id"])
         yield report
@@ -52,8 +56,7 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
     _prepare_documents_for_insertion(*reports, last=True)
     report_uuids = [report["report_uuid"] for report in reports]
-    database.reports.update_many(
-        {"report_uuid": {"$in": report_uuids}, "last": {"$exists": True}}, {"$unset": {"last": ""}})
+    database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
     if len(reports) > 1:
         database.reports.insert_many(reports, ordered=False)
     else:
@@ -84,7 +87,7 @@ def changelog(database: Database, nr_changes: int, **uuids):
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
     metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
-    delta_filter: Dict[str, Union[Dict, List]] = {"delta": {"$exists": True}}
+    delta_filter: Dict[str, Union[Dict, List]] = {"delta": DOES_EXIST}
     changes: List[Change] = []
     if not uuids:
         changes.extend(database.reports_overviews.find(
