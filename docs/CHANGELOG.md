@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- Version 2 of the *Quality-time* API has been removed.
+- Version 2 of the *Quality-time* API, which was deprecated since version 2.4.0, has been removed.
 - Remove code to fix the database structure. If you are migrating from a *Quality-time* version < 2.0.0 you need to install at least one *Quality-time* version >= 2.0.0 and < 3.0.0.
 
 ## [2.5.2] - [2020-07-10]
@@ -68,7 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add [cloc](https://github.com/AlDanial/cloc) as source for the 'size' metric. As opposed to SonarQube, cloc makes it easy to exclude certain programming languages from the size measurement. Closes [#460](https://github.com/ICTU/quality-time/issues/460).
 - When using Azure DevOps as source for the 'tests' metric, allow for filtering tests by test run name and show the test runs as detail information. Closes [#1215](https://github.com/ICTU/quality-time/issues/1215).
-- Add a button to the menubar to scroll to the dashboard. Closes [#1231](https://github.com/ICTU/quality-time/issues/1231).
+- Add a button to the menu bar to scroll to the dashboard. Closes [#1231](https://github.com/ICTU/quality-time/issues/1231).
 - Add OWASP Dependency Check as source for the 'dependencies' metric. Closes [#1239](https://github.com/ICTU/quality-time/issues/1239).
 
 ### Changed
@@ -81,8 +81,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Columns with numbers in the source entity views were incorrectly sorted as text. Fixes [#1196](https://github.com/ICTU/quality-time/issues/1196).
 - Collecting unmerged branches using Azure DevOps as source would fail if the project name contained spaces and the user did not specify a repository. *Quality-time* would fail to find the default repository because it would use the URL-quoted project name to look for it, instead of the unquoted project name. Fixes [#1224](https://github.com/ICTU/quality-time/issues/1224).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab didn't work. Fixes [#1230](https://github.com/ICTU/quality-time/issues/1230).
-- When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to wont't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
-- The `git clone` URL in the [README.md](README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
+- When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to won't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
+- The `git clone` URL in the [README.md](../README.md) required people to have a public SSH key added to their GitHub account. Replaced with a https URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
 - When using the OWASP Dependency Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
 - The trend sparkline graphs, showing the trend over the last week, would always use the full width, even when there was less than a week of data. Fixes [#1241](https://github.com/ICTU/quality-time/issues/1241).
 
@@ -95,7 +95,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - The 'source up-to-dateness' metric could report a negative number of days ago due to differences in timezone or system clock between *Quality-time* and the source. Fixes [#1217](https://github.com/ICTU/quality-time/issues/1213).
-- Reenable environment variables to set a proxy to be used by the collector. See the [deployment documentation](DEPLOY.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
+- Re-enable environment variables to set a proxy to be used by the collector. See the [deployment documentation](DEPLOY.md). Fixes [#1217](https://github.com/ICTU/quality-time/issues/1217).
 
 ## [2.3.1] - [2020-06-02]
 
@@ -143,7 +143,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Trend graphs show the target, near target, and technical debt target (if technical debt is accepted) as background colors. Note that the background colors only become visible after a metric's measurement value changes or one of its target values is edited. Closes [#1087](https://github.com/ICTU/quality-time/issues/1087).
+- Trend graphs show the target, near target, and technical debt target (if technical debt is accepted) as background colors. Note that the background colors only become visible after the measurement value of a metric changes or one of its target values is edited. Closes [#1087](https://github.com/ICTU/quality-time/issues/1087).
 
 ### Changed
 
@@ -223,7 +223,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - The new rendering component (see "Changed") shows the date in the correct format. Fixes [#1010](https://github.com/ICTU/quality-time/issues/1010).
-- Show tags added by users in the tag drowdown so they don't have to keep typing added tags. Fixes [#1041](https://github.com/ICTU/quality-time/issues/1041).
+- Show tags added by users in the tag dropdown so they don't have to keep typing added tags. Fixes [#1041](https://github.com/ICTU/quality-time/issues/1041).
 
 ### Removed
 
@@ -649,7 +649,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 - When using OWASP ZAP reports as source for the security warnings metric, report on the number of "instances" instead of "alert items". Fixes [#467](https://github.com/ICTU/quality-time/issues/467).
 - Don't wait 15 minutes before trying to access a requested Checkmarx SAST XML report, but try again after one minute. Partial fix for [#468](https://github.com/ICTU/quality-time/issues/468).
-- The performancetest-runner now uses "scalability" instead of "ramp-up" as name for the scalability measurement. Closes [#480](https://github.com/ICTU/quality-time/issues/480).
+- The Performancetest-runner now uses "scalability" instead of "ramp-up" as name for the scalability measurement. Closes [#480](https://github.com/ICTU/quality-time/issues/480).
 - OJAudit XML files may contain duplicate violations (i.e. same message, same severity, same model, same location, same everything) which led to problems in the user interface. Fixed by merging multiple duplication violations and adding a count field to the violations. Fixes [#515](https://github.com/ICTU/quality-time/issues/515).
 - Use Jenkins job timestamp for the source up-to-dateness metric if the Jenkins test report doesn't contain timestamps in the test report itself. Fixes [#517](https://github.com/ICTU/quality-time/issues/517).
 - Stop sorting metrics when the user adds a new metric to prevent it from jumping around due to the sorting. Fixes [#518](https://github.com/ICTU/quality-time/issues/518).
@@ -691,8 +691,8 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- Metric for performancetest duration added. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
-- Metric for performancetest stability added. Closes [#433](https://github.com/ICTU/quality-time/issues/433).
+- Metric for performance test duration added. Closes [#401](https://github.com/ICTU/quality-time/issues/401).
+- Metric for performance test stability added. Closes [#433](https://github.com/ICTU/quality-time/issues/433).
 - Metric for performance scalability added. Closes [#434](https://github.com/ICTU/quality-time/issues/434).
 - [Performancetest-runner](https://github.com/ICTU/performancetest-runner) reports can now be used as metric source for the tests and failed tests metrics. Closes [#402](https://github.com/ICTU/quality-time/issues/402).
 

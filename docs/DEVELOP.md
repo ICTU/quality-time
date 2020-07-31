@@ -176,7 +176,7 @@ Currently, the subclasses of `SourceCollector` are grouped into three modules:
 
 1. [API collectors](../components/collector/src/source_collectors/api_source_collectors) consume an API, e.g. the GitLab API or Azure DevOps API, to collect data,
 1. [file collectors](../components/collector/src/source_collectors/file_source_collectors) parse files, e.g. XML or JSON, to collect data,
-1. [local collectors](../components/collector/src/source_collector/local_source_collectors) don't need remote access because they e.g. use a fixed value specified by the user as measurement or the time since a specific date.
+1. [local collectors](../components/collector/src/source_collectors/local_source_collectors) don't need remote access because they e.g. use a fixed value specified by the user as measurement or the time since a specific date.
 
 Decide on the type of collector you're creating and add a file to the correct module. In the file, create a subclass of `SourceCollector` for each metric that the source can support. For example, if the new source `cloc` supports the metric LOC (size) and the metric source-uo-to-dateness, you would create two subclasses of `SourceCollector`: a `ClocLOC` class a `ClocSourceUpToDateness` class.
 
