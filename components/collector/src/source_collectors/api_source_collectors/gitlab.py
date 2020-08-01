@@ -43,8 +43,7 @@ class GitLabJobsBase(GitLabBase):
         entities = [
             dict(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
-                stage=job["stage"], build_date=str((build_date := parse(job["created_at"])).date()),
-                build_age=str(days_ago(build_date)))
+                stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
             for job in jobs]
         return str(len(entities)), "100", entities
 

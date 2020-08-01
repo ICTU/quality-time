@@ -21,12 +21,11 @@ class GitLabTestCase(SourceCollectorTestCase):
                  web_url="https://gitlab/job1", ref="master"),
             dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
                  web_url="https://gitlab/job2", ref="develop")]
-        build_age = str((datetime.now(timezone.utc) - datetime(2019, 3, 31, 19, 50, 39, 927, tzinfo=timezone.utc)).days)
         self.expected_entities = [
             dict(key="1", name="job1", stage="stage", branch="master", url="https://gitlab/job1",
-                 build_age=build_age, build_date="2019-03-31", build_status="failed"),
+                 build_date="2019-03-31", build_status="failed"),
             dict(key="2", name="job2", stage="stage", branch="develop", url="https://gitlab/job2",
-                 build_age=build_age, build_date="2019-03-31", build_status="failed")]
+                 build_date="2019-03-31", build_status="failed")]
 
 
 class CommonGitLabJobsTestsMixin:
@@ -151,9 +150,8 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
                  commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
             dict(name="merged_branch", default=False, merged=True)]
         response = await self.collect(metric, get_request_json_return_value=gitlab_json)
-        expected_age = str((datetime.now(timezone.utc) - datetime(2019, 4, 2, 9, 33, 4, tzinfo=timezone.utc)).days)
         expected_entities = [
-            dict(key="unmerged_branch", name="unmerged_branch", commit_age=expected_age, commit_date="2019-04-02",
+            dict(key="unmerged_branch", name="unmerged_branch", commit_date="2019-04-02",
                  url="https://gitlab/namespace/project/-/tree/unmerged_branch")]
         self.assert_measurement(
             response, value="1", entities=expected_entities, landing_url="https://gitlab/namespace/project/-/branches")

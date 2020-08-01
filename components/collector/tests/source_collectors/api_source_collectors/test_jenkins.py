@@ -1,7 +1,5 @@
 """Unit tests for the Jenkins source."""
 
-from datetime import datetime
-
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -13,7 +11,6 @@ class JenkinsTestCase(SourceCollectorTestCase):
         self.sources = dict(
             source_id=dict(type="jenkins", parameters=dict(url="https://jenkins/", failure_type=["Red"])))
         self.builds = [dict(result="red", timestamp="1552686540953")]
-        self.build_age = str((datetime.now() - datetime.utcfromtimestamp(1552686540953 / 1000.)).days)
         self.job_url = "https://job"
         self.job2_url = "https://job2"
 
@@ -43,9 +40,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         jenkins_json = dict(
             jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
         response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        expected_entities = [
-            dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url=self.job_url)]
+        expected_entities = [dict(build_date="2019-03-15", build_status="Red", key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     async def test_ignore_jobs(self):
@@ -55,9 +50,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds),
                   dict(name="job2", url=self.job2_url, buildable=True, color="red", builds=self.builds)])
         response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        expected_entities = [
-            dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url=self.job_url)]
+        expected_entities = [dict(build_date="2019-03-15", build_status="Red", key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     async def test_ignore_jobs_by_regular_expression(self):
@@ -67,9 +60,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds),
                   dict(name="job2", url=self.job2_url, buildable=True, color="red", builds=self.builds)])
         response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
-        expected_entities = [
-            dict(build_date="2019-03-15", build_age=self.build_age, build_status="Red", key="job", name="job",
-                 url=self.job_url)]
+        expected_entities = [dict(build_date="2019-03-15", build_status="Red", key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, entities=expected_entities)
 
     async def test_no_builds(self):

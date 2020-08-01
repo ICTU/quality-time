@@ -1,5 +1,6 @@
 """Jira metric collector."""
 
+from datetime import datetime
 from typing import cast, Dict, List, Optional, Tuple, Union
 
 from dateutil.parser import parse
@@ -67,21 +68,21 @@ class JiraManualTestExecution(JiraIssues):
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
-        entity["days_untested"] = str(self.__days_untested(issue))
+        entity["last_test_date"] = str(self.__last_test_datetime(issue).date())
         entity["desired_test_frequency"] = str(self.__desired_test_execution_frequency(issue))
         return entity
 
     def _include_issue(self, issue: Dict) -> bool:
-        return self.__days_untested(issue) > self.__desired_test_execution_frequency(issue)
+        return days_ago(self.__last_test_datetime(issue)) > self.__desired_test_execution_frequency(issue)
 
     def _fields(self) -> str:
         return super()._fields() + ",comment"
 
     @staticmethod
-    def __days_untested(issue: Dict) -> int:
-        """Return the days this issue has not been tested."""
+    def __last_test_datetime(issue: Dict) -> datetime:
+        """Return the datetime of the last test."""
         comment_dates = [comment["updated"] for comment in issue["fields"]["comment"]["comments"]]
-        return days_ago(parse(max(comment_dates))) if comment_dates else 0
+        return parse(max(comment_dates)) if comment_dates else datetime.now()
 
     def __desired_test_execution_frequency(self, issue: Dict) -> int:
         """Return the desired test frequency for this issue."""
