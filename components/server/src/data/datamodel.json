@@ -4330,7 +4330,7 @@
                     "name": "Lines to count",
                     "short_name": "lines to count",
                     "type": "single_choice",
-                    "help": "Either count all lines including lines with comments or only count lines with code, excluding comments.",
+                    "help": "Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation.",
                     "mandatory": false,
                     "default_value": "lines with code",
                     "values": [
