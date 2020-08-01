@@ -4314,6 +4314,18 @@
                         "violations"
                     ]
                 },
+                 "languages_to_ignore": {
+                    "name": "Languages to ignore (regular expressions or language names)",
+                    "short_name": "languages to ignore",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://docs.sonarqube.org/latest/analysis/languages/overview/",
+                    "default_value": [],
+                    "metrics": [
+                        "loc"
+                    ]
+                },
                 "lines_to_count": {
                     "name": "Lines to count",
                     "short_name": "lines to count",

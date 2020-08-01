@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 from dateutil.parser import isoparse
 
 from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 
 
@@ -215,15 +216,24 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
         metrics = await self.__get_metrics(responses)
-        value = metrics[self._value_key()]
-        total = metrics.get(self._total_key(), "100")
-        entities = self._entities(metrics)
-        return value, total, entities
+        return self._value(metrics), self._total(metrics), self._entities(metrics)
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
         value_key, total_key = self._value_key(), self._total_key()
         return f"{value_key},{total_key}" if total_key else value_key
+
+    def _value(self, metrics: Dict[str, str]) -> str:
+        """Return the metric value."""
+        return metrics[self._value_key()]
+
+    def _total(self, metrics: Dict[str, str]) -> str:
+        """Return the total value."""
+        return metrics.get(self._total_key(), "100")
+
+    def _entities(self, metrics: Dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+        """Return the entities."""
+        return []
 
     def _value_key(self) -> str:
         """Return the SonarQube metric key to use for the value."""
@@ -232,10 +242,6 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     def _total_key(self) -> str:
         """Return the SonarQube metric key to use for the total value."""
         return self.totalKey
-
-    def _entities(self, metrics) -> Entities:  # pylint: disable=no-self-use,unused-argument
-        """Return the entities."""
-        return []
 
     @staticmethod
     async def __get_metrics(responses: Responses) -> Dict[str, str]:
@@ -261,17 +267,36 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         xml="XML")  # https://sonarcloud.io/api/languages/list
 
     def _value_key(self) -> str:
-        return str(self._parameter('lines_to_count'))
+        return str(self._parameter("lines_to_count"))  # Either "lines" or "ncloc"
 
     def _metric_keys(self) -> str:
-        return super()._metric_keys() + ",ncloc_language_distribution"
+        metric_keys = super()._metric_keys()
+        if self._value_key() == "ncloc":
+            metric_keys += ",ncloc_language_distribution"  # Also get the ncloc per language
+        return metric_keys
 
-    def _entities(self, metrics) -> Entities:  # pylint: disable=no-self-use,unused-argument
-        entities = []
-        for language_count in metrics["ncloc_language_distribution"].split(";"):
-            language, count = language_count.split("=")
-            entities.append(dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=count))
-        return entities
+    def _value(self, metrics: Dict[str, str]) -> str:
+        if self._value_key() == "ncloc":
+            # Our user picked non-commented lines of code (ncloc), so we can sum the ncloc per language, skipping
+            # languages the user wants to ignore
+            return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
+        return super()._value(metrics)
+
+    def _entities(self, metrics: Dict[str, str]) -> Entities:
+        if self._value_key() == "ncloc":
+            # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
+            # languages the user wants to ignore
+            return [
+                dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
+                for language, ncloc in self.__language_ncloc(metrics)]
+        return super()._entities(metrics)
+
+    def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
+        """Return the languages and non-commented lines of code per language, skipping languages the user wants to
+        ignore."""
+        languages_to_ignore = self._parameter("languages_to_ignore")
+        return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
+                if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):

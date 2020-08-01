@@ -266,7 +266,5 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="1234", total="100",
-            entities=[
-                dict(key="py", language="Python", ncloc="999"), dict(key="js", language="JavaScript", ncloc="10")],
+            response, value="1234", total="100", entities=[],
             landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")
