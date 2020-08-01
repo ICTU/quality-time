@@ -4314,11 +4314,23 @@
                         "violations"
                     ]
                 },
+                 "languages_to_ignore": {
+                    "name": "Languages to ignore (regular expressions or language names)",
+                    "short_name": "languages to ignore",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "help_url": "https://docs.sonarqube.org/latest/analysis/languages/overview/",
+                    "default_value": [],
+                    "metrics": [
+                        "loc"
+                    ]
+                },
                 "lines_to_count": {
                     "name": "Lines to count",
                     "short_name": "lines to count",
                     "type": "single_choice",
-                    "help": "Either count all lines including lines with comments or only count lines with code, excluding comments.",
+                    "help": "Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation.",
                     "mandatory": false,
                     "default_value": "lines with code",
                     "values": [
@@ -4746,6 +4758,22 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        }
+                    ]
+                },
+                "loc": {
+                    "name": "language",
+                    "name_plural": "languages",
+                    "measured_attribute": "ncloc",
+                    "attributes": [
+                        {
+                            "name": "Language",
+                            "key": "language"
+                        },
+                        {
+                            "name": "Number of lines with code",
+                            "key": "ncloc",
+                            "type": "integer"
                         }
                     ]
                 },

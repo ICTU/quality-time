@@ -6,6 +6,7 @@ from typing import Dict, List, Tuple
 from dateutil.parser import isoparse
 
 from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
 
 
@@ -196,9 +197,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 class SonarQubeMetricsBaseClass(SonarQubeCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
-    # Metric keys is a string containing one or two metric keys separated by a comma. The first metric key is used for
-    # the metric value, the second for the total value (used for calculating a percentage).
-    metricKeys = ""  # Subclass responsibility
+    valueKey = ""  # Subclass responsibility
+    totalKey = ""  # Subclass responsibility
 
     async def _landing_url(self, responses: Responses) -> URL:
         url = await super()._landing_url(responses)
@@ -215,46 +215,102 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
             f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        metric_keys = self._metric_keys().split(",")
         metrics = await self.__get_metrics(responses)
-        value = str(metrics[metric_keys[0]])
-        total = str(metrics[metric_keys[1]]) if len(metric_keys) > 1 else "100"
-        return value, total, []
+        return self._value(metrics), self._total(metrics), self._entities(metrics)
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
-        return self.metricKeys
+        value_key, total_key = self._value_key(), self._total_key()
+        return f"{value_key},{total_key}" if total_key else value_key
+
+    def _value(self, metrics: Dict[str, str]) -> str:
+        """Return the metric value."""
+        return metrics[self._value_key()]
+
+    def _total(self, metrics: Dict[str, str]) -> str:
+        """Return the total value."""
+        return metrics.get(self._total_key(), "100")
+
+    def _entities(self, metrics: Dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+        """Return the entities."""
+        return []
+
+    def _value_key(self) -> str:
+        """Return the SonarQube metric key to use for the value."""
+        return self.valueKey
+
+    def _total_key(self) -> str:
+        """Return the SonarQube metric key to use for the total value."""
+        return self.totalKey
 
     @staticmethod
-    async def __get_metrics(responses: Responses) -> Dict[str, int]:
+    async def __get_metrics(responses: Responses) -> Dict[str, str]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
-        return dict((measure["metric"], int(measure["value"])) for measure in measures)
+        return dict((measure["metric"], measure["value"]) for measure in measures)
 
 
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     """SonarQube duplicated lines collector."""
 
-    metricKeys = "duplicated_lines,lines"
+    valueKey = "duplicated_lines"
+    totalKey = "lines"
 
 
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
+    LANGUAGES = dict(
+        abap="ABAP", apex="Apex", c="C", cs="C#", cpp="C++", cobol="COBOL", css="CSS", flex="Flex", go="Go", web="HTML",
+        jsp="JSP", java="Java", js="JavaScript", kotlin="Kotlin", objc="Objective-C", php="PHP", plsql="PL/SQL",
+        py="Python", ruby="Ruby", scala="Scala", swift="Swift", tsql="T-SQL", ts="TypeScript", vbnet="VB.NET",
+        xml="XML")  # https://sonarcloud.io/api/languages/list
+
+    def _value_key(self) -> str:
+        return str(self._parameter("lines_to_count"))  # Either "lines" or "ncloc"
+
     def _metric_keys(self) -> str:
-        return str(self._parameter("lines_to_count"))
+        metric_keys = super()._metric_keys()
+        if self._value_key() == "ncloc":
+            metric_keys += ",ncloc_language_distribution"  # Also get the ncloc per language
+        return metric_keys
+
+    def _value(self, metrics: Dict[str, str]) -> str:
+        if self._value_key() == "ncloc":
+            # Our user picked non-commented lines of code (ncloc), so we can sum the ncloc per language, skipping
+            # languages the user wants to ignore
+            return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
+        return super()._value(metrics)
+
+    def _entities(self, metrics: Dict[str, str]) -> Entities:
+        if self._value_key() == "ncloc":
+            # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
+            # languages the user wants to ignore
+            return [
+                dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
+                for language, ncloc in self.__language_ncloc(metrics)]
+        return super()._entities(metrics)
+
+    def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
+        """Return the languages and non-commented lines of code per language, skipping languages the user wants to
+        ignore."""
+        languages_to_ignore = self._parameter("languages_to_ignore")
+        return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
+                if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
     """SonarQube uncovered lines of code."""
 
-    metricKeys = "uncovered_lines,lines_to_cover"
+    valueKey = "uncovered_lines"
+    totalKey = "lines_to_cover"
 
 
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
-    metricKeys = "uncovered_conditions,conditions_to_cover"
+    valueKey = "uncovered_conditions"
+    totalKey = "conditions_to_cover"
 
 
 class SonarQubeTests(SonarQubeCollector):

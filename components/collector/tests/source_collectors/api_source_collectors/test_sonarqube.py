@@ -242,19 +242,29 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
 
     async def test_loc_returns_ncloc_by_default(self):
         """Test that the number of lines of non-comment code is returned."""
-        json = dict(component=dict(measures=[dict(metric="ncloc", value="1234")]))
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="ncloc", value="1234"),
+                    dict(metric="ncloc_language_distribution", value="py=1000;js=234")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100",
+            entities=[
+                dict(key="py", language="Python", ncloc="1000"), dict(key="js", language="JavaScript", ncloc="234")],
             landing_url="https://sonar/component_measures?id=id&metric=ncloc&branch=master")
 
     async def test_loc_all_lines(self):
         """Test that the number of lines of code is returned."""
         self.sources["source_id"]["parameters"]["lines_to_count"] = "all lines"
-        json = dict(component=dict(measures=[dict(metric="lines", value="1234")]))
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="lines", value="1234"),
+                    dict(metric="ncloc_language_distribution", value="py=999;js=10")]))
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="1234", total="100",
+            response, value="1234", total="100", entities=[],
             landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")

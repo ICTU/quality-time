@@ -245,7 +245,8 @@
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
-| Lines to count | Single choice | No | Either count all lines including lines with comments or only count lines with code, excluding comments. |
+| Languages to ignore (regular expressions or language names) | Multiple choice with addition | No | [https://docs.sonarqube.org/latest/analysis/languages/overview/](https://docs.sonarqube.org/latest/analysis/languages/overview/) |
+| Lines to count | Single choice | No | Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation. |
 
 ### Long units from SonarQube
 
