@@ -187,10 +187,7 @@ class AzureDevopsJobs(SourceCollector):
             build_status = self._latest_build_result(job)
             build_date_time = self._latest_build_date_time(job)
             entities.append(
-                dict(name=name, key=name, url=url,
-                     build_date=str(build_date_time.date()),
-                     build_age=str(days_ago(build_date_time)),
-                     build_status=build_status))
+                dict(name=name, key=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
         return str(len(entities)), "100", entities
 
     def _ignore_job(self, job: Job) -> bool:

@@ -100,12 +100,9 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
                 dict(name="ignored_branch", isBaseVersion=False, aheadCount=1,
                      commit=dict(committer=dict(date=timestamp)))])
         response = await self.collect(self.metric, get_request_json_side_effect=[self.repositories, branches])
-        expected_age = str(days_ago(parse(timestamp)))
         self.assert_measurement(
             response, value="1", landing_url=self.landing_url,
-            entities=[
-                dict(name="branch", key="branch", commit_age=expected_age, commit_date="2019-09-03",
-                     url="https://commit")])
+            entities=[dict(name="branch", key="branch", commit_date="2019-09-03", url="https://commit")])
 
 
 class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
@@ -187,12 +184,11 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
                     dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed")),
                     dict(path=r"\\", name="no_builds")
                 ]))
-        expected_age = days_ago(parse("2019-11-15T12:24:10.1905868Z"))
         self.assert_measurement(
             response, value="1", landing_url=f"{self.url}/_build", api_url=self.api_url,
             entities=[
                 dict(name=self.pipeline, key=self.pipeline, url=f"{self.url}/build",
-                     build_date="2019-11-15", build_age=str(expected_age), build_status="failed")])
+                     build_date="2019-11-15", build_status="failed")])
 
     async def test_nr_of_unused_jobs(self):
         """Test that the number of unused jobs is returned, that pipelines can be ignored by name and by
@@ -208,9 +204,8 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
                     dict(path=self.path, name="ignore_by_re", latestCompletedBuild=dict(result="failed")),
                     dict(path=r"\\", name="ignore_by_name", latestCompletedBuild=dict(result="failed"))
                 ]))
-        expected_age = days_ago(parse("2019-10-15T12:24:10.1905868Z"))
         self.assert_measurement(
             response, value="1", landing_url=f"{self.url}/_build", api_url=self.api_url,
             entities=[
                 dict(name=self.pipeline, key=self.pipeline, url=f"{self.url}/build",
-                     build_date="2019-10-15", build_age=str(expected_age), build_status="failed")])
+                     build_date="2019-10-15", build_status="failed")])
