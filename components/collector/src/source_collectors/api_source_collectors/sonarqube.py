@@ -196,9 +196,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 class SonarQubeMetricsBaseClass(SonarQubeCollector):
     """Base class for collectors that use the SonarQube measures/component API."""
 
-    # Metric keys is a string containing one or two metric keys separated by a comma. The first metric key is used for
-    # the metric value, the second for the total value (used for calculating a percentage).
-    metricKeys = ""  # Subclass responsibility
+    valueKey = ""  # Subclass responsibility
+    totalKey = ""  # Subclass responsibility
 
     async def _landing_url(self, responses: Responses) -> URL:
         url = await super()._landing_url(responses)
@@ -215,46 +214,60 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
             f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
     async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        metric_keys = self._metric_keys().split(",")
         metrics = await self.__get_metrics(responses)
-        value = str(metrics[metric_keys[0]])
-        total = str(metrics[metric_keys[1]]) if len(metric_keys) > 1 else "100"
+        value = metrics[self._value_key()]
+        total = metrics.get(self._total_key(), "100")
         return value, total, []
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
-        return self.metricKeys
+        value_key, total_key = self._value_key(), self._total_key()
+        return f"{value_key},{total_key}" if total_key else value_key
+
+    def _value_key(self) -> str:
+        """Return the SonarQube metric key to use for the value."""
+        return self.valueKey
+
+    def _total_key(self) -> str:
+        """Return the SonarQube metric key to use for the total value."""
+        return self.totalKey
 
     @staticmethod
-    async def __get_metrics(responses: Responses) -> Dict[str, int]:
+    async def __get_metrics(responses: Responses) -> Dict[str, str]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
-        return dict((measure["metric"], int(measure["value"])) for measure in measures)
+        return dict((measure["metric"], measure["value"]) for measure in measures)
 
 
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
     """SonarQube duplicated lines collector."""
 
-    metricKeys = "duplicated_lines,lines"
+    valueKey = "duplicated_lines"
+    totalKey = "lines"
 
 
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
+    def _value_key(self) -> str:
+        return str(self._parameter('lines_to_count'))
+
     def _metric_keys(self) -> str:
-        return str(self._parameter("lines_to_count"))
+        return super()._metric_keys() + ",ncloc_language_distribution"
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
     """SonarQube uncovered lines of code."""
 
-    metricKeys = "uncovered_lines,lines_to_cover"
+    valueKey = "uncovered_lines"
+    totalKey = "lines_to_cover"
 
 
 class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
     """SonarQube uncovered branches."""
 
-    metricKeys = "uncovered_conditions,conditions_to_cover"
+    valueKey = "uncovered_conditions"
+    totalKey = "conditions_to_cover"
 
 
 class SonarQubeTests(SonarQubeCollector):
