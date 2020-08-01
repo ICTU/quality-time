@@ -2642,9 +2642,9 @@
                             "url": "url"
                         },
                         {
-                            "name": "Days since last test",
-                            "key": "days_untested",
-                            "type": "integer"
+                            "name": "Date of last test",
+                            "key": "last_test_date",
+                            "type": "date"
                         },
                         {
                             "name": "Desired test frequency (days)",

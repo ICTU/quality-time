@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 from dateutil.parser import parse
 
-from collector_utilities.functions import days_ago
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -53,51 +52,47 @@ class JiraManualTestExecutionTest(JiraTestCase):
 
     async def test_nr_of_test_cases(self):
         """Test that the number of test cases is returned."""
-        comment_updated = "2019-10-02T11:07:02.444+0200"
+        long_ago = "2019-10-02T11:07:02.444+0200"
+        ten_days_ago = str(datetime.now()-timedelta(days=10))
         test_cases_json = dict(
             issues=[
                 dict(key="key1", id="id1",
-                     fields=dict(
-                         comment=dict(
-                             comments=[dict(updated=comment_updated)]), summary="Tested too long ago")),
+                     fields=dict(comment=dict(comments=[dict(updated=long_ago)]), summary="Tested too long ago")),
                 dict(key="key2", id="id2", fields=dict(comment=dict(comments=[]), summary="Never tested")),
                 dict(key="key3", id="id3",
                      fields=dict(
                          comment=dict(comments=[dict(updated=str(datetime.now()))]), summary="Recently tested")),
                 dict(key="key4", id="id4",
                      fields=dict(
-                         comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
-                         desired_test_frequency="5",
+                         comment=dict(comments=[dict(updated=ten_days_ago)]), desired_test_frequency="5",
                          summary=self.too_long_ago_summary))])
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
-        expected_days = str(days_ago(parse(comment_updated)))
+        response = await self.collect(self.metric, get_request_json_side_effect=[self.fields_json, test_cases_json])
         self.assert_measurement(
             response, value="2",
             entities=[
                 dict(key="id1", summary="Tested too long ago", url="https://jira/browse/key1",
-                     days_untested=expected_days, desired_test_frequency="21"),
-                dict(key="id4", summary=self.too_long_ago_summary,
-                     url="https://jira/browse/key4", days_untested="10", desired_test_frequency="5")])
+                     last_test_date=str(parse(long_ago).date()), desired_test_frequency="21"),
+                dict(key="id4", summary=self.too_long_ago_summary, url="https://jira/browse/key4",
+                     last_test_date=str(parse(ten_days_ago).date()), desired_test_frequency="5")])
 
     async def test_nr_of_test_cases_with_field_name(self):
         """Test that the number of test cases is returned when the field name for the test frequency is specified
         by name."""
         fields_json = [dict(name="Required test frequency", id="custom_field_001")]
         self.sources["source_id"]["parameters"]["manual_test_execution_frequency_field"] = "Required test frequency"
+        ten_days_ago = str(datetime.now()-timedelta(days=10))
         test_cases_json = dict(
             issues=[
                 dict(key="key", id="id",
                      fields=dict(
-                         comment=dict(comments=[dict(updated=str(datetime.now()-timedelta(days=10)))]),
-                         custom_field_001="5", summary=self.too_long_ago_summary))])
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=[fields_json, test_cases_json])
+                         comment=dict(comments=[dict(updated=ten_days_ago)]), custom_field_001="5",
+                         summary=self.too_long_ago_summary))])
+        response = await self.collect(self.metric, get_request_json_side_effect=[fields_json, test_cases_json])
         self.assert_measurement(
             response, value="1",
             entities=[
-                dict(key="id", summary=self.too_long_ago_summary,
-                     url="https://jira/browse/key", days_untested="10", desired_test_frequency="5")])
+                dict(key="id", summary=self.too_long_ago_summary, url="https://jira/browse/key",
+                     last_test_date=str(parse(ten_days_ago).date()), desired_test_frequency="5")])
 
 
 class JiraReadyUserStoryPointsTest(JiraTestCase):

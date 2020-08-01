@@ -1,7 +1,5 @@
 """Unit tests for the Jenkins source."""
 
-from datetime import datetime
-
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
