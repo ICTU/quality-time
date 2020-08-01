@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Don't store the age of last commits, last builds, and last execution of manual tests, but only the date. This prevents the measurements  from being updated daily. Fixes [#1341](https://github.com/ICTU/quality-time/issues/1341).
+
 ## [3.0.0] - [2020-07-31]
 
 ### Fixed
