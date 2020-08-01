@@ -217,7 +217,8 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         metrics = await self.__get_metrics(responses)
         value = metrics[self._value_key()]
         total = metrics.get(self._total_key(), "100")
-        return value, total, []
+        entities = self._entities(metrics)
+        return value, total, entities
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -231,6 +232,10 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     def _total_key(self) -> str:
         """Return the SonarQube metric key to use for the total value."""
         return self.totalKey
+
+    def _entities(self, metrics) -> Entities:  # pylint: disable=no-self-use,unused-argument
+        """Return the entities."""
+        return []
 
     @staticmethod
     async def __get_metrics(responses: Responses) -> Dict[str, str]:
@@ -249,11 +254,24 @@ class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
 class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
+    LANGUAGES = dict(
+        abap="ABAP", apex="Apex", c="C", cs="C#", cpp="C++", cobol="COBOL", css="CSS", flex="Flex", go="Go", web="HTML",
+        jsp="JSP", java="Java", js="JavaScript", kotlin="Kotlin", objc="Objective-C", php="PHP", plsql="PL/SQL",
+        py="Python", ruby="Ruby", scala="Scala", swift="Swift", tsql="T-SQL", ts="TypeScript", vbnet="VB.NET",
+        xml="XML")  # https://sonarcloud.io/api/languages/list
+
     def _value_key(self) -> str:
         return str(self._parameter('lines_to_count'))
 
     def _metric_keys(self) -> str:
         return super()._metric_keys() + ",ncloc_language_distribution"
+
+    def _entities(self, metrics) -> Entities:  # pylint: disable=no-self-use,unused-argument
+        entities = []
+        for language_count in metrics["ncloc_language_distribution"].split(";"):
+            language, count = language_count.split("=")
+            entities.append(dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=count))
+        return entities
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):

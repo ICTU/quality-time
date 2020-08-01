@@ -4749,6 +4749,22 @@
                         }
                     ]
                 },
+                "loc": {
+                    "name": "language",
+                    "name_plural": "languages",
+                    "measured_attribute": "ncloc",
+                    "attributes": [
+                        {
+                            "name": "Language",
+                            "key": "language"
+                        },
+                        {
+                            "name": "Number of lines with code",
+                            "key": "ncloc",
+                            "type": "integer"
+                        }
+                    ]
+                },
                 "long_units": {
                     "name": "violation",
                     "name_plural": "violations",

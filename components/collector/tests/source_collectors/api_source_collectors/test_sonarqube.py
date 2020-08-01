@@ -251,6 +251,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100",
+            entities=[
+                dict(key="py", language="Python", ncloc="1000"), dict(key="js", language="JavaScript", ncloc="234")],
             landing_url="https://sonar/component_measures?id=id&metric=ncloc&branch=master")
 
     async def test_loc_all_lines(self):
@@ -265,4 +267,6 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100",
+            entities=[
+                dict(key="py", language="Python", ncloc="999"), dict(key="js", language="JavaScript", ncloc="10")],
             landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")
