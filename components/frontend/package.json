@@ -5,7 +5,7 @@
   "proxy": "http://localhost:5001",
   "dependencies": {
     "history": "^5.0.0",
-    "md5": "^2.2.1",
+    "md5": "^2.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-grid-layout": "^1.0.0",
