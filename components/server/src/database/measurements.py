@@ -60,12 +60,9 @@ def insert_new_measurement(database: Database, data_model, metric: Dict, measure
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = determine_measurement_status(metric, direction, value)
-        debt_target = determine_debt_target(metric, measurement, scale)
-        target = determine_target(metric, measurement, metric_type, scale, "target")
-        near_target = determine_target(metric, measurement, metric_type, scale, "near_target")
-        measurement[scale] = dict(
-            value=value, status=status, direction=direction, target=target, near_target=near_target,
-            debt_target=debt_target)
+        measurement[scale] = dict(value=value, status=status, direction=direction)
+        for target in ("target", "near_target", "debt_target"):
+            measurement[scale][target] = determine_target(metric, measurement, metric_type, scale, target)
     measurement["start"] = measurement["end"] = iso_timestamp()
     database.measurements.insert_one(measurement)
     del measurement["_id"]
@@ -139,20 +136,18 @@ def determine_measurement_status(metric, direction: Direction, measurement_value
     return status
 
 
-def determine_debt_target(metric, measurement: Dict, scale: Scale) -> Optional[str]:
-    """Determine the debt target."""
-    metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
-    debt_target = metric.get("debt_target") if scale == metric_scale else measurement.get(scale, {}).get("debt_target")
-    debt_target_expired = (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
-    debt_target_off = metric.get("accept_debt") is False
-    return None if debt_target_expired or debt_target_off else debt_target
-
-
-def determine_target(metric, measurement: Dict, metric_type, scale: Scale, target: Literal["target", "near_target"]):
+def determine_target(
+        metric, measurement: Dict, metric_type, scale: Scale, target: Literal["target", "near_target", "debt_target"]):
     """Determine the (near) target."""
     metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
-    return metric.get(target, metric_type.get(target)) if scale == metric_scale \
-        else measurement.get(scale, {}).get(target)
+    target_value = metric.get(target, metric_type.get(target)) if scale == metric_scale else \
+        measurement.get(scale, {}).get(target)
+    if target == "debt_target":
+        debt_target_expired = (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
+        debt_target_off = metric.get("accept_debt") is False
+        if debt_target_expired or debt_target_off:
+            target_value = None
+    return target_value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
