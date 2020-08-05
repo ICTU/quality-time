@@ -155,6 +155,7 @@ export function MetricParameters(props) {
                     <Grid.Column>
                         <DateInput
                             label="Technical debt end date"
+                            minDate={new Date()}
                             placeholder="no end date"
                             set_value={(value) => set_metric_attribute(props.metric_uuid, "debt_end_date", value, props.reload)}
                             value={props.metric.debt_end_date || ""}
