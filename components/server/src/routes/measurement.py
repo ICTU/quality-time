@@ -51,7 +51,7 @@ def debt_target_expired(data_model, metric, measurement) -> bool:
     if not any_debt_target:
         return False
     return metric.get("accept_debt") is False or \
-           (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
+           (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()  # pragma: no cover-behave
 
 
 @bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
