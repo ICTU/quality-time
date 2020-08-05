@@ -123,5 +123,5 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     insert_new_report(database, data.report)
     attributes_impacting_status = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
     if metric_attribute in attributes_impacting_status and (latest := latest_measurement(database, metric_uuid)):
-        return insert_new_measurement(database, data.metric, latest)
+        return insert_new_measurement(database, data.datamodel, data.metric, latest)
     return dict(ok=True)

@@ -1,5 +1,6 @@
 """Measurement routes."""
 
+from datetime import date
 import logging
 import time
 from typing import cast, Dict, Iterator
@@ -7,6 +8,7 @@ from typing import cast, Dict, Iterator
 from pymongo.database import Database
 import bottle
 
+from database.datamodels import latest_datamodel
 from database.measurements import all_measurements, count_measurements, latest_measurement, \
     latest_successful_measurement, insert_new_measurement, update_measurement_end
 from database.reports import latest_metric, SourceData
@@ -22,6 +24,7 @@ def post_measurement(database: Database) -> Dict:
     metric_uuid = measurement["metric_uuid"]
     if not (metric := latest_metric(database, metric_uuid)):  # pylint: disable=superfluous-parens
         return dict(ok=False)  # Metric does not exist, must've been deleted while being measured
+    data_model = latest_datamodel(database)
     if latest := latest_measurement(database, metric_uuid):
         if latest_successful := latest_successful_measurement(database, metric_uuid):
             latest_sources = latest_successful["sources"]
@@ -33,11 +36,22 @@ def post_measurement(database: Database) -> Dict:
             for entity_key, attributes in latest_source.get("entity_user_data", {}).items():
                 if entity_key in new_entity_keys:
                     new_source.setdefault("entity_user_data", {})[entity_key] = attributes
-        if latest["sources"] == measurement["sources"]:
+        if not debt_target_expired(data_model, metric, latest) and latest["sources"] == measurement["sources"]:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, metric, measurement)
+    return insert_new_measurement(database, data_model, metric, measurement)
+
+
+def debt_target_expired(data_model, metric, measurement) -> bool:
+    """Return whether the technical debt target is expired, either because it was turned off or because the end
+    date passed."""
+    metric_scales = data_model["metrics"][metric["type"]]["scales"]
+    any_debt_target = any(measurement.get(scale, {}).get("debt_target") is not None for scale in metric_scales)
+    if not any_debt_target:
+        return False
+    return metric.get("accept_debt") is False or \
+           (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
 
 
 @bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
@@ -58,7 +72,7 @@ def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_ke
         description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
                     f"'{value}'.",
         email=user["email"])
-    return insert_new_measurement(database, data.metric, measurement)
+    return insert_new_measurement(database, data.datamodel, data.metric, measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

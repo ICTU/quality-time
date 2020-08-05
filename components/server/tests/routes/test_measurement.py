@@ -1,5 +1,6 @@
 """Unit tests for the measurement routes."""
 
+from datetime import date, timedelta
 import unittest
 from unittest.mock import Mock, patch
 
@@ -162,6 +163,39 @@ class PostMeasurementTests(unittest.TestCase):
         request.json = dict(metric_uuid=METRIC_ID, sources=[])
         self.assertEqual(dict(ok=False), post_measurement(self.database))
         self.database.measurements.update_one.assert_not_called()
+
+    def test_expired_technical_debt(self, request):
+        """Test that a new measurement is added when technical debt expires."""
+        debt_end_date = date.today() - timedelta(days=1)
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"] = debt_end_date.isoformat()
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
+        sources = [dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None, entities=[])]
+        self.database.measurements.find_one.return_value = dict(
+            _id="id", metric_uuid=METRIC_ID, sources=sources,
+            count=dict(value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"))
+        request.json = dict(metric_uuid=METRIC_ID, sources=sources)
+        new_measurement = dict(
+            metric_uuid=METRIC_ID, sources=sources, start="2019-01-01", end="2019-01-01",
+            count=dict(value="1", status="near_target_met", target="0", near_target="10", debt_target=None,
+                       direction="<"))
+        self.assertEqual(new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
+
+    def test_technical_debt_off(self, request):
+        """Test that a new measurement is added when technical debt has been turned off."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = False
+        sources = [dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None, entities=[])]
+        self.database.measurements.find_one.return_value = dict(
+            _id="id", metric_uuid=METRIC_ID, sources=sources,
+            count=dict(value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"))
+        request.json = dict(metric_uuid=METRIC_ID, sources=sources)
+        new_measurement = dict(
+            metric_uuid=METRIC_ID, sources=sources, start="2019-01-01", end="2019-01-01",
+            count=dict(value="1", status="near_target_met", target="0", near_target="10", debt_target=None,
+                       direction="<"))
+        self.assertEqual(new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once()
 
 
 class SetEntityAttributeTest(unittest.TestCase):
