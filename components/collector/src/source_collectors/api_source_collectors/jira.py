@@ -48,7 +48,11 @@ class JiraIssues(SourceCollector):
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
-        return dict(key=issue["id"], summary=issue["fields"]["summary"], url=f"{url}/browse/{issue['key']}")
+        fields = issue["fields"]
+        return dict(
+            key=issue["id"], summary=fields["summary"], url=f"{url}/browse/{issue['key']}",
+            created=fields["created"], updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
+            priority=fields.get("priority", {}).get("name"))
 
     def _include_issue(self, issue: Dict) -> bool:  # pylint: disable=no-self-use,unused-argument
         """Return whether this issue should be counted."""
@@ -56,7 +60,7 @@ class JiraIssues(SourceCollector):
 
     def _fields(self) -> str:  # pylint: disable=no-self-use
         """Return the fields to get from Jira."""
-        return "summary"
+        return "summary,created,updated,status,priority"
 
 
 class JiraManualTestExecution(JiraIssues):
