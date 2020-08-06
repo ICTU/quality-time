@@ -2,7 +2,7 @@
 
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
-from typing import Dict, List, Optional
+from typing import cast, Dict, List, Literal, Optional
 
 import pymongo
 from pymongo.database import Database
@@ -10,7 +10,9 @@ from pymongo.database import Database
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
 from model.queries import get_measured_attribute, get_attribute_type
-from .datamodels import latest_datamodel
+
+
+TargetType = Literal["target", "near_target", "debt_target"]
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId):
@@ -52,21 +54,19 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
-def insert_new_measurement(database: Database, metric: Dict, measurement: Dict) -> Dict:
+def insert_new_measurement(database: Database, data_model, metric: Dict, measurement: Dict) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    data_model = latest_datamodel(database)
     metric_type = data_model["metrics"][metric["type"]]
-    metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
     direction = metric.get("direction") or metric_type["direction"]
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = determine_measurement_status(metric, direction, value)
         measurement[scale] = dict(value=value, status=status, direction=direction)
         for target in ("target", "near_target", "debt_target"):
-            measurement[scale][target] = metric.get(target, metric_type.get(target)) if scale == metric_scale \
-                else measurement.get(scale, {}).get(target)
+            measurement[scale][target] = determine_target(
+                metric, measurement, metric_type, scale, cast(TargetType, target))
     measurement["start"] = measurement["end"] = iso_timestamp()
     database.measurements.insert_one(measurement)
     del measurement["_id"]
@@ -138,6 +138,19 @@ def determine_measurement_status(metric, direction: Direction, measurement_value
     else:
         status = "target_not_met"
     return status
+
+
+def determine_target(metric, measurement: Dict, metric_type, scale: Scale, target: TargetType):
+    """Determine the (near) target."""
+    metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
+    target_value = metric.get(target, metric_type.get(target)) if scale == metric_scale else \
+        measurement.get(scale, {}).get(target)
+    if target == "debt_target":
+        debt_target_expired = (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
+        debt_target_off = metric.get("accept_debt") is False
+        if debt_target_expired or debt_target_off:
+            target_value = None
+    return target_value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):

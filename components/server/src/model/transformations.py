@@ -71,5 +71,5 @@ def metric_status(metric, last_measurement, scale) -> Optional[Status]:
     """Determine the metric status."""
     if status := last_measurement.get(scale, {}).get("status", last_measurement.get("status")):
         return cast(Status, status)
-    debt_end_date = metric.get("debt_end_date", date.max.isoformat())
+    debt_end_date = metric.get("debt_end_date") or date.max.isoformat()
     return "debt_target_met" if metric.get("accept_debt") and date.today().isoformat() <= debt_end_date else None

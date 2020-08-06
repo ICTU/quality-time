@@ -14,6 +14,7 @@ function EditableDateInput(props) {
                 disabled={false}
                 error={props.required && props.value === ""}
                 label={props.label}
+                minDate={props.minDate}
                 onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value)}}}
                 placeholder={props.placeholder}
                 value={props.value}
@@ -23,5 +24,11 @@ function EditableDateInput(props) {
 }
 
 export function DateInput(props) {
-    return (<ReadOnlyOrEditable readOnlyComponent={<Input {...props} />} editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />} />)
+    const { minDate, ...readonlyProps} = props;
+    return (
+        <ReadOnlyOrEditable
+            readOnlyComponent={<Input {...readonlyProps} />}
+            editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />}
+        />
+    )
 }
