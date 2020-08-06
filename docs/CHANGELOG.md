@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - When measuring the 'size' metric with SonarQube, show the non-commented lines of code per programming language as measurement details and allow for ignoring specific languages. Due to a SonarQube limitation this is only possible when measuring size using non-commented lines of code (the default) and not when measuring size using all lines. Closes [#1216](https://github.com/ICTU/quality-time/issues/1216).
 
+### Changed
+
+- Increase the number of ticks on the x-axis of trend graphs. Closes [#1126](https://github.com/ICTU/quality-time/issues/1126).
+
 ## [3.0.0] - [2020-07-31]
 
 ### Fixed

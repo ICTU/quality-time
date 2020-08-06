@@ -97,7 +97,8 @@ export function TrendGraph(props) {
       <VictoryLabel x={375} y={20} text={props.title} textAnchor="middle" />
       <VictoryAxis
         label={"Time"}
-        style={axisStyle} />
+        style={axisStyle}
+        tickCount={16} />
       <VictoryAxis
         dependentAxis
         domain={[0, max_y]}
