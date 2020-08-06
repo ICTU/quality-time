@@ -35,6 +35,7 @@ class JiraTestCase(SourceCollectorTestCase):
             updated=updated, status=None, priority=None, **kwargs)
 
     async def get_response(self, issues_json, fields_json=None):
+        """Get the collector's response."""
         return await self.collect(self.metric, get_request_json_side_effect=[fields_json or [], issues_json])
 
 
