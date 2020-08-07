@@ -15,11 +15,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Trend graph didn't take technical debt end date into account. Fixes [#1272](https://github.com/ICTU/quality-time/issues/1272).
 - Don't store the age of last commits, last builds, and last execution of manual tests, but only the date. This prevents the measurements from being updated daily. Fixes [#1341](https://github.com/ICTU/quality-time/issues/1341).
+- Don't show tokens in the log of the collector when retrieving the URL fails. Fixes [#1354](https://github.com/ICTU/quality-time/issues/1354).
 
 ### Added
 
 - When measuring the 'size' metric with SonarQube, show the non-commented lines of code per programming language as measurement details and allow for ignoring specific languages. Due to a SonarQube limitation this is only possible when measuring size using non-commented lines of code (the default) and not when measuring size using all lines. Closes [#1216](https://github.com/ICTU/quality-time/issues/1216).
-- When measuring 'issues' with Jira, show status, priority, creating date and last update date for each issue in the details tab. Closes [#1351](https://github.com/ICTU/quality-time/issues/1351).
+- When measuring 'issues' with Jira, show status, priority, creation date and last update date for each issue in the details tab. Closes [#1351](https://github.com/ICTU/quality-time/issues/1351).
 
 ### Changed
 
