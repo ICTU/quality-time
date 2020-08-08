@@ -22,4 +22,4 @@ class ComposerDependencies(JSONFileSourceCollector):
                 latest_status=dependency.get("latest-status", "unknown"),
                 description=dependency.get("description", ""), warning=dependency.get("warning", ""))
             for dependency in installed_dependencies if dependency.get("latest-status", "unknown") in statuses]
-        return SourceMeasurement(str(len(entities)), str(len(installed_dependencies)), entities)
+        return SourceMeasurement(value=str(len(entities)), total=str(len(installed_dependencies)), entities=entities)

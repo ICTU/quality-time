@@ -28,7 +28,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             """Register a fake collector automatically."""
 
             async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
-                return SourceMeasurement("42", "84")
+                return SourceMeasurement(value="42", total="84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_collector = MetricsCollector()

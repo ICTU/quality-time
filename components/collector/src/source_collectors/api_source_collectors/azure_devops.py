@@ -47,7 +47,7 @@ class AzureDevopsIssues(SourceCollector):
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"], url=work_item["url"])
             for work_item in await self._work_items(responses)]
-        return SourceMeasurement(value, entities=entities)
+        return SourceMeasurement(value=value, entities=entities)
 
     @staticmethod
     async def _work_items(responses: Responses):
@@ -167,7 +167,7 @@ class AzureDevopsTests(SourceCollector):
                          total_tests=str(run.get("totalTests", 0))))
             test_count += highest_build_test_count
             test_runs.extend(highest_build_nr_test_runs)
-        return SourceMeasurement(str(test_count), entities=test_runs)
+        return SourceMeasurement(value=str(test_count), entities=test_runs)
 
 
 class AzureDevopsJobs(SourceCollector):
@@ -190,7 +190,7 @@ class AzureDevopsJobs(SourceCollector):
             build_date_time = self._latest_build_date_time(job)
             entities.append(
                 dict(name=name, key=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     def _ignore_job(self, job: Job) -> bool:
         """Return whether this job should be ignored"""

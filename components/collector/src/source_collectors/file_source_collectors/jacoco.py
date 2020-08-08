@@ -20,7 +20,7 @@ class JacocoCoverageBaseClass(XMLFileSourceCollector):
             counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
             missed += int(counter.get("missed"))
             covered += int(counter.get("covered"))
-        return SourceMeasurement(str(missed), str(missed + covered))
+        return SourceMeasurement(value=str(missed), total=str(missed + covered))
 
 
 class JacocoUncoveredLines(JacocoCoverageBaseClass):

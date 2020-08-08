@@ -31,7 +31,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
             else:
                 entities[file_path] = dict(
                     key=file_path, file_path=file_path, highest_severity=priority.capitalize(), nr_vulnerabilities="1")
-        return SourceMeasurement(str(len(entities)), entities=list(entities.values()))
+        return SourceMeasurement(value=str(len(entities)), entities=list(entities.values()))
 
     def __highest_severity(self, severity1: str, severity2: str) -> str:
         """Return the highest of the two severities."""

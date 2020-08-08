@@ -19,7 +19,7 @@ class CoberturaCoverageBaseClass(XMLFileSourceCollector):
             tree = ElementTree.fromstring(await response.text())
             valid += int(tree.get(f"{self.coverage_type}-valid"))
             covered += int(tree.get(f"{self.coverage_type}-covered"))
-        return SourceMeasurement(str(valid - covered), str(valid))
+        return SourceMeasurement(value=str(valid - covered), total=str(valid))
 
 
 class CoberturaUncoveredLines(CoberturaCoverageBaseClass):

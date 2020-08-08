@@ -33,7 +33,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
                 count += int(stats.get(test_result, 0))
                 for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/.."):
                     entities.append(dict(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
-        return SourceMeasurement(str(count), entities=entities)
+        return SourceMeasurement(value=str(count), entities=entities)
 
 
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass, SourceUpToDatenessCollector):

@@ -35,7 +35,7 @@ class JenkinsTestReportTests(SourceCollector):
         entities = [
             self.__entity(case) for suite in suites for case in suite.get("cases", [])
             if self.__status(case) in statuses]
-        return SourceMeasurement(str(value), entities=entities)
+        return SourceMeasurement(value=str(value), entities=entities)
 
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
@@ -65,4 +65,4 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
                       if suite.get("timestamp")]
         report_datetime = parse(max(timestamps)) if timestamps else \
             datetime.fromtimestamp(float((await responses[1].json())["timestamp"]) / 1000.)
-        return SourceMeasurement(str(days_ago(report_datetime)))
+        return SourceMeasurement(value=str(days_ago(report_datetime)))

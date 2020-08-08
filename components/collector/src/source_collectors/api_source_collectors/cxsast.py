@@ -68,7 +68,7 @@ class CxSASTSourceUpToDateness(CxSASTBase):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         scan = (await responses[0].json())[0]
-        return SourceMeasurement(str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))))
+        return SourceMeasurement(value=str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))))
 
 
 class CxSASTSecurityWarnings(CxSASTBase):
@@ -82,4 +82,4 @@ class CxSASTSecurityWarnings(CxSASTBase):
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         stats = await responses[0].json()
         severities = self._parameter("severities")
-        return SourceMeasurement(str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)))
+        return SourceMeasurement(value=str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)))

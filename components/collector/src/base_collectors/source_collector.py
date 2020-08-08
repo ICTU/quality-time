@@ -23,9 +23,9 @@ class SourceMeasurement:  # pylint: disable=too-few-public-methods
     MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
 
     def __init__(
-            self, value: Value = None, total: Value = "100", entities: Entities = None,
+            self, *, value: Value = None, total: Value = "100", entities: Entities = None,
             parse_error: ErrorMessage = None) -> None:
-        self.value = value
+        self.value = str(len(entities)) if value is None and entities is not None else value
         self.total = total
         self.entities = entities[:self.MAX_ENTITIES] if entities else []
         self.parse_error = parse_error
@@ -200,7 +200,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
             dict(key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
                  url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     @abstractmethod
     async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
@@ -220,7 +220,7 @@ class SourceUpToDatenessCollector(SourceCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         date_times = await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
-        return SourceMeasurement(str(days_ago(min(date_times))))
+        return SourceMeasurement(value=str(days_ago(min(date_times))))
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""

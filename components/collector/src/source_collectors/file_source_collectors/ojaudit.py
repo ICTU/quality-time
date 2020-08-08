@@ -27,7 +27,7 @@ class OJAuditViolations(XMLFileSourceCollector):
             entities.extend(self.__violations(tree, namespaces, severities))
             for severity in severities:
                 count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
-        return SourceMeasurement(str(count), entities=entities)
+        return SourceMeasurement(value=str(count), entities=entities)
 
     def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
         """Return the violations."""

@@ -31,7 +31,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
                 key = md5_hash(f"{alert_key}:{method}:{uri}")
                 entities[key] = dict(
                     key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk)
-        return SourceMeasurement(str(len(entities)), entities=list(entities.values()))
+        return SourceMeasurement(value=str(len(entities)), entities=list(entities.values()))
 
     def __stable(self, url: URL) -> URL:
         """Return the url without the variable parts."""

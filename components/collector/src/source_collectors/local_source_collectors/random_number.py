@@ -14,4 +14,4 @@ class Random(LocalSourceCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         value = random.randint(self.MIN, self.MAX)  # nosec, random generator is not used for security purpose
-        return SourceMeasurement(str(value))
+        return SourceMeasurement(value=str(value))

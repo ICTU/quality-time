@@ -44,7 +44,7 @@ class JiraIssues(SourceCollector):
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
         entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
-        return SourceMeasurement(str(json.get("total", 0)), entities=entities)
+        return SourceMeasurement(value=str(json.get("total", 0)), entities=entities)
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""

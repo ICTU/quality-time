@@ -8,4 +8,4 @@ class ManualNumber(LocalSourceCollector):
     """Manual number metric collector."""
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
-        return SourceMeasurement(str(self._parameter("number")))
+        return SourceMeasurement(value=str(self._parameter("number")))

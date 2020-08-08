@@ -19,4 +19,4 @@ class PipDependencies(JSONFileSourceCollector):
                 name=dependency["name"], version=dependency.get("version", "unknown"),
                 latest=dependency.get("latest_version", "unknown"))
             for dependency in installed_dependencies]
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)

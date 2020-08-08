@@ -30,7 +30,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             entities.extend(
                 [self._parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
                  in enumerate(self._dependencies(tree, namespaces))])
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> List[Element]:  # pylint: disable=no-self-use
         """Return the dependencies."""

@@ -36,7 +36,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
             coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
             covered += int(coverage["coveredPoints"])
             total += int(coverage["coveragePoints"])
-        return SourceMeasurement(str(total - covered), str(total))
+        return SourceMeasurement(value=str(total - covered), total=str(total))
 
 
 class NCoverUncoveredLines(NCoverCoverageBase):

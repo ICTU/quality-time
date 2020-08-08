@@ -92,7 +92,7 @@ class WekanIssues(WekanBase):
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     def _ignore_card(self, card: Dict) -> bool:
 
@@ -131,4 +131,4 @@ class WekanSourceUpToDateness(WekanBase):
         for lst in self._lists:
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             dates.extend([card["dateLastActivity"] for card in self._cards.get(lst["_id"], [])])
-        return SourceMeasurement(str(days_ago(parse(max([date for date in dates if date])))))
+        return SourceMeasurement(value=str(days_ago(parse(max([date for date in dates if date])))))

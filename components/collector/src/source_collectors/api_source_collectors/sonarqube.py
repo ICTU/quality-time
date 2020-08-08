@@ -85,7 +85,7 @@ class SonarQubeViolations(SonarQubeCollector):
             json = await response.json()
             value += int(json.get("total", 0))
             entities.extend([await self._entity(issue) for issue in json.get("issues", [])])
-        return SourceMeasurement(str(value), entities=entities)
+        return SourceMeasurement(value=str(value), entities=entities)
 
     async def __issue_landing_url(self, issue_key: str) -> URL:
         """Generate a landing url for the issue."""
@@ -218,7 +218,8 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         metrics = await self.__get_metrics(responses)
-        return SourceMeasurement(self._value(metrics), self._total(metrics), self._entities(metrics))
+        return SourceMeasurement(value=self._value(metrics), total=self._total(metrics),
+                                 entities=self._entities(metrics))
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -336,7 +337,7 @@ class SonarQubeTests(SonarQubeCollector):
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
         total = str(sum(tests[test_result] for test_result in test_results))
-        return SourceMeasurement(value, total)
+        return SourceMeasurement(value=value, total=total)
 
     @staticmethod
     async def __nr_of_tests(responses: Responses) -> Dict[str, int]:

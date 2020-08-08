@@ -45,7 +45,7 @@ class GitLabJobsBase(GitLabBase):
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
                 stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
             for job in jobs]
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     async def __jobs(self, responses: Responses) -> Sequence[Job]:
         """Return the jobs to count."""
@@ -134,7 +134,7 @@ class GitLabSourceUpToDateness(GitLabBase):
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         commit_responses = responses[1:]
         value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
-        return SourceMeasurement(value)
+        return SourceMeasurement(value=value)
 
 
 class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):

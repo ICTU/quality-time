@@ -24,7 +24,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities = [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
-        return SourceMeasurement(str(len(entities)), entities=entities)
+        return SourceMeasurement(value=str(len(entities)), entities=entities)
 
     @staticmethod
     def __entity(transaction) -> Entity:
@@ -62,7 +62,7 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
             hours, minutes, seconds = [
                 int(part) for part in (await self._soup(response)).find(id="duration").string.split(":", 2)]
             durations.append(60 * hours + minutes + round(seconds / 60.))
-        return SourceMeasurement(str(sum(durations)))
+        return SourceMeasurement(value=str(sum(durations)))
 
 
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
@@ -72,7 +72,7 @@ class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseCla
         trend_breaks = []
         for response in responses:
             trend_breaks.append(int((await self._soup(response)).find(id="trendbreak_stability").string))
-        return SourceMeasurement(str(min(trend_breaks)))
+        return SourceMeasurement(value=str(min(trend_breaks)))
 
 
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
@@ -86,7 +86,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
             for status in statuses:
                 if status_td := soup.find(id=status):
                     count += int(status_td.string)
-        return SourceMeasurement(str(count))
+        return SourceMeasurement(value=str(count))
 
 
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
@@ -100,4 +100,4 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
                 raise AssertionError(
                     "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
             trend_breaks.append(breaking_point)
-        return SourceMeasurement(str(min(trend_breaks)))
+        return SourceMeasurement(value=str(min(trend_breaks)))
