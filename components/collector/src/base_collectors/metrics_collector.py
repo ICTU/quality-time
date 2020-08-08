@@ -46,8 +46,8 @@ class MetricsCollector:
         self.server_url: Final[URL] = \
             URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
         self.data_model: JSON = dict()
-        self.next_fetch: Dict[str, datetime] = dict()
         self.last_parameters: Dict[str, Any] = dict()
+        self.next_fetch: Dict[str, datetime] = dict()
 
     @staticmethod
     def record_health(filename: str = "/tmp/health_check.txt") -> None:
@@ -123,9 +123,7 @@ class MetricsCollector:
 
     def __can_and_should_collect(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric can and needs to be measured."""
-        if not self.__can_collect(metric):
-            return False
-        return self.__should_collect(metric_uuid, metric)
+        return self.__should_collect(metric_uuid, metric) if self.__can_collect(metric) else False
 
     def __can_collect(self, metric) -> bool:
         """Return whether the user has specified all mandatory parameters for all sources."""
@@ -141,6 +139,6 @@ class MetricsCollector:
     def __should_collect(self, metric_uuid: str, metric) -> bool:
         """Return whether the metric should be collected, either because the user changed the configuration or because
         it has been collected too long ago."""
-        if self.last_parameters.get(metric_uuid) != metric:
-            return True
-        return self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
+        metric_changed = self.last_parameters.get(metric_uuid) != metric
+        metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
+        return metric_changed or metric_due
