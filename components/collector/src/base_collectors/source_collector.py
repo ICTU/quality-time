@@ -134,14 +134,13 @@ class SourceCollector(ABC):
     async def __safely_parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        measurement = SourceMeasurement()
         if responses:
             try:
                 measurement = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
-                measurement.parse_error = stable_traceback(traceback.format_exc())
+                measurement = SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
         else:
-            measurement.total = None
+            measurement = SourceMeasurement(total=None)
         return measurement
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
