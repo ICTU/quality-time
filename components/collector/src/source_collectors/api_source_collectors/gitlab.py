@@ -10,8 +10,8 @@ from urllib.parse import quote
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Job, Entities, Responses, URL, Value
-from base_collectors import SourceCollector, UnmergedBranchesSourceCollector
+from collector_utilities.type import Job, Responses, URL
+from base_collectors import SourceCollector, SourceMeasurement, UnmergedBranchesSourceCollector
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -38,14 +38,14 @@ class GitLabJobsBase(GitLabBase):
     async def _api_url(self) -> URL:
         return await self._gitlab_api_url("jobs")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         jobs = await self.__jobs(responses)
         entities = [
             dict(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
                 stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
             for job in jobs]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     async def __jobs(self, responses: Responses) -> Sequence[Job]:
         """Return the jobs to count."""
@@ -131,10 +131,10 @@ class GitLabSourceUpToDateness(GitLabBase):
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return await super()._get_source_responses(commit_api_url)
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         commit_responses = responses[1:]
         value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
-        return value, "100", []
+        return SourceMeasurement(value)
 
 
 class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):

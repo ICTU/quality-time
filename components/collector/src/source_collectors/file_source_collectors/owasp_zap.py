@@ -2,20 +2,20 @@
 
 import re
 from datetime import datetime
-from typing import cast, Dict, List, Tuple
+from typing import cast, Dict, List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import parse
 
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
-from collector_utilities.type import Entities, Entity, Response, Responses, URL, Value
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Response, Responses, URL
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities: Dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
         risks = cast(List[str], self._parameter("risks"))
@@ -31,7 +31,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
                 key = md5_hash(f"{alert_key}:{method}:{uri}")
                 entities[key] = dict(
                     key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk)
-        return str(len(entities)), "100", list(entities.values())
+        return SourceMeasurement(str(len(entities)), entities=list(entities.values()))
 
     def __stable(self, url: URL) -> URL:
         """Return the url without the variable parts."""

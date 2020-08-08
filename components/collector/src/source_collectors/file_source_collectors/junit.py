@@ -1,19 +1,19 @@
 """JUnit metric collector."""
 
 from datetime import datetime
-from typing import cast, List, Tuple
+from typing import cast, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Response, Responses, Value
+from collector_utilities.type import Entity, Response, Responses
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities = []
         test_statuses_to_count = cast(List[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
@@ -27,7 +27,7 @@ class JUnitTests(XMLFileSourceCollector):
                     test_result = "passed"
                 if test_result in test_statuses_to_count:
                     entities.append(self.__entity(test_case, test_result))
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     @staticmethod
     def __entity(case_node, case_result: str) -> Entity:

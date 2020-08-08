@@ -2,13 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Tuple
+from typing import cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
+from collector_utilities.type import Entity, Response, Responses, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -40,12 +40,12 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

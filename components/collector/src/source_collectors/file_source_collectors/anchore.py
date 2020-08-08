@@ -1,19 +1,18 @@
 """Anchore metrics collector."""
 
 from datetime import datetime, timezone
-from typing import Tuple
 
 from dateutil.parser import parse
 
 from collector_utilities.functions import md5_hash
-from collector_utilities.type import Entities, Response, Responses, Value
-from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Response, Responses
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
     """Anchore collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         severities = self._parameter("severities")
         entities = []
         for response in responses:
@@ -28,7 +27,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
                     fix=vulnerability["fix"],
                     url=vulnerability["url"])
                 for vulnerability in vulnerabilities if vulnerability["severity"] in severities])
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
 
 class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):

@@ -2,13 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List, Tuple
+from typing import cast, Dict, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Responses, URL, Value
+from collector_utilities.type import Entity, Entities, Responses, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceMeasurement
 
 
 WekanCard = Dict[str, str]
@@ -85,14 +85,14 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         api_url = await self._api_url()
         board_slug = self._board["slug"]
         entities: Entities = []
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     def _ignore_card(self, card: Dict) -> bool:
 
@@ -126,9 +126,9 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         dates = [self._board.get("createdAt"), self._board.get("modifiedAt")]
         for lst in self._lists:
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             dates.extend([card["dateLastActivity"] for card in self._cards.get(lst["_id"], [])])
-        return str(days_ago(parse(max([date for date in dates if date])))), "100", []
+        return SourceMeasurement(str(days_ago(parse(max([date for date in dates if date])))))

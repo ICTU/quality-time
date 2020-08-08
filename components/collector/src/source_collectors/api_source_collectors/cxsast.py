@@ -6,9 +6,9 @@ from typing import cast, Dict, Optional, Tuple
 from dateutil.parser import parse
 import aiohttp
 
-from collector_utilities.type import Entities, Response, Responses, URL, Value
+from collector_utilities.type import Response, Responses, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceMeasurement
 
 
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -66,9 +66,9 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         scan = (await responses[0].json())[0]
-        return str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))), "100", []
+        return SourceMeasurement(str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))))
 
 
 class CxSASTSecurityWarnings(CxSASTBase):
@@ -79,7 +79,7 @@ class CxSASTSecurityWarnings(CxSASTBase):
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         stats = await responses[0].json()
         severities = self._parameter("severities")
-        return str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)), "100", []
+        return SourceMeasurement(str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)))

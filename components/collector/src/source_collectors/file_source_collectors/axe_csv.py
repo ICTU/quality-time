@@ -3,17 +3,17 @@
 import csv
 import re
 from io import StringIO
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from collector_utilities.functions import md5_hash
-from collector_utilities.type import Entities, Responses, Value
-from base_collectors import CSVFileSourceCollector
+from collector_utilities.type import Entities, Responses
+from base_collectors import CSVFileSourceCollector, SourceMeasurement
 
 
 class AxeCSVAccessibility(CSVFileSourceCollector):
     """Collector class to get accessibility violations."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities: Entities = [
             dict(
                 url=str(row["URL"]), violation_type=row["Violation Type"], impact=row["Impact"],
@@ -22,7 +22,7 @@ class AxeCSVAccessibility(CSVFileSourceCollector):
             for row in await self.__parse_csv(responses)]
         for entity in entities:
             entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     async def __parse_csv(self, responses: Responses) -> List[Dict[str, str]]:
         """Parse the CSV and return the rows and parsed items ."""

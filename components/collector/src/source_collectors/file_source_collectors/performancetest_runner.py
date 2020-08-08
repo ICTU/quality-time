@@ -2,12 +2,12 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import List, Tuple
+from typing import List
 
 from bs4 import BeautifulSoup, Tag
 
-from collector_utilities.type import Entities, Entity, Response, Responses, Value
-from base_collectors import HTMLFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Response, Responses
+from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -22,9 +22,9 @@ class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: d
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performance test report."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities = [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     @staticmethod
     def __entity(transaction) -> Entity:
@@ -56,29 +56,29 @@ class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, So
 class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClass):
     """Collector for the performance test duration."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         durations = []
         for response in responses:
             hours, minutes, seconds = [
                 int(part) for part in (await self._soup(response)).find(id="duration").string.split(":", 2)]
             durations.append(60 * hours + minutes + round(seconds / 60.))
-        return str(sum(durations)), "100", []
+        return SourceMeasurement(str(sum(durations)))
 
 
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
     """Collector for the performance test stability."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         trend_breaks = []
         for response in responses:
             trend_breaks.append(int((await self._soup(response)).find(id="trendbreak_stability").string))
-        return str(min(trend_breaks)), "100", []
+        return SourceMeasurement(str(min(trend_breaks)))
 
 
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         count = 0
         statuses = self._parameter("test_result")
         for response in responses:
@@ -86,13 +86,13 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
             for status in statuses:
                 if status_td := soup.find(id=status):
                     count += int(status_td.string)
-        return str(count), "100", []
+        return SourceMeasurement(str(count))
 
 
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         trend_breaks = []
         for response in responses:
             breaking_point = int((await self._soup(response)).find(id="trendbreak_scalability").string)
@@ -100,4 +100,4 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
                 raise AssertionError(
                     "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
             trend_breaks.append(breaking_point)
-        return str(min(trend_breaks)), "100", []
+        return SourceMeasurement(str(min(trend_breaks)))

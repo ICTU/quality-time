@@ -6,15 +6,16 @@ See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-re
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Any, Dict, Final, List, Tuple
+from typing import cast, Any, Dict, Final, List
 import urllib.parse
 
 from dateutil.parser import parse
 import aiohttp
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Entities, Job, Response, Responses, URL, Value
-from base_collectors import SourceCollector, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector
+from collector_utilities.type import Entities, Job, Response, Responses, URL
+from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector, \
+    UnmergedBranchesSourceCollector
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -33,12 +34,12 @@ class AzureDevopsIssues(SourceCollector):
         ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return [response]
-        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, self.MAX_ENTITIES)])
+        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)])
         work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         work_items = await super()._get_source_responses(work_items_url)
         return [response] + work_items
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         value = str(len((await responses[0].json())["workItems"]))
         entities = [
             dict(
@@ -46,7 +47,7 @@ class AzureDevopsIssues(SourceCollector):
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"], url=work_item["url"])
             for work_item in await self._work_items(responses)]
-        return value, "100", entities
+        return SourceMeasurement(value, entities=entities)
 
     @staticmethod
     async def _work_items(responses: Responses):
@@ -57,13 +58,14 @@ class AzureDevopsIssues(SourceCollector):
 class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
     """Collector to get ready user story points from Azure Devops Server."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        _, total, entities = await super()._parse_source_responses(responses)
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+        measurement = await super()._parse_source_responses(responses)
         value = 0
-        for entity, work_item in zip(entities, await self._work_items(responses)):
+        for entity, work_item in zip(measurement.entities, await self._work_items(responses)):
             entity["story_points"] = story_points = work_item["fields"].get("Microsoft.VSTS.Scheduling.StoryPoints")
             value += 0 if story_points is None else story_points
-        return str(round(value)), total, entities
+        measurement.value = str(round(value))
+        return measurement
 
 
 class AzureDevopsRepositoryBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -133,7 +135,7 @@ class AzureDevopsTests(SourceCollector):
         api_url = await super()._api_url()
         return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$api-version=5.0")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         test_results = cast(List[str], self._parameter("test_result"))
         test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
         runs = (await responses[0].json()).get("value", [])
@@ -165,7 +167,7 @@ class AzureDevopsTests(SourceCollector):
                          total_tests=str(run.get("totalTests", 0))))
             test_count += highest_build_test_count
             test_runs.extend(highest_build_nr_test_runs)
-        return str(test_count), "100", test_runs
+        return SourceMeasurement(str(test_count), entities=test_runs)
 
 
 class AzureDevopsJobs(SourceCollector):
@@ -177,7 +179,7 @@ class AzureDevopsJobs(SourceCollector):
     async def _landing_url(self, responses: Responses) -> URL:
         return URL(f"{await super()._api_url()}/_build")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities: Entities = []
         for job in (await responses[0].json())["value"]:
             if self._ignore_job(job):
@@ -188,7 +190,7 @@ class AzureDevopsJobs(SourceCollector):
             build_date_time = self._latest_build_date_time(job)
             entities.append(
                 dict(name=name, key=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     def _ignore_job(self, job: Job) -> bool:
         """Return whether this job should be ignored"""

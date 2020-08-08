@@ -4,12 +4,11 @@ import re
 import json
 from abc import ABC
 from datetime import datetime
-from typing import Tuple
 
 from bs4 import BeautifulSoup
 
-from collector_utilities.type import Entities, Response, Responses, Value
-from base_collectors import HTMLFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Response, Responses
+from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -29,7 +28,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
 
     coverage_type = "Subclass responsibility"
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         covered, total = 0, 0
         for response in responses:
             script = await self._find_script(response, "ncover.execution.stats = ")
@@ -37,7 +36,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
             coverage = json.loads(json_string)[f"{self.coverage_type}Coverage"]
             covered += int(coverage["coveredPoints"])
             total += int(coverage["coveragePoints"])
-        return str(total - covered), str(total), []
+        return SourceMeasurement(str(total - covered), str(total))
 
 
 class NCoverUncoveredLines(NCoverCoverageBase):

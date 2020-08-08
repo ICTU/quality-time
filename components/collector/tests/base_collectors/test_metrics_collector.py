@@ -3,14 +3,13 @@
 import logging
 import unittest
 from datetime import datetime
-from typing import Tuple
 from unittest.mock import patch, mock_open, AsyncMock, Mock
 
 import aiohttp
 
 import quality_time_collector
-from base_collectors import MetricsCollector, SourceCollector
-from collector_utilities.type import Entities, Responses, Value
+from base_collectors import MetricsCollector, SourceCollector, SourceMeasurement
+from collector_utilities.type import Responses
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
@@ -28,8 +27,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         class SourceMetric(SourceCollector):  # pylint: disable=unused-variable
             """Register a fake collector automatically."""
 
-            async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-                return "42", "84", []
+            async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+                return SourceMeasurement("42", "84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))
         self.metrics_collector = MetricsCollector()

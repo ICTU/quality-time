@@ -1,18 +1,17 @@
 """Bandit metrics collector."""
 
 from datetime import datetime
-from typing import Tuple
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entities, Response, Responses, Value
-from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Response, Responses
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 
 
 class BanditSecurityWarnings(JSONFileSourceCollector):
     """Bandit collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         severities = self._parameter("severities")
         confidence_levels = self._parameter("confidence_levels")
         entities = []
@@ -28,7 +27,7 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                 for warning in (await response.json(content_type=None)).get("results", [])
                 if warning["issue_severity"].lower() in severities
                 and warning["issue_confidence"].lower() in confidence_levels])
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
 
 class BanditSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):

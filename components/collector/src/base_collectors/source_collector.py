@@ -16,11 +16,25 @@ from collector_utilities.functions import days_ago, tokenless, stable_traceback
 from collector_utilities.type import ErrorMessage, Entities, JSON, Measurement, Response, Responses, URL, Value
 
 
+class SourceMeasurement:  # pylint: disable=too-few-public-methods
+    """Class to hold measurement values, entities, and error messages from collecting the measurement from one
+    source."""
+
+    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
+
+    def __init__(
+            self, value: Value = None, total: Value = "100", entities: Entities = None,
+            parse_error: ErrorMessage = None) -> None:
+        self.value = value
+        self.total = total
+        self.entities = entities[:self.MAX_ENTITIES] if entities else []
+        self.parse_error = parse_error
+
+
 class SourceCollector(ABC):
     """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
     measurement data for one specific metric from one specific source."""
 
-    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
@@ -48,10 +62,11 @@ class SourceCollector(ABC):
     async def get(self) -> Measurement:
         """Return the measurement from this source."""
         responses, api_url, connection_error = await self.__safely_get_source_responses()
-        value, total, entities, parse_error = await self.__safely_parse_source_responses(responses)
+        measurement = await self.__safely_parse_source_responses(responses)
         landing_url = await self.__safely_parse_landing_url(responses)
-        return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
-                    connection_error=connection_error, parse_error=parse_error)
+        return dict(
+            api_url=api_url, landing_url=landing_url, value=measurement.value, total=measurement.total,
+            entities=measurement.entities, connection_error=connection_error, parse_error=measurement.parse_error)
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
@@ -116,24 +131,24 @@ class SourceCollector(ABC):
         """Return the headers for the get request."""
         return {}
 
-    async def __safely_parse_source_responses(
-            self, responses: Responses) -> Tuple[Value, Value, Entities, ErrorMessage]:
+    async def __safely_parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        entities: Entities = []
-        value, total, error = None, None, None
+        measurement = SourceMeasurement()
         if responses:
             try:
-                value, total, entities = await self._parse_source_responses(responses)
+                measurement = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
-                error = stable_traceback(traceback.format_exc())
-        return value, total, entities[:self.MAX_ENTITIES], error
+                measurement.parse_error = stable_traceback(traceback.format_exc())
+        else:
+            measurement.total = None
+        return measurement
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
-        This method can be overridden by collectors to parse the retrieved sources data."""
-        # pylint: disable=assignment-from-none,no-self-use,unused-argument
-        return None, "100", []  # pragma: no cover
+        This method should be overridden by collectors to parse the retrieved sources data."""
+        # pylint: disable=no-self-use,unused-argument
+        return SourceMeasurement()  # pragma: no cover
 
     async def __safely_parse_landing_url(self, responses: Responses) -> URL:
         """Parse the responses to get the landing url, without failing. This method should not be overridden because
@@ -180,12 +195,12 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for unmerged branches source collectors."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities = [
             dict(key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
                  url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(str(len(entities)), entities=entities)
 
     @abstractmethod
     async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
@@ -203,9 +218,9 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         date_times = await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
-        return str(days_ago(min(date_times))), "100", []
+        return SourceMeasurement(str(days_ago(min(date_times))))
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""

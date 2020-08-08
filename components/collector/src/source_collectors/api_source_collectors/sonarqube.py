@@ -1,13 +1,13 @@
 """Collectors for SonarQube."""
 
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
+from collector_utilities.type import URL, Entities, Entity, Response, Responses
 
 
 class SonarQubeException(Exception):
@@ -78,14 +78,14 @@ class SonarQubeViolations(SonarQubeCollector):
                     f"branch={branch}"))
         return await super()._get_source_responses(*api_urls)
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         value = 0
         entities: Entities = []
         for response in responses:
             json = await response.json()
             value += int(json.get("total", 0))
             entities.extend([await self._entity(issue) for issue in json.get("issues", [])])
-        return str(value), "100", entities
+        return SourceMeasurement(str(value), entities=entities)
 
     async def __issue_landing_url(self, issue_key: str) -> URL:
         """Generate a landing url for the issue."""
@@ -138,12 +138,13 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
             f"branch={branch}")
         return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        value, _, entities = await super()._parse_source_responses(responses)
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+        measurement = await super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:
             measures.extend((await response.json()).get("component", {}).get("measures", []))
-        return value, str(sum(int(measure["value"]) for measure in measures)), entities
+        measurement.total = str(sum(int(measure["value"]) for measure in measures))
+        return measurement
 
 
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
@@ -182,9 +183,10 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        value, _, entities = await super()._parse_source_responses(responses[:-1])
-        return value, str((await responses[-1].json())["total"]), entities
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+        measurement = await super()._parse_source_responses(responses[:-1])
+        measurement.total = str((await responses[-1].json())["total"])
+        return measurement
 
     async def _entity(self, issue) -> Entity:
         """Also add the resolution to the entity."""
@@ -214,9 +216,9 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return URL(
             f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         metrics = await self.__get_metrics(responses)
-        return self._value(metrics), self._total(metrics), self._entities(metrics)
+        return SourceMeasurement(self._value(metrics), self._total(metrics), self._entities(metrics))
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -329,12 +331,12 @@ class SonarQubeTests(SonarQubeCollector):
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
         total = str(sum(tests[test_result] for test_result in test_results))
-        return value, total, []
+        return SourceMeasurement(value, total)
 
     @staticmethod
     async def __nr_of_tests(responses: Responses) -> Dict[str, int]:
