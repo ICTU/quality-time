@@ -24,4 +24,4 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                     key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
                     affected=warning[self.AFFECTED], vulnerability=warning[self.VULNERABILITY])
                  for warning in await response.json(content_type=None)])
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)

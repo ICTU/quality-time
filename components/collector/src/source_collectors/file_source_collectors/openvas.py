@@ -25,7 +25,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
                       host=result.findtext("host", default=""), port=result.findtext("port", default=""),
                       severity=result.findtext("threat", default=""))
                  for result in self.__results(tree, severities)])
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     @staticmethod
     def __results(element: Element, severities: List[str]) -> List[Element]:

@@ -19,4 +19,4 @@ class NpmDependencies(JSONFileSourceCollector):
                 current=versions.get("current", "unknown"), wanted=versions.get("wanted", "unknown"),
                 latest=versions.get("latest", "unknown"))
             for dependency, versions in installed_dependencies.items()]
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)

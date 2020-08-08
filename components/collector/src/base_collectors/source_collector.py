@@ -200,7 +200,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
             dict(key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
                  url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     @abstractmethod
     async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:

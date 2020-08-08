@@ -55,7 +55,7 @@ class QualityTimeMetrics(QualityTimeCollector):
                 target = metric.get("target") or self._datamodel["metrics"][metric["type"]]["target"]
                 entity["target"] = f"{direction} {target} {unit}"
                 entities.append(entity)
-        return SourceMeasurement(value=str(len(entities)), total=str(len(metrics_and_entities)), entities=entities)
+        return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
 
     @staticmethod
     def __get_status_and_value(metric, measurement: Measurement) -> Tuple[str, Value]:

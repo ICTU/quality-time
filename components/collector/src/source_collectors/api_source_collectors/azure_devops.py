@@ -190,7 +190,7 @@ class AzureDevopsJobs(SourceCollector):
             build_date_time = self._latest_build_date_time(job)
             entities.append(
                 dict(name=name, key=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     def _ignore_job(self, job: Job) -> bool:
         """Return whether this job should be ignored"""

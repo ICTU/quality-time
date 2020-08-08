@@ -27,7 +27,7 @@ class JUnitTests(XMLFileSourceCollector):
                     test_result = "passed"
                 if test_result in test_statuses_to_count:
                     entities.append(self.__entity(test_case, test_result))
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     @staticmethod
     def __entity(case_node, case_result: str) -> Entity:

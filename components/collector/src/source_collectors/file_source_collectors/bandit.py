@@ -27,7 +27,7 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
                 for warning in (await response.json(content_type=None)).get("results", [])
                 if warning["issue_severity"].lower() in severities
                 and warning["issue_confidence"].lower() in confidence_levels])
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
 
 class BanditSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):

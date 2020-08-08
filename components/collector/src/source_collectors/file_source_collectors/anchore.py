@@ -27,7 +27,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
                     fix=vulnerability["fix"],
                     url=vulnerability["url"])
                 for vulnerability in vulnerabilities if vulnerability["severity"] in severities])
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
 
 class AnchoreSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):

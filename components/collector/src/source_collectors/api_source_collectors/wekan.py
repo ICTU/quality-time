@@ -92,7 +92,7 @@ class WekanIssues(WekanBase):
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     def _ignore_card(self, card: Dict) -> bool:
 

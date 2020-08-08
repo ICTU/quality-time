@@ -45,7 +45,7 @@ class TrelloIssues(TrelloBase):
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

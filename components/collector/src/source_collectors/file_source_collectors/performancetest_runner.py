@@ -24,7 +24,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 
     async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
         entities = [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
-        return SourceMeasurement(value=str(len(entities)), entities=entities)
+        return SourceMeasurement(entities=entities)
 
     @staticmethod
     def __entity(transaction) -> Entity:
