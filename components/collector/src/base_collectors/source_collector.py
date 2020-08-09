@@ -64,9 +64,9 @@ class SourceCollector(ABC):
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, source, datamodel) -> None:
+    def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
-        self._datamodel: Final = datamodel
+        self._data_model: Final = data_model
         self.__parameters: Final[Dict[str, Union[str, List[str]]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:
@@ -105,7 +105,7 @@ class SourceCollector(ABC):
             """Quote the string if needed."""
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
-        parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
+        parameter_info = self._data_model["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info and parameter_info["type"].startswith("multiple_choice"):
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
         else:

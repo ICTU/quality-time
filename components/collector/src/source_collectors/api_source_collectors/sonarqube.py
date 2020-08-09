@@ -335,7 +335,7 @@ class SonarQubeTests(SonarQubeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
-        test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
+        test_results = self._data_model["sources"][self.source_type]["parameters"]["test_result"]["values"]
         total = str(sum(tests[test_result] for test_result in test_results))
         return SourceMeasurement(value=value, total=total)
 

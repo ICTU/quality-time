@@ -49,13 +49,13 @@ class QualityTimeMetrics(QualityTimeCollector):
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
                 entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
                 entity["metric_url"] = f"{report_url}#{entity['key']}"
-                entity["metric"] = str(metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"])
+                entity["metric"] = str(metric.get("name") or self._data_model["metrics"][metric["type"]]["name"])
                 entity["status"] = status
-                unit = metric.get("unit") or self._datamodel["metrics"][metric["type"]]["unit"]
+                unit = metric.get("unit") or self._data_model["metrics"][metric["type"]]["unit"]
                 entity["measurement"] = f"{value or '?'} {unit}"
-                direction = str(metric.get("direction") or self._datamodel["metrics"][metric["type"]]["direction"])
+                direction = str(metric.get("direction") or self._data_model["metrics"][metric["type"]]["direction"])
                 direction = {"<": "≦", ">": "≧"}.get(direction, direction)
-                target = metric.get("target") or self._datamodel["metrics"][metric["type"]]["target"]
+                target = metric.get("target") or self._data_model["metrics"][metric["type"]]["target"]
                 entity["target"] = f"{direction} {target} {unit}"
                 entities.append(entity)
         return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
