@@ -3,9 +3,9 @@
 from typing import cast, Dict, List, Optional
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-from collector_utilities.type import Namespaces, Entities, Entity, Responses
+from collector_utilities.type import Namespaces, Entities, Entity
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from base_collectors import XMLFileSourceCollector, SourceMeasurement
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
@@ -18,7 +18,7 @@ class OJAuditViolations(XMLFileSourceCollector):
         super().__init__(*args, **kwargs)
         self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         severities = cast(List[str], self._parameter("severities"))
         count = 0
         entities = []

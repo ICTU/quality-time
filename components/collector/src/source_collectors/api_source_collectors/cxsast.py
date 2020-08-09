@@ -6,9 +6,9 @@ from typing import cast, Dict, Optional, Tuple
 from dateutil.parser import parse
 import aiohttp
 
-from collector_utilities.type import Response, Responses, URL
+from collector_utilities.type import Response, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector, SourceMeasurement
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
 
 
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -28,12 +28,12 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         return None
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         api_url = await self._api_url()
         return URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}") \
             if responses else api_url
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to do multiple requests to get all the data we need."""
         # See https://checkmarx.atlassian.net/wiki/spaces/KC/pages/1187774721/Using+the+CxSAST+REST+API+v8.6.0+and+up
         credentials = dict(  # nosec, The client secret is not really secret, see previous url
@@ -48,9 +48,9 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self.__project_id = await self.__get_project_id(project_response)
         scan_api = URL(
             f"{await self._api_url()}/cxrestapi/sast/scans?projectId={self.__project_id}&scanStatus=Finished&last=1")
-        scan_response = (await super()._get_source_responses(scan_api))[0]
-        self._scan_id = (await scan_response.json())[0]["id"]
-        return [scan_response]
+        scan_responses = await super()._get_source_responses(scan_api)
+        self._scan_id = (await scan_responses[0].json())[0]["id"]
+        return scan_responses
 
     async def __get_project_id(self, project_response: Response) -> str:
         """Return the project id that belongs to the project parameter."""
@@ -66,7 +66,7 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class CxSASTSourceUpToDateness(CxSASTBase):
     """Collector class to measure the up-to-dateness of a Checkmarx CxSAST scan."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         scan = (await responses[0].json())[0]
         return SourceMeasurement(value=str(days_ago(parse(scan["dateAndTime"]["finishedOn"]))))
 
@@ -74,12 +74,12 @@ class CxSASTSourceUpToDateness(CxSASTBase):
 class CxSASTSecurityWarnings(CxSASTBase):
     """Collector class to measure the number of security warnings in a Checkmarx CxSAST scan."""
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         await super()._get_source_responses(*urls)  # Get token
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # pylint: disable=protected-access
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         stats = await responses[0].json()
         severities = self._parameter("severities")
         return SourceMeasurement(value=str(sum(stats.get(f"{severity.lower()}Severity", 0) for severity in severities)))

@@ -5,15 +5,15 @@ from typing import cast, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Response, Responses
+from collector_utilities.type import Entity, Response
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class JUnitTests(XMLFileSourceCollector):
     """Collector for JUnit tests."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = []
         test_statuses_to_count = cast(List[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")

@@ -2,14 +2,14 @@
 
 from typing import Dict, List
 
-from collector_utilities.type import Entities, Responses
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
+from collector_utilities.type import Entities
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 class ComposerDependencies(JSONFileSourceCollector):
     """Composer collector for dependencies."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         statuses = self._parameter("latest_version_status")
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:

@@ -4,8 +4,8 @@ from datetime import datetime
 from typing import cast, Iterator
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Job, Jobs, Responses, URL
-from base_collectors import SourceCollector, SourceMeasurement
+from collector_utilities.type import Job, Jobs, URL
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
 
 
 class JenkinsJobs(SourceCollector):
@@ -16,7 +16,7 @@ class JenkinsJobs(SourceCollector):
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [
             dict(
                 key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),

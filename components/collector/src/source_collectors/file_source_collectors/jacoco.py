@@ -4,8 +4,8 @@ from datetime import datetime
 
 from defusedxml import ElementTree
 
-from collector_utilities.type import Response, Responses
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Response
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class JacocoCoverageBaseClass(XMLFileSourceCollector):
@@ -13,7 +13,7 @@ class JacocoCoverageBaseClass(XMLFileSourceCollector):
 
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         missed, covered = 0, 0
         for response in responses:
             tree = ElementTree.fromstring(await response.text())

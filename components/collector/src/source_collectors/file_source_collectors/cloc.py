@@ -1,14 +1,13 @@
 """cloc metrics collector."""
 
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import Responses
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 class ClocLOC(JSONFileSourceCollector):
     """cloc collector for size/lines of code."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         loc = 0
         entities = []
         languages_to_ignore = self._parameter("languages_to_ignore")

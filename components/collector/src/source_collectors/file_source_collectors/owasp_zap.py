@@ -8,14 +8,14 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 from dateutil.parser import parse
 
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
-from collector_utilities.type import Entity, Response, Responses, URL
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Response, URL
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OWASP ZAP."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities: Dict[str, Entity] = {}
         tag_re = re.compile(r"<[^>]*>")
         risks = cast(List[str], self._parameter("risks"))
@@ -42,7 +42,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         return URL(stable_url)
 
     @staticmethod
-    async def __alerts(responses: Responses, risks: List[str]) -> List[Element]:
+    async def __alerts(responses: SourceResponses, risks: List[str]) -> List[Element]:
         """Return a list of the alerts with one of the specified risk levels."""
         alerts = []
         for response in responses:

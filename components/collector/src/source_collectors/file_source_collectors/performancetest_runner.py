@@ -6,8 +6,8 @@ from typing import List
 
 from bs4 import BeautifulSoup, Tag
 
-from collector_utilities.type import Entity, Response, Responses
-from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Response
+from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -22,7 +22,7 @@ class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: d
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performance test report."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [self.__entity(transaction) for transaction in await self.__slow_transactions(responses)]
         return SourceMeasurement(entities=entities)
 
@@ -33,7 +33,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
         threshold = "high" if transaction.select("td.red.evaluated") else "warning"
         return dict(key=name, name=name, threshold=threshold)
 
-    async def __slow_transactions(self, responses: Responses) -> List[Tag]:
+    async def __slow_transactions(self, responses: SourceResponses) -> List[Tag]:
         """Return the slow transactions in the performance test report."""
         thresholds = self._parameter("thresholds")
         slow_transactions: List[Tag] = []
@@ -56,7 +56,7 @@ class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, So
 class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClass):
     """Collector for the performance test duration."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         durations = []
         for response in responses:
             hours, minutes, seconds = [
@@ -68,7 +68,7 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):
     """Collector for the performance test stability."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         trend_breaks = []
         for response in responses:
             trend_breaks.append(int((await self._soup(response)).find(id="trendbreak_stability").string))
@@ -78,7 +78,7 @@ class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseCla
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         count = 0
         statuses = self._parameter("test_result")
         for response in responses:
@@ -92,7 +92,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         trend_breaks = []
         for response in responses:
             breaking_point = int((await self._soup(response)).find(id="trendbreak_scalability").string)

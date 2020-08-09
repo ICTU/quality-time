@@ -6,15 +6,15 @@ from typing import cast, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entities, Response, Responses, URL
+from collector_utilities.type import Entities, Response, URL
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Robot Framework collectors."""
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = str(await super()._landing_url(responses))
         return URL(url.replace("output.html", "report.html"))
 
@@ -22,7 +22,7 @@ class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=a
 class RobotFrameworkTests(RobotFrameworkBaseClass):
     """Collector for Robot Framework tests."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         count = 0
         entities: Entities = []
         test_results = cast(List[str], self._parameter("test_result"))

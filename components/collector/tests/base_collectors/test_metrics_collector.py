@@ -8,8 +8,7 @@ from unittest.mock import patch, mock_open, AsyncMock, Mock
 import aiohttp
 
 import quality_time_collector
-from base_collectors import MetricsCollector, SourceCollector, SourceMeasurement
-from collector_utilities.type import Responses
+from base_collectors import MetricsCollector, SourceCollector, SourceMeasurement, SourceResponses
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):
@@ -27,7 +26,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         class SourceMetric(SourceCollector):  # pylint: disable=unused-variable
             """Register a fake collector automatically."""
 
-            async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+            async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
                 return SourceMeasurement(value="42", total="84")
 
         self.data_model = dict(sources=dict(source=dict(parameters=dict(url=dict(mandatory=True, metrics=["metric"])))))

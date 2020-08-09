@@ -7,8 +7,8 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from collector_utilities.type import Response, Responses
-from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Response
+from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -28,7 +28,7 @@ class NCoverCoverageBase(NCoverBase, ABC):  # pylint: disable=abstract-method
 
     coverage_type = "Subclass responsibility"
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         covered, total = 0, 0
         for response in responses:
             script = await self._find_script(response, "ncover.execution.stats = ")

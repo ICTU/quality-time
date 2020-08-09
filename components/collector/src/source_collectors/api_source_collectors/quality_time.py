@@ -6,8 +6,8 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
-from collector_utilities.type import Entity, Entities, Measurement, Response, Responses, URL, Value
-from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Entities, Measurement, Response, URL, Value
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class QualityTimeCollector(SourceCollector):
@@ -33,7 +33,7 @@ class QualityTimeCollector(SourceCollector):
 class QualityTimeMetrics(QualityTimeCollector):
     """Collector to get the "metrics" metric from Quality-time."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)

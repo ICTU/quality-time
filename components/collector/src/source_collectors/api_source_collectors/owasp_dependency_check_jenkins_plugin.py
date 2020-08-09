@@ -2,8 +2,9 @@
 
 from typing import Dict
 
-from collector_utilities.type import Entity, Responses, URL
-from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector, SourceMeasurement
+from collector_utilities.type import Entity, URL
+from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector, SourceMeasurement, \
+    SourceResponses
 
 
 class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
@@ -13,10 +14,10 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         api_url = await super()._api_url()
         return URL(f"{api_url}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]

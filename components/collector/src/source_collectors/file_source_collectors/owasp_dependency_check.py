@@ -7,9 +7,9 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Namespaces, Entity, Response, Responses
+from collector_utilities.type import Namespaces, Entity, Response
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -22,7 +22,7 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
 class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     """Collector to get the dependencies from the OWASP Dependency Check XML report."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         landing_url = await self._landing_url(responses)
         entities = []
         for response in responses:

@@ -5,14 +5,14 @@ from datetime import datetime, timezone
 from dateutil.parser import parse
 
 from collector_utilities.functions import md5_hash
-from collector_utilities.type import Response, Responses
-from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from collector_utilities.type import Response
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
     """Anchore collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: Responses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         severities = self._parameter("severities")
         entities = []
         for response in responses:
