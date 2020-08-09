@@ -13,7 +13,7 @@ from collector_utilities.type import JSON, Response, Responses, URL
 from .source_collector import SourceCollector, SourceResponses
 
 
-class FakeResponse:  # pylint: disable=too-few-public-methods
+class FakeResponse:
     """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
     status = HTTPStatus.OK
 
