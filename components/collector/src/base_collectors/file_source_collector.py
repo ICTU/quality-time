@@ -37,10 +37,10 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         responses = await super()._get_source_responses(*urls)
-        if not urls[0].endswith(".zip"):
-            return responses
-        unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
-        return SourceResponses(responses=list(itertools.chain(*unzipped_responses)), api_url=responses.api_url)
+        if urls[0].endswith(".zip"):
+            unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
+            responses[:] = list(itertools.chain(*unzipped_responses))
+        return responses
 
     def _headers(self) -> Dict[str, str]:
         headers = super()._headers()

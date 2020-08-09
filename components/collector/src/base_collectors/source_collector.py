@@ -32,6 +32,9 @@ class SourceResponses:
     def __getitem__(self, key):
         return self.__responses[key]
 
+    def __setitem__(self, key, value):
+        self.__responses[key] = value
+
     def insert(self, index, response: Response) -> None:
         """Insert a response."""
         self.__responses.insert(index, response)
