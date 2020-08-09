@@ -11,7 +11,7 @@ from typing import cast, Any, Dict, Final, List, Optional, Set, Tuple, Type, Uni
 import aiohttp
 
 from collector_utilities.functions import days_ago, tokenless, stable_traceback
-from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
+from collector_utilities.type import ErrorMessage, Entities, Response, Responses, URL, Value
 
 
 class SourceResponses:
@@ -84,7 +84,7 @@ class SourceCollector(ABC):
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    async def get(self) -> Measurement:
+    async def get(self):
         """Return the measurement from this source."""
         responses = await self.__safely_get_source_responses()
         measurement = await self.__safely_parse_source_responses(responses)
