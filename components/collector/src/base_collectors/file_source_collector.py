@@ -8,7 +8,7 @@ from abc import ABC
 from typing import cast, Dict, List
 
 from collector_utilities.type import Response, Responses, URL
-from .source_collector import FakeResponse, SourceCollector
+from .source_collector import FakeResponse, SourceCollector, SourceResponses
 
 
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -16,12 +16,12 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     file_extensions: List[str] = []  # Subclass responsibility
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         responses = await super()._get_source_responses(*urls)
         if not urls[0].endswith(".zip"):
             return responses
         unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
-        return list(itertools.chain(*unzipped_responses))
+        return SourceResponses(responses=list(itertools.chain(*unzipped_responses)), api_url=responses.api_url)
 
     def _headers(self) -> Dict[str, str]:
         headers = super()._headers()

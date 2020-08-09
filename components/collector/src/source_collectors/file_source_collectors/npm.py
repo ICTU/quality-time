@@ -1,15 +1,15 @@
 """npm metrics collector."""
 
-from typing import Dict, Tuple
+from typing import Dict
 
-from collector_utilities.type import Entities, Responses, Value
-from base_collectors import JSONFileSourceCollector
+from collector_utilities.type import Entities
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 class NpmDependencies(JSONFileSourceCollector):
     """npm collector for dependencies."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         installed_dependencies: Dict[str, Dict[str, str]] = {}
         for response in responses:
             installed_dependencies.update(await response.json(content_type=None))
@@ -19,4 +19,4 @@ class NpmDependencies(JSONFileSourceCollector):
                 current=versions.get("current", "unknown"), wanted=versions.get("wanted", "unknown"),
                 latest=versions.get("latest", "unknown"))
             for dependency, versions in installed_dependencies.items()]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)

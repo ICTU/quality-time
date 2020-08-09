@@ -1,9 +1,8 @@
 """Pyup.io Safety metrics collector."""
 
-from typing import Final, Tuple
+from typing import Final
 
-from collector_utilities.type import Entities, Responses, Value
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
@@ -15,7 +14,7 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
     VULNERABILITY: Final[int] = 3
     KEY: Final[int] = 4
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Return a list of warnings."""
         entities = []
         for response in responses:
@@ -24,4 +23,4 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
                     key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
                     affected=warning[self.AFFECTED], vulnerability=warning[self.VULNERABILITY])
                  for warning in await response.json(content_type=None)])
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)

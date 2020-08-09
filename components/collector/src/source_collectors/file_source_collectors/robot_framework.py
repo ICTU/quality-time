@@ -2,19 +2,19 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List, Tuple
+from typing import cast, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entities, Response, Responses, URL, Value
+from collector_utilities.type import Entities, Response, URL
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Robot Framework collectors."""
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = str(await super()._landing_url(responses))
         return URL(url.replace("output.html", "report.html"))
 
@@ -22,7 +22,7 @@ class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=a
 class RobotFrameworkTests(RobotFrameworkBaseClass):
     """Collector for Robot Framework tests."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         count = 0
         entities: Entities = []
         test_results = cast(List[str], self._parameter("test_result"))
@@ -33,7 +33,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
                 count += int(stats.get(test_result, 0))
                 for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/.."):
                     entities.append(dict(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
-        return str(count), "100", entities
+        return SourceMeasurement(value=str(count), entities=entities)
 
 
 class RobotFrameworkSourceUpToDateness(RobotFrameworkBaseClass, SourceUpToDatenessCollector):

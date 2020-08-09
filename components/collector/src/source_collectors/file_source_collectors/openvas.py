@@ -1,20 +1,20 @@
 """OpenVAS metric collector."""
 
 from datetime import datetime
-from typing import cast, List, Tuple
+from typing import cast, List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Entities, Response, Responses, Value
+from collector_utilities.type import Entities, Response
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities: Entities = []
         severities = cast(List[str], self._parameter("severities"))
         for response in responses:
@@ -25,7 +25,7 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
                       host=result.findtext("host", default=""), port=result.findtext("port", default=""),
                       severity=result.findtext("threat", default=""))
                  for result in self.__results(tree, severities)])
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
     @staticmethod
     def __results(element: Element, severities: List[str]) -> List[Element]:

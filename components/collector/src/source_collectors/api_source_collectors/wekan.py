@@ -2,13 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List, Tuple
+from typing import cast, Dict, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Responses, URL, Value
+from collector_utilities.type import Entity, Entities, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
 
 
 WekanCard = Dict[str, str]
@@ -27,22 +27,23 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         self._cards: Dict[str, List[WekanCard]] = {}
         super().__init__(*args, **kwargs)
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         api_url = await self._api_url()
         return URL(f"{api_url}/b/{self._board['_id']}") if responses else api_url
 
     def _headers(self) -> Dict[str, str]:
         return dict(Authorization=f"Bearer {self.__token}")
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we want to do a post request to login."""
+        api_url = urls[0]
         credentials = dict(username=self._parameter("username"), password=self._parameter("password"))
-        response = await self._session.post(f"{urls[0]}/users/login", data=credentials)
+        response = await self._session.post(f"{api_url}/users/login", data=credentials)
         self.__token = (await response.json())["token"]
         await self.__get_board()
         await self.__get_lists()
         await self.__get_cards()
-        return [response]
+        return SourceResponses(responses=[response], api_url=api_url)
 
     async def __get_board(self) -> None:
         """Return the board specified by the user."""
@@ -85,14 +86,14 @@ class WekanBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class WekanIssues(WekanBase):
     """Collector to get issues (cards) from Wekan."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         api_url = await self._api_url()
         board_slug = self._board["slug"]
         entities: Entities = []
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
     def _ignore_card(self, card: Dict) -> bool:
 
@@ -126,9 +127,9 @@ class WekanIssues(WekanBase):
 class WekanSourceUpToDateness(WekanBase):
     """Collector to measure how up-to-date a Wekan board is."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         dates = [self._board.get("createdAt"), self._board.get("modifiedAt")]
         for lst in self._lists:
             dates.extend([lst.get("createdAt"), lst.get("updatedAt")])
             dates.extend([card["dateLastActivity"] for card in self._cards.get(lst["_id"], [])])
-        return str(days_ago(parse(max([date for date in dates if date])))), "100", []
+        return SourceMeasurement(value=str(days_ago(parse(max([date for date in dates if date])))))

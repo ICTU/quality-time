@@ -1,13 +1,13 @@
 """Jenkins test report metric collector."""
 
 from datetime import datetime
-from typing import cast, Dict, Final, List, Tuple
+from typing import cast, Dict, Final, List
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Responses, URL, Value
+from collector_utilities.type import Entity, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
 
 
 TestCase = Dict[str, str]
@@ -23,7 +23,7 @@ class JenkinsTestReportTests(SourceCollector):
     async def _api_url(self) -> URL:
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
         statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
@@ -35,7 +35,7 @@ class JenkinsTestReportTests(SourceCollector):
         entities = [
             self.__entity(case) for suite in suites for case in suite.get("cases", [])
             if self.__status(case) in statuses]
-        return str(value), "100", entities
+        return SourceMeasurement(value=str(value), entities=entities)
 
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
@@ -55,14 +55,14 @@ class JenkinsTestReportTests(SourceCollector):
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
     """Collector to get the age of the Jenkins test report."""
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         test_report_url = URL(f"{urls[0]}/lastSuccessfulBuild/testReport/api/json")
         job_url = URL(f"{urls[0]}/lastSuccessfulBuild/api/json")
         return await super()._get_source_responses(test_report_url, job_url)
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         timestamps = [suite.get("timestamp") for suite in (await responses[0].json()).get("suites", [])
                       if suite.get("timestamp")]
         report_datetime = parse(max(timestamps)) if timestamps else \
             datetime.fromtimestamp(float((await responses[1].json())["timestamp"]) / 1000.)
-        return str(days_ago(report_datetime)), "100", []
+        return SourceMeasurement(value=str(days_ago(report_datetime)))

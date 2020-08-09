@@ -10,8 +10,8 @@ from urllib.parse import quote
 from dateutil.parser import parse
 
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Job, Entities, Responses, URL, Value
-from base_collectors import SourceCollector, UnmergedBranchesSourceCollector
+from collector_utilities.type import Job, URL
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, UnmergedBranchesSourceCollector
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -38,16 +38,16 @@ class GitLabJobsBase(GitLabBase):
     async def _api_url(self) -> URL:
         return await self._gitlab_api_url("jobs")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         jobs = await self.__jobs(responses)
         entities = [
             dict(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
                 stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
             for job in jobs]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
-    async def __jobs(self, responses: Responses) -> Sequence[Job]:
+    async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
         """Return the jobs to count."""
         jobs: List[Job] = []
         jobs_seen: Set[Tuple[str, str, str]] = set()
@@ -91,7 +91,7 @@ class GitLabSourceUpToDateness(GitLabBase):
     async def _api_url(self) -> URL:
         return await self._gitlab_api_url("")
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         if not responses:
             return await super()._landing_url(responses)
         web_url = (await responses[0].json())["web_url"]
@@ -99,11 +99,11 @@ class GitLabSourceUpToDateness(GitLabBase):
         file_path = self._parameter('file_path', quote=True)
         return URL(f"{web_url}/blob/{branch}/{file_path}")
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
         recursively."""
 
-        async def get_commits_recursively(file_path: str, first_call: bool = True) -> Responses:
+        async def get_commits_recursively(file_path: str, first_call: bool = True) -> SourceResponses:
             """Get the commits of files recursively."""
             tree_api = await self._gitlab_api_url(
                 f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
@@ -115,7 +115,7 @@ class GitLabSourceUpToDateness(GitLabBase):
                 file_paths = [file_path]
             commits = [self.__last_commit(file_path) for file_path in file_paths] + \
                 [get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths]
-            return list(itertools.chain(*(await asyncio.gather(*commits))))
+            return SourceResponses(responses=list(itertools.chain(*(await asyncio.gather(*commits)))))
 
         # First, get the project info so we can use the web url as landing url
         responses = await super()._get_source_responses(*urls)
@@ -123,7 +123,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         responses.extend(await get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses
 
-    async def __last_commit(self, file_path: str) -> Responses:
+    async def __last_commit(self, file_path: str) -> SourceResponses:
         files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
         response = await self._session.head(files_api_url)
@@ -131,10 +131,10 @@ class GitLabSourceUpToDateness(GitLabBase):
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return await super()._get_source_responses(commit_api_url)
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         commit_responses = responses[1:]
         value = str(days_ago(max([parse((await response.json())["committed_date"]) for response in commit_responses])))
-        return value, "100", []
+        return SourceMeasurement(value=value)
 
 
 class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
@@ -143,10 +143,10 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     async def _api_url(self) -> URL:
         return await self._gitlab_api_url("repository/branches")
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         return URL(f"{str(await super()._landing_url(responses))}/{self._parameter('project')}/-/branches")
 
-    async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
+    async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
         branches = await responses[0].json()
         return [branch for branch in branches if not branch["default"] and not branch["merged"] and
                 days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and

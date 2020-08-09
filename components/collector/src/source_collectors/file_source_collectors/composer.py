@@ -1,15 +1,15 @@
 """Composer metrics collector."""
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
-from collector_utilities.type import Entities, Responses, Value
-from base_collectors import JSONFileSourceCollector
+from collector_utilities.type import Entities
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
 
 
 class ComposerDependencies(JSONFileSourceCollector):
     """Composer collector for dependencies."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         statuses = self._parameter("latest_version_status")
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:
@@ -22,4 +22,4 @@ class ComposerDependencies(JSONFileSourceCollector):
                 latest_status=dependency.get("latest-status", "unknown"),
                 description=dependency.get("description", ""), warning=dependency.get("warning", ""))
             for dependency in installed_dependencies if dependency.get("latest-status", "unknown") in statuses]
-        return str(len(entities)), str(len(installed_dependencies)), entities
+        return SourceMeasurement(total=str(len(installed_dependencies)), entities=entities)

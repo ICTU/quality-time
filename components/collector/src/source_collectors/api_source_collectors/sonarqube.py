@@ -1,13 +1,13 @@
 """Collectors for SonarQube."""
 
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Entities, Entity, Response, Responses, Value
+from collector_utilities.type import URL, Entities, Entity, Response
 
 
 class SonarQubeException(Exception):
@@ -17,7 +17,7 @@ class SonarQubeException(Exception):
 class SonarQubeCollector(SourceCollector):
     """Base class for SonarQube collectors."""
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
         url = await SourceCollector._api_url(self)
@@ -36,7 +36,7 @@ class SonarQubeViolations(SonarQubeCollector):
     rules_parameter = ""  # Subclass responsibility
     types_parameter = "types"
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -62,7 +62,7 @@ class SonarQubeViolations(SonarQubeCollector):
         rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
         return f"&rules={','.join(rules)}" if rules else ""
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to manipulate the issues urls. Add an extra call to the issues API for security hotspots, if the
         user wants to see security hotspots. This is needed because the issues API only returns security hotspots if
         the severity parameter is not passed (see https://community.sonarsource.com/t/23326). If only security hotspots
@@ -78,18 +78,18 @@ class SonarQubeViolations(SonarQubeCollector):
                     f"branch={branch}"))
         return await super()._get_source_responses(*api_urls)
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         value = 0
         entities: Entities = []
         for response in responses:
             json = await response.json()
             value += int(json.get("total", 0))
             entities.extend([await self._entity(issue) for issue in json.get("issues", [])])
-        return str(value), "100", entities
+        return SourceMeasurement(value=str(value), entities=entities)
 
     async def __issue_landing_url(self, issue_key: str) -> URL:
         """Generate a landing url for the issue."""
-        url = await super()._landing_url([])
+        url = await super()._landing_url(SourceResponses())
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/project/issues?id={component}&issues={issue_key}&open={issue_key}&branch={branch}")
@@ -128,7 +128,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 
     total_metric = ""  # Subclass responsibility
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Next to the violations, also get the total number of units as basis for the percentage scale."""
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -138,12 +138,13 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
             f"branch={branch}")
         return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        value, _, entities = await super()._parse_source_responses(responses)
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        measurement = await super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:
             measures.extend((await response.json()).get("component", {}).get("measures", []))
-        return value, str(sum(int(measure["value"]) for measure in measures)), entities
+        measurement.total = str(sum(int(measure["value"]) for measure in measures))
+        return measurement
 
 
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
@@ -172,7 +173,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
 
     rules_parameter = "suppression_rules"
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
         as well as the total number of violations."""
         url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
@@ -182,9 +183,10 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
-        value, _, entities = await super()._parse_source_responses(responses[:-1])
-        return value, str((await responses[-1].json())["total"]), entities
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        measurement = await super()._parse_source_responses(responses[:-1])
+        measurement.total = str((await responses[-1].json())["total"])
+        return measurement
 
     async def _entity(self, issue) -> Entity:
         """Also add the resolution to the entity."""
@@ -200,7 +202,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     valueKey = ""  # Subclass responsibility
     totalKey = ""  # Subclass responsibility
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -214,9 +216,10 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return URL(
             f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         metrics = await self.__get_metrics(responses)
-        return self._value(metrics), self._total(metrics), self._entities(metrics)
+        return SourceMeasurement(value=self._value(metrics), total=self._total(metrics),
+                                 entities=self._entities(metrics))
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -244,7 +247,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return self.totalKey
 
     @staticmethod
-    async def __get_metrics(responses: Responses) -> Dict[str, str]:
+    async def __get_metrics(responses: SourceResponses) -> Dict[str, str]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
         return dict((measure["metric"], measure["value"]) for measure in measures)
@@ -323,21 +326,21 @@ class SonarQubeTests(SonarQubeCollector):
         metric_keys = "tests,test_errors,test_failures,skipped_tests"
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric_keys}&branch={branch}")
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._datamodel["sources"][self.source_type]["parameters"]["test_result"]["values"]
         total = str(sum(tests[test_result] for test_result in test_results))
-        return value, total, []
+        return SourceMeasurement(value=value, total=total)
 
     @staticmethod
-    async def __nr_of_tests(responses: Responses) -> Dict[str, int]:
+    async def __nr_of_tests(responses: SourceResponses) -> Dict[str, int]:
         """Return the number of tests by test result."""
         measures = dict(
             (measure["metric"], int(measure["value"]))
@@ -358,7 +361,7 @@ class SonarQubeSourceUpToDateness(SonarQubeCollector, SourceUpToDatenessCollecto
         branch = self._parameter("branch")
         return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")

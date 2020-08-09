@@ -2,14 +2,14 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import List, Tuple
+from typing import List
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Namespaces, Entity, Entities, Response, Responses, Value
+from collector_utilities.type import Namespaces, Entity, Response
 from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -22,7 +22,7 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
 class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     """Collector to get the dependencies from the OWASP Dependency Check XML report."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         landing_url = await self._landing_url(responses)
         entities = []
         for response in responses:
@@ -30,7 +30,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             entities.extend(
                 [self._parse_entity(dependency, index, namespaces, landing_url) for (index, dependency)
                  in enumerate(self._dependencies(tree, namespaces))])
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> List[Element]:  # pylint: disable=no-self-use
         """Return the dependencies."""

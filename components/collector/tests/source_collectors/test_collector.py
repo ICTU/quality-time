@@ -4,8 +4,8 @@ from unittest.mock import patch, Mock
 
 import aiohttp
 
-from collector_utilities.type import Responses, URL
-from base_collectors import SourceCollector
+from collector_utilities.type import URL
+from base_collectors import SourceCollector, SourceResponses
 from .source_collector_test_case import SourceCollectorTestCase
 
 
@@ -60,7 +60,7 @@ class CollectorTest(SourceCollectorTestCase):
             async def _api_url(self) -> URL:
                 return "https://api_url"
 
-            async def _landing_url(self, responses: Responses) -> URL:
+            async def _landing_url(self, responses: SourceResponses) -> URL:
                 raise NotImplementedError
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):

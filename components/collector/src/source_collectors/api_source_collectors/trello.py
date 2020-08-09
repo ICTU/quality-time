@@ -2,22 +2,22 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Tuple
+from typing import cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, Response, Responses, URL, Value
+from collector_utilities.type import Entity, Response, URL
 from collector_utilities.functions import days_ago
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for Trello collectors."""
 
-    async def _landing_url(self, responses: Responses) -> URL:
+    async def _landing_url(self, responses: SourceResponses) -> URL:
         return URL((await responses[0].json())["url"] if responses else "https://trello.com")
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to do multiple requests to get all the data we need."""
         api = f"1/boards/{await self.__board_id()}?fields=id,url,dateLastActivity&lists=open&" \
             "list_fields=name&cards=visible&card_fields=name,dateLastActivity,due,idList,url"
@@ -40,12 +40,12 @@ class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
 class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}
         entities = [self.__card_to_entity(card, lists) for card in cards if not self.__ignore_card(card, lists)]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
     def __ignore_card(self, card, lists) -> bool:
         """Return whether the card should be ignored."""

@@ -1,12 +1,11 @@
 """Cobertura coverage report collector."""
 
 from datetime import datetime
-from typing import Tuple
 
 from defusedxml import ElementTree
 
-from collector_utilities.type import Entities, Response, Responses, Value
-from base_collectors import XMLFileSourceCollector, SourceUpToDatenessCollector
+from collector_utilities.type import Response
+from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
 
 
 class CoberturaCoverageBaseClass(XMLFileSourceCollector):
@@ -14,13 +13,13 @@ class CoberturaCoverageBaseClass(XMLFileSourceCollector):
 
     coverage_type = "Subclass responsibility (Cobertura has: lines, branches)"
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         valid, covered = 0, 0
         for response in responses:
             tree = ElementTree.fromstring(await response.text())
             valid += int(tree.get(f"{self.coverage_type}-valid"))
             covered += int(tree.get(f"{self.coverage_type}-covered"))
-        return str(valid - covered), str(valid), []
+        return SourceMeasurement(value=str(valid - covered), total=str(valid))
 
 
 class CoberturaUncoveredLines(CoberturaCoverageBaseClass):

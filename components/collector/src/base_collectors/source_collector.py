@@ -16,11 +16,52 @@ from collector_utilities.functions import days_ago, tokenless, stable_traceback
 from collector_utilities.type import ErrorMessage, Entities, JSON, Measurement, Response, Responses, URL, Value
 
 
+class SourceResponses:
+    """Class the hold the source responses, and associated information such as api_url and connection error, if any."""
+
+    def __init__(
+            self, *, responses: Responses = None, api_url: URL = None, connection_error: ErrorMessage = None) -> None:
+        self.__responses: Responses = responses or []
+        self.api_url = api_url
+        self.connection_error = connection_error
+
+    def __iter__(self):
+        return iter(self.__responses)
+
+    def __len__(self) -> int:
+        return len(self.__responses)
+
+    def __getitem__(self, key):
+        return self.__responses[key]
+
+    def insert(self, index, response: Response) -> None:
+        """Insert a response."""
+        self.__responses.insert(index, response)
+
+    def extend(self, responses: "SourceResponses") -> None:
+        """Extend the responses."""
+        self.__responses.extend(list(responses))
+
+
+class SourceMeasurement:  # pylint: disable=too-few-public-methods
+    """Class to hold measurement values, entities, and error messages from collecting the measurement from one
+    source."""
+
+    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
+
+    def __init__(
+            self, *, value: Value = None, total: Value = "100", entities: Entities = None,
+            parse_error: ErrorMessage = None) -> None:
+        self.value = str(len(entities)) if value is None and entities is not None else value
+        self.total = total
+        self.entities = entities[:self.MAX_ENTITIES] if entities else []
+        self.parse_error = parse_error
+
+
 class SourceCollector(ABC):
     """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
     measurement data for one specific metric from one specific source."""
 
-    MAX_ENTITIES = 100  # The maximum number of entities (e.g. violations, warnings) to send to the server
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
@@ -47,11 +88,13 @@ class SourceCollector(ABC):
 
     async def get(self) -> Measurement:
         """Return the measurement from this source."""
-        responses, api_url, connection_error = await self.__safely_get_source_responses()
-        value, total, entities, parse_error = await self.__safely_parse_source_responses(responses)
+        responses = await self.__safely_get_source_responses()
+        measurement = await self.__safely_parse_source_responses(responses)
         landing_url = await self.__safely_parse_landing_url(responses)
-        return dict(api_url=api_url, landing_url=landing_url, value=value, total=total, entities=entities,
-                    connection_error=connection_error, parse_error=parse_error)
+        return dict(
+            api_url=responses.api_url, landing_url=landing_url, value=measurement.value, total=measurement.total,
+            entities=measurement.entities, connection_error=responses.connection_error,
+            parse_error=measurement.parse_error)
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
@@ -76,25 +119,25 @@ class SourceCollector(ABC):
             value = cast(str, value).rstrip("/")
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
-    async def __safely_get_source_responses(self) -> Tuple[Responses, URL, ErrorMessage]:
+    async def __safely_get_source_responses(self) -> SourceResponses:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
-        responses: Responses = []
-        api_url = URL("")
-        error = None
+        api_url = await self._api_url()
+        safe_api_url = tokenless(api_url) or self.__class__.__name__
         try:
-            responses = await self._get_source_responses(api_url := await self._api_url())
-            logging.info("Retrieved %s", tokenless(api_url) or self.__class__.__name__)
+            responses = await self._get_source_responses(api_url)
+            logging.info("Retrieved %s", safe_api_url)
+            return responses
         except aiohttp.ClientError as reason:
             error = tokenless(str(reason))
-            logging.warning("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, error)
+            logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.error("Failed to retrieve %s: %s", tokenless(api_url) or self.__class__.__name__, reason)
-        return responses, api_url, error
+            logging.error("Failed to retrieve %s: %s", safe_api_url, reason)
+        return SourceResponses(api_url=api_url, connection_error=error)
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
-        """Open the url. Can be overridden if a post request is needed or serial requests need to be made."""
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
         kwargs: Dict[str, Any] = dict()
         credentials = self._basic_auth_credentials()
         if credentials is not None:
@@ -102,7 +145,7 @@ class SourceCollector(ABC):
         if headers := self._headers():
             kwargs["headers"] = headers
         tasks = [self._session.get(url, **kwargs) for url in urls]
-        return list(await asyncio.gather(*tasks))
+        return SourceResponses(responses=list(await asyncio.gather(*tasks)), api_url=urls[0])
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
@@ -116,26 +159,25 @@ class SourceCollector(ABC):
         """Return the headers for the get request."""
         return {}
 
-    async def __safely_parse_source_responses(
-            self, responses: Responses) -> Tuple[Value, Value, Entities, ErrorMessage]:
+    async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        entities: Entities = []
-        value, total, error = None, None, None
         if responses:
             try:
-                value, total, entities = await self._parse_source_responses(responses)
+                measurement = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
-                error = stable_traceback(traceback.format_exc())
-        return value, total, entities[:self.MAX_ENTITIES], error
+                measurement = SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
+        else:
+            measurement = SourceMeasurement(total=None)
+        return measurement
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
-        This method can be overridden by collectors to parse the retrieved sources data."""
-        # pylint: disable=assignment-from-none,no-self-use,unused-argument
-        return None, "100", []  # pragma: no cover
+        This method should be overridden by collectors to parse the retrieved sources data."""
+        # pylint: disable=no-self-use,unused-argument
+        raise NotImplementedError
 
-    async def __safely_parse_landing_url(self, responses: Responses) -> URL:
+    async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:
         """Parse the responses to get the landing url, without failing. This method should not be overridden because
         it makes sure that the parsing of source data never causes the collector to fail."""
         try:
@@ -143,7 +185,7 @@ class SourceCollector(ABC):
         except Exception:  # pylint: disable=broad-except
             return await self._api_url()
 
-    async def _landing_url(self, responses: Responses) -> URL:  # pylint: disable=unused-argument
+    async def _landing_url(self, responses: SourceResponses) -> URL:  # pylint: disable=unused-argument
         """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
         a default landing url."""
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
@@ -173,22 +215,23 @@ class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-me
     """Base class for source collectors that do not need to access the network but return static or user-supplied
     data."""
 
-    async def _get_source_responses(self, *urls: URL) -> Responses:
-        return [cast(Response, FakeResponse())]  # Return a fake response so that the parse methods will be called
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        # Return a fake response so that the parse methods will be called
+        return SourceResponses(responses=[cast(Response, FakeResponse())])
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
     """Base class for unmerged branches source collectors."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [
             dict(key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
                  url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
-        return str(len(entities)), "100", entities
+        return SourceMeasurement(entities=entities)
 
     @abstractmethod
-    async def _unmerged_branches(self, responses: Responses) -> List[Dict[str, Any]]:
+    async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
         """Return the list of unmerged branches."""
 
     @abstractmethod
@@ -203,9 +246,9 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
-    async def _parse_source_responses(self, responses: Responses) -> Tuple[Value, Value, Entities]:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         date_times = await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
-        return str(days_ago(min(date_times))), "100", []
+        return SourceMeasurement(value=str(days_ago(min(date_times))))
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""
