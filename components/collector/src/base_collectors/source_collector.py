@@ -147,7 +147,7 @@ class SourceCollector(ABC):
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
         This method should be overridden by collectors to parse the retrieved sources data."""
         # pylint: disable=no-self-use,unused-argument
-        return SourceMeasurement()  # pragma: no cover
+        raise NotImplementedError
 
     async def __safely_parse_landing_url(self, responses: Responses) -> URL:
         """Parse the responses to get the landing url, without failing. This method should not be overridden because
