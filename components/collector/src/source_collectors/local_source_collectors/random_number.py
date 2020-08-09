@@ -3,10 +3,10 @@
 import random
 from typing import Final
 
-from base_collectors import LocalSourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
 
 
-class Random(LocalSourceCollector):
+class Random(SourceCollector):
     """Random number metric collector."""
     MIN: Final[int] = 1
     MAX: Final[int] = 99

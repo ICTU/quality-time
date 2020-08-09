@@ -3,12 +3,31 @@
 import asyncio
 import io
 import itertools
+import json
 import zipfile
 from abc import ABC
+from http import HTTPStatus
 from typing import cast, Dict, List
 
-from collector_utilities.type import Response, Responses, URL
-from .source_collector import FakeResponse, SourceCollector, SourceResponses
+from collector_utilities.type import JSON, Response, Responses, URL
+from .source_collector import SourceCollector, SourceResponses
+
+
+class FakeResponse:  # pylint: disable=too-few-public-methods
+    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
+    status = HTTPStatus.OK
+
+    def __init__(self, contents: bytes = bytes()) -> None:
+        super().__init__()
+        self.contents = contents
+
+    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
+        """Return the JSON version of the contents."""
+        return cast(JSON, json.loads(self.contents))
+
+    async def text(self) -> str:
+        """Return the text version of the contents."""
+        return str(self.contents.decode())
 
 
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method

@@ -1,19 +1,17 @@
 """Source collector base classes."""
 
 import asyncio
-import json
 import logging
 import traceback
 import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime
-from http import HTTPStatus
 from typing import cast, Any, Dict, Final, List, Optional, Set, Tuple, Type, Union
 
 import aiohttp
 
 from collector_utilities.functions import days_ago, tokenless, stable_traceback
-from collector_utilities.type import ErrorMessage, Entities, JSON, Measurement, Response, Responses, URL, Value
+from collector_utilities.type import ErrorMessage, Entities, Measurement, Response, Responses, URL, Value
 
 
 class SourceResponses:
@@ -162,13 +160,13 @@ class SourceCollector(ABC):
     async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        if responses:
+        if responses.connection_error:
+            measurement = SourceMeasurement(total=None)
+        else:
             try:
                 measurement = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
                 measurement = SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
-        else:
-            measurement = SourceMeasurement(total=None)
         return measurement
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -192,32 +190,6 @@ class SourceCollector(ABC):
             return URL(landing_url)
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
-
-
-class FakeResponse:  # pylint: disable=too-few-public-methods
-    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
-    status = HTTPStatus.OK
-
-    def __init__(self, contents: bytes = bytes()) -> None:
-        super().__init__()
-        self.contents = contents
-
-    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
-        """Return the JSON version of the contents."""
-        return cast(JSON, json.loads(self.contents))
-
-    async def text(self) -> str:
-        """Return the text version of the contents."""
-        return str(self.contents.decode())
-
-
-class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for source collectors that do not need to access the network but return static or user-supplied
-    data."""
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        # Return a fake response so that the parse methods will be called
-        return SourceResponses(responses=[cast(Response, FakeResponse())])
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
