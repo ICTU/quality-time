@@ -132,7 +132,7 @@ class MetricsCollector:
             parameters = self.data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
             for parameter_key, parameter in parameters.items():
                 if parameter.get("mandatory") and metric["type"] in parameter.get("metrics") and \
-                        not source.get("parameters", {}).get(parameter_key):
+                        not source.get("parameters", {}).get(parameter_key) and not parameter.get("default_value"):
                     return False
         return bool(sources)
 
