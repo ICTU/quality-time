@@ -12,7 +12,6 @@ Job = Dict[str, Any]
 Jobs = List[Job]
 JSON = Dict[str, Any]
 Namespaces = Dict[str, str]  # Namespace prefix to Namespace URI mapping
-Measurement = Dict[str, Any]
 Response = aiohttp.ClientResponse
 Responses = List[Response]
 URL = NewType("URL", str)

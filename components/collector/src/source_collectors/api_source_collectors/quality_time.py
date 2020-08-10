@@ -6,8 +6,11 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
-from collector_utilities.type import Entity, Entities, Measurement, Response, URL, Value
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from collector_utilities.type import Entity, Entities, Response, URL, Value
+
+
+Measurements = List[Dict[str, Dict[str, str]]]
 
 
 class QualityTimeCollector(SourceCollector):
@@ -40,31 +43,31 @@ class QualityTimeMetrics(QualityTimeCollector):
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
         entities: Entities = []
         for metric, entity in metrics_and_entities:
-            recent_measurements = cast(List[Measurement], metric.get("recent_measurements", []))
+            recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
             status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
             if status in status_to_count:
                 entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
                 entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
                 entity["metric_url"] = f"{report_url}#{entity['key']}"
-                entity["metric"] = str(metric.get("name") or self._datamodel["metrics"][metric["type"]]["name"])
+                entity["metric"] = str(metric.get("name") or self._data_model["metrics"][metric["type"]]["name"])
                 entity["status"] = status
-                unit = metric.get("unit") or self._datamodel["metrics"][metric["type"]]["unit"]
+                unit = metric.get("unit") or self._data_model["metrics"][metric["type"]]["unit"]
                 entity["measurement"] = f"{value or '?'} {unit}"
-                direction = str(metric.get("direction") or self._datamodel["metrics"][metric["type"]]["direction"])
+                direction = str(metric.get("direction") or self._data_model["metrics"][metric["type"]]["direction"])
                 direction = {"<": "≦", ">": "≧"}.get(direction, direction)
-                target = metric.get("target") or self._datamodel["metrics"][metric["type"]]["target"]
+                target = metric.get("target") or self._data_model["metrics"][metric["type"]]["target"]
                 entity["target"] = f"{direction} {target} {unit}"
                 entities.append(entity)
         return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
 
     @staticmethod
-    def __get_status_and_value(metric, measurement: Measurement) -> Tuple[str, Value]:
+    def __get_status_and_value(metric, measurement) -> Tuple[str, Value]:
         """Return the measurement value and status."""
         scale = metric.get("scale", "count")
         scale_data = measurement.get(scale, {})
         return scale_data.get("status") or "unknown", scale_data.get("value")
 
-    async def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Dict], Entity]]:
+    async def __get_metrics_and_entities(self, response: Response) -> List[Tuple[Dict[str, Measurements], Entity]]:
         """Get the relevant metrics from the reports response."""
         tags = set(self._parameter("tags"))
         metric_types = self._parameter("metric_type")

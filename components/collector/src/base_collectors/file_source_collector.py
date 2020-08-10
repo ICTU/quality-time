@@ -3,12 +3,31 @@
 import asyncio
 import io
 import itertools
+import json
 import zipfile
 from abc import ABC
+from http import HTTPStatus
 from typing import cast, Dict, List
 
-from collector_utilities.type import Response, Responses, URL
-from .source_collector import FakeResponse, SourceCollector, SourceResponses
+from collector_utilities.type import JSON, Response, Responses, URL
+from .source_collector import SourceCollector, SourceResponses
+
+
+class FakeResponse:
+    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
+    status = HTTPStatus.OK
+
+    def __init__(self, contents: bytes = bytes()) -> None:
+        super().__init__()
+        self.contents = contents
+
+    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
+        """Return the JSON version of the contents."""
+        return cast(JSON, json.loads(self.contents))
+
+    async def text(self) -> str:
+        """Return the text version of the contents."""
+        return str(self.contents.decode())
 
 
 class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -18,10 +37,10 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         responses = await super()._get_source_responses(*urls)
-        if not urls[0].endswith(".zip"):
-            return responses
-        unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
-        return SourceResponses(responses=list(itertools.chain(*unzipped_responses)), api_url=responses.api_url)
+        if urls[0].endswith(".zip"):
+            unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
+            responses[:] = list(itertools.chain(*unzipped_responses))
+        return responses
 
     def _headers(self) -> Dict[str, str]:
         headers = super()._headers()

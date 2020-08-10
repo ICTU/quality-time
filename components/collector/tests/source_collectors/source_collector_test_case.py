@@ -9,7 +9,6 @@ from unittest.mock import patch, AsyncMock
 import aiohttp
 
 from base_collectors import MetricsCollector
-from collector_utilities.type import Measurement
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
@@ -33,7 +32,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                       get_request_content="",
                       get_request_text="",
                       post_request_side_effect=None,
-                      post_request_json_return_value=None) -> Measurement:
+                      post_request_json_return_value=None):
         """Collect the metric."""
         mock_async_get_request = AsyncMock()
         if get_request_json_side_effect:
@@ -53,7 +52,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                     collector.data_model = self.data_model
                     return await collector.collect_sources(session, metric)
 
-    def assert_measurement(self, measurement: Measurement, *, source_index: int = 0, **attributes) -> None:
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
             if (attribute_value := attributes.get(attribute_key)) is not None:

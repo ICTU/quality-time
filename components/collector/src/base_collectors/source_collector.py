@@ -1,19 +1,17 @@
 """Source collector base classes."""
 
 import asyncio
-import json
 import logging
 import traceback
 import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime
-from http import HTTPStatus
 from typing import cast, Any, Dict, Final, List, Optional, Set, Tuple, Type, Union
 
 import aiohttp
 
 from collector_utilities.functions import days_ago, tokenless, stable_traceback
-from collector_utilities.type import ErrorMessage, Entities, JSON, Measurement, Response, Responses, URL, Value
+from collector_utilities.type import ErrorMessage, Entities, Response, Responses, URL, Value
 
 
 class SourceResponses:
@@ -33,6 +31,9 @@ class SourceResponses:
 
     def __getitem__(self, key):
         return self.__responses[key]
+
+    def __setitem__(self, key, value):
+        self.__responses[key] = value
 
     def insert(self, index, response: Response) -> None:
         """Insert a response."""
@@ -66,9 +67,9 @@ class SourceCollector(ABC):
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: Set[Type["SourceCollector"]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, source, datamodel) -> None:
+    def __init__(self, session: aiohttp.ClientSession, source, data_model) -> None:
         self._session = session
-        self._datamodel: Final = datamodel
+        self._data_model: Final = data_model
         self.__parameters: Final[Dict[str, Union[str, List[str]]]] = source.get("parameters", {})
 
     def __init_subclass__(cls) -> None:
@@ -86,7 +87,7 @@ class SourceCollector(ABC):
                 return matching_subclasses[0]
         raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
 
-    async def get(self) -> Measurement:
+    async def get(self):
         """Return the measurement from this source."""
         responses = await self.__safely_get_source_responses()
         measurement = await self.__safely_parse_source_responses(responses)
@@ -107,7 +108,7 @@ class SourceCollector(ABC):
             """Quote the string if needed."""
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
-        parameter_info = self._datamodel["sources"][self.source_type]["parameters"][parameter_key]
+        parameter_info = self._data_model["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info and parameter_info["type"].startswith("multiple_choice"):
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
         else:
@@ -162,13 +163,13 @@ class SourceCollector(ABC):
     async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the data from the responses, without failing. This method should not be overridden because it
         makes sure that the parsing of source data never causes the collector to fail."""
-        if responses:
+        if responses.connection_error:
+            measurement = SourceMeasurement(total=None)
+        else:
             try:
                 measurement = await self._parse_source_responses(responses)
             except Exception:  # pylint: disable=broad-except
                 measurement = SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
-        else:
-            measurement = SourceMeasurement(total=None)
         return measurement
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -192,32 +193,6 @@ class SourceCollector(ABC):
             return URL(landing_url)
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
         return URL(url[:-(len("xml"))] + "html" if url.endswith(".xml") else url)
-
-
-class FakeResponse:  # pylint: disable=too-few-public-methods
-    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
-    status = HTTPStatus.OK
-
-    def __init__(self, contents: bytes = bytes()) -> None:
-        super().__init__()
-        self.contents = contents
-
-    async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
-        """Return the JSON version of the contents."""
-        return cast(JSON, json.loads(self.contents))
-
-    async def text(self) -> str:
-        """Return the text version of the contents."""
-        return str(self.contents.decode())
-
-
-class LocalSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
-    """Base class for source collectors that do not need to access the network but return static or user-supplied
-    data."""
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        # Return a fake response so that the parse methods will be called
-        return SourceResponses(responses=[cast(Response, FakeResponse())])
 
 
 class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-method
