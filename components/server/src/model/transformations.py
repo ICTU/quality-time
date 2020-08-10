@@ -31,15 +31,32 @@ def change_source_parameter(data, parameter_key: str, old_value, new_value, scop
 
 def _sources_to_change(data, scope: EditScope) -> Iterator:
     """Return the sources to change, given the scope."""
-    reports = data.reports if scope == "reports" else [data.report]
-    for report in reports:
-        subjects = {data.subject_uuid: data.subject} if scope in ("subject", "metric", "source") else report["subjects"]
-        for subject_uuid, subject in subjects.items():
-            metrics = {data.metric_uuid: data.metric} if scope in ("metric", "source") else subject["metrics"]
-            for metric_uuid, metric in metrics.items():
-                sources = {data.source_uuid: data.source} if scope == "source" else metric["sources"]
-                for source_uuid, source_to_change in sources.items():
+    for report in _reports_to_change(data, scope):
+        for subject_uuid, subject in _subjects_to_change(data, report, scope):
+            for metric_uuid, metric in _metrics_to_change(data, subject, scope):
+                for source_uuid, source_to_change in __sources_to_change(data, metric, scope):
                     yield source_to_change, [report["report_uuid"], subject_uuid, metric_uuid, source_uuid]
+
+
+def _reports_to_change(data, scope: EditScope) -> Iterator:
+    """Return the reports to change, given the scope."""
+    yield from data.reports if scope == "reports" else [data.report]
+
+
+def _subjects_to_change(data, report, scope: EditScope) -> Iterator:
+    """Return the subjects to change, given the scope."""
+    yield from {data.subject_uuid: data.subject}.items() if scope in ("subject", "metric", "source") else \
+        report["subjects"].items()
+
+
+def _metrics_to_change(data, subject, scope: EditScope) -> Iterator:
+    """Return the metrics to change, given the scope."""
+    yield from {data.metric_uuid: data.metric}.items() if scope in ("metric", "source") else subject["metrics"].items()
+
+
+def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
+    """Return the sources to change, given the scope."""
+    yield from {data.source_uuid: data.source}.items() if scope == "source" else metric["sources"].items()
 
 
 def summarize_report(report, recent_measurements, data_model) -> None:
