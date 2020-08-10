@@ -9,7 +9,8 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import latest_reports, insert_new_report, ReportData
+from database.reports import latest_reports, insert_new_report
+from model.data import ReportData
 from model.actions import copy_report
 from model.transformations import hide_credentials, summarize_report
 from initialization.report import import_json_report
@@ -42,7 +43,9 @@ def post_report_new(database: Database):
 @bottle.post("/api/v3/report/<report_uuid>/copy")
 def post_report_copy(report_uuid: ReportId, database: Database):
     """Copy a report."""
-    data = ReportData(database, report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
     user = sessions.user(database)
     report_copy["delta"] = dict(
@@ -74,7 +77,9 @@ def export_report_as_pdf(report_uuid: ReportId):
 @bottle.delete("/api/v3/report/<report_uuid>")
 def delete_report(report_uuid: ReportId, database: Database):
     """Delete a report."""
-    data = ReportData(database, report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
     data.report["deleted"] = "true"
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -86,7 +91,9 @@ def delete_report(report_uuid: ReportId, database: Database):
 @bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>")
 def post_report_attribute(report_uuid: ReportId, report_attribute: str, database: Database):
     """Set a report attribute."""
-    data = ReportData(database, report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
     value = dict(bottle.request.json)[report_attribute]
     old_value = data.report.get(report_attribute) or ""
     data.report[report_attribute] = value

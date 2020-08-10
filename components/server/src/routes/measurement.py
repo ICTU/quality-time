@@ -11,8 +11,9 @@ import bottle
 from database.datamodels import latest_datamodel
 from database.measurements import all_measurements, count_measurements, latest_measurement, \
     latest_successful_measurement, insert_new_measurement, update_measurement_end
-from database.reports import latest_metric, SourceData
+from database.reports import latest_metric, latest_reports
 from database import sessions
+from model.data import SourceData
 from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
@@ -61,7 +62,9 @@ def debt_target_expired(data_model, metric, measurement) -> bool:
 def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
                          database: Database) -> Dict:
     """Set an entity attribute."""
-    data = SourceData(database, source_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = SourceData(data_model, reports, source_uuid)
     measurement = latest_measurement(database, metric_uuid)
     source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]

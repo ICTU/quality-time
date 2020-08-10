@@ -4,8 +4,9 @@ import bottle
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import default_subject_attributes
-from database.reports import insert_new_report, ReportData, SubjectData
+from database.datamodels import latest_datamodel, default_subject_attributes
+from database.reports import insert_new_report, latest_reports
+from model.data import ReportData, SubjectData
 from model.actions import copy_subject, move_item
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
@@ -14,7 +15,9 @@ from server_utilities.type import ReportId, SubjectId
 @bottle.post("/api/v3/subject/new/<report_uuid>")
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
-    data = ReportData(database, report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
     data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -28,8 +31,10 @@ def post_new_subject(report_uuid: ReportId, database: Database):
 @bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>")
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
     """Add a copy of the subject to the report (new in v3)."""
-    source = SubjectData(database, subject_uuid)
-    target = ReportData(database, report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    source = SubjectData(data_model, reports, subject_uuid)
+    target = ReportData(data_model, reports, report_uuid)
     target.report["subjects"][(subject_copy_uuid := uuid())] = copy_subject(source.subject, source.datamodel)
     user = sessions.user(database)
     target.report["delta"] = dict(
@@ -44,8 +49,10 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
 @bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>")
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
-    source = SubjectData(database, subject_uuid)
-    target = ReportData(database, target_report_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    source = SubjectData(data_model, reports, subject_uuid)
+    target = ReportData(data_model, reports, target_report_uuid)
     target.report["subjects"][subject_uuid] = source.subject
     del source.report["subjects"][subject_uuid]
     user = sessions.user(database)
@@ -61,7 +68,9 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
 @bottle.delete("/api/v3/subject/<subject_uuid>")
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
-    data = SubjectData(database, subject_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = SubjectData(data_model, reports, subject_uuid)
     del data.report["subjects"][subject_uuid]
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -73,8 +82,10 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 @bottle.post("/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>")
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
     """Set the subject attribute."""
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = SubjectData(data_model, reports, subject_uuid)
     value = dict(bottle.request.json)[subject_attribute]
-    data = SubjectData(database, subject_uuid)
     old_value = data.subject.get(subject_attribute) or ""
     if subject_attribute == "position":
         old_value, value = move_item(data, value, "subject")

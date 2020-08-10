@@ -6,9 +6,10 @@ import bottle
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import default_metric_attributes
+from database.datamodels import default_metric_attributes, latest_datamodel
 from database.measurements import insert_new_measurement, latest_measurement
-from database.reports import insert_new_report, latest_reports, MetricData, SubjectData
+from database.reports import insert_new_report, latest_reports
+from model.data import MetricData, SubjectData
 from model.actions import copy_metric, move_item
 from server_utilities.functions import uuid, sanitize_html
 from server_utilities.type import MetricId, SubjectId
@@ -29,7 +30,9 @@ def get_metrics(database: Database):
 @bottle.post("/api/v3/metric/new/<subject_uuid>")
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
-    data = SubjectData(database, subject_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = SubjectData(data_model, reports, subject_uuid)
     data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -44,8 +47,10 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 @bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
-    source = MetricData(database, metric_uuid)
-    target = SubjectData(database, subject_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    source = MetricData(data_model, reports, metric_uuid)
+    target = SubjectData(data_model, reports, subject_uuid)
     target.subject["metrics"][(metric_copy_uuid := uuid())] = copy_metric(source.metric, source.datamodel)
     user = sessions.user(database)
     target.report["delta"] = dict(
@@ -61,8 +66,10 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
 @bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
-    source = MetricData(database, metric_uuid)
-    target = SubjectData(database, target_subject_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    source = MetricData(data_model, reports, metric_uuid)
+    target = SubjectData(data_model, reports, target_subject_uuid)
     user = sessions.user(database)
     delta_description = f"{user['user']} moved the metric '{source.metric_name}' from subject " \
                         f"'{source.subject_name}' in report '{source.report_name}' to subject " \
@@ -88,7 +95,9 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 @bottle.delete("/api/v3/metric/<metric_uuid>")
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
-    data = MetricData(database, metric_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = MetricData(data_model, reports, metric_uuid)
     user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid], email=user["email"],
@@ -102,7 +111,9 @@ def delete_metric(metric_uuid: MetricId, database: Database):
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     value = dict(bottle.request.json)[metric_attribute]
-    data = MetricData(database, metric_uuid)
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = MetricData(data_model, reports, metric_uuid)
     if metric_attribute == "comment" and value:
         value = sanitize_html(value)
     old_value: Any
