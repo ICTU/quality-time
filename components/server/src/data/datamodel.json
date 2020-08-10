@@ -2586,6 +2586,7 @@
                     "help": "Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days.",
                     "type": "integer",
                     "mandatory": true,
+                    "unit": "days",
                     "min_value": "1",
                     "default_value": "21",
                     "metrics": [
@@ -2810,6 +2811,7 @@
                     "short_name": "number",
                     "type": "integer",
                     "mandatory": true,
+                    "unit": "",
                     "min_value": "0",
                     "default_value": "0",
                     "metrics": [
