@@ -155,6 +155,15 @@ class DataModelSourcesTest(DataModelTestCase):
                     f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
                     "true nor false")
 
+    def test_integer_parameter_unit(self):
+        """Test that integer type parameters have a unit."""
+        for source_id, source in self.data_model["sources"].items():
+            for parameter_id, parameter_values in source["parameters"].items():
+                if parameter_values["type"] == "integer":
+                    self.assertTrue(
+                        "unit" in parameter_values,
+                        f"Parameter '{parameter_id}' of source '{source_id}' has integer type but no unit parameter")
+
     def test_invalid_characters_in_names(self):
         """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
         for source in self.data_model["sources"].values():

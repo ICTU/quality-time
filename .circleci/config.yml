@@ -106,6 +106,8 @@ jobs:
             coverage report
       - store_artifacts:
           path: /tmp/log
+      - store_artifacts:
+          path: build/features-coverage
 
 workflows:
   version: 2
