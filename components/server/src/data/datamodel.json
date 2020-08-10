@@ -2638,6 +2638,7 @@
                 "manual_test_duration": {
                     "name": "test case",
                     "name_plural": "test cases",
+                    "measured_attribute": "duration",
                     "attributes": [
                         {
                             "name": "Summary",

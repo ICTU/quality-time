@@ -139,34 +139,38 @@ The `sources` part of the data model is an object where the keys are the source 
                 }
             },
             "entities": {
-                "issues": [
-                    {
-                        "name": "Project",
-                        "key": "project"
-                    },
-                    {
-                        "name": "Title",
-                        "key": "title",
-                        "url": "url"
-                    },
-                    {
-                        "name": "Work item type",
-                        "key": "work_item_type"
-                    },
-                    {
-                        "name": "State",
-                        "key": "state",
-                        "color": {
-                            "error": "negative",
-                            "warning": "warning"
+                "issues": {
+                    "name": "issue",
+                    "name_plural": "issues",
+                    "attributes": [                
+                        {
+                            "name": "Project",
+                            "key": "project"
+                        },
+                        {
+                            "name": "Title",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Work item type",
+                            "key": "work_item_type"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state",
+                            "color": {
+                                "error": "negative",
+                                "warning": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of last update",
+                            "key": "last_update",
+                            "type": "datetime"
                         }
-                    },
-                    {
-                        "name": "Date of last update",
-                        "key:": "last_update",
-                        "type": "datetime"
-                    }
-                ]
+                    ]
+                }
             }
         }
     }
@@ -177,7 +181,37 @@ The `name` is the default name of sources of this type. The `description` gives 
 
 The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`. If the `type` is `integer` the `unit` and `min_value` need to be specified and optionally a `max_value`. If the `type` is `multiple_choice` the possible `values` need to be specified. A `default_value` can also be given. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
-The `entities` object contains a list of columns to be used to display the entities of the metric. Each column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. The only other types supported at the moment are `date` and `datetime`. The column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states).
+The `entities` object contains the name (both singular and plural) of the entities and a list of columns, the `attributes`, to be used to display the entities of the metric. Each attribute/column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states). 
+
+Users can mark entities as false positive to ignore them. By default *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The attribute `measured_attribute` determines which attribute to use:
+
+```json
+{
+    "sources": {
+        "azure_devops": {
+            "entities": {
+                "ready_user_story_points": {
+                   "name": "user story",
+                   "name_plural": "user stories",
+                   "measured_attribute": "points",
+                   "attributes": [
+                       {
+                          "name": "Summary",
+                          "key": "summary",
+                          "url": "url"
+                       },
+                       {
+                          "name": "Points",
+                          "key": "points",
+                          "type": "float"
+                       }
+                   ]
+               }
+            }
+        }
+    }
+}
+```
 
 ## Subjects
 
