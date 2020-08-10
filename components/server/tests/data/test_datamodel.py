@@ -204,6 +204,18 @@ class DataModelSourcesTest(DataModelTestCase):
                             color_value in ("active", "error", "negative", "positive", "warning"),
                             f"Color {color_value} of {source_id}.{entity_key} is not correct")
 
+    def test_entity_attribute_type(self):
+        """Test that each entity attribute has a correct type."""
+        allowed_types = ("date", "datetime", "string", "float", "integer", "status")
+        for source_id, source in self.data_model["sources"].items():
+            for entity_key, entity_value in source["entities"].items():
+                for attribute in entity_value["attributes"]:
+                    if "type" in attribute:
+                        self.assertIn(
+                            attribute["type"], allowed_types,
+                            f"Attribute {attribute['key']} of {source_id}.{entity_key} has an invalid type "
+                            f"({attribute['type']}); should be one of {allowed_types}")
+
     def test_measured_attribute(self):
         """Test that the measured attribute is actually a key of an entity attribute and has a computable type."""
         for source in self.data_model["sources"].values():
