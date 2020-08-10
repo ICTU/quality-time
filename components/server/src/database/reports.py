@@ -18,8 +18,8 @@ DOES_NOT_EXIST = {"$exists": False}
 
 def latest_reports(database: Database, max_iso_timestamp: str = ""):
     """Return the latest, undeleted, reports in the reports collection."""
-    reports = database.reports.find(
-        {"last": True, "deleted": DOES_NOT_EXIST, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}})
+    reports = list(database.reports.find(
+        {"last": True, "deleted": DOES_NOT_EXIST, "timestamp": {"$lt": max_iso_timestamp or iso_timestamp()}}))
     for report in reports:
         report["_id"] = str(report["_id"])
     return reports
