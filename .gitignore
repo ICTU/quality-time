@@ -7,6 +7,7 @@ __pycache__/
 *$py.class
 
 # Distribution / packaging
+*.emltpl
 .Python
 build/
 develop-eggs/
