@@ -152,7 +152,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.side_effect = [metrics, metrics]
         await self.fetch_measurements(mock_async_get_request, number=2)
         mocked_post.assert_called_once_with(
-            "http://localhost:5001/api/v3/measurements",
+            self.measurement_api_url,
             json=dict(
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
@@ -186,7 +186,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.json.return_value = metrics
         await self.fetch_measurements(mock_async_get_request)
         mocked_post.assert_called_once_with(
-            "http://localhost:5001/api/v3/measurements",
+            self.measurement_api_url,
             json=dict(
                 sources=[
                     dict(api_url=self.url, landing_url=self.url, value="42", total="84", entities=[],
