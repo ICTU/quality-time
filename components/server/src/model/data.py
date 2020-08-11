@@ -12,10 +12,6 @@ class Data:
     def __init__(self, data_model, reports) -> None:
         self.datamodel = data_model
         self.reports = reports
-        self.get_data()
-
-    def get_data(self) -> None:
-        """Get the data."""
 
     def name(self, entity: str) -> str:
         """Return the name of the entity."""
@@ -28,6 +24,8 @@ class ReportData(Data):
     def __init__(self, data_model, reports, report_uuid: ReportId = None, subject_uuid: SubjectId = None) -> None:
         self.report_uuid = self.get_report_uuid(reports, subject_uuid) if subject_uuid else report_uuid
         super().__init__(data_model, reports)
+        self.report = list(filter(lambda report: self.report_uuid == report["report_uuid"], reports))[0]
+        self.report_name = self.report.get("title") or ""
 
     @staticmethod
     def get_report_uuid(reports, subject_uuid: SubjectId) -> ReportId:
@@ -35,17 +33,14 @@ class ReportData(Data):
         report = [report for report in reports if subject_uuid in report["subjects"]][0]
         return cast(ReportId, report["report_uuid"])
 
-    def get_data(self) -> None:
-        super().get_data()
-        self.report = list(filter(lambda report: self.report_uuid == report["report_uuid"], self.reports))[0]
-        self.report_name = self.report.get("title") or ""
-
 
 class SubjectData(ReportData):
     """Class to hold data about a specific subject in a specific report."""
     def __init__(self, data_model, reports, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
         self.subject_uuid = self.get_subject_uuid(reports, metric_uuid) if metric_uuid else subject_uuid
         super().__init__(data_model, reports, subject_uuid=self.subject_uuid)
+        self.subject = self.report["subjects"][self.subject_uuid]
+        self.subject_name = self.name("subject")
 
     @staticmethod
     def get_subject_uuid(reports, metric_uuid: MetricId) -> SubjectId:
@@ -55,17 +50,14 @@ class SubjectData(ReportData):
             subjects.extend(report["subjects"].items())
         return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
 
-    def get_data(self) -> None:
-        super().get_data()
-        self.subject = self.report["subjects"][self.subject_uuid] if self.subject_uuid else {}
-        self.subject_name = self.name("subject")
-
 
 class MetricData(SubjectData):
     """Class to hold data about a specific metric, in a specific subject, in a specific report."""
     def __init__(self, data_model, reports, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
         self.metric_uuid = self.get_metric_uuid(reports, source_uuid) if source_uuid else metric_uuid
         super().__init__(data_model, reports, metric_uuid=self.metric_uuid)
+        self.metric = self.subject["metrics"][self.metric_uuid]
+        self.metric_name = self.name("metric")
 
     @staticmethod
     def get_metric_uuid(reports, source_uuid: SourceId) -> MetricId:
@@ -76,19 +68,11 @@ class MetricData(SubjectData):
                 metrics.extend(subject["metrics"].items())
         return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
 
-    def get_data(self) -> None:
-        super().get_data()
-        self.metric = self.subject["metrics"][self.metric_uuid] if self.metric_uuid else {}
-        self.metric_name = self.name("metric")
-
 
 class SourceData(MetricData):
     """Class to hold data about a specific source, of a specific metric, in a specific subject, in a specific report."""
     def __init__(self, data_model, reports, source_uuid: SourceId) -> None:
         self.source_uuid = source_uuid
         super().__init__(data_model, reports, source_uuid=source_uuid)
-
-    def get_data(self) -> None:
-        super().get_data()
         self.source = self.metric["sources"][self.source_uuid]
         self.source_name = self.name("source")
