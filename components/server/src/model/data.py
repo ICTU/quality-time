@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from dataclasses import dataclass
-from typing import Any, List, Tuple
+from typing import cast, Any, List, Tuple
 
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 
@@ -12,11 +12,7 @@ class Data:
     def __init__(self, data_model, reports) -> None:
         self.datamodel = data_model
         self.reports = reports
-        self.get_uuid()
         self.get_data()
-
-    def get_uuid(self) -> None:
-        """Determine the UUID of the entity."""
 
     def get_data(self) -> None:
         """Get the data."""
@@ -30,15 +26,14 @@ class Data:
 class ReportData(Data):
     """Class to hold data about a specific report."""
     def __init__(self, data_model, reports, report_uuid: ReportId = None, subject_uuid: SubjectId = None) -> None:
-        self.report_uuid = report_uuid
-        self.subject_uuid = subject_uuid
+        self.report_uuid = self.get_report_uuid(reports, subject_uuid) if subject_uuid else report_uuid
         super().__init__(data_model, reports)
 
-    def get_uuid(self) -> None:
-        if self.subject_uuid:
-            report = [report for report in self.reports if self.subject_uuid in report["subjects"]][0]
-            self.report_uuid = report["report_uuid"]
-        super().get_uuid()
+    @staticmethod
+    def get_report_uuid(reports, subject_uuid: SubjectId) -> ReportId:
+        """Find the uuid of the report that contains a subject with the given subject uuid."""
+        report = [report for report in reports if subject_uuid in report["subjects"]][0]
+        return cast(ReportId, report["report_uuid"])
 
     def get_data(self) -> None:
         super().get_data()
@@ -49,18 +44,16 @@ class ReportData(Data):
 class SubjectData(ReportData):
     """Class to hold data about a specific subject in a specific report."""
     def __init__(self, data_model, reports, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
-        self.subject_uuid = subject_uuid
-        self.metric_uuid = metric_uuid
-        super().__init__(data_model, reports, subject_uuid=subject_uuid)
+        self.subject_uuid = self.get_subject_uuid(reports, metric_uuid) if metric_uuid else subject_uuid
+        super().__init__(data_model, reports, subject_uuid=self.subject_uuid)
 
-    def get_uuid(self) -> None:
-        if self.metric_uuid:
-            subjects: List[Tuple[SubjectId, Any]] = []
-            for report in self.reports:
-                subjects.extend(report["subjects"].items())
-            self.subject_uuid = [
-                subject_uuid for (subject_uuid, subject) in subjects if self.metric_uuid in subject["metrics"]][0]
-        super().get_uuid()
+    @staticmethod
+    def get_subject_uuid(reports, metric_uuid: MetricId) -> SubjectId:
+        """Find the uuid of the subject that contains a metric with the given metric uuid."""
+        subjects: List[Tuple[SubjectId, Any]] = []
+        for report in reports:
+            subjects.extend(report["subjects"].items())
+        return [subject_uuid for (subject_uuid, subject) in subjects if metric_uuid in subject["metrics"]][0]
 
     def get_data(self) -> None:
         super().get_data()
@@ -71,19 +64,17 @@ class SubjectData(ReportData):
 class MetricData(SubjectData):
     """Class to hold data about a specific metric, in a specific subject, in a specific report."""
     def __init__(self, data_model, reports, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
-        self.metric_uuid = metric_uuid
-        self.source_uuid = source_uuid
-        super().__init__(data_model, reports, metric_uuid=metric_uuid)
+        self.metric_uuid = self.get_metric_uuid(reports, source_uuid) if source_uuid else metric_uuid
+        super().__init__(data_model, reports, metric_uuid=self.metric_uuid)
 
-    def get_uuid(self) -> None:
-        if self.source_uuid:
-            metrics: List[Tuple[MetricId, Any]] = []
-            for report in self.reports:
-                for subject in report["subjects"].values():
-                    metrics.extend(subject["metrics"].items())
-            self.metric_uuid = [
-                metric_uuid for (metric_uuid, metric) in metrics if self.source_uuid in metric["sources"]][0]
-        super().get_uuid()
+    @staticmethod
+    def get_metric_uuid(reports, source_uuid: SourceId) -> MetricId:
+        """Find the uuid of the metric that contains a source with the given source uuid."""
+        metrics: List[Tuple[MetricId, Any]] = []
+        for report in reports:
+            for subject in report["subjects"].values():
+                metrics.extend(subject["metrics"].items())
+        return [metric_uuid for (metric_uuid, metric) in metrics if source_uuid in metric["sources"]][0]
 
     def get_data(self) -> None:
         super().get_data()
