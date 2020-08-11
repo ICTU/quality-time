@@ -1,9 +1,9 @@
 """Reports collection."""
 
 from dataclasses import dataclass
+from typing import Any, List, Tuple
 
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
-from model.queries import get_metric_uuid, get_report_uuid, get_subject_uuid
 
 
 @dataclass
@@ -35,7 +35,9 @@ class ReportData(Data):
         super().__init__(data_model, reports)
 
     def get_uuid(self) -> None:
-        self.report_uuid = get_report_uuid(self.reports, self.subject_uuid) if self.subject_uuid else self.report_uuid
+        if self.subject_uuid:
+            report = [report for report in self.reports if self.subject_uuid in report["subjects"]][0]
+            self.report_uuid = report["report_uuid"]
         super().get_uuid()
 
     def get_data(self) -> None:
@@ -45,14 +47,19 @@ class ReportData(Data):
 
 
 class SubjectData(ReportData):
-    """Class to hold data about a specific subject."""
+    """Class to hold data about a specific subject in a specific report."""
     def __init__(self, data_model, reports, subject_uuid: SubjectId = None, metric_uuid: MetricId = None) -> None:
         self.subject_uuid = subject_uuid
         self.metric_uuid = metric_uuid
         super().__init__(data_model, reports, subject_uuid=subject_uuid)
 
     def get_uuid(self) -> None:
-        self.subject_uuid = get_subject_uuid(self.reports, self.metric_uuid) if self.metric_uuid else self.subject_uuid
+        if self.metric_uuid:
+            subjects: List[Tuple[SubjectId, Any]] = []
+            for report in self.reports:
+                subjects.extend(report["subjects"].items())
+            self.subject_uuid = [
+                subject_uuid for (subject_uuid, subject) in subjects if self.metric_uuid in subject["metrics"]][0]
         super().get_uuid()
 
     def get_data(self) -> None:
@@ -62,14 +69,20 @@ class SubjectData(ReportData):
 
 
 class MetricData(SubjectData):
-    """Class to hold data about a specific metric."""
+    """Class to hold data about a specific metric, in a specific subject, in a specific report."""
     def __init__(self, data_model, reports, metric_uuid: MetricId = None, source_uuid: SourceId = None) -> None:
         self.metric_uuid = metric_uuid
         self.source_uuid = source_uuid
         super().__init__(data_model, reports, metric_uuid=metric_uuid)
 
     def get_uuid(self) -> None:
-        self.metric_uuid = get_metric_uuid(self.reports, self.source_uuid) if self.source_uuid else self.metric_uuid
+        if self.source_uuid:
+            metrics: List[Tuple[MetricId, Any]] = []
+            for report in self.reports:
+                for subject in report["subjects"].values():
+                    metrics.extend(subject["metrics"].items())
+            self.metric_uuid = [
+                metric_uuid for (metric_uuid, metric) in metrics if self.source_uuid in metric["sources"]][0]
         super().get_uuid()
 
     def get_data(self) -> None:
@@ -79,7 +92,7 @@ class MetricData(SubjectData):
 
 
 class SourceData(MetricData):
-    """Class to hold data about a specific source."""
+    """Class to hold data about a specific source, of a specific metric, in a specific subject, in a specific report."""
     def __init__(self, data_model, reports, source_uuid: SourceId) -> None:
         self.source_uuid = source_uuid
         super().__init__(data_model, reports, source_uuid=source_uuid)
