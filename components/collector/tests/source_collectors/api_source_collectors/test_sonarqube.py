@@ -108,6 +108,10 @@ class SonarQubeTestsTest(SonarQubeTestCase):
 class SonarQubeMetricsTest(SonarQubeTestCase):
     """Unit tests for the other SonarQube metrics."""
 
+    def setUp(self):
+        super().setUp()
+        self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
+
     async def test_commented_out_code(self):
         """Test that the number of lines with commented out code is returned."""
         json = dict(total="2")
@@ -151,8 +155,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         metric = dict(type="uncovered_lines", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="100", total="1000",
-            landing_url="https://sonar/component_measures?id=id&metric=uncovered_lines&branch=master")
+            response, value="100", total="1000", landing_url=self.metric_landing_url.format("uncovered_lines"))
 
     async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the number of branches to cover are returned."""
@@ -163,8 +166,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="10", total="200",
-            landing_url="https://sonar/component_measures?id=id&metric=uncovered_conditions&branch=master")
+            response, value="10", total="200", landing_url=self.metric_landing_url.format("uncovered_conditions"))
 
     async def test_duplicated_lines(self):
         """Test that the number of duplicated lines and the total number of lines are returned."""
@@ -175,8 +177,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         metric = dict(type="duplicated_lines", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="10", total="100",
-            landing_url="https://sonar/component_measures?id=id&metric=duplicated_lines&branch=master")
+            response, value="10", total="100", landing_url=self.metric_landing_url.format("duplicated_lines"))
 
     async def test_many_parameters(self):
         """Test that the number of functions with too many parameters is returned."""
@@ -253,7 +254,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
             response, value="1234", total="100",
             entities=[
                 dict(key="py", language="Python", ncloc="1000"), dict(key="js", language="JavaScript", ncloc="234")],
-            landing_url="https://sonar/component_measures?id=id&metric=ncloc&branch=master")
+            landing_url=self.metric_landing_url.format("ncloc"))
 
     async def test_loc_all_lines(self):
         """Test that the number of lines of code is returned."""
@@ -266,5 +267,35 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         metric = dict(type="loc", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="1234", total="100", entities=[],
-            landing_url="https://sonar/component_measures?id=id&metric=lines&branch=master")
+            response, value="1234", total="100", entities=[], landing_url=self.metric_landing_url.format("lines"))
+
+    async def test_remediation_effort(self):
+        """Test that the remediation effort is returned, as selected by the user."""
+        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index", "reliability_remediation_effort"]
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="reliability_remediation_effort", value="0"),
+                    dict(metric="sqale_index", value="20")]))
+        metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        self.assert_measurement(
+            response, value="20", total="100", entities=[
+                dict(key="sqale_index", effort_type="effort to fix all code smells", effort="20",
+                     url=self.metric_landing_url.format("sqale_index")),
+                dict(key="reliability_remediation_effort", effort_type="effort to fix all bug issues", effort="0",
+                     url=self.metric_landing_url.format("reliability_remediation_effort"))],
+            landing_url="https://sonar/component_measures?id=id&branch=master")
+
+    async def test_remediation_effort_one_metric(self):
+        """Test that the remediation effort is returned, as selected by the user and that the landing url points to
+        the metric."""
+        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index"]
+        json = dict(component=dict(measures=[dict(metric="sqale_index", value="20")]))
+        metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        self.assert_measurement(
+            response, value="20", total="100", entities=[
+                dict(key="sqale_index", effort_type="effort to fix all code smells", effort="20",
+                     url=self.metric_landing_url.format("sqale_index"))],
+            landing_url=self.metric_landing_url.format("sqale_index"))

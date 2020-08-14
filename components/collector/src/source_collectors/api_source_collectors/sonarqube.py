@@ -206,8 +206,13 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        metric = self._metric_keys().split(",")[0]
-        return URL(f"{url}/component_measures?id={component}&metric={metric}&branch={branch}")
+        metric = self._landing_url_metric_key()
+        metric_parameter = f"&metric={metric}" if metric else ""
+        return URL(f"{url}/component_measures?id={component}{metric_parameter}&branch={branch}")
+
+    def _landing_url_metric_key(self) -> str:
+        """Return the metric key to use for the landing url. This can be one key or an empty string."""
+        return self._metric_keys().split(",")[0]
 
     async def _api_url(self) -> URL:
         url = await super()._api_url()
@@ -219,7 +224,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         metrics = await self.__get_metrics(responses)
         return SourceMeasurement(value=self._value(metrics), total=self._total(metrics),
-                                 entities=self._entities(metrics))
+                                 entities=await self._entities(metrics))
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -228,18 +233,18 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
 
     def _value(self, metrics: Dict[str, str]) -> str:
         """Return the metric value."""
-        return metrics[self._value_key()]
+        return str(sum(int(metrics[key]) for key in self._value_key().split(",")))
 
     def _total(self, metrics: Dict[str, str]) -> str:
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    def _entities(self, metrics: Dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: Dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
         """Return the entities."""
         return []
 
     def _value_key(self) -> str:
-        """Return the SonarQube metric key to use for the value."""
+        """Return the SonarQube metric key(s) to use for the value. The string can be a comma-separated list of keys."""
         return self.valueKey
 
     def _total_key(self) -> str:
@@ -285,14 +290,14 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
         return super()._value(metrics)
 
-    def _entities(self, metrics: Dict[str, str]) -> Entities:
+    async def _entities(self, metrics: Dict[str, str]) -> Entities:
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
             # languages the user wants to ignore
             return [
                 dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
                 for language, ncloc in self.__language_ncloc(metrics)]
-        return super()._entities(metrics)
+        return await super()._entities(metrics)
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
         """Return the languages and non-commented lines of code per language, skipping languages the user wants to
@@ -314,6 +319,41 @@ class SonarQubeUncoveredBranches(SonarQubeMetricsBaseClass):
 
     valueKey = "uncovered_conditions"
     totalKey = "conditions_to_cover"
+
+
+class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
+    """SonarQube violation (technical debt) remediation effort."""
+
+    def _landing_url_metric_key(self) -> str:
+        # The landing url can point to one metric, so if the user selected one effort type point the landing url to
+        # that metric. If not, the landing url points to the project overview.
+        effort_types = self.__effort_types()
+        return effort_types[0] if len(effort_types) == 1 else ""
+
+    def _value_key(self) -> str:
+        return ",".join(self.__effort_types())
+
+    async def _entities(self, metrics: Dict[str, str]) -> Entities:
+        entities = []
+        api_values = self._data_model["sources"][self.source_type]["parameters"]["effort_types"]["api_values"]
+        for effort_type in self.__effort_types():
+            effort_type_description = [param for param, api_key in api_values.items() if effort_type == api_key][0]
+            entities.append(
+                dict(key=effort_type, effort_type=effort_type_description, effort=metrics[effort_type],
+                     url=await self.__effort_type_landing_url(effort_type)))
+        return entities
+
+    async def __effort_type_landing_url(self, effort_type: str) -> URL:
+        """Generate a landing url for the effort type."""
+        url = await super(  # pylint: disable=bad-super-call
+            SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
+
+    def __effort_types(self) -> List[str]:
+        """Return the user-selected effort types."""
+        return list(self._parameter("effort_types"))
 
 
 class SonarQubeTests(SonarQubeCollector):

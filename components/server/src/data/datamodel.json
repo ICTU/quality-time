@@ -375,6 +375,28 @@
                 "process efficiency"
             ]
         },
+        "remediation_effort": {
+            "name": "Violation remediation effort",
+            "description": "The amount of effort it takes to remediate violations.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
+            "unit": "minutes",
+            "addition": "sum",
+            "direction": "<",
+            "target": "60",
+            "near_target": "600",
+            "default_source": "sonarqube",
+            "sources": [
+                "manual_number",
+                "random",
+                "sonarqube"
+            ],
+            "tags": [
+                "maintainability"
+            ]
+        },
         "scalability": {
             "name": "Scalability",
             "description": "The percentage of (max) users at which ramp-up of throughput breaks.",
@@ -2823,6 +2845,7 @@
                         "duplicated_lines",
                         "failed_jobs",
                         "issues",
+                        "remediation_effort",
                         "loc",
                         "long_units",
                         "manual_test_duration",
@@ -3933,6 +3956,7 @@
                         "Duplicated lines",
                         "Failed CI-jobs",
                         "Issues",
+                        "Violation remediation effort",
                         "Long units",
                         "Manual test duration",
                         "Manual test execution",
@@ -3981,7 +4005,8 @@
                         "Tests": "tests",
                         "Unmerged branches": "unmerged_branches",
                         "Unused CI-jobs": "unused_jobs",
-                        "Violations": "violations"
+                        "Violations": "violations",
+                        "Violation remediation effort": "remediation_effort"
                     },
                     "metrics": [
                         "metrics"
@@ -4260,6 +4285,7 @@
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
+                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -4283,6 +4309,7 @@
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
+                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -4306,6 +4333,7 @@
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
+                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -4329,6 +4357,7 @@
                         "security_warnings",
                         "source_up_to_dateness",
                         "suppressed_violations",
+                        "remediation_effort",
                         "tests",
                         "uncovered_branches",
                         "uncovered_lines",
@@ -4661,6 +4690,28 @@
                         "suppressed_violations"
                     ]
                 },
+                "effort_types": {
+                    "name": "Types of effort",
+                    "short_name": "effort types",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "placeholder": "all effort types",
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/metric-definitions/",
+                    "default_value": [],
+                    "values": [
+                        "effort to fix all code smells",
+                        "effort to fix all bug issues",
+                        "effort to fix all vulnerabilities"
+                    ],
+                    "api_values": {
+                        "effort to fix all code smells": "sqale_index",
+                        "effort to fix all bug issues": "reliability_remediation_effort",
+                        "effort to fix all vulnerabilities": "security_remediation_effort"
+                    },
+                    "metrics": [
+                        "remediation_effort"
+                    ]
+                },
                 "types": {
                     "name": "Types",
                     "short_name": "types",
@@ -4823,6 +4874,23 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        }
+                    ]
+                },
+                "remediation_effort": {
+                    "name": "effort type",
+                    "name_plural": "effort types",
+                    "measured_attribute": "effort",
+                    "attributes": [
+                        {
+                            "name": "Effort type",
+                            "key": "effort_type",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Effort (minutes)",
+                            "key": "effort",
+                            "type": "integer"
                         }
                     ]
                 },
@@ -5203,6 +5271,7 @@
                 "dependencies",
                 "duplicated_lines",
                 "issues",
+                "remediation_effort",
                 "loc",
                 "manual_test_duration",
                 "manual_test_execution",
