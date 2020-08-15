@@ -50,3 +50,10 @@ export function scaled_number(number) {
     var exponent = Math.floor(Math.log(number) / Math.log(1000));
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
+
+export function format_minutes(number) {
+    const hours = Math.floor(number / 60);
+    const minutes = number - hours * 60;
+    const leading_zero = minutes < 10 ? "0" : "";
+    return `${hours}:${leading_zero}${minutes}`
+}

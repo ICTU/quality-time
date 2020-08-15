@@ -4890,7 +4890,7 @@
                         {
                             "name": "Effort (minutes)",
                             "key": "effort",
-                            "type": "integer"
+                            "type": "minutes"
                         }
                     ]
                 },
