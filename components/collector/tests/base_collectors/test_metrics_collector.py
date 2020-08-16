@@ -52,7 +52,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_without_sources(self, mocked_post):
         """Test fetching measurement for a metric without sources."""
-        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources=dict()))
+        metrics = dict(metric_uuid=dict(type="metric", addition="sum", sources={}))
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.return_value = metrics
         await self.fetch_measurements(mock_async_get_request)

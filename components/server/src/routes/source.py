@@ -217,4 +217,4 @@ def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:
 
 def _headers(source_parameters) -> Dict:
     """Return the headers for the url-check."""
-    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else dict()
+    return {"Private-Token": source_parameters["private_token"]} if "private_token" in source_parameters else {}

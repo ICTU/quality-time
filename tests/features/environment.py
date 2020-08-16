@@ -11,7 +11,7 @@ def before_all(context):
 
     def cookies():
         """Return the cookies."""
-        return dict(session_id=context.session_id) if context.session_id else dict()
+        return dict(session_id=context.session_id) if context.session_id else {}
 
     def get(api, headers=None):
         """Get the resource."""

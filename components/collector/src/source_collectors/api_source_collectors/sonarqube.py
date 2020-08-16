@@ -255,7 +255,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     async def __get_metrics(responses: SourceResponses) -> Dict[str, str]:
         """Get the metric(s) from the responses."""
         measures = (await responses[0].json())["component"]["measures"]
-        return dict((measure["metric"], measure["value"]) for measure in measures)
+        return {measure["metric"]: measure["value"] for measure in measures}
 
 
 class SonarQubeDuplicatedLines(SonarQubeMetricsBaseClass):
@@ -382,9 +382,9 @@ class SonarQubeTests(SonarQubeCollector):
     @staticmethod
     async def __nr_of_tests(responses: SourceResponses) -> Dict[str, int]:
         """Return the number of tests by test result."""
-        measures = dict(
-            (measure["metric"], int(measure["value"]))
-            for measure in (await responses[0].json())["component"]["measures"])
+        measures = {
+            measure["metric"]: int(measure["value"])
+            for measure in (await responses[0].json())["component"]["measures"]}
         errored = measures.get("test_errors", 0)
         failed = measures.get("test_failures", 0)
         skipped = measures.get("skipped_tests", 0)

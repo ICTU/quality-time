@@ -12,7 +12,7 @@ class CalendarSourceUpToDatenessTest(SourceCollectorTestCase):
         super().setUp()
         self.metric = dict(
             type="source_up_to_dateness", addition="max",
-            sources=dict(source_uuid=dict(type="calendar", parameters=dict())))
+            sources=dict(source_uuid=dict(type="calendar", parameters={})))
 
     async def test_source_up_to_dateness(self):
         """Test the number of days since the user-specified date."""

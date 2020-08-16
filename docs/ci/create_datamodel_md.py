@@ -1,7 +1,6 @@
 """Script to convert the data model in a Markdown file."""
 
 import json
-import os
 import pathlib
 from typing import List
 
@@ -50,9 +49,9 @@ def markdown_header(header: str, level: int = 1) -> str:
 def metrics_table(dm, universal_sources: List[str]) -> str:
     """Return the metrics as Markdown table."""
     markdown = markdown_table_header("Name", "Description", "Default target", "Default tags", "Sources¹")
-    for metric_key, metric in sorted(dm["metrics"].items(), key=lambda item: item[1]["name"]):
+    for metric in sorted(dm["metrics"].values(), key=lambda item: item["name"]):
         direction = {"<": "≦", ">": "≧"}[metric['direction']]
-        unit = f"% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
+        unit = "% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
         target = f"{direction} {metric['target']}{unit}"
         tags = ", ".join(metric['tags'])
         sources = [dm["sources"][source]['name'] for source in metric["sources"] if source not in universal_sources]
@@ -83,9 +82,9 @@ def metric_source_table(dm, metric_key, source_key) -> str:
         if metric_key in parameter["metrics"]:
             name = parameter['name']
             mandatory = "Yes" if parameter["mandatory"] else "No"
-            type = TYPE_DESCRIPTION[parameter["type"]]
-            help = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
-            markdown += markdown_table_row(name, type, mandatory, help)
+            parameter_type = TYPE_DESCRIPTION[parameter["type"]]
+            help_url = markdown_link(parameter["help_url"]) if "help_url" in parameter else parameter.get("help", "")
+            markdown += markdown_table_row(name, parameter_type, mandatory, help_url)
     markdown += "\n"
     return markdown
 

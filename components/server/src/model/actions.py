@@ -25,8 +25,7 @@ def copy_source(source, data_model, change_name: bool = True):
 def copy_metric(metric, data_model, change_name: bool = True):
     """Return a copy of the metric and its sources."""
     kwargs: Dict[str, Any] = dict(
-        sources=dict(
-            (uuid(), copy_source(source, data_model, change_name=False)) for source in metric["sources"].values()))
+        sources={uuid(): copy_source(source, data_model, change_name=False) for source in metric["sources"].values()})
     if change_name:
         kwargs["name"] = f"{metric.get('name') or data_model['metrics'][metric['type']]['name']} (copy)"
     return copy_item(metric, **kwargs)
@@ -35,8 +34,7 @@ def copy_metric(metric, data_model, change_name: bool = True):
 def copy_subject(subject, data_model, change_name: bool = True):
     """Return a copy of the subject, its metrics, and their sources."""
     kwargs: Dict[str, Any] = dict(
-        metrics=dict(
-            (uuid(), copy_metric(metric, data_model, change_name=False)) for metric in subject["metrics"].values()))
+        metrics={uuid(): copy_metric(metric, data_model, change_name=False) for metric in subject["metrics"].values()})
     if change_name:
         kwargs["name"] = f"{subject.get('name') or data_model['subjects'][subject['type']]['name']} (copy)"
     return copy_item(subject, **kwargs)
@@ -46,8 +44,8 @@ def copy_report(report, data_model):
     """Return a copy of the report, its subjects, their metrics, and their sources."""
     return copy_item(
         report, report_uuid=uuid(), title=f"{report['title']} (copy)",
-        subjects=dict(
-            (uuid(), copy_subject(subject, data_model, change_name=False)) for subject in report["subjects"].values()))
+        subjects={
+            uuid(): copy_subject(subject, data_model, change_name=False) for subject in report["subjects"].values()})
 
 
 def move_item(data, new_position: Position, item_type: Literal["metric", "source", "subject"]) -> Tuple[int, int]:
@@ -63,7 +61,7 @@ def move_item(data, new_position: Position, item_type: Literal["metric", "source
         first=0, last=nr_items - 1, previous=max(0, old_index - 1), next=min(nr_items - 1, old_index + 1))[new_position]
     # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
     # we construct a new dict in the right order and insert that in the report.
-    reordered_items: Dict[str, Dict] = dict()
+    reordered_items: Dict[str, Dict] = {}
     del items[item_to_move_id]
     for item_id, item in items.items():
         if len(reordered_items) == new_index:

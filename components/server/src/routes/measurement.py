@@ -40,7 +40,7 @@ def post_measurement(database: Database) -> Dict:
 def copy_entity_user_data(old_sources, new_sources) -> None:
     """Copy the entity user data from the old sources to the new sources."""
     for old_source, new_source in zip(old_sources, new_sources):
-        new_entity_keys = set(entity["key"] for entity in new_source.get("entities", []))
+        new_entity_keys = {entity["key"] for entity in new_source.get("entities", [])}
         # Copy the user data of entities that still exist in the new measurement:
         for entity_key, attributes in old_source.get("entity_user_data", {}).items():
             if entity_key in new_entity_keys:

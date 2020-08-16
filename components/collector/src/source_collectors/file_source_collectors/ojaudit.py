@@ -16,7 +16,7 @@ class OJAuditViolations(XMLFileSourceCollector):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.violation_counts: Dict[str, int] = dict()  # Keep track of the number of duplicated violations per key
+        self.violation_counts: Dict[str, int] = {}  # Keep track of the number of duplicated violations per key
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         severities = cast(List[str], self._parameter("severities"))

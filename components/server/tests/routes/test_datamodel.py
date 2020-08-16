@@ -40,7 +40,7 @@ class DataModelTest(unittest.TestCase):
 
     def test_insert_data_model_without_id(self):
         """Test that a new data model can be inserted."""
-        insert_new_datamodel(self.database, dict())
+        insert_new_datamodel(self.database, {})
         self.database.datamodels.insert_one.assert_called_once()
 
     def test_default_source_parameters(self):

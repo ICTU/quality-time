@@ -31,7 +31,7 @@ def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> 
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
     if overview:  # pragma: no cover-behave
         overview["_id"] = str(overview["_id"])
-    return overview or dict()
+    return overview or {}
 
 
 def report_exists(database: Database, report_uuid: ReportId):

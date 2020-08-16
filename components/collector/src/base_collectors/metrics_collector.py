@@ -45,9 +45,9 @@ class MetricsCollector:
     def __init__(self) -> None:
         self.server_url: Final[URL] = \
             URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
-        self.data_model: JSON = dict()
-        self.last_parameters: Dict[str, Any] = dict()
-        self.next_fetch: Dict[str, datetime] = dict()
+        self.data_model: JSON = {}
+        self.last_parameters: Dict[str, Any] = {}
+        self.next_fetch: Dict[str, datetime] = {}
 
     @staticmethod
     def record_health(filename: str = "/tmp/health_check.txt") -> None:

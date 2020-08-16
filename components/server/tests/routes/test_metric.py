@@ -19,14 +19,14 @@ class PostMetricAttributeTest(unittest.TestCase):
         self.report = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={
-                "other_subject": dict(metrics=dict()),
+                "other_subject": dict(metrics={}),
                 SUBJECT_ID: dict(
                     name='Subject',
                     metrics={
                         METRIC_ID: dict(
                             name="name", type="old_type", scale="count", addition="sum", direction="<", target="0",
                             near_target="10", debt_target=None, accept_debt=False, tags=[],
-                            sources={SOURCE_ID: dict()}),
+                            sources={SOURCE_ID: {}}),
                         METRIC_ID2: dict(name="name2", type="old_type")})})
         self.database = Mock()
         self.database.reports.find.return_value = [self.report]

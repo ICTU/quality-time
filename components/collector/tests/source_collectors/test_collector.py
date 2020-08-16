@@ -65,5 +65,5 @@ class CollectorTest(SourceCollectorTestCase):
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):
             async with aiohttp.ClientSession() as session:
-                response = await FailingLandingUrl(session, self.metric, dict()).get()
+                response = await FailingLandingUrl(session, self.metric, {}).get()
         self.assertEqual("https://api_url", response["landing_url"])

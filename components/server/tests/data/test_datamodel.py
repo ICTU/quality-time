@@ -13,7 +13,7 @@ def setUpModule():  # pylint: disable=invalid-name
 class DataModelTestCase(unittest.TestCase):
     """Base class for data model unit tests."""
 
-    data_model = dict()
+    data_model = {}
 
 
 class DataModelTest(DataModelTestCase):
@@ -232,24 +232,24 @@ class DataModelSpecificSourcesTest(DataModelTestCase):
 
     def test_quality_time_source_type_parameter(self):
         """Test that the source type parameter of the Quality-time source lists all source types."""
-        all_source_names = set(source["name"] for source in self.data_model["sources"].values())
+        all_source_names = {source["name"] for source in self.data_model["sources"].values()}
         quality_time_source_names = set(
             self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["values"])
         self.assertEqual(all_source_names, quality_time_source_names)
-        all_source_api_values = set(
-            (source["name"], source_id) for source_id, source in self.data_model["sources"].items())
+        all_source_api_values = {
+            (source["name"], source_id) for source_id, source in self.data_model["sources"].items()}
         quality_time_api_values = set(
             self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["api_values"].items())
         self.assertEqual(all_source_api_values, quality_time_api_values)
 
     def test_quality_time_metric_type_parameter(self):
         """Test that the metric type parameter of the Quality-time source lists all metric types."""
-        all_metric_names = set(metric["name"] for metric in self.data_model["metrics"].values())
+        all_metric_names = {metric["name"] for metric in self.data_model["metrics"].values()}
         quality_time_metric_names = set(
             self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["values"])
         self.assertEqual(all_metric_names, quality_time_metric_names)
-        all_metric_api_values = set(
-            (metric["name"], metric_id) for metric_id, metric in self.data_model["metrics"].items())
+        all_metric_api_values = {
+            (metric["name"], metric_id) for metric_id, metric in self.data_model["metrics"].items()}
         quality_time_api_values = set(
             self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items())
         self.assertEqual(all_metric_api_values, quality_time_api_values)

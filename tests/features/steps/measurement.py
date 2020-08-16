@@ -20,7 +20,7 @@ def measure(context, number, total="100"):
     entities = []
     if context.table:
         for row in context.table:
-            entity = dict((heading, row[heading]) for heading in context.table.headings)
+            entity = {heading: row[heading] for heading in context.table.headings}
             entities.append(entity)
     context.post(
         "measurements",
