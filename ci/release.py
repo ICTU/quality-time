@@ -44,7 +44,7 @@ def check_preconditions(bump: str):
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
-    subprocess.run(["python3", "docs/ci/create_datamodel_md.py"])
+    subprocess.run(["python3", "docs/ci/create_datamodel_md.py"], check=True)  # skipcq: BAN-B603
     if repo.is_dirty(path="docs/DATA_MODEL.md"):
         messages.append("The generated data model documentation is not up-to-date, please commit docs/DATA_MODEL.md.")
     with pathlib.Path("docs/CHANGELOG.md").open() as changelog:
