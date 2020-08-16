@@ -206,7 +206,7 @@ class DataModelSourcesTest(DataModelTestCase):
 
     def test_entity_attribute_type(self):
         """Test that each entity attribute has a correct type."""
-        allowed_types = ("date", "datetime", "string", "float", "integer", "status")
+        allowed_types = ("date", "datetime", "string", "float", "integer", "minutes", "status")
         for source_id, source in self.data_model["sources"].items():
             for entity_key, entity_value in source["entities"].items():
                 for attribute in entity_value["attributes"]:
@@ -224,7 +224,7 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertIn(measured_attribute, [attribute["key"] for attribute in entities["attributes"]])
                     for attribute in entities["attributes"]:
                         if measured_attribute == attribute["key"]:
-                            self.assertIn(attribute["type"], ["integer", "float"])
+                            self.assertIn(attribute["type"], ["integer", "float", "minutes"])
 
 
 class DataModelSpecificSourcesTest(DataModelTestCase):

@@ -50,14 +50,13 @@ def markdown_header(header: str, level: int = 1) -> str:
 def metrics_table(dm, universal_sources: List[str]) -> str:
     """Return the metrics as Markdown table."""
     markdown = markdown_table_header("Name", "Description", "Default target", "Default tags", "Sources¹")
-    for metric_key, metric in dm["metrics"].items():
+    for metric_key, metric in sorted(dm["metrics"].items(), key=lambda item: item[1]["name"]):
         direction = {"<": "≦", ">": "≧"}[metric['direction']]
         unit = f"% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
         target = f"{direction} {metric['target']}{unit}"
         tags = ", ".join(metric['tags'])
-        sources = ", ".join(
-            [dm["sources"][source]['name'] for source in metric["sources"] if source not in universal_sources])
-        markdown += markdown_table_row(metric['name'], metric['description'], target, tags, sources)
+        sources = [dm["sources"][source]['name'] for source in metric["sources"] if source not in universal_sources]
+        markdown += markdown_table_row(metric['name'], metric['description'], target, tags, ", ".join(sorted(sources)))
     markdown += "\n"
     return markdown
 
@@ -65,7 +64,7 @@ def metrics_table(dm, universal_sources: List[str]) -> str:
 def sources_table(dm, universal_sources: List[str]) -> str:
     """Return the sources as Markdown table."""
     markdown = markdown_table_header("Name", "Description", "Metrics")
-    for source_key, source in dm["sources"].items():
+    for source_key, source in sorted(dm["sources"].items(), key=lambda item: item[1]["name"]):
         name = f"[{source['name']}]({source['url']})" if "url" in source else source['name']
         if source_key in universal_sources:
             metrics = "¹"
@@ -80,7 +79,7 @@ def sources_table(dm, universal_sources: List[str]) -> str:
 def metric_source_table(dm, metric_key, source_key) -> str:
     """Return the metric source combination as Markdown table."""
     markdown = markdown_table_header("Parameter", "Type", "Mandatory", "Help")
-    for parameter in dm["sources"][source_key]["parameters"].values():
+    for parameter in sorted(dm["sources"][source_key]["parameters"].values(), key=lambda parameter: parameter["name"]):
         if metric_key in parameter["metrics"]:
             name = parameter['name']
             mandatory = "Yes" if parameter["mandatory"] else "No"

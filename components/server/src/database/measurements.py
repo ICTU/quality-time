@@ -95,7 +95,7 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
         if attribute := get_measured_attribute(data_model, metric["type"], source_type):
             entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
             attribute_type = get_attribute_type(entity, attribute)
-            convert = dict(float=float, integer=int)[attribute_type]
+            convert = dict(float=float, integer=int, minutes=int)[attribute_type]
             value = sum(
                 convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
         else:

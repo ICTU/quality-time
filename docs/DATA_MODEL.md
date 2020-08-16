@@ -7,11 +7,10 @@
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
-| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, npm, OWASP Dependency Check, pip |
+| Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, OWASP Dependency Check, npm, pip |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | maintainability | SonarQube |
-| Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, Jenkins, GitLab |
+| Failed CI-jobs | The number of continuous integration jobs or pipelines that have failed. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | Issues | The number of issues. | ≦ 0 issues |  | Azure DevOps Server, Jira, Trello, Wekan |
-| Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | cloc, SonarQube |
 | Long units | The amount of units (functions, methods, files) that are too long. | ≦ 0 long units | maintainability | SonarQube |
 | Manual test duration | The duration of the manual test in minutes | ≦ 0 minutes | test quality | Jira |
 | Manual test execution | Measure the number of manual test cases that have not been tested on time. | ≦ 0 manual test cases | test quality | Jira |
@@ -21,15 +20,17 @@
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | performance | Performancetest-runner |
 | Ready user story points | The number of points of user stories that are ready to implement. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
+| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, SonarQube |
+| Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube, cloc |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Cobertura, Checkmarx CxSAST, GitLab, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, JUnit XML report, NCover, Robot Framework, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Performancetest-runner, Quality-time, SonarQube, Trello, Wekan |
-| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OpenVAS, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, Pyupio Safety, SonarQube |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, SonarQube, Trello, Wekan |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
-| Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, Jenkins test report, JUnit XML report, Performancetest-runner, Robot Framework, SonarQube |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
+| Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, JUnit XML report, Jenkins test report, Performancetest-runner, Robot Framework, SonarQube |
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
+| Violation remediation effort | The amount of effort it takes to remediate violations. | ≦ 60 minutes | maintainability | SonarQube |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
 
 ## Sources
@@ -41,34 +42,34 @@
 | [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Ready user story points, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
-| [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages | Size (LOC) |
+| [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [Cobertura](https://cobertura.github.io/cobertura/) | Cobertura is a free Java tool that calculates the percentage of code accessed by tests. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | Dependencies |
-| [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | Failed CI-jobs, Source up-to-dateness, Unmerged branches, Unused CI-jobs |
+| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | Source up-to-dateness, Tests |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | Source up-to-dateness, Test branch coverage, Test line coverage |
-| [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | Failed CI-jobs, Unused CI-jobs |
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | Source up-to-dateness, Test branch coverage, Test line coverage |
+| [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | Failed CI-jobs, Unused CI-jobs |
 | [Jenkins test report](https://plugins.jenkins.io/junit) | A Jenkins job with test results. | Source up-to-dateness, Tests |
 | [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, Ready user story points |
-| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | Source up-to-dateness, Tests |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | Source up-to-dateness, Test branch coverage, Test line coverage |
-| [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | Dependencies |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
-| [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | Source up-to-dateness, Security warnings |
 | [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Dependencies, Source up-to-dateness, Security warnings |
 | [OWASP Dependency Check Jenkins plugin](https://plugins.jenkins.io/dependency-check-jenkins-plugin) | Jenkins plugin for the OWASP Dependency Check, a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | Source up-to-dateness, Security warnings |
 | [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project) | The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested. | Source up-to-dateness, Security warnings |
+| [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | Source up-to-dateness, Security warnings |
 | [Performancetest-runner](https://github.com/ICTU/performancetest-runner) | An open source tool to run performancetests and create performancetest reports. | Performancetest duration, Performancetest stability, Scalability, Slow transactions, Source up-to-dateness, Tests |
-| [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | Dependencies |
 | [Pyupio Safety](https://github.com/pyupio/safety) | Safety checks Python dependencies for known security vulnerabilities. | Security warnings |
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics, Source up-to-dateness |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | Source up-to-dateness, Tests |
-| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
+| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Violation remediation effort, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
+| [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages | Size (LOC) |
+| [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | Dependencies |
+| [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | Dependencies |
 
 ¹) All metrics can be measured using the 'Manual number' and the 'Random number' source.
 ## Supported metric/source combinations
@@ -77,226 +78,226 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an Axe report in CSV format or to a zip with Axe reports in CSV format | URL | Yes |  |
-| URL to Axe report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
+| Impact levels | Multiple choice | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
-| Impact levels | Multiple choice | No |  |
+| URL to Axe report in a human readable format | String | No |  |
+| URL to an Axe report in CSV format or to a zip with Axe reports in CSV format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 | Violation types | Multiple choice | No | [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) |
 
 ### Commented out code from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Complex units from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Dependencies from Composer
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a Compose 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports | URL | Yes | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | URL to a Composer 'outdated' report in a human readable format | String | No | [https://getcomposer.org/doc/03-cli.md#outdated](https://getcomposer.org/doc/03-cli.md#outdated) |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
-| Latest version status | Multiple choice | No | Limit which latest version statuses to show. The status 'safe update possible' means that based on semantic versioning the update should be backwards compatible. |
 
 ### Dependencies from npm
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a npm 'outdated' report in JSON format ('npm outdated --json') or a zip with npm 'outdated' reports in JSON format. | URL | Yes | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
 | URL to npm 'outdated' report in a human readable format | String | No | [https://docs.npmjs.com/cli-commands/outdated.html](https://docs.npmjs.com/cli-commands/outdated.html) |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Dependencies from OWASP Dependency Check
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
-| URL to OWASP Dependency Check report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to OWASP Dependency Check report in a human readable format | String | No |  |
+| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Dependencies from pip
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a pip 'outdated' report in JSON format ('pip list --outdated --format json') or a zip with pip 'outdated' reports in JSON format. | URL | Yes | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
 | URL to pip 'outdated' report in a human readable format | String | No | [https://pip.pypa.io/en/stable/reference/pip_list/](https://pip.pypa.io/en/stable/reference/pip_list/) |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Duplicated lines from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Failed CI-jobs from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
+| Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Failed CI-jobs from Jenkins
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Failure type | Multiple choice | No | Limit which failure types to count as failed. |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
-| Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 
 ### Failed CI-jobs from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
-| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Branches and tags to ignore (regular expressions, branch names or tag names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. |
+| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Issues from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Issue query in WIQL (Work Item Query Language) | String | Yes | [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops) |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Issues from Jira
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String | No |  |
 
 ### Issues from Trello
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
 | API key | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
-| Token | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
 | Board (title or id) | String | Yes | [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name) |
-| Lists to ignore (title or id) | Multiple choice with addition | No |  |
 | Cards to count | Multiple choice | No |  |
+| Lists to ignore (title or id) | Multiple choice with addition | No |  |
 | Number of days without activity after which to consider cards inactive | Integer | No |  |
+| Token | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
+| URL | URL | Yes |  |
 
 ### Issues from Wekan
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
 | Board (title or id) | String | No |  |
-| Username | String | No |  |
-| Password | Password | No |  |
-| Lists to ignore (title or id) | Multiple choice with addition | No |  |
 | Cards to count | Multiple choice | No |  |
+| Lists to ignore (title or id) | Multiple choice with addition | No |  |
 | Number of days without activity after which to consider cards inactive | Integer | No |  |
+| Password | Password | No |  |
+| URL | URL | Yes |  |
+| Username | String | No |  |
 
 ### Size (LOC) from cloc
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Languages to ignore (regular expressions or language names) | Multiple choice with addition | No | [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-) |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a cloc report in JSON format or to a zip with cloc reports in JSON format | URL | Yes |  |
 | URL to a cloc report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
-| Languages to ignore (regular expressions or language names) | Multiple choice with addition | No | [https://github.com/AlDanial/cloc#recognized-languages-](https://github.com/AlDanial/cloc#recognized-languages-) |
 
 ### Size (LOC) from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
-| Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
-| Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Languages to ignore (regular expressions or language names) | Multiple choice with addition | No | [https://docs.sonarqube.org/latest/analysis/languages/overview/](https://docs.sonarqube.org/latest/analysis/languages/overview/) |
 | Lines to count | Single choice | No | Either count all lines including lines with comments or only count lines with code, excluding comments. Note: it's possible to ignore specific languages only when counting lines with code. This is a SonarQube limitation. |
+| Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
+| Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Long units from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Manual test duration from Jira
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
-| Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
 | Manual test duration field (name or id) | String | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
+| Password for basic authentication | Password | No |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String | No |  |
 
 ### Manual test execution from Jira
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
-| Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
-| Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Manual test execution frequency field (name or id) | String | No | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
 | Default expected manual test execution frequency (days) | Integer | Yes | Specify how often the manual tests should be executed. For example, if the sprint length is three weeks, manual tests should be executed at least once every 21 days. |
+| Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Manual test execution frequency field (name or id) | String | No | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
+| Password for basic authentication | Password | No |  |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String | No |  |
 
 ### Many parameters from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Metrics from Quality-time
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| Quality-time URL | URL | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
 | Metric status | Multiple choice | No |  |
-| Report names or identifiers | Multiple choice with addition | No |  |
 | Metric types | Multiple choice | No |  |
+| Quality-time URL | URL | Yes | URL of the Quality-time instance, with port if necessary, but without path. For example, 'https://quality-time.example.org'. |
+| Report names or identifiers | Multiple choice with addition | No |  |
 | Source types | Multiple choice | No |  |
 | Tags | Multiple choice with addition | No |  |
 
@@ -304,86 +305,96 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Performancetest stability from Performancetest-runner
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Ready user story points from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Issue query in WIQL (Work Item Query Language) | String | Yes | [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops) |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Ready user story points from Jira
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Story points field (name or id) | String | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String | No |  |
+
+### Violation remediation effort from SonarQube
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
+| Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
+| Types of effort | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/metric-definitions/](https://docs.sonarqube.org/latest/user-guide/metric-definitions/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Scalability from Performancetest-runner
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Slow transactions from Performancetest-runner
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Thresholds | Multiple choice | No |  |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Anchore
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format | URL | Yes |  |
-| URL to Anchore report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to Anchore report in a human readable format | String | No |  |
+| URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| File or folder path | String | Yes |  |
-| Repository (name or id) | String | No |  |
 | Branch | String | No |  |
+| File or folder path | String | Yes |  |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| Repository (name or id) | String | No |  |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Source up-to-dateness from Bandit
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL | Yes |  |
-| URL to Bandit report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to Bandit report in a human readable format | String | No |  |
+| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Calendar date
 
@@ -395,132 +406,132 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
 | URL to a Cobertura report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from Checkmarx CxSAST
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
-| Project (name or id) | String | Yes |  |
-| Username for basic authentication | String | Yes |  |
 | Password for basic authentication | Password | Yes |  |
+| Project (name or id) | String | Yes |  |
+| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
+| Username for basic authentication | String | Yes |  |
 
 ### Source up-to-dateness from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
-| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
-| File or folder path | String | Yes | [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html) |
 | Branch | String | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
+| File or folder path | String | Yes | [https://docs.gitlab.com/ee/api/repository_files.html](https://docs.gitlab.com/ee/api/repository_files.html) |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
+| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Source up-to-dateness from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format | URL | Yes |  |
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from JaCoCo Jenkins plugin
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from Jenkins test report
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from JUnit XML report
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a JUnit report in XML format or to a zip with JUnit reports in XML format | URL | Yes |  |
 | URL to a JUnit report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from NCover
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Robot Framework
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL | Yes |  |
 | URL to a Robot Framework report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from OpenVAS
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL | Yes |  |
 | URL to an OpenVAS report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from OWASP Dependency Check
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
-| URL to OWASP Dependency Check report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to OWASP Dependency Check report in a human readable format | String | No |  |
+| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from OWASP Dependency Check Jenkins plugin
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL to Jenkins job | URL | Yes |  |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Source up-to-dateness from OWASP ZAP
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format | URL | Yes |  |
 | URL to an OWASP ZAP report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Source up-to-dateness from Performancetest-runner
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Quality-time
 
@@ -533,360 +544,360 @@
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Source up-to-dateness from Trello
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
 | API key | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
-| Token | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
 | Board (title or id) | String | Yes | [https://trello.com/1/members/me/boards?fields=name](https://trello.com/1/members/me/boards?fields=name) |
 | Lists to ignore (title or id) | Multiple choice with addition | No |  |
+| Token | String | No | [https://trello.com/app-key](https://trello.com/app-key) |
+| URL | URL | Yes |  |
 
 ### Source up-to-dateness from Wekan
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes |  |
 | Board (title or id) | String | No |  |
-| Username | String | No |  |
-| Password | Password | No |  |
 | Lists to ignore (title or id) | Multiple choice with addition | No |  |
+| Password | Password | No |  |
+| URL | URL | Yes |  |
+| Username | String | No |  |
 
 ### Security warnings from Anchore
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an Anchore vulnerability report in JSON format or to a zip with Anchore reports in JSON format | URL | Yes |  |
-| URL to Anchore report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
+| URL to Anchore report in a human readable format | String | No |  |
+| URL to an Anchore vulnerability report in JSON format or to a zip with Anchore reports in JSON format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from Bandit
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL | Yes |  |
-| URL to Bandit report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
+| Confidence levels | Multiple choice | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
-| Confidence levels | Multiple choice | No |  |
+| URL to Bandit report in a human readable format | String | No |  |
+| URL to a Bandit JSON-report or to a zip with Bandit JSON-reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from Checkmarx CxSAST
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
-| Project (name or id) | String | Yes |  |
-| Username for basic authentication | String | Yes |  |
 | Password for basic authentication | Password | Yes |  |
+| Project (name or id) | String | Yes |  |
 | Severities | Multiple choice | No |  |
+| URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
+| Username for basic authentication | String | Yes |  |
 
 ### Security warnings from OpenVAS
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL | Yes |  |
-| URL to an OpenVAS report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
+| URL to an OpenVAS report in XML format or to a zip with OpenVAS reports in XML format | URL | Yes |  |
+| URL to an OpenVAS report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from OWASP Dependency Check
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
-| URL to OWASP Dependency Check report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
+| URL to OWASP Dependency Check report in a human readable format | String | No |  |
+| URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from OWASP Dependency Check Jenkins plugin
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to Jenkins job | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Severities | Multiple choice | No |  |
+| URL to Jenkins job | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from OWASP ZAP
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format | URL | Yes |  |
-| URL to an OWASP ZAP report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
+| Parts of URLs to ignore (regular expressions) | Multiple choice with addition | No | Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported. |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Risks | Multiple choice | No |  |
-| Parts of URLs to ignore (regular expressions) | Multiple choice with addition | No | Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one or more of the regular expressions are removed. If, after applying the regular expressions, multiple warnings are the same only one is reported. |
+| URL to an OWASP ZAP report in XML format or to a zip with OWASP ZAP reports in XML format | URL | Yes |  |
+| URL to an OWASP ZAP report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from Pyupio Safety
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
-| Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Security issue types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
+| Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Suppressed violations from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
-| Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
+| Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Tests from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
+| Names of test runs to include (regular expressions or test run names) | Multiple choice with addition | No | Limit which test runs to include by test run name |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
-| Names of test runs to include (regular expressions or test run names) | Multiple choice with addition | No | Limit which test runs to include by test run name |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Tests from Jenkins test report
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
-| Username for basic authentication | String | No |  |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL to job | URL | Yes | URL to a Jenkins job with a test report generated by the JUnit plugin. For example, 'http://jenkins.example.org/job/test' or http://jenkins.example.org/job/test/job/master' in case of a pipeline job. |
+| Username for basic authentication | String | No |  |
 
 ### Tests from JUnit XML report
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a JUnit report in XML format or to a zip with JUnit reports in XML format | URL | Yes |  |
-| URL to a JUnit report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL to a JUnit report in XML format or to a zip with JUnit reports in XML format | URL | Yes |  |
+| URL to a JUnit report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Tests from Performancetest-runner
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Tests from Robot Framework
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL | Yes |  |
-| URL to a Robot Framework report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL to a Robot Framework report in XML format or a zip with Robot Framework reports in XML format | URL | Yes |  |
+| URL to a Robot Framework report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Tests from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Test branch coverage from Cobertura
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
 | URL to a Cobertura report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Test branch coverage from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format | URL | Yes |  |
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Test branch coverage from JaCoCo Jenkins plugin
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Test branch coverage from NCover
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Test branch coverage from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Test line coverage from Cobertura
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a Cobertura report in XML format or to a zip with Cobertura reports in XML format | URL | Yes |  |
 | URL to a Cobertura report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Test line coverage from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
 | URL to a JaCoCo report in XML format or to a zip with JaCoCo reports in XML format | URL | Yes |  |
 | URL to a JaCoCo report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
 
 ### Test line coverage from JaCoCo Jenkins plugin
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 
 ### Test line coverage from NCover
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| URL to a NCover report in HTML format or to a zip with NCover reports in HTML format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
 
 ### Test line coverage from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
 ### Unmerged branches from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| Repository (name or id) | String | No |  |
 | Branches to ignore (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 | Number of days since last commit after which to consider branches inactive | Integer | No |  |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| Repository (name or id) | String | No |  |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Unmerged branches from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
-| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Branches to ignore (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Number of days since last commit after which to consider branches inactive | Integer | No |  |
+| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Unused CI-jobs from Azure DevOps Server
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Number of days since last build after which to consider pipelines inactive | Integer | No |  |
 | Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Unused CI-jobs from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
-| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Branches and tags to ignore (regular expressions, branch names or tag names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
-| Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. |
+| Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
+| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 
 ### Unused CI-jobs from Jenkins
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
-| Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 
 ### Violations from OJAudit
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format | URL | Yes |  |
-| URL to an OJAudit report in a human readable format | String | No |  |
-| Username for basic authentication | String | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
+| URL to an OJAudit report in XML format or to a zip with OJAudit reports in XML format | URL | Yes |  |
+| URL to an OJAudit report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Violations from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
+| URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 

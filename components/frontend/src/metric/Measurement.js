@@ -7,12 +7,12 @@ import { MeasurementDetails } from './MeasurementDetails';
 import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { get_metric_name, get_metric_target } from '../utils';
+import { get_metric_name, get_metric_target, format_minutes } from '../utils';
 import "./Measurement.css";
 
 export function Measurement(props) {
   function MeasurementValue() {
-    const value = metric.value || "?";
+    const value = metric.value && metric_type.unit === "minutes" ? format_minutes(metric.value) : metric.value || "?";
     const now = new Date();
     const measurement_timestring = (latest_measurement && latest_measurement.end) || now.toISOString();
     const start = (latest_measurement && new Date(latest_measurement.start)) || now;
@@ -33,7 +33,11 @@ export function Measurement(props) {
       debt_end = ` until ${end_date.toLocaleDateString()}`;
     }
     const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
-    return `${metric_direction} ${get_metric_target(metric)}${metric_unit}${debt}`
+    let target = get_metric_target(metric);
+    if (target && metric_type.unit === "minutes") {
+      target = format_minutes(target)
+    }
+    return `${metric_direction} ${target}${metric_unit}${debt}`
   }
   function measurement_sources() {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}

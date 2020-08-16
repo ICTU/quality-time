@@ -58,6 +58,7 @@ export function SourceEntities(props) {
       "float": (value) => parseFloat(value),
       "date": (value) => Date.parse(value),
       "datetime": (value) => Date.parse(value),
+      "minutes": (value) => parseInt(value, 10),
       "text": (value) => value
     }[columnType];
     entities.sort((a, b) => parse(a[sortColumn]) < parse(b[sortColumn]) ? -1 : 1)
