@@ -5,6 +5,10 @@ test_patterns = [
   "test_*.py"
 ]
 
+exclude_patterns = [
+  "**/.vulture_ignore_list.py"
+]
+
 [[analyzers]]
 name = "python"
 enabled = true
