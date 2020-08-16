@@ -123,7 +123,7 @@ def get_tag_report(tag: str, database: Database):
 
 def _get_subjects_and_metrics_by_tag(data_model, reports, tag: str):
     """Return all subjects and metrics that have the tag."""
-    subjects = dict()
+    subjects = {}
     for report in reports:
         for subject_uuid, subject in list(report.get("subjects", {}).items()):
             for metric_uuid, metric in list(subject.get("metrics", {}).items()):

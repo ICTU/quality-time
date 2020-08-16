@@ -139,7 +139,7 @@ class SourceCollector(ABC):
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
-        kwargs: Dict[str, Any] = dict()
+        kwargs: Dict[str, Any] = {}
         credentials = self._basic_auth_credentials()
         if credentials is not None:
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])

@@ -28,7 +28,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.report = dict(
             _id="id", report_uuid=REPORT_ID,
             subjects={
-                SUBJECT_ID2: dict(),
+                SUBJECT_ID2: {},
                 SUBJECT_ID: dict(
                     metrics={
                         METRIC_ID: dict(
@@ -38,7 +38,7 @@ class PostMeasurementTests(unittest.TestCase):
         self.database.reports.find.return_value = [self.report]
         self.database.datamodels.find_one.return_value = dict(
             _id="", metrics=dict(metric_type=dict(direction="<", scales=["count"])),
-            sources=dict(junit=dict(entities=dict())))
+            sources=dict(junit=dict(entities={})))
 
         def set_measurement_id(measurement):
             measurement["_id"] = "measurement_id"
@@ -149,7 +149,7 @@ class PostMeasurementTests(unittest.TestCase):
     def test_deleted_metric(self, request):
         """Post an measurement for a deleted metric."""
         self.database.measurements.find_one.return_value = dict(_id="id", sources=[])
-        self.report["subjects"][SUBJECT_ID]["metrics"] = dict()
+        self.report["subjects"][SUBJECT_ID]["metrics"] = {}
         request.json = dict(metric_uuid=METRIC_ID, sources=[])
         self.assertEqual(dict(ok=False), post_measurement(self.database))
         self.database.measurements.update_one.assert_not_called()

@@ -28,7 +28,7 @@ class ReportInitTest(unittest.TestCase):
             dict(report_uuid="id", subjects=[
                 dict(name="name", type="subject_type", metrics=[
                     dict(type="metric_type", sources=[
-                        dict(type="source_type", parameters=dict(p1=dict()))])])]))
+                        dict(type="source_type", parameters=dict(p1={}))])])]))
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""

@@ -13,7 +13,7 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     timestamp_filter = dict(timestamp={"$lte": max_iso_timestamp or iso_timestamp()})
     if data_model := database.datamodels.find_one(timestamp_filter, sort=[("timestamp", pymongo.DESCENDING)]):
         data_model["_id"] = str(data_model["_id"])
-    return data_model or dict()
+    return data_model or {}
 
 
 def insert_new_datamodel(database: Database, data_model):
@@ -49,4 +49,4 @@ def default_subject_attributes(database: Database, subject_type: str = "") -> Di
     if not subject_type:
         subject_type = list(subject_types.keys())[0]
     defaults = subject_types[subject_type]
-    return dict(type=subject_type, name=None, description=defaults["description"], metrics=dict())
+    return dict(type=subject_type, name=None, description=defaults["description"], metrics={})

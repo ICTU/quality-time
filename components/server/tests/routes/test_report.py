@@ -132,7 +132,7 @@ class ReportTest(unittest.TestCase):
         self.database.reports.find.return_value = [dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
             subjects={
-                "subject_without_metrics": dict(metrics=dict()),
+                "subject_without_metrics": dict(metrics={}),
                 SUBJECT_ID: dict(
                     type="subject_type",
                     metrics=dict(

@@ -1,6 +1,6 @@
 """Generic step implementations for reports, subjects, metrics, and sources."""
 
-from asserts import assert_equal, assert_false, assert_not_equal, assert_true
+from asserts import assert_equal, assert_false, assert_true
 from behave import given, when, then
 
 

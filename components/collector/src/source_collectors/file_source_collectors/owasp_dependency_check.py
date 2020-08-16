@@ -62,8 +62,9 @@ class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
         """Parse the entity from the dependency."""
         entity = super()._parse_entity(dependency, dependency_index, namespaces, landing_url)
         vulnerabilities = self.__vulnerabilities(dependency, namespaces)
-        severities = set(vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower()
-                         for vulnerability in vulnerabilities)
+        severities = {
+            vulnerability.findtext(".//ns:severity", default="", namespaces=namespaces).lower()
+            for vulnerability in vulnerabilities}
         highest_severity = "low"
         for severity in ("critical", "high", "medium"):
             if severity in severities:

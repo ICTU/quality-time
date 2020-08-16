@@ -6,7 +6,7 @@ import argparse
 import datetime
 import os
 import pathlib
-import subprocess
+import subprocess  # skipcq: BAN-B404
 import sys
 from typing import Tuple
 
@@ -18,7 +18,7 @@ PART = "part-is-a-mandatory-bump2version-argument-even-when-not-used"
 def get_version() -> str:
     """Return the current version."""
     command = f"bump2version --list --dry-run --allow-dirty {PART}"
-    output = subprocess.check_output(command.split(" "), text=True)
+    output = subprocess.check_output(command.split(" "), text=True)  # skipcq: BAN-B603
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
 
 
@@ -26,8 +26,8 @@ def parse_arguments() -> Tuple[str, str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     parser = argparse.ArgumentParser(description=f"Release Quality-time. Current version is {current_version}.")
-    allowed_bumps_in_rc_mode = ("rc", "drop-rc")  # rc = release candidate
-    allowed_bumps = ("rc-patch", "rc-minor", "rc-major", "patch", "minor", "major")
+    allowed_bumps_in_rc_mode = ["rc", "drop-rc"]  # rc = release candidate
+    allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
     bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
     parser.add_argument("bump", choices=bumps)
     parser.add_argument(
@@ -44,7 +44,7 @@ def check_preconditions(bump: str):
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
-    os.system("python3 docs/ci/create_datamodel_md.py")
+    subprocess.run(["python3", "docs/ci/create_datamodel_md.py"], check=True)  # skipcq: BAN-B603
     if repo.is_dirty(path="docs/DATA_MODEL.md"):
         messages.append("The generated data model documentation is not up-to-date, please commit docs/DATA_MODEL.md.")
     with pathlib.Path("docs/CHANGELOG.md").open() as changelog:
@@ -82,8 +82,8 @@ def main() -> None:
     else:
         commands.append(["bump2version", bump])
     for command in commands:
-        subprocess.run(tuple(command), check=True)
-    subprocess.run(("git", "push", "--follow-tags"), check=True)
+        subprocess.run(tuple(command), check=True)  # skipcq: BAN-B603
+    subprocess.run(("git", "push", "--follow-tags"), check=True)  # skipcq: BAN-B603
 
 
 if __name__ == "__main__":

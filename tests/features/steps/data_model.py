@@ -21,7 +21,7 @@ def get_data_model(context):
 @when("the client gets a data model from too long ago")
 def get_old_data_model(context):
     """Get a data model from too long ago."""
-    context.get(f"datamodel?report_date=2000-07-24T10:59:58+00:00")
+    context.get("datamodel?report_date=2000-07-24T10:59:58+00:00")
 
 
 @then("the server returns the most recent data model")

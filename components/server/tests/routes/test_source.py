@@ -31,7 +31,7 @@ class SourceTestCase(unittest.TestCase):
                         username=dict(type="string", metrics=["metric_type"], default_value=""),
                         password=dict(type="password", metrics=["metric_type"], default_value=""),
                         private_token=dict(type="password", metrics=["metric_type"], default_value=""))),
-                new_source_type=dict(parameters=dict())))
+                new_source_type=dict(parameters={})))
         self.sources = {
             SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
             SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}

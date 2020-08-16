@@ -12,7 +12,7 @@ class MetricsTest(unittest.TestCase):
 
     def setUp(self):
         self.database = Mock()
-        self.database.datamodels.find_one.return_value = dict(_id="id", metrics=dict(metric_type=dict()))
+        self.database.datamodels.find_one.return_value = dict(_id="id", metrics=dict(metric_type={}))
         self.database.reports.find.return_value = [dict(
             _id="1", report_uuid="report_uuid",
             subjects=dict(subject_uuid=dict(metrics=dict(metric_uuid=dict(type="metric_type", tags=[])))))]

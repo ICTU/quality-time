@@ -21,7 +21,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         json = await responses[0].json()
         severities = self._parameter("severities")
         warnings = [warning for warning in json.get("warnings", []) if warning["priority"].lower() in severities]
-        entities: Dict[str, Entity] = dict()
+        entities: Dict[str, Entity] = {}
         for warning in warnings:
             priority = warning["priority"].lower()
             file_path = warning["fileName"]
