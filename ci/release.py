@@ -6,7 +6,7 @@ import argparse
 import datetime
 import os
 import pathlib
-import subprocess
+import subprocess  # skipcq: BAN-B404
 import sys
 from typing import Tuple
 
@@ -18,7 +18,7 @@ PART = "part-is-a-mandatory-bump2version-argument-even-when-not-used"
 def get_version() -> str:
     """Return the current version."""
     command = f"bump2version --list --dry-run --allow-dirty {PART}"
-    output = subprocess.check_output(command.split(" "), text=True)
+    output = subprocess.check_output(command.split(" "), text=True)  # skipcq: BAN-B603
     return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
 
 
@@ -82,8 +82,8 @@ def main() -> None:
     else:
         commands.append(["bump2version", bump])
     for command in commands:
-        subprocess.run(tuple(command), check=True)
-    subprocess.run(("git", "push", "--follow-tags"), check=True)
+        subprocess.run(tuple(command), check=True)  # skipcq: BAN-B603
+    subprocess.run(("git", "push", "--follow-tags"), check=True)  # skipcq: BAN-B603
 
 
 if __name__ == "__main__":
