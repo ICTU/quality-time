@@ -2514,7 +2514,7 @@
                             }
                         },
                         {
-                            "name": "Number of builds failing",
+                            "name": "Number of builds the test has been failing",
                             "key": "age",
                             "type": "integer"
                         }
