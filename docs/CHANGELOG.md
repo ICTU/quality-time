@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- When measuring the number of test cases using Jenkins test report as source, for each failing test case show how many builds it has been failing. Closes [#1373](https://github.com/ICTU/quality-time/issues/1373).
 - Add a new metric 'violation remediation effort' that reports the effort needed to remediate violations. Currently, the only source supporting this metric is SonarQube. Closes [#1374](https://github.com/ICTU/quality-time/issues/1374).
 
 ## [3.1.0] - [2020-08-07]
