@@ -40,7 +40,9 @@ class JenkinsTestReportTests(SourceCollector):
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
         name = case.get("name", "<nameless test case>")
-        return dict(key=name, name=name, class_name=case.get("className", ""), test_result=self.__status(case))
+        return dict(
+            key=name, name=name, class_name=case.get("className", ""), test_result=self.__status(case),
+            age=str(case.get("age", 0)))
 
     @staticmethod
     def __status(case: TestCase) -> str:

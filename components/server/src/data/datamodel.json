@@ -2512,6 +2512,11 @@
                                 "passed": "positive",
                                 "skipped": "warning"
                             }
+                        },
+                        {
+                            "name": "Number of builds failing",
+                            "key": "age",
+                            "type": "integer"
                         }
                     ]
                 }
