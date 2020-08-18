@@ -23,12 +23,14 @@ import Python from './python.png';
 import Pyupio from './pyupio.png';
 import QualityTime from './quality_time.png';
 import RobotFramework from './robot_framework.png';
+import Snyk from './snyk.png';
 import Sonarqube from './sonarqube.png';
 import Trello from './trello.png';
 import Wekan from './wekan.png';
 
 export function Logo(props) {
     const logo = {
+        snyk: Snyk,
         anchore: Anchore,
         axecsv: Axe,
         azure_devops: AzureDevops,
