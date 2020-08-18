@@ -21,6 +21,7 @@ from .api_source_collectors.trello import TrelloIssues, TrelloSourceUpToDateness
 from .api_source_collectors.wekan import WekanIssues, WekanSourceUpToDateness
 
 from .file_source_collectors.anchore import AnchoreSecurityWarnings, AnchoreSourceUpToDateness
+from .file_source_collectors.snyk import SnykSecurityWarnings, SnykSourceUpToDateness
 from .file_source_collectors.axe_csv import AxeCSVAccessibility
 from .file_source_collectors.bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .file_source_collectors.cloc import ClocLOC

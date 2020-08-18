@@ -66,6 +66,7 @@
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics, Source up-to-dateness |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | Source up-to-dateness, Tests |
+| [Snyk](https://snyk.io) | Continuously find & fix vulnerabilities in dependencies pulled from npm, Maven, RubyGems, PyPI and more |
 | [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
