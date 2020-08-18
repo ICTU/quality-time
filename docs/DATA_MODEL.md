@@ -23,7 +23,7 @@
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, Snyk, SonarQube |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube, cloc |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, Snyk, Snyk, SonarQube, Trello, Wekan |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, SonarQube, Trello, Wekan |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
@@ -64,7 +64,7 @@
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics, Source up-to-dateness |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | Source up-to-dateness, Tests |
-| [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI) | Snyk Dependency Scan Report in JSON format | Source up-to-dateness, Security warnings |
+| [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI) | Snyk vulnerability report in JSON format | Security warnings |
 | [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Violation remediation effort, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
@@ -367,16 +367,6 @@
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
-### Source up-to-dateness from Snyk
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
-| URL to Snyk report in a human readable format | String | No |  |
-| URL to an Snyk details report in JSON format | URL | Yes |  |
-| Username for basic authentication | String | No |  |
-
 ### Source up-to-dateness from Anchore
 
 | Parameter | Type | Mandatory | Help |
@@ -560,16 +550,6 @@
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
 
-### Source up-to-dateness from Snyk
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Password for basic authentication | Password | No |  |
-| Private token | Password | No |  |
-| URL to Snyk report in a human readable format | String | No |  |
-| URL to an Snyk details report in JSON format | URL | Yes |  |
-| Username for basic authentication | String | No |  |
-
 ### Source up-to-dateness from Trello
 
 | Parameter | Type | Mandatory | Help |
@@ -682,8 +662,8 @@
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Severities | Multiple choice | No |  |
-| URL to Snyk report in a human readable format | String | No |  |
-| URL to an Snyk vulnerability report in JSON format | URL | Yes |  |
+| URL to a Snyk vulnerability report in JSON format | URL | Yes |  |
+| URL to a Snyk vulnerability report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 
 ### Security warnings from SonarQube

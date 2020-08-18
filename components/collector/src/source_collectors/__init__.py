@@ -21,7 +21,6 @@ from .api_source_collectors.trello import TrelloIssues, TrelloSourceUpToDateness
 from .api_source_collectors.wekan import WekanIssues, WekanSourceUpToDateness
 
 from .file_source_collectors.anchore import AnchoreSecurityWarnings, AnchoreSourceUpToDateness
-from .file_source_collectors.snyk import SnykSecurityWarnings, SnykSourceUpToDateness
 from .file_source_collectors.axe_csv import AxeCSVAccessibility
 from .file_source_collectors.bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .file_source_collectors.cloc import ClocLOC
@@ -44,6 +43,7 @@ from .file_source_collectors.performancetest_runner import (
 from .file_source_collectors.pip import PipDependencies
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 from .file_source_collectors.robot_framework import RobotFrameworkTests, RobotFrameworkSourceUpToDateness
+from .file_source_collectors.snyk import SnykSecurityWarnings
 
 from .local_source_collectors.calendar import CalendarSourceUpToDateness
 from .local_source_collectors.manual_number import ManualNumber

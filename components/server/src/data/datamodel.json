@@ -455,7 +455,6 @@
             "near_target": "7",
             "default_source": "sonarqube",
             "sources": [
-                "snyk",
                 "anchore",
                 "azure_devops",
                 "bandit",
@@ -477,7 +476,6 @@
                 "performancetest_runner",
                 "quality_time",
                 "sonarqube",
-                "snyk",
                 "trello",
                 "wekan"
             ],
@@ -4058,6 +4056,7 @@
                         "Quality-time",
                         "Random",
                         "Robot Framework",
+                        "Snyk",
                         "SonarQube",
                         "Trello",
                         "Wekan"
@@ -4271,11 +4270,11 @@
         },
         "snyk": {
             "name": "Snyk",
-            "description": "Snyk Dependency Scan Report in JSON format",
+            "description": "Snyk vulnerability report in JSON format",
             "url": "https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI",
             "parameters": {
                 "url": {
-                    "name": "URL to an Snyk vulnerability report in JSON format",
+                    "name": "URL to a Snyk vulnerability report in JSON format",
                     "short_name": "URL",
                     "type": "url",
                     "mandatory": true,
@@ -4289,30 +4288,14 @@
                         "security_warnings"
                     ]
                 },
-                "details_url": {
-                    "name": "URL to an Snyk details report in JSON format",
-                    "short_name": "URL",
-                    "type": "url",
-                    "mandatory": true,
-                    "default_value": "",
-                    "validate_on": [
-                        "username",
-                        "password",
-                        "private_token"
-                    ],
-                    "metrics": [
-                        "source_up_to_dateness"
-                    ]
-                },
                 "landing_url": {
-                    "name": "URL to Snyk report in a human readable format",
+                    "name": "URL to a Snyk vulnerability report in a human readable format",
                     "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings",
-                        "source_up_to_dateness"
+                        "security_warnings"
                     ]
                 },
                 "username": {
@@ -4322,8 +4305,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings",
-                        "source_up_to_dateness"
+                        "security_warnings"
                     ]
                 },
                 "password": {
@@ -4333,8 +4315,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings",
-                        "source_up_to_dateness"
+                        "security_warnings"
                     ]
                 },
                 "private_token": {
@@ -4344,8 +4325,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
-                        "security_warnings",
-                        "source_up_to_dateness"
+                        "security_warnings"
                     ]
                 },
                  "severities": {
@@ -4356,12 +4336,9 @@
                     "mandatory": false,
                     "default_value": [],
                     "values": [
-                        "Unknown",
-                        "Negligible",
-                        "Low",
-                        "Medium",
-                        "High",
-                        "Critical"
+                        "low",
+                        "medium",
+                        "high"
                     ],
                     "metrics": [
                         "security_warnings"
@@ -4398,10 +4375,8 @@
                             "name": "Severity",
                             "key": "severity",
                             "color": {
-                                "Critical": "negative",
-                                "High": "negative",
-                                "Medium": "warning",
-                                "Low": "warning"
+                                "high": "negative",
+                                "medium": "warning"
                             }
                         }
                     ]
