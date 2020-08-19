@@ -43,6 +43,7 @@ from .file_source_collectors.performancetest_runner import (
 from .file_source_collectors.pip import PipDependencies
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 from .file_source_collectors.robot_framework import RobotFrameworkTests, RobotFrameworkSourceUpToDateness
+from .file_source_collectors.snyk import SnykSecurityWarnings
 
 from .local_source_collectors.calendar import CalendarSourceUpToDateness
 from .local_source_collectors.manual_number import ManualNumber

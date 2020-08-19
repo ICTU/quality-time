@@ -20,7 +20,7 @@
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | performance | Performancetest-runner |
 | Ready user story points | The number of points of user stories that are ready to implement. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
-| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, SonarQube |
+| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, Snyk, SonarQube |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube, cloc |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
 | Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, SonarQube, Trello, Wekan |
@@ -64,6 +64,7 @@
 | [Quality-time](https://github.com/ICTU/quality-time) | Quality report software for software development and maintenance. | Metrics, Source up-to-dateness |
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | Source up-to-dateness, Tests |
+| [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI) | Snyk vulnerability report in JSON format | Security warnings |
 | [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Violation remediation effort, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
@@ -652,6 +653,17 @@
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | URL to a Safety report in JSON format or a zip with Safety reports in JSON format. | URL | Yes |  |
+| Username for basic authentication | String | No |  |
+
+### Security warnings from Snyk
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+| Severities | Multiple choice | No |  |
+| URL to a Snyk vulnerability report in JSON format | URL | Yes |  |
+| URL to a Snyk vulnerability report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 
 ### Security warnings from SonarQube

@@ -507,6 +507,7 @@
                 "owasp_zap",
                 "pyupio_safety",
                 "random",
+                "snyk",
                 "sonarqube"
             ],
             "tags": [
@@ -4055,11 +4056,13 @@
                         "Quality-time",
                         "Random",
                         "Robot Framework",
+                        "Snyk",
                         "SonarQube",
                         "Trello",
                         "Wekan"
                     ],
                     "api_values": {
+                        "Snyk": "snyk",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "Azure DevOps Server": "azure_devops",
@@ -4259,6 +4262,121 @@
                             "color": {
                                 "fail": "negative",
                                 "pass": "positive"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "snyk": {
+            "name": "Snyk",
+            "description": "Snyk vulnerability report in JSON format",
+            "url": "https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI",
+            "parameters": {
+                "url": {
+                    "name": "URL to a Snyk vulnerability report in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a Snyk vulnerability report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                 "severities": {
+                    "name": "Severities",
+                    "short_name": "severities",
+                    "type": "multiple_choice",
+                    "placeholder": "all severities",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "CVE",
+                            "key": "cve",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Package",
+                            "key": "package"
+                        },
+                        {
+                            "name": "Version in use",
+                            "key": "version"
+                        },
+                        {
+                            "name": "Fixed versions",
+                            "key": "fix"
+                        },
+                        {
+                            "name": "Package is included from",
+                            "key": "package_include"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "high": "negative",
+                                "medium": "warning"
                             }
                         }
                     ]
