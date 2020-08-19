@@ -87,8 +87,6 @@ class SonarQubeViolations(SonarQubeCollector):
             component=issue["component"])
 
 
-
-
 class SonarQubeCommentedOutCode(SonarQubeViolations):
     """SonarQube commented out code collector."""
 

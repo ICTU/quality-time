@@ -138,7 +138,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
-    new_value = dict(bottle.request.json)[parameter_key]
+    new_value = new_parameter_value(data, parameter_key)
     old_value = data.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return dict(ok=True)  # Nothing to do
@@ -162,6 +162,15 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     if availability_checks := _availability_checks(data, parameter_key):
         result["availability"] = availability_checks
     return result
+
+
+def new_parameter_value(data, parameter_key: str):
+    """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
+    new_value = dict(bottle.request.json)[parameter_key]
+    source_parameter = data.datamodel["sources"][data.source["type"]]["parameters"][parameter_key]
+    if source_parameter["type"] == "multiple_choice":
+        new_value = [value for value in new_value if value in source_parameter["values"]]
+    return new_value
 
 
 def _source_description(data, edit_scope, parameter_key, old_value):
