@@ -46,28 +46,6 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         expected_entities = [self.entity("a", "bug", "info"), self.entity("b", "code_smell", "major")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
-    async def test_security_hotspots(self):
-        """Test that the number of security hotspots is returned."""
-        self.sources["source_id"]["parameters"]["types"] = ["security_hotspot"]
-        json = dict(
-            total="2",
-            issues=[
-                dict(key="a", message="a", component="a", type="SECURITY_HOTSPOT"),
-                dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        response = await self.collect(self.metric, get_request_json_return_value=json)
-        expected_entities = [self.entity("a", "security_hotspot"), self.entity("b", "security_hotspot")]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
-
-    async def test_bugs_and_security_hotspots(self):
-        """Test that the number of bugs and security hotspots is returned."""
-        self.sources["source_id"]["parameters"]["types"] = ["bug", "security_hotspot"]
-        bug_json = dict(total="1", issues=[dict(key="a", message="a", component="a", severity="MAJOR", type="BUG")])
-        hotspot_json = dict(total="1", issues=[dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
-        expected_entities = [self.entity("a", "bug", "major"), self.entity("b", "security_hotspot")]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
-
 
 class SonarQubeTestsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube tests metric."""
@@ -271,7 +249,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
 
     async def test_remediation_effort(self):
         """Test that the remediation effort is returned, as selected by the user."""
-        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index", "reliability_remediation_effort"]
+        self.sources["source_id"]["parameters"]["effort_types"] = [
+            "effort to fix all code smells", "effort to fix all bug issues"]
         json = dict(
             component=dict(
                 measures=[
@@ -290,7 +269,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
     async def test_remediation_effort_one_metric(self):
         """Test that the remediation effort is returned, as selected by the user and that the landing url points to
         the metric."""
-        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index"]
+        self.sources["source_id"]["parameters"]["effort_types"] = ["effort to fix all code smells"]
         json = dict(component=dict(measures=[dict(metric="sqale_index", value="20")]))
         metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
@@ -299,3 +278,13 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
                 dict(key="sqale_index", effort_type="effort to fix all code smells", effort="20",
                      url=self.metric_landing_url.format("sqale_index"))],
             landing_url=self.metric_landing_url.format("sqale_index"))
+
+    async def test_security_warnings(self):
+        """Test that the security warnings are returned."""
+        self.sources["source_id"]["parameters"]["security_types"] = ["security_hotspot"]
+        json = dict(component=dict(measures=[dict(metric="security_hotspots", value="25")]))
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        self.assert_measurement(
+            response, value="25", total="100", entities=[],
+            landing_url=self.metric_landing_url.format("security_hotspots"))

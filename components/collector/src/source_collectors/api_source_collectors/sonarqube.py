@@ -47,10 +47,8 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        severities = ",".join([severity.upper() for severity in self._parameter("severities")])
-        types = ",".join(
-            [violation_type.upper() for violation_type in self._parameter(self.types_parameter)
-             if violation_type != "security_hotspot"])
+        severities = ",".join(severity.upper() for severity in self._parameter("severities"))
+        types = ",".join(violation_type.upper() for violation_type in self._parameter(self.types_parameter))
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
@@ -61,22 +59,6 @@ class SonarQubeViolations(SonarQubeCollector):
         """Return the rules url parameter, if any."""
         rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
         return f"&rules={','.join(rules)}" if rules else ""
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Override to manipulate the issues urls. Add an extra call to the issues API for security hotspots, if the
-        user wants to see security hotspots. This is needed because the issues API only returns security hotspots if
-        the severity parameter is not passed (see https://community.sonarsource.com/t/23326). If only security hotspots
-        need to retrieved, the first call to retrieve bugs, vulnerabilities and code smells can be skipped."""
-        types = self._parameter(self.types_parameter)
-        api_urls = [] if ["security_hotspot"] == types else list(urls)
-        if self.rules_parameter == "" and "security_hotspot" in types:
-            url = await super()._api_url()
-            component = self._parameter("component")
-            branch = self._parameter("branch")
-            api_urls.append(
-                URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&types=SECURITY_HOTSPOT&"
-                    f"branch={branch}"))
-        return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         value = 0
@@ -105,12 +87,6 @@ class SonarQubeViolations(SonarQubeCollector):
             component=issue["component"])
 
 
-class SonarQubeSecurityWarnings(SonarQubeViolations):
-    """SonarQube security warnings. The security warnings are a subset of the violation types (vulnerabilities and
-    security hotspots). That the user can only pick those two violation types is determined by the data model, so no
-    code changes are needed."""
-
-    types_parameter = "security_types"
 
 
 class SonarQubeCommentedOutCode(SonarQubeViolations):
@@ -354,6 +330,13 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
     def __effort_types(self) -> List[str]:
         """Return the user-selected effort types."""
         return list(self._parameter("effort_types"))
+
+
+class SonarQubeSecurityWarnings(SonarQubeMetricsBaseClass):
+    """SonarQube security warnings. The security warnings are a sum of the vulnerabilities and security hotspots."""
+
+    def _value_key(self) -> str:
+        return ",".join(list(self._parameter("security_types")))
 
 
 class SonarQubeTests(SonarQubeCollector):

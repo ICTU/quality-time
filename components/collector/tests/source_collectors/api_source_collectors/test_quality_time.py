@@ -20,7 +20,7 @@ class QualityTimeMetricsTest(SourceCollectorTestCase):
                 type="quality_time",
                 parameters=dict(
                     url=self.url, reports=["r1"], status=["target not met (red)"], tags=["security"],
-                    metric_type=["tests", "violations"], source_type=["sonarqube"])))
+                    metric_type=["Tests", "Violations"], source_type=["SonarQube"])))
         self.reports = dict(
             reports=[
                 dict(

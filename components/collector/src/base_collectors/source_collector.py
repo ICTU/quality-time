@@ -111,6 +111,9 @@ class SourceCollector(ABC):
         parameter_info = self._data_model["sources"][self.source_type]["parameters"][parameter_key]
         if "values" in parameter_info and parameter_info["type"].startswith("multiple_choice"):
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
+            if parameter_info["type"] == "multiple_choice":
+                # Ensure all values picked by the user are still allowed. Remove any values that are no longer allowed:
+                value = [v for v in value if v in parameter_info["values"]] or parameter_info["values"]
         else:
             default_value = parameter_info.get("default_value", "")
             value = self.__parameters.get(parameter_key, default_value)

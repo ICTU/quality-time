@@ -4846,8 +4846,7 @@
                     "values": [
                         "code_smell",
                         "bug",
-                        "vulnerability",
-                        "security_hotspot"
+                        "vulnerability"
                     ],
                     "metrics": [
                         "suppressed_violations",
@@ -4866,6 +4865,10 @@
                         "vulnerability",
                         "security_hotspot"
                     ],
+                    "api_values": {
+                        "vulnerability": "vulnerabilities",
+                        "security_hotspot": "security_hotspots"
+                    },
                     "metrics": [
                         "security_warnings"
                     ]
