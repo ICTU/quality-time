@@ -4854,21 +4854,19 @@
                     ]
                 },
                 "security_types": {
-                    "name": "Security issue types",
+                    "name": "Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)",
                     "short_name": "types",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "placeholder": "all security issue types",
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
-                    "default_value": [],
+                    "default_value": [
+                        "vulnerability"
+                    ],
                     "values": [
                         "vulnerability",
                         "security_hotspot"
                     ],
-                    "api_values": {
-                        "vulnerability": "vulnerabilities",
-                        "security_hotspot": "security_hotspots"
-                    },
                     "metrics": [
                         "security_warnings"
                     ]
