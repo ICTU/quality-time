@@ -5036,6 +5036,14 @@
                             }
                         },
                         {
+                            "name": "Vulnerability probability",
+                            "key": "vulnerability_probability",
+                            "color": {
+                                "high": "negative",
+                                "medium": "warning"
+                            }
+                        },
+                        {
                             "name": "Type",
                             "key": "type"
                         },
