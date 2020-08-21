@@ -47,17 +47,11 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        severities = ",".join(severity.upper() for severity in self._parameter("severities"))
-        types = ",".join(violation_type.upper() for violation_type in self._violation_types())
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
-              f"severities={severities}&types={types}&branch={branch}"
+              f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
         return URL(api + self.__rules_url_parameter())
-
-    def _violation_types(self) -> List[str]:
-        """Return the violation types the user has selected."""
-        return list(self._parameter(self.types_parameter))
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
@@ -89,6 +83,14 @@ class SonarQubeViolations(SonarQubeCollector):
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
             component=issue["component"])
+
+    def _violation_types(self) -> str:
+        """Return the violation types."""
+        return ",".join(violation_type.upper() for violation_type in list(self._parameter(self.types_parameter)))
+
+    def _violation_severities(self) -> str:
+        """Return the severities parameter."""
+        return ",".join(severity.upper() for severity in self._parameter("severities"))
 
 
 class SonarQubeCommentedOutCode(SonarQubeViolations):
@@ -158,7 +160,9 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         component = self._parameter("component")
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
-        resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
+        resolved_issues_api_url = URL(
+            f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500&"
+            f"severities={self._violation_severities()}&types={self._violation_types()}")
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -192,8 +196,8 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_url = f"{base_landing_url}/security_hotspots?id={component}&branch={branch}"
         return URL(landing_url)
 
-    def _violation_types(self) -> List[str]:
-        return ["VULNERABILITY"]
+    def _violation_types(self) -> str:
+        return "VULNERABILITY"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         api_urls = []
@@ -202,10 +206,9 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         branch = self._parameter("branch")
         base_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         if "vulnerability" in security_types:
-            severities = ",".join(severity.upper() for severity in self._parameter("severities"))
             api_urls.append(
                 URL(f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
-                    f"severities={severities}&types=VULNERABILITY&branch={branch}"))
+                    f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"))
         if "security_hotspot" in security_types:
             api_urls.append(
                 URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}"))
