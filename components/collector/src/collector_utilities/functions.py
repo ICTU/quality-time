@@ -58,6 +58,11 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
+def safe_entity_key(key: str) -> str:
+    """Return a escaped version of the key that is safe in URLs and as Mongo document key."""
+    return key.replace("/", "-").replace(".", "_")
+
+
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
     return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
