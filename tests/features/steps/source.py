@@ -11,7 +11,8 @@ def sanitize_value(value: str):
     if value == "None":
         return ""
     if "[" in value:
-        return eval(value)
+        # Split the list items and strip the quotes:
+        return [item[1:-1] for item in value[1:-1].split(", ")]
     return value
 
 
