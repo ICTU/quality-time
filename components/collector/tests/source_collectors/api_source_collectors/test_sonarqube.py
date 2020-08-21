@@ -292,7 +292,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
 
     async def test_security_warnings(self):
         """Test that all security warnings are returned."""
-        show_component_json = dict()
+        show_component_json = {}
         vulnerabilities_json = dict(
             total="2",
             issues=[
