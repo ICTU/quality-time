@@ -47,36 +47,16 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        severities = ",".join([severity.upper() for severity in self._parameter("severities")])
-        types = ",".join(
-            [violation_type.upper() for violation_type in self._parameter(self.types_parameter)
-             if violation_type != "security_hotspot"])
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
         api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
-              f"severities={severities}&types={types}&branch={branch}"
+              f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
         return URL(api + self.__rules_url_parameter())
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
         rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
         return f"&rules={','.join(rules)}" if rules else ""
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Override to manipulate the issues urls. Add an extra call to the issues API for security hotspots, if the
-        user wants to see security hotspots. This is needed because the issues API only returns security hotspots if
-        the severity parameter is not passed (see https://community.sonarsource.com/t/23326). If only security hotspots
-        need to retrieved, the first call to retrieve bugs, vulnerabilities and code smells can be skipped."""
-        types = self._parameter(self.types_parameter)
-        api_urls = [] if ["security_hotspot"] == types else list(urls)
-        if self.rules_parameter == "" and "security_hotspot" in types:
-            url = await super()._api_url()
-            component = self._parameter("component")
-            branch = self._parameter("branch")
-            api_urls.append(
-                URL(f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&types=SECURITY_HOTSPOT&"
-                    f"branch={branch}"))
-        return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         value = 0
@@ -104,13 +84,13 @@ class SonarQubeViolations(SonarQubeCollector):
             type=issue["type"].lower(),
             component=issue["component"])
 
+    def _violation_types(self) -> str:
+        """Return the violation types."""
+        return ",".join(violation_type.upper() for violation_type in list(self._parameter(self.types_parameter)))
 
-class SonarQubeSecurityWarnings(SonarQubeViolations):
-    """SonarQube security warnings. The security warnings are a subset of the violation types (vulnerabilities and
-    security hotspots). That the user can only pick those two violation types is determined by the data model, so no
-    code changes are needed."""
-
-    types_parameter = "security_types"
+    def _violation_severities(self) -> str:
+        """Return the severities parameter."""
+        return ",".join(severity.upper() for severity in self._parameter("severities"))
 
 
 class SonarQubeCommentedOutCode(SonarQubeViolations):
@@ -180,7 +160,9 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         component = self._parameter("component")
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
-        resolved_issues_api_url = URL(f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500")
+        resolved_issues_api_url = URL(
+            f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500&"
+            f"severities={self._violation_severities()}&types={self._violation_types()}")
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -194,6 +176,73 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)
         return entity
+
+
+class SonarQubeSecurityWarnings(SonarQubeViolations):
+    """SonarQube security warnings. The security warnings are a sum of the vulnerabilities and security hotspots."""
+
+    types_parameter = "security_types"
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        security_types = self._parameter(self.types_parameter)
+        base_landing_url = await SourceCollector._landing_url(self, responses)  # pylint: disable=protected-access
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        if "vulnerability" in security_types and "security_hotspot" in security_types:
+            landing_url = f"{base_landing_url}/dashboard?id={component}&branch={branch}"
+        elif "vulnerability" in security_types:
+            landing_url = f"{base_landing_url}/project/issues?id={component}&resolved=false&branch={branch}"
+        else:
+            landing_url = f"{base_landing_url}/security_hotspots?id={component}&branch={branch}"
+        return URL(landing_url)
+
+    def _violation_types(self) -> str:
+        return "VULNERABILITY"
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        api_urls = []
+        security_types = self._parameter(self.types_parameter)
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        base_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
+        if "vulnerability" in security_types:
+            api_urls.append(
+                URL(f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
+                    f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"))
+        if "security_hotspot" in security_types:
+            api_urls.append(
+                URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}"))
+        return await super()._get_source_responses(*api_urls)
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        security_types = self._parameter(self.types_parameter)
+        vulnerabilities = await super()._parse_source_responses(SourceResponses(responses=[responses[0]])) \
+            if "vulnerability" in security_types else SourceMeasurement()
+        if "security_hotspot" in security_types:
+            json = await responses[-1].json()
+            nr_hotspots = int(json.get("paging", {}).get("total", 0))
+            hotspots = [await self.__entity(hotspot) for hotspot in json.get("hotspots", [])]
+        else:
+            nr_hotspots = 0
+            hotspots = []
+        return SourceMeasurement(
+            value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
+
+    async def __entity(self, hotspot) -> Entity:
+        return dict(
+            component=hotspot["component"],
+            key=hotspot["key"],
+            message=hotspot["message"],
+            type="security_hotspot",
+            url=await self.__hotspot_landing_url(hotspot["key"]),
+            vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
+
+    async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
+        """Generate a landing url for the hotspot."""
+        url = await SonarQubeCollector._landing_url(self, SourceResponses())  # pylint: disable=protected-access
+        component = self._parameter("component")
+        branch = self._parameter("branch")
+        return URL(f"{url}/security_hotspots?id={component}&hotspots={hotspot_key}&branch={branch}")
 
 
 class SonarQubeMetricsBaseClass(SonarQubeCollector):

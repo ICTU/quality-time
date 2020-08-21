@@ -4846,8 +4846,7 @@
                     "values": [
                         "code_smell",
                         "bug",
-                        "vulnerability",
-                        "security_hotspot"
+                        "vulnerability"
                     ],
                     "metrics": [
                         "suppressed_violations",
@@ -4855,13 +4854,15 @@
                     ]
                 },
                 "security_types": {
-                    "name": "Security issue types",
+                    "name": "Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)",
                     "short_name": "types",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "placeholder": "all security issue types",
                     "help_url": "https://docs.sonarqube.org/latest/user-guide/rules/",
-                    "default_value": [],
+                    "default_value": [
+                        "vulnerability"
+                    ],
                     "values": [
                         "vulnerability",
                         "security_hotspot"
@@ -5032,6 +5033,14 @@
                                 "blocker": "negative",
                                 "critical": "negative",
                                 "major": "warning"
+                            }
+                        },
+                        {
+                            "name": "Vulnerability probability",
+                            "key": "vulnerability_probability",
+                            "color": {
+                                "high": "negative",
+                                "medium": "warning"
                             }
                         },
                         {

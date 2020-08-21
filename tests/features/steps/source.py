@@ -6,25 +6,41 @@ from behave import then, when
 from item import get_item
 
 
+def sanitize_value(value: str):
+    """Convert the value if necessary."""
+    if value == "None":
+        return ""
+    if "[" in value:
+        # Split the list items and strip the quotes:
+        return [item[1:-1] for item in value[1:-1].split(", ")]
+    return value
+
+
 @when('the client sets the source parameter {parameter} to "{value}"')
 @when('the client sets the source parameter {parameter} to "{value}" with scope "{scope}"')
 def change_source_parameter(context, parameter, value, scope="source"):
     """Change the source parameter to value."""
-    value = "" if value == "None" else value
-    context.post(f"source/{context.uuid['source']}/parameter/{parameter}", json={parameter: value, "edit_scope": scope})
+    context.post(
+        f"source/{context.uuid['source']}/parameter/{parameter}",
+        json={parameter: sanitize_value(value), "edit_scope": scope})
 
 
 @then('the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}"')
-def check_source_parameter(context, parameter, value, status_code):
+def check_source_parameter_and_availability(context, parameter, value, status_code):
     """Check that the source parameter equals value."""
     post_response = context.response.json()
     source = get_item(context, "source")
-    value = "" if value == "None" else value
-    assert_equal(value, source["parameters"][parameter])
+    assert_equal(sanitize_value(value), source["parameters"][parameter])
     if status_code == "None":
         assert_false("availability" in post_response)
     else:
         assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
+
+
+@then('the source parameter {parameter} equals "{value}"')
+def check_source_parameter(context, parameter, value):
+    """Check that the source parameter equals value."""
+    check_source_parameter_and_availability(context, parameter, value, "None")
 
 
 @then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')

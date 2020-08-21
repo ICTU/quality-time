@@ -30,10 +30,13 @@ class SourceTestCase(unittest.TestCase):
                         url=dict(type="url", metrics=["metric_type"], default_value=""),
                         username=dict(type="string", metrics=["metric_type"], default_value=""),
                         password=dict(type="password", metrics=["metric_type"], default_value=""),
-                        private_token=dict(type="password", metrics=["metric_type"], default_value=""))),
+                        private_token=dict(type="password", metrics=["metric_type"], default_value=""),
+                        choices=dict(
+                            type="multiple_choice", metrics=["metric_type"], values=["A", "B", "C"],
+                            default_value=[]))),
                 new_source_type=dict(parameters={})))
         self.sources = {
-            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username")),
+            SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username", choices=["D"])),
             SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
         self.database.datamodels.find_one.return_value = self.data_model
 
@@ -231,6 +234,16 @@ class PostSourceParameterTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_not_called()
+
+    def test_obsolete_multiple_choice_value(self, request):
+        """Test that obsolete multiple choice values are removed."""
+        parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        self.assertEqual(["D"], parameters["choices"])
+        request.json = dict(choices=["A", "D"])
+        response = post_source_parameter(SOURCE_ID, "choices", self.database)
+        self.assertEqual(response, dict(ok=True))
+        self.assertEqual(["A"], parameters["choices"])
+        self.database.reports.insert.assert_called_once_with(self.report)
 
 
 @patch("bottle.request")

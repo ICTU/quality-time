@@ -84,8 +84,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
         for response in responses:
             soup = await self._soup(response)
             for status in statuses:
-                if status_td := soup.find(id=status):
-                    count += int(status_td.string)
+                count += int(soup.find(id=status).string)
         return SourceMeasurement(value=str(count))
 
 

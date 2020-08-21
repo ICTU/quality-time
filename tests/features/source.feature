@@ -54,7 +54,7 @@ Feature: source
 
   Scenario: change source type
     Given an existing metric with type "unmerged_branches"
-    Given an existing source with type "gitlab"
+    And an existing source with type "gitlab"
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"
     And the source parameter inactive_days equals "7" and the availability status code equals "None"
@@ -70,6 +70,12 @@ Feature: source
     Given an existing source with type "axecsv"
     When the client sets the source parameter url to "http://github.com"
     Then the source parameter url equals "http://github.com" and the availability status code equals "200"
+
+  Scenario: change multiple choice source parameter
+    Given an existing metric with type "failed_jobs"
+    And an existing source with type "gitlab"
+    When the client sets the source parameter failure_type to "['failed']"
+    Then the source parameter failure_type equals "['failed']"
 
   Scenario: change source parameter to the same value
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"

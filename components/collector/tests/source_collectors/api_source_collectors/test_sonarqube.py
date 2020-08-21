@@ -17,14 +17,21 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
         self.issue_landing_url = "https://sonar/project/issues?id=id&issues={0}&open={0}&branch=master"
+        self.hotspot_landing_url = "https://sonar/security_hotspots?id=id&hotspots={0}&branch=master"
 
-    def entity(self, component: str, entity_type: str, severity: str = "no severity", resolution: str = None) -> Entity:
+    def entity(  # pylint: disable=too-many-arguments
+            self, component: str, entity_type: str, severity: str = None, resolution: str = None,
+            vulnerability_probability: str = None) -> Entity:
         """Create an entity."""
-        entity = dict(
-            component=component, key=component, message=component, severity=severity, type=entity_type,
-            url=self.issue_landing_url.format(component))
+        url = self.hotspot_landing_url.format(component) if entity_type == "security_hotspot" else \
+            self.issue_landing_url.format(component)
+        entity = dict(component=component, key=component, message=component, type=entity_type, url=url)
+        if severity is not None:
+            entity["severity"] = severity
         if resolution is not None:
             entity["resolution"] = resolution
+        if vulnerability_probability is not None:
+            entity["vulnerability_probability"] = vulnerability_probability
         return entity
 
 
@@ -44,28 +51,6 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
                 dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
         response = await self.collect(self.metric, get_request_json_return_value=json)
         expected_entities = [self.entity("a", "bug", "info"), self.entity("b", "code_smell", "major")]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
-
-    async def test_security_hotspots(self):
-        """Test that the number of security hotspots is returned."""
-        self.sources["source_id"]["parameters"]["types"] = ["security_hotspot"]
-        json = dict(
-            total="2",
-            issues=[
-                dict(key="a", message="a", component="a", type="SECURITY_HOTSPOT"),
-                dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        response = await self.collect(self.metric, get_request_json_return_value=json)
-        expected_entities = [self.entity("a", "security_hotspot"), self.entity("b", "security_hotspot")]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
-
-    async def test_bugs_and_security_hotspots(self):
-        """Test that the number of bugs and security hotspots is returned."""
-        self.sources["source_id"]["parameters"]["types"] = ["bug", "security_hotspot"]
-        bug_json = dict(total="1", issues=[dict(key="a", message="a", component="a", severity="MAJOR", type="BUG")])
-        hotspot_json = dict(total="1", issues=[dict(key="b", message="b", component="b", type="SECURITY_HOTSPOT")])
-        response = await self.collect(
-            self.metric, get_request_json_side_effect=[bug_json, bug_json, hotspot_json, hotspot_json])
-        expected_entities = [self.entity("a", "bug", "major"), self.entity("b", "security_hotspot")]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
 
@@ -111,6 +96,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
     def setUp(self):
         super().setUp()
         self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
+        self.all_code_smells = "effort to fix all code smells"
+        self.all_bug_issues = "effort to fix all bug issues"
 
     async def test_commented_out_code(self):
         """Test that the number of lines with commented out code is returned."""
@@ -271,7 +258,7 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
 
     async def test_remediation_effort(self):
         """Test that the remediation effort is returned, as selected by the user."""
-        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index", "reliability_remediation_effort"]
+        self.sources["source_id"]["parameters"]["effort_types"] = [self.all_code_smells, self.all_bug_issues]
         json = dict(
             component=dict(
                 measures=[
@@ -281,21 +268,81 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="20", total="100", entities=[
-                dict(key="sqale_index", effort_type="effort to fix all code smells", effort="20",
+                dict(key="sqale_index", effort_type=self.all_code_smells, effort="20",
                      url=self.metric_landing_url.format("sqale_index")),
-                dict(key="reliability_remediation_effort", effort_type="effort to fix all bug issues", effort="0",
+                dict(key="reliability_remediation_effort", effort_type=self.all_bug_issues, effort="0",
                      url=self.metric_landing_url.format("reliability_remediation_effort"))],
             landing_url="https://sonar/component_measures?id=id&branch=master")
 
     async def test_remediation_effort_one_metric(self):
         """Test that the remediation effort is returned, as selected by the user and that the landing url points to
         the metric."""
-        self.sources["source_id"]["parameters"]["effort_types"] = ["sqale_index"]
+        self.sources["source_id"]["parameters"]["effort_types"] = [self.all_code_smells]
         json = dict(component=dict(measures=[dict(metric="sqale_index", value="20")]))
         metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="20", total="100", entities=[
-                dict(key="sqale_index", effort_type="effort to fix all code smells", effort="20",
+                dict(key="sqale_index", effort_type=self.all_code_smells, effort="20",
                      url=self.metric_landing_url.format("sqale_index"))],
             landing_url=self.metric_landing_url.format("sqale_index"))
+
+
+class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
+    """Unit tests for the SonarQube security warnings collector."""
+
+    async def test_security_warnings(self):
+        """Test that all security warnings are returned."""
+        show_component_json = {}
+        vulnerabilities_json = dict(
+            total="2",
+            issues=[
+                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY")])
+        hotspots_json = dict(
+            paging=dict(total="2"),
+            hotspots=[
+                dict(key="a", message="a", component="a", vulnerabilityProbability="MEDIUM"),
+                dict(key="b", message="b", component="b", vulnerabilityProbability="LOW")])
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(
+            metric, get_request_json_side_effect=[show_component_json, vulnerabilities_json, hotspots_json])
+        expected_entities = [
+            self.entity("a", "vulnerability", "info"),
+            self.entity("b", "vulnerability", "major"),
+            self.entity("a", "security_hotspot", vulnerability_probability="medium"),
+            self.entity("b", "security_hotspot", vulnerability_probability="low")]
+        self.assert_measurement(
+            response, value="4", total="100", entities=expected_entities,
+            landing_url="https://sonar/dashboard?id=id&branch=master")
+
+    async def test_security_warnings_hotspots_only(self):
+        """Test that only the security hotspots are returned."""
+        self.sources["source_id"]["parameters"]["security_types"] = ["security_hotspot"]
+        json = dict(
+            paging=dict(total="2"),
+            hotspots=[
+                dict(key="a", message="a", component="a", vulnerabilityProbability="MEDIUM"),
+                dict(key="b", message="b", component="b", vulnerabilityProbability="LOW")])
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        expected_entities = [
+            self.entity("a", "security_hotspot", vulnerability_probability="medium"),
+            self.entity("b", "security_hotspot", vulnerability_probability="low")]
+        self.assert_measurement(
+            response, value="2", total="100", entities=expected_entities,
+            landing_url="https://sonar/security_hotspots?id=id&branch=master")
+
+    async def test_security_warnings_vulnerabilities_only(self):
+        """Test that only the vulnerabilities are returned."""
+        self.sources["source_id"]["parameters"]["security_types"] = ["vulnerability"]
+        json = dict(
+            total="2",
+            issues=[
+                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY")])
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        expected_entities = [self.entity("a", "vulnerability", "info"), self.entity("b", "vulnerability", "major")]
+        self.assert_measurement(
+            response, value="2", total="100", entities=expected_entities, landing_url=self.issues_landing_url)

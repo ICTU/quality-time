@@ -101,8 +101,11 @@ class OJAuditTest(SourceCollectorTestCase):
         """Test that violations of types the user doesn't want to see are not included."""
         ojaudit_xml = """<audit xmlns="http://xmlns.oracle.com/jdeveloper/1013/audit">
   <violation-count>1</violation-count>
-  <high-count>0</high-count>
-  <medium-count>1</medium-count>
+  <exception-count>1</exception-count>
+  <error-count>0</error-count>
+  <warning-count>0</warning-count>
+  <incomplete-count>0</incomplete-count>
+  <advisory-count>0</advisory-count>
   <models>
     <model id="a">
       <file>
@@ -118,12 +121,12 @@ class OJAuditTest(SourceCollectorTestCase):
         <column-offset>4</column-offset>
       </location>
       <values>
-          <value>medium</value>
+          <value>exception</value>
       </values>
     </violation>
   </construct>
 </audit>"""
-        self.metric["sources"]["source_id"]["parameters"]["severities"] = ["high"]
+        self.metric["sources"]["source_id"]["parameters"]["severities"] = ["error"]
         response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         self.assert_measurement(response, value="0", entities=[])
 
