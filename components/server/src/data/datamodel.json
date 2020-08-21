@@ -1187,6 +1187,30 @@
                         "tests"
                     ]
                 },
+                "test_run_states_to_include": {
+                    "name": "States of the test runs to include",
+                    "short_name": "test run states",
+                    "help": "Limit which test runs to include by test run state",
+                    "placeholder": "all test run states",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "aborted",
+                        "completed",
+                        "in progress",
+                        "not started"
+                    ],
+                    "api_values": {
+                        "aborted": "aborted",
+                        "completed": "completed",
+                        "in progress": "inProgress",
+                        "not started": "notStarted"
+                    },
+                    "metrics": [
+                        "tests"
+                    ]
+                },
                 "jobs_to_ignore": {
                     "name": "Pipelines to ignore (regular expressions or pipeline names)",
                     "short_name": "pipelines to ignore",
