@@ -58,6 +58,11 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
+def slashless(string: str) -> str:
+    """Return a slashless version of the string."""
+    return string.replace("/", "-")
+
+
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
     return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
