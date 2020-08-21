@@ -20,13 +20,14 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         self.hotspot_landing_url = "https://sonar/security_hotspots?id=id&hotspots={0}&branch=master"
 
     def entity(  # pylint: disable=too-many-arguments
-            self, component: str, entity_type: str, severity: str = "no severity", resolution: str = None,
+            self, component: str, entity_type: str, severity: str = None, resolution: str = None,
             vulnerability_probability: str = None) -> Entity:
         """Create an entity."""
         url = self.hotspot_landing_url.format(component) if entity_type == "security_hotspot" else \
             self.issue_landing_url.format(component)
-        entity = dict(
-            component=component, key=component, message=component, severity=severity, type=entity_type, url=url)
+        entity = dict(component=component, key=component, message=component, type=entity_type, url=url)
+        if severity is not None:
+            entity["severity"] = severity
         if resolution is not None:
             entity["resolution"] = resolution
         if vulnerability_probability is not None:

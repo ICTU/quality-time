@@ -230,7 +230,6 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             component=hotspot["component"],
             key=hotspot["key"],
             message=hotspot["message"],
-            severity="no severity",
             type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
             vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
