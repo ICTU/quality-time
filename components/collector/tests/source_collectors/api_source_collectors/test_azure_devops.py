@@ -159,7 +159,9 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
         self.sources["source_id"]["test_result"] = ["failed"]
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(
-            metric, get_request_json_return_value=dict(value=[dict(id="1", build=dict(id="1"), unanalyzedTests=4)]))
+            metric,
+            get_request_json_return_value=dict(
+                value=[dict(id="1", build=dict(id="1"), state="Completed", unanalyzedTests=4)]))
         self.assert_measurement(response, value="4")
 
 

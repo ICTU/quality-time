@@ -142,7 +142,8 @@ class AzureDevopsTests(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         test_results = cast(List[str], self._parameter("test_result"))
         test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
-        test_run_states_to_include = cast(List[str], self._parameter("test_run_states_to_include")) or ["all"]
+        test_run_states_to_include = [
+            value.lower() for value in self._parameter("test_run_states_to_include")] or ["all"]
         runs = (await responses[0].json()).get("value", [])
         highest_build_nr_seen: Dict[str, int] = defaultdict(int)
         highest_build_nr_test_runs: Dict[str, Entities] = defaultdict(list)
@@ -153,7 +154,7 @@ class AzureDevopsTests(SourceCollector):
                     not match_string_or_regular_expression(name, test_run_names_to_include):
                 continue
             state = run.get("state", "Unknown test run state")
-            if test_run_states_to_include != ["all"] and state not in test_run_states_to_include:
+            if test_run_states_to_include != ["all"] and state.lower() not in test_run_states_to_include:
                 continue
             build_nr = int(run.get("build", {}).get("id", "-1"))
             if build_nr < highest_build_nr_seen[name]:
