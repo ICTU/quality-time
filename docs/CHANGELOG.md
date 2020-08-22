@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.2.0-rc.2] - [2020-08-22]
+## [Unreleased]
 
 ### Fixed
 
@@ -18,11 +18,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - SonarQube doesn't consider security hotspots to be violations anymore since version 8.2. Therefore, when using SonarQube as source for the 'violations' or the 'suppressed violations' metric, you can no longer select security hotspots as a violation type to be included or excluded. If you have a 'violations' or 'suppressed violations' metric that was configured to measure only the number of security hotspots you will need to remove it, as it will now measure all violation types. To count security hotspots, use the 'security warnings' metric with SonarQube as source instead, and configure it to only count security hotspots. Fixes [#1381](https://github.com/ICTU/quality-time/issues/1381).
 - When measuring 'tests' with Azure DevOps, only the latest build of all matching test runs was reported instead of the latest build of each matching test run. Fixes [#1382](https://github.com/ICTU/quality-time/issues/1382).
 - Jenkins jobs with slashes in their names couldn't be marked as false positive or won't fix. Fixes [#1390](https://github.com/ICTU/quality-time/issues/1390).
-- Typing an invalid date in the report date picker would creash the front end. Fixes [#1394](https://github.com/ICTU/quality-time/issues/1394).
+- Typing an invalid date in the report date picker would crash the front end. Fixes [#1394](https://github.com/ICTU/quality-time/issues/1394).
 
 ### Added
 
-- When measuring the number of test cases using Jenkins test report as source, for each failing test case show how many builds it has been failing. Closes [#1373](https://github.com/ICTU/quality-time/issues/1373).
+- When measuring the number of test cases using Jenkins test report as source, for each failing test case show for how many builds it has been failing. Closes [#1373](https://github.com/ICTU/quality-time/issues/1373).
 - Add a new metric 'violation remediation effort' that reports the effort needed to remediate violations. Currently, the only source supporting this metric is SonarQube. Closes [#1374](https://github.com/ICTU/quality-time/issues/1374).
 - Allow for filtering Azure DevOps test runs by test run state. Closes [#1383](https://github.com/ICTU/quality-time/issues/1383).
 - Added Snyk JSON reports as source for the 'security warnings' metric. Contributed by [@greckko](https://github.com/greckko).
