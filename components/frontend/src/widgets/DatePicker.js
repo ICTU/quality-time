@@ -9,7 +9,7 @@ export function DatePicker(props) {
         setDate(value);
         if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(value))
         {
-            const milliseconds_since_epoch = Date.parse(value);
+            const milliseconds_since_epoch = Date.parse(value.split("-").reverse().join("-"));
             if (!isNaN(milliseconds_since_epoch)) {
                 props.onDate(event, { name, value });  // We have a valid date, invoke callback
             }
