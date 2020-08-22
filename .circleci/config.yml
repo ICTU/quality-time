@@ -68,7 +68,7 @@ jobs:
         environment:
           ALLOW_HTTP: true
           LC_ALL: en_GB.UTF-8
-      - image: ictu/quality-time_frontend:v3.1.0
+      - image: ictu/quality-time_frontend:v3.2.0-rc.1
       - image: mongo:4.2.3
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
