@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
-import { DateInput } from 'semantic-ui-calendar-react';
+import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
 
@@ -34,8 +34,6 @@ function Logout(props) {
 }
 
 export function Menubar(props) {
-  const today = new Date();
-  const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
   return (
     <Menu className="Menubar" fixed='top' inverted>
       <Container fluid>
@@ -59,19 +57,7 @@ export function Menubar(props) {
             </Menu.Item>
           }
           <Menu.Item>
-            <DateInput
-              animation="none"  // Work-around for https://github.com/arfedulov/semantic-ui-calendar-react/issues/152
-              clearable
-              closable
-              iconPosition="left"
-              initialDate={today}
-              maxDate={today}
-              name="report_date_string"
-              onChange={props.onDate}
-              placeholder={today_string}
-              value={props.report_date_string}
-              aria-label="Report date"
-            />
+            <DatePicker onDate={props.onDate} name="report_date_string" value={props.report_date_string} label="Report date" />
           </Menu.Item>
           <Menu.Item>
             {(props.user !== null) ? <Logout email={props.email} user={props.user} logout={props.logout} /> : <Login login={props.login} error={props.login_error} />}
