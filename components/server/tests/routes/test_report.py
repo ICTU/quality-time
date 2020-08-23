@@ -1,14 +1,13 @@
 """Unit tests for the report routes."""
 
 import unittest
-from unittest.mock import Mock, patch
 from typing import cast
+from unittest.mock import Mock, patch
 
 import bottle
 
-from routes.report import (
-    delete_report, export_report_as_pdf, get_tag_report, post_report_attribute, post_report_copy, post_report_new,
-    post_report_import)
+from routes.report import (delete_report, export_report_as_pdf, get_tag_report, post_report_attribute, post_report_copy,
+    post_report_import, post_report_new)
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import ReportId
 

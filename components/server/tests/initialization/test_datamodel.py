@@ -1,8 +1,8 @@
 """Unit tests for importing the data model."""
 
-import unittest
 import pathlib
-from unittest.mock import Mock, patch, mock_open
+import unittest
+from unittest.mock import Mock, mock_open, patch
 
 from initialization.datamodel import import_datamodel
 

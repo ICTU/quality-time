@@ -1,7 +1,7 @@
 """Unit tests for the database initialization."""
 
-import unittest
 import pathlib
+import unittest
 from unittest.mock import Mock, mock_open, patch
 
 import bottle

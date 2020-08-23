@@ -1,7 +1,7 @@
 """Reports collection."""
 
 from dataclasses import dataclass
-from typing import cast, Any, List, Tuple
+from typing import Any, List, Tuple, cast
 
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
 

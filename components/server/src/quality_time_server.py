@@ -1,13 +1,16 @@
 """Quality-time server."""
 
 import os
+
 from gevent import monkey  # pylint: disable=import-error
+
 monkey.patch_all()
 
 # pylint: disable=wrong-import-order,wrong-import-position
 
-import bottle
 import logging
+
+import bottle
 
 from initialization import init_bottle, init_database
 

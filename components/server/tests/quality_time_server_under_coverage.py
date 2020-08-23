@@ -2,15 +2,18 @@
 
 # pylint: disable=wrong-import-order,wrong-import-position
 
-import coverage
-cov = coverage.process_startup()
-
-import sys
-sys.path.insert(0, "src")
-
 import signal
+import sys
+
+import coverage
 
 from quality_time_server import serve
+
+cov = coverage.process_startup()
+
+sys.path.insert(0, "src")
+
+
 
 
 def signal_handler(*args):  # pylint: disable=unused-argument

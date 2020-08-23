@@ -4,10 +4,10 @@ import bottle
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import latest_datamodel, default_subject_attributes
+from database.datamodels import default_subject_attributes, latest_datamodel
 from database.reports import insert_new_report, latest_reports
-from model.data import ReportData, SubjectData
 from model.actions import copy_subject, move_item
+from model.data import ReportData, SubjectData
 from server_utilities.functions import uuid
 from server_utilities.type import ReportId, SubjectId
 

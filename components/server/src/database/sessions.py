@@ -3,8 +3,8 @@
 from datetime import datetime
 from typing import cast
 
-from pymongo.database import Database
 import bottle
+from pymongo.database import Database
 
 from server_utilities.type import SessionId
 

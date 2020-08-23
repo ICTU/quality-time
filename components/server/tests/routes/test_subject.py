@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.subject import (
-    delete_subject, post_move_subject, post_new_subject, post_subject_attribute, post_subject_copy)
+from routes.subject import (delete_subject, post_move_subject, post_new_subject, post_subject_attribute,
+    post_subject_copy)
 
 from ..fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
 

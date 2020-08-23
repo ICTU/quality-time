@@ -1,13 +1,13 @@
 """Unit tests for the datamodel routes."""
 
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import bottle
 
+from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 from routes import datamodel
 from server_utilities.functions import md5_hash
-from database.datamodels import default_source_parameters, default_subject_attributes, insert_new_datamodel
 
 
 class DataModelTest(unittest.TestCase):

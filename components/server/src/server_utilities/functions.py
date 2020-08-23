@@ -1,15 +1,15 @@
 """Utility functions."""
 
-from datetime import datetime, timezone
-from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
 import hashlib
 import re
 import uuid as _uuid
+from datetime import datetime, timezone
+from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
 
+import bottle
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # nosec, pylint: disable=no-name-in-module
-import bottle
 
 from server_utilities.type import ReportId
 

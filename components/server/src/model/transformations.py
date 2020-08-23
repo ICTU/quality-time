@@ -1,10 +1,11 @@
 """Model transformations."""
 
 from datetime import date
-from typing import cast, Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional, cast
 
 from server_utilities.functions import unique
 from server_utilities.type import Color, EditScope, ItemId, Status
+
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
 

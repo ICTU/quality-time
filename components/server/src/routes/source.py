@@ -1,20 +1,20 @@
 """Source routes."""
 
-from typing import cast, Any, Dict, List, Tuple, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import bottle
 import requests
 from pymongo.database import Database
 
 from database import sessions
-from database.datamodels import latest_datamodel, default_source_parameters
+from database.datamodels import default_source_parameters, latest_datamodel
 from database.reports import insert_new_report, latest_reports
-from model.data import MetricData, SourceData
 from model.actions import copy_source, move_item
-from model.transformations import change_source_parameter
+from model.data import MetricData, SourceData
 from model.queries import is_password_parameter
+from model.transformations import change_source_parameter
 from server_utilities.functions import uuid
-from server_utilities.type import EditScope, MetricId, ReportId, SourceId, SubjectId, URL
+from server_utilities.type import URL, EditScope, MetricId, ReportId, SourceId, SubjectId
 
 
 @bottle.post("/api/v3/source/new/<metric_uuid>")

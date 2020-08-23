@@ -3,6 +3,7 @@
 import unittest
 
 from database.measurements import calculate_measurement_value, determine_measurement_status
+
 from ..fixtures import SOURCE_ID, SOURCE_ID2
 
 

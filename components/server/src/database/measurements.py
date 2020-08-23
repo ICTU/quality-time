@@ -1,16 +1,15 @@
 """Measurements collection."""
 
 from datetime import date, datetime, timedelta, timezone
-from decimal import Decimal, ROUND_HALF_UP
-from typing import cast, Dict, List, Literal, Optional
+from decimal import ROUND_HALF_UP, Decimal
+from typing import Dict, List, Literal, Optional, cast
 
 import pymongo
 from pymongo.database import Database
 
+from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp
 from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
-from model.queries import get_measured_attribute, get_attribute_type
-
 
 TargetType = Literal["target", "near_target", "debt_target"]
 

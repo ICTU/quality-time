@@ -1,11 +1,11 @@
 """Unit tests for the report initialization functions."""
 
 import json
-import unittest
 import pathlib
+import unittest
 from unittest.mock import Mock, mock_open, patch
 
-from initialization.report import import_report, import_example_reports
+from initialization.report import import_example_reports, import_report
 
 
 class ReportInitTest(unittest.TestCase):
