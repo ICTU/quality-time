@@ -27,7 +27,7 @@ additional_builtins = ["given", "when", "then"]
   max_line_length = 120
 
 [[analyzers]]
-name = "docker
+name = "docker"
 enabled = true
 
   [analyzers.meta]
