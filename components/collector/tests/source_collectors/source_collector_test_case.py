@@ -4,7 +4,7 @@ import json
 import logging
 import pathlib
 import unittest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import aiohttp
 

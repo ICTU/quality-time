@@ -1,16 +1,17 @@
 """Metrics collector."""
 
-from datetime import datetime, timedelta
 import asyncio
 import logging
 import os
 import traceback
-from typing import cast, Any, Dict, Final, NoReturn
+from datetime import datetime, timedelta
+from typing import Any, Dict, Final, NoReturn, cast
 
 import aiohttp
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSON, URL
+
 from .source_collector import SourceCollector
 
 

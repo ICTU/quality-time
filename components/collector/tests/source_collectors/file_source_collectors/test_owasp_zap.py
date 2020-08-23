@@ -2,8 +2,9 @@
 
 from datetime import datetime
 
-from collector_utilities.functions import md5_hash
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+from collector_utilities.functions import md5_hash
 
 
 class OWASPZAPTest(SourceCollectorTestCase):

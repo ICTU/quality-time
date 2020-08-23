@@ -1,11 +1,12 @@
 """Unit tests for the Collector class."""
 
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import aiohttp
 
-from collector_utilities.type import URL
 from base_collectors import SourceCollector, SourceResponses
+from collector_utilities.type import URL
+
 from .source_collector_test_case import SourceCollectorTestCase
 
 

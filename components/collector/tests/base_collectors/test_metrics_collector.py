@@ -3,7 +3,7 @@
 import logging
 import unittest
 from datetime import datetime
-from unittest.mock import patch, mock_open, AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, mock_open, patch
 
 import aiohttp
 

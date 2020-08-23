@@ -1,9 +1,9 @@
 """Unit tests for the utility functions."""
 
-from datetime import datetime, timedelta, timezone
 import unittest
+from datetime import datetime, timedelta, timezone
 
-from collector_utilities.functions import days_ago, hashless, is_regexp, tokenless, stable_traceback
+from collector_utilities.functions import days_ago, hashless, is_regexp, stable_traceback, tokenless
 from collector_utilities.type import URL
 
 

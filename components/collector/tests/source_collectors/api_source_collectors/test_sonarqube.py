@@ -2,8 +2,9 @@
 
 from datetime import datetime, timedelta, timezone
 
-from collector_utilities.type import Entity
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+from collector_utilities.type import Entity
 
 
 class SonarQubeTestCase(SourceCollectorTestCase):

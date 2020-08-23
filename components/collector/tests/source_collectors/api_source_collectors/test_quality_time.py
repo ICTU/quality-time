@@ -3,9 +3,9 @@
 from datetime import datetime
 
 from dateutil.parser import parse
+from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 from collector_utilities.functions import days_ago
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
 class QualityTimeMetricsTest(SourceCollectorTestCase):

@@ -6,9 +6,9 @@ from typing import cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Response, URL
-from collector_utilities.functions import days_ago
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from collector_utilities.functions import days_ago
+from collector_utilities.type import URL, Entity, Response
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
