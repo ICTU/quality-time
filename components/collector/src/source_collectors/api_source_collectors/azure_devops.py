@@ -14,8 +14,8 @@ from typing import Any, Dict, Final, List, cast
 import aiohttp
 from dateutil.parser import parse
 
-from base_collectors import (SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector,
-    UnmergedBranchesSourceCollector)
+from base_collectors import (
+    SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector)
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Entities, Job, Response
 
