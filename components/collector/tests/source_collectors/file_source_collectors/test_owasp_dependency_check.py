@@ -2,8 +2,9 @@
 
 from datetime import datetime, timedelta, timezone
 
-from source_collectors.file_source_collectors.owasp_dependency_check import OWASPDependencyCheckBase
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+from source_collectors.file_source_collectors.owasp_dependency_check import OWASPDependencyCheckBase
 
 
 class OWASPDependencyCheckTest(SourceCollectorTestCase):

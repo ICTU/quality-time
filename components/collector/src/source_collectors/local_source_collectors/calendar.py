@@ -3,8 +3,8 @@
 from datetime import datetime
 from typing import cast
 
-from collector_utilities.type import Response
 from base_collectors import SourceUpToDatenessCollector
+from collector_utilities.type import Response
 
 
 class CalendarSourceUpToDateness(SourceUpToDatenessCollector):

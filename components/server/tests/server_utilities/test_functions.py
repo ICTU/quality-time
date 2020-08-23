@@ -1,9 +1,9 @@
 """Unit tests for the util module."""
 
 import unittest
-
 from datetime import datetime, timezone
 from unittest.mock import patch
+
 from server_utilities.functions import iso_timestamp, report_date_time, uuid
 
 

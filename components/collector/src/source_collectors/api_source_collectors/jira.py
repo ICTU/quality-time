@@ -1,13 +1,13 @@
 """Jira metric collector."""
 
 from datetime import datetime
-from typing import cast, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, cast
 
 from dateutil.parser import parse
 
-from collector_utilities.functions import days_ago
-from collector_utilities.type import Entity, URL
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from collector_utilities.functions import days_ago
+from collector_utilities.type import URL, Entity
 
 
 class JiraIssues(SourceCollector):

@@ -2,14 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, Dict, List
+from typing import Dict, List, cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, Entities, URL
-from collector_utilities.functions import days_ago
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
-
+from collector_utilities.functions import days_ago
+from collector_utilities.type import URL, Entities, Entity
 
 WekanCard = Dict[str, str]
 WekanBoard = Dict[str, str]

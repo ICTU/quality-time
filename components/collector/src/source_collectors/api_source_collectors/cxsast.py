@@ -1,14 +1,14 @@
 """Collectors for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import cast, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, cast
 
-from dateutil.parser import parse
 import aiohttp
+from dateutil.parser import parse
 
-from collector_utilities.type import Response, URL
-from collector_utilities.functions import days_ago
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from collector_utilities.functions import days_ago
+from collector_utilities.type import URL, Response
 
 
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method

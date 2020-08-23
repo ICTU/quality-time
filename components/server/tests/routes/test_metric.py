@@ -3,11 +3,11 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from routes.metric import delete_metric, get_metrics, post_metric_attribute, post_metric_new, post_metric_copy, \
-    post_move_metric
+from routes.metric import (
+    delete_metric, get_metrics, post_metric_attribute, post_metric_copy, post_metric_new, post_move_metric)
 
-from ..fixtures import JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, \
-    create_report
+from ..fixtures import (
+    JOHN, METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report)
 
 
 @patch("database.reports.iso_timestamp", new=Mock(return_value="2019-01-01T12:00:00+00:00"))

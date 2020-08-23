@@ -4,20 +4,20 @@ Where possible we use version 4.1 of the API so we can support TFS 2018 and newe
 See https://docs.microsoft.com/en-gb/rest/api/azure/devops/?view=azure-devops-rest-4.1#api-and-tfs-version-mapping
 """
 
+import itertools
+import urllib.parse
 from abc import ABC
 from collections import defaultdict
 from datetime import datetime
-from typing import cast, Any, Dict, Final, List
-import itertools
-import urllib.parse
+from typing import Any, Dict, Final, List, cast
 
-from dateutil.parser import parse
 import aiohttp
+from dateutil.parser import parse
 
+from base_collectors import (
+    SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector)
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Entities, Job, Response, URL
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, \
-    UnmergedBranchesSourceCollector
+from collector_utilities.type import URL, Entities, Job, Response
 
 
 class AzureDevopsIssues(SourceCollector):

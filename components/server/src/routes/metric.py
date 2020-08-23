@@ -9,9 +9,9 @@ from database import sessions
 from database.datamodels import default_metric_attributes, latest_datamodel
 from database.measurements import insert_new_measurement, latest_measurement
 from database.reports import insert_new_report, latest_reports
-from model.data import MetricData, SubjectData
 from model.actions import copy_metric, move_item
-from server_utilities.functions import uuid, sanitize_html
+from model.data import MetricData, SubjectData
+from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
 
 

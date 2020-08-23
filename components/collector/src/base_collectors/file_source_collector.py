@@ -7,9 +7,10 @@ import json
 import zipfile
 from abc import ABC
 from http import HTTPStatus
-from typing import cast, Dict, List
+from typing import Dict, List, cast
 
-from collector_utilities.type import JSON, Response, Responses, URL
+from collector_utilities.type import JSON, URL, Response, Responses
+
 from .source_collector import SourceCollector, SourceResponses
 
 

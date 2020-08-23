@@ -7,9 +7,9 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Namespaces, Entity, Response
-from collector_utilities.functions import sha1_hash, parse_source_response_xml_with_namespace
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
+from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
+from collector_utilities.type import Entity, Namespaces, Response
 
 
 class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

@@ -4,14 +4,14 @@ import asyncio
 import itertools
 from abc import ABC
 from datetime import datetime
-from typing import cast, Any, Dict, List, Optional, Set, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, cast
 from urllib.parse import quote
 
 from dateutil.parser import parse
 
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import Job, URL
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, UnmergedBranchesSourceCollector
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.type import URL, Job
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -102,26 +102,25 @@ class GitLabSourceUpToDateness(GitLabBase):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
         recursively."""
-
-        async def get_commits_recursively(file_path: str, first_call: bool = True) -> SourceResponses:
-            """Get the commits of files recursively."""
-            tree_api = await self._gitlab_api_url(
-                f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
-            tree_response = (await super(GitLabSourceUpToDateness, self)._get_source_responses(tree_api))[0]
-            tree = await tree_response.json()
-            file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
-            folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
-            if not tree and first_call:
-                file_paths = [file_path]
-            commits = [self.__last_commit(file_path) for file_path in file_paths] + \
-                [get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths]
-            return SourceResponses(responses=list(itertools.chain(*(await asyncio.gather(*commits)))))
-
         # First, get the project info so we can use the web url as landing url
         responses = await super()._get_source_responses(*urls)
         # Then, collect the commits
-        responses.extend(await get_commits_recursively(str(self._parameter("file_path", quote=True))))
+        responses.extend(await self.__get_commits_recursively(str(self._parameter("file_path", quote=True))))
         return responses
+
+    async def __get_commits_recursively(self, file_path: str, first_call: bool = True) -> SourceResponses:
+        """Get the commits of files recursively."""
+        tree_api = await self._gitlab_api_url(
+            f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
+        tree_response = (await super()._get_source_responses(tree_api))[0]
+        tree = await tree_response.json()
+        file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
+        folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
+        if not tree and first_call:
+            file_paths = [file_path]
+        commits = [self.__last_commit(file_path) for file_path in file_paths] + \
+            [self.__get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths]
+        return SourceResponses(responses=list(itertools.chain(*(await asyncio.gather(*commits)))))
 
     async def __last_commit(self, file_path: str) -> SourceResponses:
         files_api_url = await self._gitlab_api_url(

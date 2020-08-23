@@ -1,11 +1,11 @@
 """Jenkins metric collector."""
 
 from datetime import datetime
-from typing import cast, Iterator
+from typing import Iterator, cast
 
-from collector_utilities.functions import days_ago, match_string_or_regular_expression, safe_entity_key
-from collector_utilities.type import Job, Jobs, URL
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from collector_utilities.functions import days_ago, match_string_or_regular_expression, safe_entity_key
+from collector_utilities.type import URL, Job, Jobs
 
 
 class JenkinsJobs(SourceCollector):

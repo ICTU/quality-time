@@ -1,7 +1,7 @@
 """Changelog routes."""
 
-from pymongo.database import Database
 import bottle
+from pymongo.database import Database
 
 from database import measurements, reports
 from server_utilities.type import MetricId, ReportId, SourceId, SubjectId

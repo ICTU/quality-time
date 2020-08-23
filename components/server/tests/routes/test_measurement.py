@@ -1,11 +1,12 @@
 """Unit tests for the measurement routes."""
 
-from datetime import date, timedelta
 import unittest
+from datetime import date, timedelta
 from unittest.mock import Mock, patch
 
 from routes.measurement import get_measurements, post_measurement, set_entity_attribute, stream_nr_measurements
-from ..fixtures import create_report, JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2
+
+from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report
 
 
 class GetMeasurementsTest(unittest.TestCase):

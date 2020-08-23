@@ -1,14 +1,14 @@
 """OpenVAS metric collector."""
 
 from datetime import datetime
-from typing import cast, List
+from typing import List, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from dateutil.parser import isoparse
 
-from collector_utilities.type import Entities, Response
+from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from collector_utilities.type import Entities, Response
 
 
 class OpenVASSecurityWarnings(XMLFileSourceCollector):

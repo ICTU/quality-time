@@ -1,13 +1,12 @@
 """Reports collection."""
 
-from typing import cast, Any, Dict, List, Union
+from typing import Any, Dict, List, Union, cast
 
 import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId
-
 
 # Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]

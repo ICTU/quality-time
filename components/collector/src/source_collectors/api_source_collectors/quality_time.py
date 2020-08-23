@@ -1,14 +1,13 @@
 """Collector for Quality-time."""
 
 from datetime import datetime
-from typing import cast, Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, cast
 from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
-from collector_utilities.type import Entity, Entities, Response, URL, Value
-
+from collector_utilities.type import URL, Entities, Entity, Response, Value
 
 Measurements = List[Dict[str, Dict[str, str]]]
 

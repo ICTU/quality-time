@@ -2,7 +2,7 @@
 
 import unittest
 from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from database import sessions
 from server_utilities.type import SessionId

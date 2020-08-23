@@ -1,14 +1,14 @@
 """NCover collectors."""
 
-import re
 import json
+import re
 from abc import ABC
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from collector_utilities.type import Response
 from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from collector_utilities.type import Response
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

@@ -5,12 +5,12 @@ import hashlib
 import re
 import urllib
 from datetime import datetime
-from typing import cast, Collection, Generator, Pattern, Tuple
+from typing import Collection, Generator, Pattern, Tuple, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
 
-from .type import Namespaces, Response, URL
+from .type import URL, Namespaces, Response
 
 
 async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:

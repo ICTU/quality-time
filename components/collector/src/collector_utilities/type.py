@@ -4,7 +4,6 @@ from typing import Any, Dict, List, NewType, Optional
 
 import aiohttp
 
-
 Entity = Dict[str, str]  # pylint: disable=invalid-name
 Entities = List[Entity]
 ErrorMessage = Optional[str]

@@ -1,14 +1,13 @@
 """Jenkins test report metric collector."""
 
 from datetime import datetime
-from typing import cast, Dict, Final, List
+from typing import Dict, Final, List, cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entity, URL
-from collector_utilities.functions import days_ago
 from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
-
+from collector_utilities.functions import days_ago
+from collector_utilities.type import URL, Entity
 
 TestCase = Dict[str, str]
 Suite = Dict[str, List[TestCase]]

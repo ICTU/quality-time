@@ -2,13 +2,13 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import cast, List
+from typing import List, cast
 
 from dateutil.parser import parse
 
-from collector_utilities.type import Entities, Response, URL
+from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from base_collectors import XMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from collector_utilities.type import URL, Entities, Response
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

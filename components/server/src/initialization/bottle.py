@@ -1,11 +1,15 @@
 """Initialize bottle."""
 
-from pymongo.database import Database
 import bottle
+from pymongo.database import Database
+
 from routes.plugins import AuthenticationPlugin, InjectionPlugin
+
+# isort: off
 # pylint: disable=unused-import
 from routes import (  # lgtm [py/unused-import]
     auth, changelog, datamodel, documentation, measurement, metric, report, reports, source, subject)
+# isort: on
 
 
 def init_bottle(database: Database) -> None:

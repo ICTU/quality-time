@@ -2,7 +2,8 @@
 
 from datetime import datetime
 
-from collector_utilities.type import Response, URL
+from collector_utilities.type import URL, Response
+
 from .source_collector import SourceUpToDatenessCollector
 
 

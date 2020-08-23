@@ -11,7 +11,6 @@ from ldap3.core import exceptions
 from database import sessions
 from routes import auth
 
-
 USERNAME = "john-doe"
 PASSWORD = "secret"
 

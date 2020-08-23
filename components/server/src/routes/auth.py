@@ -7,10 +7,10 @@ import os
 import re
 import string
 from datetime import datetime, timedelta
-from typing import cast, Dict, Tuple, Union
+from typing import Dict, Tuple, Union, cast
 
 import bottle
-from ldap3 import Server, Connection, ALL
+from ldap3 import ALL, Connection, Server
 from ldap3.core import exceptions
 from pymongo.database import Database
 

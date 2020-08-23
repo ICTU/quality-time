@@ -9,11 +9,11 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import latest_reports, insert_new_report
-from model.data import ReportData
-from model.actions import copy_report
-from model.transformations import hide_credentials, summarize_report
+from database.reports import insert_new_report, latest_reports
 from initialization.report import import_json_report
+from model.actions import copy_report
+from model.data import ReportData
+from model.transformations import hide_credentials, summarize_report
 from server_utilities.functions import report_date_time, uuid
 from server_utilities.type import ReportId
 

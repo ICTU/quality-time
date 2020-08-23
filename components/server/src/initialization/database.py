@@ -9,7 +9,6 @@ from pymongo.database import Database
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
 
-
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
 
 def init_database() -> Database:  # pragma: no cover-behave
