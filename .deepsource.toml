@@ -26,3 +26,15 @@ additional_builtins = ["given", "when", "then"]
   type_checker = "mypy"
   max_line_length = 120
 
+[[analyzers]]
+name = "docker
+enabled = true
+
+  [analyzers.meta]
+  dockerfile_paths = [
+    "components/collector/Dockerfile",
+    "components/frontend/Dockerfile",
+    "components/ldap/Dockerfile",
+    "components/server/Dockerfile",
+    "components/testdata/Dockerfile",
+  ]
