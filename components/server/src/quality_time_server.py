@@ -7,6 +7,7 @@ monkey.patch_all()
 
 # isort: on
 # pylint: disable=wrong-import-order,wrong-import-position
+# skipcq: FLK-E402
 
 import logging
 import os
