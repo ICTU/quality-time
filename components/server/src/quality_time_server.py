@@ -7,12 +7,11 @@ monkey.patch_all()
 
 # isort: on
 # pylint: disable=wrong-import-order,wrong-import-position
-# skipcq: FLK-E402
 
 import logging
-import os
+import os  # skipcq: FLK-E402
 
-import bottle
+import bottle  # skipcq: FLK-E402
 
 from initialization import init_bottle, init_database
 
