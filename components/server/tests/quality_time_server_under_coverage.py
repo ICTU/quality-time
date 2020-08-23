@@ -5,15 +5,15 @@
 import signal
 import sys
 
+# isort: off
+
 import coverage
-
-from quality_time_server import serve
-
 cov = coverage.process_startup()
 
 sys.path.insert(0, "src")
+from quality_time_server import serve
 
-
+# isort: on
 
 
 def signal_handler(*args):  # pylint: disable=unused-argument
