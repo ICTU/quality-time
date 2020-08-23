@@ -10,8 +10,9 @@ from pymongo.database import Database
 
 from database import sessions
 from database.datamodels import latest_datamodel
-from database.measurements import (all_measurements, count_measurements, insert_new_measurement, latest_measurement,
-    latest_successful_measurement, update_measurement_end)
+from database.measurements import (
+    all_measurements, count_measurements, insert_new_measurement, latest_measurement, latest_successful_measurement,
+    update_measurement_end)
 from database.reports import latest_metric, latest_reports
 from model.data import SourceData
 from server_utilities.functions import report_date_time

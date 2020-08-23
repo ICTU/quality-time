@@ -3,8 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
-from routes.changelog import (get_changelog, get_metric_changelog, get_report_changelog, get_source_changelog,
-    get_subject_changelog)
+from routes.changelog import (
+    get_changelog, get_metric_changelog, get_report_changelog, get_source_changelog, get_subject_changelog)
 
 from ..fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
