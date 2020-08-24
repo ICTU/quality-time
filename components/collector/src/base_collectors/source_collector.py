@@ -6,7 +6,7 @@ import traceback
 import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, Final, List, Optional, Set, Tuple, Type, Union, cast
+from typing import Any, Dict, Final, List, Optional, Set, Sequence, Tuple, Type, Union, cast
 
 import aiohttp
 
@@ -148,7 +148,7 @@ class SourceCollector(ABC):
             kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
         if headers := self._headers():
             kwargs["headers"] = headers
-        tasks = [self._session.get(url, **kwargs) for url in urls]
+        tasks = [self._session.get(url, **kwargs) for url in urls if url]
         return SourceResponses(responses=list(await asyncio.gather(*tasks)), api_url=urls[0])
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
@@ -225,8 +225,11 @@ class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        date_times = await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
+        date_times = await self._parse_source_response_date_times(responses)
         return SourceMeasurement(value=str(days_ago(min(date_times))))
+
+    async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
+        return await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the date time from the source."""
