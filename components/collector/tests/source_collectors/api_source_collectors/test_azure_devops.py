@@ -135,15 +135,15 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
         response = await self.collect(
             metric, get_request_json_return_value=dict(
                 value=[
-                    dict(id="1", name="A", build=dict(id="1"), state="Completed", passedTests=2, totalTests=2),
-                    dict(id="2", name="A", build=dict(id="2"), state="Completed", startedDate="2020-06-20T14:56:00.58Z",
+                    dict(id=1, name="A", build=dict(id="1"), state="Completed", passedTests=2, totalTests=2),
+                    dict(id=2, name="A", build=dict(id="2"), state="Completed", startedDate="2020-06-20T14:56:00.58Z",
                          completedDate="2020-06-20T14:56:00.633Z", passedTests=2, notApplicableTests=1, totalTests=3,
                          webAccessUrl="https://azuredevops/project/run"),
-                    dict(id="3", name="A", build=dict(id="1"), state="Completed", passedTests=4, totalTests=4),
-                    dict(id="4", name="A", build=dict(id="2"), state="Completed", passedTests=1, totalTests=1),
-                    dict(id="5", name="B", build=dict(id="3"), state="Completed", passedTests=5, totalTests=5),
-                    dict(id="6", name="A+", build=dict(id="1"), state="Completed", passedTests=6, totalTests=6),
-                    dict(id="7", name="A+", build=dict(id="2"), state="InProgress", passedTests=6, totalTests=6)]))
+                    dict(id=3, name="A", build=dict(id="1"), state="Completed", passedTests=4, totalTests=4),
+                    dict(id=4, name="A", build=dict(id="2"), state="Completed", passedTests=1, totalTests=1),
+                    dict(id=5, name="B", build=dict(id="3"), state="Completed", passedTests=5, totalTests=5),
+                    dict(id=6, name="A+", build=dict(id="1"), state="Completed", passedTests=6, totalTests=6),
+                    dict(id=7, name="A+", build=dict(id="2"), state="InProgress", passedTests=6, totalTests=6)]))
         self.assert_measurement(response, value="10", entities=[
             dict(key="2", name="A", state="Completed", build_id="2", started_date="2020-06-20T14:56:00.58Z",
                  completed_date="2020-06-20T14:56:00.633Z", incomplete_tests="0", not_applicable_tests="1",

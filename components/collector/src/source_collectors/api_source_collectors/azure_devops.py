@@ -166,7 +166,7 @@ class AzureDevopsTests(SourceCollector):
             highest_build_test_count[name] += sum(run.get(test_result, 0) for test_result in test_results)
             highest_build_nr_test_runs[name].append(
                 dict(
-                    key=run["id"], name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
+                    key=str(run["id"]), name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
                     started_date=run.get("startedDate", ""), completed_date=run.get("completedDate", ""),
                     incomplete_tests=str(run.get("incompleteTests", 0)),
                     not_applicable_tests=str(run.get("notApplicableTests", 0)),
