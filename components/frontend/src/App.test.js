@@ -78,10 +78,14 @@ describe("<App/>", () => {
     expect(scrollIntoView).toHaveBeenCalled()
   });
 
-  it('logs in the user', () => {
+  it('sets the user', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org");
     expect(wrapper.state("user")).toBe("admin");
+    expect(wrapper.state("email")).toBe("email@example.org");
+    wrapper.instance().set_user(null);
+    expect(wrapper.state("user")).toBe(null);
+    expect(wrapper.state("email")).toBe(null);
   });
 });
 
