@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import { shallow } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import App from './App';
 
 let container;
@@ -77,4 +77,11 @@ describe("<App/>", () => {
     wrapper.instance().go_dashboard(new Event('click'));
     expect(scrollIntoView).toHaveBeenCalled()
   });
+
+  it('logs in the user', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().set_user("admin", "email@example.org");
+    expect(wrapper.state("user")).toBe("admin");
+  });
 });
+
