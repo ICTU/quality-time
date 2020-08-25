@@ -1279,6 +1279,7 @@
                 "tests": {
                     "name": "test run",
                     "name_plural": "test runs",
+                    "measured_attribute": "counted_tests",
                     "attributes": [
                         {
                             "name": "Test run name",
@@ -1327,6 +1328,12 @@
                             "name": "Total tests",
                             "key": "total_tests",
                             "type": "integer"
+                        },
+                        {
+                            "name": "Counted tests",
+                            "key": "counted_tests",
+                            "type": "integer",
+                            "visible": false
                         }
                     ]
                 },

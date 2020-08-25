@@ -9,6 +9,7 @@ import urllib.parse
 from abc import ABC
 from collections import defaultdict
 from datetime import datetime
+from types import SimpleNamespace
 from typing import Any, Dict, Final, List, cast
 
 import aiohttp
@@ -132,6 +133,12 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         return parse((await response.json())["value"][0]["committer"]["date"])
 
 
+class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
+    """Represent an Azure DevOps test run."""
+    def __init__(self, build_nr: int = 0) -> None:
+        super().__init__(build_nr=build_nr, test_count=0, entities=[])
+
+
 class AzureDevopsTests(SourceCollector):
     """Collector for the tests metric."""
 
@@ -145,9 +152,7 @@ class AzureDevopsTests(SourceCollector):
         test_run_states_to_include = [
             value.lower() for value in self._parameter("test_run_states_to_include")] or ["all"]
         runs = (await responses[0].json()).get("value", [])
-        highest_build_nr_seen: Dict[str, int] = defaultdict(int)
-        highest_build_nr_test_runs: Dict[str, Entities] = defaultdict(list)
-        highest_build_test_count = defaultdict(int)
+        highest_build: Dict[str, TestRun] = defaultdict(TestRun)
         for run in runs:
             name = run.get("name", "Unknown test run name")
             if test_run_names_to_include != ["all"] and \
@@ -156,24 +161,23 @@ class AzureDevopsTests(SourceCollector):
             state = run.get("state", "Unknown test run state")
             if test_run_states_to_include != ["all"] and state.lower() not in test_run_states_to_include:
                 continue
-            build_nr = int(run.get("build", {}).get("id", "-1"))
-            if build_nr < highest_build_nr_seen[name]:
+            build_nr = int(run.get("build", {}).get("id", -1))
+            if build_nr < highest_build[name].build_nr:
                 continue
-            if build_nr > highest_build_nr_seen[name]:
-                highest_build_nr_seen[name] = build_nr
-                highest_build_nr_test_runs[name] = []
-                highest_build_test_count[name] = 0
-            highest_build_test_count[name] += sum(run.get(test_result, 0) for test_result in test_results)
-            highest_build_nr_test_runs[name].append(
+            if build_nr > highest_build[name].build_nr:
+                highest_build[name] = TestRun(build_nr)
+            counted_tests = sum(run.get(test_result, 0) for test_result in test_results)
+            highest_build[name].test_count += counted_tests
+            highest_build[name].entities.append(
                 dict(
-                    key=run["id"], name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
+                    key=str(run["id"]), name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
                     started_date=run.get("startedDate", ""), completed_date=run.get("completedDate", ""),
-                    incomplete_tests=str(run.get("incompleteTests", 0)),
+                    counted_tests=str(counted_tests), incomplete_tests=str(run.get("incompleteTests", 0)),
                     not_applicable_tests=str(run.get("notApplicableTests", 0)),
                     passed_tests=str(run.get("passedTests", 0)), unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
                     total_tests=str(run.get("totalTests", 0))))
-        test_count = sum(highest_build_test_count.values())
-        test_runs = list(itertools.chain.from_iterable(highest_build_nr_test_runs.values()))
+        test_count = sum(build.test_count for build in highest_build.values())
+        test_runs = list(itertools.chain.from_iterable([build.entities for build in highest_build.values()]))
         return SourceMeasurement(value=str(test_count), entities=test_runs)
 
 

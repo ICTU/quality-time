@@ -27,7 +27,7 @@ export function SourceEntities(props) {
   if (!metric_entities || !Array.isArray(props.source.entities) || props.source.entities.length === 0) {
     return null;
   }
-  const entity_attributes = metric_entities.attributes;
+  const entity_attributes = metric_entities.attributes.filter((attribute) => attribute.visible === undefined || attribute.visible);
   const entity_name = metric_entities.name;
   const entity_name_plural = metric_entities.name_plural;
   const headers =

@@ -179,9 +179,15 @@ The `sources` part of the data model is an object where the keys are the source 
 
 The `name` is the default name of sources of this type. The `description` gives some background information on the source type. The `url` links to a landing page describing the source type.
 
+#### Parameters
+
 The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`. If the `type` is `integer` the `unit` and `min_value` need to be specified and optionally a `max_value`. If the `type` is `multiple_choice` the possible `values` need to be specified. A `default_value` can also be given. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
-The `entities` object contains the name (both singular and plural) of the entities and a list of columns, the `attributes`, to be used to display the entities of the metric. Each attribute/column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. The key `url` can be used to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states). 
+#### Entities
+
+Measurement entities are the things that are counted or measured to get the measurement value. For example, the measurement entities of the 'violations' metric are the individual violations. Sometimes, the measurement entities are not interesting enough to show, e.g. when measuring the size in terms of lines of code. In other cases, groups of entities are shown, for example test runs as entities for the 'tests' metric.
+
+The `entities` object contains the name (both singular and plural) of the entities and a list of `attributes`. The attributes are shown as columns in the front end. Each attribute/column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. An attribute/column can have a key `url` to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the attribute/column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the optional `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states). 
 
 Users can mark entities as false positive to ignore them. By default *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The attribute `measured_attribute` determines which attribute to use:
 
@@ -212,6 +218,53 @@ Users can mark entities as false positive to ignore them. By default *Quality-ti
     }
 }
 ```
+
+In most cases, the measured attribute is simply one of the attributes. In other cases, the measured attribute may depend on the parameters selected by the user. For example, when measuring 'tests' using Azure DevOps as source, the test results (failed/passed/etc.) selected by the user influence how many tests *Quality-time* has to subtract from the total if the user decides to ignore a test run. To accommodate this, it is possible to add an attribute that is not shown by the front end, but is used as measured attribute:
+
+```json
+{
+    "sources": {
+        "azure_devops": {
+            "entities": {
+                "tests": {
+                    "name": "test run",
+                    "name_plural": "test runs",
+                    "measured_attribute": "counted_tests",
+                    "attributes": [
+                        {
+                            "name": "Test run name",
+                            "key": "name"
+                        },
+                        {
+                            "name": "Passed tests",
+                            "key": "passed_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Failed tests",
+                            "key": "unanalyzed_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Total tests",
+                            "key": "total_tests",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Counted tests",
+                            "key": "counted_tests",
+                            "type": "integer",
+                            "visible": false
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+```
+
+Of course, the collector needs to compute the extra attribute and add it to the measurement entities.
 
 ## Subjects
 
