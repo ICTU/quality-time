@@ -146,14 +146,15 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
                     dict(id=7, name="A+", build=dict(id="2"), state="InProgress", passedTests=6, totalTests=6)]))
         self.assert_measurement(response, value="10", entities=[
             dict(key="2", name="A", state="Completed", build_id="2", started_date="2020-06-20T14:56:00.58Z",
-                 completed_date="2020-06-20T14:56:00.633Z", incomplete_tests="0", not_applicable_tests="1",
-                 passed_tests="2", unanalyzed_tests="0", total_tests="3", url="https://azuredevops/project/run"),
+                 completed_date="2020-06-20T14:56:00.633Z", counted_tests="3", incomplete_tests="0",
+                 not_applicable_tests="1", passed_tests="2", unanalyzed_tests="0", total_tests="3",
+                 url="https://azuredevops/project/run"),
             dict(key="4", name="A", state="Completed", build_id="2", started_date="", completed_date="",
-                 incomplete_tests="0", not_applicable_tests="0", passed_tests="1", unanalyzed_tests="0",
-                 total_tests="1", url=""),
+                 counted_tests="1", incomplete_tests="0", not_applicable_tests="0", passed_tests="1",
+                 unanalyzed_tests="0", total_tests="1", url=""),
             dict(key="6", name="A+", state="Completed", build_id="1", started_date="", completed_date="",
-                 incomplete_tests="0", not_applicable_tests="0", passed_tests="6", unanalyzed_tests="0",
-                 total_tests="6", url="")])
+                 counted_tests="6", incomplete_tests="0", not_applicable_tests="0", passed_tests="6",
+                 unanalyzed_tests="0", total_tests="6", url="")])
 
     async def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
