@@ -11,7 +11,6 @@ import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
 import { createBrowserHistory } from 'history';
 import { ReadOnlyContext } from './context/ReadOnly';
-import { login, logout } from './api/auth';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
@@ -22,7 +21,7 @@ class App extends Component {
     super(props);
     this.state = {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
-      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date(), login_error: false
+      nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
     };
     this.history = createBrowserHistory();
     this.history.listen((location, action) => {
@@ -184,31 +183,16 @@ class App extends Component {
     return report_date;
   }
 
-  login(username, password) {
-    let self = this;
-    login(username, password)
-      .then(function (json) {
-        if (json.ok) {
-          const email = json.email.indexOf("@") > -1 ? json.email : null;
-          self.setState({ user: username, email: email, login_error: false })
-          localStorage.setItem("user", username)
-          localStorage.setItem("email", email)
-        } else {
-          self.setState({ login_error: true })
-        }
-      })
-      .catch(function (error) {
-        self.setState({ login_error: true });
-      });
-  }
-
-  logout() {
-    let self = this;
-    logout().then(() => {
-      self.setState({ user: null });
+  set_user(username, email) {
+    const email_address = email && email.indexOf("@") > -1 ? email : null;
+    this.setState({ user: username, email: email_address });
+    if (username === null) {
       localStorage.removeItem("user");
       localStorage.removeItem("email");
-    })
+    } else {
+      localStorage.setItem("user", username);
+      localStorage.setItem("email", email_address);
+    }
   }
 
   render() {
@@ -223,13 +207,11 @@ class App extends Component {
           email={this.state.email}
           go_dashboard={(e) => this.go_dashboard(e)}
           go_home={() => this.go_home()}
-          login={(u, p) => this.login(u, p)}
-          login_error={this.state.login_error}
-          logout={(e) => this.logout(e)}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           onSearch={(e) => this.handleSearchChange(e)}
           report_date_string={this.state.report_date_string}
           searchable={current_report !== null}
+          set_user={(username, email) => this.set_user(username, email)}
           user={this.state.user}
         />
         <SemanticToastContainer />
