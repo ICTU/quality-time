@@ -36,7 +36,8 @@ class OJAuditViolations(XMLFileSourceCollector):
         violation_elements = tree.findall(".//ns:violation", namespaces)
         violations = []
         for element in violation_elements:
-            if violation := self.__violation(element, namespaces, models, severities):
+            violation = self.__violation(element, namespaces, models, severities)
+            if violation is not None:
                 violations.append(violation)
         # Add the duplication counts
         for violation in violations:
