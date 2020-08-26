@@ -1,8 +1,8 @@
 """cloc metrics collector."""
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
+from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class ClocLOC(JSONFileSourceCollector):

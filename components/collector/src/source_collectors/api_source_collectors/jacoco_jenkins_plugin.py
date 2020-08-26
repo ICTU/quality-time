@@ -1,8 +1,8 @@
 """Jacoco Jenkins plugin coverage report collector."""
 
-from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector, SourceMeasurement
+from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
 from collector_utilities.type import URL
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class JacocoJenkinsPluginBaseClass(SourceCollector):

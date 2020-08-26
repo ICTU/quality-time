@@ -6,9 +6,9 @@ from typing import List
 
 from bs4 import BeautifulSoup, Tag
 
-from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import HTMLFileSourceCollector, SourceUpToDatenessCollector
 from collector_utilities.type import Entity, Response
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

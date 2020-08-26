@@ -2,8 +2,8 @@
 
 from typing import Final
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
-from source_model import SourceResponses
+from base_collectors import JSONFileSourceCollector
+from source_model import SourceMeasurement, SourceResponses
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):

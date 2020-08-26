@@ -2,9 +2,9 @@
 
 from typing import Dict
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
+from base_collectors import JSONFileSourceCollector
 from collector_utilities.type import Entities
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class NpmDependencies(JSONFileSourceCollector):

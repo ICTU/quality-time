@@ -5,10 +5,10 @@ from typing import Dict, List
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Entities, Entity, Response
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class SonarQubeException(Exception):

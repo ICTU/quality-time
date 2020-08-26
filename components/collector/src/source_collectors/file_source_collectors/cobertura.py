@@ -4,9 +4,9 @@ from datetime import datetime
 
 from defusedxml import ElementTree
 
-from base_collectors import SourceMeasurement, SourceUpToDatenessCollector, XMLFileSourceCollector
+from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.type import Response
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class CoberturaCoverageBaseClass(XMLFileSourceCollector):

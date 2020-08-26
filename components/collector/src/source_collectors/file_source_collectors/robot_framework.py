@@ -6,10 +6,10 @@ from typing import List, cast
 
 from dateutil.parser import parse
 
-from base_collectors import SourceMeasurement, SourceUpToDatenessCollector, XMLFileSourceCollector
+from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import URL, Entities, Response
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

@@ -1,8 +1,8 @@
 """Snyk metrics collector."""
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement
+from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class SnykSecurityWarnings(JSONFileSourceCollector):

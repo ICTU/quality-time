@@ -4,10 +4,10 @@ from datetime import datetime, timezone
 
 from dateutil.parser import parse
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
+from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import md5_hash
 from collector_utilities.type import Response
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):

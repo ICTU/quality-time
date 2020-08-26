@@ -9,10 +9,10 @@ from urllib.parse import quote
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, UnmergedBranchesSourceCollector
+from base_collectors import SourceCollector, UnmergedBranchesSourceCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Job
-from source_model import SourceResponses
+from source_model import SourceMeasurement, SourceResponses
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method

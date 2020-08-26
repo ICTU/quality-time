@@ -1,7 +1,7 @@
 """Metric collector that returns a manually entered number."""
 
-from base_collectors import SourceCollector, SourceMeasurement
-from source_model import SourceResponses
+from base_collectors import SourceCollector
+from source_model import SourceMeasurement, SourceResponses
 
 
 class ManualNumber(SourceCollector):
