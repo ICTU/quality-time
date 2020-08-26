@@ -13,7 +13,7 @@ class NpmDependenciesTest(SourceCollectorTestCase):
             "react-dom": {"current": "16.12.0", "wanted": "16.13.1", "latest": "16.13.1", "location": ""}}
         expected_entities = [
             dict(key="react@?", name="react", current="unknown", wanted="16.13.1", latest="16.13.1"),
-            dict(key="react-dom@16.12.0", name="react-dom", current="16.12.0", wanted="16.13.1", latest="16.13.1")]
+            dict(key="react-dom@16_12_0", name="react-dom", current="16.12.0", wanted="16.13.1", latest="16.13.1")]
         sources = dict(source_id=dict(type="npm", parameters=dict(url="npm.json")))
         metric = dict(type="dependencies", sources=sources, addition="sum")
         response = await self.collect(metric, get_request_json_return_value=npm_json)

@@ -9,8 +9,8 @@ from dateutil.parser import isoparse
 
 from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
-from collector_utilities.type import Entity, Namespaces, Response
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import Namespaces, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -46,7 +46,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
         key = sha1 if sha1 else sha1_hash(file_path)
-        return dict(key=key, file_path=file_path, url=entity_landing_url)
+        return Entity(key=key, file_path=file_path, url=entity_landing_url)
 
 
 class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):

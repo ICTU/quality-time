@@ -3,8 +3,7 @@
 from typing import Dict, List
 
 from base_collectors import JSONFileSourceCollector
-from collector_utilities.type import Entities
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class ComposerDependencies(JSONFileSourceCollector):
@@ -15,8 +14,8 @@ class ComposerDependencies(JSONFileSourceCollector):
         installed_dependencies: List[Dict[str, str]] = []
         for response in responses:
             installed_dependencies.extend((await response.json(content_type=None)).get("installed", []))
-        entities: Entities = [
-            dict(
+        entities = [
+            Entity(
                 key=f'{dependency["name"]}@{dependency.get("version", "?")}',
                 name=dependency["name"], version=dependency.get("version", "unknown"),
                 homepage=dependency.get("homepage", ""), latest=dependency.get("latest", "unknown"),

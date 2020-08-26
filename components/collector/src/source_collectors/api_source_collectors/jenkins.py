@@ -4,9 +4,9 @@ from datetime import datetime
 from typing import Iterator, cast
 
 from base_collectors import SourceCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression, safe_entity_key
+from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class JenkinsJobs(SourceCollector):
@@ -19,9 +19,8 @@ class JenkinsJobs(SourceCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [
-            dict(
-                key=safe_entity_key(job["name"]), name=job["name"], url=job["url"],
-                build_status=self._build_status(job),
+            Entity(
+                key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),
                 build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "")
             for job in self.__jobs((await responses[0].json())["jobs"])]
         return SourceMeasurement(entities=entities)

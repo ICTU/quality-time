@@ -7,8 +7,8 @@ from typing import List
 from bs4 import BeautifulSoup, Tag
 
 from base_collectors import HTMLFileSourceCollector, SourceUpToDatenessCollector
-from collector_utilities.type import Entity, Response
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -32,7 +32,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
         """Transform a transaction into a transaction entity."""
         name = transaction.find("td", class_="name").string
         threshold = "high" if transaction.select("td.red.evaluated") else "warning"
-        return dict(key=name, name=name, threshold=threshold)
+        return Entity(key=name, name=name, threshold=threshold)
 
     async def __slow_transactions(self, responses: SourceResponses) -> List[Tag]:
         """Return the slow transactions in the performance test report."""

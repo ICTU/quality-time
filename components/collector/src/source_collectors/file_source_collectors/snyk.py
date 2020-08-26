@@ -2,7 +2,7 @@
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class SnykSecurityWarnings(JSONFileSourceCollector):
@@ -23,7 +23,7 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
                     if isinstance(vulnerability["fixedIn"], list) else vulnerability["fixedIn"]
                 key = md5_hash(f'{vulnerability["id"]}:{package_include}')
                 entities.append(
-                    dict(
+                    Entity(
                         key=key, cve=vulnerability["title"], package=vulnerability["packageName"],
                         severity=vulnerability["severity"], version=vulnerability['version'],
                         package_include=package_include, fix=fix, url=f"https://snyk.io/vuln/{vulnerability['id']}"))

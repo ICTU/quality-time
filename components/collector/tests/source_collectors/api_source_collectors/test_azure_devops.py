@@ -197,7 +197,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
         self.assert_measurement(
             response, value="1", landing_url=f"{self.url}/_build", api_url=self.api_url,
             entities=[
-                dict(name=self.pipeline, key=self.pipeline, url=f"{self.url}/build",
+                dict(name=self.pipeline, key=self.pipeline.replace("/", "-"), url=f"{self.url}/build",
                      build_date="2019-11-15", build_status="failed")])
 
     async def test_nr_of_unused_jobs(self):
@@ -217,5 +217,5 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
         self.assert_measurement(
             response, value="1", landing_url=f"{self.url}/_build", api_url=self.api_url,
             entities=[
-                dict(name=self.pipeline, key=self.pipeline, url=f"{self.url}/build",
+                dict(name=self.pipeline, key=self.pipeline.replace("/", "-"), url=f"{self.url}/build",
                      build_date="2019-10-15", build_status="failed")])

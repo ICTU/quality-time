@@ -8,8 +8,8 @@ from dateutil.parser import parse
 
 from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import URL, Entities, Response
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):  # pylint: disable=abstract-method
@@ -25,7 +25,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         count = 0
-        entities: Entities = []
+        entities = []
         test_results = cast(List[str], self._parameter("test_result"))
         for response in responses:
             tree = await parse_source_response_xml(response)
@@ -33,7 +33,7 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
             for test_result in test_results:
                 count += int(stats.get(test_result, 0))
                 for test in tree.findall(f".//test/status[@status='{test_result.upper()}']/.."):
-                    entities.append(dict(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
+                    entities.append(Entity(key=test.get("id", ""), name=test.get("name", ""), test_result=test_result))
         return SourceMeasurement(value=str(count), entities=entities)
 
 

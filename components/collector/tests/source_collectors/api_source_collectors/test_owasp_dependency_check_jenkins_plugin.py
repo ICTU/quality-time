@@ -29,9 +29,9 @@ class OWASPDependencyCheckJenkinsPluginTest(SourceCollectorTestCase):
                     dict(fileName="/f3", priority="LOW"),
                     dict(fileName="/f4", priority="CRITICAL")]))
         expected_entities = [
-            dict(key="/f1", file_path="/f1", highest_severity="High", nr_vulnerabilities="2"),
-            dict(key="/f2", file_path="/f2", highest_severity="Normal", nr_vulnerabilities="1"),
-            dict(key="/f4", file_path="/f4", highest_severity="Critical", nr_vulnerabilities="1")]
+            dict(key="-f1", file_path="/f1", highest_severity="High", nr_vulnerabilities="2"),
+            dict(key="-f2", file_path="/f2", highest_severity="Normal", nr_vulnerabilities="1"),
+            dict(key="-f4", file_path="/f4", highest_severity="Critical", nr_vulnerabilities="1")]
         self.assert_measurement(response, value="3", entities=expected_entities)
 
     async def test_up_to_dateness(self):

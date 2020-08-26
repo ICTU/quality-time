@@ -6,7 +6,7 @@ from dateutil.parser import parse
 
 from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
 from collector_utilities.type import Response
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class BanditSecurityWarnings(JSONFileSourceCollector):
@@ -18,7 +18,7 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
         entities = []
         for response in responses:
             entities.extend([
-                dict(
+                Entity(
                     key=f'{warning["test_id"]}:{warning["filename"]}:{warning["line_number"]}',
                     location=f'{warning["filename"]}:{warning["line_number"]}',
                     issue_text=warning["issue_text"],

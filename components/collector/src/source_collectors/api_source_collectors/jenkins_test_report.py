@@ -7,8 +7,8 @@ from dateutil.parser import parse
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL, Entity
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import URL
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 TestCase = Dict[str, str]
@@ -41,7 +41,7 @@ class JenkinsTestReportTests(SourceCollector):
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""
         name = case.get("name", "<nameless test case>")
-        return dict(
+        return Entity(
             key=name, name=name, class_name=case.get("className", ""), test_result=self.__status(case),
             age=str(case.get("age", 0)))
 

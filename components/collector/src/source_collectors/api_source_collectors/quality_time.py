@@ -7,8 +7,8 @@ from urllib import parse
 from dateutil.parser import parse as parse_datetime
 
 from base_collectors import SourceCollector, SourceUpToDatenessCollector
-from collector_utilities.type import URL, Entities, Entity, Response, Value
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import URL, Response, Value
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 Measurements = List[Dict[str, Dict[str, str]]]
@@ -42,7 +42,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         status_to_count = self._parameter("status")
         landing_url = await self._landing_url(responses)
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        entities: Entities = []
+        entities: List[Entity] = []
         for metric, entity in metrics_and_entities:
             recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
             status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
@@ -80,7 +80,7 @@ class QualityTimeMetrics(QualityTimeCollector):
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
                         metric["report_uuid"] = report["report_uuid"]
                         metric["subject_uuid"] = subject_uuid
-                        entity = dict(key=metric_uuid, report=report["title"], subject=subject["name"])
+                        entity = Entity(key=metric_uuid, report=report["title"], subject=subject["name"])
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities
 

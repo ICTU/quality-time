@@ -35,7 +35,7 @@ class BanditSecurityWarningsTest(BanditTestCase):
         self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
         self.expected_entities = [
             dict(
-                location="src/collectors/cxsast.py:37", key="B106:src/collectors/cxsast.py:37",
+                key="B106:src-collectors-cxsast_py:37", location="src/collectors/cxsast.py:37",
                 issue_text="Possible hardcoded password: '014DF517-39D1-4453-B7B3-9930C563627C'",
                 issue_severity="Low", issue_confidence="Medium",
                 more_info="https://bandit/b106_hardcoded_password_funcarg.html")]

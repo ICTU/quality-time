@@ -12,7 +12,7 @@ from dateutil.parser import parse
 from base_collectors import SourceCollector, UnmergedBranchesSourceCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Job
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -42,7 +42,7 @@ class GitLabJobsBase(GitLabBase):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         jobs = await self.__jobs(responses)
         entities = [
-            dict(
+            Entity(
                 key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
                 stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
             for job in jobs]

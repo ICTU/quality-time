@@ -8,8 +8,8 @@ from dateutil.parser import parse
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL, Entities, Entity
-from source_model import SourceMeasurement, SourceResponses
+from collector_utilities.type import URL
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 WekanCard = Dict[str, str]
@@ -90,7 +90,7 @@ class WekanIssues(WekanBase):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         api_url = await self._api_url()
         board_slug = self._board["slug"]
-        entities: Entities = []
+        entities = []
         for lst in self._lists:
             for card in self._cards.get(lst["_id"], []):
                 entities.append(self.__card_to_entity(card, api_url, board_slug, lst["title"]))
@@ -120,9 +120,9 @@ class WekanIssues(WekanBase):
     @staticmethod
     def __card_to_entity(card, api_url: URL, board_slug: str, list_title: str) -> Entity:
         """Convert a card into a entity."""
-        return dict(key=card["_id"], url=f"{api_url}/b/{card['boardId']}/{board_slug}/{card['_id']}",
-                    list=list_title, title=card["title"], due_date=card.get("dueAt", ""),
-                    date_last_activity=card["dateLastActivity"])
+        return Entity(
+            key=card["_id"], url=f"{api_url}/b/{card['boardId']}/{board_slug}/{card['_id']}", list=list_title,
+            title=card["title"], due_date=card.get("dueAt", ""), date_last_activity=card["dateLastActivity"])
 
 
 class WekanSourceUpToDateness(WekanBase):

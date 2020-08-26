@@ -12,7 +12,7 @@ import aiohttp
 
 from collector_utilities.functions import days_ago, stable_traceback, tokenless
 from collector_utilities.type import URL, Response
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class SourceCollector(ABC):
@@ -159,8 +159,9 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [
-            dict(key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
-                 url=str(self._branch_landing_url(branch)))
+            Entity(
+                key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
+                url=str(self._branch_landing_url(branch)))
             for branch in await self._unmerged_branches(responses)]
         return SourceMeasurement(entities=entities)
 

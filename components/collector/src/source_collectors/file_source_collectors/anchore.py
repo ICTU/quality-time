@@ -7,7 +7,7 @@ from dateutil.parser import parse
 from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import md5_hash
 from collector_utilities.type import Response
-from source_model import SourceMeasurement, SourceResponses
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector):
@@ -20,7 +20,7 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
             json = await response.json(content_type=None)
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
             entities.extend([
-                dict(
+                Entity(
                     key=md5_hash(f'{vulnerability["vuln"]}:{vulnerability["package"]}'),
                     cve=vulnerability["vuln"],
                     package=vulnerability["package"],
