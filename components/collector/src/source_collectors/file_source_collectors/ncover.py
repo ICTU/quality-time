@@ -7,8 +7,9 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import HTMLFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 from collector_utilities.type import Response
+from source_model import SourceResponses
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):  # pylint: disable=abstract-method

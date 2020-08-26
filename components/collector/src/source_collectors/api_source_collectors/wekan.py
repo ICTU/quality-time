@@ -6,9 +6,11 @@ from typing import Dict, List, cast
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Entities, Entity
+from source_model import SourceResponses
+
 
 WekanCard = Dict[str, str]
 WekanBoard = Dict[str, str]

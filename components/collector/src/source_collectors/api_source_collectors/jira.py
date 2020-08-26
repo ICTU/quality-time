@@ -5,9 +5,10 @@ from typing import Dict, List, Optional, Union, cast
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Entity
+from source_model import SourceResponses
 
 
 class JiraIssues(SourceCollector):

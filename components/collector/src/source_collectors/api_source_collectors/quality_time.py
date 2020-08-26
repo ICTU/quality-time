@@ -6,8 +6,10 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 from collector_utilities.type import URL, Entities, Entity, Response, Value
+from source_model import SourceResponses
+
 
 Measurements = List[Dict[str, Dict[str, str]]]
 

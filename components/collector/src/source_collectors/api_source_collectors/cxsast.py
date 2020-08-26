@@ -6,9 +6,10 @@ from typing import Dict, Optional, Tuple, cast
 import aiohttp
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Response
+from source_model import SourceResponses
 
 
 class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method

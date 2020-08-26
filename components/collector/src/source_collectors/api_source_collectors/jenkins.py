@@ -3,9 +3,10 @@
 from datetime import datetime
 from typing import Iterator, cast
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement
 from collector_utilities.functions import days_ago, match_string_or_regular_expression, safe_entity_key
 from collector_utilities.type import URL, Job, Jobs
+from source_model import SourceResponses
 
 
 class JenkinsJobs(SourceCollector):

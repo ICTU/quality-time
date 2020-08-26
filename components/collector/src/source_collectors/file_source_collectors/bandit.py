@@ -4,8 +4,9 @@ from datetime import datetime
 
 from dateutil.parser import parse
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceUpToDatenessCollector
 from collector_utilities.type import Response
+from source_model import SourceResponses
 
 
 class BanditSecurityWarnings(JSONFileSourceCollector):

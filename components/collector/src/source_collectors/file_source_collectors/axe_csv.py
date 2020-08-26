@@ -5,9 +5,10 @@ import re
 from io import StringIO
 from typing import Dict, List
 
-from base_collectors import CSVFileSourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import CSVFileSourceCollector, SourceMeasurement
 from collector_utilities.functions import md5_hash
 from collector_utilities.type import Entities
+from source_model import SourceResponses
 
 
 class AxeCSVAccessibility(CSVFileSourceCollector):

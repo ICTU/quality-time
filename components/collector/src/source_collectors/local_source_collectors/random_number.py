@@ -3,7 +3,8 @@
 import random
 from typing import Final
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector, SourceMeasurement
+from source_model import SourceResponses
 
 
 class Random(SourceCollector):

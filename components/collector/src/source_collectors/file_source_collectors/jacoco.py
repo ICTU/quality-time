@@ -4,8 +4,9 @@ from datetime import datetime
 
 from defusedxml import ElementTree
 
-from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
+from base_collectors import SourceMeasurement, SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.type import Response
+from source_model import SourceResponses
 
 
 class JacocoCoverageBaseClass(XMLFileSourceCollector):

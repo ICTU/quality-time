@@ -8,7 +8,8 @@ from unittest.mock import AsyncMock, Mock, mock_open, patch
 import aiohttp
 
 import quality_time_collector
-from base_collectors import MetricsCollector, SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import MetricsCollector, SourceCollector, SourceMeasurement
+from source_model import SourceResponses
 
 
 class CollectorTest(unittest.IsolatedAsyncioTestCase):

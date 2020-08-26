@@ -3,9 +3,11 @@
 from typing import Dict, List, Optional, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-from base_collectors import SourceMeasurement, SourceResponses, XMLFileSourceCollector
+from base_collectors import SourceMeasurement, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Entities, Entity, Namespaces
+from source_model import SourceResponses
+
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 
