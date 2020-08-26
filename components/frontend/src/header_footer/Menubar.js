@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Form, Header, Icon, Image, Input, Menu, Message, Modal, Dropdown, Popup } from 'semantic-ui-react';
+import { login, logout } from '../api/auth';
 import { DatePicker } from '../widgets/DatePicker';
 import { Avatar } from '../widgets/Avatar';
 import './Menubar.css';
@@ -7,11 +8,27 @@ import './Menubar.css';
 function Login(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [login_error, setLoginError] = useState(false);
+
+  function submit() {
+    login(username, password)
+      .then(function (json) {
+        if (json.ok) {
+          props.set_user(username, json.email)
+        } else {
+          setLoginError(true);
+        }
+      })
+      .catch(function (error) {
+        setLoginError(true);
+      });
+  }
+
   return (
-    <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny'>
+    <Modal trigger={<Button secondary><Icon name='user' />Login</Button>} size='tiny' onClose={() => setLoginError(false)} >
       <Header content='Login' />
       <Modal.Content>
-        <Form error={props.error} warning={!props.error} onSubmit={() => props.login(username, password)}>
+        <Form error={login_error} warning={!login_error} onSubmit={() => submit()} >
           <Form.Input autoFocus label='Username' name='username' onChange={(event, { value }) => setUsername(value)} />
           <Form.Input type='password' label='Password' name='password' onChange={(event, { value }) => setPassword(value)} />
           <Message error header='Invalid credentials' content='Username and/or password are invalid. Please try again.' />
@@ -28,7 +45,7 @@ function Logout(props) {
   return (
     <Dropdown
       trigger={trigger}
-      options={[{ key: "logout", text: "Logout", icon: "log out", onClick: props.logout }]}
+      options={[{ key: "logout", text: "Logout", icon: "log out", onClick: () => {logout().then(() => props.set_user(null))} }]}
     />
   )
 }
@@ -60,7 +77,7 @@ export function Menubar(props) {
             <DatePicker onDate={props.onDate} name="report_date_string" value={props.report_date_string} label="Report date" />
           </Menu.Item>
           <Menu.Item>
-            {(props.user !== null) ? <Logout email={props.email} user={props.user} logout={props.logout} /> : <Login login={props.login} error={props.login_error} />}
+            {(props.user !== null) ? <Logout email={props.email} user={props.user} set_user={props.set_user} /> : <Login set_user={props.set_user} />}
           </Menu.Item>
         </Menu.Menu>
       </Container>
