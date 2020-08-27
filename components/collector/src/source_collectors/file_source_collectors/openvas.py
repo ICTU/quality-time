@@ -6,24 +6,25 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
+from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Entities, Response
+from collector_utilities.type import Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class OpenVASSecurityWarnings(XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        entities: Entities = []
+        entities = []
         severities = cast(List[str], self._parameter("severities"))
         for response in responses:
             tree = await parse_source_response_xml(response)
             entities.extend(
-                [dict(key=result.attrib["id"], name=result.findtext("name", default=""),
-                      description=result.findtext("description", default=""),
-                      host=result.findtext("host", default=""), port=result.findtext("port", default=""),
-                      severity=result.findtext("threat", default=""))
+                [Entity(
+                    key=result.attrib["id"], name=result.findtext("name", default=""),
+                    description=result.findtext("description", default=""), host=result.findtext("host", default=""),
+                    port=result.findtext("port", default=""), severity=result.findtext("threat", default=""))
                  for result in self.__results(tree, severities)])
         return SourceMeasurement(entities=entities)
 

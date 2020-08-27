@@ -3,9 +3,11 @@
 from typing import Dict, List, Optional, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-from base_collectors import SourceMeasurement, SourceResponses, XMLFileSourceCollector
+from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
-from collector_utilities.type import Entities, Entity, Namespaces
+from collector_utilities.type import Namespaces
+from source_model import Entity, SourceMeasurement, SourceResponses
+
 
 ModelFilePaths = Dict[str, str]  # Model id to model file path mapping
 
@@ -28,14 +30,19 @@ class OJAuditViolations(XMLFileSourceCollector):
                 count += int(tree.findtext(f"./ns:{severity}-count", default="0", namespaces=namespaces))
         return SourceMeasurement(value=str(count), entities=entities)
 
-    def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> Entities:
+    def __violations(self, tree: Element, namespaces: Namespaces, severities: List[str]) -> List[Entity]:
         """Return the violations."""
         models = self.__model_file_paths(tree, namespaces)
         violation_elements = tree.findall(".//ns:violation", namespaces)
-        violations = [self.__violation(element, namespaces, models, severities) for element in violation_elements]
-        # Discard duplicated violations (where self.__violation() returned None) and add the duplication count
-        return [{**violation, "count": str(self.violation_counts[str(violation["key"])])}
-                for violation in violations if violation is not None]
+        violations = []
+        for element in violation_elements:
+            violation = self.__violation(element, namespaces, models, severities)
+            if violation is not None:
+                violations.append(violation)
+        # Add the duplication counts
+        for violation in violations:
+            violation["count"] = str(self.violation_counts[str(violation["key"])])
+        return violations
 
     def __violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
                     severities: List[str]) -> Optional[Entity]:
@@ -52,11 +59,12 @@ class OJAuditViolations(XMLFileSourceCollector):
         model = models[location.get("model", "")]
         component = f"{model}:{line_number}:{column_offset}"
         key = sha1_hash(f"{message}:{component}")
-        if key in self.violation_counts:
-            self.violation_counts[key] += 1
+        entity = Entity(key=key, severity=severity, message=message, component=component)
+        if entity["key"] in self.violation_counts:
+            self.violation_counts[entity["key"]] += 1
             return None  # Ignore duplicate violation
-        self.violation_counts[key] = 1
-        return dict(key=key, severity=severity, message=message, component=component)
+        self.violation_counts[entity["key"]] = 1
+        return entity
 
     @staticmethod
     def __model_file_paths(tree: Element, namespaces: Namespaces) -> ModelFilePaths:

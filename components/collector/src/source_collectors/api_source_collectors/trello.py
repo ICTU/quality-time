@@ -6,9 +6,10 @@ from typing import cast
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL, Entity, Response
+from collector_utilities.type import URL, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class TrelloBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -73,7 +74,7 @@ class TrelloIssues(TrelloBase):
     @staticmethod
     def __card_to_entity(card, lists) -> Entity:
         """Convert a card into a entity."""
-        return dict(
+        return Entity(
             key=card["id"], title=card["name"], url=card["url"], list=lists[card["idList"]], due_date=card["due"],
             date_last_activity=card["dateLastActivity"])
 

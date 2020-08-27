@@ -5,9 +5,10 @@ from typing import Dict, List, Optional, Union, cast
 
 from dateutil.parser import parse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL, Entity
+from collector_utilities.type import URL
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class JiraIssues(SourceCollector):
@@ -49,7 +50,7 @@ class JiraIssues(SourceCollector):
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
-        return dict(
+        return Entity(
             key=issue["id"], summary=fields["summary"], url=f"{url}/browse/{issue['key']}",
             created=fields["created"], updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
             priority=fields.get("priority", {}).get("name"))

@@ -2,9 +2,9 @@
 
 from typing import Dict
 
-from base_collectors import (
-    JenkinsPluginSourceUpToDatenessCollector, SourceCollector, SourceMeasurement, SourceResponses)
-from collector_utilities.type import URL, Entity
+from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
+from collector_utilities.type import URL
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
@@ -30,7 +30,7 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
                 entities[file_path]["highest_severity"] = \
                     self.__highest_severity(str(entities[file_path]["highest_severity"]).lower(), priority).capitalize()
             else:
-                entities[file_path] = dict(
+                entities[file_path] = Entity(
                     key=file_path, file_path=file_path, highest_severity=priority.capitalize(), nr_vulnerabilities="1")
         return SourceMeasurement(entities=list(entities.values()))
 

@@ -2,9 +2,9 @@
 
 from datetime import datetime, timedelta, timezone
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from source_model import Entity
 
-from collector_utilities.type import Entity
+from ..source_collector_test_case import SourceCollectorTestCase
 
 
 class SonarQubeTestCase(SourceCollectorTestCase):
@@ -26,7 +26,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         """Create an entity."""
         url = self.hotspot_landing_url.format(component) if entity_type == "security_hotspot" else \
             self.issue_landing_url.format(component)
-        entity = dict(component=component, key=component, message=component, type=entity_type, url=url)
+        entity = Entity(key=component, component=component, message=component, type=entity_type, url=url)
         if severity is not None:
             entity["severity"] = severity
         if resolution is not None:

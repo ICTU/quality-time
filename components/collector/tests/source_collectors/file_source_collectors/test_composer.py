@@ -14,10 +14,10 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
                 {"name": "package-2", "version": "2.0.0", "latest": "2.0.0", "latest-status": "up-to-date"}])
         self.expected_entities = [
             dict(
-                key="package-1@2.5.2", name="package-1", version="2.5.2", latest="2.6.1", homepage="https://url",
+                key="package-1@2_5_2", name="package-1", version="2.5.2", latest="2.6.1", homepage="https://url",
                 latest_status="semver-safe-update", description="description", warning="warning"),
             dict(
-                key="package-2@2.0.0", name="package-2", version="2.0.0", latest="2.0.0", homepage="",
+                key="package-2@2_0_0", name="package-2", version="2.0.0", latest="2.0.0", homepage="",
                 latest_status="up-to-date", description="", warning="")]
         self.sources = dict(source_id=dict(type="composer", parameters=dict(url="composer.json")))
         self.metric = dict(type="dependencies", sources=self.sources, addition="sum")

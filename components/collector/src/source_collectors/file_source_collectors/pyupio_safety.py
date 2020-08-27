@@ -2,7 +2,8 @@
 
 from typing import Final
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import JSONFileSourceCollector
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
@@ -19,7 +20,7 @@ class PyupioSafetySecurityWarnings(JSONFileSourceCollector):
         entities = []
         for response in responses:
             entities.extend(
-                [dict(
+                [Entity(
                     key=warning[self.KEY], package=warning[self.PACKAGE], installed=warning[self.INSTALLED],
                     affected=warning[self.AFFECTED], vulnerability=warning[self.VULNERABILITY])
                  for warning in await response.json(content_type=None)])

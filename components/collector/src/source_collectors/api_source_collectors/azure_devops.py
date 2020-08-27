@@ -15,10 +15,10 @@ from typing import Any, Dict, Final, List, cast
 import aiohttp
 from dateutil.parser import parse
 
-from base_collectors import (
-    SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector)
+from base_collectors import SourceCollector, SourceUpToDatenessCollector, UnmergedBranchesSourceCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
-from collector_utilities.type import URL, Entities, Job, Response
+from collector_utilities.type import URL, Job, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -47,8 +47,8 @@ class AzureDevopsIssues(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         value = str(len((await responses[0].json())["workItems"]))
         entities = [
-            dict(
-                key=str(work_item["id"]), project=work_item["fields"]["System.TeamProject"],
+            Entity(
+                key=work_item["id"], project=work_item["fields"]["System.TeamProject"],
                 title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
                 state=work_item["fields"]["System.State"], url=work_item["url"])
             for work_item in await self._work_items(responses)]
@@ -169,8 +169,8 @@ class AzureDevopsTests(SourceCollector):
             counted_tests = sum(run.get(test_result, 0) for test_result in test_results)
             highest_build[name].test_count += counted_tests
             highest_build[name].entities.append(
-                dict(
-                    key=str(run["id"]), name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
+                Entity(
+                    key=run["id"], name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
                     started_date=run.get("startedDate", ""), completed_date=run.get("completedDate", ""),
                     counted_tests=str(counted_tests), incomplete_tests=str(run.get("incompleteTests", 0)),
                     not_applicable_tests=str(run.get("notApplicableTests", 0)),
@@ -191,7 +191,7 @@ class AzureDevopsJobs(SourceCollector):
         return URL(f"{await super()._api_url()}/_build")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        entities: Entities = []
+        entities = []
         for job in (await responses[0].json())["value"]:
             if self._ignore_job(job):
                 continue
@@ -200,7 +200,7 @@ class AzureDevopsJobs(SourceCollector):
             build_status = self._latest_build_result(job)
             build_date_time = self._latest_build_date_time(job)
             entities.append(
-                dict(name=name, key=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
+                Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
         return SourceMeasurement(entities=entities)
 
     def _ignore_job(self, job: Job) -> bool:

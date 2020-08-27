@@ -10,8 +10,9 @@ from http import HTTPStatus
 from typing import Dict, List, cast
 
 from collector_utilities.type import JSON, URL, Response, Responses
+from source_model import SourceResponses
 
-from .source_collector import SourceCollector, SourceResponses
+from .source_collector import SourceCollector
 
 
 class FakeResponse:

@@ -7,9 +7,10 @@ from xml.etree.ElementTree import Element  # nosec, Element is not available fro
 
 from dateutil.parser import parse
 
-from base_collectors import SourceMeasurement, SourceResponses, SourceUpToDatenessCollector, XMLFileSourceCollector
+from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
 from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
-from collector_utilities.type import URL, Entity, Response
+from collector_utilities.type import URL, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
@@ -29,7 +30,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
                 method = alert_instance.findtext("method", default="")
                 uri = self.__stable(hashless(URL(alert_instance.findtext("uri", default=""))))
                 key = md5_hash(f"{alert_key}:{method}:{uri}")
-                entities[key] = dict(
+                entities[key] = Entity(
                     key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk)
         return SourceMeasurement(entities=list(entities.values()))
 

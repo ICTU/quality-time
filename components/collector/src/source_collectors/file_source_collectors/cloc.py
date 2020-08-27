@@ -1,7 +1,8 @@
 """cloc metrics collector."""
 
-from base_collectors import JSONFileSourceCollector, SourceMeasurement, SourceResponses
+from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class ClocLOC(JSONFileSourceCollector):
@@ -16,6 +17,7 @@ class ClocLOC(JSONFileSourceCollector):
                 if key not in ("header", "SUM") and not match_string_or_regular_expression(key, languages_to_ignore):
                     loc += value["code"]
                     entities.append(
-                        dict(key=key, language=key, blank=str(value["blank"]), comment=str(value["comment"]),
-                             code=str(value["code"]), nr_files=str(value["nFiles"])))
+                        Entity(
+                            key=key, language=key, blank=str(value["blank"]), comment=str(value["comment"]),
+                            code=str(value["code"]), nr_files=str(value["nFiles"])))
         return SourceMeasurement(value=str(loc), entities=entities)

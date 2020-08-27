@@ -3,8 +3,9 @@
 from datetime import datetime
 from typing import Sequence, cast
 
-from base_collectors import SourceResponses, SourceUpToDatenessCollector
+from base_collectors import SourceUpToDatenessCollector
 from collector_utilities.type import Response
+from source_model import SourceResponses
 
 
 class CalendarSourceUpToDateness(SourceUpToDatenessCollector):

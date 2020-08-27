@@ -5,9 +5,10 @@ from typing import Dict, List
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceCollector, SourceMeasurement, SourceResponses, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Entities, Entity, Response
+from collector_utilities.type import URL, Response
+from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class SonarQubeException(Exception):
@@ -60,7 +61,7 @@ class SonarQubeViolations(SonarQubeCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         value = 0
-        entities: Entities = []
+        entities: List[Entity] = []
         for response in responses:
             json = await response.json()
             value += int(json.get("total", 0))
@@ -76,7 +77,7 @@ class SonarQubeViolations(SonarQubeCollector):
 
     async def _entity(self, issue) -> Entity:
         """Create an entity from an issue."""
-        return dict(
+        return Entity(
             key=issue["key"],
             url=await self.__issue_landing_url(issue["key"]),
             message=issue["message"],
@@ -229,9 +230,9 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
 
     async def __entity(self, hotspot) -> Entity:
-        return dict(
-            component=hotspot["component"],
+        return Entity(
             key=hotspot["key"],
+            component=hotspot["component"],
             message=hotspot["message"],
             type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
@@ -288,7 +289,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         """Return the total value."""
         return metrics.get(self._total_key(), "100")
 
-    async def _entities(self, metrics: Dict[str, str]) -> Entities:  # pylint: disable=no-self-use,unused-argument
+    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:  # pylint: disable=no-self-use,unused-argument
         """Return the entities."""
         return []
 
@@ -339,12 +340,12 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
         return super()._value(metrics)
 
-    async def _entities(self, metrics: Dict[str, str]) -> Entities:
+    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
             # languages the user wants to ignore
             return [
-                dict(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
+                Entity(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
                 for language, ncloc in self.__language_ncloc(metrics)]
         return await super()._entities(metrics)
 
@@ -382,14 +383,15 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
     def _value_key(self) -> str:
         return ",".join(self.__effort_types())
 
-    async def _entities(self, metrics: Dict[str, str]) -> Entities:
+    async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
         entities = []
         api_values = self._data_model["sources"][self.source_type]["parameters"]["effort_types"]["api_values"]
         for effort_type in self.__effort_types():
             effort_type_description = [param for param, api_key in api_values.items() if effort_type == api_key][0]
             entities.append(
-                dict(key=effort_type, effort_type=effort_type_description, effort=metrics[effort_type],
-                     url=await self.__effort_type_landing_url(effort_type)))
+                Entity(
+                    key=effort_type, effort_type=effort_type_description, effort=metrics[effort_type],
+                    url=await self.__effort_type_landing_url(effort_type)))
         return entities
 
     async def __effort_type_landing_url(self, effort_type: str) -> URL:

@@ -5,7 +5,7 @@ import hashlib
 import re
 import urllib
 from datetime import datetime
-from typing import Collection, Generator, Pattern, Tuple, cast
+from typing import Any, Collection, Generator, Pattern, Tuple, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -58,9 +58,9 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
-def safe_entity_key(key: str) -> str:
+def safe_entity_key(key: Any) -> str:
     """Return a escaped version of the key that is safe in URLs and as Mongo document key."""
-    return key.replace("/", "-").replace(".", "_")
+    return str(key).replace("/", "-").replace(".", "_")
 
 
 def md5_hash(string: str) -> str:

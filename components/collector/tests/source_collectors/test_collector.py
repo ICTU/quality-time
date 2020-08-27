@@ -4,8 +4,9 @@ from unittest.mock import Mock, patch
 
 import aiohttp
 
-from base_collectors import SourceCollector, SourceResponses
+from base_collectors import SourceCollector
 from collector_utilities.type import URL
+from source_model import SourceResponses
 
 from .source_collector_test_case import SourceCollectorTestCase
 
