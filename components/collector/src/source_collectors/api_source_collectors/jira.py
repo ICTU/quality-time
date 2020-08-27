@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL
+from collector_utilities.type import URL, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
@@ -20,6 +20,9 @@ class JiraIssues(SourceCollector):
 
     async def _api_url(self) -> URL:
         url = await super()._api_url()
+        fields_url = URL(f"{url}/rest/api/2/field")
+        response = (await super()._get_source_responses(fields_url))[0]
+        self._field_ids = {field["name"].lower(): field["id"] for field in await response.json()}
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
@@ -32,20 +35,19 @@ class JiraIssues(SourceCollector):
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
         parameter_value = super()._parameter(parameter_key, quote)
         if parameter_key.endswith("field"):
-            parameter_value = self._field_ids.get(parameter_value, parameter_value)
+            parameter_value = self._field_ids.get(str(parameter_value).lower(), parameter_value)
         return parameter_value
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        fields_url = URL(f"{await super()._api_url()}/rest/api/2/field")
-        response = (await super()._get_source_responses(fields_url))[0]
-        self._field_ids = {field["name"]: field["id"] for field in await response.json()}
-        return await super()._get_source_responses(*urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
         entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
-        return SourceMeasurement(value=str(json.get("total", 0)), entities=entities)
+        return SourceMeasurement(value=self._compute_value(entities), entities=entities)
+
+    @classmethod
+    def _compute_value(cls, entities: List[Entity]) -> Value:  # pylint: disable=unused-argument
+        """Allow subclasses to compute the value from the entities."""
+        return None
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
@@ -66,11 +68,6 @@ class JiraIssues(SourceCollector):
 
 class JiraManualTestExecution(JiraIssues):
     """Collector for the number of manual test cases that have not been executed recently enough."""
-
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        measurement = await super()._parse_source_responses(responses)
-        measurement.value = str(len(measurement.entities))
-        return measurement
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
@@ -103,10 +100,10 @@ class JiraFieldSumBase(JiraIssues):
     field_parameter = "subclass responsibility"
     entity_key = "subclass responsibility"
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        measurement = await super()._parse_source_responses(responses)
-        measurement.value = str(round(sum(float(entity[self.entity_key]) for entity in measurement.entities)))
-        return measurement
+    @classmethod
+    def _compute_value(cls, entities: List[Entity]) -> Value:
+        # Sum the field, as specified by the entity key, from the entities.
+        return str(round(sum(float(entity[cls.entity_key]) for entity in entities)))
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
