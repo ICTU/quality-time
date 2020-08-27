@@ -43,12 +43,6 @@ class JiraIssuesTest(JiraTestCase):
 
     METRIC_TYPE = "issues"
 
-    async def test_nr_of_issues(self):
-        """Test that the number of issues is returned."""
-        issues_json = dict(total=42)
-        response = await self.get_response(issues_json)
-        self.assert_measurement(response, value="42")
-
     async def test_issues(self):
         """Test that the issues are returned."""
         issues_json = dict(total=1, issues=[self.issue()])

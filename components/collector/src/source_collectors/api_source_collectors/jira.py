@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
-from collector_utilities.type import URL
+from collector_utilities.type import URL, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
@@ -42,7 +42,12 @@ class JiraIssues(SourceCollector):
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
         entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
-        return SourceMeasurement(value=str(json.get("total", 0)), entities=entities)
+        return SourceMeasurement(value=self._compute_value(entities), entities=entities)
+
+    @classmethod
+    def _compute_value(cls, entities: List[Entity]) -> Value:  # pylint: disable=unused-argument
+        """Allow subclasses to compute the value from the entities."""
+        return None
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
@@ -63,11 +68,6 @@ class JiraIssues(SourceCollector):
 
 class JiraManualTestExecution(JiraIssues):
     """Collector for the number of manual test cases that have not been executed recently enough."""
-
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        measurement = await super()._parse_source_responses(responses)
-        measurement.value = str(len(measurement.entities))
-        return measurement
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
@@ -100,10 +100,10 @@ class JiraFieldSumBase(JiraIssues):
     field_parameter = "subclass responsibility"
     entity_key = "subclass responsibility"
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        measurement = await super()._parse_source_responses(responses)
-        measurement.value = str(round(sum(float(entity[self.entity_key]) for entity in measurement.entities)))
-        return measurement
+    @classmethod
+    def _compute_value(cls, entities: List[Entity]) -> Value:
+        # Sum the field, as specified by the entity key, from the entities.
+        return str(round(sum(float(entity[cls.entity_key]) for entity in entities)))
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
         entity = super()._create_entity(issue, url)
