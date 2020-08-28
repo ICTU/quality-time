@@ -2683,6 +2683,10 @@
                             "key": "priority"
                         },
                         {
+                            "name": "Sprint(s)",
+                            "key": "sprint"
+                        },
+                        {
                             "name": "Created",
                             "key": "created",
                             "type": "datetime"
@@ -2741,6 +2745,28 @@
                             "name": "Summary",
                             "key": "summary",
                             "url": "url"
+                        },
+                        {
+                            "name": "Status",
+                            "key": "status"
+                        },
+                        {
+                            "name": "Priority",
+                            "key": "priority"
+                        },
+                        {
+                            "name": "Sprint(s)",
+                            "key": "sprint"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "created",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "updated",
+                            "type": "datetime"
                         },
                         {
                             "name": "Points",

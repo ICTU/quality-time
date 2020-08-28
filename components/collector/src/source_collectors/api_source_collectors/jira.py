@@ -1,5 +1,6 @@
 """Jira metric collector."""
 
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Union, cast
 
@@ -13,6 +14,8 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 
 class JiraIssues(SourceCollector):
     """Jira collector for issues."""
+
+    SPRINT_NAME_RE = re.compile(r",name=(.*),startDate=")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,10 +55,13 @@ class JiraIssues(SourceCollector):
     def _create_entity(self, issue: Dict, url: URL) -> Entity:  # pylint: disable=no-self-use
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
-        return Entity(
-            key=issue["id"], summary=fields["summary"], url=f"{url}/browse/{issue['key']}",
-            created=fields["created"], updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
+        entity_attributes = dict(
+            summary=fields["summary"], url=f"{url}/browse/{issue['key']}", created=fields["created"],
+            updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
             priority=fields.get("priority", {}).get("name"))
+        if sprint_field_id := self._field_ids.get("sprint"):
+            entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
+        return Entity(key=issue["id"], **entity_attributes)
 
     def _include_issue(self, issue: Dict) -> bool:  # pylint: disable=no-self-use,unused-argument
         """Return whether this issue should be counted."""
@@ -63,7 +69,15 @@ class JiraIssues(SourceCollector):
 
     def _fields(self) -> str:  # pylint: disable=no-self-use
         """Return the fields to get from Jira."""
-        return "summary,created,updated,status,priority"
+        sprint_field_id = self._field_ids.get("sprint")
+        return "summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
+
+    @classmethod
+    def __get_sprint_names(cls, sprint_texts: List[str]) -> str:
+        """Parse the sprint name from the sprint text."""
+        matches = [cls.SPRINT_NAME_RE.search(sprint_text) for sprint_text in sprint_texts]
+        sprint_names = [match.group(1) for match in matches if match]
+        return ", ".join(sorted(sprint_names))
 
 
 class JiraManualTestExecution(JiraIssues):
