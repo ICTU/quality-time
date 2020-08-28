@@ -68,9 +68,9 @@ By default, there are three users defined in the LDAP database:
 
 ### Coding style
 
-This section contains some notes on coding style used in this project. It's far from complete, however. 
+This section contains some notes on coding style used in this project. It's far from complete, however.
 
-#### Python 
+#### Python
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
