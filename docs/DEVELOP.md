@@ -10,6 +10,8 @@
 
 ## Develop
 
+### Running *Quality-time* locally
+
 Follow these instructions to run the software in hot-reload mode for easy development. Prerequisites are Python 3.8 and a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
@@ -63,6 +65,24 @@ By default, there are three users defined in the LDAP database:
 - User `admin` has password `admin`.
 - User `Jane Doe` has user id `jadoe` and password `secret`.
 - User `John Doe` has user id `jodoe` and password `secret`.
+
+### Coding style
+
+This section contains some notes on coding style used in this project. It's far from complete, however. 
+
+#### Python 
+
+Most of the coding standard are enforced by the [quality checks](#quality-checks).
+
+Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
+
+Production code and unit tests are organized in parallel hierarchies. Each Python component has a `src` with the production code and a `tests` folder with the unit tests. The folder layout of the `tests` follows the layout of the `src` hierarchy.
+
+#### JavaScript
+
+Functional React components are preferred over class-based components.
+
+Production code and unit tests are organized together in one `src` folder hierarchy.
 
 ## Test
 
