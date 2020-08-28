@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When measuring 'tests' with Azure Devops, test runs could not be marked as false positive or won't fix. Fixes [#1402](https://github.com/ICTU/quality-time/issues/1402).
 - Specifying the Jira user story point field only worked if done by id, not by name. Fixes [#1409](https://github.com/ICTU/quality-time/issues/1409).
 
+### Added
+
+- When measuring ready user story points with Jira as source, show the sprint(s) of the user stories in the details. When measuring issues with Jira as source, show issue status, priority, sprint(s), creation date, and date of last update in the details. Closes [#1411](https://github.com/ICTU/quality-time/issues/1411).
+
 ## [3.2.0] - [2020-08-22]
 
 ### Fixed
