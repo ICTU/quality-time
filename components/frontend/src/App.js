@@ -113,7 +113,7 @@ class App extends Component {
 
   check_session(json) {
     if (json.ok === false && json.status === 401) {
-      this.logout();
+      this.set_user(null);
       show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
     }
   }
