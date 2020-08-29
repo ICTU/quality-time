@@ -2658,7 +2658,7 @@
                     "type": "string",
                     "help_url": "https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html",
                     "mandatory": true,
-                    "default_value": "",
+                    "default_value": "Story Points",
                     "metrics": [
                         "ready_user_story_points"
                     ]
