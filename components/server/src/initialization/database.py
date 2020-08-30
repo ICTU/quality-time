@@ -48,7 +48,7 @@ def add_last_flag_to_reports(database: Database) -> None:
     database.reports.update_many({"_id": {"$in": report_ids}}, {"$set": {"last": True}})
 
 
-def rename_ready_user_story_points_metric(database: Database) -> None:
+def rename_ready_user_story_points_metric(database: Database) -> None:  # pragma: no cover-behave
     """Rename the ready_user_story_points metric to user_story_points."""
     # Introduced when the most recent version of Quality-time was 3.3.0.
     reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
