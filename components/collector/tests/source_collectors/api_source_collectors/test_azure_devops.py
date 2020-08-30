@@ -52,12 +52,12 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
                 url=self.work_item_url)])
 
 
-class AzureDevopsReadyStoryPointsTest(AzureDevopsTestCase):
-    """Unit tests for the Azure Devops Server ready story points metric."""
+class AzureDevopsStoryPointsTest(AzureDevopsTestCase):
+    """Unit tests for the Azure Devops Server story points metric."""
 
     def setUp(self):
         super().setUp()
-        self.metric = dict(type="ready_user_story_points", sources=self.sources, addition="sum")
+        self.metric = dict(type="user_story_points", sources=self.sources, addition="sum")
 
     async def test_story_points(self):
         """Test that the number of story points are returned."""

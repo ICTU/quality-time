@@ -84,7 +84,7 @@ Feature: measurement
     Then the metric has two measurements
 
   Scenario: mark an entity as false positive
-    Given an existing metric with type "ready_user_story_points"
+    Given an existing metric with type "user_story_points"
     Given an existing source with type "azure_devops"
     When the collector measures "120"
       | key | story_points |
@@ -100,7 +100,7 @@ Feature: measurement
     Then the metric status is "target_not_met"
 
   Scenario: an entity marked as false positive disappears on the next measurement
-    Given an existing metric with type "ready_user_story_points"
+    Given an existing metric with type "user_story_points"
     Given an existing source with type "azure_devops"
     When the collector measures "120"
       | key | story_points |

@@ -352,29 +352,6 @@
                 "performance"
             ]
         },
-        "ready_user_story_points": {
-            "name": "Ready user story points",
-            "description": "The number of points of user stories that are ready to implement.",
-            "scales": [
-                "count"
-            ],
-            "default_scale": "count",
-            "unit": "user story points",
-            "addition": "sum",
-            "direction": ">",
-            "target": "100",
-            "near_target": "75",
-            "default_source": "azure_devops",
-            "sources": [
-                "azure_devops",
-                "jira",
-                "manual_number",
-                "random"
-            ],
-            "tags": [
-                "process efficiency"
-            ]
-        },
         "remediation_effort": {
             "name": "Violation remediation effort",
             "description": "The amount of effort it takes to remediate violations.",
@@ -663,6 +640,29 @@
             ],
             "tags": [
                 "ci"
+            ]
+        },
+        "user_story_points": {
+            "name": "User story points",
+            "description": "The total number of points of a selection of user stories.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
+            "unit": "user story points",
+            "addition": "sum",
+            "direction": ">",
+            "target": "100",
+            "near_target": "75",
+            "default_source": "azure_devops",
+            "sources": [
+                "azure_devops",
+                "jira",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "process efficiency"
             ]
         },
         "violations": {
@@ -1047,7 +1047,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
-                        "ready_user_story_points",
+                        "user_story_points",
                         "source_up_to_dateness",
                         "tests",
                         "unmerged_branches",
@@ -1064,7 +1064,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
-                        "ready_user_story_points",
+                        "user_story_points",
                         "source_up_to_dateness",
                         "tests",
                         "unmerged_branches",
@@ -1080,7 +1080,7 @@
                     "default_value": "",
                     "metrics": [
                         "issues",
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 },
                 "file_path": {
@@ -1402,7 +1402,7 @@
                         }
                     ]
                 },
-                "ready_user_story_points": {
+                "user_story_points": {
                     "name": "user story",
                     "name_plural": "user stories",
                     "measured_attribute": "story_points",
@@ -2574,7 +2574,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 },
                 "jql": {
@@ -2588,7 +2588,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 },
                 "username": {
@@ -2601,7 +2601,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 },
                 "password": {
@@ -2614,7 +2614,7 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 },
                 "manual_test_duration_field": {
@@ -2660,7 +2660,7 @@
                     "mandatory": true,
                     "default_value": "Story Points",
                     "metrics": [
-                        "ready_user_story_points"
+                        "user_story_points"
                     ]
                 }
             },
@@ -2736,7 +2736,7 @@
                         }
                     ]
                 },
-                "ready_user_story_points": {
+                "user_story_points": {
                     "name": "user story",
                     "name_plural": "user stories",
                     "measured_attribute": "points",
@@ -2917,7 +2917,7 @@
                         "metrics",
                         "performancetest_duration",
                         "performancetest_stability",
-                        "ready_user_story_points",
+                        "user_story_points",
                         "scalability",
                         "slow_transactions",
                         "security_warnings",
@@ -4039,6 +4039,7 @@
                         "Tests",
                         "Unmerged branches",
                         "Unused CI-jobs",
+                        "User story points",
                         "Violations"
                     ],
                     "api_values": {
@@ -4068,6 +4069,7 @@
                         "Tests": "tests",
                         "Unmerged branches": "unmerged_branches",
                         "Unused CI-jobs": "unused_jobs",
+                        "User story points": "user_story_points",
                         "Violations": "violations",
                         "Violation remediation effort": "remediation_effort"
                     },
@@ -5438,7 +5440,7 @@
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
-                "ready_user_story_points",
+                "user_story_points",
                 "source_up_to_dateness",
                 "unmerged_branches"
             ]
@@ -5468,7 +5470,7 @@
                 "long_units",
                 "performancetest_duration",
                 "performancetest_stability",
-                "ready_user_story_points",
+                "user_story_points",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",

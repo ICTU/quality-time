@@ -60,8 +60,8 @@ class AzureDevopsIssues(SourceCollector):
         return (await responses[1].json())["value"] if len(responses) > 1 else []
 
 
-class AzureDevopsReadyUserStoryPoints(AzureDevopsIssues):
-    """Collector to get ready user story points from Azure Devops Server."""
+class AzureDevopsUserStoryPoints(AzureDevopsIssues):
+    """Collector to get user story points from Azure Devops Server."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         measurement = await super()._parse_source_responses(responses)

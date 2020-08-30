@@ -1,6 +1,6 @@
 """Metric collectors per source."""
 
-from .api_source_collectors.azure_devops import AzureDevopsIssues, AzureDevopsReadyUserStoryPoints
+from .api_source_collectors.azure_devops import AzureDevopsIssues, AzureDevopsUserStoryPoints
 from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab import (
     GitLabFailedJobs, GitLabSourceUpToDateness, GitLabUnmergedBranches, GitLabUnusedJobs)
@@ -9,7 +9,7 @@ from .api_source_collectors.jacoco_jenkins_plugin import (
 from .api_source_collectors.jenkins import JenkinsFailedJobs, JenkinsJobs
 from .api_source_collectors.jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
 from .api_source_collectors.jira import (
-    JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraReadyUserStoryPoints)
+    JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraUserStoryPoints)
 from .api_source_collectors.owasp_dependency_check_jenkins_plugin import (
     OWASPDependencyCheckJenkinsPluginSecurityWarnings, OWASPDependencyCheckJenkinsPluginSourceUpToDateness)
 from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness

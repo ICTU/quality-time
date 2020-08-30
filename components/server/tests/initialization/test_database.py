@@ -66,3 +66,23 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.find_one.return_value = {"_id": "1"}
         self.init_database("{}")
         self.database.reports.update_many.assert_called_once()
+
+    def test_rename_ready_user_story_points(self):
+        """Test that the ready user story points metric is correctly renamed."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}},
+            {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
+            {"_id": "3", "subjects": {
+                "subject2": {
+                    "metrics": {
+                        "metric1": {"type": "violations"},
+                        "metric2": {"type": "ready_user_story_points"},
+                        "metric3": {"type": "ready_user_story_points", "name": "Don't change the name"}}}}}]
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "3"},
+            {"subjects": {
+                "subject2": {
+                    "metrics": {"metric1": {"type": "violations"},
+                                "metric2": {"type": "user_story_points", "name": "Ready user story points"},
+                                "metric3": {"type": "user_story_points", "name": "Don't change the name"}}}}})

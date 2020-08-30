@@ -245,11 +245,13 @@ class DataModelSpecificSourcesTest(DataModelTestCase):
     def test_quality_time_metric_type_parameter(self):
         """Test that the metric type parameter of the Quality-time source lists all metric types."""
         all_metric_names = {metric["name"] for metric in self.data_model["metrics"].values()}
+        all_metric_names.add("Ready user story points")  # Removed in first non-patch version after Quality-time v3.3.0
         quality_time_metric_names = set(
             self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["values"])
         self.assertEqual(all_metric_names, quality_time_metric_names)
         all_metric_api_values = {
             (metric["name"], metric_id) for metric_id, metric in self.data_model["metrics"].items()}
+        all_metric_api_values.add(("Ready user story points", "ready_user_story_points"))
         quality_time_api_values = set(
             self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items())
         self.assertEqual(all_metric_api_values, quality_time_api_values)
