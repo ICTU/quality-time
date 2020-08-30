@@ -18,7 +18,6 @@
 | Metrics | The amount of metrics from one more quality reports, with specific states and/or tags. | ≦ 0 metrics |  | Quality-time |
 | Performancetest duration | The duration of the performancetest in minutes | ≧ 30 minutes | performance | Performancetest-runner |
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | performance | Performancetest-runner |
-| Ready user story points | The number of points of user stories that are ready to implement. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | performance | Performancetest-runner |
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, Snyk, SonarQube |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube, cloc |
@@ -30,6 +29,7 @@
 | Tests | The number of tests. | ≧ 0 tests | test quality | Azure DevOps Server, JUnit XML report, Jenkins test report, Performancetest-runner, Robot Framework, SonarQube |
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
+| User story points | The total number of points of a selection of user stories. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
 | Violation remediation effort | The amount of effort it takes to remediate violations. | ≦ 60 minutes | maintainability | SonarQube |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
 
@@ -39,7 +39,7 @@
 | :--- | :---------- | :------ |
 | [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/) | Anchore image scan analysis report in JSON format | Source up-to-dateness, Security warnings |
 | [Axe CSV](https://github.com/ICTU/axe-reports) | An Axe accessibility report in CSV format. | Accessibility violations |
-| [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Ready user story points, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs |
+| [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | Failed CI-jobs, Issues, Source up-to-dateness, Tests, Unmerged branches, Unused CI-jobs, User story points |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | Source up-to-dateness, Security warnings |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | Source up-to-dateness |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | Source up-to-dateness, Security warnings |
@@ -51,7 +51,7 @@
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | Failed CI-jobs, Unused CI-jobs |
 | [Jenkins test report](https://plugins.jenkins.io/junit) | A Jenkins job with test results. | Source up-to-dateness, Tests |
-| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, Ready user story points |
+| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, User story points |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
@@ -318,24 +318,6 @@
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
-| Username for basic authentication | String | No |  |
-
-### Ready user story points from Azure DevOps Server
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Issue query in WIQL (Work Item Query Language) | String | Yes | [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops) |
-| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
-| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
-
-### Ready user story points from Jira
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
-| Password for basic authentication | Password | No |  |
-| Story points field (name or id) | String | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
-| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String | No |  |
 
 ### Violation remediation effort from SonarQube
@@ -890,6 +872,24 @@
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
+| Username for basic authentication | String | No |  |
+
+### User story points from Azure DevOps Server
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Issue query in WIQL (Work Item Query Language) | String | Yes | [https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops) |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
+
+### User story points from Jira
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
+| Password for basic authentication | Password | No |  |
+| Story points field (name or id) | String | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String | No |  |
 
 ### Violations from OJAudit
