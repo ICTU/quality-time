@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Use the default value of a source parameter if the user sets it to an empty string. Fixes [#1417](https://github.com/ICTU/quality-time/issues/1417).
+
 ### Changed
 
 - Rename the 'ready user story points' to 'user story points' as it can not just be used to count ready user stories, but rather any selection of user stories. Closes [#1415](https://github.com/ICTU/quality-time/issues/1415).

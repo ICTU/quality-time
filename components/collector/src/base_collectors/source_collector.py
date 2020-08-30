@@ -72,7 +72,7 @@ class SourceCollector(ABC):
                 value = [v for v in value if v in parameter_info["values"]] or parameter_info["values"]
         else:
             default_value = parameter_info.get("default_value", "")
-            value = self.__parameters.get(parameter_key, default_value)
+            value = self.__parameters.get(parameter_key) or default_value
         if api_values := parameter_info.get("api_values"):
             value = api_values.get(value, value) if isinstance(value, str) else [api_values.get(v, v) for v in value]
         if parameter_key.endswith("url"):
