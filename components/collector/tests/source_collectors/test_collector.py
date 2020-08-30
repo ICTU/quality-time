@@ -1,5 +1,6 @@
 """Unit tests for the Collector class."""
 
+from datetime import datetime
 from unittest.mock import Mock, patch
 
 import aiohttp
@@ -69,3 +70,10 @@ class CollectorTest(SourceCollectorTestCase):
             async with aiohttp.ClientSession() as session:
                 response = await FailingLandingUrl(session, self.metric, {}).get()
         self.assertEqual("https://api_url", response["landing_url"])
+
+    async def test_default_parameter_value_supersedes_empty_string(self):
+        """Test that a parameter default value takes precedence over an empty string."""
+        sources = dict(source_uuid=dict(type="calendar", parameters=dict(date="")))
+        metric = dict(type="source_up_to_dateness", addition="max", sources=sources)
+        response = await self.collect(metric)
+        self.assert_measurement(response, value=str((datetime.today() - datetime(2020, 1, 1)).days))
