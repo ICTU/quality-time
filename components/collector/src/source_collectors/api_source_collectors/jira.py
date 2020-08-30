@@ -136,8 +136,8 @@ class JiraFieldSumBase(JiraIssues):
         return value if value is None else float(value)
 
 
-class JiraReadyUserStoryPoints(JiraFieldSumBase):
-    """Collector to get ready user story points from Jira."""
+class JiraUserStoryPoints(JiraFieldSumBase):
+    """Collector to get user story points from Jira."""
 
     field_parameter = "story_points_field"
     entity_key = "points"

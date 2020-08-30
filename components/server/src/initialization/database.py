@@ -11,6 +11,7 @@ from .report import import_example_reports, initialize_reports_overview
 
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
 
+
 def init_database() -> Database:  # pragma: no cover-behave
     """Initialize the database connection and contents."""
     database_url = os.environ.get("DATABASE_URL", "mongodb://root:root@localhost:27017")
@@ -25,6 +26,7 @@ def init_database() -> Database:  # pragma: no cover-behave
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
     add_last_flag_to_reports(database)
+    rename_ready_user_story_points_metric(database)
     return database
 
 
@@ -44,3 +46,22 @@ def add_last_flag_to_reports(database: Database) -> None:
             filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
         report_ids.append(report["_id"])
     database.reports.update_many({"_id": {"$in": report_ids}}, {"$set": {"last": True}})
+
+
+def rename_ready_user_story_points_metric(database: Database) -> None:
+    """Rename the ready_user_story_points metric to user_story_points."""
+    # Introduced when the most recent version of Quality-time was 3.3.0.
+    reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
+    for report in reports:
+        changed = False
+        for subject in report["subjects"].values():
+            for metric in subject["metrics"].values():
+                if metric["type"] == "ready_user_story_points":
+                    metric["type"] = "user_story_points"
+                    changed = True
+                    if not metric.get("name"):
+                        metric["name"] = "Ready user story points"
+        if changed:
+            report_id = report["_id"]
+            del report["_id"]
+            database.reports.replace_one({"_id": report_id}, report)

@@ -90,10 +90,10 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 self.entity(key="1", last_test_date=str(parse(self.ten_days_ago).date()), desired_test_frequency="5")])
 
 
-class JiraReadyUserStoryPointsTest(JiraTestCase):
-    """Unit tests for the Jira ready story points collector."""
+class JiraUserStoryPointsTest(JiraTestCase):
+    """Unit tests for the Jira story points collector."""
 
-    METRIC_TYPE = "ready_user_story_points"
+    METRIC_TYPE = "user_story_points"
 
     async def test_nr_story_points(self):
         """Test that the number of story points is returned."""
