@@ -4,7 +4,7 @@
 
 | Name | Description | Default target | Default tags | Sources¹ |
 | :--- | :---------- | :------------- | :----------- | :------- |
-| Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV |
+| Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | accessibility | Axe CSV, axe-selenium-python |
 | Commented out code | The number of lines of code commented out. | ≦ 0 lines | maintainability | SonarQube |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | maintainability, testability | SonarQube |
 | Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | maintainability | Composer, OWASP Dependency Check, npm, pip |
@@ -22,7 +22,7 @@
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | security | Anchore, Bandit, Checkmarx CxSAST, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Pyupio Safety, Snyk, SonarQube |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | maintainability | SonarQube, cloc |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | performance | Performancetest-runner |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, SonarQube, Trello, Wekan |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | ci | Anchore, Azure DevOps Server, Bandit, Calendar date, Checkmarx CxSAST, Cobertura, GitLab, JUnit XML report, JaCoCo, JaCoCo Jenkins plugin, Jenkins test report, NCover, OWASP Dependency Check, OWASP Dependency Check Jenkins plugin, OWASP ZAP, OpenVAS, Performancetest-runner, Quality-time, Robot Framework, SonarQube, Trello, Wekan, axe-selenium-python |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | maintainability | SonarQube |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | test quality | Cobertura, JaCoCo, JaCoCo Jenkins plugin, NCover, SonarQube |
@@ -68,6 +68,7 @@
 | [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | Commented out code, Complex units, Duplicated lines, Size (LOC), Long units, Many parameters, Violation remediation effort, Source up-to-dateness, Security warnings, Suppressed violations, Tests, Test branch coverage, Test line coverage, Violations |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | Issues, Source up-to-dateness |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | Issues, Source up-to-dateness |
+| [axe-selenium-python](https://github.com/mozilla-services/axe-selenium-python) | axe-selenium-python integrates aXe and selenium to enable automated web accessibility testing. | Accessibility violations, Source up-to-dateness |
 | [cloc](https://github.com/AlDanial/cloc) | cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source code in many programming languages | Size (LOC) |
 | [npm](https://docs.npmjs.com/) | npm is a package manager for the JavaScript programming language. | Dependencies |
 | [pip](https://pip.pypa.io/en/stable/) | pip is the package installer for Python. You can use pip to install packages from the Python Package Index and other indexes. | Dependencies |
@@ -82,10 +83,21 @@
 | Impact levels | Multiple choice | No |  |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
-| URL to Axe report in a human readable format | String | No |  |
 | URL to an Axe report in CSV format or to a zip with Axe reports in CSV format | URL | Yes |  |
+| URL to an Axe report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 | Violation types | Multiple choice | No | [https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) |
+
+### Accessibility violations from axe-selenium-python
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Impact levels | Multiple choice | No |  |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+| URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format | URL | Yes |  |
+| URL to an axe-selenium-python report in a human readable format | String | No |  |
+| Username for basic authentication | String | No |  |
 
 ### Commented out code from SonarQube
 
@@ -357,6 +369,16 @@
 | Private token | Password | No |  |
 | URL to Anchore report in a human readable format | String | No |  |
 | URL to an Anchore details report in JSON format or to a zip with Anchore reports in JSON format | URL | Yes |  |
+| Username for basic authentication | String | No |  |
+
+### Source up-to-dateness from axe-selenium-python
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+| URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format | URL | Yes |  |
+| URL to an axe-selenium-python report in a human readable format | String | No |  |
 | Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Azure DevOps Server

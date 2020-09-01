@@ -25,6 +25,7 @@
             "default_source": "axecsv",
             "sources": [
                 "axecsv",
+                "axe_selenium_python",
                 "manual_number",
                 "random"
             ],
@@ -433,6 +434,7 @@
             "default_source": "sonarqube",
             "sources": [
                 "anchore",
+                "axe_selenium_python",
                 "azure_devops",
                 "bandit",
                 "calendar",
@@ -821,6 +823,120 @@
                 }
             }
         },
+        "axe_selenium_python": {
+            "name": "axe-selenium-python",
+            "description": "axe-selenium-python integrates aXe and selenium to enable automated web accessibility testing.",
+            "url": "https://github.com/mozilla-services/axe-selenium-python",
+            "parameters": {
+               "url": {
+                    "name": "URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "metrics": [
+                        "accessibility",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to an axe-selenium-python report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "accessibility",
+                        "source_up_to_dateness"
+                    ]
+                },
+                "impact": {
+                    "name": "Impact levels",
+                    "short_name": "impact levels",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all impact levels",
+                    "values": [
+                        "minor",
+                        "moderate",
+                        "serious",
+                        "critical"
+                    ],
+                    "metrics": [
+                        "accessibility"
+                    ]
+                }
+            },
+            "entities": {
+                "accessibility": {
+                    "name": "accessibility violation",
+                    "name_plural": "accessibility violations",
+                    "attributes": [
+                        {
+                            "name": "Violation type",
+                            "key": "violation_type",
+                            "url": "help"
+                        },
+                        {
+                            "name": "Impact",
+                            "key": "impact"
+                        },
+                        {
+                            "name": "Page of the violation",
+                            "key": "page",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Element",
+                            "key": "element"
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description"
+                        }
+                    ]
+                }
+            }
+        },
         "axecsv": {
             "name": "Axe CSV",
             "description": "An Axe accessibility report in CSV format.",
@@ -842,7 +958,7 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to Axe report in a human readable format",
+                    "name": "URL to an Axe report in a human readable format",
                     "short_name": "URL",
                     "type": "string",
                     "mandatory": false,
@@ -4087,6 +4203,7 @@
                     "values": [
                         "Anchore",
                         "Axe CSV",
+                        "axe-selenium-python",
                         "Azure DevOps Server",
                         "Bandit",
                         "Calendar date",
@@ -4124,6 +4241,7 @@
                         "Snyk": "snyk",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
+                        "axe-selenium-python": "axe_selenium_python",
                         "Azure DevOps Server": "azure_devops",
                         "Bandit": "bandit",
                         "Calendar date": "calendar",
