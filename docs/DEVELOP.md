@@ -113,7 +113,7 @@ ci/quality.sh
 
 ### Integration tests
 
-To run the integration tests (these currently test all components except the collector), start the following components and then run the feature tests:
+To run the integration tests (these currently test all components except the frontend and the collector), start the following components and then run the feature tests:
 
 ```console
 docker-compose up -d ldap database renderer www frontend server  # And optionally mongo-express
@@ -121,6 +121,15 @@ ci/behave.sh
 ```
 
 The `behave.sh` shell script will start a server under coverage and then run the behave [feature tests](../tests/features).
+
+### Application tests
+
+To run the application tests (these in theory test all components through the frontend, but the number of tests is very small), start all components and then run the application tests:
+
+```console
+docker-compose up -d
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time_www_1 circleci/python:3.8-browsers ci/test.sh
+```
 
 ## Release
 
