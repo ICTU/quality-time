@@ -15,7 +15,8 @@ class AxeSeleniumPythonTestCase(SourceCollectorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.sources = dict(source_id=dict(type="axe_selenium_python", parameters=dict(url="https://axe.json")))
+        self.axe_json_url = "https://axe.json"
+        self.sources = dict(source_id=dict(type="axe_selenium_python", parameters=dict(url=self.axe_json_url)))
 
 
 class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
@@ -23,8 +24,9 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
 
     def setUp(self):
         super().setUp()
+        self.tested_url = "https://tested_url"
         self.json = dict(
-            url="https://url",
+            url=self.tested_url,
             violations=[
                 dict(id="aria-input-field-name", description="description1", helpUrl="https://help1",
                      nodes=[dict(impact="serious", html="html1")]),
@@ -37,8 +39,8 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
                 'element': 'html1',
                 'help': 'https://help1',
                 'impact': 'serious',
-                'page': 'https://url',
-                'url': 'https://url',
+                'page': self.tested_url,
+                'url': self.tested_url,
                 'violation_type': 'aria-input-field-name'
             },
             {
@@ -46,8 +48,8 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
                 'element': 'html2',
                 'help': 'https://help2',
                 'impact': 'moderate',
-                'page': 'https://url',
-                'url': 'https://url',
+                'page': self.tested_url,
+                'url': self.tested_url,
                 'violation_type': 'aria-hidden-focus'
             }]
         for entity in self.expected_entities:
@@ -60,18 +62,19 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
 
     async def test_no_issues(self):
         """Test zero issues."""
-        response = await self.collect(self.metric, get_request_json_return_value=dict(url="https://axe", violations=[]))
+        self.json["violations"] = []
+        response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
-        self.metric["sources"]["source_id"]["parameters"]["impact"] = ["serious", "critical"]
+        self.sources["source_id"]["parameters"]["impact"] = ["serious", "critical"]
         response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1")
 
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
-        self.metric["sources"]["source_id"]["parameters"]["url"] = "https://axe.json.zip"
+        self.sources["source_id"]["parameters"]["url"] = f"{self.axe_json_url}.zip"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_axe_json:
             for index in range(2):
