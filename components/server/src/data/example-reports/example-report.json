@@ -358,6 +358,26 @@
                                 "url": "http://testdata:8000/reports/axe/public-axe-results.csv",
                                 "landing_url": "http://localhost:8000/reports/axe/public-axe-results.csv"
                             }
+                        },
+                        {
+                            "type": "axe_selenium_python",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
+                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "source_up_to_dateness",
+                    "name": "Time since last axe-selenium-python report",
+                    "sources": [
+                        {
+                            "type": "axe_selenium_python",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/axe/axe-selenium-python.json",
+                                "landing_url": "http://localhost:8000/reports/axe/axe-selenium-python.json"
+                            }
                         }
                     ]
                 }
