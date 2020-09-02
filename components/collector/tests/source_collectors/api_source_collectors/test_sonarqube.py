@@ -108,9 +108,9 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         self.assert_measurement(
             response, value="2", total="100",
             landing_url=f"{self.issues_landing_url}&rules=abap:S125,apex:S125,c:CommentedCode,cpp:CommentedCode,"
-                        "flex:CommentedCode,csharpsquid:S125,javascript:CommentedCode,kotlin:S125,objc:CommentedCode,"
-                        "php:S125,plsql:S125,python:S125,scala:S125,squid:CommentedOutCodeLine,swift:S125,"
-                        "typescript:S125,Web:AvoidCommentedOutCodeCheck,xml:S125")
+                        "flex:CommentedCode,csharpsquid:S125,javascript:CommentedCode,javascript:S125,kotlin:S125,"
+                        "objc:CommentedCode,php:S125,plsql:S125,python:S125,scala:S125,squid:CommentedOutCodeLine,"
+                        "java:S125,swift:S125,typescript:S125,Web:AvoidCommentedOutCodeCheck,xml:S125")
 
     async def test_complex_units(self):
         """Test that the number of lines with commented out code is returned."""
@@ -124,9 +124,10 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         self.assert_measurement(
             response, value="2", total="4",
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1541,csharpsquid:S3776,flex:FunctionComplexity,"
-                        "javascript:FunctionComplexity,javascript:S3776,go:S3776,kotlin:S3776,php:S1541,php:S3776,"
-                        "python:FunctionComplexity,python:S3776,ruby:S3776,scala:S3776,squid:MethodCyclomatic"
-                        "Complexity,squid:S3776,typescript:S1541,typescript:S3776,vbnet:S1541,vbnet:S3776")
+                        "javascript:FunctionComplexity,javascript:S1541,javascript:S3776,go:S3776,kotlin:S3776,"
+                        "php:S1541,php:S3776,python:FunctionComplexity,python:S3776,ruby:S3776,scala:S3776,"
+                        "squid:MethodCyclomaticComplexity,java:S1541,squid:S3776,typescript:S1541,typescript:S3776,"
+                        "vbnet:S1541,vbnet:S3776")
 
     async def test_tests(self):
         """Test that the number of tests is returned."""
@@ -180,8 +181,9 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         self.assert_measurement(
             response, value="2", total="4",
             landing_url=f"{self.issues_landing_url}&rules=c:S107,csharpsquid:S107,csharpsquid:S2436,cpp:S107,flex:S107,"
-                        "javascript:ExcessiveParameterList,objc:S107,php:S107,plsql:PlSql.FunctionAndProcedureExcessive"
-                        "Parameters,python:S107,squid:S00107,tsql:S107,typescript:S107")
+                        "javascript:ExcessiveParameterList,javascript:S107,objc:S107,php:S107,"
+                        "plsql:PlSql.FunctionAndProcedureExcessiveParameters,python:S107,squid:S00107,java:S107,"
+                        "tsql:S107,typescript:S107")
 
     async def test_long_units(self):
         """Test that the number of long units is returned."""
@@ -197,8 +199,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
             landing_url=f"{self.issues_landing_url}&rules=abap:S104,c:FileLoc,cpp:FileLoc,csharpsquid:S104,"
                         "csharpsquid:S138,flex:S138,go:S104,go:S138,javascript:S104,javascript:S138,kotlin:S104,"
                         "kotlin:S138,objc:FileLoc,php:S104,php:S138,php:S2042,Pylint:R0915,python:S104,ruby:S104,"
-                        "ruby:S138,scala:S104,scala:S138,squid:S00104,squid:S1188,squid:S138,squid:S2972,swift:S104,"
-                        "typescript:S104,typescript:S138,vbnet:S104,vbnet:S138,Web:FileLengthCheck,"
+                        "ruby:S138,scala:S104,scala:S138,squid:S00104,squid:S1188,squid:S138,java:S138,squid:S2972,"
+                        "swift:S104,typescript:S104,typescript:S138,vbnet:S104,vbnet:S138,Web:FileLengthCheck,"
                         "Web:LongJavaScriptCheck")
 
     async def test_source_up_to_dateness(self):
@@ -227,7 +229,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         self.assert_measurement(
             response, value="2", total="4", entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
-                        "squid:NoSonar,squid:S1309,squid:S1310,squid:S1315")
+                        "squid:NoSonar,java:NoSonar,squid:S1309,java:S1309,squid:S1310,"
+                        "java:S1310,squid:S1315,java:S1315")
 
     async def test_loc_returns_ncloc_by_default(self):
         """Test that the number of lines of non-comment code is returned."""
