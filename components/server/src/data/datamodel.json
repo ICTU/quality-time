@@ -3116,6 +3116,7 @@
                         "uncovered_lines",
                         "unmerged_branches",
                         "unused_jobs",
+                        "velocity",
                         "violations"
                     ]
                 }
@@ -4229,6 +4230,7 @@
                         "Unmerged branches",
                         "Unused CI-jobs",
                         "User story points",
+                        "Velocity",
                         "Violations"
                     ],
                     "api_values": {
@@ -4259,6 +4261,7 @@
                         "Unmerged branches": "unmerged_branches",
                         "Unused CI-jobs": "unused_jobs",
                         "User story points": "user_story_points",
+                        "Velocity": "velocity",
                         "Violations": "violations",
                         "Violation remediation effort": "remediation_effort"
                     },
@@ -5655,7 +5658,9 @@
                 "manual_test_execution",
                 "user_story_points",
                 "source_up_to_dateness",
-                "unmerged_branches"
+                "unmerged_branches",
+                "user_story_points",
+                "velocity"
             ]
         },
         "report": {
@@ -5683,7 +5688,6 @@
                 "long_units",
                 "performancetest_duration",
                 "performancetest_stability",
-                "user_story_points",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",
@@ -5693,6 +5697,7 @@
                 "uncovered_branches",
                 "uncovered_lines",
                 "unmerged_branches",
+                "user_story_points",
                 "violations"
             ]
         }

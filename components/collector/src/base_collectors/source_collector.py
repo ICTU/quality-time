@@ -95,7 +95,7 @@ class SourceCollector(ABC):
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
             logging.error("Failed to retrieve %s: %s", safe_api_url, reason)
-        return SourceResponses(api_url=api_url, connection_error=error)
+        return SourceResponses(api_url=URL(api_url), connection_error=error)
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""

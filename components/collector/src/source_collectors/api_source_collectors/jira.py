@@ -166,8 +166,8 @@ class JiraVelocity(SourceCollector):
         try:
             board = [
                 board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())][0]
-        except IndexError:
-            raise JiraException(f"Could not find a Jira board with id or name '{board_name_or_id}' at {url}")
+        except IndexError as error:
+            raise JiraException(f"Could not find a Jira board with id or name '{board_name_or_id}' at {url}") from error
         return URL(f"{url}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board['id']}")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -183,5 +183,5 @@ class JiraVelocity(SourceCollector):
             entities.append(
                 Entity(key=sprint["id"], name=sprint["name"], goal=sprint["goal"], points_completed=completed,
                        points_committed=committed))
-        velocity = velocity[:int(self._parameter("velocity_sprints"))]
-        return SourceMeasurement(value=str(round(sum(velocity)/len(velocity))) if velocity else 0, entities=entities)
+        velocity = velocity[:int(str(self._parameter("velocity_sprints")))]
+        return SourceMeasurement(value=str(round(sum(velocity)/len(velocity))) if velocity else "0", entities=entities)
