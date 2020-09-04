@@ -30,6 +30,7 @@
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | ci | Azure DevOps Server, GitLab |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | ci | Azure DevOps Server, GitLab, Jenkins |
 | User story points | The total number of points of a selection of user stories. | ≧ 100 user story points | process efficiency | Azure DevOps Server, Jira |
+| Velocity | The average number of user story points delivered in recent sprints. | ≧ 20 user story points per sprint | process efficiency | Jira |
 | Violation remediation effort | The amount of effort it takes to remediate violations. | ≦ 60 minutes | maintainability | SonarQube |
 | Violations | The number of violations of programming rules in the software. | ≦ 0 violations | maintainability | OJAudit, SonarQube |
 
@@ -51,7 +52,7 @@
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | Failed CI-jobs, Unused CI-jobs |
 | [Jenkins test report](https://plugins.jenkins.io/junit) | A Jenkins job with test results. | Source up-to-dateness, Tests |
-| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, User story points |
+| [Jira](https://www.atlassian.com/software/jira) | Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project management. | Issues, Manual test duration, Manual test execution, User story points, Velocity |
 | Manual number | A manual number. | ¹ |
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | Source up-to-dateness, Test branch coverage, Test line coverage |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | Violations |
@@ -911,6 +912,16 @@
 | Issue query in JQL (Jira Query Language) | String | Yes | [https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html](https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html) |
 | Password for basic authentication | Password | No |  |
 | Story points field (name or id) | String | Yes | [https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html](https://confluence.atlassian.com/jirakb/how-to-find-id-for-custom-field-s-744522503.html) |
+| URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
+| Username for basic authentication | String | No |  |
+
+### Velocity from Jira
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Board (name or id) | String | Yes | [https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/) |
+| Number of sprints to base velocity on | Integer | Yes |  |
+| Password for basic authentication | Password | No |  |
 | URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String | No |  |
 

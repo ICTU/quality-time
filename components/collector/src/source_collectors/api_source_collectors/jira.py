@@ -12,6 +12,10 @@ from collector_utilities.type import URL, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
+class JiraException(Exception):
+    """Something went wrong collecting information from Jira."""
+
+
 class JiraIssues(SourceCollector):
     """Jira collector for issues."""
 
@@ -148,3 +152,36 @@ class JiraManualTestDuration(JiraFieldSumBase):
 
     field_parameter = "manual_test_duration_field"
     entity_key = "duration"
+
+
+class JiraVelocity(SourceCollector):
+    """Collector to get sprint velocity from Jira."""
+
+    async def _api_url(self) -> URL:
+        url = await super()._api_url()
+        boards_url = URL(f"{url}/rest/agile/1.0/board")
+        response = (await super()._get_source_responses(boards_url))[0]
+        board_name_or_id = str(self._parameter("board")).lower()
+        boards = (await response.json())["values"]
+        try:
+            board = [
+                board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())][0]
+        except IndexError:
+            raise JiraException(f"Could not find a Jira board with id or name '{board_name_or_id}' at {url}")
+        return URL(f"{url}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board['id']}")
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        json = await responses[0].json()
+        entities = []
+        velocity = []
+        points = json["velocityStatEntries"]
+        for sprint in json["sprints"]:
+            sprint_points = points[str(sprint["id"])]
+            velocity.append(sprint_points["completed"]["value"])
+            committed = sprint_points["estimated"]["text"]
+            completed = sprint_points["completed"]["text"]
+            entities.append(
+                Entity(key=sprint["id"], name=sprint["name"], goal=sprint["goal"], points_completed=completed,
+                       points_committed=committed))
+        velocity = velocity[:int(self._parameter("velocity_sprints"))]
+        return SourceMeasurement(value=str(round(sum(velocity)/len(velocity))) if velocity else 0, entities=entities)

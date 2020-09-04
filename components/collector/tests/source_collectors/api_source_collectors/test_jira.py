@@ -19,7 +19,7 @@ class JiraTestCase(SourceCollectorTestCase):
                 parameters=dict(
                     url="https://jira/", jql="query", story_points_field="field",
                     manual_test_execution_frequency_field="desired_test_frequency",
-                    manual_test_duration_field="field")))
+                    manual_test_duration_field="field", board="Board 2")))
         self.metric = dict(type=self.METRIC_TYPE, addition="sum", sources=self.sources)
         self.created = "2020-08-06T16:36:48.000+0200"
 
@@ -129,3 +129,28 @@ class JiraManualTestDurationTest(JiraTestCase):
         self.assert_measurement(
             response, value="25",
             entities=[self.entity(key="1", duration="10.0"), self.entity(key="2", duration="15.0")])
+
+
+class JiraVelocityTest(JiraTestCase):
+    """Unit tests for the Jira velocity collector."""
+
+    METRIC_TYPE = "velocity"
+
+    async def test_velocity(self):
+        """Test that the velocity is returned."""
+        boards_json = dict(values=[dict(id=1, name="Board 1"), dict(id=2, name="Board 2")])
+        velocity_json = dict(
+            sprints=[
+                dict(id=3, name="Sprint 3", goal="Goal 3"), dict(id=2, name="Sprint 2", goal="Goal 2"),
+                dict(id=1, name="Sprint 1", goal="")],
+            velocityStatEntries={
+                1: dict(estimated=dict(value=65, text="65.0"), completed=dict(value=30, text="30.0")),
+                2: dict(estimated=dict(value=62, text="62.0"), completed=dict(value=48, text="46.0")),
+                3: dict(estimated=dict(value=40, text="40.0"), completed=dict(value=42, text="42.0"))})
+        response = await self.collect(self.metric, get_request_json_side_effect=[boards_json, velocity_json])
+        self.assert_measurement(
+            response, value="40.0",
+            entities=[
+                dict(key="3", name="Sprint 3", goal="Goal 3", points_completed="42.0", points_committed="40.0"),
+                dict(key="2", name="Sprint 2", goal="Goal 2", points_completed="46.0", points_committed="62.0"),
+                dict(key="1", name="Sprint 1", goal="", points_completed="30.0", points_committed="65.0")])
