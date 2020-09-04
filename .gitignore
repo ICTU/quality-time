@@ -55,7 +55,7 @@ venv.bak/
 
 # IDE
 *.code-workspace
-.vscode
+.vs*
 .idea
 
 # Node
