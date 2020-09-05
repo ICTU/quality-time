@@ -2946,7 +2946,8 @@
                     "attributes": [
                         {
                             "name": "Sprint name",
-                            "key": "name"
+                            "key": "name",
+                            "url": "url"
                         },
                         {
                             "name": "Sprint goal",

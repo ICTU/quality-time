@@ -3,6 +3,7 @@
 import re
 from datetime import datetime
 from typing import Dict, List, Optional, Union, cast
+from urllib.parse import parse_qs, urlparse
 
 from dateutil.parser import parse
 
@@ -157,20 +158,14 @@ class JiraManualTestDuration(JiraFieldSumBase):
 class JiraVelocity(SourceCollector):
     """Collector to get sprint velocity from Jira."""
 
-    async def _api_url(self) -> URL:
-        url = await super()._api_url()
-        boards_url = URL(f"{url}/rest/agile/1.0/board")
-        response = (await super()._get_source_responses(boards_url))[0]
-        board_name_or_id = str(self._parameter("board")).lower()
-        boards = (await response.json())["values"]
-        try:
-            board = [
-                board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())][0]
-        except IndexError as error:
-            raise JiraException(f"Could not find a Jira board with id or name '{board_name_or_id}' at {url}") from error
-        return URL(f"{url}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board['id']}")
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        board_id = await self.__board_id(urls[0])
+        api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
+        return await super()._get_source_responses(api_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        api_url = await self._api_url()
+        board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         json = await responses[0].json()
         entities = []
         velocity = []
@@ -181,7 +176,29 @@ class JiraVelocity(SourceCollector):
             committed = sprint_points["estimated"]["text"]
             completed = sprint_points["completed"]["text"]
             entities.append(
-                Entity(key=sprint["id"], name=sprint["name"], goal=sprint["goal"], points_completed=completed,
-                       points_committed=committed))
+                Entity(
+                    key=sprint["id"], name=sprint["name"], goal=sprint["goal"], points_completed=completed,
+                    points_committed=committed,
+                    url=f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&"
+                        f"chart=sprintRetrospective&sprint={sprint['id']}"))
         velocity = velocity[:int(str(self._parameter("velocity_sprints")))]
         return SourceMeasurement(value=str(round(sum(velocity)/len(velocity))) if velocity else "0", entities=entities)
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        api_url = await self._api_url()
+        board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
+        return URL(f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=velocityChart")
+
+    async def __board_id(self, api_url: URL) -> str:
+        """Return the board id."""
+        boards_url = URL(f"{api_url}/rest/agile/1.0/board")
+        response = (await super()._get_source_responses(boards_url))[0]
+        board_name_or_id = str(self._parameter("board")).lower()
+        boards = (await response.json())["values"]
+        matching_boards = [
+            board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())]
+        try:
+            return str(matching_boards[0]["id"])
+        except IndexError as error:
+            raise JiraException(
+                f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}") from error
