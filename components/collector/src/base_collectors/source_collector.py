@@ -82,9 +82,10 @@ class SourceCollector(ABC):
     async def __safely_get_source_responses(self) -> SourceResponses:
         """Connect to the source and get the data, without failing. This method should not be overridden
         because it makes sure the collection of source data never causes the collector to fail."""
-        api_url = await self._api_url()
-        safe_api_url = tokenless(api_url) or self.__class__.__name__
+        api_url = safe_api_url = self.__class__.__name__
         try:
+            api_url = await self._api_url()
+            safe_api_url = tokenless(api_url) or self.__class__.__name__
             responses = await self._get_source_responses(api_url)
             logging.info("Retrieved %s", safe_api_url)
             return responses
@@ -94,7 +95,7 @@ class SourceCollector(ABC):
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
             logging.error("Failed to retrieve %s: %s", safe_api_url, reason)
-        return SourceResponses(api_url=api_url, connection_error=error)
+        return SourceResponses(api_url=URL(api_url), connection_error=error)
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""

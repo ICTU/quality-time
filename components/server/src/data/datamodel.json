@@ -667,6 +667,28 @@
                 "process efficiency"
             ]
         },
+        "velocity": {
+            "name": "Velocity",
+            "description": "The average number of user story points delivered in recent sprints.",
+            "scales": [
+                "count"
+            ],
+            "default_scale": "count",
+            "unit": "user story points per sprint",
+            "addition": "sum",
+            "direction": ">",
+            "target": "20",
+            "near_target": "15",
+            "default_source": "jira",
+            "sources": [
+                "jira",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "process efficiency"
+            ]
+        },
         "violations": {
             "name": "Violations",
             "description": "The number of violations of programming rules in the software.",
@@ -2690,7 +2712,8 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "user_story_points"
+                        "user_story_points",
+                        "velocity"
                     ]
                 },
                 "jql": {
@@ -2717,7 +2740,8 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "user_story_points"
+                        "user_story_points",
+                        "velocity"
                     ]
                 },
                 "password": {
@@ -2730,7 +2754,19 @@
                         "issues",
                         "manual_test_duration",
                         "manual_test_execution",
-                        "user_story_points"
+                        "user_story_points",
+                        "velocity"
+                    ]
+                },
+                "board": {
+                    "name": "Board (name or id)",
+                    "short_name": "board",
+                    "type": "string",
+                    "help_url": "https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/",
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "velocity"
                     ]
                 },
                 "manual_test_duration_field": {
@@ -2766,6 +2802,18 @@
                     "default_value": "21",
                     "metrics": [
                         "manual_test_execution"
+                    ]
+                },
+                "velocity_sprints": {
+                    "name": "Number of sprints to base velocity on",
+                    "short_name": "number of sprints",
+                    "type": "integer",
+                    "mandatory": true,
+                    "unit": "sprints",
+                    "min_value": "1",
+                    "default_value": "3",
+                    "metrics": [
+                        "velocity"
                     ]
                 },
                 "story_points_field": {
@@ -2887,6 +2935,32 @@
                         {
                             "name": "Points",
                             "key": "points",
+                            "type": "float"
+                        }
+                    ]
+                },
+                "velocity": {
+                    "name": "sprint",
+                    "name_plural": "sprints",
+                    "measured_attribute": "points_completed",
+                    "attributes": [
+                        {
+                            "name": "Sprint name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Sprint goal",
+                            "key": "goal"
+                        },
+                        {
+                            "name": "Points committed",
+                            "key": "points_committed",
+                            "type": "float"
+                        },
+                        {
+                            "name": "Points completed",
+                            "key": "points_completed",
                             "type": "float"
                         }
                     ]
@@ -3043,6 +3117,7 @@
                         "uncovered_lines",
                         "unmerged_branches",
                         "unused_jobs",
+                        "velocity",
                         "violations"
                     ]
                 }
@@ -4156,6 +4231,7 @@
                         "Unmerged branches",
                         "Unused CI-jobs",
                         "User story points",
+                        "Velocity",
                         "Violations"
                     ],
                     "api_values": {
@@ -4186,6 +4262,7 @@
                         "Unmerged branches": "unmerged_branches",
                         "Unused CI-jobs": "unused_jobs",
                         "User story points": "user_story_points",
+                        "Velocity": "velocity",
                         "Violations": "violations",
                         "Violation remediation effort": "remediation_effort"
                     },
@@ -5582,7 +5659,9 @@
                 "manual_test_execution",
                 "user_story_points",
                 "source_up_to_dateness",
-                "unmerged_branches"
+                "unmerged_branches",
+                "user_story_points",
+                "velocity"
             ]
         },
         "report": {
@@ -5610,7 +5689,6 @@
                 "long_units",
                 "performancetest_duration",
                 "performancetest_stability",
-                "user_story_points",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",
@@ -5620,6 +5698,7 @@
                 "uncovered_branches",
                 "uncovered_lines",
                 "unmerged_branches",
+                "user_story_points",
                 "violations"
             ]
         }
