@@ -177,7 +177,7 @@ class JiraVelocity(SourceCollector):
             completed = sprint_points["completed"]["text"]
             entities.append(
                 Entity(
-                    key=sprint["id"], name=sprint["name"], goal=sprint["goal"], points_completed=completed,
+                    key=sprint["id"], name=sprint["name"], goal=sprint.get("goal") or "", points_completed=completed,
                     points_committed=committed,
                     url=f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&"
                         f"chart=sprintRetrospective&sprint={sprint['id']}"))
