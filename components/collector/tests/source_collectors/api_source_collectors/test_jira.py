@@ -138,7 +138,6 @@ class JiraVelocityTest(JiraTestCase):
 
     async def test_velocity(self):
         """Test that the velocity is returned."""
-        self.maxDiff = None
         sprint_url = "https://jira/secure/RapidBoard.jspa?rapidView=2&view=reporting&chart=sprintRetrospective&sprint="
         boards_json = dict(values=[dict(id=1, name="Board 1"), dict(id=2, name="Board 2")])
         velocity_json = dict(
