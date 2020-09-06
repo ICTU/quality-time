@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Union, cast
 from urllib.parse import parse_qs, urlparse
 
 from dateutil.parser import parse
+from typing_extensions import TypedDict
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago
@@ -158,6 +159,10 @@ class JiraManualTestDuration(JiraFieldSumBase):
 class JiraVelocity(SourceCollector):
     """Collector to get sprint velocity from Jira."""
 
+    Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
+    Points = TypedDict("Points", {"text": str, "value": float})
+    SprintPoints = Dict[str, Points]
+
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         board_id = await self.__board_id(urls[0])
         api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
@@ -169,24 +174,35 @@ class JiraVelocity(SourceCollector):
         entity_url = URL(
             f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint=")
         json = await responses[0].json()
+        # The JSON contains a list with sprints and a dict with the committed and completed points, indexed by sprint id
         sprints, points = json["sprints"], json["velocityStatEntries"]
         velocity_type = str(self._parameter("velocity_type"))
         nr_sprints = int(str(self._parameter("velocity_sprints")))
-        sprint_values = [points[str(sprint["id"])][velocity_type]["value"] for sprint in sprints[:nr_sprints]]
-        entities = [self.__entity(sprint, points, velocity_type, entity_url) for sprint in sprints]
+        # Get the points, either completed, committed, or completed minus committed, as determined by the velocity type
+        sprint_values = [self.__velocity(points[str(sprint["id"])], velocity_type) for sprint in sprints[:nr_sprints]]
+        entities = [self.__entity(sprint, points[str(sprint["id"])], velocity_type, entity_url) for sprint in sprints]
         return SourceMeasurement(
             value=str(round(sum(sprint_values)/len(sprint_values))) if sprint_values else "0", entities=entities)
 
     @staticmethod
-    def __entity(sprint, points, velocity_type: str, entity_url: URL) -> Entity:
+    def __velocity(sprint_points: SprintPoints, velocity_type: str) -> float:
+        """Return the points completed, points committed, or difference between the two for the sprint."""
+        if velocity_type == "difference":
+            return sprint_points["completed"]["value"] - sprint_points["estimated"]["value"]
+        return sprint_points[velocity_type]["value"]
+
+    @staticmethod
+    def __entity(sprint: Sprint, sprint_points: SprintPoints, velocity_type: str, entity_url: URL) -> Entity:
         """Create a sprint entity."""
         sprint_id = str(sprint["id"])
-        committed = points[sprint_id]["estimated"]["text"]
-        completed = points[sprint_id]["completed"]["text"]
-        measured = completed if velocity_type == "completed" else committed
+        committed = sprint_points["estimated"]["text"]
+        completed = sprint_points["completed"]["text"]
+        difference = str(float(sprint_points["completed"]["value"] - sprint_points["estimated"]["value"]))
+        measured = dict(completed=completed, estimated=committed, difference=difference)[velocity_type]
         return Entity(
             key=sprint["id"], name=sprint["name"], goal=sprint.get("goal") or "", points_completed=completed,
-            points_committed=committed, points_measured=measured, url=str(entity_url) + sprint_id)
+            points_committed=committed, points_measured=measured, points_difference=difference,
+            url=str(entity_url) + sprint_id)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         api_url = await self._api_url()

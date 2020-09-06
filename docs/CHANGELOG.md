@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- When measuring 'velocity' with Jira as source, the metric can either report the number of points committed to or the number of points completed. Closes [#1406](https://github.com/ICTU/quality-time/issues/1406).
+- When measuring 'velocity' with Jira as source, the metric can also report the number of points committed to. Closes [#1406](https://github.com/ICTU/quality-time/issues/1406).
+- When measuring 'velocity' with Jira as source, the metric can also report the number of points completed minus the number of points committed to. Closes [#1408](https://github.com/ICTU/quality-time/issues/1408).
 
 ## [3.4.0] - [2020-09-05]
 

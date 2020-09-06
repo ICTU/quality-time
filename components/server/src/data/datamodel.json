@@ -2819,17 +2819,19 @@
                 "velocity_type": {
                     "name": "Type of velocity",
                     "short_name": "velocity type",
-                    "help": "Whether to report the amount of story points committed to, or the amount of story points actually completed",
+                    "help": "Whether to report the amount of story points committed to, the amount of story points actually completed, or the difference between the two.",
                     "type": "single_choice",
                     "mandatory": true,
                     "default_value": "completed points",
                     "values": [
                         "committed points",
-                        "completed points"
+                        "completed points",
+                        "completed points minus committed points"
                     ],
                     "api_values": {
                         "committed points": "estimated",
-                        "completed points": "completed"
+                        "completed points": "completed",
+                        "completed points minus committed points": "difference"
                     },
                     "metrics": [
                         "velocity"
@@ -2980,6 +2982,11 @@
                         {
                             "name": "Points completed",
                             "key": "points_completed",
+                            "type": "float"
+                        },
+                        {
+                            "name": "Points completed minus committed",
+                            "key": "points_difference",
                             "type": "float"
                         },
                         {
