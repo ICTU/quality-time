@@ -924,7 +924,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Board (name or id) | String | Yes | [https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/](https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/) |
 | Number of sprints to base velocity on | Integer | Yes |  |
 | Password for basic authentication | Password | No |  |
-| Type of velocity | Single choice | Yes | Whether to report the amount of story points committed to, or the amount of story points actually completed |
+| Type of velocity | Single choice | Yes | Whether to report the amount of story points committed to, the amount of story points actually completed, or the difference between the two. |
 | URL | URL | Yes | URL of the Jira instance, with port if necessary. For example, 'https://jira.example.org'. |
 | Username for basic authentication | String | No |  |
 
