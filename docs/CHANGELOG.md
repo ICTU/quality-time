@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When measuring 'velocity' with Jira as source, the metric can either report the number of points committed to or the number of points completed. Closes [#1406](https://github.com/ICTU/quality-time/issues/1406).
+
 ## [3.4.0] - [2020-09-05]
 
 ### Fixed

@@ -166,23 +166,27 @@ class JiraVelocity(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
+        entity_url = URL(
+            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint=")
         json = await responses[0].json()
-        entities = []
-        velocity = []
-        points = json["velocityStatEntries"]
-        for sprint in json["sprints"]:
-            sprint_points = points[str(sprint["id"])]
-            velocity.append(sprint_points["completed"]["value"])
-            committed = sprint_points["estimated"]["text"]
-            completed = sprint_points["completed"]["text"]
-            entities.append(
-                Entity(
-                    key=sprint["id"], name=sprint["name"], goal=sprint.get("goal") or "", points_completed=completed,
-                    points_committed=committed,
-                    url=f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&"
-                        f"chart=sprintRetrospective&sprint={sprint['id']}"))
-        velocity = velocity[:int(str(self._parameter("velocity_sprints")))]
-        return SourceMeasurement(value=str(round(sum(velocity)/len(velocity))) if velocity else "0", entities=entities)
+        sprints, points = json["sprints"], json["velocityStatEntries"]
+        velocity_type = str(self._parameter("velocity_type"))
+        nr_sprints = int(str(self._parameter("velocity_sprints")))
+        sprint_values = [points[str(sprint["id"])][velocity_type]["value"] for sprint in sprints[:nr_sprints]]
+        entities = [self.__entity(sprint, points, velocity_type, entity_url) for sprint in sprints]
+        return SourceMeasurement(
+            value=str(round(sum(sprint_values)/len(sprint_values))) if sprint_values else "0", entities=entities)
+
+    @staticmethod
+    def __entity(sprint, points, velocity_type: str, entity_url: URL) -> Entity:
+        """Create a sprint entity."""
+        sprint_id = str(sprint["id"])
+        committed = points[sprint_id]["estimated"]["text"]
+        completed = points[sprint_id]["completed"]["text"]
+        measured = completed if velocity_type == "completed" else committed
+        return Entity(
+            key=sprint["id"], name=sprint["name"], goal=sprint.get("goal") or "", points_completed=completed,
+            points_committed=committed, points_measured=measured, url=str(entity_url) + sprint_id)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         api_url = await self._api_url()

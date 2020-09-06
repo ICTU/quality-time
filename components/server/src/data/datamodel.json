@@ -2816,6 +2816,25 @@
                         "velocity"
                     ]
                 },
+                "velocity_type": {
+                    "name": "Type of velocity",
+                    "short_name": "velocity type",
+                    "help": "Whether to report the amount of story points committed to, or the amount of story points actually completed",
+                    "type": "single_choice",
+                    "mandatory": true,
+                    "default_value": "completed points",
+                    "values": [
+                        "committed points",
+                        "completed points"
+                    ],
+                    "api_values": {
+                        "committed points": "estimated",
+                        "completed points": "completed"
+                    },
+                    "metrics": [
+                        "velocity"
+                    ]
+                },
                 "story_points_field": {
                     "name": "Story points field (name or id)",
                     "short_name": "story points field",
@@ -2942,7 +2961,7 @@
                 "velocity": {
                     "name": "sprint",
                     "name_plural": "sprints",
-                    "measured_attribute": "points_completed",
+                    "measured_attribute": "points_measured",
                     "attributes": [
                         {
                             "name": "Sprint name",
@@ -2962,6 +2981,12 @@
                             "name": "Points completed",
                             "key": "points_completed",
                             "type": "float"
+                        },
+                        {
+                            "name": "Points measured",
+                            "key": "points_measured",
+                            "type": "float",
+                            "visible": false
                         }
                     ]
                 }
