@@ -68,13 +68,14 @@ def sources_table(dm, universal_sources: List[str]) -> str:
     """Return the sources as Markdown table."""
     markdown = markdown_table_header("Name", "Description", "Metrics")
     for source_key, source in sorted(dm["sources"].items(), key=lambda item: item[1]["name"]):
-        name = f"[{source['name']}]({source['url']})" if "url" in source else source['name']
+        source_name = f"[{source['name']}]({source['url']})" if "url" in source else source['name']
         if source_key in universal_sources:
             metrics = "¹"
         else:
             metrics = ", ".join(
-                [f"[{metric['name']}]({metric_source_slug(dm, metric, source_key)})" for metric in dm["metrics"].values() if source_key in metric["sources"]])
-        markdown += markdown_table_row(name, source['description'], metrics)
+                [f"[{metric['name']}]({metric_source_slug(dm, metric, source_key)})"
+                 for metric in dm["metrics"].values() if source_key in metric["sources"]])
+        markdown += markdown_table_row(source_name, source['description'], metrics)
     markdown += "\n"
     return markdown
 
