@@ -54,7 +54,11 @@ def metrics_table(dm, universal_sources: List[str]) -> str:
         unit = "% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
         target = f"{direction} {metric['target']}{unit}"
         tags = ", ".join(metric['tags'])
-        sources = [dm["sources"][source]['name'] for source in metric["sources"] if source not in universal_sources]
+        sources = []
+        for source in metric["sources"]:
+            if source not in universal_sources:
+                source_name = dm['sources'][source]['name']
+                sources.append(f"[{source_name}]({metric_source_slug(dm, metric, source)})")
         markdown += markdown_table_row(metric['name'], metric['description'], target, tags, ", ".join(sorted(sources)))
     markdown += "\n"
     return markdown
@@ -69,10 +73,16 @@ def sources_table(dm, universal_sources: List[str]) -> str:
             metrics = "¹"
         else:
             metrics = ", ".join(
-                [metric["name"] for metric in dm["metrics"].values() if source_key in metric["sources"]])
+                [f"[{metric['name']}]({metric_source_slug(dm, metric, source_key)})" for metric in dm["metrics"].values() if source_key in metric["sources"]])
         markdown += markdown_table_row(name, source['description'], metrics)
     markdown += "\n"
     return markdown
+
+
+def metric_source_slug(dm, metric, source) -> str:
+    """Return a slug for the metric source combination."""
+    source_name = dm['sources'][source]['name']
+    return f"#{metric['name']} from {source_name}".lower().replace(" ", "-")
 
 
 def metric_source_table(dm, metric_key, source_key) -> str:
@@ -92,12 +102,16 @@ def metric_source_table(dm, metric_key, source_key) -> str:
 def data_model_as_table(dm) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_header("Quality-time metrics and sources")
+    markdown += "This document lists all [metrics](#metrics) that *Quality-time* can measure and all " \
+        "[sources](#sources) that *Quality-time* can use to measure the metrics. For each " \
+        "[supported combination of metric and source](#supported-metric-source-combinations), it lists the " \
+        "parameters that can be used to configure the source.\n\n"
     markdown += markdown_header("Metrics", 2)
     markdown += metrics_table(dm, universal_sources := ["manual_number", "random"])
     markdown += markdown_header("Sources", 2)
     markdown += sources_table(dm, universal_sources)
     markdown += "¹) All metrics can be measured using the 'Manual number' and the 'Random number' source.\n"
-    markdown += markdown_header("Supported metric/source combinations", 2)
+    markdown += markdown_header("Supported metric-source combinations", 2)
     for metric_key, metric in dm["metrics"].items():
         for source_key in metric["sources"]:
             if source_key not in universal_sources:
