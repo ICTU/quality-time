@@ -455,6 +455,7 @@
                 "performancetest_runner",
                 "quality_time",
                 "sonarqube",
+                "testng",
                 "trello",
                 "wekan"
             ],
@@ -537,7 +538,8 @@
                 "performancetest_runner",
                 "random",
                 "robot_framework",
-                "sonarqube"
+                "sonarqube",
+                "testng"
             ],
             "tags": [
                 "test quality"
@@ -4343,6 +4345,7 @@
                         "Robot Framework",
                         "Snyk",
                         "SonarQube",
+                        "TestNG",
                         "Trello",
                         "Wekan"
                     ],
@@ -4380,6 +4383,7 @@
                         "Robot Framework": "robot_framework",
                         "Quality-time": "quality_time",
                         "SonarQube": "sonarqube",
+                        "TestNG": "testng",
                         "Trello": "trello",
                         "Wekan": "wekan"
                     },
@@ -5423,6 +5427,92 @@
                     ]
                 }
             }
+        },
+        "testng": {
+            "name": "TestNG",
+            "description": "Test reports in the TestNG XML format.",
+            "url": "https://testng.org",
+            "parameters": {
+                "url": {
+                    "name": "URL to a TestNG report in XML format or to a zip with TestNG reports in XML format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "mandatory": true,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a TestNG report in a human readable format",
+                    "short_name": "URL",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "source_up_to_dateness",
+                        "tests"
+                    ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "failed",
+                        "ignored",
+                        "passed",
+                        "skipped"
+                    ],
+                    "metrics": [
+                        "tests"
+                    ]
+                }
+            },
+            "entities": {}
         },
         "trello": {
             "name": "Trello",

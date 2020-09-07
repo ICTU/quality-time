@@ -45,6 +45,7 @@ from .file_source_collectors.pip import PipDependencies
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 from .file_source_collectors.robot_framework import RobotFrameworkSourceUpToDateness, RobotFrameworkTests
 from .file_source_collectors.snyk import SnykSecurityWarnings
+from .file_source_collectors.testng import TestNGSourceUpToDateness, TestNGTests
 from .local_source_collectors.calendar import CalendarSourceUpToDateness
 from .local_source_collectors.manual_number import ManualNumber
 from .local_source_collectors.random_number import Random

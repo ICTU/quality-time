@@ -53,8 +53,8 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         """Test that the number of tests is returned from a zip with JUnit reports."""
         self.sources["source_id"]["parameters"]["url"] = "junit.zip"
         bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_bandit_report:
-            zipped_bandit_report.writestr("junit.xml", self.junit_xml)
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_junit_report:
+            zipped_junit_report.writestr("junit.xml", self.junit_xml)
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="5", entities=self.expected_entities)
 

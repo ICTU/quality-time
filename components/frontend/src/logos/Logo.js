@@ -25,6 +25,7 @@ import QualityTime from './quality_time.png';
 import RobotFramework from './robot_framework.png';
 import Snyk from './snyk.png';
 import Sonarqube from './sonarqube.png';
+import TestNG from './testng.png';
 import Trello from './trello.png';
 import Wekan from './wekan.png';
 
@@ -56,6 +57,7 @@ export function Logo(props) {
         quality_time: QualityTime,
         robot_framework: RobotFramework,
         sonarqube: Sonarqube,
+        testng: TestNG,
         trello: Trello,
         wekan: Wekan
     }[props.logo];
