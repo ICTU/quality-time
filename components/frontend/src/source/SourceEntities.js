@@ -3,6 +3,10 @@ import { Button, Popup, Table } from 'semantic-ui-react';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 
+export function alignment(column_type) {
+  return {text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right"}[column_type];
+}
+
 export function SourceEntities(props) {
   const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
   const [sortColumn, setSortColumn] = useState(null);
@@ -46,7 +50,10 @@ export function SourceEntities(props) {
       <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
         {`${capitalize(entity_name)} status`}</Table.HeaderCell>
       {entity_attributes.map((entity_attribute) =>
-        <Table.HeaderCell key={entity_attribute.key} sorted={sorted(entity_attribute.key)} onClick={() => sort(entity_attribute.key, entity_attribute.type)}>
+        <Table.HeaderCell
+          key={entity_attribute.key} sorted={sorted(entity_attribute.key)} textAlign={alignment(entity_attribute.type)}
+          onClick={() => sort(entity_attribute.key, entity_attribute.type)}
+        >
           {entity_attribute.name}
         </Table.HeaderCell>)
       }
