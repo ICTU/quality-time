@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Open source detail URLs (e.g. links to individual user stories or violations) in a separate window or tab. Fixes [#1434](https://github.com/ICTU/quality-time/issues/1434).
 - When measuring 'velocity' with Jira as source, *Quality-time* would only retrieve the first 50 boards from Jira, making the metric fail for some boards. Fixes [#1445](https://github.com/ICTU/quality-time/issues/1445).
 
+### Changed
+
+- Right align columns with numbers in the metric details. Closes [#1384](https://github.com/ICTU/quality-time/issues/1384).
+
 ### Added
 
 - Added TestNG XML reports as possible source for the 'tests' and 'source up-to-dateness' metrics. Closes [#1204](https://github.com/ICTU/quality-time/issues/1204).
