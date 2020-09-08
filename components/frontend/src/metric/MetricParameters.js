@@ -8,6 +8,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
 import { set_metric_attribute } from '../api/metric';
 import { DateInput } from '../fields/DateInput';
+import { HyperLink } from '../widgets/HyperLink';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -133,7 +134,7 @@ export function MetricParameters(props) {
                 <Grid.Row columns={3}>
                     <Grid.Column>
                         <SingleChoiceInput
-                            label={<label>Accept technical debt? <a href="https://en.wikipedia.org/wiki/Technical_debt" target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>}
+                            label={<label>Accept technical debt? <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt"><Icon name="help circle" link /></HyperLink></label>}
                             value={props.metric.accept_debt || false}
                             options={[
                                 { key: true, text: "Yes", value: true },

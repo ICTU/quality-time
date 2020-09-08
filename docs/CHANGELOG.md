@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Open source detail URLs (e.g. links to individual user stories or violations) in a separate window or tab. Fixes [#1434](https://github.com/ICTU/quality-time/issues/1434).
 - When measuring 'velocity' with Jira as source, *Quality-time* would only retrieve the first 50 boards from Jira, making the metric fail for some boards. Fixes [#1445](https://github.com/ICTU/quality-time/issues/1445).
 
 ### Added

@@ -1,6 +1,7 @@
 import React from 'react';
 import TimeAgo from 'react-timeago';
 import { StatusIcon } from '../metric/StatusIcon';
+import { HyperLink } from '../widgets/HyperLink';
 import { format_minutes } from '../utils';
 
 function DateAndTimeAgo(date_string, include_time) {
@@ -15,7 +16,7 @@ export function SourceEntityAttribute(props) {
   cell_contents = cell_contents && props.entity_attribute.type === "date" ? DateAndTimeAgo(cell_contents, false) : cell_contents;
   cell_contents = cell_contents && props.entity_attribute.type === "minutes" ? format_minutes(cell_contents) : cell_contents;
   cell_contents = cell_contents && props.entity_attribute.type === "status" ? <StatusIcon status={cell_contents} /> : cell_contents;
-  cell_contents = props.entity[props.entity_attribute.url] ? <a href={props.entity[props.entity_attribute.url]}>{cell_contents}</a> : cell_contents;
+  cell_contents = props.entity[props.entity_attribute.url] ? <HyperLink url={props.entity[props.entity_attribute.url]}>{cell_contents}</HyperLink> : cell_contents;
   cell_contents = props.entity_attribute.pre ? <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{cell_contents}</pre> : cell_contents;
   return (cell_contents);
 }

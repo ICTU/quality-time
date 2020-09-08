@@ -8,6 +8,7 @@ import { PasswordInput } from '../fields/PasswordInput';
 import { set_source_parameter } from '../api/source';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { LabelWithDropdown } from '../widgets/LabelWithDropdown';
+import { HyperLink } from '../widgets/HyperLink';
 
 function SourceParameterLabel(props) {
   const scope_options = [
@@ -49,7 +50,7 @@ export function SourceParameter(props) {
   }
   var label = props.parameter_name;
   if (props.help_url) {
-    label = <label>{props.parameter_name} <a href={props.help_url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="help circle" link /></a></label>
+    label = <label>{props.parameter_name} <HyperLink url={props.help_url}><Icon name="help circle" link /></HyperLink></label>
   }
   if (props.help) {
     label = <label>{props.parameter_name} <Popup on={['hover', 'focus']} content={props.help} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>
