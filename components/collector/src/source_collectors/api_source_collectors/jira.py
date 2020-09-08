@@ -159,8 +159,9 @@ class JiraManualTestDuration(JiraFieldSumBase):
 class JiraVelocity(SourceCollector):
     """Collector to get sprint velocity from Jira."""
 
-    Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
+    Board = TypedDict("Board", {"id": int, "name": str})
     Points = TypedDict("Points", {"text": str, "value": float})
+    Sprint = TypedDict("Sprint", {"id": int, "name": str, "goal": str})
     SprintPoints = Dict[str, Points]
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -213,7 +214,7 @@ class JiraVelocity(SourceCollector):
         """Return the board id."""
         last = False
         start_at = 0
-        boards = []
+        boards: List[JiraVelocity.Board] = []
         while not last:
             response = (
                 await super()._get_source_responses(URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")))[0]
