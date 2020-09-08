@@ -6,6 +6,7 @@ import { StringInput } from '../fields/StringInput';
 import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
+import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
@@ -24,7 +25,7 @@ export function Source(props) {
                     {source_type.name}
                     <Header.Subheader>
                         {source_type.description}
-                        {source_type.url && <a href={source_type.url} target="_blank" title="Opens new window or tab" rel="noopener noreferrer"><Icon name="external" link /></a>}
+                        {source_type.url && <HyperLink url={source_type.url}><Icon name="external" link /></HyperLink>}
                     </Header.Subheader>
                 </Header.Content>
             </Header>

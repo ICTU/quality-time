@@ -1,5 +1,6 @@
 import React from 'react';
 import { Label, Popup } from 'semantic-ui-react';
+import { HyperLink } from '../widgets/HyperLink';
 import { get_source_name } from '../utils';
 
 export function SourceStatus(props) {
@@ -8,7 +9,7 @@ export function SourceStatus(props) {
   const source = props.metric.sources[props.source_uuid];
   const source_name = get_source_name(source, props.datamodel);
   function source_label() {
-    return (props.source.landing_url ? <a href={props.source.landing_url} target='_blank' rel='noopener noreferrer'>{source_name}</a> : source_name)
+    return (props.source.landing_url ? <HyperLink url={props.source.landing_url}>{source_name}</HyperLink> : source_name)
   }
   if (props.source.connection_error || props.source.parse_error) {
     return (
