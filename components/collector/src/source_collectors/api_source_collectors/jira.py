@@ -211,10 +211,17 @@ class JiraVelocity(SourceCollector):
 
     async def __board_id(self, api_url: URL) -> str:
         """Return the board id."""
-        boards_url = URL(f"{api_url}/rest/agile/1.0/board")
-        response = (await super()._get_source_responses(boards_url))[0]
+        last = False
+        start_at = 0
+        boards = []
+        while not last:
+            response = (
+                await super()._get_source_responses(URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")))[0]
+            json = await response.json()
+            boards.extend(json["values"])
+            start_at += json["maxResults"]
+            last = json["isLast"]
         board_name_or_id = str(self._parameter("board")).lower()
-        boards = (await response.json())["values"]
         matching_boards = [
             board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())]
         try:
