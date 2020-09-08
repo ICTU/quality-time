@@ -34,6 +34,13 @@
                                 "url": "http://testdata:8000/reports/robot-framework/output.xml",
                                 "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
                             }
+                        },
+                        {
+                            "type": "testng",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml"
+                            }
                         }
                     ]
                 },
@@ -52,6 +59,13 @@
                             "parameters": {
                                 "url": "http://testdata:8000/reports/robot-framework/output.xml",
                                 "landing_url": "http://localhost:8000/reports/robot-framework/report.html"
+                            }
+                        },
+                        {
+                            "type": "testng",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml"
                             }
                         }
                     ]
