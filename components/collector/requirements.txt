@@ -4,3 +4,4 @@ beautifulsoup4==4.9.1
 cchardet==2.1.6
 defusedxml==0.6.0
 python-dateutil==2.8.1
+typing_extensions==3.7.4.3
