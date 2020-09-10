@@ -209,7 +209,7 @@ def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict
     """Check the availability of the URL."""
     try:
         response = requests.get(
-            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters))
+            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False)
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
         return dict(status_code=-1, reason='Unknown error')
