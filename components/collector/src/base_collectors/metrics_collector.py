@@ -70,8 +70,8 @@ class MetricsCollector:
             self.record_health()
             logging.info("Collecting...")
             async with aiohttp.ClientSession(
-                    connector=aiohttp.TCPConnector(limit_per_host=20), raise_for_status=True, timeout=timeout,
-                    trust_env=True) as session:
+                    connector=aiohttp.TCPConnector(limit_per_host=20, ssl=False), raise_for_status=True,
+                    timeout=timeout, trust_env=True) as session:
                 with timer() as collection_timer:
                     await self.collect_metrics(session, measurement_frequency)
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
