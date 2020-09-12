@@ -17,7 +17,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database = Mock()
         self.database.reports.find.return_value = []
         self.database.reports.distinct.return_value = []
-        self.database.datamodels.find_one.return_value = None
+        self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="now", entities={})
         self.database.reports_overviews.find_one.return_value = None
         self.database.reports.count_documents.return_value = 0
         self.database.measurements.count_documents.return_value = 0
@@ -45,11 +45,11 @@ class DatabaseInitTest(unittest.TestCase):
 
     def test_init_initialized_database(self):
         """Test the initialization of an initialized database."""
-        self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="now")
+        self.database.datamodels.find_one.return_value = dict(_id="id", timestamp="now", entities={})
         self.database.reports_overviews.find_one.return_value = dict(_id="id")
         self.database.reports.count_documents.return_value = 10
         self.database.measurements.count_documents.return_value = 20
-        self.init_database("{}")
+        self.init_database('{"entities": {}}')
         self.database.datamodels.insert_one.assert_not_called()
         self.database.reports_overviews.insert.assert_not_called()
 

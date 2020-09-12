@@ -4,32 +4,29 @@ import { TextInput } from '../fields/TextInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_source_entity_attribute } from '../api/source';
 import { capitalize } from '../utils';
-import { source_entity_status_name as status_name } from './source_entity_status';
+import { entity_status } from './source_entity_status';
 
-function entity_status_option(status, text, content, subheader) {
+function entity_status_option(status, key, entity_name) {
+  // Replace the possible '${entity_type}' expression in the description with the entity name
+  const description = status.description.replace(/\${(.*?)}/g, entity_name);
   return {
-    key: status, text: text, value: status, content: <Header as="h5" content={content} subheader={subheader} />
+    key: key, text: status.name, value: key, content: <Header as="h5" content={status.action} subheader={description} />
   }
 }
 
-function entity_status_options(entity_type) {
-  return [
-    entity_status_option('unconfirmed', status_name.unconfirmed, 'Unconfirm', `This ${entity_type} should be reviewed to decide what to do with it.`),
-    entity_status_option('confirmed', status_name.confirmed, 'Confirm', `This ${entity_type} has been reviewed and should be dealt with.`),
-    entity_status_option('fixed', 'Fixed', status_name.fixed, `This ${entity_type} has been fixed and will disappear shortly.`),
-    entity_status_option('false_positive', status_name.false_positive, 'Resolve as false positive', `This ${entity_type} can be ignored because it's been incorrectly identified as ${entity_type}.`),
-    entity_status_option('wont_fix', status_name.wont_fix, "Resolve as won't fix", `This ${entity_type} will not be fixed.`)
-  ]
+function entity_status_options(statuses, entity_name) {
+  return Object.keys(statuses).map(key => entity_status_option(statuses[key], key, entity_name))
 }
 
 export function SourceEntityDetails(props) {
+  const statuses = entity_status(props.data_model);
   return (
     <Grid stackable>
       <Grid.Row columns={4}>
         <Grid.Column width={4}>
           <SingleChoiceInput
             label={`${capitalize(props.name)} status`}
-            options={entity_status_options(props.name)}
+            options={entity_status_options(statuses, props.name)}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
             value={props.status}
           />

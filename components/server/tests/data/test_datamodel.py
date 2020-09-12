@@ -21,7 +21,7 @@ class DataModelTest(DataModelTestCase):
 
     def test_top_level_keys(self):
         """Test that the top level keys are correct."""
-        self.assertEqual({"metrics", "subjects", "sources", "scales"}, set(self.data_model.keys()))
+        self.assertEqual({"entities", "metrics", "subjects", "sources", "scales"}, set(self.data_model.keys()))
 
     def test_metrics_have_sources(self):
         """Test that each metric has one or more sources."""

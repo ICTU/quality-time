@@ -25,6 +25,8 @@ def init_database() -> Database:  # pragma: no cover-behave
     initialize_reports_overview(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
+    # Migrations
+    add_entities_to_data_model(database)
     add_last_flag_to_reports(database)
     rename_ready_user_story_points_metric(database)
     return database
@@ -35,6 +37,13 @@ def create_indexes(database: Database) -> None:
     database.datamodels.create_index("timestamp")
     database.reports.create_index("timestamp")
     database.measurements.create_index("start")
+
+
+def add_entities_to_data_model(database) -> None:
+    """Add the entities to the old data models."""
+    # Introduced when the most recent version of Quality-time was 3.4.0.
+    entities = database.datamodels.find_one(sort=[("timestamp", pymongo.DESCENDING)])["entities"]
+    database.datamodels.update_many({"entities": {"$exists": False}}, {"$set": {"entities": entities}})
 
 
 def add_last_flag_to_reports(database: Database) -> None:

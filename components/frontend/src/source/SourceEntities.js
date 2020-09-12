@@ -75,6 +75,7 @@ export function SourceEntities(props) {
   }
   const rows = entities.map((entity) =>
     <SourceEntity
+      data_model={props.datamodel}
       entity={entity}
       entity_attributes={entity_attributes}
       entity_name={entity_name}

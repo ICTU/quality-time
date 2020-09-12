@@ -3,6 +3,27 @@ import { mount } from 'enzyme';
 import { SourceEntities } from './SourceEntities';
 
 const data_model = {
+    entities: {
+        default: {
+            status: {
+                unconfirmed: {
+                    ignore_entity: false
+                },
+                confirmed: {
+                    ignore_entity: false
+                },
+                false_positive: {
+                    ignore_entity: true
+                },
+                wont_fix: {
+                    ignore_entity: true
+                },
+                fixed: {
+                    ignore_entity: true
+                }
+            }
+        }
+    },
     sources: {
         source_type: {
             entities: {
