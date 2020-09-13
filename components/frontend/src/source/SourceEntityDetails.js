@@ -3,8 +3,8 @@ import { Grid, Header } from 'semantic-ui-react';
 import { TextInput } from '../fields/TextInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_source_entity_attribute } from '../api/source';
-import { capitalize } from '../utils';
 import { entity_status } from './source_entity_status';
+import { capitalize } from '../utils';
 
 function entity_status_option(status, key, entity_name) {
   // Replace the possible '${entity_type}' expression in the description with the entity name

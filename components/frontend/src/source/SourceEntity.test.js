@@ -9,7 +9,7 @@ describe('<SourceEntity />', () => {
             <Table>
                 <Table.Body>
                     <SourceEntity
-                        data_model={{ entities: { default: { status: { unconfirmed: { ignore_entity: false } } } } }}
+                        data_model={{ entities: { statuses: { unconfirmed: { default: true, ignore_entity: false } } } }}
                         entity_attributes={["attr"]} entity={{ key: "1" }} status="unconfirmed"
                     />
                 </Table.Body>

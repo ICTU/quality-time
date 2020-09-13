@@ -4,23 +4,26 @@ import { SourceEntities } from './SourceEntities';
 
 const data_model = {
     entities: {
-        default: {
-            status: {
-                unconfirmed: {
-                    ignore_entity: false
-                },
-                confirmed: {
-                    ignore_entity: false
-                },
-                false_positive: {
-                    ignore_entity: true
-                },
-                wont_fix: {
-                    ignore_entity: true
-                },
-                fixed: {
-                    ignore_entity: true
-                }
+        statuses: {
+            unconfirmed: {
+                default: true,
+                ignore_entity: false
+            },
+            confirmed: {
+                default: true,
+                ignore_entity: false
+            },
+            false_positive: {
+                default: true,
+                ignore_entity: true
+            },
+            wont_fix: {
+                default: true,
+                ignore_entity: true
+            },
+            fixed: {
+                default: true,
+                ignore_entity: true
             }
         }
     },

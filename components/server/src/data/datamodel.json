@@ -1,37 +1,40 @@
 {
     "entities": {
-        "default": {
-            "status": {
-                "unconfirmed": {
-                    "name": "Unconfirmed",
-                    "description": "This ${entity_type} should be reviewed to decide what to do with it.",
-                    "action": "Unconfirm",
-                    "ignore_entity": false
-                },
-                "confirmed": {
-                    "name": "Confirmed",
-                    "description": "This ${entity_type} has been reviewed and should be dealt with.",
-                    "action": "Confirm",
-                    "ignore_entity": false
-                },
-                "fixed": {
-                    "name": "Fixed",
-                    "description": "This ${entity_type} has been fixed and will disappear shortly.",
-                    "action": "Resolve as fixed",
-                    "ignore_entity": true
-                },
-                "false_positive": {
-                    "name": "False positive",
-                    "description": "This ${entity_type} can be ignored because it has been incorrectly identified as ${entity_type}.",
-                    "action": "Resolve as false positive",
-                    "ignore_entity": true
-                },
-                "wont_fix": {
-                    "name": "Won't fix",
-                    "description": "This ${entity_type} will not be fixed.",
-                    "action": "Resolve as won't fix",
-                    "ignore_entity": true
-                }
+        "statuses": {
+            "unconfirmed": {
+                "default": true,
+                "name": "Unconfirmed",
+                "description": "This ${entity_type} should be reviewed to decide what to do with it.",
+                "action": "Unconfirm",
+                "ignore_entity": false
+            },
+            "confirmed": {
+                "default": true,
+                "name": "Confirmed",
+                "description": "This ${entity_type} has been reviewed and should be dealt with.",
+                "action": "Confirm",
+                "ignore_entity": false
+            },
+            "fixed": {
+                "default": true,
+                "name": "Fixed",
+                "description": "This ${entity_type} has been fixed and will disappear shortly.",
+                "action": "Resolve as fixed",
+                "ignore_entity": true
+            },
+            "false_positive": {
+                "default": true,
+                "name": "False positive",
+                "description": "This ${entity_type} can be ignored because it has been incorrectly identified as ${entity_type}.",
+                "action": "Resolve as false positive",
+                "ignore_entity": true
+            },
+            "wont_fix": {
+                "default": true,
+                "name": "Won't fix",
+                "description": "This ${entity_type} will not be fixed.",
+                "action": "Resolve as won't fix",
+                "ignore_entity": true
             }
         }
     },
