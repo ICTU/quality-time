@@ -1,4 +1,4 @@
-"""Unit tests for the datamodel routes."""
+"""Unit tests for the data model routes."""
 
 import unittest
 from unittest.mock import Mock, patch
