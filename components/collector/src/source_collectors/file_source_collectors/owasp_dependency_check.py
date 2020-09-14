@@ -17,7 +17,7 @@ class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):  # pylint: disable=
     """Base class for OWASP Dependency Check collectors."""
 
     allowed_root_tags = [f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"
-                         for version in ("2.0", "2.1", "2.2", "2.3")]
+                         for version in ("2.0", "2.1", "2.2", "2.3", "2.4", "2.5")]
 
 
 class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
@@ -42,7 +42,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
         """Parse the entity from the dependency."""
         file_path = dependency.findtext("ns:filePath", default="", namespaces=namespaces)
         sha1 = dependency.findtext("ns:sha1", namespaces=namespaces)
-        # We can only generate a entity landing url if a sha1 is present in the XML, but unfortunately not all
+        # We can only generate an entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
         key = sha1 if sha1 else sha1_hash(file_path)
