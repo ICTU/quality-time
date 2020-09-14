@@ -12,12 +12,44 @@ API documentation can be retrieved via http://www.quality-time.example.org/api (
 
 The [`datamodel.json`](src/data/datamodel.json) describes the domain model used by the application. It allows for a frontend that doesn't need to know about specific metrics and sources. Every time the server is started, the latest data model is imported into the database. The server [`data` package](src/data/datamodel.json) contains the `datamodel.json`.
 
-The data model consists of four parts:
+The data model consists of five parts:
 
+- Entities
 - Scales
 - Metrics
 - Sources
 - Subjects
+
+### Entities
+
+Measurement entities are the things that are counted or measured to get the measurement value. For example, the measurement entities of the 'violations' metric are the individual violations. Sometimes, the measurement entities are not interesting enough to show, e.g. when measuring the size in terms of lines of code. In other cases, groups of entities are shown, for example test runs as entities for the 'tests' metric.
+
+The data model contains a top-level object that describes generic information about the entities. Each source also has a specification of entities for each metric that the source supports, see the [source entities](#source-entities) section below.
+
+The top-level entities object contains the possible statuses (unconfirmed, confirmed, fixed, won't fix, and false positive) that entities can have:
+
+```json
+{
+    "entities": {
+        "statuses": {
+            "unconfirmed": {
+                "default": true,
+                "name": "Unconfirmed",
+                "description": "This ${entity_type} should be reviewed to decide what to do with it.",
+                "action": "Unconfirm",
+                "ignore_entity": false
+            },
+            "confirmed": {
+                "default": true,
+                "name": "Confirmed",
+                "description": "..."
+            }
+        }
+    }
+}
+```
+
+For each status, the `default` flag specifies whether the status should be used for source entities that don't specify which statuses they allow. The `name` field gives the name of the status. The `description` describes the status and should use one parameter `${entity_type}` that is replaced by the actual entity type (e.g. violation, security warning or user story) in the UI. The `action` describes the change that would result in the status, e.g. the 'confirm' action leads to the 'confirmed' status. Finally, the `ignore_entity` flag specifies whether entities with this state should be ignored and subtracted from the measurement value.
 
 ### Scales
 
@@ -179,13 +211,11 @@ The `sources` part of the data model is an object where the keys are the source 
 
 The `name` is the default name of sources of this type. The `description` gives some background information on the source type. The `url` links to a landing page describing the source type.
 
-#### Parameters
+#### Source parameters
 
 The `parameters` describe the parameters that need to be entered by the user to configure the source. Each parameter has a `name` used as label in the user interface. The `type` specifies the type of the parameter and the widget used to get user input. Possible values are `string`, `password`, `integer`, and `multiple_choice`. If the `type` is `integer` the `unit` and `min_value` need to be specified and optionally a `max_value`. If the `type` is `multiple_choice` the possible `values` need to be specified. A `default_value` can also be given. Also, an `api_values` mapping can specify how the values map to the values used in the API of the source. Finally, for each parameter, a list of `metrics` must be given for which the parameter is applicable. This is needed because not every metric needs the same parameters.
 
-#### Entities
-
-Measurement entities are the things that are counted or measured to get the measurement value. For example, the measurement entities of the 'violations' metric are the individual violations. Sometimes, the measurement entities are not interesting enough to show, e.g. when measuring the size in terms of lines of code. In other cases, groups of entities are shown, for example test runs as entities for the 'tests' metric.
+#### Source entities
 
 The `entities` object contains the name (both singular and plural) of the entities and a list of `attributes`. The attributes are shown as columns in the front end. Each attribute/column consists of a `name`, which is used as column header, and a `key`, used to get the data from the database. An attribute/column can have a key `url` to specify which field contains the url to be used in the column. In theory, each column can link to a different url this way. To specify the data type of the attribute/column, use the `type` key. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or datetime string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or datetime. Values can be mapped to colors using the optional `color` key with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states). 
 
