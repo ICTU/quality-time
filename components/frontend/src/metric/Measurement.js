@@ -41,7 +41,7 @@ export function Measurement(props) {
   }
   function measurement_sources() {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-    metric={metric} source={source} datamodel={props.datamodel} />])
+      metric={metric} source={source} datamodel={props.datamodel} />])
   }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
@@ -55,13 +55,13 @@ export function Measurement(props) {
   return (
     <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details}>
       <Table.Cell>{metric_name}</Table.Cell>
-      <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>
+      {!props.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>}
       <Table.Cell textAlign='center'><StatusIcon status={metric.status} /></Table.Cell>
       <Table.Cell><MeasurementValue /></Table.Cell>
-      <Table.Cell>{measurement_target()}</Table.Cell>
-      <Table.Cell>{measurement_sources()}</Table.Cell>
-      <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>
-      <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>
+      {!props.hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
+      {!props.hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
+      {!props.hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
+      {!props.hiddenColumns.includes("tags") && <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
     </TableRowWithDetails>
   )
 }

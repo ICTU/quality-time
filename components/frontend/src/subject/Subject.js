@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Popup, Table } from 'semantic-ui-react';
+import { Dropdown, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -32,6 +32,7 @@ export function Subject(props) {
       components.push(
         <Metric
           first_metric={index === 0}
+          hiddenColumns={props.hiddenColumns}
           key={metric_uuid}
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
@@ -106,18 +107,30 @@ export function Subject(props) {
       </Table.HeaderCell>
     )
   }
-  function FilterHeader() {
+  function HamburgerHeader() {
+    function ColumnMenuItem({ column }) {
+      return (
+        <Dropdown.Item onClick={() => props.hiddenColumns.includes(column) ? props.setHiddenColumns(props.hiddenColumns.filter((item) => item !== column)) : props.setHiddenColumns(props.hiddenColumns.concat(column))}>
+          {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+        </Dropdown.Item>
+      )
+    }
     return (
       <Table.HeaderCell collapsing textAlign="center">
-        <Popup trigger={
-          <Button
-            basic
-            compact
-            icon={props.hideMetricsNotRequiringAction ? 'unhide' : 'hide'}
-            onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}
-            primary
-          />
-        } content={props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'} />
+        <Dropdown item icon='sidebar'>
+          <Dropdown.Menu>
+            <Dropdown.Header>Rows</Dropdown.Header>
+            <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
+              {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
+            </Dropdown.Item>
+            <Dropdown.Header>Columns</Dropdown.Header>
+            <ColumnMenuItem column="trend"/>
+            <ColumnMenuItem column="target"/>
+            <ColumnMenuItem column="source"/>
+            <ColumnMenuItem column="comment"/>
+            <ColumnMenuItem column="tags"/>
+          </Dropdown.Menu>
+        </Dropdown>
       </Table.HeaderCell>
     )
   }
@@ -125,15 +138,15 @@ export function Subject(props) {
     return (
       <Table.Header>
         <Table.Row>
-          <FilterHeader />
+          <HamburgerHeader />
           <SortableHeader column='name' label='Metric' />
-          <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>
+          {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           <SortableHeader column='status' label='Status' textAlign='center' />
           <SortableHeader column='measurement' label='Measurement' />
-          <SortableHeader column='target' label='Target' />
-          <SortableHeader column='source' label='Source' />
-          <SortableHeader column='comment' label='Comment' />
-          <SortableHeader column='tags' label='Tags' />
+          {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
+          {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
+          {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
+          {!props.hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
         </Table.Row>
       </Table.Header>
     )

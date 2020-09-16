@@ -15,6 +15,7 @@ function useDelayedRender() {
 export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(false);
+  const [hiddenColumns, setHiddenColumns] = useState([]);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
@@ -23,9 +24,11 @@ export function Subjects(props) {
         <Subject
           {...props}
           first_subject={index === 0}
+          hiddenColumns={hiddenColumns}
           hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
           key={subject_uuid}
           last_subject={index === last_index}
+          setHiddenColumns={setHiddenColumns}
           setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
           subject_uuid={subject_uuid}
         /> : null
