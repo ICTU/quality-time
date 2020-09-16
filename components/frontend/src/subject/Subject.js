@@ -110,7 +110,7 @@ export function Subject(props) {
   function HamburgerHeader() {
     function ColumnMenuItem({ column }) {
       return (
-        <Dropdown.Item onClick={() => props.hiddenColumns.includes(column) ? props.setHiddenColumns(props.hiddenColumns.filter((item) => item != column)) : props.setHiddenColumns(props.hiddenColumns.concat(column))}>
+        <Dropdown.Item onClick={() => props.hiddenColumns.includes(column) ? props.setHiddenColumns(props.hiddenColumns.filter((item) => item !== column)) : props.setHiddenColumns(props.hiddenColumns.concat(column))}>
           {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
         </Dropdown.Item>
       )
