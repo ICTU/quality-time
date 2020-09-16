@@ -32,7 +32,7 @@ export function Subject(props) {
       components.push(
         <Metric
           first_metric={index === 0}
-          hidden_columns={hidden_columns}
+          hiddenColumns={props.hiddenColumns}
           key={metric_uuid}
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
@@ -45,7 +45,6 @@ export function Subject(props) {
   }
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
-  const [hidden_columns, setHiddenColumns] = useState([]);
   const metric_components = create_metric_components();
 
   if (sortColumn !== null) {
@@ -111,8 +110,8 @@ export function Subject(props) {
   function HamburgerHeader() {
     function ColumnMenuItem({ column }) {
       return (
-        <Dropdown.Item onClick={() => hidden_columns.includes(column) ? setHiddenColumns(hidden_columns.filter((item) => item != column)) : setHiddenColumns(hidden_columns.concat(column))}>
-          {hidden_columns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+        <Dropdown.Item onClick={() => props.hiddenColumns.includes(column) ? props.setHiddenColumns(props.hiddenColumns.filter((item) => item != column)) : props.setHiddenColumns(props.hiddenColumns.concat(column))}>
+          {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
         </Dropdown.Item>
       )
     }
@@ -141,13 +140,13 @@ export function Subject(props) {
         <Table.Row>
           <HamburgerHeader />
           <SortableHeader column='name' label='Metric' />
-          {!hidden_columns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
+          {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           <SortableHeader column='status' label='Status' textAlign='center' />
           <SortableHeader column='measurement' label='Measurement' />
-          {!hidden_columns.includes("target") && <SortableHeader column='target' label='Target' />}
-          {!hidden_columns.includes("source") && <SortableHeader column='source' label='Source' />}
-          {!hidden_columns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
-          {!hidden_columns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
+          {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
+          {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
+          {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
+          {!props.hiddenColumns.includes("tags") && <SortableHeader column='tags' label='Tags' />}
         </Table.Row>
       </Table.Header>
     )

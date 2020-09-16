@@ -44,7 +44,7 @@ describe("<Subject />", () => {
   it('shows the add subject button', () => {
     const wrapper = mount(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
+        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>
     );
     expect(wrapper.find("AddButton").length).toBe(1);
@@ -53,7 +53,7 @@ describe("<Subject />", () => {
     function table_header_cell(index) {
       return wrapper.find("SubjectTableHeader").at(0).dive().find("SortableHeader").at(index).dive().find("TableHeaderCell");
     }
-    const wrapper = shallow(<Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} />);
+    const wrapper = shallow(<Subject datamodel={datamodel} hiddenColumns={[]} report={report} subject_uuid="subject_uuid" tags={[]} />);
     for (let index of [0, 1, 2, 3, 4, 5, 6]) {
       expect(table_header_cell(index).prop("sorted")).toBe(null);
       table_header_cell(index).simulate("click");
@@ -72,7 +72,7 @@ describe("<Subject />", () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const wrapper = mount(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
+        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>);
     click_metric(wrapper, "CopyButton");
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
@@ -81,7 +81,7 @@ describe("<Subject />", () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const wrapper = mount(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
+        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} />
       </ReadOnlyContext.Provider>);
     click_metric(wrapper, "MoveButton");
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});

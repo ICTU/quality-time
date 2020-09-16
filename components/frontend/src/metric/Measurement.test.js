@@ -26,6 +26,7 @@ const data_model = { metrics: { violations: { name: "Metric type", direction: "<
 
 it('renders the source', () => {
   const wrapper = mount(<Table><Table.Body><Measurement
+    hiddenColumns={[]}
     report={report}
     reports={[report]}
     metric_uuid="metric_uuid"
@@ -36,6 +37,7 @@ it('renders the source', () => {
 
 it('renders the metric name', () => {
   const wrapper = mount(<Table><Table.Body><Measurement
+    hiddenColumns={[]}
     report={report}
     reports={[report]}
     metric_uuid="metric_uuid"
