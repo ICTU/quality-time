@@ -41,7 +41,7 @@ export function Measurement(props) {
   }
   function measurement_sources() {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
-    metric={metric} source={source} datamodel={props.datamodel} />])
+      metric={metric} source={source} datamodel={props.datamodel} />])
   }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
@@ -52,16 +52,17 @@ export function Measurement(props) {
   const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
   const metric_name = get_metric_name(metric, props.datamodel);
   const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={metric_unit} {...props} />
+  const hidden_columns = props.hidden_columns || [];
   return (
     <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details}>
       <Table.Cell>{metric_name}</Table.Cell>
-      <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>
+      {!hidden_columns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>}
       <Table.Cell textAlign='center'><StatusIcon status={metric.status} /></Table.Cell>
       <Table.Cell><MeasurementValue /></Table.Cell>
-      <Table.Cell>{measurement_target()}</Table.Cell>
-      <Table.Cell>{measurement_sources()}</Table.Cell>
-      <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>
-      <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>
+      {!hidden_columns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
+      {!hidden_columns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
+      {!hidden_columns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
+      {!hidden_columns.includes("tags") && <Table.Cell>{metric.tags.sort().map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
     </TableRowWithDetails>
   )
 }
