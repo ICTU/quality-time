@@ -25,4 +25,12 @@ describe("<Subjects />", () => {
         wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
       });
+    it('hides columns', () => {
+        const wrapper = shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} subject_uuid="subject_uuid" tags={[]} />);
+        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
+      });
 });
