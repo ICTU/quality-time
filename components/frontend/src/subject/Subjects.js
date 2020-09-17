@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
+import history from 'history/browser';
 import { Subject } from './Subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
@@ -15,7 +16,7 @@ function useDelayedRender() {
 export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [hiddenColumns, setHiddenColumns] = useState(props.hidden_columns);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
@@ -28,7 +29,7 @@ export function Subjects(props) {
           hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
           key={subject_uuid}
           last_subject={index === last_index}
-          setHiddenColumns={setHiddenColumns}
+          setHiddenColumns={(columns) => {history.replace(`?hidden_columns=${columns.join(",")}`); setHiddenColumns(columns)}}
           setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
           subject_uuid={subject_uuid}
         /> : null
