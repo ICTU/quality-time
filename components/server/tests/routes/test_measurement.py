@@ -12,11 +12,20 @@ from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJEC
 class GetMeasurementsTest(unittest.TestCase):
     """Unit tests for the get measurements route."""
 
+    def setUp(self):
+        self.database = Mock()
+
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
-        database = Mock()
-        database.measurements.find.return_value = [dict(_id="id")]
-        self.assertEqual(dict(measurements=[dict(_id="id")]), get_measurements(METRIC_ID, database))
+        self.database.measurements.find_one.return_value = dict(start="1")
+        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
+        self.assertEqual(
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database))
+
+    def test_get_measurements_when_there_are_none(self):
+        """Tests that the measurements for the requested metric are returned."""
+        self.database.measurements.find_one.return_value = None
+        self.assertEqual(dict(measurements=[]), get_measurements(METRIC_ID, self.database))
 
 
 @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))

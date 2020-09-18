@@ -122,8 +122,4 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    measurements = []
-    for measurement in all_measurements(database, metric_uuid, report_date_time()):
-        measurement["_id"] = str(measurement["_id"])
-        measurements.append(measurement)
-    return dict(measurements=measurements)
+    return dict(measurements=list(all_measurements(database, metric_uuid, report_date_time())))

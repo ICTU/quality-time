@@ -39,8 +39,15 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
 
 
 def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
-    """Return all measurements."""
-    return database.measurements.find(filter={"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}})
+    """Return all measurements, without the entities, except for the most recent one."""
+    measurement_filter = {"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}}
+    latest_with_entities = database.measurements.find_one(
+        filter=measurement_filter, sort=[("start", pymongo.ASCENDING)], projection={"_id": False})
+    if not latest_with_entities:
+        return []
+    all_measurements_without_entities = database.measurements.find(
+        filter=measurement_filter, projection={"_id": False, "sources.entities": False})
+    return list(all_measurements_without_entities)[:-1] + [latest_with_entities]
 
 
 def count_measurements(database: Database) -> int:
