@@ -18,7 +18,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Support version 2.4 and 2.5 of the OWASP Dependency Check XSD. Closes [#1460](https://github.com/ICTU/quality-time/issues/1460).
-- Allow for hiding the trend, target, source, comment, and tags columns in the metric tables. This can be done through the 'hamburger' menu on the top left side of each metric table. Partially implements [#1464](https://github.com/ICTU/quality-time/issues/1464).
+- Allow for hiding the trend, target, source, comment, and tags columns in the metric tables. This can be done through the 'hamburger' menu on the top left side of each metric table. Closes [#1464](https://github.com/ICTU/quality-time/issues/1464).
+
+### Fixed
+
+- Retrieving measurements for the trend graph of a metric with many measurements and entities (violations, user stories, security warnings, etc.) was slow because *Quality-time* would retrieve all entities for all measurements even though it only needs the entities for the most recent measurement. Fixes [#1468](https://github.com/ICTU/quality-time/issues/1468).
 
 ## [3.5.0] - [2020-09-12]
 
