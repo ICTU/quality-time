@@ -42,7 +42,7 @@ def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestam
     """Return all measurements, without the entities, except for the most recent one."""
     measurement_filter = {"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}}
     latest_with_entities = database.measurements.find_one(
-        filter=measurement_filter, sort=[("start", pymongo.ASCENDING)], projection={"_id": False})
+        filter=measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False})
     if not latest_with_entities:
         return []
     all_measurements_without_entities = database.measurements.find(
