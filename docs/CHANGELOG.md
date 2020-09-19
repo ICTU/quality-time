@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.6.0-rc.2] - [2020-09-19]
+## [Unreleased]
 
 ### Changed
 
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Retrieving measurements for the trend graph of a metric with many measurements and entities (violations, user stories, security warnings, etc.) was slow because *Quality-time* would retrieve all entities for all measurements even though it only needs the entities for the most recent measurement. Fixes [#1468](https://github.com/ICTU/quality-time/issues/1468).
+- Retrieving measurements for the trend graph of a metric with many measurements and details (violations, user stories, security warnings, etc.) was slow because *Quality-time* would retrieve all details for all measurements even though it only needs the details for the most recent measurement. Fixes [#1468](https://github.com/ICTU/quality-time/issues/1468).
 
 ## [3.5.0] - [2020-09-12]
 
