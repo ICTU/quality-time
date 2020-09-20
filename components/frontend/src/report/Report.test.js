@@ -33,11 +33,11 @@ const report = {
 
 describe("<Report />", () => {
   it('shows the report', () => {
-    const wrapper = mount(<Report datamodel={datamodel} reports={[report]} report={report} />);
+    const wrapper = mount(<Report datamodel={datamodel} reports={[report]} report={report} hidden_columns={[]} />);
     expect(wrapper.find("ReportTitle").prop("report")).toBe(report)
   });
   it('shows an error message if there is no report', () => {
-    const wrapper = mount(<Report datamodel={datamodel} />);
+    const wrapper = mount(<Report datamodel={datamodel} hidden_columns={[]} />);
     expect(wrapper.find("MessageHeader").childAt(0).text()).toBe("Sorry, this report doesn't exist")
   });
 });

@@ -92,7 +92,8 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid")))
         options = "emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&pdf.margin.top=25&pdf.margin.bottom=25&" \
                   "pdf.margin.left=25&pdf.margin.right=25"
-        requests_get.assert_called_once_with(f"http://renderer:9000/api/render?url=http://www:80/report_uuid&{options}")
+        requests_get.assert_called_once_with(
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{options}")
 
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):
@@ -102,7 +103,7 @@ class ReportTest(unittest.TestCase):
         options = "emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&pdf.margin.top=25&pdf.margin.bottom=25&" \
                   "pdf.margin.left=25&pdf.margin.right=25"
         requests_get.assert_called_once_with(
-            f"http://renderer:9000/api/render?url=http://www:80/tag-security&{options}")
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/tag-security&{options}")
 
     def test_delete_report(self):
         """Test that the report can be deleted."""

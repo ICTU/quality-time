@@ -13,7 +13,7 @@ export function ReportTitle(props) {
         return (
             <Grid.Row>
                 <Grid.Column>
-                    <DownloadAsPDFButton report_uuid={report_uuid} />
+                    <DownloadAsPDFButton report_uuid={report_uuid} query_string={props.history.location.search} />
                     <ReadOnlyOrEditable editableComponent={
                         <DeleteButton
                             item_type='report'

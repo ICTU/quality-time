@@ -4,7 +4,7 @@ import { SemanticToastContainer } from 'react-semantic-toasts';
 import HashLinkObserver from "react-hash-link";
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import './App.css';
-import history from 'history/browser';
+import { createBrowserHistory } from 'history';
 
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
@@ -24,11 +24,10 @@ class App extends Component {
       datamodel: {}, reports: [], report_uuid: '', search_string: '', report_date_string: '', reports_overview: {},
       nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
     };
-    this.hidden_columns = [];
-    this.history = history;
-    this.history.listen((location, action) => {
+    this.history = createBrowserHistory();
+    this.history.listen(({location, action}) => {
       if (action === "POP") {
-        const pathname = this.history.location.pathname;
+        const pathname = location.pathname;
         const report_uuid = pathname.slice(1, pathname.length);
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
       }
@@ -201,9 +200,14 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
-    const hidden_columns_parameter = new URL(document.location.href).searchParams.get("hidden_columns");
+    const searchParams = new URL(document.location.href).searchParams
+    const hidden_columns_parameter = searchParams.get("hidden_columns");
     const hidden_columns = hidden_columns_parameter ? hidden_columns_parameter.split(",") : [];
-    const props = { reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, hidden_columns: hidden_columns };
+    const hide_metrics_parameter = searchParams.get("hide_metrics_not_requiring_action");
+    const hide_metrics = hide_metrics_parameter ? true : false;
+    const props = {
+      reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports,
+      hidden_columns: hidden_columns, hide_metrics_not_requiring_action: hide_metrics, history: this.history };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />

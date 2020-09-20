@@ -1,6 +1,7 @@
 """Report routes."""
 
 import os
+import urllib
 
 import bottle
 import requests
@@ -64,7 +65,8 @@ def export_report_as_pdf(report_uuid: ReportId):
     render_url = f"http://{renderer_host}:{renderer_port}/api/render"
     proxy_host = os.environ.get("PROXY_HOST", "www")
     proxy_port = os.environ.get("PROXY_PORT", "80")
-    report_url = f"http://{proxy_host}:{proxy_port}/{report_uuid}"
+    query_string = f"?{bottle.request.query_string}" if bottle.request.query_string else ""
+    report_url = urllib.parse.quote(f"http://{proxy_host}:{proxy_port}/{report_uuid}{query_string}")
     margins = "&".join([f"pdf.margin.{side}=25" for side in ("top", "bottom", "left", "right")])
     # Set pdf scale to 70% or otherwise the dashboard falls off the page
     options = f"emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&{margins}"

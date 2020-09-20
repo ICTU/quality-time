@@ -36,8 +36,8 @@ export function DeleteButton(props) {
   )
 }
 
-function download_pdf(report_uuid, callback) {
-  get_report_pdf(report_uuid)
+function download_pdf(report_uuid, query_string, callback) {
+  get_report_pdf(report_uuid, query_string)
     .then(response => {
       if (response.ok === false) {
         show_message("error", "PDF rendering failed", "HTTP code " + response.status + ": " + response.statusText)
@@ -54,7 +54,7 @@ function download_pdf(report_uuid, callback) {
 
 export function DownloadAsPDFButton(props) {
   const [loading, setLoading] = useState(false);
-  const { report_uuid, ...otherProps } = props;
+  const { report_uuid, query_string, ...otherProps } = props;
   return (
     <ActionButton
       action='Download'
@@ -64,7 +64,7 @@ export function DownloadAsPDFButton(props) {
       onClick={() => {
         if (!loading) {
           setLoading(true);
-          download_pdf(report_uuid, () => { setLoading(false) })
+          download_pdf(report_uuid, query_string, () => { setLoading(false) })
         }
       }}
       {...otherProps}

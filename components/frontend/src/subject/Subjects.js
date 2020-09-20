@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Segment } from 'semantic-ui-react';
-import history from 'history/browser';
 import { Subject } from './Subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
@@ -13,26 +12,37 @@ function useDelayedRender() {
   return visible;
 }
 
+function set_query_string(history, colums, hide_metrics) {
+  let queries = [];
+  if (colums.length > 0) {
+    queries.push(`hidden_columns=${colums.join(",")}`)
+  }
+  if (hide_metrics) {
+    queries.push(`hide_metrics_not_requiring_action=${hide_metrics}`)
+  }
+  history.replace({ search: queries.length > 0 ? "?" + queries.join("&") : "" })
+}
+
 export function Subjects(props) {
   const visible = useDelayedRender();
-  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(false);
+  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(props.hide_metrics_not_requiring_action);
   const [hiddenColumns, setHiddenColumns] = useState(props.hidden_columns);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
       {Object.keys(props.report.subjects).map((subject_uuid, index) =>
         visible || index < 3 ?
-        <Subject
-          {...props}
-          first_subject={index === 0}
-          hiddenColumns={hiddenColumns}
-          hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
-          key={subject_uuid}
-          last_subject={index === last_index}
-          setHiddenColumns={(columns) => {history.replace(`?hidden_columns=${columns.join(",")}`); setHiddenColumns(columns)}}
-          setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
-          subject_uuid={subject_uuid}
-        /> : null
+          <Subject
+            {...props}
+            first_subject={index === 0}
+            hiddenColumns={hiddenColumns}
+            hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+            key={subject_uuid}
+            last_subject={index === last_index}
+            setHiddenColumns={(columns) => { setHiddenColumns(columns); set_query_string(props.history, columns, hideMetricsNotRequiringAction) }}
+            setHideMetricsNotRequiringAction={(state) => { setHideMetricsNotRequiringAction(state); set_query_string(props.history, hiddenColumns, state) }}
+            subject_uuid={subject_uuid}
+          /> : null
       )}
       <ReadOnlyOrEditable editableComponent={
         <Segment basic>
