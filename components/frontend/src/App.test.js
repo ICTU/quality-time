@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { mount, shallow } from 'enzyme';
+import { Action } from 'history';
 import App from './App';
 
 let container;
@@ -27,7 +28,6 @@ it('is loading datamodel and reports', async () => {
   await act(async () => { ReactDOM.render(<App />, container) });
   expect(container.querySelectorAll("div.loading").length).toBe(1);
 });
-
 
 describe("<App/>", () => {
   it('renders without crashing', () => {
@@ -91,9 +91,17 @@ describe("<App/>", () => {
   it('resets the user when the session is expired', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org");
-    wrapper.instance().check_session({ok: true });
+    wrapper.instance().check_session({ ok: true });
     expect(wrapper.state("user")).toBe("admin");
-    wrapper.instance().check_session({ok: false, status: 401});
+    wrapper.instance().check_session({ ok: false, status: 401 });
     expect(wrapper.state("user")).toBe(null);
-  })
+  });
+
+  it('listens to history pop events', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().open_report({ preventDefault: jest.fn }, "report1");
+    expect(wrapper.state("report_uuid")).toBe("report1");
+    wrapper.instance().on_history({ location: {pathname: "/"}, action: Action.Pop });  // simulate user hitting "back"
+    expect(wrapper.state("report_uuid")).toBe("");
+  });
 });

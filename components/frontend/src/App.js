@@ -4,7 +4,7 @@ import { SemanticToastContainer } from 'react-semantic-toasts';
 import HashLinkObserver from "react-hash-link";
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import './App.css';
-import { createBrowserHistory } from 'history';
+import { createBrowserHistory, Action } from 'history';
 
 import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
@@ -25,13 +25,15 @@ class App extends Component {
       nr_measurements: 0, loading: true, user: null, email: null, last_update: new Date()
     };
     this.history = createBrowserHistory();
-    this.history.listen(({location, action}) => {
-      if (action === "POP") {
-        const pathname = location.pathname;
-        const report_uuid = pathname.slice(1, pathname.length);
-        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
-      }
-    });
+    this.history.listen(({ location, action }) => this.on_history({ location, action }));
+  }
+
+  on_history({ location, action }) {
+    if (action === Action.Pop) {
+      const pathname = location.pathname;
+      const report_uuid = pathname.slice(1, pathname.length);
+      this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+    }
   }
 
   componentDidMount() {
@@ -207,7 +209,8 @@ class App extends Component {
     const hide_metrics = hide_metrics_parameter ? true : false;
     const props = {
       reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports,
-      hidden_columns: hidden_columns, hide_metrics_not_requiring_action: hide_metrics, history: this.history };
+      hidden_columns: hidden_columns, hide_metrics_not_requiring_action: hide_metrics, history: this.history
+    };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <HashLinkObserver />
