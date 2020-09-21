@@ -125,6 +125,8 @@ export function Subject(props) {
             </Dropdown.Item>
             <Dropdown.Header>Columns</Dropdown.Header>
             <ColumnMenuItem column="trend"/>
+            <ColumnMenuItem column="status"/>
+            <ColumnMenuItem column="measurement"/>
             <ColumnMenuItem column="target"/>
             <ColumnMenuItem column="source"/>
             <ColumnMenuItem column="comment"/>
@@ -141,8 +143,8 @@ export function Subject(props) {
           <HamburgerHeader />
           <SortableHeader column='name' label='Metric' />
           {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
-          <SortableHeader column='status' label='Status' textAlign='center' />
-          <SortableHeader column='measurement' label='Measurement' />
+          {!props.hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' />}
+          {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' />}
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
