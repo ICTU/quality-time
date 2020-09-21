@@ -27,7 +27,7 @@ jobs:
 
     - name: "Frontend unit tests"
       language: node_js
-      node_js: "10"
+      node_js: "13"
       install:
       - cd components/frontend
       - npm install
@@ -43,7 +43,7 @@ jobs:
         sonarcloud:
           organization: "ictu"
       before_install:
-      - nvm install 10
+      - nvm install 13
       install:
       - cd components/collector
       - pip install -r requirements.txt -r requirements-dev.txt
