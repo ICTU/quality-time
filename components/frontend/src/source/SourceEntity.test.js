@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import { SourceEntity } from './SourceEntity';
 
 describe('<SourceEntity />', () => {
-    it('render', () => {
+    it('renders', () => {
         const wrapper = mount(
             <Table>
                 <Table.Body>
@@ -16,5 +16,19 @@ describe('<SourceEntity />', () => {
             </Table>
         );
         expect(wrapper.find("TableRow").hasClass("status_unknown"));
+    });
+
+    it('does not render if hidden', () => {
+        const wrapper = mount(
+            <Table>
+                <Table.Body>
+                    <SourceEntity
+                        data_model={{ entities: { statuses: { fixed: { default: true, ignore_entity: true } } } }}
+                        entity_attributes={["attr"]} entity={{ key: "1" }} status="fixed" hide_ignored_entities={true}
+                    />
+                </Table.Body>
+            </Table>
+        );
+        expect(wrapper.find("TableRow").length).toBe(0);
     });
 });
