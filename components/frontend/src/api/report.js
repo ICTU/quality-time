@@ -28,8 +28,8 @@ function set_reports_attribute(attribute, value, reload) {
   return fetch_server_api('post', `reports/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
-function get_report_pdf(report_uuid) {
-  return fetch_server_api('get', `report/${report_uuid}/pdf`, {}, 'application/pdf')
+function get_report_pdf(report_uuid, query_string) {
+  return fetch_server_api('get', `report/${report_uuid}/pdf${query_string}`, {}, 'application/pdf')
 }
 
 export {

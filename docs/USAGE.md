@@ -16,8 +16,10 @@
   - [Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin](#jenkins-jenkins-test-report-jacoco-jenkins-plugin-and-owasp-dependency-check-jenkins-plugin)
 - [Customizing quality reports](#customizing-quality-reports)
   - [Customizing dashboards](#customizing-dashboards)
+  - [Sorting metrics](#sorting-metrics)
   - [Filtering metrics by tag](#filtering-metrics-by-tag)
   - [Filtering metrics by status](#filtering-metrics-by-status)
+  - [Hiding columns](#hiding-columns)
 - [Exporting quality reports](#exporting-quality-reports)
   - [Manually](#manually)
   - [API](#api)
@@ -216,15 +218,23 @@ Users can customize quality reports on an individual basis by changing the dashb
 
 Both the reports dashboard on the *Quality-time* landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
 
+### Sorting metrics
+
+Metrics can be sorted by clicking on the table column headers. The sort order cycles between the default order, sorted ascending by the column click, and sorted descending by the column clicked.
+
 ### Filtering metrics by tag
 
 In a report's dashboard, click on a tag card to show only metrics that have the selected tag. The selected tag turns blue to indicate it is filtered on. Click the selected tag again to turn off the filtering. Selecting multiple tags shows metrics that have at least one of the selected tags.
 
 ### Filtering metrics by status
 
-Each metric table has a button on the top left hand side that can clicked to hide metrics that need to action. Click it again to undo the filtering.
+Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide metrics that need no action. 
 
 ![Metric table columns](screenshots/metric_table_columns.png)
+
+### Hiding columns
+
+Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide specific columns from the metric tables.
 
 ## Exporting quality reports
 
@@ -236,6 +246,12 @@ As *Quality-time* has to open the report in a (headless) browser and load all th
 
 To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.
 
+The exported PDF report has the same metric table rows and columns hidden as in the user interface.
+
 ### API
 
 If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
+
+To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`. 
+
+To hide columns from the report, set the `hidden_columns` parameter, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columsn=target,comment`. Possible options are `trend`, `target`, `source`, `comment`, and `tags`.
