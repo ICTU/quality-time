@@ -754,6 +754,7 @@
                 "landing_url": {
                     "name": "URL to Anchore report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Anchore report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -798,6 +799,7 @@
                  "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -852,7 +854,7 @@
             "description": "axe-selenium-python integrates aXe and selenium to enable automated web accessibility testing.",
             "url": "https://github.com/mozilla-services/axe-selenium-python",
             "parameters": {
-               "url": {
+                "url": {
                     "name": "URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format",
                     "short_name": "URL",
                     "type": "url",
@@ -871,6 +873,7 @@
                 "landing_url": {
                     "name": "URL to an axe-selenium-python report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -915,6 +918,7 @@
                 "impact": {
                     "name": "Impact levels",
                     "short_name": "impact levels",
+                    "help": "If provided, only count accessibility violations with the impact levels.",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -984,6 +988,7 @@
                 "landing_url": {
                     "name": "URL to an Axe report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Axe report in CSV format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1024,6 +1029,7 @@
                 "impact": {
                     "name": "Impact levels",
                     "short_name": "impact levels",
+                    "help": "If provided, only count accessibility violations with the selected impact levels.",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "default_value": [],
@@ -1318,7 +1324,7 @@
                 "test_run_names_to_include": {
                     "name": "Names of test runs to include (regular expressions or test run names)",
                     "short_name": "test run names",
-                    "help": "Limit which test runs to include by test run name",
+                    "help": "Limit which test runs to include by test run name.",
                     "placeholder": "all test run names",
                     "type": "multiple_choice_with_addition",
                     "mandatory": false,
@@ -1330,7 +1336,7 @@
                 "test_run_states_to_include": {
                     "name": "States of the test runs to include",
                     "short_name": "test run states",
-                    "help": "Limit which test runs to include by test run state",
+                    "help": "Limit which test runs to include by test run state.",
                     "placeholder": "all test run states",
                     "type": "multiple_choice",
                     "mandatory": false,
@@ -1597,6 +1603,7 @@
                 "landing_url": {
                     "name": "URL to Bandit report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Bandit report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1641,6 +1648,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -1657,6 +1665,7 @@
                 "confidence_levels": {
                     "name": "Confidence levels",
                     "short_name": "confidence levels",
+                    "help": "If provided, only count security warnings with the selected confidence levels.",
                     "type": "multiple_choice",
                     "placeholder": "all confidence levels",
                     "mandatory": false,
@@ -1741,6 +1750,7 @@
                 "landing_url": {
                     "name": "URL to a cloc report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the cloc report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1850,6 +1860,7 @@
                 "landing_url": {
                     "name": "URL to a Cobertura report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -1904,7 +1915,7 @@
             "url": "https://getcomposer.org/",
             "parameters": {
                 "url": {
-                    "name": "URL to a Compose 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports",
+                    "name": "URL to a Composer 'outdated' JSON-report or to a zip with Composer 'outdated' JSON-reports",
                     "short_name": "URL",
                     "type": "url",
                     "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
@@ -1922,8 +1933,8 @@
                 "landing_url": {
                     "name": "URL to a Composer 'outdated' report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Composer 'outdated' report in JSON format.",
                     "type": "string",
-                    "help_url": "https://getcomposer.org/doc/03-cli.md#outdated",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -2081,6 +2092,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -2360,6 +2372,7 @@
                 "landing_url": {
                     "name": "URL to a JaCoCo report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the JaCoCo report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3025,6 +3038,7 @@
                 "landing_url": {
                     "name": "URL to a JUnit report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the JUnit report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3243,8 +3257,8 @@
                 "landing_url": {
                     "name": "URL to npm 'outdated' report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the npm 'outdated' report in JSON format.",
                     "type": "string",
-                    "help_url": "https://docs.npmjs.com/cli-commands/outdated.html",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -3330,6 +3344,7 @@
                 "landing_url": {
                     "name": "URL to an OJAudit report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the OJAudit report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3370,6 +3385,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count violations with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -3441,6 +3457,7 @@
                 "landing_url": {
                     "name": "URL to an OpenVAS report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the OpenVAS report in XMLj format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3485,6 +3502,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -3559,6 +3577,7 @@
                 "landing_url": {
                     "name": "URL to OWASP Dependency Check report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the OWASP Dependency Check report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3607,6 +3626,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -3707,6 +3727,7 @@
                 "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -3773,6 +3794,7 @@
                 "landing_url": {
                     "name": "URL to an OWASP ZAP report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the OWASP ZAP report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -3818,6 +3840,7 @@
                     "name": "Risks",
                     "short_name": "risks",
                     "type": "multiple_choice",
+                    "help": "If provided, only count security warnings with the selected risks.",
                     "placeholder": "all risks",
                     "mandatory": false,
                     "default_value": [],
@@ -3973,6 +3996,7 @@
                 "thresholds": {
                     "name": "Thresholds",
                     "short_name": "thresholds",
+                    "help": "If provided, only count transactions that surpass the selected thresholds.",
                     "type": "multiple_choice",
                     "mandatory": false,
                     "placeholder": "all thresholds",
@@ -4038,8 +4062,8 @@
                 "landing_url": {
                     "name": "URL to pip 'outdated' report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the pip 'outdated' report in JSON format.",
                     "type": "string",
-                    "help_url": "https://pip.pypa.io/en/stable/reference/pip_list/",
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
@@ -4232,6 +4256,7 @@
                 "metric_type": {
                     "name": "Metric types",
                     "short_name": "metric types",
+                    "help": "If provided, only count metrics with the selected metric types.",
                     "type": "multiple_choice",
                     "placeholder": "all metric types",
                     "mandatory": false,
@@ -4307,6 +4332,7 @@
                 "source_type": {
                     "name": "Source types",
                     "short_name": "source types",
+                    "help": "If provided, only count metrics with one or more sources of the selected source types.",
                     "type": "multiple_choice",
                     "placeholder": "all source types",
                     "mandatory": false,
@@ -4394,6 +4420,7 @@
                 "tags": {
                     "name": "Tags",
                     "short_name": "tags",
+                    "help": "If provided, only count metrics with one ore more of the given tags.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "all tags",
                     "mandatory": false,
@@ -4479,6 +4506,7 @@
                 "landing_url": {
                     "name": "URL to a Robot Framework report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Robot Framework report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -4581,6 +4609,7 @@
                 "landing_url": {
                     "name": "URL to a Snyk vulnerability report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the Snyk vulnerability report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
@@ -4621,6 +4650,7 @@
                  "severities": {
                     "name": "Severities",
                     "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
                     "type": "multiple_choice",
                     "placeholder": "all severities",
                     "mandatory": false,
@@ -5452,6 +5482,7 @@
                 "landing_url": {
                     "name": "URL to a TestNG report in a human readable format",
                     "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the TestNG report in XML format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",
