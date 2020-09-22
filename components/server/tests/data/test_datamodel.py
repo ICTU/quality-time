@@ -180,12 +180,16 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertTrue(parameter_key in parameter_keys)
 
     def test_source_parameter_help(self):
-        """Test that source parameters have either a help url or a help text, but not both."""
+        """Test that source parameters have either a help url or a help text, but not both.
+        Test that help texts end with a dot."""
         for source in self.data_model["sources"].values():
             for parameter_key, parameter in source["parameters"].items():
+                parameter_description = f"The parameter '{parameter_key}' of the source '{source['name']}'"
                 self.assertFalse(
                     "help" in parameter and "help_url" in parameter,
-                    f"The parameter '{parameter_key}' of the source '{source['name']}' has both a help and a help_url")
+                    f"{parameter_description} has both a help and a help_url")
+                if "help" in parameter:
+                    self.assertTrue(parameter["help"].endswith("."), f"{parameter_description} does not end with a dot")
 
     def test_entity_attributes(self):
         """Test that entities have the required attributes."""
