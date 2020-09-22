@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When exporting quality reports to PDF, hide the same metric table rows and columns in the PDF as hidden by the user in the user interface. Closes [#1466](https://github.com/ICTU/quality-time/issues/1466).
 - In addition to the trend, target, source, comment, and tags columns, also allow for hiding the status and measurement columns in metric tables. Closes [#1474](https://github.com/ICTU/quality-time/issues/1474).
 
+### Fixed
+
+- The measurement value and target of metrics with unit minutes and their scale set to percentage were formatted incorrectly (e.g. "0:50%" instead of "50%"). Fixes [#1480](https://github.com/ICTU/quality-time/issues/1480).
+
 ## [3.6.0] - [2020-09-19]
 
 ### Changed
