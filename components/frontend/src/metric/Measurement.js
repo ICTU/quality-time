@@ -12,7 +12,7 @@ import "./Measurement.css";
 
 export function Measurement(props) {
   function MeasurementValue() {
-    const value = metric.value && metric_type.unit === "minutes" ? format_minutes(metric.value) : metric.value || "?";
+    const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
     const now = new Date();
     const measurement_timestring = (latest_measurement && latest_measurement.end) || now.toISOString();
     const start = (latest_measurement && new Date(latest_measurement.start)) || now;
@@ -34,7 +34,7 @@ export function Measurement(props) {
     }
     const debt = metric.accept_debt ? ` (debt accepted${debt_end})` : "";
     let target = get_metric_target(metric);
-    if (target && metric_type.unit === "minutes") {
+    if (target && metric_type.unit === "minutes" && metric.scale !== "percentage") {
       target = format_minutes(target)
     }
     return `${metric_direction} ${target}${metric_unit}${debt}`
