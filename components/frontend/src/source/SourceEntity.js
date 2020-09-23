@@ -3,16 +3,16 @@ import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
-import { source_entity_status_name } from './source_entity_status';
+import { source_entity_statuses } from './source_entity_status';
 import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
 
 export function SourceEntity(props) {
-  const ignored_entity = ["wont_fix", "fixed", "false_positive"].includes(props.status);
-  if (props.hide_ignored_entities && ignored_entity) {
+  const entity_status = source_entity_statuses(props.entity_name)[props.status];
+  if (props.hide_ignored_entities && entity_status.ignored) {
     return null;
   }
-  const style = ignored_entity ? { textDecoration: "line-through" } : {};
+  const style = entity_status.ignored ? { textDecoration: "line-through" } : {};
   var status = "unknown_status";
   props.entity_attributes.forEach((entity_attribute) => {
     let cell_contents = props.entity[entity_attribute.key];
@@ -33,7 +33,7 @@ export function SourceEntity(props) {
   return (
     <TableRowWithDetails className={status} details={details} key={props.entity.key} style={style}>
       <>
-        <Table.Cell>{source_entity_status_name[props.status]}</Table.Cell>
+        <Table.Cell>{entity_status.name}</Table.Cell>
         {props.entity_attributes.map((entity_attribute, col_index) =>
           <Table.Cell key={col_index} textAlign={alignment(entity_attribute.type)}>
             <SourceEntityAttribute entity={props.entity} entity_attribute={entity_attribute} />
