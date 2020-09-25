@@ -1,4 +1,10 @@
-export function source_entity_statuses(entity_type) {
+export function source_entity_statuses(data_model, metric_type, source_type, entity_type) {
+    if (data_model.sources[source_type]?.entities[metric_type]) {
+        const statuses = data_model.sources[source_type].entities[metric_type].statuses;
+        if (statuses && Object.keys(statuses).length > 0) {
+            return statuses
+        }
+    }
     return {
         unconfirmed: {
             name: "Unconfirmed",

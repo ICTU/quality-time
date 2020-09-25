@@ -6,8 +6,8 @@ import { set_source_entity_attribute } from '../api/source';
 import { capitalize } from '../utils';
 import { source_entity_statuses } from './source_entity_status';
 
-function entity_status_options(entity_type) {
-  return Object.entries(source_entity_statuses(entity_type)).map(([key, status]) => (
+function entity_status_options(data_model, metric_type, source_type, entity_type) {
+  return Object.entries(source_entity_statuses(data_model, metric_type, source_type, entity_type)).map(([key, status]) => (
     {
       key: key, text: status.name, value: key,
       content: <Header as="h5" content={status.action} subheader={status.description} />
@@ -22,7 +22,7 @@ export function SourceEntityDetails(props) {
         <Grid.Column width={4}>
           <SingleChoiceInput
             label={`${capitalize(props.name)} status`}
-            options={entity_status_options(props.name)}
+            options={entity_status_options(props.data_model, props.metric_type, props.source_type, props.name)}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
             value={props.status}
           />

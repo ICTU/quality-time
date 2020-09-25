@@ -75,11 +75,13 @@ export function SourceEntities(props) {
   }
   const rows = entities.map((entity) =>
     <SourceEntity
+      data_model={props.datamodel}
       entity={entity}
       entity_attributes={entity_attributes}
       entity_name={entity_name}
       hide_ignored_entities={hideIgnoredEntities}
       key={entity.key}
+      metric_type={props.metric.type}
       metric_uuid={props.metric_uuid}
       reload={props.reload}
       status={
@@ -88,6 +90,7 @@ export function SourceEntities(props) {
       rationale={
         props.source.entity_user_data && props.source.entity_user_data[entity.key] &&
           props.source.entity_user_data[entity.key].rationale ? props.source.entity_user_data[entity.key].rationale : ""}
+      source_type={source_type}
       source_uuid={props.source.source_uuid}
     />);
   return (

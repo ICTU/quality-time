@@ -8,7 +8,7 @@ import { alignment } from './SourceEntities';
 import "./SourceEntity.css";
 
 export function SourceEntity(props) {
-  const entity_status = source_entity_statuses(props.entity_name)[props.status];
+  const entity_status = source_entity_statuses(props.data_model, props.metric_type, props.source_type, props.entity_name)[props.status];
   if (props.hide_ignored_entities && entity_status.ignored) {
     return null;
   }
@@ -22,11 +22,14 @@ export function SourceEntity(props) {
     }
   });
   const details = <SourceEntityDetails
+    data_model={props.data_model}
     entity={props.entity}
+    metric_type={props.metric_type}
     metric_uuid={props.metric_uuid}
     name={props.entity_name}
     rationale={props.rationale}
     reload={props.reload}
+    source_type={props.source_type}
     source_uuid={props.source_uuid}
     status={props.status}
   />;
