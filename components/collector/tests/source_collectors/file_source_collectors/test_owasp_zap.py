@@ -60,11 +60,11 @@ class OWASPZAPTest(SourceCollectorTestCase):
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
             dict(
-                key=md5_hash(f"10021:16:15:3:GET:{url1}"), name=self.warning_name, description=self.warning_description,
-                location=f"GET {url1}", uri=url1, risk=self.warning_risk),
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url1}"), name=self.warning_name,
+                description=self.warning_description, location=f"GET {url1}", uri=url1, risk=self.warning_risk),
             dict(
-                key=md5_hash(f"10021:16:15:3:GET:{url2}"), name=self.warning_name, description=self.warning_description,
-                location=f"GET {url2}", uri=url2, risk=self.warning_risk)]
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{url2}"), name=self.warning_name,
+                description=self.warning_description, location=f"GET {url2}", uri=url2, risk=self.warning_risk)]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     async def test_variable_url_regexp(self):
@@ -75,8 +75,9 @@ class OWASPZAPTest(SourceCollectorTestCase):
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             dict(
-                key=md5_hash(f"10021:16:15:3:GET:{stable_url}"), name=self.warning_name, uri=stable_url,
-                description=self.warning_description, location=f"GET {stable_url}", risk=self.warning_risk)]
+                key=md5_hash(f"X-Content-Type-Options Header Missing:10021:16:15:3:GET:{stable_url}"),
+                name=self.warning_name, uri=stable_url, description=self.warning_description,
+                location=f"GET {stable_url}", risk=self.warning_risk)]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_source_up_to_dateness(self):

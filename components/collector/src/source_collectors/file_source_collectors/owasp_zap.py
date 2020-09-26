@@ -22,7 +22,7 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         risks = cast(List[str], self._parameter("risks"))
         for alert in await self.__alerts(responses, risks):
             alert_key = ":".join(
-                [alert.findtext(id_tag, default="") for id_tag in ("pluginid", "cweid", "wascid", "sourceid")])
+                [alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid", "sourceid")])
             name = alert.findtext("name", default="")
             description = tag_re.sub("", alert.findtext("desc", default=""))
             risk = alert.findtext("riskdesc", default="")
