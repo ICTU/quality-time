@@ -15,7 +15,7 @@ from server_utilities.functions import report_date_time
 def get_reports(database: Database):
     """Return the quality reports."""
     date_time = report_date_time()
-    data_model = latest_datamodel(database)
+    data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)
     overview["reports"] = []
     recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
