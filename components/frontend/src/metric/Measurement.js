@@ -43,13 +43,17 @@ export function Measurement(props) {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
       metric={metric} source={source} datamodel={props.datamodel} />])
   }
+  function get_metric_unit() {
+    const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
+    const metric_type_unit = metric_type.unit === 'minutes' && metric.scale !== 'percentage' ? 'hours' : metric_type.unit;
+    return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
+  }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
   const latest_measurements = metric.recent_measurements;
   const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
   const sources = (latest_measurement && latest_measurement.sources) || [];
-  const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
-  const metric_unit = `${metric_unit_prefix}${metric.unit || metric_type.unit}`;
+  const metric_unit = get_metric_unit();
   const metric_name = get_metric_name(metric, props.datamodel);
   const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={metric_unit} {...props} />
   return (

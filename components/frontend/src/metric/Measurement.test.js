@@ -54,8 +54,8 @@ it('renders the metric', () => {
 it('renders the minutes', () => {
   report.subjects.subject_uuid.metrics.metric_uuid.type = "stability";
   const wrapper = measurement();
-  expect(wrapper.find("TableCell").at(4).text()).toBe("0:50 minutes");
-  expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0:00 minutes");
+  expect(wrapper.find("TableCell").at(4).text()).toBe("0:50 hours");
+  expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0:00 hours");
 });
 
 it('renders the minutes as percentage', () => {
