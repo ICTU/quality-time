@@ -19,6 +19,11 @@ def import_report(context):
     context.uuid["report"] = response["new_report_uuid"]
 
 
+@when("the client enters a report date that's too old")
+def time_travel(context):
+    context.report_date = "2020-08-31T23:00:00.000Z"
+
+
 @then("the client receives the pdf")
 def check_pdf(context):
     """Check the pdf."""

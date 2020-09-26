@@ -15,6 +15,8 @@ def before_all(context):
 
     def get(api, headers=None):
         """Get the resource."""
+        if context.report_date:
+            api += f"?report_date={context.report_date}"
         context.response = response = requests.get(f"{context.base_api_url}/{api}", headers=headers)
         return response.json() if response.headers.get('Content-Type') == "application/json" else response
 
@@ -36,6 +38,7 @@ def before_all(context):
 
     context.base_api_url = "http://localhost:5001/api/v3"
     context.session_id = None
+    context.report_date = None
     context.response = None
     context.uuid: Dict[str, str] = {}  # Keep track of the most recent uuid per item type
     context.get = get

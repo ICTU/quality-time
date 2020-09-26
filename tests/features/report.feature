@@ -63,3 +63,7 @@ Feature: report
       }
       """
     Then the report title is "Imported report"
+
+  Scenario:
+    When the client enters a report date that's too old
+    Then the report does not exist
