@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Time travel was broken. Fixes [#1497](https://github.com/ICTU/quality-time/issues/1497).
+
 ## [3.7.0] - [2020-09-26]
 
 ### Added

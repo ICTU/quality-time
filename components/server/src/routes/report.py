@@ -113,7 +113,7 @@ def get_tag_report(tag: str, database: Database):
     """Get a report with all metrics that have the specified tag."""
     date_time = report_date_time()
     reports = latest_reports(database, date_time)
-    data_model = latest_datamodel(database)
+    data_model = latest_datamodel(database, date_time)
     subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
     tag_report = dict(
         title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",

@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from routes.reports import get_reports, post_reports_attribute
 
-from ..fixtures import METRIC_ID, SOURCE_ID, SUBJECT_ID, create_report
+from ..fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 
 
 class ReportsTest(unittest.TestCase):
@@ -59,6 +59,27 @@ class ReportsTest(unittest.TestCase):
                 sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
         report = create_report()
         self.database.reports.find.return_value = [report]
+        report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
+        report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
+        report["summary_by_tag"] = {}
+        self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
+
+    @patch("bottle.request")
+    def test_get_old_report(self, request):
+        """Test that an old report can be retrieved and credentials are hidden."""
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
+        self.database.datamodels.find_one.return_value = dict(
+            _id="id",
+            sources=dict(source_type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))),
+            metrics=dict(metric_type=dict(default_scale="count")))
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
+        self.database.measurements.find.return_value = [
+            dict(
+                _id="id", metric_uuid=METRIC_ID, status="red",
+                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
+        report = create_report()
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.database.reports.find_one.return_value = report
         report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=1)
         report["summary_by_subject"] = {SUBJECT_ID: dict(red=0, green=0, yellow=0, grey=0, white=1)}
         report["summary_by_tag"] = {}
