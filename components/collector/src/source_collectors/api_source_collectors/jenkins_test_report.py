@@ -28,15 +28,17 @@ class JenkinsTestReportTests(SourceCollector):
         json = await responses[0].json()
         statuses = cast(List[str], self._parameter("test_result"))
         status_counts = [self.JENKINS_TEST_REPORT_COUNTS[status] for status in statuses]
+        all_status_counts = self.JENKINS_TEST_REPORT_COUNTS.values()
         results = [report["result"] for report in json["childReports"]] if "childReports" in json else [json]
         value = sum(int(result.get(status_count, 0)) for status_count in status_counts for result in results)
+        total = sum(int(result.get(status_count, 0)) for status_count in all_status_counts for result in results)
         suites: List[Suite] = []
         for result in results:
             suites.extend(result["suites"])
         entities = [
             self.__entity(case) for suite in suites for case in suite.get("cases", [])
             if self.__status(case) in statuses]
-        return SourceMeasurement(value=str(value), entities=entities)
+        return SourceMeasurement(value=str(value), total=str(total), entities=entities)
 
     def __entity(self, case: TestCase) -> Entity:
         """Transform a test case into a test case entity."""

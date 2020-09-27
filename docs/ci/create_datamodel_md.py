@@ -48,18 +48,25 @@ def markdown_header(header: str, level: int = 1) -> str:
 
 def metrics_table(dm, universal_sources: List[str]) -> str:
     """Return the metrics as Markdown table."""
-    markdown = markdown_table_header("Name", "Description", "Default target", "Default tags", "Sources¹")
+    markdown = markdown_table_header("Name", "Description", "Default target", "Scale(s)", "Default tags", "Sources¹")
     for metric in sorted(dm["metrics"].values(), key=lambda item: item["name"]):
         direction = {"<": "≦", ">": "≧"}[metric['direction']]
         unit = "% of the " + metric["unit"] if metric["default_scale"] == "percentage" else " " + metric["unit"]
         target = f"{direction} {metric['target']}{unit}"
+        if len(metric['scales']) == 1:
+            scales = metric['default_scale']
+        else:
+            scales = ", ".join(
+                [f"{scale} (default)" if scale == metric["default_scale"] else scale
+                 for scale in sorted(metric['scales'])])
         tags = ", ".join(metric['tags'])
         sources = []
         for source in metric["sources"]:
             if source not in universal_sources:
                 source_name = dm['sources'][source]['name']
                 sources.append(f"[{source_name}]({metric_source_slug(dm, metric, source)})")
-        markdown += markdown_table_row(metric['name'], metric['description'], target, tags, ", ".join(sorted(sources)))
+        markdown += markdown_table_row(
+            metric['name'], metric['description'], target, scales, tags, ", ".join(sorted(sources)))
     markdown += "\n"
     return markdown
 

@@ -81,12 +81,14 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         count = 0
+        total = 0
         statuses = self._parameter("test_result")
         for response in responses:
             soup = await self._soup(response)
+            total += int(soup.find(id="executed").string)
             for status in statuses:
                 count += int(soup.find(id=status).string)
-        return SourceMeasurement(value=str(count))
+        return SourceMeasurement(value=str(count), total=str(total))
 
 
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):

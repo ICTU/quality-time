@@ -44,13 +44,13 @@ class TestNGTestReportTest(TestNGCollectorTestCase):
     async def test_tests(self):
         """Test that the number of tests is returned."""
         response = await self.collect(self.metric, get_request_text=self.testng_xml)
-        self.assert_measurement(response, value="3")
+        self.assert_measurement(response, value="3", total="3")
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
         self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
         response = await self.collect(self.metric, get_request_text=self.testng_xml)
-        self.assert_measurement(response, value="1")
+        self.assert_measurement(response, value="1", total="3")
 
     async def test_zipped_testng_report(self):
         """Test that the number of tests is returned from a zip with TestNG reports."""
@@ -59,7 +59,7 @@ class TestNGTestReportTest(TestNGCollectorTestCase):
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_testng_report:
             zipped_testng_report.writestr("testng.xml", self.testng_xml)
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
-        self.assert_measurement(response, value="3")
+        self.assert_measurement(response, value="3", total="3")
 
 
 class TestNGSourceUpToDatenessTest(TestNGCollectorTestCase):

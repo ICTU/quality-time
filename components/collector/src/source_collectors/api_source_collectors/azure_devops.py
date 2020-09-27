@@ -136,7 +136,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
 class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
     """Represent an Azure DevOps test run."""
     def __init__(self, build_nr: int = 0) -> None:
-        super().__init__(build_nr=build_nr, test_count=0, entities=[])
+        super().__init__(build_nr=build_nr, test_count=0, total_test_count=0, entities=[])
 
 
 class AzureDevopsTests(SourceCollector):
@@ -168,6 +168,7 @@ class AzureDevopsTests(SourceCollector):
                 highest_build[name] = TestRun(build_nr)
             counted_tests = sum(run.get(test_result, 0) for test_result in test_results)
             highest_build[name].test_count += counted_tests
+            highest_build[name].total_test_count += run.get("totalTests", 0)
             highest_build[name].entities.append(
                 Entity(
                     key=run["id"], name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
@@ -177,8 +178,9 @@ class AzureDevopsTests(SourceCollector):
                     passed_tests=str(run.get("passedTests", 0)), unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
                     total_tests=str(run.get("totalTests", 0))))
         test_count = sum(build.test_count for build in highest_build.values())
+        total_test_count = sum(build.total_test_count for build in highest_build.values())
         test_runs = list(itertools.chain.from_iterable([build.entities for build in highest_build.values()]))
-        return SourceMeasurement(value=str(test_count), entities=test_runs)
+        return SourceMeasurement(value=str(test_count), total=str(total_test_count), entities=test_runs)
 
 
 class AzureDevopsJobs(SourceCollector):
