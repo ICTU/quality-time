@@ -22,7 +22,7 @@ def import_report(context):
 
 
 @when("the client enters a report date that's too old")
-def time_travel(context):
+def time_travel_long_ago(context):
     context.report_date = "2020-08-31T23:00:00.000Z"
 
 
