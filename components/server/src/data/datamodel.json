@@ -519,9 +519,10 @@
         },
         "tests": {
             "name": "Tests",
-            "description": "The number of tests.",
+            "description": "The amount of tests.",
             "scales": [
-                "count"
+                "count",
+                "percentage"
             ],
             "default_scale": "count",
             "unit": "tests",
