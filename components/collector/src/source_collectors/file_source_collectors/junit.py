@@ -18,6 +18,7 @@ class JUnitTests(XMLFileSourceCollector):
         entities = []
         test_statuses_to_count = cast(List[str], self._parameter("test_result"))
         junit_status_nodes = dict(errored="error", failed="failure", skipped="skipped")
+        total = 0
         for response in responses:
             tree = await parse_source_response_xml(response)
             for test_case in tree.findall(".//testcase"):
@@ -28,7 +29,8 @@ class JUnitTests(XMLFileSourceCollector):
                     test_result = "passed"
                 if test_result in test_statuses_to_count:
                     entities.append(self.__entity(test_case, test_result))
-        return SourceMeasurement(entities=entities)
+                total += 1
+        return SourceMeasurement(entities=entities, total=str(total))
 
     @staticmethod
     def __entity(case_node, case_result: str) -> Entity:

@@ -40,14 +40,15 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
     async def test_tests(self):
         """Test that the number of tests is returned."""
         response = await self.collect(self.metric, get_request_text=self.junit_xml)
-        self.assert_measurement(response, value="5", entities=self.expected_entities)
+        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
         self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
         response = await self.collect(self.metric, get_request_text=self.junit_xml)
         self.assert_measurement(
-            response, value="1", entities=[dict(key="tc3", name="tc3", class_name="cn", test_result="failed")])
+            response, value="1", total="5",
+            entities=[dict(key="tc3", name="tc3", class_name="cn", test_result="failed")])
 
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
@@ -56,7 +57,7 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_junit_report:
             zipped_junit_report.writestr("junit.xml", self.junit_xml)
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
-        self.assert_measurement(response, value="5", entities=self.expected_entities)
+        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
 
 
 class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
