@@ -29,7 +29,7 @@ def time_travel_long_ago(context):
 @when("the client enters a report date that's not too old")
 def time_travel(context):
     time.sleep(1)  # Make sure the previously created report is older than the report date
-    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()[:-len("+00:00")] + "Z"
     time.sleep(1)  # Make sure report date is in the past
 
 
