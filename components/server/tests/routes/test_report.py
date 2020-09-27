@@ -125,7 +125,6 @@ class ReportTest(unittest.TestCase):
     @patch("bottle.request")
     def test_get_tag_report(self, request):
         """Test that a tag report can be retrieved."""
-        self.maxDiff = None  # pylint: disable=invalid-name
         request.query = bottle.FormsDict(report_date=iso_timestamp())
         self.database.datamodels.find_one.return_value = dict(
             _id="id", sources={}, subjects=dict(subject_type=dict(name="Subject")),

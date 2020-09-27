@@ -106,7 +106,6 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_changed_measurement_entity_key(self, request):
         """Post a measurement whose value and entities are the same, except for a changed entity key."""
-        self.maxDiff = None
         measurement = self.database.measurements.find_one.return_value = dict(
             _id="id", metric_uuid=METRIC_ID, status="target_met",
             sources=[
