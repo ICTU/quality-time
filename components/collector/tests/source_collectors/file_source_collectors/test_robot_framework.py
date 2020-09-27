@@ -43,14 +43,14 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         expected_entities = [
             dict(key="s1-t1", name="Test 1", test_result="fail"),
             dict(key="s1-t2", name="Test 2", test_result="pass")]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url="report.html")
+        self.assert_measurement(response, value="2", total="2", entities=expected_entities, landing_url="report.html")
 
     async def test_failed_tests(self):
         """Test that the number of failed tests is returned."""
         self.sources["source_id"]["parameters"]["test_result"] = ["fail"]
         response = await self.collect(self.metric, get_request_text=self.xml)
         expected_entities = [dict(key="s1-t1", name="Test 1", test_result="fail")]
-        self.assert_measurement(response, value="1", entities=expected_entities, landing_url="report.html")
+        self.assert_measurement(response, value="1", total="2", entities=expected_entities, landing_url="report.html")
 
 
 class RobotFrameworkSourceUpToDatenessTest(RobotFrameworkTestCase):
