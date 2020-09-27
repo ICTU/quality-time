@@ -68,3 +68,8 @@ Feature: report
     When the client creates a report
     And the client enters a report date that's too old
     Then the report does not exist
+
+  Scenario:
+    When the client creates a report
+    And the client enters a report date that's not too old
+    Then the report title is "New report"
