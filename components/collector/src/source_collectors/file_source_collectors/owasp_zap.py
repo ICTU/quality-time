@@ -21,17 +21,18 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
         tag_re = re.compile(r"<[^>]*>")
         risks = cast(List[str], self._parameter("risks"))
         for alert in await self.__alerts(responses, risks):
-            alert_key = ":".join(
-                [alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid", "sourceid")])
+            ids = [
+                alert.findtext(id_tag, default="") for id_tag in ("alert", "pluginid", "cweid", "wascid", "sourceid")]
             name = alert.findtext("name", default="")
             description = tag_re.sub("", alert.findtext("desc", default=""))
             risk = alert.findtext("riskdesc", default="")
             for alert_instance in alert.findall("./instances/instance"):
                 method = alert_instance.findtext("method", default="")
                 uri = self.__stable(hashless(URL(alert_instance.findtext("uri", default=""))))
-                key = md5_hash(f"{alert_key}:{method}:{uri}")
+                key = md5_hash(f"{':'.join(ids)}:{method}:{uri}")
                 entities[key] = Entity(
-                    key=key, name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk)
+                    key=key, old_key=md5_hash(f"{':'.join(ids[1:])}:{method}:{uri}"),
+                    name=name, description=description, uri=uri, location=f"{method} {uri}", risk=risk)
         return SourceMeasurement(entities=list(entities.values()))
 
     def __stable(self, url: URL) -> URL:

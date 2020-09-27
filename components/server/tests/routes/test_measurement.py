@@ -104,6 +104,30 @@ class PostMeasurementTests(unittest.TestCase):
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
+    def test_changed_measurement_entity_key(self, request):
+        """Post a measurement whose value and entities are the same, except for a changed entity key."""
+        measurement = self.database.measurements.find_one.return_value = dict(
+            _id="id", metric_uuid=METRIC_ID, status="target_met",
+            sources=[
+                dict(source_uuid=SOURCE_ID, value="1", entities=[dict(key="a")],
+                     entity_user_data=dict(a=dict(status="confirmed")))])
+        self.database.measurements.find.return_value = [measurement]
+        self.sources.append(
+            dict(source_uuid=SOURCE_ID, value="1", total=None, parse_error=None, connection_error=None,
+                 entities=[dict(old_key="a", key="b")]))
+        request.json = dict(metric_uuid=METRIC_ID, sources=self.sources)
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
+        self.assertEqual(self.new_measurement, post_measurement(self.database))
+        self.database.measurements.insert_one.assert_called_once_with(
+            dict(
+                metric_uuid=METRIC_ID,
+                sources=[
+                    dict(source_uuid=SOURCE_ID, value="1", total=None, parse_error=None, connection_error=None,
+                         entities=[dict(key="b", old_key="a")], entity_user_data=dict(b=dict(status="confirmed")))],
+                count=dict(
+                    value="1", status="near_target_met", direction="<", target="0", near_target="10", debt_target=None),
+                start="2019-01-01", end="2019-01-01"))
+
     def test_ignored_measurement_entities(self, request):
         """Post a measurement where the old one has ignored entities."""
         self.database.measurements.find_one.return_value = dict(

@@ -1,6 +1,8 @@
 """Step implementations for reports."""
 
 import json
+import time
+from datetime import datetime, timezone
 
 from asserts import assert_equal
 from behave import then, when
@@ -20,8 +22,15 @@ def import_report(context):
 
 
 @when("the client enters a report date that's too old")
-def time_travel(context):
+def time_travel_long_ago(context):
     context.report_date = "2020-08-31T23:00:00.000Z"
+
+
+@when("the client enters a report date that's not too old")
+def time_travel(context):
+    time.sleep(1)  # Make sure the previously created report is older than the report date
+    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()[:-len("+00:00")] + "Z"
+    time.sleep(1)  # Make sure report date is in the past
 
 
 @then("the client receives the pdf")

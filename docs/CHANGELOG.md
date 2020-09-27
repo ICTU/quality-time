@@ -9,13 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.7.1-rc.1] - [2020-09-27]
-
-### Fixed
-
-- Time travel was broken. Fixes [#1497](https://github.com/ICTU/quality-time/issues/1497).
-
-## [3.7.0] - [2020-09-26]
+## [Unreleased]
 
 ### Added
 
@@ -26,7 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The measurement value and target of metrics with unit minutes and their scale set to percentage were formatted incorrectly (e.g. "0:50%" instead of "50%"). Fixes [#1480](https://github.com/ICTU/quality-time/issues/1480).
 - The measurement value and target of metrics with unit minutes and their scale set to count were displayed as '`hours`:`minutes` minutes'. This would be confusing: e.g. '3:10 minutes' looks like 3 minutes and 10 seconds instead of 3 hours and 10 minutes. Fixed by changing 'minutes' to 'hours'. Fixes [#1484](https://github.com/ICTU/quality-time/issues/1484).
-- The security warnings in OWASP ZAP reports do not have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. Therefore, *Quality-time* generates keys for OWASP ZAP security warnings itself. Unfortunately, the key that *Quality-time* generated, was not guaranteed to be unique. NB: an unfortunate side effect of the fix is that any OWASP ZAP security warning marked as false positive, confirmed, fixed, or won't fix will return to the unconfirmed state. Fixes [#1492](https://github.com/ICTU/quality-time/issues/1492).
+- The security warnings in OWASP ZAP reports do not have unique keys. However, *Quality-time* needs security warnings to be uniquely identifiable to detect whether the list of warnings changes between measurements. Therefore, *Quality-time* generates keys for OWASP ZAP security warnings itself. Unfortunately, the key that *Quality-time* generated, was not guaranteed to be unique. Fixes [#1492](https://github.com/ICTU/quality-time/issues/1492).
+- Time travel was broken. Fixes [#1497](https://github.com/ICTU/quality-time/issues/1497).
 
 ## [3.6.0] - [2020-09-19]
 
