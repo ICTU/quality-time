@@ -90,7 +90,7 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
             '</table></html>'
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="1250")
+        self.assert_measurement(response, value="1250", total="1250")
 
     async def test_failed_tests(self):
         """Test that the number of failed performancetest transactions is returned."""
@@ -103,7 +103,7 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
         self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
         metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="10")
+        self.assert_measurement(response, value="10", total="1250")
 
 
 class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
