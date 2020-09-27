@@ -42,9 +42,16 @@ def copy_entity_user_data(old_sources, new_sources) -> None:
     """Copy the entity user data from the old sources to the new sources."""
     for old_source, new_source in zip(old_sources, new_sources):
         new_entity_keys = {entity["key"] for entity in new_source.get("entities", [])}
+        # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
+        # unique. Create a mapping of old keys to new keys so we can move the entity user data to the new keys
+        changed_entity_keys = {
+            entity["old_key"]: entity["key"] for entity in new_source.get("entities", []) if "old_key" in entity}
         # Copy the user data of entities that still exist in the new measurement:
         for entity_key, attributes in old_source.get("entity_user_data", {}).items():
-            if entity_key in new_entity_keys:
+            if entity_key in changed_entity_keys:
+                new_entity_key = changed_entity_keys[entity_key]
+                new_source.setdefault("entity_user_data", {})[new_entity_key] = attributes
+            elif entity_key in new_entity_keys:
                 new_source.setdefault("entity_user_data", {})[entity_key] = attributes
 
 
