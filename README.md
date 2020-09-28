@@ -22,7 +22,7 @@ Users can add and configure reports, metrics, and sources (such as SonarQube and
 Also see:
 
 - [User manual](docs/USAGE.md)
-- [Supported metrics and sources](docs/DATA_MODEL.md)
+- [Supported metrics and sources](docs/METRICS_AND_SOURCES.md)
 - [Deployment instructions](docs/DEPLOY.md)
 - [Developer manual](docs/DEVELOP.md)
 - [Change log](docs/CHANGELOG.md)
