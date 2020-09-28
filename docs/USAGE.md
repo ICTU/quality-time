@@ -104,7 +104,7 @@ After you've added a metric, the metric is visible in the subject's metric table
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported metric types. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
@@ -134,7 +134,7 @@ To delete a metric, expand the metric in the metric table and click the "Delete 
 
 #### Adding sources
 
-To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type.
+To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported source types. 
 
 ![Adding source screenshot](screenshots/adding_source.png)
 

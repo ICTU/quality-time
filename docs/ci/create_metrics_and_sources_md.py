@@ -129,6 +129,6 @@ def data_model_as_table(dm) -> str:
 
 
 if __name__ == "__main__":
-    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "DATA_MODEL.md"
+    data_model_md_path = pathlib.Path(__file__).resolve().parent.parent / "METRICS_AND_SOURCES.md"
     with data_model_md_path.open("w") as data_model_md:
         data_model_md.write(data_model_as_table(data_model()))
