@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The 'tests' metric now also supports the percentage scale so it's possible to e.g. report the percentage of tests failed. Closes [#1494](https://github.com/ICTU/quality-time/issues/1494).
 
+### Fixed
+
+- The 'commented-out code' metric claimed to measure the number of lines of commented-out code, but SonarQube actually reports the number of *blocks* of commented-out lines of code. Changed the metric description and unit to conform to the SonarQube data. Fixes [#1507](https://github.com/ICTU/quality-time/issues/1507).
+
 ## [3.7.0] - [2020-09-27]
 
 ### Added

@@ -7,7 +7,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Name | Description | Default target | Scale(s) | Default tags | Sources¹ |
 | :--- | :---------- | :------------- | :------- | :----------- | :------- |
 | Accessibility violations | The number of accessibility violations in the web user interface of the software. | ≦ 0 violations | count | accessibility | [Axe CSV](#accessibility-violations-from-axe-csv), [axe-selenium-python](#accessibility-violations-from-axe-selenium-python) |
-| Commented out code | The number of lines of code commented out. | ≦ 0 lines | count | maintainability | [SonarQube](#commented-out-code-from-sonarqube) |
+| Commented-out code | The number of blocks of commented-out lines of code. | ≦ 0 blocks | count | maintainability | [SonarQube](#commented-out-code-from-sonarqube) |
 | Complex units | The amount of units (classes, functions, methods, files) that are too complex. | ≦ 0 complex units | count (default), percentage | maintainability, testability | [SonarQube](#complex-units-from-sonarqube) |
 | Dependencies | The amount of (outdated) dependencies | ≦ 0 dependencies | count (default), percentage | maintainability | [Composer](#dependencies-from-composer), [OWASP Dependency Check](#dependencies-from-owasp-dependency-check), [npm](#dependencies-from-npm), [pip](#dependencies-from-pip) |
 | Duplicated lines | The amount of lines that are duplicated. | ≦ 0 lines | count (default), percentage | maintainability | [SonarQube](#duplicated-lines-from-sonarqube) |
@@ -68,7 +68,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Random](https://en.wikipedia.org/wiki/Special:Random) | A source that generates random numbers, for testing purposes. | ¹ |
 | [Robot Framework](https://robotframework.org) | Robot Framework is a generic open source automation framework for acceptance testing, acceptance test driven development, and robotic process automation. | [Source up-to-dateness](#source-up-to-dateness-from-robot-framework), [Tests](#tests-from-robot-framework) |
 | [Snyk](https://support.snyk.io/hc/en-us/articles/360003812458-Getting-started-with-the-CLI) | Snyk vulnerability report in JSON format | [Security warnings](#security-warnings-from-snyk) |
-| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | [Commented out code](#commented-out-code-from-sonarqube), [Complex units](#complex-units-from-sonarqube), [Duplicated lines](#duplicated-lines-from-sonarqube), [Size (LOC)](#size-(loc)-from-sonarqube), [Long units](#long-units-from-sonarqube), [Many parameters](#many-parameters-from-sonarqube), [Violation remediation effort](#violation-remediation-effort-from-sonarqube), [Source up-to-dateness](#source-up-to-dateness-from-sonarqube), [Security warnings](#security-warnings-from-sonarqube), [Suppressed violations](#suppressed-violations-from-sonarqube), [Tests](#tests-from-sonarqube), [Test branch coverage](#test-branch-coverage-from-sonarqube), [Test line coverage](#test-line-coverage-from-sonarqube), [Violations](#violations-from-sonarqube) |
+| [SonarQube](https://www.sonarqube.org) | SonarQube is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming languages. | [Commented-out code](#commented-out-code-from-sonarqube), [Complex units](#complex-units-from-sonarqube), [Duplicated lines](#duplicated-lines-from-sonarqube), [Size (LOC)](#size-(loc)-from-sonarqube), [Long units](#long-units-from-sonarqube), [Many parameters](#many-parameters-from-sonarqube), [Violation remediation effort](#violation-remediation-effort-from-sonarqube), [Source up-to-dateness](#source-up-to-dateness-from-sonarqube), [Security warnings](#security-warnings-from-sonarqube), [Suppressed violations](#suppressed-violations-from-sonarqube), [Tests](#tests-from-sonarqube), [Test branch coverage](#test-branch-coverage-from-sonarqube), [Test line coverage](#test-line-coverage-from-sonarqube), [Violations](#violations-from-sonarqube) |
 | [TestNG](https://testng.org) | Test reports in the TestNG XML format. | [Source up-to-dateness](#source-up-to-dateness-from-testng), [Tests](#tests-from-testng) |
 | [Trello](https://trello.com) | Trello is a collaboration tool that organizes projects into boards. | [Issues](#issues-from-trello), [Source up-to-dateness](#source-up-to-dateness-from-trello) |
 | [Wekan](https://wekan.github.io) | Open-source kanban. | [Issues](#issues-from-wekan), [Source up-to-dateness](#source-up-to-dateness-from-wekan) |
@@ -103,7 +103,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to an axe-selenium-python report in a human readable format | String | No | If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format. |
 | Username for basic authentication | String | No |  |
 
-### Commented out code from SonarQube
+### Commented-out code from SonarQube
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
