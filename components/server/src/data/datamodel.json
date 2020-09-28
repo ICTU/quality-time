@@ -34,8 +34,8 @@
             ]
         },
         "commented_out_code": {
-            "name": "Commented-out code",
-            "description": "The number of blocks of commented-out lines of code.",
+            "name": "Commented out code",
+            "description": "The number of blocks of commented out lines of code.",
             "scales": [
                 "count"
             ],
