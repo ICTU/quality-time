@@ -1,34 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Segment } from 'semantic-ui-react';
-import { parse, stringify } from 'query-string';
 import { Subject } from './Subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
-
-function useDelayedRender() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(setVisible, 50, true) }, []);
-  return visible;
-}
-
-function set_query_string(history, key, value) {
-  let parsed = parse(history.location.search, {arrayFormat: 'comma'});
-  parsed[key] = value;
-  const search = stringify(parsed, { skipEmptyString: true, arrayFormat: 'comma' });
-  history.replace({ search: search.length > 0 ? "?" + search : "" })
-}
-
-function get_query_string(history, key) {
-  const parsed = parse(history.location.search, {arrayFormat: 'comma'});
-  return parsed[key]
-}
+import { useDelayedRender, useURLSearchQuery } from '../utils';
 
 export function Subjects(props) {
   const visible = useDelayedRender();
-  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useState(get_query_string(props.history, "hide_metrics_not_requiring_action") || false);
-  const [hiddenColumns, setHiddenColumns] = useState(get_query_string(props.history, "hidden_columns") || []);
+  const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
+  const [hiddenColumns, setHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
@@ -41,14 +23,8 @@ export function Subjects(props) {
             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
             key={subject_uuid}
             last_subject={index === last_index}
-            setHiddenColumns={(columns) => {
-              setHiddenColumns(columns);
-              set_query_string(props.history, "hidden_columns", columns)
-            }}
-            setHideMetricsNotRequiringAction={(state) => {
-              setHideMetricsNotRequiringAction(state);
-              set_query_string(props.history, "hide_metrics_not_requiring_action", state ? "true" : "")
-            }}
+            setHiddenColumns={(columns) => setHiddenColumns(columns)}
+            setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
             subject_uuid={subject_uuid}
           /> : null
       )}

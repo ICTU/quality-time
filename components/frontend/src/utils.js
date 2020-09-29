@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-semantic-toasts';
+import { parse, stringify } from 'query-string';
 
 export function get_metric_name(metric, datamodel) {
     return metric.name || datamodel.metrics[metric.type].name;
@@ -56,4 +57,39 @@ export function format_minutes(number) {
     const minutes = number - hours * 60;
     const leading_zero = minutes < 10 ? "0" : "";
     return `${hours}:${leading_zero}${minutes}`
+}
+
+export function useURLSearchQuery(history, key, state_type = "string") {
+    const [state, setState] = useState(getState());
+
+    function getState() {
+        const parsed_state = parseURLSearchQuery()[key];
+        if (state_type === "boolean") {
+            return parsed_state === "true"
+        } else if (state_type === "array") {
+            return typeof parsed_state === "string" ? [parsed_state] : parsed_state || []
+        } else {
+            return parsed_state || ""
+        }
+    }
+
+    function parseURLSearchQuery() {
+        return parse(history.location.search, { arrayFormat: 'comma' });
+    }
+
+    function setURLSearchQuery(new_state) {
+        let parsed = parseURLSearchQuery();
+        parsed[key] = new_state || "";
+        const search = stringify(parsed, { skipEmptyString: true, arrayFormat: 'comma' });
+        history.replace({ search: search.length > 0 ? "?" + search : "" })
+        setState(new_state);
+    }
+
+    return [state, setURLSearchQuery]
+}
+
+export function useDelayedRender() {
+    const [visible, setVisible] = useState(false);
+    useEffect(() => { setTimeout(setVisible, 50, true) }, []);
+    return visible;
 }
