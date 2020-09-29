@@ -134,7 +134,7 @@ To delete a metric, expand the metric in the metric table and click the "Delete 
 
 #### Adding sources
 
-To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported source types. 
+To add a source to a metric, expand the metric in the metric table and then click the "Sources" tab. In the "Sources" tab, click the "Add source" button. This adds one of the sources that can support the metric type. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported source types.
 
 ![Adding source screenshot](screenshots/adding_source.png)
 
@@ -228,7 +228,7 @@ In a report's dashboard, click on a tag card to show only metrics that have the 
 
 ### Filtering metrics by status
 
-Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide metrics that need no action. 
+Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide metrics that need no action.
 
 ![Metric table columns](screenshots/metric_table_columns.png)
 
@@ -252,6 +252,8 @@ The exported PDF report has the same metric table rows and columns hidden as in 
 
 If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
 
-To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`. 
+To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`.
 
 To hide columns from the report, set the `hidden_columns` parameter, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, and `tags`.
+
+The `report_uuid` is the unique identifier *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
