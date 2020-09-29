@@ -6,7 +6,7 @@ import { Subjects } from './Subjects';
 const datamodel = { subjects: { subject_type: { name: "Subject type"} }, metrics: { metric_type: { tags: [] } } }
 const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [] } } } } };
 
-let mockHistory = {};
+let mockHistory = { location: "" };
 
 describe("<Subjects />", () => {
     beforeEach(() => { mockHistory["replace"] = jest.fn(); });

@@ -202,14 +202,8 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
-    const searchParams = new URL(document.location.href).searchParams
-    const hidden_columns_parameter = searchParams.get("hidden_columns");
-    const hidden_columns = hidden_columns_parameter ? hidden_columns_parameter.split(",") : [];
-    const hide_metrics_parameter = searchParams.get("hide_metrics_not_requiring_action");
-    const hide_metrics = hide_metrics_parameter ? true : false;
     const props = {
-      reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports,
-      hidden_columns: hidden_columns, hide_metrics_not_requiring_action: hide_metrics, history: this.history
+      reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
