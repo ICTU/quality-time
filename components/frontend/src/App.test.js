@@ -78,6 +78,20 @@ describe("<App/>", () => {
     expect(scrollIntoView).toHaveBeenCalled()
   });
 
+  it('goes home', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().open_report({ preventDefault: jest.fn }, "report1");
+    expect(wrapper.state("report_uuid")).toBe("report1");
+    wrapper.instance().go_home();
+    expect(wrapper.state("report_uuid")).toBe("");
+  })
+
+  it('opens tag report', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().open_tag_report({ preventDefault: jest.fn }, "security");
+    expect(wrapper.state("report_uuid")).toBe("tag-security");
+  });
+
   it('sets the user', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org");
