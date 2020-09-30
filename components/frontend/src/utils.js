@@ -67,7 +67,7 @@ export function useURLSearchQuery(history, key, state_type = "string") {
         if (state_type === "boolean") {
             return parsed_state === "true"
         } else if (state_type === "array") {
-            return typeof parsed_state === "string" ? [parsed_state] : parsed_state || []
+            return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
         } else {
             return parsed_state || ""
         }
@@ -81,7 +81,7 @@ export function useURLSearchQuery(history, key, state_type = "string") {
         let parsed = parseURLSearchQuery();
         parsed[key] = new_state || "";
         const search = stringify(parsed, { skipEmptyString: true, arrayFormat: 'comma' });
-        history.replace({ search: search.length > 0 ? "?" + search : "" })
+        history.replace({ search: search.length > 0 ? "?" + search : "" });
         setState(new_state);
     }
 
