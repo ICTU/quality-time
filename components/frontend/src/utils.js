@@ -59,18 +59,17 @@ export function format_minutes(number) {
     return `${hours}:${leading_zero}${minutes}`
 }
 
-export function useURLSearchQuery(history, key, state_type = "string") {
+export function useURLSearchQuery(history, key, state_type) {
+    // state_type can either be "boolean" or "array"
     const [state, setState] = useState(getState());
 
     function getState() {
         const parsed_state = parseURLSearchQuery()[key];
         if (state_type === "boolean") {
             return parsed_state === "true"
-        } else if (state_type === "array") {
-            return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
-        } else {
-            return parsed_state || ""
         }
+        // else state_type is "array"
+        return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
     }
 
     function parseURLSearchQuery() {
