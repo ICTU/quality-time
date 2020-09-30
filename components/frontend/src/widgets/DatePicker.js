@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateInput } from 'semantic-ui-calendar-react';
+import { isValidDate_DDMMYYYY } from '../utils';
 
 export function DatePicker(props) {
     const [date, setDate] = useState(props.value);
+    useEffect(() => { setDate(props.value); }, [props.value]);
     const today = new Date();
     const today_string = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-    function onChange(event, { name, value}) {
+    function onChange(event, { name, value }) {
         setDate(value);
-        if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(value))
-        {
-            const milliseconds_since_epoch = Date.parse(value.split("-").reverse().join("-"));
-            if (!isNaN(milliseconds_since_epoch)) {
-                props.onDate(event, { name, value });  // We have a valid date, invoke callback
-            }
+        if (isValidDate_DDMMYYYY(value)) {
+            props.onDate(event, { name, value });
         }
     }
     function onClear(event, { name, value }) {

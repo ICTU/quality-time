@@ -1,4 +1,4 @@
-import { nice_number, scaled_number, show_message, format_minutes, useURLSearchQuery } from './utils';
+import { nice_number, scaled_number, show_message, format_minutes } from './utils';
 import * as react_semantic_toast from 'react-semantic-toasts';
 
 jest.mock("react-semantic-toasts");
