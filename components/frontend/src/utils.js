@@ -95,8 +95,7 @@ export function useDelayedRender() {
 
 export function isValidDate_DDMMYYYY(string) {
     if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(string)) {
-        const milliseconds_since_epoch = Date.parse(string.split("-").reverse().join("-"));
-        return !isNaN(milliseconds_since_epoch)
+        return isValidDate_YYYYMMDD(string.split("-").reverse().join("-"))
     }
     return false
 }
