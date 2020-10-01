@@ -52,6 +52,17 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
         response = await self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="Name", name="Name", threshold="warning")])
 
+    async def test_ignore_transactions_by_name(self):
+        """Test that transactions can be ignored by name."""
+        html = '<html><table class="details">' \
+               '<tr class="transaction"><td class="name">T1</td><td class="red evaluated"/></tr>' \
+               '<tr class="transaction"><td class="name">T2</td><td class="yellow evaluated"/></tr>' \
+               '<tr class="transaction"><td class="name">T3</td><td class="green evaluated"/></tr>' \
+               '</table></html>'
+        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = ["T[1|3]"]
+        response = await self.collect(self.metric, get_request_text=html)
+        self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])
+
 
 class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase):
     """Unit tests for the performancetest-runner source up-to-dateness collector."""
