@@ -45,8 +45,9 @@ function download_pdf(report_uuid, query_string, callback) {
         let url = window.URL.createObjectURL(response);
         let a = document.createElement('a');
         a.href = url;
-        let now = new Date();
-        a.download = `Quality-time-report-${report_uuid}-${now.toISOString()}.pdf`;
+        const now = new Date();
+        const local_now = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
+        a.download = `Quality-time-report-${report_uuid}-${local_now.toISOString().split(".")[0]}.pdf`;
         a.click();
       }
     }).finally(() => callback());
