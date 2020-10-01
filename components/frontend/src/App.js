@@ -10,12 +10,13 @@ import { Report } from './report/Report.js';
 import { Reports } from './report/Reports.js';
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
+import { parse, stringify } from 'query-string';
 
 import { ReadOnlyContext } from './context/ReadOnly';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
-import { show_message } from './utils'
+import { isValidDate_YYYYMMDD, show_message } from './utils'
 
 class App extends Component {
   constructor(props) {
@@ -39,9 +40,14 @@ class App extends Component {
   componentDidMount() {
     const pathname = this.history.location.pathname;
     const report_uuid = pathname.slice(1, pathname.length);
+    const report_date_iso_string = parse(this.history.location.search).report_date || "";
+    const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
     this.connect_to_nr_measurements_event_source()
     this.setState(
-      { report_uuid: report_uuid, loading: true, user: localStorage.getItem("user"), email: localStorage.getItem("email") },
+      {
+        report_uuid: report_uuid, report_date_string: report_date_string, loading: true,
+        user: localStorage.getItem("user"), email: localStorage.getItem("email")
+      },
       () => this.reload());
   }
 
@@ -129,6 +135,10 @@ class App extends Component {
     const today = new Date();
     const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
     const new_report_date_string = value === today_string ? '' : value;
+    let parsed = parse(this.history.location.search);
+    parsed.report_date = new_report_date_string.split("-").reverse().join("-");
+    const search = stringify(parsed, { skipEmptyString: true });
+    this.history.replace({ search: search.length > 0 ? "?" + search : "" })
     this.setState({ [name]: new_report_date_string, loading: true }, () => this.reload())
   }
 
@@ -202,14 +212,8 @@ class App extends Component {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
     const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
-    const searchParams = new URL(document.location.href).searchParams
-    const hidden_columns_parameter = searchParams.get("hidden_columns");
-    const hidden_columns = hidden_columns_parameter ? hidden_columns_parameter.split(",") : [];
-    const hide_metrics_parameter = searchParams.get("hide_metrics_not_requiring_action");
-    const hide_metrics = hide_metrics_parameter ? true : false;
     const props = {
-      reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports,
-      hidden_columns: hidden_columns, hide_metrics_not_requiring_action: hide_metrics, history: this.history
+      reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };
     return (
       <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>

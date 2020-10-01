@@ -78,6 +78,20 @@ describe("<App/>", () => {
     expect(scrollIntoView).toHaveBeenCalled()
   });
 
+  it('goes home', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().open_report({ preventDefault: jest.fn }, "report1");
+    expect(wrapper.state("report_uuid")).toBe("report1");
+    wrapper.instance().go_home();
+    expect(wrapper.state("report_uuid")).toBe("");
+  })
+
+  it('opens tag report', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().open_tag_report({ preventDefault: jest.fn }, "security");
+    expect(wrapper.state("report_uuid")).toBe("tag-security");
+  });
+
   it('sets the user', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org");
@@ -101,7 +115,21 @@ describe("<App/>", () => {
     const wrapper = mount(<App />);
     wrapper.instance().open_report({ preventDefault: jest.fn }, "report1");
     expect(wrapper.state("report_uuid")).toBe("report1");
-    wrapper.instance().on_history({ location: {pathname: "/"}, action: Action.Pop });  // simulate user hitting "back"
+    wrapper.instance().on_history({ location: { pathname: "/" }, action: Action.Pop });  // simulate user hitting "back"
     expect(wrapper.state("report_uuid")).toBe("");
   });
+
+  it('handles a date change', () => {
+    const wrapper = mount(<App />);
+    wrapper.instance().handleDateChange({}, {name: "report_date_string", value: "13-03-2020"})
+    expect(wrapper.state("report_date_string")).toBe("13-03-2020");
+  });
+
+  it('handles a date change to today', () => {
+    const wrapper = mount(<App />);
+    const today = new Date();
+    const today_string = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + today.getFullYear();
+    wrapper.instance().handleDateChange({}, {name: "report_date_string", value: today_string})
+    expect(wrapper.state("report_date_string")).toBe("");
+  })
 });
