@@ -54,7 +54,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     @staticmethod
     def __name(transaction) -> str:
         """Return the name of the transaction."""
-        return transaction.find("td", class_="name").string
+        return str(transaction.find("td", class_="name").string)
 
 
 class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, SourceUpToDatenessCollector):
