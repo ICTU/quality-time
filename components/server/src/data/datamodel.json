@@ -4016,6 +4016,18 @@
                     "metrics": [
                         "slow_transactions"
                     ]
+                },
+                "transactions_to_ignore": {
+                    "name": "Transactions to ignore (regular expressions or transaction names)",
+                    "short_name": "transactions to ignore",
+                    "help": "Transactions to ignore can be specified by transaction name or by regular expression.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory":  false,
+                    "default_value": [],
+                    "metrics": [
+                        "slow_transactions"
+                    ]
                 }
             },
             "entities": {
