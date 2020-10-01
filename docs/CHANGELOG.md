@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- The 'slow transactions' metric with the Performancetest-runner as source allows for ignoring transactions by name or by regular expression. Partially implements [#1493](https://github.com/ICTU/quality-time/issues/1493).
+- The 'slow transactions' metric with the Performancetest-runner as source allows for ignoring transactions by name or by regular expression. Closes [#1493](https://github.com/ICTU/quality-time/issues/1493).
 - The 'tests' metric now also supports the percentage scale so it's possible to e.g. report the percentage of tests failed. Closes [#1494](https://github.com/ICTU/quality-time/issues/1494).
 
 ### Fixed
