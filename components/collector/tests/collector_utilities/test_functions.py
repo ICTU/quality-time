@@ -24,7 +24,7 @@ class StableTracebackTest(unittest.TestCase):
         """Test that tokens are redacted from tracebacks."""
         self.assertEqual(
             "https://example.com?id=5&token=<redacted>&page=0",
-            stable_traceback("https://example.com?id=5&token=abcdef45321a&page=0"))
+            stable_traceback("https://example.com?id=5&token=abcdef_45321-a&page=0"))
 
     def test_no_keys(self):
         """Test that keys are redacted from tracebacks."""

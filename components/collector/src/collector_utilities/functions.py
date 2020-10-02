@@ -32,7 +32,7 @@ async def parse_source_response_xml_with_namespace(
 
 Substitution = Tuple[Pattern[str], str]
 MEMORY_ADDRESS_SUB: Substitution = (re.compile(r" at 0x[0-9abcdef]+>"), ">")
-TOKEN_SUB: Substitution = (re.compile(r"token=[0-9a-zA-Z]+"), "token=<redacted>")
+TOKEN_SUB: Substitution = (re.compile(r"token=[^&]+"), "token=<redacted>")
 KEY_SUB: Substitution = (re.compile(r"key=[0-9abcdef]+"), "key=<redacted>")
 HASH_SUB: Substitution = (re.compile(r"(?i)[a-f0-9]{20,}"), "hashremoved")
 
