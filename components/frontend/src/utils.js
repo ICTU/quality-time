@@ -59,6 +59,15 @@ export function format_minutes(number) {
     return `${hours}:${leading_zero}${minutes}`
 }
 
+export function format_metric_unit(metric_type, metric, with_multiple=true) {
+    const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
+    let metric_type_unit = metric_type.unit;
+    if (with_multiple) {
+        metric_type_unit = metric_type.unit === 'minutes' && metric.scale !== 'percentage' ? 'hours' : metric_type.unit;
+    }
+    return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
+}
+
 export function useURLSearchQuery(history, key, state_type) {
     // state_type can either be "boolean" or "array"
     const [state, setState] = useState(getState());
