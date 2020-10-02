@@ -7,7 +7,7 @@ import { MeasurementDetails } from './MeasurementDetails';
 import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { get_metric_name, get_metric_target, format_minutes } from '../utils';
+import { get_metric_name, get_metric_target, format_metric_unit, format_minutes } from '../utils';
 import "./Measurement.css";
 
 export function Measurement(props) {
@@ -43,19 +43,14 @@ export function Measurement(props) {
     return sources.map((source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} source_uuid={source.source_uuid}
       metric={metric} source={source} datamodel={props.datamodel} />])
   }
-  function get_metric_unit() {
-    const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
-    const metric_type_unit = metric_type.unit === 'minutes' && metric.scale !== 'percentage' ? 'hours' : metric_type.unit;
-    return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
-  }
   const metric = props.report.subjects[props.subject_uuid].metrics[props.metric_uuid];
   const metric_type = props.datamodel.metrics[metric.type];
   const latest_measurements = metric.recent_measurements;
   const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
   const sources = (latest_measurement && latest_measurement.sources) || [];
-  const metric_unit = get_metric_unit();
+  const metric_unit = format_metric_unit(metric_type, metric);
   const metric_name = get_metric_name(metric, props.datamodel);
-  const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={metric_unit} {...props} />
+  const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={format_metric_unit(metric_type, metric, false)} {...props} />
   return (
     <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details}>
       <Table.Cell>{metric_name}</Table.Cell>
