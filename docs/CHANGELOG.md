@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Some exceptions thrown by the aiohttp library have no explicit error message. This would cause *Quality-time* to try and parse the non-existing source response, erroneously complaining about a parse error. Although in these cases the connection error would be logged, without an error message the logging would not be very informative. Fixed by having the collector log the class of the aiohttp exception if the error message is empty. Fixes [#1422](https://github.com/ICTU/quality-time/issues/1422).
 - The PDF export would always export the most recent report, even when the user picked another date. Fixes [#1498](https://github.com/ICTU/quality-time/issues/1498).
 - The 'commented-out code' metric claimed to measure the number of lines of commented-out code, but SonarQube actually reports the number of *blocks* of commented-out lines of code. Changed the metric description and unit to conform to the SonarQube data. Fixes [#1507](https://github.com/ICTU/quality-time/issues/1507).
+- Tokens with an underscore would not be completely redacted from the collector log. Fixes [#1523](https://github.com/ICTU/quality-time/issues/1523).
 
 ## [3.7.0] - [2020-09-27]
 
