@@ -1,6 +1,7 @@
 """Robot Framework Jenkins plugin collector."""
 
 from abc import ABC
+from typing import cast, List
 
 from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
 from collector_utilities.type import URL
@@ -21,8 +22,10 @@ class RobotFrameworkJenkinsPluginTests(RobotFrameworkJenkinsPluginBaseClass):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/robot/api/json")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        statuses = cast(List[str], self._parameter("test_result"))
         json = await responses[0].json()
-        return SourceMeasurement(value=str(json["overallTotal"]), total=str(json["overallTotal"]))
+        value = sum(int(json[status]) for status in statuses)
+        return SourceMeasurement(value=str(value), total=str(json["overallTotal"]))
 
 
 class RobotFrameworkJenkinsPluginSourceUpToDateness(

@@ -4701,6 +4701,26 @@
                         "source_up_to_dateness",
                         "tests"
                     ]
+                },
+                "test_result": {
+                    "name": "Test result",
+                    "short_name": "test result",
+                    "help": "Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better.",
+                    "placeholder": "all test results",
+                    "type": "multiple_choice",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "fail",
+                        "pass"
+                    ],
+                    "api_values": {
+                        "fail": "overallFailed",
+                        "pass": "overallPassed"
+                    },
+                    "metrics": [
+                        "tests"
+                    ]
                 }
             },
             "entities": {}
