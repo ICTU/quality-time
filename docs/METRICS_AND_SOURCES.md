@@ -24,10 +24,10 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | count | security | [Anchore](#security-warnings-from-anchore), [Bandit](#security-warnings-from-bandit), [Checkmarx CxSAST](#security-warnings-from-checkmarx-cxsast), [OWASP Dependency Check Jenkins plugin](#security-warnings-from-owasp-dependency-check-jenkins-plugin), [OWASP Dependency Check](#security-warnings-from-owasp-dependency-check), [OWASP ZAP](#security-warnings-from-owasp-zap), [OpenVAS](#security-warnings-from-openvas), [Pyupio Safety](#security-warnings-from-pyupio-safety), [Snyk](#security-warnings-from-snyk), [SonarQube](#security-warnings-from-sonarqube) |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | count | maintainability | [SonarQube](#size-(loc)-from-sonarqube), [cloc](#size-(loc)-from-cloc) |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | count | performance | [Performancetest-runner](#slow-transactions-from-performancetest-runner) |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check Jenkins plugin](#source-up-to-dateness-from-owasp-dependency-check-jenkins-plugin), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan), [axe-selenium-python](#source-up-to-dateness-from-axe-selenium-python) |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check Jenkins plugin](#source-up-to-dateness-from-owasp-dependency-check-jenkins-plugin), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan), [axe-selenium-python](#source-up-to-dateness-from-axe-selenium-python) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
-| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
-| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
+| Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
+| Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
 | Tests | The amount of tests. | ≧ 0 tests | count (default), percentage | test quality | [Azure DevOps Server](#tests-from-azure-devops-server), [JUnit XML report](#tests-from-junit-xml-report), [Jenkins test report](#tests-from-jenkins-test-report), [Performancetest-runner](#tests-from-performancetest-runner), [Robot Framework](#tests-from-robot-framework), [SonarQube](#tests-from-sonarqube), [TestNG](#tests-from-testng) |
 | Unmerged branches | The number of branches that have not been merged to the default branch. | ≦ 0 branches | count | ci | [Azure DevOps Server](#unmerged-branches-from-azure-devops-server), [GitLab](#unmerged-branches-from-gitlab) |
 | Unused CI-jobs | The number of continuous integration jobs that are unused. | ≦ 0 CI-jobs | count | ci | [Azure DevOps Server](#unused-ci-jobs-from-azure-devops-server), [GitLab](#unused-ci-jobs-from-gitlab), [Jenkins](#unused-ci-jobs-from-jenkins) |
@@ -47,6 +47,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | [Source up-to-dateness](#source-up-to-dateness-from-calendar-date) |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | [Source up-to-dateness](#source-up-to-dateness-from-checkmarx-cxsast), [Security warnings](#security-warnings-from-checkmarx-cxsast) |
 | [Cobertura](https://cobertura.github.io/cobertura/) | Cobertura is a free Java tool that calculates the percentage of code accessed by tests. | [Source up-to-dateness](#source-up-to-dateness-from-cobertura), [Test branch coverage](#test-branch-coverage-from-cobertura), [Test line coverage](#test-line-coverage-from-cobertura) |
+| [Cobertura Jenkins plugin](https://plugins.jenkins.io/cobertura/) | Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed by tests. | [Source up-to-dateness](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-cobertura-jenkins-plugin), [Test line coverage](#test-line-coverage-from-cobertura-jenkins-plugin) |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | [Dependencies](#dependencies-from-composer) |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
 | [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
@@ -422,6 +423,14 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to a Cobertura report in a human readable format | String | No | If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format. |
 | Username for basic authentication | String | No |  |
 
+### Source up-to-dateness from Cobertura Jenkins plugin
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| Username for basic authentication | String | No |  |
+
 ### Source up-to-dateness from Checkmarx CxSAST
 
 | Parameter | Type | Mandatory | Help |
@@ -456,7 +465,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 
 ### Source up-to-dateness from Jenkins test report
@@ -790,6 +799,14 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to a Cobertura report in a human readable format | String | No | If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format. |
 | Username for basic authentication | String | No |  |
 
+### Test branch coverage from Cobertura Jenkins plugin
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| Username for basic authentication | String | No |  |
+
 ### Test branch coverage from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
@@ -805,7 +822,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 
 ### Test branch coverage from NCover
@@ -836,6 +853,14 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to a Cobertura report in a human readable format | String | No | If provided, users clicking the source URL will visit this URL instead of the Cobertura report in XML format. |
 | Username for basic authentication | String | No |  |
 
+### Test line coverage from Cobertura Jenkins plugin
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the Cobertura plugin. For example, 'http://jenkins.example.org/job/cobertura' or http://jenkins.example.org/job/cobertura/job/master' in case of a pipeline job. |
+| Username for basic authentication | String | No |  |
+
 ### Test line coverage from JaCoCo
 
 | Parameter | Type | Mandatory | Help |
@@ -851,7 +876,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
+| URL to Jenkins job | URL | Yes | URL to a Jenkins job with a coverage report generated by the JaCoCo plugin. For example, 'http://jenkins.example.org/job/jacoco' or http://jenkins.example.org/job/jacoco/job/master' in case of a pipeline job. |
 | Username for basic authentication | String | No |  |
 
 ### Test line coverage from NCover

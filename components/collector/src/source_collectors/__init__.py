@@ -1,6 +1,9 @@
 """Metric collectors per source."""
 
 from .api_source_collectors.azure_devops import AzureDevopsIssues, AzureDevopsUserStoryPoints
+from .api_source_collectors.cobertura_jenkins_plugin import (
+    CoberturaJenkinsPluginSourceUpToDateness, CoberturaJenkinsPluginUncoveredBranches,
+    CoberturaJenkinsPluginUncoveredLines)
 from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab import (
     GitLabFailedJobs, GitLabSourceUpToDateness, GitLabUnmergedBranches, GitLabUnusedJobs)
