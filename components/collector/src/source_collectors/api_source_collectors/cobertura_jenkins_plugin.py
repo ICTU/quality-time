@@ -1,11 +1,13 @@
 """Cobertura Jenkins plugin coverage report collector."""
 
+from abc import ABC
+
 from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
 from collector_utilities.type import URL
 from source_model import SourceMeasurement, SourceResponses
 
 
-class CoberturaJenkinsPluginBaseClass(SourceCollector):
+class CoberturaJenkinsPluginBaseClass(SourceCollector, ABC):
     """Base class for Cobertura Jenkins plugin collectors."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
