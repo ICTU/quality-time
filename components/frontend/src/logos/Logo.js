@@ -56,6 +56,7 @@ export function Logo(props) {
         pyupio_safety: Pyupio,
         quality_time: QualityTime,
         robot_framework: RobotFramework,
+        robot_framework_jenkins_plugin: RobotFramework,
         sonarqube: Sonarqube,
         testng: TestNG,
         trello: Trello,

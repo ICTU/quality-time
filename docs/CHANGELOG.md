@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The 'slow transactions' metric with the Performancetest-runner as source allows for ignoring transactions by name or by regular expression. Closes [#1493](https://github.com/ICTU/quality-time/issues/1493).
 - The 'tests' metric now also supports the percentage scale so it's possible to e.g. report the percentage of tests failed. Closes [#1494](https://github.com/ICTU/quality-time/issues/1494).
 - Added Cobertura Jenkins plugin as possible source for the 'test line coverage', 'test branch coverage', and 'source up-to-dateness' metrics. Closes [#1520](https://github.com/ICTU/quality-time/issues/1520).
+- Added Robot Framework Jenkins plugin as possible source for the 'tests', and 'source up-to-dateness' metrics. Closes [#1521](https://github.com/ICTU/quality-time/issues/1521).
 
 ### Fixed
 
