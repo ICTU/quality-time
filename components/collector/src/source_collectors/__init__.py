@@ -16,6 +16,8 @@ from .api_source_collectors.jira import (
 from .api_source_collectors.owasp_dependency_check_jenkins_plugin import (
     OWASPDependencyCheckJenkinsPluginSecurityWarnings, OWASPDependencyCheckJenkinsPluginSourceUpToDateness)
 from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
+from .api_source_collectors.robot_framework_jenkins_plugin import (
+    RobotFrameworkJenkinsPluginSourceUpToDateness, RobotFrameworkJenkinsPluginTests)
 from .api_source_collectors.sonarqube import (
     SonarQubeCommentedOutCode, SonarQubeComplexUnits, SonarQubeDuplicatedLines, SonarQubeLOC, SonarQubeLongUnits,
     SonarQubeManyParameters, SonarQubeSourceUpToDateness, SonarQubeSuppressedViolations, SonarQubeTests,
