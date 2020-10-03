@@ -1,18 +1,12 @@
 """Unit tests for the JaCoCo Jenkins plugin source."""
 
-from datetime import datetime
-
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
-
-from collector_utilities.functions import days_ago
+from .jenkins_plugin_test_case import JenkinsPluginTestCase, JenkinsPluginTestsMixin
 
 
-class JaCoCoJenkinsPluginTest(SourceCollectorTestCase):
+class JaCoCoJenkinsPluginTest(JenkinsPluginTestCase, JenkinsPluginTestsMixin):
     """Unit tests for the JaCoCo Jenkins plugin metrics."""
 
-    def setUp(self):
-        super().setUp()
-        self.sources = dict(source_id=dict(type="jacoco_jenkins_plugin", parameters=dict(url="https://jenkins/job")))
+    source_type = "jacoco_jenkins_plugin"
 
     async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the total number of lines are returned."""
@@ -26,10 +20,3 @@ class JaCoCoJenkinsPluginTest(SourceCollectorTestCase):
         response = await self.collect(
             metric, get_request_json_return_value=dict(branchCoverage=dict(total=6, missed=2)))
         self.assert_measurement(response, value="2", total="6")
-
-    async def test_source_up_to_dateness(self):
-        """Test that the source up to dateness is returned."""
-        metric = dict(type="source_up_to_dateness", addition="max", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=dict(timestamp="1565284457173"))
-        expected_age = days_ago(datetime.fromtimestamp(1565284457173 / 1000.))
-        self.assert_measurement(response, value=str(expected_age))

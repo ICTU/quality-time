@@ -21,8 +21,8 @@ class JacocoJenkinsPluginCoverageBaseClass(JacocoJenkinsPluginBaseClass):
         return URL(f"{await super()._api_url()}/lastSuccessfulBuild/jacoco/api/json")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        line_coverage = (await responses[0].json())[f"{self.coverage_type}Coverage"]
-        return SourceMeasurement(value=str(line_coverage["missed"]), total=str(line_coverage["total"]))
+        coverage = (await responses[0].json())[f"{self.coverage_type}Coverage"]
+        return SourceMeasurement(value=str(coverage["missed"]), total=str(coverage["total"]))
 
 
 class JacocoJenkinsPluginUncoveredLines(JacocoJenkinsPluginCoverageBaseClass):

@@ -17,7 +17,6 @@ import NCover from './ncover.png';
 import npm from './npm.png';
 import OpenVAS from './openvas.png';
 import OWASPDependencyCheck from './owasp_dependency_check.png';
-import OWASPDependencyCheckJenkinsPlugin from './owasp_dependency_check_jenkins_plugin.png';
 import OWASPZAP from './owasp_zap.png';
 import Python from './python.png';
 import Pyupio from './pyupio.png';
@@ -37,6 +36,7 @@ export function Logo(props) {
         azure_devops: AzureDevops,
         bandit: Bandit,
         cobertura: Cobertura,
+        cobertura_jenkins_plugin: Cobertura,
         composer: Composer,
         cxsast: Checkmarx,
         gitlab: GitLab,
@@ -50,7 +50,7 @@ export function Logo(props) {
         npm: npm,
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
-        owasp_dependency_check_jenkins_plugin: OWASPDependencyCheckJenkinsPlugin,
+        owasp_dependency_check_jenkins_plugin: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
         pip: Python,
         pyupio_safety: Pyupio,
