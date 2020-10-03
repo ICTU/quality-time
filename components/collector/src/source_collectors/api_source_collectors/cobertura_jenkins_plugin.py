@@ -7,7 +7,7 @@ from collector_utilities.type import URL
 from source_model import SourceMeasurement, SourceResponses
 
 
-class CoberturaJenkinsPluginBaseClass(SourceCollector, ABC):
+class CoberturaJenkinsPluginBaseClass(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base class for Cobertura Jenkins plugin collectors."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:

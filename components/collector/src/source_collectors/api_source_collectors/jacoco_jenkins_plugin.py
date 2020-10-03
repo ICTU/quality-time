@@ -1,11 +1,13 @@
 """Jacoco Jenkins plugin coverage report collector."""
 
+from abc import ABC
+
 from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
 from collector_utilities.type import URL
 from source_model import SourceMeasurement, SourceResponses
 
 
-class JacocoJenkinsPluginBaseClass(SourceCollector):
+class JacocoJenkinsPluginBaseClass(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base class for Jacoco Jenkins plugin collectors."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
