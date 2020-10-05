@@ -5,6 +5,8 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Input } from './Input';
 
 function EditableDateInput(props) {
+    // We don't use the minDate property because having a value < minDate can crash the date picker,
+    // see https://github.com/ICTU/quality-time/issues/1534
     return (
         <Form>
             <CalendarDateInput
@@ -14,7 +16,6 @@ function EditableDateInput(props) {
                 disabled={false}
                 error={props.required && props.value === ""}
                 label={props.label}
-                minDate={props.minDate}
                 onChange={(event, { value }) => { if (value !== props.value) { props.set_value(value)}}}
                 placeholder={props.placeholder}
                 value={props.value}
@@ -24,10 +25,9 @@ function EditableDateInput(props) {
 }
 
 export function DateInput(props) {
-    const { minDate, ...readonlyProps} = props;
     return (
         <ReadOnlyOrEditable
-            readOnlyComponent={<Input {...readonlyProps} />}
+            readOnlyComponent={<Input {...props} />}
             editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />}
         />
     )
