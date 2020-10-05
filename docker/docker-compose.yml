@@ -88,6 +88,7 @@ services:
     image: ictu/url-to-pdf-api:v1.0.0
     environment:
       - ALLOW_HTTP=true
-      - LC_ALL=en_GB.UTF-8
+      - LC_ALL=en_GB.UTF-8  # Set the data format in the PDF export to DD-MM-YYYY
+      - TZ=Europe/Amsterdam  # Make the PDF export use the correct timezone
 volumes:
   dbdata:
