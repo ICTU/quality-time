@@ -59,6 +59,16 @@ services:
       - server
     cap_drop:
       - ALL
+  notifier:
+    image: ictu/quality-time_notifier:v0.1
+    environment:
+      - SERVER_PORT=5001
+      - SERVER_HOST=server
+      - NOTIFIER_SLEEP_DURATION=3600
+    depends_on:
+      - server
+    cap_drop:
+      - ALL
   server:
     image: ictu/quality-time_server:v3.8.0
     environment:
