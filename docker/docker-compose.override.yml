@@ -8,6 +8,8 @@ services:
     build: ../components/collector
     depends_on:
       - testdata
+  notifier:
+    build: ../components/notifier
   server:
     build: ../components/server
     depends_on:
