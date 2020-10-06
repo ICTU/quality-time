@@ -31,7 +31,7 @@ async def notify(log_level: int = None) -> None:
             my_teams_message.text(notification)
             my_teams_message.send()
 
-            await asyncio.sleep(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
+            await asyncio.sleep(int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60)))
 
 
 if __name__ == "__main__":

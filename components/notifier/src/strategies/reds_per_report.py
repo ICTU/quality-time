@@ -1,7 +1,7 @@
 from typing import List
 
 
-def reds_per_report(json, log_level: int = None) -> List:
+def reds_per_report(json) -> List:
     red_metrics = []
     for report in json["reports"]:
         red_metrics.append([report["report_uuid"], 0])
