@@ -7,6 +7,8 @@ services:
     build: ../components/frontend
   collector:
     build: ../components/collector
+  notifier:
+    build: ../components/notifier
   server:
     build: ../components/server
     environment:
