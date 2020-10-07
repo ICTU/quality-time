@@ -22,7 +22,7 @@ async def notify(log_level: int = None) -> None:
 
             reds_in_reports = reds_per_report(json)
 
-            notification = "number of red metrics in each report:"
+            notification = "Number of red metrics in each report:"
             for report in reds_in_reports:
                 notification += "\n\r - " + report[0] + ": " + str(report[1])
             print(notification)
