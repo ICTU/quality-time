@@ -38,6 +38,7 @@ export function Subject(props) {
           metric_uuid={metric_uuid}
           metric={metric}
           stop_sort={() => setSortColumn(null)}
+          visibleColumns={props.visibleColumns}
           {...props}
         />)
     });
@@ -108,10 +109,19 @@ export function Subject(props) {
     )
   }
   function HamburgerHeader() {
-    function ColumnMenuItem({ column }) {
+    function HideColumnMenuItem({ column, header }) {
+      let column_header = header || column;
       return (
         <Dropdown.Item onClick={() => props.toggleHiddenColumn(column)}>
-          {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
+          {props.hiddenColumns.includes(column) ? `Show ${column_header} column` : `Hide ${column_header} column`}
+        </Dropdown.Item>
+      )
+    }
+    function ShowColumnMenuItem({ column, header }) {
+      let column_header = header || column;
+      return (
+        <Dropdown.Item onClick={() => props.toggleVisibleColumn(column)}>
+          {props.visibleColumns.includes(column) ? `Hide ${column_header} column` : `Show ${column_header} column`}
         </Dropdown.Item>
       )
     }
@@ -124,6 +134,7 @@ export function Subject(props) {
               {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
             </Dropdown.Item>
             <Dropdown.Header>Columns</Dropdown.Header>
+<<<<<<< HEAD
             <ColumnMenuItem column="trend" />
             <ColumnMenuItem column="status" />
             <ColumnMenuItem column="measurement" />
@@ -131,6 +142,16 @@ export function Subject(props) {
             <ColumnMenuItem column="source" />
             <ColumnMenuItem column="comment" />
             <ColumnMenuItem column="tags" />
+=======
+            <HideColumnMenuItem column="trend"/>
+            <HideColumnMenuItem column="status"/>
+            <HideColumnMenuItem column="measurement"/>
+            <ShowColumnMenuItem column="prev1" header="previous measurement" />
+            <HideColumnMenuItem column="target"/>
+            <HideColumnMenuItem column="source"/>
+            <HideColumnMenuItem column="comment"/>
+            <HideColumnMenuItem column="tags"/>
+>>>>>>> 7c7f27bd... Add extra column.
           </Dropdown.Menu>
         </Dropdown>
       </Table.HeaderCell>
@@ -145,6 +166,7 @@ export function Subject(props) {
           {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           {!props.hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' />}
           {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' />}
+          {props.visibleColumns.includes("prev1") && <SortableHeader column='prev1' label='Previous measurement' />}
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}

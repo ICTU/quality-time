@@ -37,34 +37,34 @@ const report = {
   }
 };
 
-it('shows the subject title', () => {
-  const wrapper = shallow(<Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
-  expect(wrapper.find("SubjectTitle").length).toBe(1);
-});
-
-it('shows the add subject button', () => {
-  const wrapper = mount(
-    <ReadOnlyContext.Provider value={false}>
-      <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
-    </ReadOnlyContext.Provider>
-  );
-  expect(wrapper.find("AddButton").length).toBe(1);
-});
-
-it('changes the sort column when clicked', () => {
-  function table_header_cell(index) {
-    return wrapper.find("SubjectTableHeader").at(0).dive().find("SortableHeader").at(index).dive().find("TableHeaderCell");
-  }
-  const wrapper = shallow(<Subject datamodel={datamodel} hiddenColumns={[]} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
-  for (let index of [0, 1, 2, 3, 4, 5, 6]) {
-    expect(table_header_cell(index).prop("sorted")).toBe(null);
-    table_header_cell(index).simulate("click");
-    expect(table_header_cell(index).prop("sorted")).toBe("ascending");
-    table_header_cell(index).simulate("click");
-    expect(table_header_cell(index).prop("sorted")).toBe("descending");
-    table_header_cell(index).simulate("click");
-    expect(table_header_cell(index).prop("sorted")).toBe(null);
-  }
+describe("<Subject />", () => {
+  it('shows the subject title', () => {
+    const wrapper = shallow(<Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
+    expect(wrapper.find("SubjectTitle").length).toBe(1);
+  });
+  it('shows the add subject button', () => {
+    const wrapper = mount(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} hiddenColumns={[]} visibleColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
+      </ReadOnlyContext.Provider>
+    );
+    expect(wrapper.find("AddButton").length).toBe(1);
+  });
+  it('changes the sort column when clicked', () => {
+    function table_header_cell(index) {
+      return wrapper.find("SubjectTableHeader").at(0).dive().find("SortableHeader").at(index).dive().find("TableHeaderCell");
+    }
+    const wrapper = shallow(<Subject datamodel={datamodel} hiddenColumns={[]} visibleColumns={[]} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
+    for (let index of [0, 1, 2, 3, 4, 5, 6]) {
+      expect(table_header_cell(index).prop("sorted")).toBe(null);
+      table_header_cell(index).simulate("click");
+      expect(table_header_cell(index).prop("sorted")).toBe("ascending");
+      table_header_cell(index).simulate("click");
+      expect(table_header_cell(index).prop("sorted")).toBe("descending");
+      table_header_cell(index).simulate("click");
+      expect(table_header_cell(index).prop("sorted")).toBe(null);
+    }
+  });
 });
 
 it('copies a metric when the copy button is clicked and a metric is selected', async () => {
@@ -72,7 +72,7 @@ it('copies a metric when the copy button is clicked and a metric is selected', a
   await act(async () => {
     render(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
+        <Subject datamodel={datamodel} hiddenColumns={[]} visibleColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
       </ReadOnlyContext.Provider>);
     fireEvent.click(screen.getByText(/Copy metric/));
   });
@@ -87,7 +87,7 @@ it('moves a metric when the move button is clicked and a metric is selected', as
   await act(async () => {
     render(
       <ReadOnlyContext.Provider value={false}>
-        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
+        <Subject datamodel={datamodel} hiddenColumns={[]} visibleColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
       </ReadOnlyContext.Provider>)
     fireEvent.click(screen.getByText(/Move metric/));
   });

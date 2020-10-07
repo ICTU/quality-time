@@ -11,6 +11,7 @@ export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
   const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
+  const [visibleColumns, toggleVisibleColumn, clearVisibleColumns] = useURLSearchQuery(props.history, "visible_columns", "array");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
@@ -20,6 +21,7 @@ export function Subjects(props) {
           <Subject
             {...props}
             clearHiddenColumns={clearHiddenColumns}
+            clearVisibleColumns={clearVisibleColumns}
             clearVisibleDetailsTabs={clearVisibleDetailsTabs}
             first_subject={index === 0}
             hiddenColumns={hiddenColumns}
@@ -27,10 +29,13 @@ export function Subjects(props) {
             key={subject_uuid}
             last_subject={index === last_index}
             setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
+            setVisibleColumns={(columns) => setVisibleColumns(columns)}
             subject_uuid={subject_uuid}
             toggleHiddenColumn={(column) => toggleHiddenColumn(column)}
+            toggleVisibleColumn={(column) => toggleVisibleColumn(column)}
             toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
             visibleDetailsTabs={visibleDetailsTabs}
+            visibleColumns={visibleColumns}
           /> : null
       )}
       <ReadOnlyOrEditable editableComponent={

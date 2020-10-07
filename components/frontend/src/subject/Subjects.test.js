@@ -47,23 +47,23 @@ describe("<Subjects />", () => {
     it('hides columns', () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HideColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HideColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
     });
     it('hides columns on load', () => {
         mockHistory.location.search = "?hidden_columns=trend"
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HideColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
     });
     it('hides multiple columns on load', () => {
         mockHistory.location.search = "?hidden_columns=trend,tags"
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend', 'tags'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("HideColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['tags']);
     });
     it('can handle missing columns', () => {

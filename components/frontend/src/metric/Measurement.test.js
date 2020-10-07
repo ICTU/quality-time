@@ -17,7 +17,7 @@ let report = {
           sources: [],
           status: "target_not_met",
           value: "50",
-          recent_measurements: [{sources: [{name: "Source", source_uuid: "1"}]}]
+          recent_measurements: [{ sources: [{ name: "Source", source_uuid: "1" }] }]
         }
       }
     }
@@ -32,14 +32,21 @@ const data_model = {
 
 function measurement() {
   return (
-    mount(<Table><Table.Body><Measurement
-      hiddenColumns={[]}
-      report={report}
-      reports={[report]}
-      metric_uuid="metric_uuid"
-      subject_uuid="subject_uuid"
-      datamodel={data_model}
-      visibleDetailsTabs={[]} /></Table.Body></Table>
+    mount(
+      <Table>
+        <Table.Body>
+          <Measurement
+            datamodel={data_model}
+            hiddenColumns={[]}
+            metric_uuid="metric_uuid"
+            report={report}
+            reports={[report]}
+            subject_uuid="subject_uuid"
+            visibleColumns={[]}
+            visibleDetailsTabs={[]}
+          />
+        </Table.Body>
+      </Table>
     )
   )
 }
