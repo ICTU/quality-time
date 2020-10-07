@@ -18,9 +18,7 @@ async def notify(log_level: int = None) -> None:
     logging.getLogger().setLevel(log_level or logging.ERROR)
     while True:
         async with aiohttp.ClientSession(raise_for_status=True, trust_env=True) as session:
-            response = await session.get(
-                f"http://{server_host}:"
-                f"{server_port}/api/v3/reports")
+            response = await session.get(f"http://{server_host}:{server_port}/api/v3/reports")
             json = await response.json()
 
             reds_in_reports = reds_per_report(json)
