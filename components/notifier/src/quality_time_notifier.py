@@ -12,12 +12,15 @@ from strategies.reds_per_report import reds_per_report
 
 async def notify(log_level: int = None) -> None:
     """Notify our users."""
+    sleep_duration = int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
+    server_host = os.environ.get('SERVER_HOST', 'localhost')
+    server_port = os.environ.get('SERVER_PORT', '5001')
     logging.getLogger().setLevel(log_level or logging.ERROR)
     while True:
         async with aiohttp.ClientSession(raise_for_status=True, trust_env=True) as session:
             response = await session.get(
-                f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
-                f"{os.environ.get('SERVER_PORT', '5001')}/api/v3/reports")
+                f"http://{server_host}:"
+                f"{server_port}/api/v3/reports")
             json = await response.json()
 
             reds_in_reports = reds_per_report(json)
@@ -31,7 +34,7 @@ async def notify(log_level: int = None) -> None:
             my_teams_message.text(notification)
             my_teams_message.send()
 
-            await asyncio.sleep(int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60)))
+            await asyncio.sleep(sleep_duration)
 
 
 if __name__ == "__main__":
