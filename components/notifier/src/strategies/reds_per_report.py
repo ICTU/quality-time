@@ -1,7 +1,10 @@
+"""Strategies for notifying users about metrics."""
+
 from typing import List
 
 
 def reds_per_report(json) -> List:
+    """Return the number of red metrics per report in the JSON returned by /api/v3/reports."""
     red_metrics = []
     for report in json["reports"]:
         red_metrics.append([report["report_uuid"], 0])
