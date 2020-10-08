@@ -21,7 +21,7 @@ class RedsPerReportTestCase(unittest.TestCase):
         self.assertEqual([["report1", 0]], reds_per_report(json))
 
     def test_red_metrics(self):
-        """Test that there the number of red metrics is returned."""
+        """Test that the number of red metrics is returned."""
         red_metric = dict(status="target_not_met")
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(report_uuid="report1", subjects=dict(subject1=subject1))
