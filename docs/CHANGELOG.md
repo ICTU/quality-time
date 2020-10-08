@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Show how to set the time zone of the renderer in the [docker-compose.yml](../docker/docker-compose.yml) to that PDF exports contain the correct local time. Fixes [#1529](https://github.com/ICTU/quality-time/issues/1529).
 - The date picker for the end date of technical debt has a minimum date set to today. Apparently, if the current value of the technical debt end date is far enough in the past so that the whole month popup consists of disabled dates, the date picker will crash. Worked around by removing the minimum date. Fixes [#1534](https://github.com/ICTU/quality-time/issues/1534).
+- Running `docker-compose up` in the project root folder wouldn't work on Windows. Fixes [#1543](https://github.com/ICTU/quality-time/issues/1543).
 
 ## [3.8.0] - [2020-10-04]
 
