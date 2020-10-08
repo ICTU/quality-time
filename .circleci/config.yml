@@ -56,6 +56,7 @@ jobs:
       - checkout
       - run: |
           export ENV=ci
+          export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
           docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.8-browsers ci/test.sh
