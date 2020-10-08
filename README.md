@@ -78,6 +78,11 @@ Clone this repository:
 git clone https://github.com/ICTU/quality-time.git
 ```
 
+Move into the 'quality-time/docker/' directory:
+```console
+cd quality-time/docker/
+```
+
 Build the containers:
 
 ```console
