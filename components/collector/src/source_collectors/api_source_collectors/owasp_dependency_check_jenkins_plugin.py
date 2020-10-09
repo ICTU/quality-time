@@ -2,20 +2,15 @@
 
 from typing import Dict
 
-from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
-from collector_utilities.type import URL
+from base_collectors import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
+class OWASPDependencyCheckJenkinsPluginSecurityWarnings(JenkinsPluginCollector):
     """OWASP Dependency Check Jenkins plugin security warnings collector."""
 
-    async def _api_url(self) -> URL:
-        api_url = await super()._api_url()
-        return URL(f"{api_url}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
-
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
+    plugin = "dependency-check-jenkins-pluginResult"
+    depth = 1
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
