@@ -92,29 +92,52 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
 class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
     """Unit tests for the performancetest-runner tests collector."""
 
+    def setUp(self):
+        super().setUp()
+        self.html = '''
+<html>
+    <table id="responsetimestable_begin">
+        <tr class="transaction"><td class="name">T1</td><td>7</td><td/><td/><td/><td/><td/><td>3</td></tr>
+        <tr class="transaction"><td class="name">T2</td><td>13</td><td/><td/><td/><td/><td/><td>5</td></tr>
+    </table>
+</html>'''
+
     async def test_tests(self):
         """Test that the number of performancetest transactions is returned."""
-        html = '<html><table class="config">' \
-            '<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>'\
-            '<tr><td class="name">Transactions success</td><td id="success">1240</td></tr>' \
-            '<tr><td class="name">Transactions failed</td><td id="failed">10</td></tr>' \
-            '</table></html>'
         metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="1250", total="1250")
+        response = await self.collect(metric, get_request_text=self.html)
+        self.assert_measurement(response, value="28", total="28")
 
     async def test_failed_tests(self):
         """Test that the number of failed performancetest transactions is returned."""
-        html = '<html><table class="config">' \
-            '<tr><td class="name">Transactions executed</td><td id="executed">1250</td></tr>' \
-            '<tr><td class="name">Transactions success</td><td id="success">1240</td></tr>' \
-            '<tr><td class="name">Transactions failed</td><td id="failed">10</td></tr>' \
-            '</table></html>'
         # We also pass an obsolete status ("canceled") to test that obsolete statuses are ignored:
         self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
         metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=html)
-        self.assert_measurement(response, value="10", total="1250")
+        response = await self.collect(metric, get_request_text=self.html)
+        self.assert_measurement(response, value="8", total="28")
+
+    async def test_succeeded_tests(self):
+        """Test that the number of succeeded performancetest transactions is returned."""
+        self.sources["source_id"]["parameters"]["test_result"] = ["success"]
+        metric = dict(type="tests", sources=self.sources, addition="sum")
+        response = await self.collect(metric, get_request_text=self.html)
+        self.assert_measurement(response, value="20", total="28")
+
+    async def test_ignored_tests(self):
+        """Test that the number of performancetest transactions is returned for transactions that are not ignored."""
+        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
+        metric = dict(type="tests", sources=self.sources, addition="sum")
+        response = await self.collect(metric, get_request_text=self.html)
+        self.assert_measurement(response, value="10", total="10")
+
+    async def test_failed_and_ignored_tests(self):
+        """Test that the number of failed performancetest transactions is returned for transactions that are not
+        ignored."""
+        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
+        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        metric = dict(type="tests", sources=self.sources, addition="sum")
+        response = await self.collect(metric, get_request_text=self.html)
+        self.assert_measurement(response, value="3", total="10")
 
 
 class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):

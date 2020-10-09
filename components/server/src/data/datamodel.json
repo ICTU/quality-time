@@ -4081,7 +4081,8 @@
                     "mandatory":  false,
                     "default_value": [],
                     "metrics": [
-                        "slow_transactions"
+                        "slow_transactions",
+                        "tests"
                     ]
                 }
             },

@@ -20,6 +20,11 @@ class PerformanceTestRunnerBaseClass(HTMLFileSourceCollector, ABC):  # pylint: d
         """Return the HTML soup."""
         return BeautifulSoup(await response.text(), "html.parser")
 
+    @staticmethod
+    def _name(transaction) -> str:
+        """Return the name of the transaction."""
+        return str(transaction.find("td", class_="name").string)
+
 
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     """Collector for the number of slow transactions in a Performancetest-runner performance test report."""
@@ -31,7 +36,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     @classmethod
     def __entity(cls, transaction) -> Entity:
         """Transform a transaction into a transaction entity."""
-        name = cls.__name(transaction)
+        name = cls._name(transaction)
         threshold = "high" if transaction.select("td.red.evaluated") else "warning"
         return Entity(key=name, name=name, threshold=threshold)
 
@@ -42,7 +47,7 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
 
         def include(transaction) -> bool:
             """Return whether the transaction should be included."""
-            return not match_string_or_regular_expression(self.__name(transaction), transactions_to_ignore)
+            return not match_string_or_regular_expression(self._name(transaction), transactions_to_ignore)
 
         slow_transactions: List[Tag] = []
         for response in responses:
@@ -50,11 +55,6 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
             for color in thresholds:
                 slow_transactions.extend(soup.select(f"tr.transaction:has(> td.{color}.evaluated)"))
         return [transaction for transaction in slow_transactions if include(transaction)]
-
-    @staticmethod
-    def __name(transaction) -> str:
-        """Return the name of the transaction."""
-        return str(transaction.find("td", class_="name").string)
 
 
 class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, SourceUpToDatenessCollector):
@@ -92,15 +92,23 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        count = 0
+        transactions_to_ignore = self._parameter("transactions_to_ignore")
+        count = dict(failed=0, success=0)
+        column_indices = dict(failed=7, success=1)
         total = 0
-        statuses = self._parameter("test_result")
         for response in responses:
             soup = await self._soup(response)
-            total += int(soup.find(id="executed").string)
-            for status in statuses:
-                count += int(soup.find(id=status).string)
-        return SourceMeasurement(value=str(count), total=str(total))
+            for transaction in soup.find(id="responsetimestable_begin").select("tr.transaction"):
+                if match_string_or_regular_expression(self._name(transaction), transactions_to_ignore):
+                    continue
+                columns = transaction.find_all("td")
+                for status, column_index in column_indices.items():
+                    nr_tests = int(columns[column_index].string or 0)
+                    count[status] += nr_tests
+                    total += nr_tests
+
+        value = sum(count[status] for status in self._parameter("test_result"))
+        return SourceMeasurement(value=str(value), total=str(total))
 
 
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
