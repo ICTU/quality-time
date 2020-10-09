@@ -213,6 +213,7 @@ To reduce duplication, `SourceCollector` has several abstract subclasses. The cl
 
 - `SourceCollector`
   - `UnmergedBranchesSourceCollector`: for sources that collect data for the number of unmerged branches metric
+  - `JenkinsPluginCollector`: for sources that collect their data from Jenkins plugins
   - `SourceUpToDatenessCollector`: for sources that support the source-up-to-dateness metric
     - `JenkinsPluginSourceUpToDatenessCollector`: for getting the source-up-to-dateness from Jenkins plugins
   - `LocalSourceCollector`: for sources that are local to the collector like fixed numbers and date/times

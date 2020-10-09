@@ -1,21 +1,21 @@
 """OWASP Dependency Check Jenkins plugin metric collector."""
 
+from abc import ABC
 from typing import Dict
 
-from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
-from collector_utilities.type import URL
+from base_collectors import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
+class OWASPDependencyCheckJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
+    """Base class for OWASP Dependency Check Jenkins plugin collectors."""
+
+    plugin = "dependency-check-jenkins-pluginResult"
+    depth = 1
+
+
+class OWASPDependencyCheckJenkinsPluginSecurityWarnings(JenkinsPluginCollector):
     """OWASP Dependency Check Jenkins plugin security warnings collector."""
-
-    async def _api_url(self) -> URL:
-        api_url = await super()._api_url()
-        return URL(f"{api_url}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult/api/json?depth=1")
-
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/dependency-check-jenkins-pluginResult")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
@@ -40,5 +40,6 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(SourceCollector):
         return severity1 if severities.index(severity1) >= severities.index(severity2) else severity2
 
 
-class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(JenkinsPluginSourceUpToDatenessCollector):
+class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(
+        OWASPDependencyCheckJenkinsPluginBaseClass, JenkinsPluginSourceUpToDatenessCollector):
     """Collector to get the age of the OWASP Dependency Check Jenkins plugin report."""
