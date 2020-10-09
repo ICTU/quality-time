@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- When measuring 'tests' with the Performncetest-runner as source, allow for ignoring transactions by name or regular expression. Closes [#1550](https://github.com/ICTU/quality-time/issues/1550).
+
 ### Fixed
 
 - Show how to set the time zone of the renderer in the [docker-compose.yml](../docker/docker-compose.yml) so that PDF exports contain the correct local time. Fixes [#1529](https://github.com/ICTU/quality-time/issues/1529).

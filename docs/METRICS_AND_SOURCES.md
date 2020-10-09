@@ -763,6 +763,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
+| Transactions to ignore (regular expressions or transaction names) | Multiple choice with addition | No | Transactions to ignore can be specified by transaction name or by regular expression. |
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
