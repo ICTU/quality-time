@@ -5,8 +5,8 @@ from datetime import datetime
 
 from collector_utilities.type import URL, Response
 
-from .source_collector import SourceCollector, SourceUpToDatenessCollector
 from source_model import SourceResponses
+from .source_collector import SourceCollector, SourceUpToDatenessCollector
 
 
 class JenkinsPluginCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
