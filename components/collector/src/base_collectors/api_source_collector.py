@@ -11,8 +11,8 @@ from source_model import SourceResponses
 
 class JenkinsPluginCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base class for Jenkins plugin collectors."""
-    plugin = "subclass responsibility"
-    depth = 0
+    plugin = "Subclass responsibility"
+    depth = 0  # Override to pass a higher depth to the plugin API, which means: "please, give me more details"
 
     async def _api_url(self) -> URL:
         depth = f"?depth={self.depth}" if self.depth > 0 else ""

@@ -2,25 +2,21 @@
 
 from abc import ABC
 
-from base_collectors import JenkinsPluginSourceUpToDatenessCollector, SourceCollector
-from collector_utilities.type import URL
+from base_collectors import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
 from source_model import SourceMeasurement, SourceResponses
 
 
-class CoberturaJenkinsPluginBaseClass(SourceCollector, ABC):  # skipcq: PYL-W0223
+class CoberturaJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
     """Base class for Cobertura Jenkins plugin collectors."""
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/cobertura")
+    plugin = "cobertura"
+    depth = 2
 
 
 class CoberturaJenkinsPluginCoverageBaseClass(CoberturaJenkinsPluginBaseClass):
     """Base class for Cobertura Jenkins plugin coverage collectors."""
 
     coverage_type = "subclass responsibility"
-
-    async def _api_url(self) -> URL:
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/cobertura/api/json?depth=2")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         elements = (await responses[0].json())["results"]["elements"]

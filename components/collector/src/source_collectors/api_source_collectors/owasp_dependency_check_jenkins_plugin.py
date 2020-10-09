@@ -1,16 +1,21 @@
 """OWASP Dependency Check Jenkins plugin metric collector."""
 
+from abc import ABC
 from typing import Dict
 
 from base_collectors import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class OWASPDependencyCheckJenkinsPluginSecurityWarnings(JenkinsPluginCollector):
-    """OWASP Dependency Check Jenkins plugin security warnings collector."""
+class OWASPDependencyCheckJenkinsPluginBaseClass(JenkinsPluginCollector, ABC):  # skipcq: PYL-W0223
+    """Base class for OWASP Dependency Check Jenkins plugin collectors."""
 
     plugin = "dependency-check-jenkins-pluginResult"
     depth = 1
+
+
+class OWASPDependencyCheckJenkinsPluginSecurityWarnings(JenkinsPluginCollector):
+    """OWASP Dependency Check Jenkins plugin security warnings collector."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         json = await responses[0].json()
@@ -35,5 +40,6 @@ class OWASPDependencyCheckJenkinsPluginSecurityWarnings(JenkinsPluginCollector):
         return severity1 if severities.index(severity1) >= severities.index(severity2) else severity2
 
 
-class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(JenkinsPluginSourceUpToDatenessCollector):
+class OWASPDependencyCheckJenkinsPluginSourceUpToDateness(
+        OWASPDependencyCheckJenkinsPluginBaseClass, JenkinsPluginSourceUpToDatenessCollector):
     """Collector to get the age of the OWASP Dependency Check Jenkins plugin report."""
