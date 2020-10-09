@@ -28,18 +28,26 @@ async def notify(log_level: int = None) -> None:
 
             notification = "Number of red metrics in each report:"
             for report in reds_in_reports:
-                notification += "\n\r - " + report[0] + ": " + str(report[1])
+                notification += "\n\r - " + report["report_uuid"] + ": " + str(report["red_metrics"])
 
-            if webhook:
-                logging.info("Sending notification to configured webhook")
-                my_teams_message = pymsteams.connectorcard(webhook)
-                my_teams_message.text(notification)
-                my_teams_message.send()
-            else:
-                logging.warning("No webhook configured; please set the environment variable TEAMS_WEBHOOK")
+            webhook = ""
+
+            send_notification_to_teams(webhook, notification)
 
             logging.info("Sleeping %.1f seconds...", sleep_duration)
             await asyncio.sleep(sleep_duration)
+
+
+def send_notification_to_teams(destination, text):
+    if destination:
+        logging.info("Sending notification to configured webhook")
+        my_teams_message = pymsteams.connectorcard(destination)
+        my_teams_message.text(text)
+        my_teams_message.send()
+        return True
+    else:
+        logging.warning("No webhook configured; please set the environment variable TEAMS_WEBHOOK")
+        return False
 
 
 if __name__ == "__main__":
