@@ -100,6 +100,6 @@ def changelog(database: Database, nr_changes: int, **uuids):
     delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
     changes.extend(database.reports.find(
         filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes*2, projection=projection))
-    changes = sorted(changes, reverse=True, key=lambda change: change["timestamp"])
+    changes = sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
