@@ -1,5 +1,7 @@
 """Changelog routes."""
 
+from typing import cast
+
 import bottle
 from pymongo.database import Database
 
@@ -16,7 +18,7 @@ def _get_changelog(database: Database, nr_changes: str, **uuids: str):
             timestamp=item.get("timestamp") or item["start"])
         for item in
         list(measurements.changelog(database, limit, **uuids)) + list(reports.changelog(database, limit, **uuids))]
-    return dict(changelog=sorted(changes, reverse=True, key=lambda change: change["timestamp"])[:limit])
+    return dict(changelog=sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))[:limit])
 
 
 @bottle.get("/api/v3/changelog/source/<source_uuid>/<nr_changes>")
