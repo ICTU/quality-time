@@ -15,6 +15,16 @@ jobs:
       - ci/unittest.sh
       - ci/quality.sh
 
+    - name: "Notifier unit tests"
+      language: python
+      python: 3.8
+      install:
+        - cd components/notifier
+        - pip install -r requirements.txt -r requirements-dev.txt
+      script:
+        - ci/unittest.sh
+        - ci/quality.sh
+
     - name: "Server unit tests"
       language: python
       python: 3.8
@@ -47,6 +57,8 @@ jobs:
       install:
       - cd components/collector
       - pip install -r requirements.txt -r requirements-dev.txt
+      - cd ../../components/notifier
+      - pip install -r requirements.txt -r requirements-dev.txt
       - cd ../../components/server
       - pip install -r requirements.txt -r requirements-dev.txt
       - cd ../../components/frontend
@@ -54,6 +66,10 @@ jobs:
       - cd ../..
       script:
       - cd components/collector
+      - mkdir build
+      - ci/unittest.sh
+      - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+      - cd components/notifier
       - mkdir build
       - ci/unittest.sh
       - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
@@ -69,6 +85,8 @@ jobs:
       - touch components/server/src/__init__.py
       - touch components/collector/__init__.py
       - touch components/collector/src/__init__.py
+      - touch components/notifier/__init__.py
+      - touch components/notifier/src/__init__.py
       - sonar-scanner
 
     - stage: deploy
@@ -88,5 +106,6 @@ jobs:
         script: >-
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" &&
           docker push ictu/quality-time_collector:$TRAVIS_TAG &&
+          docker push ictu/quality-time_notifier:$TRAVIS_TAG &&
           docker push ictu/quality-time_server:$TRAVIS_TAG &&
           docker push ictu/quality-time_frontend:$TRAVIS_TAG  # https://github.com/travis-ci/dpl/issues/673

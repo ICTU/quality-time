@@ -16,6 +16,8 @@ dependency_file_paths = [
   "requirements-dev.txt",
   "components/collector/requirements.txt",
   "components/collector/requirements-dev.txt",
+  "components/notifier/requirements.txt",
+  "components/notifier/requirements-dev.txt",
   "components/server/requirements.txt",
   "components/server/requirements-dev.txt",
 ]
@@ -33,6 +35,7 @@ enabled = true
   [analyzers.meta]
   dockerfile_paths = [
     "components/collector/Dockerfile",
+    "components/notifier/Dockerfile",
     "components/frontend/Dockerfile",
     "components/ldap/Dockerfile",
     "components/server/Dockerfile",

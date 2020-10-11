@@ -4,13 +4,14 @@ jobs:
   unittest_backend:
     docker:
       - image: circleci/python:3.8
-    parallelism: 2
+    parallelism: 3
     steps:
       - checkout
       - run: |
           case $CIRCLE_NODE_INDEX in
           	0) component=collector;;
-          	1) component=server
+          	1) component=notifier;;
+          	2) component=server
                    sudo apt-get install libsasl2-dev libldap2-dev libssl-dev;;
           esac
           cd components/$component
@@ -34,7 +35,7 @@ jobs:
   security_scan:
     docker:
       - image: docker:stable
-    parallelism: 3
+    parallelism: 4
     steps:
       - checkout
       - setup_remote_docker
@@ -42,8 +43,9 @@ jobs:
           apk add curl bash
           case $CIRCLE_NODE_INDEX in
           	0) component=collector;;
-          	1) component=server;;
-          	2) component=frontend;;
+          	1) component=notifier;;
+          	2) component=server;;
+          	3) component=frontend;;
           esac
           docker build -t ictu/$component:latest components/$component && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/$component:latest"
       - store_artifacts:
