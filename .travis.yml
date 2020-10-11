@@ -69,7 +69,7 @@ jobs:
       - mkdir build
       - ci/unittest.sh
       - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-      - cd components/notifier
+      - cd ../../components/notifier
       - mkdir build
       - ci/unittest.sh
       - nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
