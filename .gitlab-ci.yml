@@ -18,6 +18,18 @@ collector:
     paths:
       - components/collector/build/unittest-coverage
 
+notifer:
+  stage: test
+  script:
+    - cd components/notifier
+    - pip install -r requirements.txt -r requirements-dev.txt
+    - ci/unittest.sh
+    - ci/quality.sh
+  coverage: '/ \d+%/'
+  artifacts:
+    paths:
+      - components/notifier/build/unittest-coverage
+
 server:
   stage: test
   script:
