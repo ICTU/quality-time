@@ -58,9 +58,9 @@ The API is accessible at the server container, running at port 5001 by default. 
 
 ### Collector
 
-The collector contacts the server to see whether there's metrics that need to be measured and uses the server API to store the new measurements in the database. By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes and sleeps 60 seconds in between measurements.
+The collector contacts the server to see whether there are metrics that need to be measured and uses the server API to store the new measurements in the database. By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes and sleeps 60 seconds in between measurements.
 
-To configure the sleep duration and the measurement frequency, set the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables. Both variables have seconds as unit. Add the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables to collector service:
+To configure the sleep duration and the measurement frequency, set the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables. Both variables have seconds as unit. Add the `COLLECTOR_SLEEP_DURATION` and `COLLECTOR_MEASUREMENT_FREQUENCY` environment variables to the collector service:
 
 ```yaml
   collector:
@@ -69,7 +69,7 @@ To configure the sleep duration and the measurement frequency, set the `COLLECTO
       - COLLECTOR_MEASUREMENT_FREQUENCY=600
 ```
 
-To configure a proxy for the collector to use, set the `HTTP_PROXY` or `HTTPS_PROXY` environment variable, for example:
+To optionally configure a proxy for the collector to use, set the `HTTP_PROXY` or `HTTPS_PROXY` environment variable, for example:
 
 ```yaml
   collector:
@@ -78,3 +78,17 @@ To configure a proxy for the collector to use, set the `HTTP_PROXY` or `HTTPS_PR
 ```
 
 See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
+
+### Renderer
+
+The renderer converts *Quality-time* reports into PDFs. Currently, https has not been configured for communication between components, so `ALLOW_HTTP` needs to be true. 
+
+The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezone) environment variables, for example:
+
+```yaml
+  renderer:
+    environment:
+      - ALLOW_HTTP=true
+      - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
+      - TZ=Europe/Amsterdam  # Set the timezone to CET
+```
