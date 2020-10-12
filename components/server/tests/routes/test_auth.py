@@ -69,14 +69,14 @@ class LoginTests(AuthTestCase):
         self.assertEqual(f"user {username} <{email}>", logging_mock.call_args[0][1])
         self.assertIsInstance(logging_mock.call_args[0][2], exception)
 
-    def test_successful_forwardauth_login(self, connection_mock, connection_enter):
+    def test_successful_forwardauth_login(self):
         """Test successful login from forwarded authentication header."""
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
             with patch("bottle.request.get_header", Mock(return_value=self.user_email)):
                 self.assertEqual(dict(ok=True, email=self.user_email), auth.login(self.database))
         self.assert_cookie_has_session_id()
 
-    def test_forwardauth_login_no_header(self, connection_mock, connection_enter):
+    def test_forwardauth_login_no_header(self):
         """Test successful login from forwarded authentication header."""
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
             with patch("bottle.request.get_header", Mock(return_value=None)):
