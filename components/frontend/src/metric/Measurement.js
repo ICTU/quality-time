@@ -25,6 +25,28 @@ export function Measurement(props) {
       </Popup>
     )
   }
+  function PrevMeasurementValue() {
+    let three_days_ago = props.report_date ? new Date(props.report_date) : new Date();
+    three_days_ago.setDate(three_days_ago.getDate() - 3);
+    const matches = latest_measurements.filter((each) => Date.parse(each.start) <= three_days_ago && three_days_ago <= Date.parse(each.end));
+    let value, PopupLabel;
+    if (matches.length > 0) {
+      const measurement = matches[0];
+      value = measurement[metric.scale].value;
+      value = value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(value) : value || "?";
+      const start = new Date(measurement.start);
+      const end = new Date(measurement.end);
+      PopupLabel = () => <>Measured <TimeAgo date={three_days_ago.toISOString()} /> ({start.toLocaleString()} - {end.toLocaleString()})</>;
+    } else {
+      value = "?";
+      PopupLabel = () => <>No measurement found <TimeAgo date={three_days_ago.toISOString()} /> ({three_days_ago.toLocaleString()})</>;
+    }
+    return (
+      <Popup trigger={<span>{value + metric_unit}</span>} flowing hoverable>
+        <PopupLabel/>
+      </Popup>
+    )
+  }
   function measurement_target() {
     const metric_direction = { "<": "≦", ">": "≧" }[metric.direction || metric_type.direction];
     let debt_end = "";
@@ -66,7 +88,7 @@ export function Measurement(props) {
       {!props.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>}
       {!props.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} /></Table.Cell>}
       {!props.hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue /></Table.Cell>}
-      {props.visibleColumns.includes("prev1") && <Table.Cell><MeasurementValue /></Table.Cell>}
+      {props.visibleColumns.includes("prev1") && <Table.Cell><PrevMeasurementValue /></Table.Cell>}
       {!props.hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!props.hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}
       {!props.hiddenColumns.includes("comment") && <Table.Cell><div dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}

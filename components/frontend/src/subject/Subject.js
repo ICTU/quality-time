@@ -146,7 +146,7 @@ export function Subject(props) {
             <HideColumnMenuItem column="trend"/>
             <HideColumnMenuItem column="status"/>
             <HideColumnMenuItem column="measurement"/>
-            <ShowColumnMenuItem column="prev1" header="previous measurement" />
+            <ShowColumnMenuItem column="prev1" header="measurement 3 days ago" />
             <HideColumnMenuItem column="target"/>
             <HideColumnMenuItem column="source"/>
             <HideColumnMenuItem column="comment"/>
@@ -166,7 +166,7 @@ export function Subject(props) {
           {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           {!props.hiddenColumns.includes("status") && <SortableHeader column='status' label='Status' textAlign='center' />}
           {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement' label='Measurement' />}
-          {props.visibleColumns.includes("prev1") && <SortableHeader column='prev1' label='Previous measurement' />}
+          {props.visibleColumns.includes("prev1") && <SortableHeader column='prev1' label='Measurement 3 days ago' />}
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target' label='Target' />}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source' label='Source' />}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment' label='Comment' />}
@@ -180,7 +180,7 @@ export function Subject(props) {
       <ReadOnlyOrEditable editableComponent={
         <Table.Footer>
           <Table.Row>
-            <Table.HeaderCell colSpan='9'>
+            <Table.HeaderCell colSpan='10'>
               <AddButton item_type="metric" onClick={() => {
                 setSortColumn(null);
                 add_metric(props.subject_uuid, props.reload);
