@@ -80,7 +80,7 @@ class LoginTests(AuthTestCase):
         connection_enter.assert_not_called()
 
     def test_forwardauth_login_no_header(self, connection_mock, connection_enter):
-        """Test successful login from forwarded authentication header."""
+        """Test failed login if forwarded authentication is enabled but no header is present."""
         connection_mock.return_value = None
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
             with patch("bottle.request.get_header", Mock(return_value=None)):
