@@ -13,6 +13,8 @@ digraph {
   collector -> server [label=measurements]
   server -> collector [label=metrics]
   collector -> source [label=measurements, dir="back"]
+  server -> notifier [label=metrics]
+  notifier -> destination [label=notifications]
   proxy -> renderer [label=ui]
   proxy -> renderer [label=metrics]
   proxy -> renderer [label=measurements]
@@ -22,4 +24,5 @@ digraph {
   proxy -> server [label=credentials]
   server -> ldap [label=credentials]
   source [label="{{1|2|3|...|n}|sources}" shape=record]
+  destination [label="{{1|2|3|...|n}|destinations}" shape=record]
 }
