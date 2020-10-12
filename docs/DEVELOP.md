@@ -49,7 +49,7 @@ Open another terminal and run the server:
 ```console
 cd components/server
 python3 -m venv venv
-. venv/bin/activate
+. venv/bin/activate  # on Windows: venv\Scripts\activate 
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_server.py
 ```
@@ -63,7 +63,7 @@ Open another terminal and run the collector:
 ```console
 cd components/collector
 python3 -m venv venv
-. venv/bin/activate
+. venv/bin/activate  # on Windows: venv\Scripts\activate 
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
@@ -87,7 +87,7 @@ Optionally, open yet another terminal and run the notifier:
 ```console
 cd components/notifier
 python3 -m venv venv
-. venv/bin/activate
+. venv/bin/activate  # on Windows: venv\Scripts\activate 
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_notifier.py
 ```
@@ -118,6 +118,9 @@ To run the unit tests and measure unit test coverage of the backend components:
 
 ```console
 cd components/server  # or components/collector, or components/notifier
+python3 -m venv venv
+. venv/bin/activate  # on Windows: venv\Scripts\activate 
+pip install -r requirements.txt -r requirements-dev.txt
 ci/unittest.sh
 ```
 
@@ -125,6 +128,7 @@ To run the frontend unit tests:
 
 ```console
 cd compontents/frontend
+npm install
 npm run test
 ```
 
