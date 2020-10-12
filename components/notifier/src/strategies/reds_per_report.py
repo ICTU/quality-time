@@ -8,16 +8,16 @@ def reds_per_report(json) -> List:
     red_metrics = []
     for report in json["reports"]:
         if "teams_webhook" in report:
-            # red_metrics.append([report["report_uuid"], 0, report["teams_webhook"]])
             red_metrics.append({
-                "report_uuid": report["report_uuid"],
+                "report_name": report["report_uuid"],
                 "teams_webhook": report["teams_webhook"],
+                "url": report["url"],
                 "red_metrics": 0})
         else:
-            # red_metrics.append([report["report_uuid"], 0])
             red_metrics.append({
-                "report_uuid": report["report_uuid"],
+                "report_name": report["report_uuid"],
                 "teams_webhook": "",
+                "url": "",
                 "red_metrics": 0})
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
