@@ -28,7 +28,9 @@ async def notify(log_level: int = None) -> None:
             for notification in notifications:
                 text = "\n\r" + notification["report_name"] + " contains " + str(notification["red_metrics"]) + \
                        " red metrics" + "\n\r" + notification["url"]
-                send_notification_to_teams(notification["teams_webhook"], text)
+                send = send_notification_to_teams(notification["teams_webhook"], text)
+                if not send:
+                    logging.warning("unable to send notification for " + notification["report_name"])
 
             logging.info("Sleeping %.1f seconds...", sleep_duration)
             await asyncio.sleep(sleep_duration)
@@ -39,7 +41,11 @@ def send_notification_to_teams(destination, text):
         logging.info("Sending notification to configured webhook")
         my_teams_message = pymsteams.connectorcard(destination)
         my_teams_message.text(text)
-        my_teams_message.send()
+        try:
+            my_teams_message.send()
+        except:
+            logging.info("invalid webhook")
+            return False
         return True
     else:
         logging.warning("No webhook configured; please set the environment variable TEAMS_WEBHOOK")
