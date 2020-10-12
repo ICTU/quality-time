@@ -35,10 +35,6 @@ To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWA
       - FORWARD_AUTH_HEADER=X-Forwarded-User
 ```
 
-When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box.
-
-See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more information on LDAP filters.
-
 ## Settings per component
 
 ### Proxy
