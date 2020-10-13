@@ -14,14 +14,14 @@ class GenericSecurityWarningsTest(SourceCollectorTestCase):
             vulnerabilities=[
                 {
                       'title': 'ISO27001:2013 A9',
-                      'description': 'Application does not meet the Access Control Requirements since 2-fa is not enforced',
+                      'description': 'Application does not meet the Access Control Requirements',
                       'severity': 'high',
                     } ])
         expected_entities = [
             dict(
                 key='4c3462695bd4013b1dcfbb9da9aae1b9',
                 title = 'ISO27001:2013 A9',
-                description='Application does not meet the Access Control Requirements since 2-fa is not enforced',
+                description='Application does not meet the Access Control Requirements',
                 severity='high')]
         response = await self.collect(metric, get_request_json_return_value=vulnerabilities_json)
         self.assert_measurement(response, value="1", entities=expected_entities)
