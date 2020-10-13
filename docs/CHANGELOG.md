@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication.
+
 ## [3.9.0] - [2020-10-11]
 
 ### Added

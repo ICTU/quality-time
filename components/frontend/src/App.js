@@ -16,6 +16,7 @@ import { ReadOnlyContext } from './context/ReadOnly';
 import { get_datamodel } from './api/datamodel';
 import { get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
+import { login } from './api/auth';
 import { isValidDate_YYYYMMDD, show_message } from './utils'
 
 class App extends Component {
@@ -42,6 +43,7 @@ class App extends Component {
     const report_uuid = pathname.slice(1, pathname.length);
     const report_date_iso_string = parse(this.history.location.search).report_date || "";
     const report_date_string = isValidDate_YYYYMMDD(report_date_iso_string) ? report_date_iso_string.split("-").reverse().join("-") : "";
+    this.login_forwardauth();
     this.connect_to_nr_measurements_event_source()
     this.setState(
       {
@@ -123,7 +125,9 @@ class App extends Component {
   check_session(json) {
     if (json.ok === false && json.status === 401) {
       this.set_user(null);
-      show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
+      if(this.login_forwardauth() === false){
+        show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
+      }
     }
   }
 
@@ -194,6 +198,18 @@ class App extends Component {
       report_date.setHours(23, 59, 59);
     }
     return report_date;
+  }
+
+  login_forwardauth() {
+    let self = this;
+    login("", "")
+      .then(function (json) {
+        if(json.ok) {
+          self.set_user(json.email, json.email);
+          return true;
+        }
+      });
+      return false;
   }
 
   set_user(username, email) {

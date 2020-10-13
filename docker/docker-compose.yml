@@ -82,6 +82,8 @@ services:
       - LDAP_LOOKUP_USER_PASSWORD=admin
       - LDAP_SEARCH_FILTER=(|(uid=$$username)(cn=$$username))
       - LOAD_EXAMPLE_REPORTS=True
+      - FORWARD_AUTH_ENABLED=False
+      - FORWARD_AUTH_HEADER=X-Forwarded-User
     depends_on:
       - database
     cap_drop:
