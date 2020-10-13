@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, Table } from 'semantic-ui-react';
+import { Dropdown, Input, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -37,6 +37,7 @@ export function Subject(props) {
           last_metric={index === last_index}
           metric_uuid={metric_uuid}
           metric={metric}
+          previousMeasurementDaysAgo={previousMeasurementDaysAgo}
           stop_sort={() => setSortColumn(null)}
           visibleColumns={props.visibleColumns}
           {...props}
@@ -46,6 +47,7 @@ export function Subject(props) {
   }
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
+  const [previousMeasurementDaysAgo, setPreviousMeasurementDaysAgo] = useState(3);
   const metric_components = create_metric_components();
 
   if (sortColumn !== null) {
@@ -134,30 +136,27 @@ export function Subject(props) {
               {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
             </Dropdown.Item>
             <Dropdown.Header>Columns</Dropdown.Header>
-<<<<<<< HEAD
-            <ColumnMenuItem column="trend" />
-            <ColumnMenuItem column="status" />
-            <ColumnMenuItem column="measurement" />
-            <ColumnMenuItem column="target" />
-            <ColumnMenuItem column="source" />
-            <ColumnMenuItem column="comment" />
-            <ColumnMenuItem column="tags" />
-=======
             <HideColumnMenuItem column="trend"/>
             <HideColumnMenuItem column="status"/>
             <HideColumnMenuItem column="measurement"/>
-            <ShowColumnMenuItem column="prev1" header="measurement 3 days ago" />
+            <ShowColumnMenuItem column="prev1" header="earlier measurement" />
             <HideColumnMenuItem column="target"/>
             <HideColumnMenuItem column="source"/>
             <HideColumnMenuItem column="comment"/>
             <HideColumnMenuItem column="tags"/>
->>>>>>> 7c7f27bd... Add extra column.
           </Dropdown.Menu>
         </Dropdown>
       </Table.HeaderCell>
     )
   }
+  function DaysAgoInput() {
+    return (
+      <Input inline style={{ width: 35 }} transparent type='number' value={previousMeasurementDaysAgo}
+        tabIndex={0} onChange={({ value }) => { setPreviousMeasurementDaysAgo(Math.min(7, Math.max(1, value))) }} />
+    )
+  }
   function SubjectTableHeader() {
+    const measurement_header = props.report_date ? `Measurement (${props.report_date.toLocaleDateString()})` : 'Measurement'
     return (
       <Table.Header>
         <Table.Row>
@@ -165,8 +164,8 @@ export function Subject(props) {
           <SortableHeader column='name'>Metric</SortableHeader>
           {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           {!props.hiddenColumns.includes("status") && <SortableHeader column='status' textAlign='center' >Status</SortableHeader>}
-          {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement'>Measurement</SortableHeader>}
-          {props.visibleColumns.includes("prev1") && <SortableHeader column='prev1'>Measurement 3 days ago</SortableHeader>}
+          {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement'>{measurement_header}</SortableHeader>}
+          {props.visibleColumns.includes("prev1") && <Table.HeaderCell>Measurement <DaysAgoInput /> day{previousMeasurementDaysAgo === 1 ? '' : 's'} earlier</Table.HeaderCell>}
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target'>Target</SortableHeader>}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source'>Source</SortableHeader>}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment'>Comment</SortableHeader>}

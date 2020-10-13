@@ -26,9 +26,9 @@ export function Measurement(props) {
     )
   }
   function PrevMeasurementValue() {
-    let three_days_ago = props.report_date ? new Date(props.report_date) : new Date();
-    three_days_ago.setDate(three_days_ago.getDate() - 3);
-    const matches = latest_measurements.filter((each) => Date.parse(each.start) <= three_days_ago && three_days_ago <= Date.parse(each.end));
+    let days_ago = props.report_date ? new Date(props.report_date) : new Date();
+    days_ago.setDate(days_ago.getDate() - props.previousMeasurementDaysAgo);
+    const matches = latest_measurements.filter((each) => Date.parse(each.start) <= days_ago && days_ago <= Date.parse(each.end));
     let value, PopupLabel;
     if (matches.length > 0) {
       const measurement = matches[0];
@@ -36,10 +36,10 @@ export function Measurement(props) {
       value = value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(value) : value || "?";
       const start = new Date(measurement.start);
       const end = new Date(measurement.end);
-      PopupLabel = () => <>Measured <TimeAgo date={three_days_ago.toISOString()} /> ({start.toLocaleString()} - {end.toLocaleString()})</>;
+      PopupLabel = () => <>Measured <TimeAgo date={days_ago.toISOString()} /> ({start.toLocaleString()} - {end.toLocaleString()})</>;
     } else {
       value = "?";
-      PopupLabel = () => <>No measurement found <TimeAgo date={three_days_ago.toISOString()} /> ({three_days_ago.toLocaleString()})</>;
+      PopupLabel = () => <>No measurement found <TimeAgo date={days_ago.toISOString()} /> ({days_ago.toLocaleString()})</>;
     }
     return (
       <Popup trigger={<span>{value + metric_unit}</span>} flowing hoverable>
