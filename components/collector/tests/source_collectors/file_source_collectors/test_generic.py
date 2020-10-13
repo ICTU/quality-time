@@ -19,7 +19,7 @@ class GenericSecurityWarningsTest(SourceCollectorTestCase):
                     } ])
         expected_entities = [
             dict(
-                key='4c3462695bd4013b1dcfbb9da9aae1b9',
+                key='4fff19e8a55b0dac211e16d105dbaccb',
                 title = 'ISO27001:2013 A9',
                 description='Application does not meet the Access Control Requirements',
                 severity='high')]
