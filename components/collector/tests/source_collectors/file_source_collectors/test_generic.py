@@ -19,7 +19,7 @@ class GenericSecurityWarningsTest(SourceCollectorTestCase):
                     } ])
         expected_entities = [
             dict(
-                key='2ca764b9f23cea1fbcaf53b7149f0495',
+                key='4c3462695bd4013b1dcfbb9da9aae1b9',
                 title = 'ISO27001:2013 A9',
                 description='Application does not meet the Access Control Requirements since 2-fa is not enforced',
                 severity='high')]
