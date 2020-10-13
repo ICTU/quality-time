@@ -32,7 +32,7 @@ export function Subjects(props) {
             previousMeasurementDaysEarlier={previousMeasurementDaysEarlier}
             setHiddenColumns={(columns) => setHiddenColumns(columns)}
             setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
-            setPreviousMeasurementDaysEarlier={(state) => setPreviousMeasurementDaysEarlier(state)}
+            setPreviousMeasurementDaysEarlier={(days) => setPreviousMeasurementDaysEarlier(days)}
             setVisibleColumns={(columns) => setVisibleColumns(columns)}
             subject_uuid={subject_uuid}
             toggleHiddenColumn={(column) => toggleHiddenColumn(column)}

@@ -80,5 +80,25 @@ describe("<Subjects />", () => {
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
         wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
+    });
+    it('shows columns', () => {
+        const wrapper = subjects();
+        expect(wrapper.find("Subject").prop("visibleColumns")).toStrictEqual([]);
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ShowColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        expect(wrapper.find("Subject").prop("visibleColumns")).toStrictEqual(['prev1']);
+    });
+    it('shows columns on load', () => {
+        mockHistory.location.search = "?visible_columns=prev1"
+        const wrapper = subjects();
+        expect(wrapper.find("Subject").prop("visibleColumns")).toStrictEqual(['prev1']);
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ShowColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
+        expect(wrapper.find("Subject").prop("visibleColumns")).toStrictEqual([]);
+    });
+    it('sets the number of days earlier', () => {
+        mockHistory.location.search = "?visible_columns=prev1"
+        const wrapper = subjects();
+        expect(wrapper.find("Subject").prop("previousMeasurementDaysEarlier")).toStrictEqual(3);
+        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("DaysEarlierInput").dive().find("Input").simulate("change", {target: {value: 4}});
+        expect(wrapper.find("Subject").prop("previousMeasurementDaysEarlier")).toStrictEqual(4);
     })
 });
