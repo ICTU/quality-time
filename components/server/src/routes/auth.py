@@ -106,8 +106,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
 @bottle.post("/api/v3/login")
 def login(database: Database) -> Dict[str, Union[bool, str]]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
-    forward_auth_enabled = bool(os.environ.get("FORWARD_AUTH_ENABLED"))
-    if forward_auth_enabled:
+    if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no cover-behave
         forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
         username = bottle.request.get_header(forward_auth_header, None)
         verified, email = username is not None, username
