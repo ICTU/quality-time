@@ -1,4 +1,4 @@
-"""Unit tests for the Snyk source."""
+"""Unit tests for the Generic Warning source."""
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
