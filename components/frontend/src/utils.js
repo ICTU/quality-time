@@ -68,14 +68,18 @@ export function format_metric_unit(metric_type, metric, with_multiple=true) {
     return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
 }
 
-export function useURLSearchQuery(history, key, state_type) {
-    // state_type can either be "boolean" or "array"
+export function useURLSearchQuery(history, key, state_type, default_value) {
+    // state_type can be "boolean", "integer", or "array"
+    // default_value is only used for state_type integer
     const [state, setState] = useState(getState());
 
     function getState() {
         const parsed_state = parseURLSearchQuery()[key];
         if (state_type === "boolean") {
             return parsed_state === "true"
+        }
+        if (state_type === "integer") {
+            return typeof parsed_state === "string" && parsed_state !== "" ? parseInt(parsed_state) : default_value || 0
         }
         // else state_type is "array"
         return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Subject } from './Subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
@@ -13,7 +13,7 @@ export function Subjects(props) {
   const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
   const [visibleColumns, toggleVisibleColumn, clearVisibleColumns] = useURLSearchQuery(props.history, "visible_columns", "array");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
-  const [previousMeasurementDaysEarlier, setPreviousMeasurementDaysEarlier] = useState(3);
+  const [previousMeasurementDaysEarlier, setPreviousMeasurementDaysEarlier] = useURLSearchQuery(props.history, "prev_days", "integer", 3);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
