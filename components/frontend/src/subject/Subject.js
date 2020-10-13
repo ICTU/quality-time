@@ -147,10 +147,10 @@ export function Subject(props) {
       </Table.HeaderCell>
     )
   }
-  function DaysAgoInput() {
+  function DaysEarlierInput() {
     return (
-      <Input style={{ width: 35 }} transparent type='number' value={props.previousMeasurementDaysAgo}
-        tabIndex={0} onChange={(event) => { props.setPreviousMeasurementDaysAgo(Math.min(7, Math.max(1, event.target.value))) }} />
+      <Input style={{ width: 35 }} transparent type='number' value={props.previousMeasurementDaysEarlier}
+        tabIndex={0} onChange={(event) => { props.setPreviousMeasurementDaysEarlier(Math.min(7, Math.max(1, event.target.value))) }} />
     )
   }
   function SubjectTableHeader() {
@@ -163,7 +163,7 @@ export function Subject(props) {
           {!props.hiddenColumns.includes("trend") && <Table.HeaderCell width="2">Trend (7 days)</Table.HeaderCell>}
           {!props.hiddenColumns.includes("status") && <SortableHeader column='status' textAlign='center' >Status</SortableHeader>}
           {!props.hiddenColumns.includes("measurement") && <SortableHeader column='measurement'>{measurement_header}</SortableHeader>}
-          {props.visibleColumns.includes("prev1") && <Table.HeaderCell>Measurement <DaysAgoInput /> day{props.previousMeasurementDaysAgo === 1 ? '' : 's'} earlier</Table.HeaderCell>}
+          {props.visibleColumns.includes("prev1") && <Table.HeaderCell>Measurement <DaysEarlierInput /> day{props.previousMeasurementDaysEarlier === 1 ? '' : 's'} earlier</Table.HeaderCell>}
           {!props.hiddenColumns.includes("target") && <SortableHeader column='target'>Target</SortableHeader>}
           {!props.hiddenColumns.includes("source") && <SortableHeader column='source'>Source</SortableHeader>}
           {!props.hiddenColumns.includes("comment") && <SortableHeader column='comment'>Comment</SortableHeader>}

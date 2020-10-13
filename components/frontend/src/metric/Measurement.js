@@ -27,7 +27,7 @@ export function Measurement(props) {
   }
   function PrevMeasurementValue() {
     let days_ago = props.report_date ? new Date(props.report_date) : new Date();
-    days_ago.setDate(days_ago.getDate() - props.previousMeasurementDaysAgo);
+    days_ago.setDate(days_ago.getDate() - props.previousMeasurementDaysEarlier);
     const matches = latest_measurements.filter((each) => Date.parse(each.start) <= days_ago && days_ago <= Date.parse(each.end));
     let value, PopupLabel;
     if (matches.length > 0) {

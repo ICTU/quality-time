@@ -13,7 +13,7 @@ export function Subjects(props) {
   const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
   const [visibleColumns, toggleVisibleColumn, clearVisibleColumns] = useURLSearchQuery(props.history, "visible_columns", "array");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
-  const [previousMeasurementDaysAgo, setPreviousMeasurementDaysAgo] = useState(3);
+  const [previousMeasurementDaysEarlier, setPreviousMeasurementDaysEarlier] = useState(3);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
@@ -29,9 +29,11 @@ export function Subjects(props) {
             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
             key={subject_uuid}
             last_subject={index === last_index}
-            previousMeasurementDaysAgo={previousMeasurementDaysAgo}
+            previousMeasurementDaysEarlier={previousMeasurementDaysEarlier}
+            setHiddenColumns={(columns) => setHiddenColumns(columns)}
             setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
-            setPreviousMeasurementDaysAgo={(state) => setPreviousMeasurementDaysAgo(state)}
+            setPreviousMeasurementDaysEarlier={(state) => setPreviousMeasurementDaysEarlier(state)}
+            setVisibleColumns={(columns) => setVisibleColumns(columns)}
             subject_uuid={subject_uuid}
             toggleHiddenColumn={(column) => toggleHiddenColumn(column)}
             toggleVisibleColumn={(column) => toggleVisibleColumn(column)}
