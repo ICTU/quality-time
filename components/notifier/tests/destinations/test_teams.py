@@ -16,8 +16,13 @@ class TeamsTestCase(TestCase):
         expected_result = False
         self.assertEqual(result, expected_result)
 
-    @mock.patch('quality_time_notifier.send_notification_to_teams', return_value=True)
+    @mock.patch('quality_time_notifier.pymsteams.connectorcard.send', return_value=True)
     def test_valid_webhook(self, mock_teams_destination):
-        result = send_notification_to_teams("", "test")
+        result = send_notification_to_teams("valid_webhook", "test")
+        expected_result = True
+        self.assertEqual(result, expected_result)
+
+    def test_invalid_message(self, mock_teams_destination):
+        result = send_notification_to_teams("valid_webhook", None)
         expected_result = True
         self.assertEqual(result, expected_result)
