@@ -11,7 +11,7 @@ class GenericSecurityWarningsTest(SourceCollectorTestCase):
         sources = dict(source_id=dict(type="generic", parameters=dict(url="generic.json", severities=["high"])))
         metric = dict(type="security_warnings", sources=sources, addition="sum")
         vulnerabilities_json = dict(
-            vulnerabilities=[ 
+            vulnerabilities=[
                 {
                       'title': 'ISO27001:2013 A9',
                       'description': 'Application does not meet the Access Control Requirements since 2-fa is not enforced',
