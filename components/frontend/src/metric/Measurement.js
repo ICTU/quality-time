@@ -10,9 +10,13 @@ import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { get_metric_name, get_metric_target, format_metric_unit, format_minutes } from '../utils';
 import "./Measurement.css";
 
+function format_value(value, unit, scale) {
+  return value && unit === "minutes" && scale !== "percentage" ? format_minutes(value) : value || "?";
+}
+
 export function Measurement(props) {
   function MeasurementValue() {
-    const value = metric.value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(metric.value) : metric.value || "?";
+    const value = format_value(metric.value, metric_type.unit, metric.scale);
     const now = new Date();
     const measurement_timestring = (latest_measurement && latest_measurement.end) || now.toISOString();
     const start = (latest_measurement && new Date(latest_measurement.start)) || now;
@@ -32,8 +36,7 @@ export function Measurement(props) {
     let value, PopupLabel;
     if (matches.length > 0) {
       const measurement = matches[0];
-      value = measurement[metric.scale].value;
-      value = value && metric_type.unit === "minutes" && metric.scale !== "percentage" ? format_minutes(value) : value || "?";
+      value = format_value(measurement[metric.scale].value, metric_type.unit, metric.scale);
       const start = new Date(measurement.start);
       const end = new Date(measurement.end);
       PopupLabel = () => <>Measured <TimeAgo date={days_ago.toISOString()} /> ({start.toLocaleString()} - {end.toLocaleString()})</>;

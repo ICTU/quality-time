@@ -68,7 +68,7 @@ export function format_metric_unit(metric_type, metric, with_multiple=true) {
     return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
 }
 
-export function useURLSearchQuery(history, key, state_type, default_value) {
+export function useURLSearchQuery(history, key, state_type, default_value=0) {
     // state_type can be "boolean", "integer", or "array"
     // default_value is only used for state_type integer
     const [state, setState] = useState(getState());
@@ -79,7 +79,7 @@ export function useURLSearchQuery(history, key, state_type, default_value) {
             return parsed_state === "true"
         }
         if (state_type === "integer") {
-            return typeof parsed_state === "string" && parsed_state !== "" ? parseInt(parsed_state) : default_value || 0
+            return typeof parsed_state === "string" && parsed_state !== "" ? parseInt(parsed_state) : default_value
         }
         // else state_type is "array"
         return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
