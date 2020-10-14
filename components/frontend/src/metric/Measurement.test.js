@@ -30,7 +30,7 @@ const data_model = {
   }
 };
 
-function measurement() {
+function measurement(visibleColumns=[]) {
   return (
     mount(
       <Table>
@@ -42,7 +42,7 @@ function measurement() {
             report={report}
             reports={[report]}
             subject_uuid="subject_uuid"
-            visibleColumns={[]}
+            visibleColumns={visibleColumns}
             visibleDetailsTabs={[]}
           />
         </Table.Body>
@@ -72,4 +72,9 @@ it('renders the minutes as percentage', () => {
   const wrapper = measurement();
   expect(wrapper.find("TableCell").at(4).text()).toBe("50% minutes");
   expect(wrapper.find("TableCell").at(5).text()).toBe("≦ 0% minutes");
+});
+
+it('renders the previous measurement column', () => {
+  const wrapper = measurement(['prev1']);
+  expect(wrapper.find("TableCell").at(5).text()).toBe("?% minutes");
 });
