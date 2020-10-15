@@ -32,25 +32,6 @@ jobs:
             npm install
             npm test
 
-  security_scan:
-    docker:
-      - image: docker:stable
-    parallelism: 4
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          apk add curl bash
-          case $CIRCLE_NODE_INDEX in
-          	0) component=collector;;
-          	1) component=notifier;;
-          	2) component=server;;
-          	3) component=frontend;;
-          esac
-          docker build -t ictu/$component:latest components/$component && curl -s https://ci-tools.anchore.io/inline_scan-v0.6.0 | bash -s -- -t 600 -r "ictu/$component:latest"
-      - store_artifacts:
-          path: anchore-reports/
-
   application_tests:
     machine: true
     parallelism: 1
@@ -119,8 +100,6 @@ workflows:
       - application_tests:
           context: QualityTime
       - integration_tests:
-          context: QualityTime
-      - security_scan:
           context: QualityTime
       - unittest_backend:
           context: QualityTime
