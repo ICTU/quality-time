@@ -23,17 +23,17 @@ async def notify(log_level: int = None) -> None:
             response = await session.get(f"http://{server_host}:{server_port}/api/v3/reports")
             json = await response.json()
 
-            notifications = reds_per_report(json)
+        notifications = reds_per_report(json)
 
-            for notification in notifications:
-                text = "\n\r" + notification["report_name"] + " contains " + str(notification["red_metrics"]) + \
-                       " red metrics" + "\n\r" + notification["url"]
-                send = send_notification_to_teams(notification["teams_webhook"], text)
-                if not send:
-                    logging.warning("unable to send the notification for " + notification["report_name"])
+        for notification in notifications:
+            text = "\n\r" + notification["report_name"] + " contains " + str(notification["red_metrics"]) + \
+                   " red metrics" + "\n\r" + notification["url"]
+            send = send_notification_to_teams(notification["teams_webhook"], text)
+            if not send:
+                logging.warning("unable to send the notification for " + notification["report_name"])
 
-            logging.info("Sleeping %.1f seconds...", sleep_duration)
-            await asyncio.sleep(sleep_duration)
+        logging.info("Sleeping %.1f seconds...", sleep_duration)
+        await asyncio.sleep(sleep_duration)
 
 
 def send_notification_to_teams(destination, text):
