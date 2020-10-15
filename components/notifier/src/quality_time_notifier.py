@@ -37,19 +37,22 @@ async def notify(log_level: int = None) -> None:
 
 
 def send_notification_to_teams(destination, text):
-    if destination:
-        logging.info("Sending notification to configured webhook")
-        my_teams_message = pymsteams.connectorcard(destination)
-        my_teams_message.text(text)
-        try:
-            my_teams_message.send()
-        except:
-            logging.info("invalid webhook")
-            return False
-        return True
-    else:
+    if not destination:
         logging.warning("No webhook configured; please set the environment variable TEAMS_WEBHOOK")
         return False
+    if not text:
+        logging.warning("No text passed configured; please set the environment variable TEAMS_WEBHOOK")
+        return False
+
+    logging.info("Sending notification to configured webhook")
+    my_teams_message = pymsteams.connectorcard(destination)
+    my_teams_message.text(text)
+    try:
+        my_teams_message.send()
+    except:
+        logging.info("invalid webhook")
+        return False
+    return True
 
 
 if __name__ == "__main__":
