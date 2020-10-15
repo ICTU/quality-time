@@ -9,6 +9,7 @@ def reds_per_report(json) -> List:
     for report in json["reports"]:
         red_metrics.append({
             "report_uuid": report["report_uuid"],
+            "report_title": report["title"],
             "teams_webhook": report.get("teams_webhook", ""),
             "url": report.get("url", ""),
             "red_metrics": 0})
