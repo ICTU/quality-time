@@ -21,7 +21,7 @@ def import_datamodel(database: Database) -> None:  # pragma: no-cover behave
     if latest := latest_datamodel(database):
         del latest["timestamp"]
         del latest["_id"]
-        if data_model == latest:
+        if data_model == latest:  # pragma: no-cover behave
             logging.info("Skipping loading the data model; it is unchanged")
             return
     insert_new_datamodel(database, data_model)

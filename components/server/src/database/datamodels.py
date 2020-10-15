@@ -21,7 +21,7 @@ def insert_new_datamodel(database: Database, data_model):  # pragma: no-cover be
     # The coverage measurement of the behave feature tests is unstable. Most of the time it reports the last two lines
     # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report, coverage
     # measurement has been turned off for this method.
-    if "_id" in data_model:
+    if "_id" in data_model:  # pragma: no-cover behave
         del data_model["_id"]
     data_model["timestamp"] = iso_timestamp()
     return database.datamodels.insert_one(data_model)
