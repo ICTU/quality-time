@@ -62,7 +62,7 @@ export function MeasurementDetails(props) {
       const nr_entities = (source.entities && source.entities.length) || 0;
       if (nr_entities === 0) { return } // no entities to show, continue
       const source_name = get_source_name(report_source, props.datamodel);
-      panes.push({
+      panes.unshift({
         menuItem: <Menu.Item key={source.source_uuid}><FocusableTab>{source_name}</FocusableTab></Menu.Item>,
         render: () => <Tab.Pane><SourceEntities metric={metric} report_uuid={report_uuid} source={source} {...props} reload={reload} /></Tab.Pane>
       });
