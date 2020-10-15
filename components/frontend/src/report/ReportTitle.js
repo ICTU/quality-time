@@ -44,6 +44,20 @@ export function ReportTitle(props) {
             </Grid.Row>
         )
     }
+    function NotifierRow() {
+        return (
+            <Grid.Row>
+                <Grid.Column>
+                    <StringInput
+                        label="Teams Webhook"
+                        set_value={(value) => set_report_attribute(report_uuid, "teams_webhook", value, props.reload) &&
+                                   set_report_attribute(report_uuid, "url", window.location.href, props.reload)}
+                        value={props.report.teams_webhook}
+                    />
+                </Grid.Column>
+            </Grid.Row>
+        )
+    }
     function ChangeLogRow() {
         return (
             <Grid.Row>
@@ -57,6 +71,7 @@ export function ReportTitle(props) {
         <HeaderWithDetails level="h1" header={props.report.title} subheader={props.report.subtitle}>
             <Grid stackable>
                 <ReportAttributesRow />
+                <NotifierRow />
                 <ChangeLogRow />
                 <ButtonRow />
             </Grid>
