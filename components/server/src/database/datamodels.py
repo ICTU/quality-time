@@ -16,9 +16,12 @@ def latest_datamodel(database: Database, max_iso_timestamp: str = ""):
     return data_model or {}
 
 
-def insert_new_datamodel(database: Database, data_model):
+def insert_new_datamodel(database: Database, data_model):  # pragma: no-cover behave
     """Insert a new data model in the data models collection."""
-    if "_id" in data_model:  # pragma: no cover-behave
+    # The coverage measurement of the behave feature tests is unstable. Most of the time it reports the last two lines
+    # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report, coverage
+    # measurement has been turned off for this method.
+    if "_id" in data_model:
         del data_model["_id"]
     data_model["timestamp"] = iso_timestamp()
     return database.datamodels.insert_one(data_model)

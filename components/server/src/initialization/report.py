@@ -11,30 +11,30 @@ from database.reports import insert_new_report, insert_new_reports_overview, lat
 from server_utilities.functions import uuid
 
 
-def initialize_reports_overview(database: Database) -> None:
+def initialize_reports_overview(database: Database) -> None:  # pragma: no-cover behave
     """Initialize the reports overview if not present in the database."""
     # The coverage measurement of the behave feature tests is unstable. Most of the time it reports the last two lines
-    # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report coverage
-    # measurement of the last two lines and the if-statement has been turned off.
-    if latest_reports_overview(database):  # pragma: no-cover behave
+    # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report, coverage
+    # measurement has been turned off for this method.
+    if latest_reports_overview(database):
         logging.info("Skipping initializing reports overview; it already exists")
     else:
-        logging.info("Initializing reports overview")  # pragma: no-cover behave
-        insert_new_reports_overview(database, dict(title="Reports", subtitle=""))  # pragma: no-cover behave
+        logging.info("Initializing reports overview")
+        insert_new_reports_overview(database, dict(title="Reports", subtitle=""))
 
 
-def import_report(database: Database, filename: pathlib.Path) -> None:
+def import_report(database: Database, filename: pathlib.Path) -> None:  # pragma: no-cover behave
     """Read the report and store it in the database."""
     # The coverage measurement of the behave feature tests is unstable. Most of the time it reports the last two lines
-    # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report coverage
-    # measurement of the last two lines and the if-statement has been turned off.
+    # as covered, sometimes not. It's unclear why. To prevent needless checking of the coverage report, coverage
+    # measurement has been turned off for this method.
     with filename.open() as json_report:
         imported_report = json.load(json_report)
-    if report_exists(database, imported_report["report_uuid"]):  # pragma: no-cover behave
+    if report_exists(database, imported_report["report_uuid"]):
         logging.info("Skipping import of %s; it already exists", filename)
     else:
-        import_json_report(database, imported_report)  # pragma: no-cover behave
-        logging.info("Report %s imported", filename)  # pragma: no-cover behave
+        import_json_report(database, imported_report)
+        logging.info("Report %s imported", filename)
 
 
 def import_json_report(database: Database, imported_report):
