@@ -8,7 +8,7 @@ import pymsteams
 def send_notification_to_teams(destination, text):
     """Send notification to Microsoft teams using a Webhook."""
     if not destination:
-        logging.warning("No webhook configured; please set the environment variable TEAMS_WEBHOOK")
+        logging.warning("No webhook configured")
         return False
     if not text:
         logging.error("No text passed to send as notification; please fix this bug")
