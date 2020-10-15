@@ -26,7 +26,8 @@ async def notify(log_level: int = None) -> None:
         notifications = reds_per_report(json)
 
         for notification in notifications:
-            text = "\n\r[" + notification["report_uuid"] + "](" + notification["url"] + ") contains " + str(notification["red_metrics"]) + " red metrics"
+            text = "\n\r[" + notification["report_uuid"] + "](" + notification["url"] + \
+                   ") contains " + str(notification["red_metrics"]) + " red metrics"
             send = send_notification_to_teams(notification["teams_webhook"], text)
             if not send:
                 logging.warning("unable to send the notification for %s", notification["report_uuid"])
