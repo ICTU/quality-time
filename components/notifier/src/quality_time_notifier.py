@@ -26,7 +26,6 @@ async def notify(log_level: int = None) -> None:
         notifications = reds_that_are_new(json)
 
         total_new_red_metrics = sum(notification["new_red_metrics"] for notification in notifications)
-            total_new_red_metrics += notification["new_red_metrics"]
         if total_new_red_metrics > 0:
             for notification in notifications:
                 text = build_notification_text(notifications)
