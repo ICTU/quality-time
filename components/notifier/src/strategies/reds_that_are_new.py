@@ -15,9 +15,8 @@ def reds_that_are_new(json) -> List:
             "new_red_metrics": 0})
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-                if metric["status"] == "target_not_met":
-                    if used_to_be_not_red(metric):
-                        new_red_metrics[-1]["new_red_metrics"] += 1
+                if metric["status"] == "target_not_met" and used_to_be_not_red(metric):
+                    new_red_metrics[-1]["new_red_metrics"] += 1
 
     return new_red_metrics
 
