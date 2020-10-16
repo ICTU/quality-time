@@ -7,7 +7,7 @@ import os
 import aiohttp
 
 from destinations.ms_teams import send_notification_to_teams
-from strategies.reds_per_report import reds_per_report
+from strategies.reds_that_are_new import reds_that_are_new
 
 
 async def notify(log_level: int = None) -> None:
@@ -23,14 +23,20 @@ async def notify(log_level: int = None) -> None:
             response = await session.get(f"http://{server_host}:{server_port}/api/v3/reports")
             json = await response.json()
 
-        notifications = reds_per_report(json)
+        notifications = reds_that_are_new(json)
 
+        total = 0
         for notification in notifications:
-            text = "\n\r[" + notification["report_title"] + "](" + notification["url"] + \
-                   ") contains " + str(notification["red_metrics"]) + " red metrics"
+            total += notification["new_red_metrics"]
+        if total > 0:
+            text = "number of <i>new</i> red metrics in each report:"
+            for notification in notifications:
+                text += f'\n\r[{notification["report_title"]}]({notification["url"]}): {notification["new_red_metrics"]}'
             send = send_notification_to_teams(notification["teams_webhook"], text)
             if not send:
                 logging.warning("unable to send the notification for %s", notification["report_uuid"])
+        else:
+            logging.info("no new red metrics")
 
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
@@ -38,3 +44,5 @@ async def notify(log_level: int = None) -> None:
 
 if __name__ == "__main__":
     asyncio.run(notify(logging.INFO))  # pragma: no cover
+
+
