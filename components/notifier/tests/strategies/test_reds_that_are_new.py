@@ -47,11 +47,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(["report_title", 0], [result["report_title"], result["new_red_metrics"]])
 
     def test_new_red_metrics(self):
+        equal_start_and_end_time = "2020-01-01T00:23:59+59:00"
         """Test that the number of red metrics is returned."""
         old_status = dict(status="target_met")
         recent_measurement1 = [dict(count=old_status,
-                                    start="2020-01-01T00:23:59+59:00",
-                                    end="2020-01-01T00:23:59+59:00")]
+                                    start=equal_start_and_end_time,
+                                    end=equal_start_and_end_time)]
         red_metric = dict(status="target_not_met",
                           recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=red_metric))
