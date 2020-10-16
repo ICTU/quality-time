@@ -22,7 +22,7 @@ def reds_that_are_new(json) -> List:
 
 
 def used_to_be_not_red(metric):
-    """Sdetermine if a metric used to be something other than red"""
+    """determine if a metric used to be something other than red"""
     if "recent_measurements" in metric:
         return metric["recent_measurements"][0]["count"]["status"] != "target_not_met"
     return True
