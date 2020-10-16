@@ -28,7 +28,7 @@ class MyTestCase(unittest.TestCase):
     def test_still_red_metric(self):
         """Test that the number of red metrics is returned."""
         old_status = dict(status="target_not_met")
-        recent_measurement1 = [dict(count=old_status)]
+        recent_measurement1 = [dict(count=old_status, start="2020-01-01T00:23:59+59:00", end="2020-02-01T00:23:59+59:00")]
         red_metric = dict(status="target_not_met", recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
@@ -41,7 +41,7 @@ class MyTestCase(unittest.TestCase):
     def test_new_red_metrics(self):
         """Test that the number of red metrics is returned."""
         old_status = dict(status="target_met")
-        recent_measurement1 = [dict(count=old_status)]
+        recent_measurement1 = [dict(count=old_status, start="2020-01-01T00:23:59+59:00", end="2020-01-01T00:23:59+59:00")]
         red_metric = dict(status="target_not_met", recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))

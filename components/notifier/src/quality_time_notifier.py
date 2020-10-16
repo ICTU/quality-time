@@ -41,9 +41,8 @@ async def notify(log_level: int = None) -> None:
 
 def build_notification_text(text_parameters):
     """Create and format the contents of the notification."""
-    text = "number of <i>new</i> red metrics in each report:"
-    text += f'\n\r[{text_parameters["report_title"]}]({text_parameters["url"]}):' \
-            f' {text_parameters["new_red_metrics"]}'
+    text = f'number of <i>new</i> red metrics in [{text_parameters["report_title"]}]({text_parameters["url"]}):' \
+           f' {text_parameters["new_red_metrics"]}'
     return text
 
 
