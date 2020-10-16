@@ -25,10 +25,10 @@ async def notify(log_level: int = None) -> None:
 
         notifications = reds_that_are_new(json)
 
-        total = 0
+        total_new_red_metrics = 0
         for notification in notifications:
-            total += notification["new_red_metrics"]
-        if total > 0:
+            total_new_red_metrics += notification["new_red_metrics"]
+        if total_new_red_metrics > 0:
             text = "number of <i>new</i> red metrics in each report:"
             for notification in notifications:
                 text += f'\n\r[{notification["report_title"]}]({notification["url"]}): {notification["new_red_metrics"]}'
@@ -44,5 +44,3 @@ async def notify(log_level: int = None) -> None:
 
 if __name__ == "__main__":
     asyncio.run(notify(logging.INFO))  # pragma: no cover
-
-
