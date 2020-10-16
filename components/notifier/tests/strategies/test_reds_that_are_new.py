@@ -16,9 +16,12 @@ class MyTestCase(unittest.TestCase):
         """Test that there is nothing to notify when there are no red metrics."""
         old_status = dict(status="target_met")
         recent_measurement1 = [dict(count=old_status)]
-        green_metric = dict(status="target_met", recent_measurements=recent_measurement1)
+        green_metric = dict(status="target_met",
+                            recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=green_metric))
-        report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
+        report1 = dict(report_uuid="report1",
+                       title="report_title",
+                       subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
 
         result = reds_that_are_new(json)[0]
@@ -28,10 +31,15 @@ class MyTestCase(unittest.TestCase):
     def test_still_red_metric(self):
         """Test that the number of red metrics is returned."""
         old_status = dict(status="target_not_met")
-        recent_measurement1 = [dict(count=old_status, start="2020-01-01T00:23:59+59:00", end="2020-02-01T00:23:59+59:00")]
-        red_metric = dict(status="target_not_met", recent_measurements=recent_measurement1)
+        recent_measurement1 = [dict(count=old_status,
+                                    start="2020-01-01T00:23:59+59:00",
+                                    end="2020-02-01T00:23:59+59:00")]
+        red_metric = dict(status="target_not_met",
+                          recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=red_metric))
-        report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
+        report1 = dict(report_uuid="report1",
+                       title="report_title",
+                       subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
 
         result = reds_that_are_new(json)[0]
@@ -41,10 +49,15 @@ class MyTestCase(unittest.TestCase):
     def test_new_red_metrics(self):
         """Test that the number of red metrics is returned."""
         old_status = dict(status="target_met")
-        recent_measurement1 = [dict(count=old_status, start="2020-01-01T00:23:59+59:00", end="2020-01-01T00:23:59+59:00")]
-        red_metric = dict(status="target_not_met", recent_measurements=recent_measurement1)
+        recent_measurement1 = [dict(count=old_status,
+                                    start="2020-01-01T00:23:59+59:00",
+                                    end="2020-01-01T00:23:59+59:00")]
+        red_metric = dict(status="target_not_met",
+                          recent_measurements=recent_measurement1)
         subject1 = dict(metrics=dict(metric1=red_metric))
-        report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
+        report1 = dict(report_uuid="report1",
+                       title="report_title",
+                       subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
 
         result = reds_that_are_new(json)[0]
@@ -55,7 +68,9 @@ class MyTestCase(unittest.TestCase):
         """"Test that reds are counted if no previous data is available"""
         red_metric = dict(status="target_not_met")
         subject1 = dict(metrics=dict(metric1=red_metric))
-        report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
+        report1 = dict(report_uuid="report1",
+                       title="report_title",
+                       subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
 
         result = reds_that_are_new(json)[0]
@@ -66,7 +81,9 @@ class MyTestCase(unittest.TestCase):
         """"Test that non reds are not counted if no recent measurements are available"""
         green_metric = dict(status="target_met")
         subject1 = dict(metrics=dict(metric1=green_metric))
-        report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
+        report1 = dict(report_uuid="report1",
+                       title="report_title",
+                       subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
 
         result = reds_that_are_new(json)[0]
