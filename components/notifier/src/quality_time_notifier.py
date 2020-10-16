@@ -31,7 +31,8 @@ async def notify(log_level: int = None) -> None:
                 text = build_notification_text(notification)
                 send = send_notification_to_teams(notification["teams_webhook"], text)
                 if not send:
-                    logging.warning("unable to send the notification for %s", notification["report_uuid"])
+                    logging.warning("unable to send the notification for %s",
+                                    notification["report_uuid"])
         else:
             logging.info("no new red metrics")
 
@@ -41,8 +42,9 @@ async def notify(log_level: int = None) -> None:
 
 def build_notification_text(text_parameters):
     """Create and format the contents of the notification."""
-    text = f'number of <i>new</i> red metrics in [{text_parameters["report_title"]}]({text_parameters["url"]}):' \
-           f' {text_parameters["new_red_metrics"]}'
+    text = f'number of <i>new</i> red metrics in [' \
+           f'{text_parameters["report_title"]}]({text_parameters["url"]}): ' \
+           f'{text_parameters["new_red_metrics"]}'
     return text
 
 
