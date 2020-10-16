@@ -25,5 +25,4 @@ def reds_that_are_new(json) -> List:
 def used_to_be_not_red(metric):
     if "recent_measurements" in metric:
         return metric["recent_measurements"][0]["count"]["status"] != "target_not_met"
-    else:
-        return True
+    return True

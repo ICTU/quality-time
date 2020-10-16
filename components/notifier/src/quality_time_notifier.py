@@ -29,10 +29,11 @@ async def notify(log_level: int = None) -> None:
         for notification in notifications:
             total_new_red_metrics += notification["new_red_metrics"]
         if total_new_red_metrics > 0:
-            text = build_notification_text(notifications)
-            send = send_notification_to_teams(notification["teams_webhook"], text)
-            if not send:
-                logging.warning("unable to send the notification for %s", notification["report_uuid"])
+            for notification in notifications:
+                text = build_notification_text(notifications)
+                send = send_notification_to_teams(notification["teams_webhook"], text)
+                if not send:
+                    logging.warning("unable to send the notification for %s", notification["report_uuid"])
         else:
             logging.info("no new red metrics")
 
