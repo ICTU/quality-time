@@ -1,28 +1,28 @@
 """Strategies for notifying users about metrics."""
 
-from typing import List
+from typing import Dict, List, Union
 
 
-def reds_that_are_new(json) -> List:
-    """Return the number of red metrics per report in the JSON returned by /api/v3/reports."""
-    new_red_metrics = []
+def reds_that_are_new(json, most_recent_measurement_seen: str) -> List[Dict[str, Union[str, int]]]:
+    """Return the reports that have a webhook and new red metrics."""
+    notifications = []
     for report in json["reports"]:
-        new_red_metrics.append({
-            "report_uuid": report["report_uuid"],
-            "report_title": report["title"],
-            "teams_webhook": report.get("teams_webhook", ""),
-            "url": report.get("url", ""),
-            "new_red_metrics": 0})
+        webhook = report.get("teams_webhook")
+        nr_red = 0
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-                if metric["status"] == "target_not_met" and used_to_be_not_red(metric):
-                    new_red_metrics[-1]["new_red_metrics"] += 1
+                if turned_red(metric, most_recent_measurement_seen):
+                    nr_red += 1
+        if webhook and nr_red > 0:
+            notifications.append(
+                dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
+                     url=report.get("url", ""), new_red_metrics=nr_red))
+    return notifications
 
-    return new_red_metrics
 
-
-def used_to_be_not_red(metric):
-    """determine if a metric used to be something other than red"""
-    if "recent_measurements" in metric:
-        return metric["recent_measurements"][-1]["start"] == metric["recent_measurements"][-1]["end"]
-    return True
+def turned_red(metric, most_recent_measurement_seen: str) -> bool:
+    """Determine if a metric turned red after the timestamp of the most recent measurement seen."""
+    metric_is_red = metric["status"] == "target_not_met"
+    recent_measurements = metric.get("recent_measurements")
+    return bool(
+        metric_is_red and recent_measurements and recent_measurements[-1]["start"] > most_recent_measurement_seen)

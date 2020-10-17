@@ -50,8 +50,10 @@ export function ReportTitle(props) {
                 <Grid.Column>
                     <StringInput
                         label="Teams Webhook"
-                        set_value={(value) => set_report_attribute(report_uuid, "teams_webhook", value, props.reload) &&
-                                   set_report_attribute(report_uuid, "url", window.location.href, props.reload)}
+                        set_value={(value) => {
+                            set_report_attribute(report_uuid, "teams_webhook", value, props.reload);
+                            set_report_attribute(report_uuid, "url", window.location.href, props.reload)
+                        }}
                         value={props.report.teams_webhook}
                     />
                 </Grid.Column>
