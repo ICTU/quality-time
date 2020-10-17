@@ -32,5 +32,5 @@ class BuildNotificationTextTests(TestCase):
         text = build_notification_text(
             dict(report_uuid="report1", report_title="Report 1", new_red_metrics=2, url="http://report1"))
         salutation, contents = text.split(", ")
-        self.assertEqual("[Report 1](http://report1) has 2 _new_ red metrics.", contents)
+        self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red.", contents)
         self.assertIn(salutation, SALUTATIONS)

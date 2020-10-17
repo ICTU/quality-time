@@ -15,7 +15,7 @@ def build_notification_text(text_parameters) -> str:
     plural_s = "s" if nr_red > 1 else ""
     report_link = f'[{text_parameters["report_title"]}]({text_parameters["url"]})'
     salutation = random.choice(SALUTATIONS)  # nosec, Not used for cryptography
-    return f'{salutation}, {report_link} has {nr_red} _new_ red metric{plural_s}.'
+    return f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red.'
 
 
 def send_notification_to_teams(destination: str, text: str) -> None:

@@ -60,6 +60,10 @@ To change the title or subtitle of a report, expand the report header and simply
 
 ![Editing report screenshot](screenshots/editing_report.png)
 
+#### Configuring notifications
+
+*Quality-time* can send notifications about metrics that turned red, i.e. that don't meet their target, to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+
 #### Deleting reports
 
 To delete a report expand the report header and click the "Delete report" button. The report and all its subjects is deleted.
