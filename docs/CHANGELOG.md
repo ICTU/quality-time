@@ -13,13 +13,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication.
+- Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment documentation](DEPLOY.md#configuring-forwarded-authentication).
+- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](USAGE.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](../docker/docker-compose.yml) and the [deployment documentation](DEPLOY.md#notifier). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## [3.9.0] - [2020-10-11]
 
 ### Added
 
-- When measuring 'tests' with the Performncetest-runner as source, allow for ignoring transactions by name or regular expression. Closes [#1550](https://github.com/ICTU/quality-time/issues/1550).
+- When measuring 'tests' with the Performancetest-runner as source, allow for ignoring transactions by name or regular expression. Closes [#1550](https://github.com/ICTU/quality-time/issues/1550).
 
 ### Fixed
 

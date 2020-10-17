@@ -23,6 +23,7 @@
 - [Exporting quality reports](#exporting-quality-reports)
   - [Manually](#manually)
   - [API](#api)
+- [Notifications](#notifications)
 
 ## Logging in and out
 
@@ -56,13 +57,9 @@ To add a new report, be sure to be logged in and click the "Add report" button o
 
 #### Editing reports
 
-To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields.
+To change the title or subtitle of a report, expand the report header and simply enter a new title and/or subtitle in their respective fields. For notifications, see the [Notifications](#notifications) section below.
 
 ![Editing report screenshot](screenshots/editing_report.png)
-
-#### Configuring notifications
-
-*Quality-time* can send notifications about metrics that turned red, i.e. that don't meet their target, to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
 #### Deleting reports
 
@@ -263,3 +260,9 @@ To hide metrics that do not need any action, set the `hide_metrics_not_requiring
 To hide columns from the report, set the `hidden_columns` parameter, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, and `tags`.
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
+
+## Notifications
+
+*Quality-time* can send notifications about metrics that turned red, i.e. that don't meet their target, to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+
+If a webhook has been configured, *Quality-time* will check for new red metrics every minute. As soon as one or more metrics in the report turn red, a notification will be sent to the Microsoft Teams channel configured by the webhook.

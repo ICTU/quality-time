@@ -12,7 +12,7 @@
 
 ### Running *Quality-time* locally
 
-Follow these instructions to run the software in hot-reload mode for easy development. 
+Follow these instructions to run the software in hot-reload mode for easy development.
 
 #### Install prerequisites
 
@@ -49,7 +49,7 @@ Open another terminal and run the server:
 ```console
 cd components/server
 python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate 
+. venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_server.py
 ```
@@ -63,7 +63,7 @@ Open another terminal and run the collector:
 ```console
 cd components/collector
 python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate 
+. venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_collector.py
 ```
@@ -87,7 +87,7 @@ Optionally, open yet another terminal and run the notifier:
 ```console
 cd components/notifier
 python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate 
+. venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
 python src/quality_time_notifier.py
 ```
@@ -119,7 +119,7 @@ To run the unit tests and measure unit test coverage of the backend components:
 ```console
 cd components/server  # or components/collector, or components/notifier
 python3 -m venv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate 
+. venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
 ci/unittest.sh
 ```
@@ -277,7 +277,7 @@ class ClocLOC(JSONFileSourceCollector):
 
 Most collector classes are bit more complex than that, because to retrieve the data they have to deal with API's and while parsing the data they have to take parameters into account. See the collector source code for more examples.
 
-##### Unit tests
+##### Writing and running unit tests
 
 To test the `ClocLOC` collector class, we add unit tests to the [collector tests package](../components/collector/tests), for example:
 
@@ -315,7 +315,7 @@ ci/unittest.sh
 
 You should get 100% line and branch coverage.
 
-##### Quality checks
+##### Running quality checks
 
 To run the quality checks:
 
