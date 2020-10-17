@@ -9,15 +9,18 @@ from destinations.ms_teams import build_notification_text, SALUTATIONS, send_not
 class SendNotificationToTeamsTests(TestCase):
     """Unit tests for the Teams destination for notifications."""
 
+    def setUp(self):
+        self.message = "notification message"
+
     def test_invalid_webhook(self, mock_send):
         """Test that exceptions are caught."""
         mock_send.side_effect = OSError
-        send_notification_to_teams("invalid_webhook", "message")
+        send_notification_to_teams("invalid_webhook", self.message)
         mock_send.assert_called()
 
     def test_valid_webhook(self, mock_send):
         """test that a valid message is sent to a valid webhook."""
-        send_notification_to_teams("valid_webhook", "message")
+        send_notification_to_teams("valid_webhook", self.message)
         mock_send.assert_called()
 
 
