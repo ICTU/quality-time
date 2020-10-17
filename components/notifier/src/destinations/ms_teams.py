@@ -14,7 +14,7 @@ def build_notification_text(text_parameters) -> str:
     nr_red = text_parameters["new_red_metrics"]
     plural_s = "s" if nr_red > 1 else ""
     report_link = f'[{text_parameters["report_title"]}]({text_parameters["url"]})'
-    salutation = random.choice(SALUTATIONS)
+    salutation = random.choice(SALUTATIONS)  # nosec, Not used for cryptography
     return f'{salutation}, {report_link} has {nr_red} _new_ red metric{plural_s}.'
 
 
