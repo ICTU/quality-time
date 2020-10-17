@@ -64,7 +64,7 @@ services:
     environment:
       - SERVER_PORT=5001
       - SERVER_HOST=server
-      - NOTIFIER_SLEEP_DURATION=3600
+      - NOTIFIER_SLEEP_DURATION=60
     depends_on:
       - server
     cap_drop:

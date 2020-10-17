@@ -1,6 +1,8 @@
 # Deploying *Quality-time*
 
-Quality-time consists of containers that together form the application: a proxy that routes incoming traffic to either the frontend container to serve the React frontend and static resources or the server container that serves the REST API. The database container runs a Mongo database server and the collector container collects the measurement data for the metrics.
+Quality-time consists of a set of containers that together form the application: a proxy that routes incoming traffic to either the frontend container to serve the React frontend and static resources or to the server container that serves the REST API. The database container runs a Mongo database server. The renderer containers is responsible for converting reports to PDF. The collector container collects the measurement data for the metrics. Finally, the notifier container notifies users of significant events, like metrics turning red.
+
+In addition, *Quality-time* assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
 
 ## Docker-composition
 
@@ -56,13 +58,16 @@ The React UI is served by the frontend container, which runs at port 5000 by def
 
 ### Server
 
-The API is accessible at the server container, running at port 5001 by default. The Caddy reverse proxy routes URLs that start with /api to the server. To configure the server container port, set the `SERVER_PORT` environment variable. Add the `SERVER_PORT` environment variable to both the server and the collector service:
+The API is accessible at the server container, running at port 5001 by default. The Caddy reverse proxy routes URLs that start with /api to the server. To configure the server container port, set the `SERVER_PORT` environment variable. Add the `SERVER_PORT` environment variable to the server, the collector, and the notifier services:
 
 ```yaml
   server:
     environment:
       - SERVER_PORT=6001
   collector:
+    environment:
+      - SERVER_PORT=6001
+  notifier:
     environment:
       - SERVER_PORT=6001
 ```
@@ -90,9 +95,21 @@ To optionally configure a proxy for the collector to use, set the `HTTP_PROXY` o
 
 See the [aiohttp documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
 
+### Notifier
+
+The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether whether notification destinations have been configured, and whether events happened that users need to be notified of.
+
+To configure the sleep duration, set the `NOTIFIER_SLEEP_DURATION` environment variable. The variable has seconds as unit. Add the `NOTIFIER_SLEEP_DURATION` environment variable to the notifier service:
+
+```yaml
+  notifier:
+    environment:
+      - NOTIFIER_SLEEP_DURATION=60
+```
+
 ### Renderer
 
-The renderer converts *Quality-time* reports into PDFs. Currently, https has not been configured for communication between components, so `ALLOW_HTTP` needs to be true. 
+The renderer converts *Quality-time* reports into PDFs. Currently, https has not been configured for communication between containers, so `ALLOW_HTTP` needs to be true.
 
 The renderer can be localized by setting the `LC_ALL` (locale) and `TZ` (timezone) environment variables, for example:
 

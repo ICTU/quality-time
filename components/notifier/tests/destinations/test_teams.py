@@ -2,29 +2,35 @@
 
 from unittest import mock, TestCase
 
-from destinations.ms_teams import send_notification_to_teams
+from destinations.ms_teams import build_notification_text, SALUTATIONS, send_notification_to_teams
 
 
 @mock.patch('pymsteams.connectorcard.send')
-class TeamsTestCase(TestCase):
+class SendNotificationToTeamsTests(TestCase):
     """Unit tests for the Teams destination for notifications."""
+
+    def setUp(self):
+        self.message = "notification message"
 
     def test_invalid_webhook(self, mock_send):
         """Test that exceptions are caught."""
         mock_send.side_effect = OSError
-        self.assertFalse(send_notification_to_teams("invalid_webhook", "message"))
-
-    def test_no_destination_configured(self, mock_send):
-        """Test that a valid message is not sent if there is no webhook."""
-        self.assertFalse(send_notification_to_teams(None, "message"))
-        mock_send.assert_not_called()
+        send_notification_to_teams("invalid_webhook", self.message)
+        mock_send.assert_called()
 
     def test_valid_webhook(self, mock_send):
         """test that a valid message is sent to a valid webhook."""
-        self.assertTrue(send_notification_to_teams("valid_webhook", "message"))
+        send_notification_to_teams("valid_webhook", self.message)
         mock_send.assert_called()
 
-    def test_invalid_message(self, mock_send):
-        """Test that an empty message is not sent."""
-        self.assertFalse(send_notification_to_teams("valid_webhook", ""))
-        mock_send.assert_not_called()
+
+class BuildNotificationTextTests(TestCase):
+    """Unit tests for the message builder."""
+
+    def test_text(self):
+        """Test that the text is correct."""
+        text = build_notification_text(
+            dict(report_uuid="report1", report_title="Report 1", new_red_metrics=2, url="http://report1"))
+        salutation, contents = text.split(", ")
+        self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red.", contents)
+        self.assertIn(salutation, SALUTATIONS)
