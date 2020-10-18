@@ -1,5 +1,6 @@
 """Unit tests for the Teams notification destination."""
 
+import logging
 from unittest import mock, TestCase
 
 from destinations.ms_teams import build_notification_text, SALUTATIONS, send_notification_to_teams
@@ -14,9 +15,11 @@ class SendNotificationToTeamsTests(TestCase):
 
     def test_invalid_webhook(self, mock_send):
         """Test that exceptions are caught."""
-        mock_send.side_effect = OSError
+        logging.disable(logging.CRITICAL)  # Don't log to stderr during this unit test
+        mock_send.side_effect = OSError("Some error")
         send_notification_to_teams("invalid_webhook", self.message)
         mock_send.assert_called()
+        logging.disable(logging.NOTSET)  # Reset the logging
 
     def test_valid_webhook(self, mock_send):
         """test that a valid message is sent to a valid webhook."""
