@@ -1,6 +1,6 @@
 bandit==1.6.2
 coverage==5.3
-isort==5.5.4
+isort==5.6.4
 mypy==0.790
 lxml==4.5.2
 nose==1.3.7
