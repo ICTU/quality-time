@@ -27,13 +27,16 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
 class HealthCheckTest(unittest.TestCase):
     """Unit tests for the record_health method."""
 
+    def setUp(self):
+        self.filename = "/tmp/health_check.txt"
+
     @patch("builtins.open", new_callable=mock_open)
     @patch("quality_time_notifier.datetime")
     def test_writing_health_check(self, mocked_datetime, mocked_open):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
         record_health()
-        mocked_open.assert_called_once_with("/tmp/health_check.txt", "w")
+        mocked_open.assert_called_once_with(self.filename, "w")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("builtins.open")
@@ -42,9 +45,7 @@ class HealthCheckTest(unittest.TestCase):
         """Test that a failure to open the health check file is logged, but otherwise ignored."""
         mocked_open.side_effect = io_error = OSError("Some error")
         record_health()
-        mocked_log.assert_called_once_with(
-            "Could not write health check time stamp to %s: %s", "/tmp/health_check.txt", io_error)
-
+        mocked_log.assert_called_once_with("Could not write health check time stamp to %s: %s", self.filename, io_error)
 
 
 @patch("builtins.open", mock_open())
