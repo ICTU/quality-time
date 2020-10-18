@@ -1,10 +1,10 @@
 """Unit tests for the Quality-time notifier."""
 
-import datetime
 import unittest
-from unittest.mock import patch
+from datetime import datetime
+from unittest.mock import mock_open, patch
 
-from quality_time_notifier import most_recent_measurement_timestamp, notify
+from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -14,16 +14,40 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
         """Test without measurements."""
         report = dict(subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[])))))
         json = dict(reports=[report])
-        self.assertEqual(datetime.datetime.min.isoformat(), most_recent_measurement_timestamp(json))
+        self.assertEqual(datetime.min.isoformat(), most_recent_measurement_timestamp(json))
 
     def test_one_measurement(self):
         """Test that the end timestamp of the measurement is returned."""
-        now = datetime.datetime.now().isoformat()
+        now = datetime.now().isoformat()
         report = dict(subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[dict(end=now)])))))
         json = dict(reports=[report])
         self.assertEqual(now, most_recent_measurement_timestamp(json))
 
 
+class HealthCheckTest(unittest.TestCase):
+    """Unit tests for the record_health method."""
+
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("quality_time_notifier.datetime")
+    def test_writing_health_check(self, mocked_datetime, mocked_open):
+        """Test that the current time is written to the health check file."""
+        mocked_datetime.now.return_value = now = datetime.now()
+        record_health()
+        mocked_open.assert_called_once_with("/tmp/health_check.txt", "w")
+        mocked_open().write.assert_called_once_with(now.isoformat())
+
+    @patch("builtins.open")
+    @patch("logging.error")
+    def test_fail_writing_health_check(self, mocked_log, mocked_open):
+        """Test that a failure to open the health check file is logged, but otherwise ignored."""
+        mocked_open.side_effect = io_error = OSError("Some error")
+        record_health()
+        mocked_log.assert_called_once_with(
+            "Could not write health check time stamp to %s: %s", "/tmp/health_check.txt", io_error)
+
+
+
+@patch("builtins.open", mock_open())
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
@@ -76,7 +100,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             @staticmethod
             async def json():
                 """Return the json from the response."""
-                now = datetime.datetime.now().isoformat()
+                now = datetime.now().isoformat()
                 report = dict(
                     report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
                     subjects=dict(

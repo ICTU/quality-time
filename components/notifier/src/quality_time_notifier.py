@@ -1,9 +1,9 @@
 """Notifier."""
 
 import asyncio
-import datetime
 import logging
 import os
+from datetime import datetime
 
 import aiohttp
 
@@ -19,9 +19,10 @@ async def notify(log_level: int = None) -> None:
     server_host = os.environ.get('SERVER_HOST', 'localhost')
     server_port = os.environ.get('SERVER_PORT', '5001')
     reports_url = f"http://{server_host}:{server_port}/api/v3/reports"
-    most_recent_measurement_seen = datetime.datetime.max.isoformat()
+    most_recent_measurement_seen = datetime.max.isoformat()
 
     while True:
+        record_health()
         logging.info("Determining notifications...")
         try:
             async with aiohttp.ClientSession(raise_for_status=True, trust_env=True) as session:
@@ -42,9 +43,18 @@ async def notify(log_level: int = None) -> None:
         await asyncio.sleep(sleep_duration)
 
 
+def record_health(filename: str = "/tmp/health_check.txt") -> None:
+    """Record the current date and time in a file to allow for health checks."""
+    try:
+        with open(filename, "w") as health_check:
+            health_check.write(datetime.now().isoformat())
+    except OSError as reason:
+        logging.error("Could not write health check time stamp to %s: %s", filename, reason)
+
+
 def most_recent_measurement_timestamp(json) -> str:
     """Return the most recent measurement timestamp."""
-    most_recent = datetime.datetime.min.isoformat()
+    most_recent = datetime.min.isoformat()
     for report in json["reports"]:
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
