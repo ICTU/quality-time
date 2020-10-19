@@ -4730,7 +4730,7 @@
             "entities": {}
         },
         "generic": {
-            "name": "Generic Security Warning",
+            "name": "JSON file with Security Warnings",
             "description": "Generic Security Warning vulnerability report in JSON format",
             "url": "https://github.com/ICTU/quality-time/blob/master/docs/GENERIC_REPORTS.MD",
             "parameters": {
