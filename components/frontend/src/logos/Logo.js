@@ -8,6 +8,7 @@ import Bandit from './bandit.png';
 import Cobertura from './cobertura.png';
 import Composer from './composer.png';
 import Checkmarx from './checkmarx.png';
+import Generic from './quality_time.png';
 import GitLab from './gitlab.png';
 import JaCoCo from './jacoco.png';
 import Jenkins from './jenkins.png';
@@ -46,6 +47,7 @@ export function Logo(props) {
         jenkins_test_report: Jenkins,
         jira: Jira,
         junit: Junit,
+        generic: Generic,
         ncover: NCover,
         npm: npm,
         openvas: OpenVAS,
