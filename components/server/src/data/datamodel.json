@@ -4442,7 +4442,7 @@
                         "Robot Framework",
                         "Robot Framework Jenkins plugin",
                         "Snyk",
-                        "Generic Security Warning",
+                        "JSON file with Security Warnings",
                         "SonarQube",
                         "TestNG",
                         "Trello",
@@ -4450,7 +4450,7 @@
                     ],
                     "api_values": {
                         "Snyk": "snyk",
-                        "Generic Security Warning": "generic",
+                        "JSON file with Security Warnings": "generic",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "axe-selenium-python": "axe_selenium_python",
@@ -4732,13 +4732,13 @@
         "generic": {
             "name": "Generic Security Warning",
             "description": "Generic Security Warning vulnerability report in JSON format",
-            "url": "https://www.google.com",
+            "url": "https://github.com/ICTU/quality-time/blob/master/docs/GENERIC_REPORTS.MD",
             "parameters": {
                 "url": {
                     "name": "URL to a generic vulnerability report in JSON format",
                     "short_name": "URL",
                     "type": "url",
-                    "mandatory": false,
+                    "mandatory": true,
                     "default_value": "",
                     "validate_on": [
                         "username",

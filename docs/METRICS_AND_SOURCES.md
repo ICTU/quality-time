@@ -50,7 +50,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Cobertura Jenkins plugin](https://plugins.jenkins.io/cobertura/) | Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed by tests. | [Source up-to-dateness](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-cobertura-jenkins-plugin), [Test line coverage](#test-line-coverage-from-cobertura-jenkins-plugin) |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | [Dependencies](#dependencies-from-composer) |
 | [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
-| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
+| [Generic Security Warnings](https://github.com/ICTU/quality-time/blob/master/docs/GENERIC_REPORTS.MD) | This source collector is used for Generic Security Warnings imported from json files | [Security warnings](#generic-security-warnings) |
+| [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Security warnings](#security-warnings-from-snyk) |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco), [Test branch coverage](#test-branch-coverage-from-jacoco), [Test line coverage](#test-line-coverage-from-jacoco) |
 | [JaCoCo Jenkins plugin](https://plugins.jenkins.io/jacoco) | A Jenkins job with a JaCoCo coverage report produced by the JaCoCo Jenkins plugin. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-jacoco-jenkins-plugin), [Test line coverage](#test-line-coverage-from-jacoco-jenkins-plugin) |
 | [Jenkins](https://jenkins.io/) | Jenkins is an open source continuous integration/continuous deployment server. | [Failed CI-jobs](#failed-ci-jobs-from-jenkins), [Unused CI-jobs](#unused-ci-jobs-from-jenkins) |
@@ -639,6 +640,16 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Severities | Multiple choice | No | If provided, only count security warnings with the selected severities. |
 | URL | URL | Yes | URL of the Checkmarx instance, with port if necessary, but without path. For example 'https://checkmarx.example.org'. |
 | Username for basic authentication | String | Yes |  |
+
+### Generic Security Warnings
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Password for basic authentication | Password | No |  |
+| Private token | Password | No |  |
+| Severities | Multiple choice | No | If provided, only count security warnings with the selected severities. |
+| URL to a Generic vulnerability report in JSON format | URL | Yes |  |vulnerability report in JSON format. |
+| Username for basic authentication | String | No |  |
 
 ### Security warnings from OpenVAS
 
