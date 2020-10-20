@@ -57,6 +57,8 @@ describe("<MeasurementDetails />", () => {
                         report={report}
                         reports={[report]}
                         subject_uuid="subject_uuid"
+                        visibleDetailsTabs={[]}
+                        toggleVisibleDetailsTab={() => {}}
                     />
                 </ReadOnlyContext.Provider>
             );
@@ -78,6 +80,8 @@ describe("<MeasurementDetails />", () => {
                         scale="count"
                         subject_uuid="subject_uuid"
                         unit="unit"
+                        visibleDetailsTabs={[]}
+                        toggleVisibleDetailsTab={() => {}}
                     />
                 </ReadOnlyContext.Provider>
             );
@@ -102,6 +106,8 @@ describe("<MeasurementDetails />", () => {
                         reports={[report]}
                         stop_sort={mockCallBack}
                         subject_uuid="subject_uuid"
+                        visibleDetailsTabs={[]}
+                        toggleVisibleDetailsTab={() => {}}
                     />
                 </ReadOnlyContext.Provider>
             );
@@ -121,6 +127,7 @@ describe("<MeasurementDetails />", () => {
                         report={report}
                         reports={[report]}
                         subject_uuid="subject_uuid"
+                        visibleDetailsTabs={[]}
                     />
                 </ReadOnlyContext.Provider>
             );
