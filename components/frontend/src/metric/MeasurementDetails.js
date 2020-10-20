@@ -25,7 +25,7 @@ function fetch_measurements(report_date, metric_uuid, setMeasurements) {
 export function MeasurementDetails(props) {
   const [measurements, setMeasurements] = useState([]);
   useEffect(() => {
-    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements)
+    fetch_measurements(props.report_date, props.metric_uuid, setMeasurements);
     // eslint-disable-next-line
   }, [props.metric_uuid, props.report_date]);
   function reload() {
@@ -81,9 +81,17 @@ export function MeasurementDetails(props) {
       />
     )
   }
+  function onTabChange(event, data) {
+    const old_tab = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid))[0];
+    const new_tab = `${props.metric_uuid}:${data.activeIndex}`;
+    props.toggleVisibleDetailsTab(old_tab, new_tab);
+  }
+
+  const visible_tabs = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid));
+  const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
   return (
     <>
-      <Tab panes={panes} />
+      <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
       <Buttons />
     </>
   );

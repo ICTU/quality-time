@@ -93,7 +93,18 @@ export function useURLSearchQuery(history, key, state_type) {
         setState(new_state);
     }
 
-    return [state, setURLSearchQuery]
+    function toggleURLSearchQuery(...items) {
+        const new_state = [];
+        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item)}})
+        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item)}})
+        setURLSearchQuery(new_state);
+    }
+
+    function clearURLSearchQuery() {
+        setURLSearchQuery([]);
+    }
+
+    return state_type === "boolean" ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
 }
 
 export function useDelayedRender() {

@@ -51,8 +51,17 @@ export function Measurement(props) {
   const metric_unit = format_metric_unit(metric_type, metric);
   const metric_name = get_metric_name(metric, props.datamodel);
   const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={format_metric_unit(metric_type, metric, false)} {...props} />
+  const expanded = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid)).length > 0;
+  function onExpand(expand) {
+    if (expand) {
+      props.toggleVisibleDetailsTab(`${props.metric_uuid}:0`)
+    } else {
+      const tab = props.visibleDetailsTabs.filter((each) => each.startsWith(props.metric_uuid))[0];
+      props.toggleVisibleDetailsTab(tab)
+    }
+  }
   return (
-    <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details}>
+    <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
       <Table.Cell>{metric_name}</Table.Cell>
       {!props.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} scale={metric.scale} /></Table.Cell>}
       {!props.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} /></Table.Cell>}
