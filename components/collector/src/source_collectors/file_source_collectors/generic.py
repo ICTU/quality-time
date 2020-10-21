@@ -8,7 +8,7 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 class GenericSecurityWarnings(JSONFileSourceCollector):
     """Generic collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement: # skipcq: PY-D0003
         entities = []
         for response in responses:
             json = await response.json(content_type=None)
