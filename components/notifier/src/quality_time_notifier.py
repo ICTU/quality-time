@@ -14,7 +14,6 @@ from strategies.reds_that_are_new import get_notable_metrics_from_json
 from notifier_utilities.type import JSON, URL
 
 
-
 async def notify(log_level: int = None) -> None:
     """Notify our users periodically of the number of red metrics."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
