@@ -4,6 +4,9 @@ jobs:
   unittest_backend:
     docker:
       - image: circleci/python:3.9.0-buster
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     parallelism: 3
     steps:
       - checkout
@@ -25,6 +28,9 @@ jobs:
   unittest_frontend:
     docker:
       - image: circleci/node:lts
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
       - run:
@@ -48,13 +54,28 @@ jobs:
   integration_tests:
     docker:
       - image: circleci/python:3.9.0-buster
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
       - image: osixia/openldap:1.4.0
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
       - image: ictu/url-to-pdf-api:v1.0.0
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
         environment:
           ALLOW_HTTP: true
           LC_ALL: en_GB.UTF-8
       - image: ictu/quality-time_frontend:v3.10.0
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
       - image: mongo:4.2.3
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: root
