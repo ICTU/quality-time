@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { mount, shallow } from 'enzyme';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subject } from './Subject';
@@ -41,6 +41,7 @@ it('shows the subject title', () => {
   const wrapper = shallow(<Subject datamodel={datamodel} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
   expect(wrapper.find("SubjectTitle").length).toBe(1);
 });
+
 it('shows the add subject button', () => {
   const wrapper = mount(
     <ReadOnlyContext.Provider value={false}>
@@ -49,6 +50,7 @@ it('shows the add subject button', () => {
   );
   expect(wrapper.find("AddButton").length).toBe(1);
 });
+
 it('changes the sort column when clicked', () => {
   function table_header_cell(index) {
     return wrapper.find("SubjectTableHeader").at(0).dive().find("SortableHeader").at(index).dive().find("TableHeaderCell");
@@ -64,25 +66,33 @@ it('changes the sort column when clicked', () => {
     expect(table_header_cell(index).prop("sorted")).toBe(null);
   }
 });
-function click_metric(wrapper, button) {
-  wrapper.find(button).find("div.button").simulate('click');
-  wrapper.find(button).find("DropdownItem").at(0).simulate("click")
-}
-it('copies a metric when the copy button is clicked and a metric is selected', () => {
+
+it('copies a metric when the copy button is clicked and a metric is selected', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-  const wrapper = mount(
-    <ReadOnlyContext.Provider value={false}>
-      <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
-    </ReadOnlyContext.Provider>);
-  click_metric(wrapper, "CopyButton");
+  await act(async () => {
+    render(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
+      </ReadOnlyContext.Provider>);
+    fireEvent.click(screen.getByText(/Copy metric/));
+  });
+  await act(async () => {
+    fireEvent.click(screen.getAllByText(/M1/)[1]);
+  });
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {});
 });
+
 it('moves a metric when the move button is clicked and a metric is selected', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-  const wrapper = mount(
-    <ReadOnlyContext.Provider value={false}>
-      <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
-    </ReadOnlyContext.Provider>)
-  click_metric(wrapper, "MoveButton");
+  await act(async () => {
+    render(
+      <ReadOnlyContext.Provider value={false}>
+        <Subject datamodel={datamodel} hiddenColumns={[]} report={report} reports={[report]} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />
+      </ReadOnlyContext.Provider>)
+    fireEvent.click(screen.getByText(/Move metric/));
+  });
+  await act(async() => {
+    fireEvent.click(screen.getByText(/Subject 2 title/));
+  })
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});
 });
