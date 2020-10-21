@@ -47,7 +47,7 @@ export function Logo(props) {
         jenkins_test_report: Jenkins,
         jira: Jira,
         junit: Junit,
-        generic: Generic,
+        generic_json: Generic,
         ncover: NCover,
         npm: npm,
         openvas: OpenVAS,

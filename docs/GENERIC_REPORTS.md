@@ -1,11 +1,12 @@
 # Generic Security Warnings*
 
-In some cases, there are security vulnerabilities not found by automated tools. Quality Time has the ability to parse JSON files into reports for generic security warnings.
+In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a simple generic format.
+The JSON format consists of an object with one key `vulnerabilities`. The value should be a list of, you guess it, vulnerabilities. Each vulnerability is an object with three keys: `title`, `description`, and `severity`. The severity can be `low`, `medium`, or `high`.
 
 ## Example Generic Report
 
-generic.json
-```
+
+```json
 {
     "vulnerabilities": [
       {

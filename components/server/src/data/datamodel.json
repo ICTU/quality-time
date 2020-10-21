@@ -490,7 +490,7 @@
                 "pyupio_safety",
                 "random",
                 "snyk",
-                "generic",
+                "generic_json",
                 "sonarqube"
             ],
             "tags": [
@@ -4450,7 +4450,7 @@
                     ],
                     "api_values": {
                         "Snyk": "snyk",
-                        "JSON file with Security Warnings": "generic",
+                        "JSON file with Security Warnings": "generic_json",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "axe-selenium-python": "axe_selenium_python",
@@ -4729,9 +4729,9 @@
             },
             "entities": {}
         },
-        "generic": {
-            "name": "JSON file with Security Warnings",
-            "description": "Generic Security Warning vulnerability report in JSON format",
+        "generic_json": {
+            "name": "JSON file with security warnings",
+            "description": "A generic vulnerability report with security warnings in JSON format",
             "url": "https://github.com/ICTU/quality-time/blob/master/docs/GENERIC_REPORTS.MD",
             "parameters": {
                 "url": {
@@ -4750,9 +4750,9 @@
                     ]
                 },
                 "landing_url": {
-                    "name": "URL to a Generic vulnerability report in a human readable format",
+                    "name": "URL to a generic vulnerability report in a human readable format",
                     "short_name": "URL",
-                    "help": "If provided, users clicking the source URL will visit this URL instead of the Generic vulnerability report in JSON format.",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.",
                     "type": "string",
                     "mandatory": false,
                     "default_value": "",

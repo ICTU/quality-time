@@ -5,10 +5,10 @@ from collector_utilities.functions import md5_hash
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class GenericSecurityWarnings(JSONFileSourceCollector):
+class GenericJSONSecurityWarnings(JSONFileSourceCollector):
     """Generic collector for security warnings."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement: # skipcq: PY-D0003
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:  # skipcq: PY-D0003
         entities = []
         for response in responses:
             json = await response.json(content_type=None)
@@ -18,6 +18,5 @@ class GenericSecurityWarnings(JSONFileSourceCollector):
                 entities.append(
                     Entity(
                         key=key, title=vulnerability["title"], description=vulnerability["description"],
-                        severity=vulnerability["severity"])
-                        )
+                        severity=vulnerability["severity"]))
         return SourceMeasurement(entities=entities)
