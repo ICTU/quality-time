@@ -109,15 +109,12 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                         subject1=dict(
                             metrics=dict(
                                 metric1=dict(
-                                    type="test",
-                                    name="metric1",
-                                    unit="units",
-                                    status="target_not_met",
+                                    type="test", name="metric1", unit="units", status="target_not_met",
                                     recent_measurements=[
                                         dict(
                                             start=history,
                                             end=now,
-                                            count=dict(status="target_not_met", value="10")),
+                                            count=dict(status="target_met", value="5")),
                                         dict(
                                             start=now,
                                             end=now,
