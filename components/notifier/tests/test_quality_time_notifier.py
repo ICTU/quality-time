@@ -52,10 +52,11 @@ class HealthCheckTest(unittest.TestCase):
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
+    @patch("quality_time_notifier.retrieve_data_model")
     @patch("logging.error")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_exception(self, mocked_get, mocked_sleep, mocked_log_error):
+    async def test_exception(self, mocked_get, mocked_sleep, mocked_log_error, mocked_data_model):
         """Test that an exception while retrieving the reports is handled."""
         mocked_get.side_effect = OSError
         mocked_sleep.side_effect = RuntimeError
@@ -68,7 +69,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch('pymsteams.connectorcard.send')
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_no_new_reds(self, mocked_get, mocked_sleep, mocked_send):
+    async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that no notifications are sent if there are no new red metrics."""
 
         class Response:  # pylint: disable=too-few-public-methods
@@ -90,17 +91,17 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch('pymsteams.connectorcard.send')
+    @patch('destinations.ms_teams.send_notification_to_teams')
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_one_new_reds(self, mocked_get, mocked_sleep, mocked_send):
+    async def test_one_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notifications is sent if there is one new red metric."""
-
         class Response:  # pylint: disable=too-few-public-methods
             """Fake response."""
             @staticmethod
             async def json():
                 """Return the json from the response."""
+                history = "2020-01-01T00:23:59+59:00" #some data in the past
                 now = datetime.now().isoformat()
                 report = dict(
                     report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
@@ -108,7 +109,19 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                         subject1=dict(
                             metrics=dict(
                                 metric1=dict(
-                                    status="target_not_met", recent_measurements=[dict(start=now, end=now)])))))
+                                    type="test",
+                                    name="metric1",
+                                    unit="units",
+                                    status="target_not_met",
+                                    recent_measurements=[
+                                        dict(
+                                            start=history,
+                                            end=now,
+                                            count=dict(status="target_not_met", value="10")),
+                                        dict(
+                                            start=now,
+                                            end=now,
+                                            count=dict(status="target_not_met", value="10"))])))))
                 return dict(reports=[report])
 
         async def return_response():

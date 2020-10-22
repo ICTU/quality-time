@@ -24,7 +24,7 @@ async def notify(log_level: int = None) -> None:
     reports_url = f"http://{server_host}:{server_port}/api/v3/reports"
     most_recent_measurement_seen = datetime.max.isoformat()
 
-    data_model = retrieve_data_model()
+    data_model = await retrieve_data_model()
 
     while True:
         record_health()
@@ -40,7 +40,7 @@ async def notify(log_level: int = None) -> None:
         notifications = get_notable_metrics_from_json(json, most_recent_measurement_seen)
         for notification in notifications:
             destination = str(notification["teams_webhook"])
-            text = build_notification_text(notification, await data_model)
+            text = build_notification_text(notification, data_model)
             send_notification_to_teams(destination, text)
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
