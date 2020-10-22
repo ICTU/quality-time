@@ -5,7 +5,11 @@ import json
 import pathlib
 from unittest import mock, TestCase
 
+<<<<<<< HEAD
 from destinations.ms_teams import build_notification_text, send_notification_to_teams, get_status
+=======
+from destinations.ms_teams import build_notification_text, send_notification_to_teams
+>>>>>>> fixed some code quality issues
 
 
 @mock.patch('pymsteams.connectorcard.send')

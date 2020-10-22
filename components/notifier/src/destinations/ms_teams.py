@@ -37,12 +37,12 @@ def build_notification_text(text_parameters, data_model) -> str:
     return result
 
 
-def get_status(param, data_model) -> str:
+def get_status(status, data_model) -> str:
     """"get the user friendly status name"""
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
-    for status in statuses:
-        if statuses[status] == param:
-            return status
+    for user_friendly_status in statuses:
+        if statuses[user_friendly_status] == status:
+            return user_friendly_status
 
 
 def build_notification_text(text_parameters, data_model) -> str:
