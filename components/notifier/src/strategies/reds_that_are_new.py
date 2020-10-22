@@ -16,11 +16,12 @@ def get_notable_metrics_from_json(json, most_recent_measurement_seen: str) -> Li
                         metric_type=metric["type"],
                         metric_name=metric["name"],
                         metric_unit=metric["unit"],
-                        old_metric_status=metric["recent_measurements"][-2]["count"]["status"],
-                        old_metric_value=metric["recent_measurements"][-2]["count"]["value"],
                         new_metric_status=metric["recent_measurements"][-1]["count"]["status"],
                         new_metric_value=metric["recent_measurements"][-1]["count"]["value"]
                     ))
+                    if len(metric["recent_measurements"]) > 1:
+                        red_metrics[-1]["old_metric_status"] = metric["recent_measurements"][-2]["count"]["status"]
+                        red_metrics[-1]["old_metric_value"] = metric["recent_measurements"][-2]["count"]["value"]
         if webhook and len(red_metrics) > 0:
             notifications.append(
                 dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,

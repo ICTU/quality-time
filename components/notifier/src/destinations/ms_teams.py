@@ -18,6 +18,14 @@ def build_notification_text_old(text_parameters) -> str:
     return f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red.'
 
 
+def get_status(param, data_model) -> str:
+    """"get the user friendly status name"""
+    statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
+    for status in statuses:
+        if statuses[status] == param:
+            return status
+
+
 def build_notification_text(text_parameters, data_model) -> str:
     """Create and format the contents of the notification."""
     nr_red = text_parameters["new_red_metrics"]
@@ -28,13 +36,12 @@ def build_notification_text(text_parameters, data_model) -> str:
     result = f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red.'
     for metric in text_parameters["metrics"]:
         name = f'{data_model["metrics"][metric["metric_type"]]["name"]}'
-        status = f'{data_model[""]}'
+        old_status = f'{get_status(metric["old_metric_status"], data_model)}'
+        new_status = f'{get_status(metric["new_metric_status"], data_model)}'
         unit = f'{data_model["metrics"][metric["metric_type"]]["unit"]}'
 
-        result += f'<br> {name} status is ' \
-                  f'{metric["new_metric_status"]}, was {metric["old_metric_status"]}. ' \
-                  f'Value is {metric["new_metric_value"]}{unit} was ' \
-                  f'{metric["old_metric_value"]}{unit}.'
+        result += f'<br> {name} status is {new_status}, was {old_status}. ' \
+                  f'Value is {metric["new_metric_value"]}{unit} was {metric["old_metric_value"]}{unit}.'
     return result
 
 
