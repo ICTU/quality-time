@@ -53,8 +53,7 @@ class BuildNotificationTextTests(TestCase):
             dict(
                 report_uuid="report1", report_title="Report 1",
                 new_red_metrics=2, url="http://report1", teams_webhook="",
-                metrics=[
-                    dict(
+                metrics=[dict(
                         metric_type="metric_type",
                         metric_name="name",
                         metric_unit="unit",

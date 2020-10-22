@@ -24,6 +24,7 @@ def get_status(status, data_model) -> str:
     for user_friendly_status in statuses:
         if statuses[user_friendly_status] == status:
             return user_friendly_status
+    return "Unknown status"
 
 
 def build_notification_text(text_parameters, data_model) -> str:
