@@ -100,7 +100,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch('destinations.ms_teams.send_notification_to_teams')
+    @patch('pymsteams.connectorcard.send')
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
