@@ -5700,6 +5700,14 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creationDate"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "updateDate"
                         }
                     ]
                 }

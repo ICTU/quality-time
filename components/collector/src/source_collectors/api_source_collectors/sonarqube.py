@@ -83,7 +83,10 @@ class SonarQubeViolations(SonarQubeCollector):
             message=issue["message"],
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
-            component=issue["component"])
+            component=issue["component"],
+            created_datetime=issue["creationDate"],
+            updated_datetime=issue["updateDate"],
+        )
 
     def _violation_types(self) -> str:
         """Return the violation types."""
