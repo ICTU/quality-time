@@ -1,5 +1,7 @@
 """Unit tests for the Quality-time notifier."""
 
+import json
+import pathlib
 import unittest
 from datetime import datetime
 from unittest.mock import mock_open, patch
@@ -52,6 +54,13 @@ class HealthCheckTest(unittest.TestCase):
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        module_dir = pathlib.Path(__file__).resolve().parent
+        data_model_path = module_dir.parent.parent / "server" / "src" / "data" / "datamodel.json"
+        with data_model_path.open() as json_data_model:
+            cls.data_model = json.load(json_data_model)
+
     @patch("quality_time_notifier.retrieve_data_model")
     @patch("logging.error")
     @patch("asyncio.sleep")
@@ -91,16 +100,21 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch('destinations.ms_teams.send_notification_to_teams')
+    @patch('pymsteams.connectorcard.send')
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_one_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
-        """Test that a notifications is sent if there is one new red metric."""
-        class Response:  # pylint: disable=too-few-public-methods
+    async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
+        """Test that a notification is sent if there is one new red metric."""
+        class Response:
             """Fake response."""
-            @staticmethod
-            async def json():
+            def __init__(self, json=None):
+                self._json = json
+            def close(self):
+                pass
+            async def json(self):
                 """Return the json from the response."""
+                if self._json:
+                    return self._json
                 history = "2020-01-01T00:23:59+59:00" #some data in the past
                 now = datetime.now().isoformat()
                 report = dict(
@@ -109,7 +123,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                         subject1=dict(
                             metrics=dict(
                                 metric1=dict(
-                                    type="test", name="metric1", unit="units", status="target_not_met",
+                                    type="tests", name="metric1", unit="units", status="target_not_met",
                                     recent_measurements=[
                                         dict(
                                             start=history,
@@ -121,11 +135,14 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                                             count=dict(status="target_not_met", value="10"))])))))
                 return dict(reports=[report])
 
-        async def return_response():
+        async def return_reports():
             """Return the response asynchronously."""
             return Response()
 
-        mocked_get.side_effect = [return_response(), return_response()]
+        async def return_datamodel():
+            return Response(json=self.data_model)
+
+        mocked_get.side_effect = [return_datamodel(), return_reports(), return_reports()]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
