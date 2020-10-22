@@ -108,7 +108,7 @@ export function useURLSearchQuery(history, key, state_type, default_value=0) {
         setURLSearchQuery([]);
     }
 
-    return state_type === "boolean" ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
+    return ["boolean", "integer"].includes(state_type) ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
 }
 
 export function useDelayedRender() {

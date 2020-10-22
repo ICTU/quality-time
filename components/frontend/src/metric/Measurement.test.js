@@ -3,26 +3,6 @@ import { Table } from 'semantic-ui-react';
 import { mount } from 'enzyme';
 import { Measurement } from './Measurement';
 
-let report = {
-  report_uuid: "report_uuid",
-  subjects: {
-    subject_uuid: {
-      name: "Subject",
-      metrics: {
-        metric_uuid: {
-          name: "Metric",
-          accept_debt: false,
-          tags: [],
-          type: "violations",
-          sources: [],
-          status: "target_not_met",
-          value: "50",
-          recent_measurements: [{ sources: [{ name: "Source", source_uuid: "1" }] }]
-        }
-      }
-    }
-  }
-};
 const data_model = {
   metrics: {
     stability: { name: "Stability", unit: "minutes", direction: "<", tags: [] },
