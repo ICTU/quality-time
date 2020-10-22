@@ -4,9 +4,9 @@ import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subjects } from './Subjects';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metrics: { metric_type: { tags: [] } } }
-const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [] } } } } };
+const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [], recent_measurements: [] } } } } };
 
-let mockHistory = { };
+let mockHistory = {};
 
 function subjects() {
     return (
@@ -71,4 +71,14 @@ describe("<Subjects />", () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([])
     });
+    it('toggles tabs', () => {
+        const wrapper = subjects();
+        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
+        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
+        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("MeasurementDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
+        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
+        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
+    })
 });

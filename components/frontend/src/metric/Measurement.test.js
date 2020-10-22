@@ -38,7 +38,8 @@ function measurement() {
       reports={[report]}
       metric_uuid="metric_uuid"
       subject_uuid="subject_uuid"
-      datamodel={data_model} /></Table.Body></Table>
+      datamodel={data_model}
+      visibleDetailsTabs={[]} /></Table.Body></Table>
     )
   )
 }

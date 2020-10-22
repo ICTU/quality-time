@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 import { Icon, Table } from 'semantic-ui-react';
 
 export function TableRowWithDetails(props) {
-  var { children, details, ...otherProps } = props;
-  const [show_details, setShowDetails] = useState(false);
+  var { children, details, expanded, onExpand, ...otherProps } = props;
+  const [show_details, setShowDetails] = useState(expanded);
+  function toggleDetails() {
+    setShowDetails(!show_details);
+    if (props.onExpand) {
+      props.onExpand(!show_details)
+    }
+  }
   return (
     <>
       <Table.Row {...otherProps}>
         <Table.Cell
           collapsing
-          onClick={() => setShowDetails(!show_details)}
-          onKeyPress={() => setShowDetails(!show_details)}
+          onClick={() => toggleDetails()}
+          onKeyPress={() => toggleDetails()}
           tabIndex="0"
           textAlign="center"
         >

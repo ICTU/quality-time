@@ -110,7 +110,7 @@ export function Subject(props) {
   function HamburgerHeader() {
     function ColumnMenuItem({ column }) {
       return (
-        <Dropdown.Item onClick={() => props.hiddenColumns.includes(column) ? props.setHiddenColumns(props.hiddenColumns.filter((item) => item !== column)) : props.setHiddenColumns(props.hiddenColumns.concat(column))}>
+        <Dropdown.Item onClick={() => props.toggleHiddenColumn(column)}>
           {props.hiddenColumns.includes(column) ? `Show ${column} column` : `Hide ${column} column`}
         </Dropdown.Item>
       )
@@ -124,13 +124,13 @@ export function Subject(props) {
               {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
             </Dropdown.Item>
             <Dropdown.Header>Columns</Dropdown.Header>
-            <ColumnMenuItem column="trend"/>
-            <ColumnMenuItem column="status"/>
-            <ColumnMenuItem column="measurement"/>
-            <ColumnMenuItem column="target"/>
-            <ColumnMenuItem column="source"/>
-            <ColumnMenuItem column="comment"/>
-            <ColumnMenuItem column="tags"/>
+            <ColumnMenuItem column="trend" />
+            <ColumnMenuItem column="status" />
+            <ColumnMenuItem column="measurement" />
+            <ColumnMenuItem column="target" />
+            <ColumnMenuItem column="source" />
+            <ColumnMenuItem column="comment" />
+            <ColumnMenuItem column="tags" />
           </Dropdown.Menu>
         </Dropdown>
       </Table.HeaderCell>
