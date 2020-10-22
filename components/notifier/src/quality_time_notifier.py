@@ -6,12 +6,13 @@ import os
 import traceback
 from datetime import datetime
 
+from typing import Final, cast
 import aiohttp
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from strategies.reds_that_are_new import get_notable_metrics_from_json
 from notifier_utilities.type import JSON, URL
-from typing import Final, cast
+
 
 
 async def notify(log_level: int = None) -> None:
@@ -49,6 +50,7 @@ async def notify(log_level: int = None) -> None:
 
 
 async def retrieve_data_model():
+    """"retrieve data model from server"""
     max_sleep_duration = 60 #make an environment variable
     timeout = aiohttp.ClientTimeout(total=120)
     async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, trust_env=True) as session:

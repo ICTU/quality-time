@@ -3,7 +3,7 @@
 import logging
 from unittest import mock, TestCase
 
-from destinations.ms_teams import build_notification_text, SALUTATIONS, send_notification_to_teams
+from destinations.ms_teams import build_notification_text, send_notification_to_teams
 
 
 @mock.patch('pymsteams.connectorcard.send')
@@ -50,26 +50,30 @@ class BuildNotificationTextTests(TestCase):
         data_model = {"sources": sources, "metrics": metrics}
 
         text = build_notification_text(
-            dict(report_uuid="report1", report_title="Report 1", new_red_metrics=2, url="http://report1", teams_webhook="",
-                 metrics=[dict(
-                     metric_type="metric_type",
-                     metric_name="name",
-                     metric_unit="unit",
-                     old_metric_status="near_target_met",
-                     old_metric_value=5,
-                     new_metric_status="target_not_met",
-                     new_metric_value=10),
-                     dict(
-                     metric_type="metric_type",
-                     metric_name="name",
-                     metric_unit="unit",
-                     old_metric_status="target_met",
-                     old_metric_value=5,
-                     new_metric_status="target_not_met",
-                     new_metric_value=10)]), data_model)
-        salutation, contents = text.split(", ", 1)
+            dict(
+                report_uuid="report1", report_title="Report 1",
+                new_red_metrics=2, url="http://report1", teams_webhook="",
+                metrics=[
+                    dict(
+                        metric_type="metric_type",
+                        metric_name="name",
+                        metric_unit="unit",
+                        old_metric_status="near_target_met",
+                        old_metric_value=5,
+                        new_metric_status="target_not_met",
+                        new_metric_value=10),
+                    dict(
+                        metric_type="metric_type",
+                        metric_name="name",
+                        metric_unit="unit",
+                        old_metric_status="target_met",
+                        old_metric_value=5,
+                        new_metric_status="target_not_met",
+                        new_metric_value=10)]), data_model)
+        contents = text.split(", ", 1)
         self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red.<br> "
-                         "Test metric status is target not met (red), was near target met (yellow). Value is 10bad was 5bad.<br> "
-                         "Test metric status is target not met (red), was target met (green). Value is 10bad was 5bad.",
-                         contents)
-        #self.assertIn(salutation, SALUTATIONS)
+                         "Test metric status is target not met (red), "
+                         "was near target met (yellow). Value is 10bad was 5bad.<br> "
+                         "Test metric status is target not met (red), "
+                         "was target met (green). Value is 10bad was 5bad.",
+                         contents[1])
