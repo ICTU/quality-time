@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Final, cast
+from typing import Final, NoReturn, cast
 
 import aiohttp
 
@@ -14,7 +14,7 @@ from notifier_utilities.type import JSON, URL
 from strategies.reds_that_are_new import get_notable_metrics_from_json
 
 
-async def notify(log_level: int = None) -> None:
+async def notify(log_level: int = None) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
 
@@ -37,10 +37,10 @@ async def notify(log_level: int = None) -> None:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
 
-        notifications = get_notable_metrics_from_json(json, most_recent_measurement_seen)
+        notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
         for notification in notifications:
             destination = str(notification["teams_webhook"])
-            text = build_notification_text(notification, data_model)
+            text = build_notification_text(notification)
             send_notification_to_teams(destination, text)
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)

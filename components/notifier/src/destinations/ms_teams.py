@@ -9,16 +9,7 @@ import pymsteams
 SALUTATIONS = ("Alas", "Blimey", "Darn", "Oh dear", "Ouch", "Regrettably", "Sadly", "Unfortunately")
 
 
-def get_status(status, data_model) -> str:
-    """Get the user friendly status name."""
-    statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
-    for user_friendly_status in statuses:
-        if statuses[user_friendly_status] == status:
-            return str(user_friendly_status)
-    return "Unknown status"
-
-
-def build_notification_text(text_parameters, data_model) -> str:
+def build_notification_text(text_parameters) -> str:
     """Create and format the contents of the notification."""
     nr_red = text_parameters["new_red_metrics"]
     plural_s = "s" if nr_red > 1 else ""
@@ -27,12 +18,10 @@ def build_notification_text(text_parameters, data_model) -> str:
 
     result = f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red:'
     for metric in text_parameters["metrics"]:
-        name = metric["metric_name"] or f'{data_model["metrics"][metric["metric_type"]]["name"]}'
-        unit = metric["metric_unit"] or f'{data_model["metrics"][metric["metric_type"]]["unit"]}'
+        name = metric["metric_name"]
+        unit = metric["metric_unit"]
         unit = unit if unit.startswith("%") else f" {unit}"
-        old_status = f'{get_status(metric["old_metric_status"], data_model)}'
-        new_status = f'{get_status(metric["new_metric_status"], data_model)}'
-        result += f'<br>* {name} status is {new_status}, was {old_status}. ' \
+        result += f'<br>* {name} status is {metric["new_metric_status"]}, was {metric["old_metric_status"]}. ' \
                   f'Value is {metric["new_metric_value"]}{unit}, was {metric["old_metric_value"]}{unit}.'
     return result
 
