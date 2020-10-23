@@ -67,7 +67,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("logging.error")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_exception(self, mocked_get, mocked_sleep, mocked_log_error, mocked_data_model):
+    async def test_exception(self, mocked_get, mocked_sleep, mocked_log_error, mocked_data_model):  # pylint: disable=unused-variable
         """Test that an exception while retrieving the reports is handled."""
         mocked_get.side_effect = OSError
         mocked_sleep.side_effect = RuntimeError
@@ -159,7 +159,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("logging.warning")
     @patch("logging.error")
     @patch("aiohttp.ClientSession.get")
-    async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_error, mocked_log_warning, mocked_sleep):
+    async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_error, mocked_log_warning, mocked_sleep):  # pylint: disable=unused-variable
         """"Test being unable to retrieve data from api."""
         mocked_get.side_effect = [Exception]
         mocked_sleep.side_effect = [None, RuntimeError]
