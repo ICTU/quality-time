@@ -5,9 +5,9 @@ import logging
 import os
 import traceback
 from datetime import datetime
+from typing import Final, cast
 
 import aiohttp
-from typing import Final, cast
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from notifier_utilities.type import JSON, URL
