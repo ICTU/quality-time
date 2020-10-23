@@ -110,16 +110,17 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is sent if there is one new red metric."""
         class Response:
             """Fake response."""
-
             def __init__(self, json_data=None):
                 self._json = json_data
+
             def close(self):
                 """Mock close method."""
+
             async def json(self):
                 """Return the json from the response."""
                 if self._json:
                     return self._json
-                history = "2020-01-01T00:23:59+59:00" #some data in the past
+                history = "2020-01-01T00:23:59+59:00"
                 now = datetime.now().isoformat()
                 report = dict(
                     report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
@@ -127,16 +128,10 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                         subject1=dict(
                             metrics=dict(
                                 metric1=dict(
-                                    type="tests", name="metric1", unit="units", status="target_not_met",
+                                    type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
                                     recent_measurements=[
-                                        dict(
-                                            start=history,
-                                            end=now,
-                                            count=dict(status="target_met", value="5")),
-                                        dict(
-                                            start=now,
-                                            end=now,
-                                            count=dict(status="target_not_met", value="10"))])))))
+                                        dict(start=history, end=now, count=dict(status="target_met", value="5")),
+                                        dict(start=now, end=now, count=dict(status="target_not_met", value="10"))])))))
                 return dict(reports=[report])
 
         async def return_reports():

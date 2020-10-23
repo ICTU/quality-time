@@ -25,15 +25,15 @@ def build_notification_text(text_parameters, data_model) -> str:
     report_link = f'[{text_parameters["report_title"]}]({text_parameters["url"]})'
     salutation = random.choice(SALUTATIONS)  # nosec, Not used for cryptography
 
-    result = f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red.'
+    result = f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red:'
     for metric in text_parameters["metrics"]:
-        name = f'{data_model["metrics"][metric["metric_type"]]["name"]}'
+        name = metric["metric_name"] or f'{data_model["metrics"][metric["metric_type"]]["name"]}'
+        unit = metric["metric_unit"] or f'{data_model["metrics"][metric["metric_type"]]["unit"]}'
+        unit = unit if unit.startswith("%") else f" {unit}"
         old_status = f'{get_status(metric["old_metric_status"], data_model)}'
         new_status = f'{get_status(metric["new_metric_status"], data_model)}'
-        unit = f'{data_model["metrics"][metric["metric_type"]]["unit"]}'
-
-        result += f'<br> {name} status is {new_status}, was {old_status}. ' \
-                  f'Value is {metric["new_metric_value"]}{unit} was {metric["old_metric_value"]}{unit}.'
+        result += f'<br>* {name} status is {new_status}, was {old_status}. ' \
+                  f'Value is {metric["new_metric_value"]}{unit}, was {metric["old_metric_value"]}{unit}.'
     return result
 
 

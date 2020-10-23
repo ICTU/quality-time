@@ -22,16 +22,15 @@ def get_notable_metrics_from_json(json, most_recent_measurement_seen: str) -> Li
 
 def create_metric(metric):
     """Create the return dictionary."""
+    recent_measurements = metric["recent_measurements"]
+    scale = metric["scale"]
     result = dict(
-        metric_type=metric["type"],
-        metric_name=metric["name"],
-        metric_unit=metric["unit"],
-        new_metric_status=metric["recent_measurements"][-1]["count"]["status"],
-        new_metric_value=metric["recent_measurements"][-1]["count"]["value"]
-    )
-    if len(metric["recent_measurements"]) > 1:
-        result["old_metric_status"] = metric["recent_measurements"][-2]["count"]["status"]
-        result["old_metric_value"] = metric["recent_measurements"][-2]["count"]["value"]
+        metric_type=metric["type"], metric_name=metric["name"], metric_unit=metric["unit"],
+        new_metric_status=recent_measurements[-1][scale]["status"],
+        new_metric_value=recent_measurements[-1][scale]["value"])
+    if len(recent_measurements) > 1:
+        result["old_metric_status"] = recent_measurements[-2][scale]["status"]
+        result["old_metric_value"] = recent_measurements[-2][scale]["value"]
     return result
 
 

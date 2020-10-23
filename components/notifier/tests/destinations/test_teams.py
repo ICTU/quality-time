@@ -67,7 +67,7 @@ class BuildNotificationTextTests(TestCase):
                 new_red_metrics=2, url="http://report1", teams_webhook="",
                 metrics=[dict(
                         metric_type="metric_type",
-                        metric_name="name",
+                        metric_name="Metric",
                         metric_unit="unit",
                         old_metric_status="near_target_met",
                         old_metric_value=5,
@@ -75,20 +75,19 @@ class BuildNotificationTextTests(TestCase):
                         new_metric_value=10),
                     dict(
                         metric_type="metric_type",
-                        metric_name="name",
+                        metric_name="Metric",
                         metric_unit="unit",
                         old_metric_status="target_met",
                         old_metric_value=5,
                         new_metric_status="target_not_met",
                         new_metric_value=10)]), data_model)
         contents = text.split(", ", 1)
-        self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red.<br> "
-                         "Test metric status is target not met (red), "
-                         "was near target met (yellow). Value is 10bad was 5bad.<br> "
-                         "Test metric status is target not met (red), "
-                         "was target met (green). Value is 10bad was 5bad.",
+        self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red:<br>"
+                         "* Metric status is target not met (red), "
+                         "was near target met (yellow). Value is 10 unit, was 5 unit.<br>"
+                         "* Metric status is target not met (red), "
+                         "was target met (green). Value is 10 unit, was 5 unit.",
                          contents[1])
-
 
     def test_unknown_status(self):
         """"Test that the return value is correct."""
