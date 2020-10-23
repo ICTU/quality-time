@@ -3,8 +3,8 @@
 import json
 import pathlib
 import unittest
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
 from unittest.mock import AsyncMock, Mock, mock_open, patch
 
 from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
