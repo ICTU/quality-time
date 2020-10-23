@@ -8,7 +8,7 @@ class GenericJSONSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_warnings(self):
         """Test the number of security warnings."""
-        sources = dict(source_id=dict(type="generic", parameters=dict(url="generic.json", severities=["high"])))
+        sources = dict(source_id=dict(type="generic_json", parameters=dict(url="generic.json", severities=["high"])))
         metric = dict(type="security_warnings", sources=sources, addition="sum")
         vulnerabilities_json = dict(
             vulnerabilities=[
@@ -19,7 +19,7 @@ class GenericJSONSecurityWarningsTest(SourceCollectorTestCase):
         expected_entities = [
             dict(
                 key='4fff19e8a55b0dac211e16d105dbaccb',
-                title= 'ISO27001:2013 A9',
+                title='ISO27001:2013 A9',
                 description='Application does not meet the Access Control Requirements',
                 severity='high')]
         response = await self.collect(metric, get_request_json_return_value=vulnerabilities_json)

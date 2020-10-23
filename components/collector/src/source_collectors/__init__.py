@@ -33,6 +33,7 @@ from .file_source_collectors.cloc import ClocLOC
 from .file_source_collectors.cobertura import (
     CoberturaSourceUpToDateness, CoberturaUncoveredBranches, CoberturaUncoveredLines)
 from .file_source_collectors.composer import ComposerDependencies
+from .file_source_collectors.generic_json import GenericJSONSecurityWarnings
 from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
 from .file_source_collectors.ncover import NCoverSourceUpToDateness
@@ -50,7 +51,6 @@ from .file_source_collectors.pip import PipDependencies
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 from .file_source_collectors.robot_framework import RobotFrameworkSourceUpToDateness, RobotFrameworkTests
 from .file_source_collectors.snyk import SnykSecurityWarnings
-from .file_source_collectors.generic import GenericJSONSecurityWarnings
 from .file_source_collectors.testng import TestNGSourceUpToDateness, TestNGTests
 from .local_source_collectors.calendar import CalendarSourceUpToDateness
 from .local_source_collectors.manual_number import ManualNumber

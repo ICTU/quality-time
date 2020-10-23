@@ -4442,7 +4442,7 @@
                         "Robot Framework",
                         "Robot Framework Jenkins plugin",
                         "Snyk",
-                        "JSON file with Security Warnings",
+                        "JSON file with security warnings",
                         "SonarQube",
                         "TestNG",
                         "Trello",
@@ -4450,7 +4450,7 @@
                     ],
                     "api_values": {
                         "Snyk": "snyk",
-                        "JSON file with Security Warnings": "generic_json",
+                        "JSON file with security warnings": "generic_json",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "axe-selenium-python": "axe_selenium_python",
@@ -4732,7 +4732,7 @@
         "generic_json": {
             "name": "JSON file with security warnings",
             "description": "A generic vulnerability report with security warnings in JSON format",
-            "url": "https://github.com/ICTU/quality-time/blob/master/docs/GENERIC_REPORTS.MD",
+            "url": "https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings",
             "parameters": {
                 "url": {
                     "name": "URL to a generic vulnerability report in JSON format",
