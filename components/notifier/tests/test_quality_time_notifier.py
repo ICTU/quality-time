@@ -6,6 +6,7 @@ import unittest
 from datetime import datetime
 
 from unittest.mock import AsyncMock, mock_open, Mock, patch
+
 from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
 
 
