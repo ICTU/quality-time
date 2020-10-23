@@ -1,17 +1,17 @@
 """Notifier."""
 
+import aiohttp
 import asyncio
 import logging
 import os
 import traceback
-import aiohttp
+
 from datetime import datetime
 
-from typing import Final, cast
-
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
-from strategies.reds_that_are_new import get_notable_metrics_from_json
 from notifier_utilities.type import JSON, URL
+from strategies.reds_that_are_new import get_notable_metrics_from_json
+from typing import Final, cast
 
 
 async def notify(log_level: int = None) -> None:
