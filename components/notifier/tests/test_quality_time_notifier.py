@@ -115,7 +115,6 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                 self._json = json
             def close(self):
                 """Mock close method."""
-                pass
             async def json(self):
                 """Return the json from the response."""
                 if self._json:

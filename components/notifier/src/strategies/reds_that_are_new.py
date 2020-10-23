@@ -19,7 +19,9 @@ def get_notable_metrics_from_json(json, most_recent_measurement_seen: str) -> Li
                      url=report.get("url"), new_red_metrics=len(red_metrics), metrics=red_metrics))
     return notifications
 
+
 def create_metric(metric):
+    """Create the return dictionary."""
     result = dict(
         metric_type=metric["type"],
         metric_name=metric["name"],
@@ -31,6 +33,7 @@ def create_metric(metric):
         result["old_metric_status"] = metric["recent_measurements"][-2]["count"]["status"]
         result["old_metric_value"] = metric["recent_measurements"][-2]["count"]["value"]
     return result
+
 
 def turned_red(metric, most_recent_measurement_seen: str) -> bool:
     """Determine if a metric turned red after the timestamp of the most recent measurement seen."""
