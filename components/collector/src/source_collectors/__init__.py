@@ -33,6 +33,7 @@ from .file_source_collectors.cloc import ClocLOC
 from .file_source_collectors.cobertura import (
     CoberturaSourceUpToDateness, CoberturaUncoveredBranches, CoberturaUncoveredLines)
 from .file_source_collectors.composer import ComposerDependencies
+from .file_source_collectors.generic_json import GenericJSONSecurityWarnings
 from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
 from .file_source_collectors.ncover import NCoverSourceUpToDateness

@@ -14,6 +14,7 @@
 - [Notes on specific sources](#notes-on-specific-sources)
   - [GitLab](#gitlab)
   - [Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin](#jenkins-jenkins-test-report-jacoco-jenkins-plugin-and-owasp-dependency-check-jenkins-plugin)
+  - [Generic JSON for security warnings](#generic-json-for-security-warnings)
 - [Customizing quality reports](#customizing-quality-reports)
   - [Customizing dashboards](#customizing-dashboards)
   - [Sorting metrics](#sorting-metrics)
@@ -24,6 +25,8 @@
   - [Manually](#manually)
   - [API](#api)
 - [Notifications](#notifications)
+
+---
 
 ## Logging in and out
 
@@ -210,6 +213,31 @@ If the repository is private, you also need to enter an [personal access token](
 ### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
 
 To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the user name to which the token belongs.
+
+### Generic JSON for security warnings
+
+In some cases, there are security vulnerabilities not found by automated tools. Quality-time has the ability to parse security warnings from JSON files with a simple generic format.
+
+The JSON format consists of an object with one key `vulnerabilities`. The value should be a list of, you guess it, vulnerabilities. Each vulnerability is an object with three keys: `title`, `description`, and `severity`. The title and description values should be strings. The severity is also a string and can be either `low`, `medium`, or `high`.
+
+Example generic JSON file:
+
+```json
+{
+    "vulnerabilities": [
+        {
+            "title": "ISO27001:2013 A9 Insufficient Access Control",
+            "description": "The Application does not enforce Two-Factor Authentication and therefore not satisfy security best practices.",
+            "severity": "high"
+        },
+        {
+            "title": "Threat Model Finding: Uploading Malicious of Malicious files",
+            "description": "An attacker can upload malicious files with low privileges can perform direct API calls and perform unwanted mutations or see unauthorized information.",
+            "severity": "medium"
+        }
+    ]
+}
+```
 
 ## Customizing quality reports
 
