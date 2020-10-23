@@ -15,15 +15,15 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
     def test_no_measurements(self):
         """Test without measurements."""
         report = dict(subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[])))))
-        json = dict(reports=[report])
-        self.assertEqual(datetime.min.isoformat(), most_recent_measurement_timestamp(json))
+        json_data = dict(reports=[report])
+        self.assertEqual(datetime.min.isoformat(), most_recent_measurement_timestamp(json_data))
 
     def test_one_measurement(self):
         """Test that the end timestamp of the measurement is returned."""
         now = datetime.now().isoformat()
         report = dict(subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[dict(end=now)])))))
-        json = dict(reports=[report])
-        self.assertEqual(now, most_recent_measurement_timestamp(json))
+        json_data = dict(reports=[report])
+        self.assertEqual(now, most_recent_measurement_timestamp(json_data))
 
 
 class HealthCheckTest(unittest.TestCase):
@@ -111,8 +111,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         class Response:
             """Fake response."""
 
-            def __init__(self, json=None):
-                self._json = json
+            def __init__(self, json_data=None):
+                self._json = json_data
             def close(self):
                 """Mock close method."""
             async def json(self):
@@ -145,7 +145,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
         async def return_datamodel():
             """Retrieve data_model from class variable."""
-            return Response(json=self.data_model)
+            return Response(json_data=self.data_model)
 
         mocked_get.side_effect = [return_datamodel(), return_reports(), return_reports()]
         mocked_sleep.side_effect = [None, RuntimeError]
