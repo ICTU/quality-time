@@ -3,18 +3,19 @@
 import datetime
 import unittest
 
-from strategies.reds_that_are_new import reds_that_are_new
+from strategies.reds_that_are_new import get_notable_metrics_from_json
 
 
 class MyTestCase(unittest.TestCase):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
 
     def setUp(self):
+        """Set variables for the other testcases."""
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
-        self.assertEqual([], reds_that_are_new(dict(reports=[]), self.most_recent_measurement_seen))
+        self.assertEqual([], get_notable_metrics_from_json(dict(reports=[]), self.most_recent_measurement_seen))
 
     def test_no_red_metrics(self):
         """Test that there is nothing to notify when there are no red metrics."""
@@ -22,17 +23,21 @@ class MyTestCase(unittest.TestCase):
         subject1 = dict(metrics=dict(metric1=green_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
-        self.assertEqual([], reds_that_are_new(json, self.most_recent_measurement_seen))
+        self.assertEqual([], get_notable_metrics_from_json(json, self.most_recent_measurement_seen))
 
     def test_old_red_metric(self):
         """Test that there is nothing to notify if the red metric was already red."""
+        count = dict(status="target_not_met", value="10")
         red_metric = dict(
+            type="test",
+            name="metric1",
+            unit="units",
             status="target_not_met",
-            recent_measurements=[dict(start="2020-01-01T00:23:59+59:00", end="2020-02-01T00:23:59+59:00")])
+            recent_measurements=[dict(start="2020-01-01T00:23:59+59:00", end="2020-02-01T00:23:59+59:00", count=count)])
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
-        self.assertEqual([], reds_that_are_new(json, self.most_recent_measurement_seen))
+        self.assertEqual([], get_notable_metrics_from_json(json, self.most_recent_measurement_seen))
 
     def test_red_metric_without_recent_measurements(self):
         """Test that there is nothing to notify if the red metric has no recent measurements."""
@@ -41,21 +46,37 @@ class MyTestCase(unittest.TestCase):
         subject1 = dict(metrics=dict(metric1=red_metric1, metric2=red_metric2))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
-        self.assertEqual([], reds_that_are_new(json, self.most_recent_measurement_seen))
+        self.assertEqual([], get_notable_metrics_from_json(json, self.most_recent_measurement_seen))
 
     def test_new_red_metric(self):
-        """Test that the number of red metrics is returned."""
+        """Test that a metric that has become red is included."""
         equal_start_and_end_time = "2020-01-01T00:23:59+59:00"
+        old_count = dict(status="target_met", value="5")
+        new_count = dict(status="target_not_met", value="10")
         red_metric = dict(
+            type="test",
+            name="metric1",
+            unit="units",
             status="target_not_met",
-            recent_measurements=[dict(start=equal_start_and_end_time, end=equal_start_and_end_time)])
+            recent_measurements=[dict(start="2019-01-01T00:23:59+59:00", end=equal_start_and_end_time, count=old_count),
+                                 dict(start=equal_start_and_end_time, end=equal_start_and_end_time, count=new_count)]
+        )
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(
-            report_uuid="report1", title="Title", teams_webhook="webhook", url="http://report1",
+            title="Title", report_uuid="report1", teams_webhook="webhook", url="http://report1",
             subjects=dict(subject1=subject1))
         json = dict(reports=[report1])
         self.assertEqual(
             [dict(
-                report_title="Title", report_uuid="report1", new_red_metrics=1, teams_webhook="webhook",
-                url="http://report1")],
-            reds_that_are_new(json, self.most_recent_measurement_seen))
+                report_uuid="report1", report_title="Title",
+                teams_webhook="webhook", url="http://report1",
+                new_red_metrics=1, metrics=[dict(
+                    metric_type="test",
+                    metric_name="metric1",
+                    metric_unit="units",
+                    new_metric_status="target_not_met",
+                    new_metric_value="10",
+                    old_metric_status="target_met",
+                    old_metric_value="5"
+                )])],
+            get_notable_metrics_from_json(json, self.most_recent_measurement_seen))
