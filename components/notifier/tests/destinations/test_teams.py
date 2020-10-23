@@ -89,4 +89,5 @@ class BuildNotificationTextTests(TestCase):
 
 
     def test_unknown_status(self):
+        """"test that the return value is correct"""
         self.assertEqual("Unknown status", get_status("", self.data_model))
