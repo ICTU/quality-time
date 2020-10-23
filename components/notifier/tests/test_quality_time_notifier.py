@@ -57,7 +57,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        """Setup data_model."""
+        """Provide the data_model to the class."""
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent / "server" / "src" / "data" / "datamodel.json"
         with data_model_path.open() as json_data_model:
