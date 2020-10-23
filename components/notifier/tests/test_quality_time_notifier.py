@@ -6,7 +6,7 @@ import unittest
 from datetime import datetime
 from unittest.mock import mock_open, patch
 
-from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health
+from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -149,3 +149,17 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         except RuntimeError:
             pass
         mocked_send.assert_called_once()
+
+    @patch("asyncio.sleep")
+    @patch("logging.warning")
+    @patch("logging.error")
+    @patch("aiohttp.ClientSession.get")
+    async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_error, mocked_log_warning, mocked_sleep):
+        """"test being unable to retrieve data from api"""
+        mocked_get.side_effect = [Exception]
+        mocked_sleep.side_effect = [None, RuntimeError]
+        try:
+            await retrieve_data_model()
+        except RuntimeError:
+            pass
+        self.assertEqual(2, mocked_log_warning.call_count)

@@ -1,9 +1,11 @@
 """Unit tests for the Teams notification destination."""
 
 import logging
+import json
+import pathlib
 from unittest import mock, TestCase
 
-from destinations.ms_teams import build_notification_text, send_notification_to_teams
+from destinations.ms_teams import build_notification_text, send_notification_to_teams, get_status
 
 
 @mock.patch('pymsteams.connectorcard.send')
@@ -29,6 +31,14 @@ class SendNotificationToTeamsTests(TestCase):
 
 class BuildNotificationTextTests(TestCase):
     """Unit tests for the message builder."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        module_dir = pathlib.Path(__file__).resolve().parent
+        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
+        with data_model_path.open() as json_data_model:
+            cls.data_model = json.load(json_data_model)
+
 
     def test_text(self):
         """Test that the text is correct."""
@@ -76,3 +86,7 @@ class BuildNotificationTextTests(TestCase):
                          "Test metric status is target not met (red), "
                          "was target met (green). Value is 10bad was 5bad.",
                          contents[1])
+
+
+    def test_unknown_status(self):
+        self.assertEqual("Unknown status", get_status("", self.data_model))
