@@ -9,6 +9,7 @@ import pymsteams
 SALUTATIONS = ("Alas", "Blimey", "Darn", "Oh dear", "Ouch", "Regrettably", "Sadly", "Unfortunately")
 
 
+<<<<<<< HEAD
 def get_status(status, data_model) -> str:
     """"get the user friendly status name"""
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
@@ -37,6 +38,8 @@ def build_notification_text(text_parameters, data_model) -> str:
     return result
 
 
+=======
+>>>>>>> added neccesary unittests for 100% coverage
 def get_status(status, data_model) -> str:
     """"get the user friendly status name"""
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
