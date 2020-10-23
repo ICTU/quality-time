@@ -24,7 +24,7 @@ class SendNotificationToTeamsTests(TestCase):
         logging.disable(logging.NOTSET)  # Reset the logging
 
     def test_valid_webhook(self, mock_send):
-        """test that a valid message is sent to a valid webhook."""
+        """Test that a valid message is sent to a valid webhook."""
         send_notification_to_teams("valid_webhook", self.message)
         mock_send.assert_called()
 
@@ -89,5 +89,5 @@ class BuildNotificationTextTests(TestCase):
 
 
     def test_unknown_status(self):
-        """"test that the return value is correct"""
+        """"Test that the return value is correct."""
         self.assertEqual("Unknown status", get_status("", self.data_model))

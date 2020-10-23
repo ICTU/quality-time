@@ -10,7 +10,7 @@ SALUTATIONS = ("Alas", "Blimey", "Darn", "Oh dear", "Ouch", "Regrettably", "Sadl
 
 
 def get_status(status, data_model) -> str:
-    """"get the user friendly status name"""
+    """Get the user friendly status name."""
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
     for user_friendly_status in statuses:
         if statuses[user_friendly_status] == status:

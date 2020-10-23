@@ -83,6 +83,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
         class Response:  # pylint: disable=too-few-public-methods
             """Fake response."""
+
             @staticmethod
             async def json():
                 """Return the json from the response."""
@@ -107,6 +108,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is sent if there is one new red metric."""
         class Response:
             """Fake response."""
+            
             def __init__(self, json=None):
                 self._json = json
             def close(self):
@@ -155,7 +157,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("logging.error")
     @patch("aiohttp.ClientSession.get")
     async def test_error_in_get_data_from_api(self, mocked_get, mocked_log_error, mocked_log_warning, mocked_sleep):
-        """"test being unable to retrieve data from api"""
+        """"Test being unable to retrieve data from api."""
         mocked_get.side_effect = [Exception]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
