@@ -51,6 +51,19 @@ class HealthCheckTest(unittest.TestCase):
         mocked_log.assert_called_once_with("Could not write health check time stamp to %s: %s", self.filename, io_error)
 
 
+class FakeResponse:
+    """Fake response."""
+    def __init__(self, json_data):
+        self._json = json_data
+
+    def close(self):
+        """Mock close method."""
+
+    async def json(self):
+        """Return the json from the response."""
+        return self._json
+
+
 @patch("builtins.open", mock_open())
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
@@ -83,20 +96,16 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that no notifications are sent if there are no new red metrics."""
 
-        class Response:  # pylint: disable=too-few-public-methods
-            """Fake response."""
-
-            @staticmethod
-            async def json():
-                """Return the json from the response."""
-                return dict(reports=[])
+        async def return_data_model():
+            """Retrieve data_model from class variable."""
+            return FakeResponse(json_data=self.data_model)
 
         async def return_response():
             """Return the response asynchronously."""
-            return Response()
+            return FakeResponse(dict(reports=[]))
 
-        mocked_get.return_value = return_response()
-        mocked_sleep.side_effect = RuntimeError
+        mocked_get.side_effect = [return_data_model(), return_response(), return_response()]
+        mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
         except RuntimeError:
@@ -108,41 +117,28 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is sent if there is one new red metric."""
-        class Response:
-            """Fake response."""
-            def __init__(self, json_data=None):
-                self._json = json_data
-
-            def close(self):
-                """Mock close method."""
-
-            async def json(self):
-                """Return the json from the response."""
-                if self._json:
-                    return self._json
-                history = "2020-01-01T00:23:59+59:00"
-                now = datetime.now().isoformat()
-                report = dict(
-                    report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
-                    subjects=dict(
-                        subject1=dict(
-                            metrics=dict(
-                                metric1=dict(
-                                    type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
-                                    recent_measurements=[
-                                        dict(start=history, end=now, count=dict(status="target_met", value="5")),
-                                        dict(start=now, end=now, count=dict(status="target_not_met", value="10"))])))))
-                return dict(reports=[report])
 
         async def return_reports():
             """Return the response asynchronously."""
-            return Response()
+            history = "2020-01-01T00:23:59+59:00"
+            now = datetime.now().isoformat()
+            report = dict(
+                report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
+                subjects=dict(
+                    subject1=dict(
+                        metrics=dict(
+                            metric1=dict(
+                                type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                                recent_measurements=[
+                                    dict(start=history, end=now, count=dict(status="target_met", value="5")),
+                                    dict(start=now, end=now, count=dict(status="target_not_met", value="10"))])))))
+            return FakeResponse(dict(reports=[report]))
 
-        async def return_datamodel():
+        async def return_data_model():
             """Retrieve data_model from class variable."""
-            return Response(json_data=self.data_model)
+            return FakeResponse(json_data=self.data_model)
 
-        mocked_get.side_effect = [return_datamodel(), return_reports(), return_reports()]
+        mocked_get.side_effect = [return_data_model(), return_reports(), return_reports()]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
