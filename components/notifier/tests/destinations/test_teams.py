@@ -13,6 +13,7 @@ class SendNotificationToTeamsTests(TestCase):
     """Unit tests for the Teams destination for notifications."""
 
     def setUp(self):
+        """Setup the notification test text."""
         self.message = "notification message"
 
     def test_invalid_webhook(self, mock_send):
@@ -34,6 +35,7 @@ class BuildNotificationTextTests(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        """setup the data_model."""
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
         with data_model_path.open() as json_data_model:

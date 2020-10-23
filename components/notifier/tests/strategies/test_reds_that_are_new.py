@@ -10,6 +10,7 @@ class MyTestCase(unittest.TestCase):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
 
     def setUp(self):
+        """Set variables for the other testcases."""
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
 
     def test_no_reports(self):

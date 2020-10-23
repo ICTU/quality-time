@@ -30,6 +30,7 @@ class HealthCheckTest(unittest.TestCase):
     """Unit tests for the record_health method."""
 
     def setUp(self):
+        """Set variables required by testcases."""
         self.filename = "/tmp/health_check.txt"
 
     @patch("builtins.open", new_callable=mock_open)
@@ -56,6 +57,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        """Setup data_model."""
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent / "server" / "src" / "data" / "datamodel.json"
         with data_model_path.open() as json_data_model:
@@ -108,10 +110,11 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is sent if there is one new red metric."""
         class Response:
             """Fake response."""
-            
+
             def __init__(self, json=None):
                 self._json = json
             def close(self):
+                """Mock close method."""
                 pass
             async def json(self):
                 """Return the json from the response."""
@@ -142,6 +145,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             return Response()
 
         async def return_datamodel():
+            """Retrieve data_model from class variable."""
             return Response(json=self.data_model)
 
         mocked_get.side_effect = [return_datamodel(), return_reports(), return_reports()]

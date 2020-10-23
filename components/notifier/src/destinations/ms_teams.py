@@ -14,7 +14,7 @@ def get_status(status, data_model) -> str:
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
     for user_friendly_status in statuses:
         if statuses[user_friendly_status] == status:
-            return user_friendly_status
+            return str(user_friendly_status)
     return "Unknown status"
 
 

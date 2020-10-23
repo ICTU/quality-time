@@ -50,7 +50,7 @@ async def notify(log_level: int = None) -> None:
 
 async def retrieve_data_model():
     """Retrieve data model from server."""
-    max_sleep_duration = 60  #Make an environment variable
+    max_sleep_duration = 60  # Make an environment variable
     timeout = aiohttp.ClientTimeout(total=120)
     async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, trust_env=True) as session:
         data_model = await fetch_data_model(session, max_sleep_duration)
