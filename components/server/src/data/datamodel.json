@@ -490,6 +490,7 @@
                 "pyupio_safety",
                 "random",
                 "snyk",
+                "generic_json",
                 "sonarqube"
             ],
             "tags": [
@@ -4441,6 +4442,7 @@
                         "Robot Framework",
                         "Robot Framework Jenkins plugin",
                         "Snyk",
+                        "JSON file with security warnings",
                         "SonarQube",
                         "TestNG",
                         "Trello",
@@ -4448,6 +4450,7 @@
                     ],
                     "api_values": {
                         "Snyk": "snyk",
+                        "JSON file with security warnings": "generic_json",
                         "Anchore": "anchore",
                         "Axe CSV": "axecsv",
                         "axe-selenium-python": "axe_selenium_python",
@@ -4725,6 +4728,110 @@
                 }
             },
             "entities": {}
+        },
+        "generic_json": {
+            "name": "JSON file with security warnings",
+            "description": "A generic vulnerability report with security warnings in JSON format",
+            "url": "https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings",
+            "parameters": {
+                "url": {
+                    "name": "URL to a generic vulnerability report in JSON format",
+                    "short_name": "URL",
+                    "type": "url",
+                    "mandatory": true,
+                    "default_value": "",
+                    "validate_on": [
+                        "username",
+                        "password",
+                        "private_token"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "landing_url": {
+                    "name": "URL to a generic vulnerability report in a human readable format",
+                    "short_name": "URL",
+                    "help": "If provided, users clicking the source URL will visit this URL instead of the generic vulnerability report in JSON format.",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "username": {
+                    "name": "Username for basic authentication",
+                    "short_name": "username",
+                    "type": "string",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "password": {
+                    "name": "Password for basic authentication",
+                    "short_name": "password",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                "private_token": {
+                    "name": "Private token",
+                    "short_name": "private token",
+                    "type": "password",
+                    "mandatory": false,
+                    "default_value": "",
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
+                 "severities": {
+                    "name": "Severities",
+                    "short_name": "severities",
+                    "help": "If provided, only count security warnings with the selected severities.",
+                    "type": "multiple_choice",
+                    "placeholder": "all severities",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                }
+            },
+            "entities": {
+                "security_warnings": {
+                    "name": "security warning",
+                    "name_plural": "security warnings",
+                    "attributes": [
+                        {
+                            "name": "Title",
+                            "key": "title"
+                        },
+                        {
+                            "name": "Description",
+                            "key": "description"
+                        },
+                        {
+                            "name": "Severity",
+                            "key": "severity",
+                            "color": {
+                                "high": "negative",
+                                "medium": "warning"
+                            }
+                        }
+                    ]
+                }
+            }
         },
         "snyk": {
             "name": "Snyk",
