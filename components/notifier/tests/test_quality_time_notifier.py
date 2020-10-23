@@ -4,6 +4,7 @@ import json
 import pathlib
 import unittest
 from datetime import datetime
+from copy import deepcopy
 from unittest.mock import AsyncMock, Mock, mock_open, patch
 
 from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
@@ -76,6 +77,17 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
 
+    @classmethod
+    async def return_data_model(cls):
+        """Retrieve data_model from class variable."""
+        return FakeResponse(json_data=cls.data_model)
+
+    @staticmethod
+    async def return_report(report=None):
+        """Return the reports response asynchronously."""
+        reports = [report] if report else []
+        return FakeResponse(dict(reports=reports))
+
     @patch("quality_time_notifier.retrieve_data_model", new=AsyncMock())
     @patch("logging.error")
     @patch("asyncio.sleep")
@@ -95,16 +107,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
         """Test that no notifications are sent if there are no new red metrics."""
-
-        async def return_data_model():
-            """Retrieve data_model from class variable."""
-            return FakeResponse(json_data=self.data_model)
-
-        async def return_response():
-            """Return the response asynchronously."""
-            return FakeResponse(dict(reports=[]))
-
-        mocked_get.side_effect = [return_data_model(), return_response(), return_response()]
+        mocked_get.side_effect = [self.return_data_model(), self.return_report(), self.return_report()]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
@@ -116,35 +119,51 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
-        """Test that a notification is sent if there is one new red metric."""
-
-        async def return_reports():
-            """Return the response asynchronously."""
-            history = "2020-01-01T00:23:59+59:00"
-            now = datetime.now().isoformat()
-            report = dict(
-                report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
-                subjects=dict(
-                    subject1=dict(
-                        metrics=dict(
-                            metric1=dict(
-                                type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
-                                recent_measurements=[
-                                    dict(start=history, end=now, count=dict(status="target_met", value="5")),
-                                    dict(start=now, end=now, count=dict(status="target_not_met", value="10"))])))))
-            return FakeResponse(dict(reports=[report]))
-
-        async def return_data_model():
-            """Retrieve data_model from class variable."""
-            return FakeResponse(json_data=self.data_model)
-
-        mocked_get.side_effect = [return_data_model(), return_reports(), return_reports()]
+        """Test that a notification is not sent if there is one new red metric."""
+        history = "2020-01-01T00:23:59+59:00"
+        report = dict(
+            report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
+            subjects=dict(
+                subject1=dict(
+                    metrics=dict(
+                        metric1=dict(
+                            type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                            recent_measurements=[
+                                dict(start=history, end=history, count=dict(status="target_met", value="5"))])))))
+        now = datetime.now().isoformat()
+        report2 = deepcopy(report)
+        report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
+            dict(start=now, end=now, count=dict(status="target_not_met", value="10")))
+        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
             await notify()
         except RuntimeError:
             pass
         mocked_send.assert_called_once()
+
+    @patch('pymsteams.connectorcard.send')
+    @patch("asyncio.sleep")
+    @patch("aiohttp.ClientSession.get")
+    async def test_one_old_red_metric_with_one_measurement(self, mocked_get, mocked_sleep, mocked_send):
+        """Test that a notification is not sent if there is one old red metric."""
+        history = "2020-01-01T00:23:59+59:00"
+        report = dict(
+            report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
+            subjects=dict(
+                subject1=dict(
+                    metrics=dict(
+                        metric1=dict(
+                            type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                            recent_measurements=[
+                                dict(start=history, end=history, count=dict(status="target_met", value="5"))])))))
+        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report)]
+        mocked_sleep.side_effect = [None, RuntimeError]
+        try:
+            await notify()
+        except RuntimeError:
+            pass
+        mocked_send.assert_not_called()
 
     @patch("logging.error", Mock())
     @patch("asyncio.sleep")
