@@ -9,15 +9,6 @@ import pymsteams
 SALUTATIONS = ("Alas", "Blimey", "Darn", "Oh dear", "Ouch", "Regrettably", "Sadly", "Unfortunately")
 
 
-def build_notification_text_old(text_parameters) -> str:
-    """Create and format the contents of the notification."""
-    nr_red = text_parameters["new_red_metrics"]
-    plural_s = "s" if nr_red > 1 else ""
-    report_link = f'[{text_parameters["report_title"]}]({text_parameters["url"]})'
-    salutation = random.choice(SALUTATIONS)  # nosec, Not used for cryptography
-    return f'{salutation}, {report_link} has {nr_red} metric{plural_s} that turned red.'
-
-
 def get_status(status, data_model) -> str:
     """"get the user friendly status name"""
     statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
