@@ -13,22 +13,22 @@ def get_notable_metrics_from_json(
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
                 if turned_red(metric, most_recent_measurement_seen):
-                    red_metrics.append(create_metric(data_model, metric))
+                    red_metrics.append(create_notification(data_model, metric))
         if webhook and len(red_metrics) > 0:
             notifications.append(
                 dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
-                     url=report.get("url"), new_red_metrics=len(red_metrics), metrics=red_metrics))
+                     url=report.get("url"), metrics=red_metrics))
     return notifications
 
 
-def create_metric(data_model, metric):
-    """Create the return dictionary."""
+def create_notification(data_model, metric):
+    """Create the notification dictionary."""
     recent_measurements = metric["recent_measurements"]
     scale = metric["scale"]
     result = dict(
         metric_type=metric["type"],
-        metric_name=metric["name"] or f'{data_model["metrics"][metric["metric_type"]]["name"]}',
-        metric_unit=metric["unit"] or f'{data_model["metrics"][metric["metric_type"]]["unit"]}',
+        metric_name=metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}',
+        metric_unit=metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}',
         new_metric_status=get_status(data_model, recent_measurements[-1][scale]["status"]),
         new_metric_value=recent_measurements[-1][scale]["value"])
     if len(recent_measurements) > 1:
@@ -43,7 +43,8 @@ def get_status(data_model, status) -> str:
     # The statuses have the human readable version of the status as key and the status itself as value so we need to
     # invert the dictionary:
     inverted_statuses = {statuses[key]: key for key in statuses}
-    return str(inverted_statuses[status])
+    human_readable_status, color = str(inverted_statuses[status]).strip(")").split(" (")
+    return f"{color} ({human_readable_status})"
 
 
 def turned_red(metric, most_recent_measurement_seen: str) -> bool:

@@ -1,8 +1,6 @@
 """Unit tests for the Teams notification destination."""
 
 import logging
-import json
-import pathlib
 from unittest import mock, TestCase
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
@@ -37,28 +35,26 @@ class BuildNotificationTextTests(TestCase):
         """Test that the text is correct."""
         text = build_notification_text(
             dict(
-                report_uuid="report1", report_title="Report 1",
-                new_red_metrics=2, url="http://report1", teams_webhook="",
-                metrics=[dict(
-                        metric_type="metric_type",
-                        metric_name="Metric",
-                        metric_unit="unit",
-                        old_metric_status="near target met (yellow)",
-                        old_metric_value=5,
-                        new_metric_status="target not met (red)",
-                        new_metric_value=10),
+                report_uuid="report1", report_title="Report 1", url="http://report1",
+                metrics=[
                     dict(
                         metric_type="metric_type",
                         metric_name="Metric",
-                        metric_unit="unit",
-                        old_metric_status="target met (green)",
+                        metric_unit="units",
+                        old_metric_status="yellow (near target met)",
+                        old_metric_value=0,
+                        new_metric_status="red (target not met)",
+                        new_metric_value=42),
+                    dict(
+                        metric_type="metric_type",
+                        metric_name="Metric",
+                        metric_unit="units",
+                        old_metric_status="green (target met)",
                         old_metric_value=5,
-                        new_metric_status="target not met (red)",
+                        new_metric_status="red (target not met)",
                         new_metric_value=10)]))
-        contents = text.split(", ", 1)
-        self.assertEqual("[Report 1](http://report1) has 2 metrics that turned red:<br>"
-                         "* Metric status is target not met (red), "
-                         "was near target met (yellow). Value is 10 unit, was 5 unit.<br>"
-                         "* Metric status is target not met (red), "
-                         "was target met (green). Value is 10 unit, was 5 unit.",
-                         contents[1])
+        self.assertEqual(
+            "[Report 1](http://report1) has 2 metrics that changed status:\n\n"
+            "* Metric status is red (target not met), was yellow (near target met). Value is 42 units, was 0 units.\n"
+            "* Metric status is red (target not met), was green (target met). Value is 10 units, was 5 units.\n",
+            text)

@@ -87,13 +87,13 @@ class StrategiesTestCase(unittest.TestCase):
             [dict(
                 report_uuid="report1", report_title="Title",
                 teams_webhook="webhook", url="http://report1",
-                new_red_metrics=1, metrics=[dict(
+                metrics=[dict(
                     metric_type="tests",
                     metric_name="metric1",
                     metric_unit="units",
-                    new_metric_status="target not met (red)",
+                    new_metric_status="red (target not met)",
                     new_metric_value="10",
-                    old_metric_status="target met (green)",
+                    old_metric_status="green (target met)",
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
@@ -104,7 +104,7 @@ class StrategiesTestCase(unittest.TestCase):
         new_percentage = dict(status="target_not_met", value="10")
         red_metric = dict(
             type="tests",
-            name="metric1",
+            name="",
             scale="percentage",
             unit="units",
             status="target_not_met",
@@ -120,13 +120,13 @@ class StrategiesTestCase(unittest.TestCase):
             [dict(
                 report_uuid="report1", report_title="Title",
                 teams_webhook="webhook", url="http://report1",
-                new_red_metrics=1, metrics=[dict(
+                metrics=[dict(
                     metric_type="tests",
-                    metric_name="metric1",
+                    metric_name="Tests",
                     metric_unit="units",
-                    new_metric_status="target not met (red)",
+                    new_metric_status="red (target not met)",
                     new_metric_value="10",
-                    old_metric_status="target met (green)",
+                    old_metric_status="green (target met)",
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
