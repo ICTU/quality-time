@@ -54,6 +54,7 @@ class HealthCheckTest(unittest.TestCase):
 
 class FakeResponse:
     """Fake response."""
+
     def __init__(self, json_data):
         self._json = json_data
 
@@ -122,7 +123,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is not sent if there is one new red metric."""
         history = "2020-01-01T00:23:59+59:00"
         report = dict(
-            report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
+            report_uuid="report1", title="Report 1", url="https://report1", teams_webhook="https://webhook",
             subjects=dict(
                 subject1=dict(
                     metrics=dict(
@@ -149,7 +150,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is not sent if there is one old red metric."""
         history = "2020-01-01T00:23:59+59:00"
         report = dict(
-            report_uuid="report1", title="Report 1", url="http://report1", teams_webhook="http://webhook",
+            report_uuid="report1", title="Report 1", url="https://report1", teams_webhook="https://webhook",
             subjects=dict(
                 subject1=dict(
                     metrics=dict(

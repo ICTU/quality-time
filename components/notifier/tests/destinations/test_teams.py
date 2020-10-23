@@ -35,7 +35,7 @@ class BuildNotificationTextTests(TestCase):
         """Test that the text is correct."""
         text = build_notification_text(
             dict(
-                report_uuid="report1", report_title="Report 1", url="http://report1",
+                report_uuid="report1", report_title="Report 1", url="https://report1",
                 metrics=[
                     dict(
                         metric_type="metric_type",
@@ -54,7 +54,7 @@ class BuildNotificationTextTests(TestCase):
                         new_metric_status="red (target not met)",
                         new_metric_value=10)]))
         self.assertEqual(
-            "[Report 1](http://report1) has 2 metrics that changed status:\n\n"
+            "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
             "* Metric status is red (target not met), was yellow (near target met). Value is 42 units, was 0 units.\n"
             "* Metric status is red (target not met), was green (target met). Value is 10 units, was 5 units.\n",
             text)

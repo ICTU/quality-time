@@ -24,6 +24,7 @@ class StrategiesTestCase(unittest.TestCase):
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
         self.first_timestamp = "2019-01-01T00:23:59+59:00"
         self.second_timestamp = "2020-01-01T00:23:59+59:00"
+        self.report_url = "https://report1"
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
@@ -80,13 +81,12 @@ class StrategiesTestCase(unittest.TestCase):
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(
-            title="Title", report_uuid="report1", teams_webhook="webhook", url="http://report1",
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
             subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
             [dict(
-                report_uuid="report1", report_title="Title",
-                teams_webhook="webhook", url="http://report1",
+                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
                 metrics=[dict(
                     metric_type="tests",
                     metric_name="metric1",
@@ -113,13 +113,12 @@ class StrategiesTestCase(unittest.TestCase):
                 dict(start=self.second_timestamp, end=self.second_timestamp, percentage=new_percentage)])
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(
-            title="Title", report_uuid="report1", teams_webhook="webhook", url="http://report1",
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
             subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
             [dict(
-                report_uuid="report1", report_title="Title",
-                teams_webhook="webhook", url="http://report1",
+                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
                 metrics=[dict(
                     metric_type="tests",
                     metric_name="Tests",
