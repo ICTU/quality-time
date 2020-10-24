@@ -35,7 +35,7 @@ export function ChangeLog(props) {
             }
         });
         return () => { didCancel = true; };
-    }, [props.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.timestamp, nrChanges, get_changelog]);
+    }, [props.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.timestamp, nrChanges]);
 
     let scope = "Changes in this instance of Quality-time";
     if (props.report_uuid) { scope = "Changes in this report" }
