@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import * as source_api from '../api/source';
 import { Source } from './Source';
@@ -13,19 +13,16 @@ const datamodel = {
 const source = { type: "source_type" };
 const report = { report_uuid: "report_uuid", subjects: {} };
 
-function source_wrapper() {
-    return mount(
-        <ReadOnlyContext.Provider value={false}>
-            <Source datamodel={datamodel} metric_type="metric_type" report={report} reports={[report]} source={source} />
-        </ReadOnlyContext.Provider>
-    )
-}
-
 describe('<Source />', () => {
-    beforeEach(() => { source.set_source_entity_attribute = jest.fn(); });
-    it('invokes the callback on clicking delete', () => {
-        const wrapper = source_wrapper();
-        wrapper.find("DeleteButton").at(0).simulate("click");
+    it('invokes the callback on clicking delete', async () => {
+        await act(async () => {
+            render(
+                <ReadOnlyContext.Provider value={false}>
+                    <Source datamodel={datamodel} metric_type="metric_type" report={report} reports={[report]} source={source} />
+                </ReadOnlyContext.Provider>
+            );
+            fireEvent.click(screen.getByText(/Delete source/));
+        })
         expect(source_api.delete_source).toHaveBeenCalled();
-    });
+    })
 });

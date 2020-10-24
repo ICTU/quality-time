@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [user manual](USAGE.md#generic-json-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
-- In the Microsoft Teams notifications, include which metric turned red. 
+- In the Microsoft Teams notifications, include which metric turned red.
 
 ## [3.10.0] - [2020-10-18]
 
