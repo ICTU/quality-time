@@ -136,53 +136,47 @@ class StrategiesTestCase(unittest.TestCase):
 
     def test_new_white_metric(self):
         """Test that a metric that turns white is added."""
-        moment_ago = "2000-01-01T00:23:59+59:00"
-        most_recent_measurement_seen = datetime.datetime.now().isoformat()
         metric = dict(
             scale="count",
             status="unknown",
             recent_measurements=[
                 dict(
-                    start="",
+                    start=self.second_timestamp,
                     count=dict(
                         status="target_met")),
                 dict(
-                    start=most_recent_measurement_seen,
+                    start=self.first_timestamp,
                     count=dict(
                         status="unknown"))])
-        result = turned_white(metric, moment_ago)
+        result = turned_white(metric, self.most_recent_measurement_seen)
         self.assertTrue(result)
 
     def test_old_white_metric(self):
         """Test that a metric that was already white isn't added."""
-        moment_ago = "2000-01-01T00:23:59+59:00"
-        most_recent_measurement_seen = datetime.datetime.now().isoformat()
         metric = dict(
             scale="count",
             status="unknown",
             recent_measurements=[
                 dict(
-                    start="",
+                    start=self.second_timestamp,
                     count=dict(
                         status="unknown")),
                 dict(
-                    start=most_recent_measurement_seen,
+                    start=self.first_timestamp,
                     count=dict(
                         status="unknown"))])
-        result = turned_white(metric, moment_ago)
+        result = turned_white(metric, self.most_recent_measurement_seen)
         self.assertFalse(result)
 
     def test_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
-        moment_ago = "2000-01-01T00:23:59+59:00"
-        most_recent_measurement_seen = datetime.datetime.now().isoformat()
         metric = dict(
             scale="count",
             status="unknown",
             recent_measurements=[
                 dict(
-                    start=most_recent_measurement_seen,
+                    start=self.first_timestamp,
                     count=dict(
                         status="unknown"))])
-        result = turned_white(metric, moment_ago)
+        result = turned_white(metric, self.most_recent_measurement_seen)
         self.assertFalse(result)
