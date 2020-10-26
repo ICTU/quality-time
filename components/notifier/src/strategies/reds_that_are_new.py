@@ -12,7 +12,8 @@ def get_notable_metrics_from_json(
         webhook = report.get("teams_webhook")
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-                if turned_red(metric, most_recent_measurement_seen):
+                if turned_red(metric, most_recent_measurement_seen) \
+                        or turned_white(metric, most_recent_measurement_seen):
                     red_metrics.append(create_notification(data_model, metric))
         if webhook and len(red_metrics) > 0:
             notifications.append(
@@ -53,3 +54,15 @@ def turned_red(metric, most_recent_measurement_seen: str) -> bool:
     recent_measurements = metric.get("recent_measurements")
     return bool(
         metric_is_red and recent_measurements and recent_measurements[-1]["start"] > most_recent_measurement_seen)
+
+def turned_white(metric, most_recent_measurement_seen: str)-> bool:
+    """Determine if a metric turned white after the timestamp of the most recent measurement seen."""
+    scale = metric["scale"]
+    metric_is_white = metric["status"] == "unknown"
+    recent_measurements = metric.get("recent_measurements")
+    if recent_measurements and len(recent_measurements) > 1:
+        metric_was_not_white = recent_measurements[-2][scale]["status"] != "unknown"
+        return bool(
+            metric_is_white and metric_was_not_white and
+            recent_measurements[-1]["start"] > most_recent_measurement_seen)
+    return False
