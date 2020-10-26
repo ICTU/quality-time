@@ -12,17 +12,10 @@ def get_notable_metrics_from_json(
         webhook = report.get("teams_webhook")
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-<<<<<<< HEAD
                 if has_new_status(metric, "target_not_met", most_recent_measurement_seen) \
                         or has_new_status(metric, "unknown", most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
         if webhook and len(notable_metrics) > 0:
-=======
-                if turned_red(metric, most_recent_measurement_seen) \
-                        or turned_white(metric, most_recent_measurement_seen):
-                    red_metrics.append(create_notification(data_model, metric))
-        if webhook and len(red_metrics) > 0:
->>>>>>> 48c3ba7f... added notification strategy for when metrics turn white
             notifications.append(
                 dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
                      url=report.get("url"), metrics=notable_metrics))
@@ -54,7 +47,6 @@ def get_status(data_model, status) -> str:
     return f"{color} ({human_readable_status})"
 
 
-<<<<<<< HEAD
 def has_new_status(metric, new_status: str, most_recent_measurement_seen: str) -> bool:
     """Determine if a metric got a new status after the timestamp of the most recent measurement seen."""
     recent_measurements = metric.get("recent_measurements") or []
@@ -65,23 +57,3 @@ def has_new_status(metric, new_status: str, most_recent_measurement_seen: str) -
     metric_had_other_status = recent_measurements[-2][scale]["status"] != new_status
     change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
     return bool(metric_has_status and metric_had_other_status and change_was_recent)
-=======
-def turned_red(metric, most_recent_measurement_seen: str) -> bool:
-    """Determine if a metric turned red after the timestamp of the most recent measurement seen."""
-    metric_is_red = metric["status"] == "target_not_met"
-    recent_measurements = metric.get("recent_measurements")
-    return bool(
-        metric_is_red and recent_measurements and recent_measurements[-1]["start"] > most_recent_measurement_seen)
-
-def turned_white(metric, most_recent_measurement_seen: str)-> bool:
-    """Determine if a metric turned white after the timestamp of the most recent measurement seen."""
-    scale = metric["scale"]
-    metric_is_white = metric["status"] == "unknown"
-    recent_measurements = metric.get("recent_measurements")
-    if recent_measurements and len(recent_measurements) > 1:
-        metric_was_not_white = recent_measurements[-2][scale]["status"] != "unknown"
-        return bool(
-            metric_is_white and metric_was_not_white and
-            recent_measurements[-1]["start"] > most_recent_measurement_seen)
-    return False
->>>>>>> 48c3ba7f... added notification strategy for when metrics turn white
