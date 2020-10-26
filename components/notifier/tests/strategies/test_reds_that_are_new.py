@@ -173,7 +173,7 @@ class StrategiesTestCase(unittest.TestCase):
         self.assertFalse(result)
 
     def test_only_one_measurement(self):
-        """Da."""
+        """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
         moment_ago = "2000-01-01T00:23:59+59:00"
         most_recent_measurement_seen = datetime.datetime.now().isoformat()
         metric = dict(
