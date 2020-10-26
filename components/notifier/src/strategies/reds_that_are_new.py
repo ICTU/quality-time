@@ -56,7 +56,7 @@ def turned_red(metric, most_recent_measurement_seen: str) -> bool:
         metric_is_red and recent_measurements and recent_measurements[-1]["start"] > most_recent_measurement_seen)
 
 
-def turned_white(metric, most_recent_measurement_seen: str)-> bool:
+def turned_white(metric, most_recent_measurement_seen: str) -> bool:
     """Determine if a metric turned white after the timestamp of the most recent measurement seen."""
     scale = metric["scale"]
     metric_is_white = metric["status"] == "unknown"
