@@ -16,7 +16,8 @@ from .source_collector import SourceCollector
 
 
 class FakeResponse:
-    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
+    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly."""
+
     status = HTTPStatus.OK
 
     def __init__(self, contents: bytes = bytes()) -> None:
