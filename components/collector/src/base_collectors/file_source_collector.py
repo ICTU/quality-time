@@ -57,6 +57,8 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
         with zipfile.ZipFile(io.BytesIO(await response.read())) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
+            if not names:
+                raise LookupError(f"Zipfile contains no files with extension {' or '.join(cls.file_extensions)}")
             responses = [FakeResponse(response_zipfile.read(name)) for name in names]
         return cast(Responses, responses)
 

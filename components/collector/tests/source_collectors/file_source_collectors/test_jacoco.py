@@ -45,3 +45,14 @@ class JaCoCoTest(SourceCollectorTestCase):
                 "jacoco.xml", "<report><counter type='LINE' missed='2' covered='4'/></report>")
         response = await self.collect(metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value="2", total="6")
+
+    async def test_zipped_report_without_xml(self):
+        """Test that a zip file without xml files throws an exception."""
+        self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
+        metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_jacoco_report:
+            zipped_jacoco_report.writestr(
+                "jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>")
+        response = await self.collect(metric, get_request_content=bytes_io.getvalue())
+        self.assert_measurement(response, value=None, connection_error="Zipfile contains no files with extension xml")
