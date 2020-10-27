@@ -5,7 +5,7 @@ import json
 import pathlib
 import unittest
 
-from strategies.reds_that_are_new import get_notable_metrics_from_json
+from strategies.changed_status import get_notable_metrics_from_json, has_new_status
 
 
 class StrategiesTestCase(unittest.TestCase):
@@ -25,6 +25,7 @@ class StrategiesTestCase(unittest.TestCase):
         self.first_timestamp = "2019-01-01T00:23:59+59:00"
         self.second_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
+        self.white_status = "unknown"
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
@@ -33,7 +34,11 @@ class StrategiesTestCase(unittest.TestCase):
 
     def test_no_red_metrics(self):
         """Test that there is nothing to notify when there are no red metrics."""
-        green_metric = dict(status="target_met")
+        count = dict(status="target_met", value="0")
+        green_metric = dict(
+            status="target_met",
+            scale="count",
+            recent_measurements=[dict(start=self.first_timestamp, end=self.second_timestamp, count=count)])
         subject1 = dict(metrics=dict(metric1=green_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
@@ -58,8 +63,8 @@ class StrategiesTestCase(unittest.TestCase):
 
     def test_red_metric_without_recent_measurements(self):
         """Test that there is nothing to notify if the red metric has no recent measurements."""
-        red_metric1 = dict(status="target_not_met")
-        red_metric2 = dict(status="target_not_met", recent_measurements=[])
+        red_metric1 = dict(status="target_not_met", scale="count")
+        red_metric2 = dict(status="target_not_met", scale="count", recent_measurements=[])
         subject1 = dict(metrics=dict(metric1=red_metric1, metric2=red_metric2))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
@@ -129,3 +134,55 @@ class StrategiesTestCase(unittest.TestCase):
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
+
+    def test_new_white_metric(self):
+        """Test that a metric that turns white is added."""
+        metric = dict(
+            scale="count",
+            status=self.white_status,
+            recent_measurements=[
+                dict(
+                    start=self.second_timestamp,
+                    count=dict(
+                        status="target_met")),
+                dict(
+                    start=self.first_timestamp,
+                    count=dict(
+                        status=self.white_status))])
+        result = has_new_status(metric, self.white_status,self.most_recent_measurement_seen)
+        self.assertTrue(result)
+
+    def test_old_white_metric(self):
+        """Test that a metric that was already white isn't added."""
+        metric = dict(
+            scale="count",
+            status=self.white_status,
+            recent_measurements=[
+                dict(
+                    start=self.second_timestamp,
+                    count=dict(
+                        status=self.white_status)),
+                dict(
+                    start=self.first_timestamp,
+                    count=dict(
+                        status=self.white_status))])
+        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+
+    def test_only_one_measurement(self):
+        """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
+        metric = dict(
+            scale="count",
+            status=self.white_status,
+            recent_measurements=[
+                dict(
+                    start=self.first_timestamp,
+                    count=dict(
+                        status=self.white_status))])
+        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+
+    def test_no_measurements(self):
+        """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
+        metric = dict(
+            scale="count",
+            status=self.white_status)
+        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
