@@ -5,7 +5,7 @@ import json
 import pathlib
 import unittest
 
-from strategies.reds_that_are_new import get_notable_metrics_from_json, has_new_status
+from strategies.changed_status import get_notable_metrics_from_json, has_new_status
 
 
 class StrategiesTestCase(unittest.TestCase):
