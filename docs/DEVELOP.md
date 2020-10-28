@@ -158,7 +158,7 @@ To run the application tests (these in theory test all components through the fr
 
 ```console
 docker-compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time_www_1 circleci/python:3.8-browsers ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.0-browsers ci/test.sh
 ```
 
 ## Release

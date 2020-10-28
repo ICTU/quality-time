@@ -7,7 +7,7 @@ jobs:
     - stage: test
       name: "Collector unit tests"
       language: python
-      python: 3.9-dev
+      python: 3.9
       install:
       - cd components/collector
       - pip install -r requirements.txt -r requirements-dev.txt
@@ -17,7 +17,7 @@ jobs:
 
     - name: "Notifier unit tests"
       language: python
-      python: 3.8
+      python: 3.9
       install:
         - cd components/notifier
         - pip install -r requirements.txt -r requirements-dev.txt
@@ -27,7 +27,7 @@ jobs:
 
     - name: "Server unit tests"
       language: python
-      python: 3.9-dev
+      python: 3.9
       install:
       - cd components/server
       - pip install -r requirements.txt -r requirements-dev.txt
@@ -46,7 +46,7 @@ jobs:
 
     - name: "SonarQube"
       language: python
-      python: 3.9-dev
+      python: 3.9
       git:
         depth: false
       addons:
