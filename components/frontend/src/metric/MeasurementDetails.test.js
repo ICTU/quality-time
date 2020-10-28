@@ -91,7 +91,7 @@ describe("<MeasurementDetails />", () => {
             wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
             wrapper.find("MenuItem").at(2).simulate('click');
         });
-        expect(wrapper.find("a.active").text()).toBe("Trend");
+        expect(wrapper.find("a.active").text()).toBe("Trend graph");
     });
     it('calls the callback on click', async () => {
         const mockCallBack = jest.fn();
