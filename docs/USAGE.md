@@ -293,6 +293,6 @@ To export an older version of a report, add the `report_date` parameter with a d
 
 ## Notifications
 
-*Quality-time* can send notifications about metrics that turned red, i.e. that don't meet their target, to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+*Quality-time* can send notifications about metrics that change status to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
-If a webhook has been configured, *Quality-time* will check for new red metrics every minute. As soon as one or more metrics in the report turn red, a notification will be sent to the Microsoft Teams channel configured by the webhook.
+If a webhook has been configured, *Quality-time* will check for new red (target not met) and white (source unreachable or error parsing source data) metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
