@@ -16,7 +16,7 @@ Follow these instructions to run the software in hot-reload mode for easy develo
 
 #### Install prerequisites
 
-Prerequisites are Docker, Git, Python 3.8, a recent version of Node.js (we test with the Long Term Support version of Node).
+Prerequisites are Docker, Git, Python 3.9, a recent version of Node.js (we test with the Long Term Support version of Node).
 
 Clone this repository:
 

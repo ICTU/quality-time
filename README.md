@@ -67,6 +67,7 @@ Implemented features so far include:
 - Export of reports to PDF, both via the UI as well as via the API.
 
 We're currently working on:
+
 - Notifications of events, such as metrics turning red, to Microsoft Teams.
 - Side-by-side comparison of measurements at different points in time.
 
