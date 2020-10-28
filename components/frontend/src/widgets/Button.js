@@ -36,6 +36,23 @@ export function DeleteButton(props) {
   )
 }
 
+export function DeleteNotificationDestinationButton(props) {
+    return (
+        <ActionButton
+            icon='trash'
+            popup={`Delete this ${props.item_type}. Careful, this cannot be undone`}
+        />
+    )
+}
+
+export function AddNotificationDestinationButton(props) {
+    return (
+        <ActionButton
+
+        />
+    )
+}
+
 function download_pdf(report_uuid, query_string, callback) {
   get_report_pdf(report_uuid, query_string)
     .then(response => {

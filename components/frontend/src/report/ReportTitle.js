@@ -3,13 +3,15 @@ import { Grid, Icon } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { DeleteButton, DownloadAsPDFButton, DeleteNotificationDestinationButton, AddNotificationDestinationButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
+import { add_notification_destination, delete_notification_destination, set_notification_destination_attribute } from '../api/notification'
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { HyperLink } from '../widgets/HyperLink';
 
 export function ReportTitle(props) {
     const report_uuid = props.report.report_uuid;
+    const destinations = props.report.destinations;
     function ButtonRow() {
         return (
             <Grid.Row>
@@ -48,18 +50,44 @@ export function ReportTitle(props) {
     function NotifierRow() {
         const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
         const label = <label>Microsoft Teams webhook <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>;
-        return (
+        const result = [];
+        for (const destination of destinations) {
+            result.push(
+                <Grid.Row columns={3}>
+                    <Grid.Column>
+                        <StringInput
+                            id={destination.destination.destination_uuid}
+                            label='Name'
+                        />
+                        <StringInput
+                            label={label}
+                            set_value={(value) => {
+                                set_notification_destination_attribute(report_uuid, destination.destination_uuid, "teams_webhook", value).then(
+                                set_notification_destination_attribute(report_uuid, destination.destination_uuid, "url", window.location.href).then(
+                                set_notification_destination_attribute(report_uuid, destination.destination_uuid, "name", "")))
+                            }}
+                            value={props.report.teams_webhook}
+                        />
+                        <DeleteNotificationDestinationButton
+                            item_type='notification destination'
+                            onClick={() => delete_notification_destination(report_uuid, destination.destination_uuid)}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            )
+        }
+        result.push(
             <Grid.Row>
                 <Grid.Column>
-                    <StringInput
-                        label={label}
-                        set_value={(value) => {
-                            set_report_attribute(report_uuid, "teams_webhook", value, props.reload).then(
-                            set_report_attribute(report_uuid, "url", window.location.href, props.reload))
-                        }}
-                        value={props.report.teams_webhook}
+                    <AddNotificationDestinationButton
+                        onClick={() => add_notification_destination(report_uuid)}
                     />
                 </Grid.Column>
+            </Grid.Row>
+        )
+        return (
+            <Grid.Row>
+                {result}
             </Grid.Row>
         )
     }
