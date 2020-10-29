@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-semantic-toasts';
 import { parse, stringify } from 'query-string';
 
+export function get_metric_direction(metric, data_model) {
+    return format_metric_direction(metric.direction || data_model.metrics[metric.type].direction);
+}
+
+export function format_metric_direction(direction) {
+    return { "<": "≦", ">": "≧" }[direction];
+}
+
 export function get_metric_name(metric, datamodel) {
     return metric.name || datamodel.metrics[metric.type].name;
 }

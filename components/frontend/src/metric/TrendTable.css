@@ -21,3 +21,9 @@ td.unknown {
 td > a {
     color: rgb(0, 88, 176) !important;
 }
+
+.ui.sortable.table thead th:hover {
+    /* Tables nested in a sortabe table are sortable automatically, but TrendTables aren't sortable
+       so revert the style */
+    background: #f9fafb;
+}
