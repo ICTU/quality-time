@@ -5703,12 +5703,12 @@
                         },
                         {
                             "name": "Created",
-                            "key": "created_datetime",
+                            "key": "creation_date",
                             "type": "datetime"
                         },
                         {
                             "name": "Updated",
-                            "key": "updated_datetime",
+                            "key": "update_date",
                             "type": "datetime"
                         }
                     ]

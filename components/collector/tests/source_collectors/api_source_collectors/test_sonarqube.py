@@ -22,7 +22,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
 
     def entity(  # pylint: disable=too-many-arguments
             self, component: str, entity_type: str, severity: str = None, resolution: str = None,
-            vulnerability_probability: str = None) -> Entity:
+            vulnerability_probability: str = None, creation_date: str = None, update_date: str = None) -> Entity:
         """Create an entity."""
         url = self.hotspot_landing_url.format(component) if entity_type == "security_hotspot" else \
             self.issue_landing_url.format(component)
@@ -33,6 +33,10 @@ class SonarQubeTestCase(SourceCollectorTestCase):
             entity["resolution"] = resolution
         if vulnerability_probability is not None:
             entity["vulnerability_probability"] = vulnerability_probability
+        if creation_date is not None:
+            entity["creation_date"] = creation_date
+        if update_date is not None:
+            entity["update_date"] = update_date
         return entity
 
 
@@ -48,10 +52,13 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         json = dict(
             total="2",
             issues=[
-                dict(key="a", message="a", component="a", severity="INFO", type="BUG"),
-                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL")])
+                dict(key="a", message="a", component="a", severity="INFO", type="BUG", creationDate="2020-08-30T22:48:52+0200", updateDate="2020-09-30T22:48:52+0200"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL", creationDate="2019-08-30T22:48:52+0200", updateDate="2019-09-30T22:48:52+0200")])
         response = await self.collect(self.metric, get_request_json_return_value=json)
-        expected_entities = [self.entity("a", "bug", "info"), self.entity("b", "code_smell", "major")]
+        expected_entities = [
+            self.entity("a", "bug", "info", creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"), 
+            self.entity("b", "code_smell", "major", creation_date="2019-08-30T22:48:52+0200", update_date="2019-09-30T22:48:52+0200")
+        ]
         self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.issues_landing_url)
 
 
@@ -216,16 +223,19 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
     async def test_suppressed_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
         violations_json = dict(
-            total="1", issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG")])
+            total="1", issues=[dict(key="a", message="a", component="a", severity="INFO", type="BUG", creationDate="2020-08-30T22:48:52+0200", updateDate="2020-09-30T22:48:52+0200")])
         wont_fix_json = dict(
             total="1",
             issues=[
-                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL", resolution="WONTFIX")])
+                dict(key="b", message="b", component="b", severity="MAJOR", type="CODE_SMELL", resolution="WONTFIX", creationDate="2019-08-30T22:48:52+0200", updateDate="2019-09-30T22:48:52+0200")])
         total_violations_json = dict(total="4")
         metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = await self.collect(
             metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
-        expected_entities = [self.entity("a", "bug", "info", ""), self.entity("b", "code_smell", "major", "won't fix")]
+        expected_entities = [
+            self.entity("a", "bug", "info", "", creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"), 
+            self.entity("b", "code_smell", "major", "won't fix", creation_date="2019-08-30T22:48:52+0200", update_date="2019-09-30T22:48:52+0200")
+        ]
         self.assert_measurement(
             response, value="2", total="4", entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
@@ -301,8 +311,8 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         vulnerabilities_json = dict(
             total="2",
             issues=[
-                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY"),
-                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY")])
+                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY", creationDate="2020-08-30T22:48:52+0200", updateDate="2020-09-30T22:48:52+0200"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY", creationDate="2019-08-30T22:48:52+0200", updateDate="2019-09-30T22:48:52+0200")])
         hotspots_json = dict(
             paging=dict(total="2"),
             hotspots=[
@@ -312,8 +322,8 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         response = await self.collect(
             metric, get_request_json_side_effect=[show_component_json, vulnerabilities_json, hotspots_json])
         expected_entities = [
-            self.entity("a", "vulnerability", "info"),
-            self.entity("b", "vulnerability", "major"),
+            self.entity("a", "vulnerability", "info", creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"),
+            self.entity("b", "vulnerability", "major", creation_date="2019-08-30T22:48:52+0200", update_date="2019-09-30T22:48:52+0200"),
             self.entity("a", "security_hotspot", vulnerability_probability="medium"),
             self.entity("b", "security_hotspot", vulnerability_probability="low")]
         self.assert_measurement(
@@ -343,10 +353,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         json = dict(
             total="2",
             issues=[
-                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY"),
-                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY")])
+                dict(key="a", message="a", component="a", severity="INFO", type="VULNERABILITY", creationDate="2020-08-30T22:48:52+0200", updateDate="2020-09-30T22:48:52+0200"),
+                dict(key="b", message="b", component="b", severity="MAJOR", type="VULNERABILITY", creationDate="2019-08-30T22:48:52+0200", updateDate="2019-09-30T22:48:52+0200")])
         metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = await self.collect(metric, get_request_json_return_value=json)
-        expected_entities = [self.entity("a", "vulnerability", "info"), self.entity("b", "vulnerability", "major")]
+        expected_entities = [
+            self.entity("a", "vulnerability", "info", creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"), 
+            self.entity("b", "vulnerability", "major", creation_date="2019-08-30T22:48:52+0200", update_date="2019-09-30T22:48:52+0200")
+        ]
         self.assert_measurement(
             response, value="2", total="100", entities=expected_entities, landing_url=self.issues_landing_url)

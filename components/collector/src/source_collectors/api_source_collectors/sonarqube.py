@@ -84,8 +84,8 @@ class SonarQubeViolations(SonarQubeCollector):
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
             component=issue["component"],
-            created_datetime=issue["creationDate"],
-            updated_datetime=issue["updateDate"],
+            creation_date=issue["creationDate"],
+            update_date=issue["updateDate"],
         )
 
     def _violation_types(self) -> str:
