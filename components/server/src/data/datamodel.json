@@ -5703,11 +5703,13 @@
                         },
                         {
                             "name": "Created",
-                            "key": "creationDate"
+                            "key": "created_datetime",
+                            "type": "datetime"
                         },
                         {
                             "name": "Updated",
-                            "key": "updateDate"
+                            "key": "updated_datetime",
+                            "type": "datetime"
                         }
                     ]
                 }
