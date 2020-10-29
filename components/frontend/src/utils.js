@@ -115,6 +115,29 @@ export function useURLSearchQuery(history, key, state_type) {
     return state_type === "boolean" ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
 }
 
+export function useIntegerURLSearchQuery(history, key, default_value) {
+    const [state, setState] = useState(getState());
+
+    function getState() {
+        const parsed_state = parseURLSearchQuery()[key];
+        return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
+    }
+
+    function parseURLSearchQuery() {
+        return parse(history.location.search);
+    }
+
+    function setURLSearchQuery(new_state) {
+        let parsed = parseURLSearchQuery();
+        parsed[key] = new_state || "";
+        const search = stringify(parsed, { skipEmptyString: true });
+        history.replace({ search: search.length > 0 ? "?" + search : "" });
+        setState(new_state);
+    }
+
+    return [state, setURLSearchQuery]
+}
+
 export function useDelayedRender() {
     const [visible, setVisible] = useState(false);
     useEffect(() => { setTimeout(setVisible, 50, true) }, []);

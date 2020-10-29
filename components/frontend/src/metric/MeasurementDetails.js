@@ -57,7 +57,15 @@ export function MeasurementDetails(props) {
       },
       {
         menuItem: <Menu.Item key='trend_table'><FocusableTab>{'Trend table'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendTable data_model={props.datamodel} measurements={measurements} metric={metric} report_date={props.report_date} scale={props.scale} unit={props.unit} /></Tab.Pane>
+        render: () => (
+          <Tab.Pane>
+            <TrendTable
+              data_model={props.datamodel} measurements={measurements} metric={metric} report_date={props.report_date}
+              scale={props.scale} setTrendTableInterval={props.setTrendTableInterval}
+              setTrendTableNrDates={props.setTrendTableNrDates} trendTableInterval={props.trendTableInterval}
+              trendTableNrDates={props.trendTableNrDates} unit={props.unit} />
+          </Tab.Pane>
+        )
       }
     );
     const last_measurement = measurements[measurements.length - 1];
