@@ -1,4 +1,4 @@
-asserts==0.11.0
+asserts==0.11.1
 behave==1.2.6
 bump2version==1.0.1
 coverage==5.3
