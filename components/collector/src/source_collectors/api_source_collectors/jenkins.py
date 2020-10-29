@@ -37,7 +37,10 @@ class JenkinsJobs(SourceCollector):
 
     def _count_job(self, job: Job) -> bool:
         """Return whether the job should be counted."""
-        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
+        if len(self._parameter("jobs_to_include")) > 0:
+            return match_string_or_regular_expression(job["name"], self._parameter("jobs_to_include"))
+        else:
+            return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore"))
 
     @staticmethod
     def _build_datetime(job: Job) -> datetime:
