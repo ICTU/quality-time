@@ -78,7 +78,8 @@ export function TrendTable({ data_model, measurements, metric, report_date, scal
             if (value[0] !== "?") { return }
             const iso_date = date.toISOString();
             if (measurement.start <= iso_date && iso_date <= measurement.end) {
-                table.set(date, [measurement[scale].value, measurement[scale].status, measurement[scale].target, format_metric_direction(measurement[scale].direction)])
+                const measurement_value = measurement[scale].value === null ? "?" : measurement[scale].value;
+                table.set(date, [measurement_value, measurement[scale].status, measurement[scale].target, format_metric_direction(measurement[scale].direction)])
             }
         })
     });
