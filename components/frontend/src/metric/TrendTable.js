@@ -1,22 +1,21 @@
 import React from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
 import { format_metric_direction, get_metric_direction } from '../utils';
+import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import "./TrendTable.css";
 
 function HamburgerHeader({ setTrendTableInterval, setTrendTableNrDates, trendTableInterval, trendTableNrDates }) {
     return (
-        <Dropdown item icon='sidebar'>
-            <Dropdown.Menu>
-                <Dropdown.Header>Number of dates</Dropdown.Header>
-                {[2, 3, 4, 5, 6, 7].map((nr) =>
-                    <Dropdown.Item key={nr} active={nr === trendTableNrDates} onClick={() => setTrendTableNrDates(nr)}>{nr}</Dropdown.Item>
-                )}
-                <Dropdown.Header>Time between dates</Dropdown.Header>
-                {[1, 2, 3, 4].map((nr) =>
-                    <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr} week${nr === 1 ? '' : 's'}`}</Dropdown.Item>
-                )}
-            </Dropdown.Menu>
-        </Dropdown >
+        <HamburgerMenu>
+            <Dropdown.Header>Number of dates</Dropdown.Header>
+            {[2, 3, 4, 5, 6, 7].map((nr) =>
+                <Dropdown.Item key={nr} active={nr === trendTableNrDates} onClick={() => setTrendTableNrDates(nr)}>{nr}</Dropdown.Item>
+            )}
+            <Dropdown.Header>Time between dates</Dropdown.Header>
+            {[1, 2, 3, 4].map((nr) =>
+                <Dropdown.Item key={nr} active={nr === trendTableInterval} onClick={() => setTrendTableInterval(nr)}>{`${nr} week${nr === 1 ? '' : 's'}`}</Dropdown.Item>
+            )}
+        </HamburgerMenu>
     )
 }
 
