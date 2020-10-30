@@ -158,8 +158,11 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
     rules_parameter = "suppression_rules"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
-        as well as the total number of violations."""
+        """Get the suppressed violations from SonarQube.
+
+        In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
+        as well as the total number of violations.
+        """
         url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -353,8 +356,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         return await super()._entities(metrics)
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
-        """Return the languages and non-commented lines of code per language, skipping languages the user wants to
-        ignore."""
+        """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = self._parameter("languages_to_ignore")
         return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
                 if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]
