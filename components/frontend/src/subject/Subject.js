@@ -4,6 +4,7 @@ import { Metric } from '../metric/Metric';
 import { SubjectTitle } from './SubjectTitle';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
+import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { add_metric, copy_metric, move_metric } from '../api/metric';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
 import { metric_options } from '../widgets/menu_options';
@@ -117,22 +118,20 @@ export function Subject(props) {
     }
     return (
       <Table.HeaderCell collapsing textAlign="center">
-        <Dropdown item icon='sidebar'>
-          <Dropdown.Menu>
-            <Dropdown.Header>Rows</Dropdown.Header>
-            <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
-              {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-            </Dropdown.Item>
-            <Dropdown.Header>Columns</Dropdown.Header>
-            <ColumnMenuItem column="trend" />
-            <ColumnMenuItem column="status" />
-            <ColumnMenuItem column="measurement" />
-            <ColumnMenuItem column="target" />
-            <ColumnMenuItem column="source" />
-            <ColumnMenuItem column="comment" />
-            <ColumnMenuItem column="tags" />
-          </Dropdown.Menu>
-        </Dropdown>
+        <HamburgerMenu>
+          <Dropdown.Header>Rows</Dropdown.Header>
+          <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
+            {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
+          </Dropdown.Item>
+          <Dropdown.Header>Columns</Dropdown.Header>
+          <ColumnMenuItem column="trend" />
+          <ColumnMenuItem column="status" />
+          <ColumnMenuItem column="measurement" />
+          <ColumnMenuItem column="target" />
+          <ColumnMenuItem column="source" />
+          <ColumnMenuItem column="comment" />
+          <ColumnMenuItem column="tags" />
+        </HamburgerMenu>
       </Table.HeaderCell>
     )
   }
