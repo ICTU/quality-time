@@ -46,77 +46,37 @@ const data_model = {
 }
 
 describe("<MeasurementDetails />", () => {
-    it('switches to source tab', async () => {
+    function mount_wrapper() {
+        return mount(
+            <ReadOnlyContext.Provider value={false}>
+                <MeasurementDetails
+                    datamodel={data_model}
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    reports={[report]}
+                    scale="count"
+                    subject_uuid="subject_uuid"
+                    unit="unit"
+                    visibleDetailsTabs={[]}
+                    toggleVisibleDetailsTab={() => {}}
+                />
+            </ReadOnlyContext.Provider>
+        );
+    }
+    it('switches tabs', async () => {
         let wrapper;
-        await act(async () => {
-            wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
-                    <MeasurementDetails
-                        datamodel={data_model}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        subject_uuid="subject_uuid"
-                        visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {}}
-                    />
-                </ReadOnlyContext.Provider>
-            );
-            wrapper.find("MenuItem").at(1).simulate('click');
+        await act(async () => { wrapper = mount_wrapper() });
+        function switch_tab(index) {
             wrapper.setProps({})  // rerender
-        });
+            wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
+            wrapper.find("MenuItem").at(index).simulate('click');
+        }
+        expect(wrapper.find("a.active").text()).toBe("Metric");
+        await act(async () => { switch_tab(1) });
         expect(wrapper.find("a.active").text()).toBe("Sources");
-    });
-    it('switches to trend graph tab', async () => {
-        let wrapper;
-        await act(async () => {
-            wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
-                    <MeasurementDetails
-                        datamodel={data_model}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        scale="count"
-                        subject_uuid="subject_uuid"
-                        unit="unit"
-                        visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {}}
-                    />
-                </ReadOnlyContext.Provider>
-            );
-        });
-        await act(async () => {
-            wrapper.setProps({})  // rerender
-            wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
-            wrapper.find("MenuItem").at(2).simulate('click');
-        });
+        await act(async () => { switch_tab(2) });
         expect(wrapper.find("a.active").text()).toBe("Trend graph");
-    });
-    it('switches to trend table tab', async () => {
-        let wrapper;
-        await act(async () => {
-            wrapper = mount(
-                <ReadOnlyContext.Provider value={false}>
-                    <MeasurementDetails
-                        datamodel={data_model}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        scale="count"
-                        subject_uuid="subject_uuid"
-                        unit="unit"
-                        visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {}}
-                    />
-                </ReadOnlyContext.Provider>
-            );
-        });
-        await act(async () => {
-            wrapper.setProps({})  // rerender
-            wrapper.update();  // sync the enzyme component tree snapshot with the react component tree.
-            wrapper.find("MenuItem").at(3).simulate('click');
-        });
+        await act(async () => { switch_tab(3) });
         expect(wrapper.find("a.active").text()).toBe("Trend table");
     });
     it('calls the callback on click', async () => {
