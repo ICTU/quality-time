@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-semantic-toasts';
 import { parse, stringify } from 'query-string';
 
+export function get_metric_direction(metric, data_model) {
+    return format_metric_direction(metric.direction || data_model.metrics[metric.type].direction);
+}
+
+export function format_metric_direction(direction) {
+    return { "<": "≦", ">": "≧" }[direction];
+}
+
 export function get_metric_name(metric, datamodel) {
     return metric.name || datamodel.metrics[metric.type].name;
 }
@@ -59,7 +67,7 @@ export function format_minutes(number) {
     return `${hours}:${leading_zero}${minutes}`
 }
 
-export function format_metric_unit(metric_type, metric, with_multiple=true) {
+export function format_metric_unit(metric_type, metric, with_multiple = true) {
     const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
     let metric_type_unit = metric_type.unit;
     if (with_multiple) {
@@ -68,14 +76,16 @@ export function format_metric_unit(metric_type, metric, with_multiple=true) {
     return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
 }
 
-export function useURLSearchQuery(history, key, state_type) {
-    // state_type can either be "boolean" or "array"
+export function useURLSearchQuery(history, key, state_type, default_value) {
+    // state_type can either be "boolean", "integer", or "array"
     const [state, setState] = useState(getState());
 
     function getState() {
         const parsed_state = parseURLSearchQuery()[key];
         if (state_type === "boolean") {
             return parsed_state === "true"
+        } else if (state_type === "integer") {
+            return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
         }
         // else state_type is "array"
         return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
@@ -95,8 +105,8 @@ export function useURLSearchQuery(history, key, state_type) {
 
     function toggleURLSearchQuery(...items) {
         const new_state = [];
-        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item)}})
-        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item)}})
+        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item) } })
+        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item) } })
         setURLSearchQuery(new_state);
     }
 
@@ -104,7 +114,7 @@ export function useURLSearchQuery(history, key, state_type) {
         setURLSearchQuery([]);
     }
 
-    return state_type === "boolean" ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
+    return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
 }
 
 export function useDelayedRender() {

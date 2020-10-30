@@ -7,7 +7,7 @@ import { MeasurementDetails } from './MeasurementDetails';
 import { StatusIcon } from './StatusIcon';
 import { Tag } from '../widgets/Tag';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { get_metric_name, get_metric_target, format_metric_unit, format_minutes } from '../utils';
+import { get_metric_direction, get_metric_name, get_metric_target, format_metric_unit, format_minutes } from '../utils';
 import "./Measurement.css";
 
 export function Measurement(props) {
@@ -26,7 +26,7 @@ export function Measurement(props) {
     )
   }
   function measurement_target() {
-    const metric_direction = { "<": "≦", ">": "≧" }[metric.direction || metric_type.direction];
+    const metric_direction = get_metric_direction(metric, props.datamodel)
     let debt_end = "";
     if (metric.debt_end_date) {
       const end_date = new Date(metric.debt_end_date);

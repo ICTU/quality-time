@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - When a report has a Microsoft Teams webhook configured, in addition to sending notifications for metrics turned red (target not met), also send notifications when metrics turn white (error parsing source data or troubles connecting to source). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Add a trend table to each metric to see the trend of a metric in tabular form. The number of dates shown and the time between dates can be adjusted through the 'hamburger' menu in the table header. Closes [#1536](https://github.com/ICTU/quality-time/issues/1536).
 
 ### Fixed
 

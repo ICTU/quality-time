@@ -80,5 +80,5 @@ describe("<Subjects />", () => {
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
         wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-    })
+    });
 });

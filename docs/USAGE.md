@@ -289,6 +289,8 @@ To hide columns from the report, set the `hidden_columns` parameter, for example
 
 To expand metrics and set the active tab of the metric detail information, use the `tabs` parameter, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
 
+To change the number of dates and the time between dates shown in the trend table, use the `trend_table_nr_dates` and the `trend_table_interval` parameters. The number of dates should be an integer between 2 and 7. The interval should be an integer between 1 and 4 and is in weeks.
+
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
 ## Notifications
