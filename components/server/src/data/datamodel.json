@@ -5487,6 +5487,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5515,6 +5525,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5543,6 +5563,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5587,6 +5617,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5640,6 +5680,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5672,6 +5722,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -5700,6 +5760,16 @@
                             "name": "Component",
                             "key": "component",
                             "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "creation_date",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "update_date",
+                            "type": "datetime"
                         }
                     ]
                 }

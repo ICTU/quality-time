@@ -83,7 +83,9 @@ class SonarQubeViolations(SonarQubeCollector):
             message=issue["message"],
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
-            component=issue["component"])
+            component=issue["component"],
+            creation_date=issue["creationDate"],
+            update_date=issue["updateDate"])
 
     def _violation_types(self) -> str:
         """Return the violation types."""
@@ -155,8 +157,11 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
     rules_parameter = "suppression_rules"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
-        as well as the total number of violations."""
+        """Get the suppressed violations from SonarQube.
+
+        In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
+        as well as the total number of violations.
+        """
         url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -230,13 +235,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
 
     async def __entity(self, hotspot) -> Entity:
+        """Create the security warning entity."""
         return Entity(
-            key=hotspot["key"],
-            component=hotspot["component"],
-            message=hotspot["message"],
-            type="security_hotspot",
+            key=hotspot["key"], component=hotspot["component"], message=hotspot["message"], type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
-            vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
+            vulnerability_probability=hotspot["vulnerabilityProbability"].lower(),
+            creation_date=hotspot["creationDate"], update_date=hotspot["updateDate"])
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""
@@ -350,8 +354,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         return await super()._entities(metrics)
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
-        """Return the languages and non-commented lines of code per language, skipping languages the user wants to
-        ignore."""
+        """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = self._parameter("languages_to_ignore")
         return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
                 if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]
