@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { Subjects } from './Subjects';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metrics: { metric_type: { tags: [] } } }
 const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [], recent_measurements: [] } } } } };
@@ -80,5 +81,5 @@ describe("<Subjects />", () => {
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
         wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-    })
+    });
 });
