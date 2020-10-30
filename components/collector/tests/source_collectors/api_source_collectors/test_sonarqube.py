@@ -48,7 +48,6 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.metric = dict(type="violations", addition="sum", sources=self.sources)
 
     async def test_violations(self):
-
         """Test that the number of violations is returned."""
         json = dict(
             total="2",

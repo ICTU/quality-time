@@ -236,11 +236,9 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
 
     async def __entity(self, hotspot) -> Entity:
+        """Create the security warning entity."""
         return Entity(
-            key=hotspot["key"],
-            component=hotspot["component"],
-            message=hotspot["message"],
-            type="security_hotspot",
+            key=hotspot["key"], component=hotspot["component"], message=hotspot["message"], type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
             vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
 
