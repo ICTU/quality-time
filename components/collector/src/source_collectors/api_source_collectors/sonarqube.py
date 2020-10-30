@@ -85,8 +85,7 @@ class SonarQubeViolations(SonarQubeCollector):
             type=issue["type"].lower(),
             component=issue["component"],
             creation_date=issue["creationDate"],
-            update_date=issue["updateDate"],
-        )
+            update_date=issue["updateDate"])
 
     def _violation_types(self) -> str:
         """Return the violation types."""
@@ -240,7 +239,8 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         return Entity(
             key=hotspot["key"], component=hotspot["component"], message=hotspot["message"], type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
-            vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
+            vulnerability_probability=hotspot["vulnerabilityProbability"].lower(),
+            creation_date=hotspot["creationDate"], update_date=hotspot["updateDate"])
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""

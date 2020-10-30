@@ -33,10 +33,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
             entity["resolution"] = resolution
         if vulnerability_probability is not None:
             entity["vulnerability_probability"] = vulnerability_probability
-        if creation_date is not None:
-            entity["creation_date"] = creation_date
-        if update_date is not None:
-            entity["update_date"] = update_date
+        entity["creation_date"] = creation_date
+        entity["update_date"] = update_date
         return entity
 
 
@@ -331,11 +329,19 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         self.hotspots_json = dict(
             paging=dict(total="2"),
             hotspots=[
-                dict(key="a", message="a", component="a", vulnerabilityProbability="MEDIUM"),
-                dict(key="b", message="b", component="b", vulnerabilityProbability="LOW")])
+                dict(
+                    key="a", message="a", component="a", vulnerabilityProbability="MEDIUM",
+                    creationDate="2010-12-13T10:37:07+0000", updateDate="2019-08-26T09:02:49+0000"),
+                dict(
+                    key="b", message="b", component="b", vulnerabilityProbability="LOW",
+                    creationDate="2011-10-26T13:34:12+0000", updateDate="2020-08-31T08:19:00+0000")])
         self.hotspot_entities = [
-            self.entity("a", "security_hotspot", vulnerability_probability="medium"),
-            self.entity("b", "security_hotspot", vulnerability_probability="low")]
+            self.entity(
+                "a", "security_hotspot", vulnerability_probability="medium",
+                creation_date="2010-12-13T10:37:07+0000", update_date="2019-08-26T09:02:49+0000"),
+            self.entity(
+                "b", "security_hotspot", vulnerability_probability="low",
+                creation_date="2011-10-26T13:34:12+0000", update_date="2020-08-31T08:19:00+0000")]
         self.vulnerability_entities = [
             self.entity("a", "vulnerability", "info",
                 creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"),
