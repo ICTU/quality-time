@@ -67,7 +67,7 @@ export function format_minutes(number) {
     return `${hours}:${leading_zero}${minutes}`
 }
 
-export function format_metric_unit(metric_type, metric, with_multiple=true) {
+export function format_metric_unit(metric_type, metric, with_multiple = true) {
     const metric_unit_prefix = metric.scale === "percentage" ? "% " : " ";
     let metric_type_unit = metric_type.unit;
     if (with_multiple) {
@@ -76,14 +76,16 @@ export function format_metric_unit(metric_type, metric, with_multiple=true) {
     return `${metric_unit_prefix}${metric.unit || metric_type_unit}`;
 }
 
-export function useURLSearchQuery(history, key, state_type) {
-    // state_type can either be "boolean" or "array"
+export function useURLSearchQuery(history, key, state_type, default_value) {
+    // state_type can either be "boolean", "integer", or "array"
     const [state, setState] = useState(getState());
 
     function getState() {
         const parsed_state = parseURLSearchQuery()[key];
         if (state_type === "boolean") {
             return parsed_state === "true"
+        } else if (state_type === "integer") {
+            return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
         }
         // else state_type is "array"
         return typeof parsed_state === "string" && parsed_state !== "" ? [parsed_state] : parsed_state || []
@@ -103,8 +105,8 @@ export function useURLSearchQuery(history, key, state_type) {
 
     function toggleURLSearchQuery(...items) {
         const new_state = [];
-        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item)}})
-        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item)}})
+        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item) } })
+        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item) } })
         setURLSearchQuery(new_state);
     }
 
@@ -112,30 +114,7 @@ export function useURLSearchQuery(history, key, state_type) {
         setURLSearchQuery([]);
     }
 
-    return state_type === "boolean" ? [state, setURLSearchQuery] : [state, toggleURLSearchQuery, clearURLSearchQuery]
-}
-
-export function useIntegerURLSearchQuery(history, key, default_value) {
-    const [state, setState] = useState(getState());
-
-    function getState() {
-        const parsed_state = parseURLSearchQuery()[key];
-        return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
-    }
-
-    function parseURLSearchQuery() {
-        return parse(history.location.search);
-    }
-
-    function setURLSearchQuery(new_state) {
-        let parsed = parseURLSearchQuery();
-        parsed[key] = new_state || "";
-        const search = stringify(parsed, { skipEmptyString: true });
-        history.replace({ search: search.length > 0 ? "?" + search : "" });
-        setState(new_state);
-    }
-
-    return [state, setURLSearchQuery]
+    return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
 }
 
 export function useDelayedRender() {

@@ -5,15 +5,15 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
-import { useDelayedRender, useIntegerURLSearchQuery, useURLSearchQuery } from '../utils';
+import { useDelayedRender, useURLSearchQuery } from '../utils';
 
 export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
   const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
-  const [trendTableNrDates, setTrendTableNrDates] = useIntegerURLSearchQuery(props.history, "trend_table_nr_dates", 7);
-  const [trendTableInterval, setTrendTableInterval] = useIntegerURLSearchQuery(props.history, "trend_table_interval", 1);
+  const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(props.history, "trend_table_nr_dates", "integer", 7);
+  const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(props.history, "trend_table_interval", "integer", 1);
   const last_index = Object.keys(props.report.subjects).length - 1;
   return (
     <>
