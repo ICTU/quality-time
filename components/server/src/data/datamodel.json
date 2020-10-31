@@ -2534,6 +2534,19 @@
                         "unused_jobs"
                     ]
                 },
+                "jobs_to_include": {
+                    "name": "Jobs to include (regular expressions or job names)",
+                    "short_name": "jobs to include",
+                    "help": "Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. If empty, all jobs will be included.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "all",
+                    "mandatory":  false,
+                    "default_value": [],
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
                 "jobs_to_ignore": {
                     "name": "Jobs to ignore (regular expressions or job names)",
                     "short_name": "jobs to ignore",
