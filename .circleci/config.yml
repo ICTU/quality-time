@@ -68,7 +68,7 @@ jobs:
         environment:
           ALLOW_HTTP: true
           LC_ALL: en_GB.UTF-8
-      - image: ictu/quality-time_frontend:v3.12.0-rc.3
+      - image: ictu/quality-time_frontend:v3.12.0
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
