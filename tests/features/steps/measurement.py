@@ -10,7 +10,7 @@ from sseclient import SSEClient
 @when("the collector gets the metrics to measure")
 def get_metrics(context):
     """Get the metrics to measure from the server."""
-    context.get("metrics")
+    context.get("metrics", internal=True)
 
 
 @when('the collector measures "{number}"')
