@@ -41,6 +41,7 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
 
 class MetricsCollector:
     """Collect measurements for all metrics."""
+
     API_VERSION = "v3"
 
     def __init__(self) -> None:
@@ -138,8 +139,10 @@ class MetricsCollector:
         return bool(sources)
 
     def __should_collect(self, metric_uuid: str, metric) -> bool:
-        """Return whether the metric should be collected, either because the user changed the configuration or because
-        it has been collected too long ago."""
+        """Return whether the metric should be collected.
+
+        Metric should be collected when the user changes the configuration or when it has been collected too long ago.
+        """
         metric_changed = self.last_parameters.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
         return metric_changed or metric_due
