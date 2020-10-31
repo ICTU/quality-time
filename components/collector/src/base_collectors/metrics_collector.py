@@ -96,7 +96,7 @@ class MetricsCollector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
         """Collect measurements for all metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/api/{self.API_VERSION}/metrics"))
+        metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
         tasks = [self.collect_metric(session, metric_uuid, metric, next_fetch)
                  for metric_uuid, metric in metrics.items() if self.__can_and_should_collect(metric_uuid, metric)]
@@ -109,7 +109,7 @@ class MetricsCollector:
         self.next_fetch[metric_uuid] = next_fetch
         measurement = await self.collect_sources(session, metric)
         measurement["metric_uuid"] = metric_uuid
-        await post(session, URL(f"{self.server_url}/api/{self.API_VERSION}/measurements"), measurement)
+        await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
 
     async def collect_sources(self, session: aiohttp.ClientSession, metric):
         """Collect the measurements from the metric's sources."""

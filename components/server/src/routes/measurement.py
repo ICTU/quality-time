@@ -19,7 +19,7 @@ from server_utilities.functions import report_date_time
 from server_utilities.type import MetricId, SourceId
 
 
-@bottle.post("/api/v3/measurements")
+@bottle.post("/internal-api/v3/measurements")
 def post_measurement(database: Database) -> Dict:
     """Put the measurement in the database."""
     measurement = dict(bottle.request.json)
