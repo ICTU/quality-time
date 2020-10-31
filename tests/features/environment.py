@@ -34,7 +34,7 @@ def before_all(context):
 
     def delete(api):
         """Delete the resource."""
-        context.response = response = requests.delete(f"{context.base_api_url}/{api}", cookies=cookies())
+        context.response = response = requests.delete(f"{context.base_api_url.format('')}/{api}", cookies=cookies())
         time.sleep(1)  # Give server and database time to process the previous request
         return response.json()
 
