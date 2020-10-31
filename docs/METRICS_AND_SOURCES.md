@@ -191,6 +191,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :-------- | :--- |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Jobs to include (regular expressions or job names) | Multiple choice with addition | No | Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. If empty, all jobs will be included. |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
@@ -973,6 +974,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Jobs to include (regular expressions or job names) | Multiple choice with addition | No | Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. If empty, all jobs will be included. |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |

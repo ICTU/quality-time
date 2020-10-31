@@ -9,13 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.12.0-rc.3] - [2020-10-31]
+## [Unreleased]
 
 ### Added
 
 - When a report has a Microsoft Teams webhook configured, in addition to sending notifications for metrics turned red (target not met), also send notifications when metrics turn white (error parsing source data or troubles connecting to source). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 - Add a trend table to each metric to see the trend of a metric in tabular form. The number of dates shown and the time between dates can be adjusted through the 'hamburger' menu in the table header. Closes [#1536](https://github.com/ICTU/quality-time/issues/1536).
 - When measuring with SonarQube as source, include the creation date and last update date of issues such as violations and security warnings in the metric details. Closes [#1564](https://github.com/ICTU/quality-time/issues/1564).
+- In addition to ignoring Jenkins jobs by name or regular expression, also allow for including Jenkins jobs by name or regular expression. Closes [#1596](https://github.com/ICTU/quality-time/issues/1596).
 
 ### Fixed
 
