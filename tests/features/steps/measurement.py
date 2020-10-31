@@ -28,7 +28,8 @@ def measure(context, number, total="100"):
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total=total, entities=entities)]))
+                     total=total, entities=entities)]),
+        internal=True)
 
 
 @when("the collector encounters a parse error")
