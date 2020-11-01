@@ -41,7 +41,8 @@ def parse_error(context):
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error="Parse error", connection_error=None, value=None,
-                     total=None, entities=[])]))
+                     total=None, entities=[])]),
+        internal=True)
 
 
 @when('the client sets the {attribute} of entity {key} to "{value}"')
