@@ -15,7 +15,7 @@ it('scrolls to the dashboard', async () => {
 });
 
 it('does not crash if there is no dashboard', async () => {
-  Object.defineProperty(global.document, 'getElementById', {});
+  Object.defineProperty(global.document, 'getElementById', {value: null});
   await act(async () => {
     render(<Menubar report_date_string="2019-10-10" onDate={console.log} />);
     fireEvent.click(screen.getByLabelText(/Scroll to dashboard/));
