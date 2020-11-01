@@ -97,6 +97,7 @@ def match_string_or_regular_expression(string: str, strings_and_or_regular_expre
 
 class Clock:  # pylint: disable=too-few-public-methods
     """Class to keep track of time."""
+
     def __init__(self) -> None:
         self.start = datetime.now()
         self.duration = 0.0

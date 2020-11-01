@@ -9,6 +9,7 @@ from source_model import SourceMeasurement, SourceResponses
 
 class Random(SourceCollector):
     """Random number metric collector."""
+
     MIN: Final[int] = 1
     MAX: Final[int] = 99
 

@@ -20,8 +20,11 @@ from server_utilities.type import SessionId
 
 
 def create_session(database: Database, username: str, email: str) -> None:
-    """Generate a new random, secret and unique session id and a session expiration datetime and add it to the
-    database and the session cookie."""
+    """Create a new user session.
+
+    Generate a new random, secret and unique session id and a session expiration datetime and add it to the
+    database and the session cookie.
+    """
     session_id = cast(SessionId, uuid())
     session_expiration_datetime = datetime.now() + timedelta(hours=24)
     sessions.upsert(database, username, email, session_id, session_expiration_datetime)
@@ -42,7 +45,7 @@ def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> Non
 
 
 def check_password(ssha_ldap_salted_password, password) -> bool:
-    """Checks the OpenLDAP tagged digest against the given password."""
+    """Check the OpenLDAP tagged digest against the given password."""
     # See https://www.openldap.org/doc/admin24/security.html#SSHA%20password%20storage%20scheme
     # We should (also) support SHA512 as SHA1 is no longer considered to be secure.
     ssha_prefix = b'{SSHA}'
