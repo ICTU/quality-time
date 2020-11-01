@@ -184,13 +184,6 @@ class App extends Component {
     }, false);
   }
 
-  open_tag_report(event, tag) {
-    event.preventDefault();
-    const report_uuid = `tag-${tag}`
-    this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
-    this.history.push(report_uuid);
-  }
-
   report_date() {
     let report_date = null;
     if (this.state.report_date_string) {
@@ -254,7 +247,6 @@ class App extends Component {
               this.state.report_uuid === "" ?
                 <Reports
                   open_report={(e, r) => this.open_report(e, r)}
-                  open_tag_report={(e, t) => this.open_tag_report(e, t)}
                   reports_overview={this.state.reports_overview}
                   {...props}
                 />

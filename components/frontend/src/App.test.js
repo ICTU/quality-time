@@ -86,12 +86,6 @@ describe("<App/>", () => {
     expect(wrapper.state("report_uuid")).toBe("");
   })
 
-  it('opens tag report', () => {
-    const wrapper = mount(<App />);
-    wrapper.instance().open_tag_report({ preventDefault: jest.fn }, "security");
-    expect(wrapper.state("report_uuid")).toBe("tag-security");
-  });
-
   it('sets the user', () => {
     const wrapper = mount(<App />);
     wrapper.instance().set_user("admin", "email@example.org");
