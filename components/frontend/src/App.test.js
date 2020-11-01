@@ -63,21 +63,6 @@ describe("<App/>", () => {
     expect(wrapper.find('Container').find('Segment').exists()).toBe(false);
   });
 
-  it('does not crash scrolling if there is no dashboard', () => {
-    const wrapper = shallow(<App />);
-    wrapper.instance().go_dashboard(new Event('click'));
-  });
-
-  it('scrolls the dashboard', () => {
-    const scrollIntoView = jest.fn();
-    scrollIntoView.mockImplementation(() => { return { scrollIntoView: jest.fn() } });
-    Object.defineProperty(global.document, 'getElementById', { value: scrollIntoView });
-    Object.defineProperty(global.window, 'scrollBy', { value: jest.fn() });
-    const wrapper = shallow(<App />);
-    wrapper.instance().go_dashboard(new Event('click'));
-    expect(scrollIntoView).toHaveBeenCalled()
-  });
-
   it('goes home', () => {
     const wrapper = mount(<App />);
     wrapper.instance().open_report({ preventDefault: jest.fn }, "report1");

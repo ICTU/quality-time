@@ -50,6 +50,15 @@ function Logout(props) {
   )
 }
 
+function go_dashboard(event) {
+  event.preventDefault();
+  const dashboard = document.getElementById("dashboard");
+  if (dashboard) {
+    dashboard.scrollIntoView();
+    window.scrollBy(0, -65);  // Correct for menu bar
+  }
+}
+
 export function Menubar(props) {
   return (
     <Menu className="Menubar" fixed='top' inverted>
@@ -64,7 +73,7 @@ export function Menubar(props) {
         />
         <Popup content="Scroll to dashboard" trigger={
           <Menu.Item>
-            <Button inverted icon="arrow circle up" onClick={(e) => props.go_dashboard(e)} />
+            <Button inverted icon="arrow circle up" onClick={(e) => go_dashboard(e)} aria-label="Scroll to dashboard" />
           </Menu.Item>}
         />
         <Menu.Menu position='right'>

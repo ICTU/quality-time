@@ -153,15 +153,6 @@ class App extends Component {
     }
   }
 
-  go_dashboard(event) {
-    event.preventDefault();
-    const dashboard = document.getElementById("dashboard");
-    if (dashboard) {
-      dashboard.scrollIntoView();
-      window.scrollBy(0, -65);  // Correct for menu bar
-    }
-  }
-
   open_report(event, report_uuid) {
     event.preventDefault();
     this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
@@ -229,7 +220,6 @@ class App extends Component {
         <HashLinkObserver />
         <Menubar
           email={this.state.email}
-          go_dashboard={(e) => this.go_dashboard(e)}
           go_home={() => this.go_home()}
           onDate={(e, { name, value }) => this.handleDateChange(e, { name, value })}
           onSearch={(e) => this.handleSearchChange(e)}
