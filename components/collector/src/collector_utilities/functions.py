@@ -15,7 +15,7 @@ from .type import URL, Namespaces, Response
 
 async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] = None) -> Element:
     """Parse the XML from the source response."""
-    tree = cast(Element, ElementTree.fromstring(await response.text()))
+    tree = cast(Element, ElementTree.fromstring(await response.text(), forbid_dtd=True))
     if allowed_root_tags and tree.tag not in allowed_root_tags:
         raise AssertionError(f'The XML root element should be one of "{allowed_root_tags}" but is "{tree.tag}"')
     return tree
@@ -65,12 +65,12 @@ def safe_entity_key(key: Any) -> str:
 
 def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+    return hashlib.md5(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
 
 
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
-    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # nosec, Not used for cryptography
+    return hashlib.sha1(string.encode("utf-8")).hexdigest()  # noqa: DUO130, # nosec, Not used for cryptography
 
 
 def days_ago(date_time: datetime) -> int:

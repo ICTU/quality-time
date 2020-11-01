@@ -1,5 +1,6 @@
 bandit==1.6.2
 coverage==5.3
+dlint==0.11.0
 isort==5.6.4
 mypy==0.790
 lxml==4.6.1
