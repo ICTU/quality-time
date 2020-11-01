@@ -18,8 +18,8 @@ class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
     @staticmethod
     def apply(callback, context):
         """Apply the plugin to the route."""
-
-        if context.method not in ("DELETE", "POST") or context.rule.split("/")[-1] in ("login", "measurements"):
+        path = context.rule.strip("/").split("/")
+        if context.method not in ("DELETE", "POST") or path[-1] == "login" or path[0] == "internal-api":
             return callback
 
         def wrapper(*args, **kwargs):
