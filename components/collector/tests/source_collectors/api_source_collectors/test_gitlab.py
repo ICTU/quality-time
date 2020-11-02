@@ -8,6 +8,7 @@ from tests.source_collectors.source_collector_test_case import SourceCollectorTe
 
 class GitLabTestCase(SourceCollectorTestCase):
     """Base class for testing GitLab collectors."""
+
     def setUp(self):
         super().setUp()
         self.sources = dict(
@@ -46,11 +47,9 @@ class CommonGitLabJobsTestsMixin:
     async def test_private_token(self):
         """Test that the private token is used."""
         self.sources["source_id"]["parameters"]["private_token"] = "token"
-        response = await self.collect(self.metric)
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(
-            response,
-            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&private_token=token",
-            parse_error="Traceback")
+            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100")
 
 
 class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):

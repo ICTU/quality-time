@@ -25,12 +25,16 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = f"{url}/api/v4/projects/{project}/{api}"
         sep = "&" if "?" in api_url else "?"
         api_url += f"{sep}per_page=100"
-        if private_token := self._parameter("private_token"):
-            api_url += f"&private_token={private_token}"
         return URL(api_url)
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
-        return None  # The private token is passed as URI parameter
+        return None  # The private token is passed as header
+
+    def _headers(self) -> Dict[str, str]:
+        headers = super()._headers()
+        if private_token := self._parameter("private_token"):
+            headers["Private-Token"] = str(private_token)
+        return headers
 
 
 class GitLabJobsBase(GitLabBase):
@@ -101,8 +105,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         return URL(f"{web_url}/blob/{branch}/{file_path}")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Override to get the last commit metadata of the file or, if the file is a folder, of the files in the folder,
-        recursively."""
+        """Get the last commit metadata of the file or, in case of a folder, of the files in the folder, recursively."""
         # First, get the project info so we can use the web url as landing url
         responses = await super()._get_source_responses(*urls)
         # Then, collect the commits
@@ -124,6 +127,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         return SourceResponses(responses=list(itertools.chain(*(await asyncio.gather(*commits)))))
 
     async def __last_commit(self, file_path: str) -> SourceResponses:
+        """Return the last, meaning the most recent, commit."""
         files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
         response = await self._session.head(files_api_url)
