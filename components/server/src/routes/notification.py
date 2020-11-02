@@ -17,13 +17,16 @@ from server_utilities.functions import uuid
 from server_utilities.type import URL, EditScope, MetricId, ReportId, SourceId, SubjectId
 
 
-@bottle.post("/api/v3/report/<report_uuid>/notification_destinations/new")
+@bottle.post("/api/v3/report/<report_uuid>/notification_destination/new")
 def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
     data = ReportData(data_model, reports, report_uuid)
-    data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(teams_webhook="", name="", url="")
+    if "notification_destinations" not in data.report:
+        data.report["notification_destinations"] = {}
+    data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(teams_webhook="", name="new", url="")
+
     user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[report_uuid, notification_destination_uuid], email=user["email"],

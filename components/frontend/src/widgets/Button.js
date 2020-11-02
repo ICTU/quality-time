@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
 import { get_report_pdf } from '../api/report';
-import { add_notification_destination } from '../api/notification';
 import { show_message } from '../utils'
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
@@ -35,32 +34,6 @@ export function DeleteButton(props) {
       {...props}
     />
   )
-}
-
-export function DeleteNotificationDestinationButton(props) {
-    return (
-        <ActionButton
-            icon='trash'
-            popup={`Delete this ${props.item_type}. Careful, this cannot be undone`}
-        />
-    )
-}
-
-function add_notification_destination_to_report(report_uuid){
-    add_notification_destination(report_uuid)
-}
-
-export function AddNotificationDestinationButton(props) {
-    const { report_uuid } = props;
-    return (
-        <ActionButton
-            action='Add'
-            icon='plus'
-            onClick={() => {
-              add_notification_destination_to_report(report_uuid)
-            }}
-        />
-    )
 }
 
 function download_pdf(report_uuid, query_string, callback) {
