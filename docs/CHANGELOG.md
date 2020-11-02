@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- When using GitLab as source with a private token, pass the token to GitLab as header instead of URL parameter to prevent redirection. Closes [#1638](https://github.com/ICTU/quality-time/issues/1638).
+
 ### Fixed
 
 - Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).

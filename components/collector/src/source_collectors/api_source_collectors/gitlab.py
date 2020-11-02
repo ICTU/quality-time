@@ -25,12 +25,16 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url = f"{url}/api/v4/projects/{project}/{api}"
         sep = "&" if "?" in api_url else "?"
         api_url += f"{sep}per_page=100"
-        if private_token := self._parameter("private_token"):
-            api_url += f"&private_token={private_token}"
         return URL(api_url)
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
-        return None  # The private token is passed as URI parameter
+        return None  # The private token is passed as header
+
+    def _headers(self) -> Dict[str, str]:
+        headers = super()._headers()
+        if private_token := self._parameter("private_token"):
+            headers["Private-Token"] = str(private_token)
+        return headers
 
 
 class GitLabJobsBase(GitLabBase):
