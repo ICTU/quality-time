@@ -8,6 +8,7 @@ from tests.source_collectors.source_collector_test_case import SourceCollectorTe
 
 class GitLabTestCase(SourceCollectorTestCase):
     """Base class for testing GitLab collectors."""
+
     def setUp(self):
         super().setUp()
         self.sources = dict(
