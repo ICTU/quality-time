@@ -4848,25 +4848,21 @@
                     "name_plural": "security warnings",
                     "attributes": [
                         {
-                            "name": "CVE",
-                            "key": "cve",
+                            "name": "Direct dependency",
+                            "key": "directdependency"
+                        },
+                        {
+                            "name": "Number of vulnerabilities",
+                            "key": "numbervulns"
+                        },
+                        {
+                            "name": "Example vulnerability",
+                            "key": "examplevuln",
                             "url": "url"
                         },
                         {
-                            "name": "Package",
-                            "key": "package"
-                        },
-                        {
-                            "name": "Version in use",
-                            "key": "version"
-                        },
-                        {
-                            "name": "Fixed versions",
-                            "key": "fix"
-                        },
-                        {
-                            "name": "Package is included from",
-                            "key": "package_include"
+                            "name": "Example vulnerable path",
+                            "key": "examplepath"
                         },
                         {
                             "name": "Severity",
