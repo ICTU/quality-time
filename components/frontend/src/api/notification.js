@@ -6,11 +6,11 @@ function add_notification_destination(report_uuid, reload) {
 }
 
 function delete_notification_destination(report_uuid, destination_uuid, go_home) {
-    return fetch_server_api('delete', `report/${report_uuid}/notification_destinations/${destination_uuid}`, {}).then(go_home)
+    return fetch_server_api('delete', `report/${report_uuid}/notification_destination/${destination_uuid}`, {}).then(go_home)
 }
 
 function set_notification_destination_attribute(report_uuid, destination_uuid, attribute, value, reload) {
-    return fetch_server_api('post', `report/${report_uuid}/notification_destinations/${destination_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
+    return fetch_server_api('post', `report/${report_uuid}/notification_destination/${destination_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
 
 export {

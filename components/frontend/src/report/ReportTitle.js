@@ -58,13 +58,16 @@ export function ReportTitle(props) {
                         <StringInput
                             id={destination_uuid}
                             label='Name'
-                            set_notification_destination_attribute(report_uuid, destination_uuid, "name", "")
+                            set_value={(value) => {
+                                set_notification_destination_attribute(report_uuid, destination_uuid, "name", value, props.reload)
+                            }}
+                            value={destination.name}
                         />
                         <StringInput
                             label={label}
                             set_value={(value) => {
-                                set_notification_destination_attribute(report_uuid, destination_uuid, "teams_webhook", value).then(
-                                set_notification_destination_attribute(report_uuid, destination_uuid, "url", window.location.href))
+                                set_notification_destination_attribute(report_uuid, destination_uuid, "teams_webhook", value, props.reload).then(
+                                set_report_attribute(report_uuid, destination_uuid, "url", window.location.href, props.reload))
                             }}
                             value={destination.teams_webhook}
                         />
