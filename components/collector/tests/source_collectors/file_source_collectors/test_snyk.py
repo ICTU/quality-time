@@ -2,38 +2,95 @@
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
-
 class SnykSecurityWarningsTest(SourceCollectorTestCase):
     """Unit tests for the security warning metric."""
 
-    async def test_warnings(self):
-        """Test the number of security warnings."""
-        css = "Cross Site Scripting"
-        package_name = "vulnerablepackage"
-        package_spec = "vulnerable_package@1.2.0"
-        sources = dict(source_id=dict(type="snyk", parameters=dict(url="snyk-vuln.json", severities=["high"])))
-        metric = dict(type="security_warnings", sources=sources, addition="sum")
+    def setUp(self):
+        """Setup basic configs for tests"""
+        super().setUp()
+        self.sources = dict(source_id=dict(type="snyk", parameters=dict(url="snyk.json")))
+        self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
+
+    async def test_warnings_from_indirect_dependencies(self):
+        """Test the number of security warnings indirect dependencies """
+        vulnerabilities_json1 = dict(
+            vulnerabilities=[
+                {
+                    "id": "SNYK-JS-ACORN-559469",
+                    "severity": "high",
+                    "from": [
+                        "package.json@*",
+                        "laravel-mix@4.0.16",
+                        "webpack@4.41.4",
+                        "acorn@6.4.0"
+                    ]
+                },
+                {
+                    "id": "SNYK-JS-AJV-584908",
+                    "severity": "high",
+                    "from": [
+                        "package.json@*",
+                        "laravel-mix@4.0.16",
+                        "webpack@4.41.4",
+                        "ajv@6.10.2"
+                    ]
+                },
+                {
+                    "id": "SNYK-JS-AJV-584908",
+                    "severity": "high",
+                    "title": "Prototype Pollution",
+                    "from": [
+                        "package.json@*",
+                        "laravel-mix@4.0.16",
+                        "extract-text-webpack-plugin@4.0.0-beta.0",
+                        "schema-utils@0.4.7",
+                        "ajv@6.10.2"
+                    ]
+                }
+            ]
+        )
+        expected_entities = [
+            dict(
+                key='be02316f7d497041428a76ddb7f5ad3f',
+                directdependency='laravel-mix@4.0.16',
+                numbervulns=3,examplevuln='SNYK-JS-AJV-584908',
+                url='https://snyk.io/vuln/SNYK-JS-AJV-584908',
+                examplepath='package.json@* ➜ laravel-mix@4.0.16 ➜ webpack@4.41.4 ➜ ajv@6.10.2',
+                severity='high')
+                ]
+        response = await self.collect(self.metric, get_request_json_return_value=vulnerabilities_json1)
+        self.assert_measurement(response, value="1", entities=expected_entities)
+
+    async def test_warnings_without_indirect_dependencies(self):
+        """Test the number of security warnings from a direct dependency"""
         vulnerabilities_json = dict(
             vulnerabilities=[
                 {
-                    'title': css, 'id': 'SNYK-JS-LODASH-590103', 'severity': 'high',
-                    'fixedIn': '3.0', 'packageName': package_name, 'version': '1.2',
-                    'from': ["mainpackage@0.0.0", package_spec]},
+                    "id": "SNYK-PHP-LARAVELLARAVEL-609735",
+                    "severity": "medium",
+                    "title": "Improper Input Validation",
+                    "from": [
+                        "laravel/laravel@6.18.34"
+                    ]
+                },
                 {
-                    'title': css, 'id': 'SNYK-JS-LODASH-590103', 'severity': 'high',
-                    'fixedIn': ['3.0', '3.1'], 'packageName': package_name, 'version': '1.2',
-                    'from': ["mainpackage@0.0.0", "intermediatepackage@1.0", package_spec]},
-                {
-                    'title': 'SQL Injection', 'id': 'SNYK-JS-LODASH-590104', 'severity': 'low',
-                    'fixedIn': ['3.0', '3.1'], 'packageName': package_name, 'version': '1.4.0',
-                    'from': ["mainpackage@1.0.0", "vulnerablepackage@1.4.0"]}])
+                    "id": "SNYK-PHP-LARAVELLARAVEL-609736",
+                    "severity": "high",
+                    "title": "Improper Input Validation",
+                    "from": [
+                        "laravel/laravel@6.18.34"
+                    ]
+                }
+            ]
+        )
         expected_entities = [
             dict(
-                key='c6948b61d82118ab3438d4c847879a00', cve=css, url='https://snyk.io/vuln/SNYK-JS-LODASH-590103',
-                severity='high', fix='3.0', package=package_name, version='1.2', package_include=package_spec),
-            dict(
-                key='32317b40f5948e02fa530c5ab6380d3d', cve=css, url='https://snyk.io/vuln/SNYK-JS-LODASH-590103',
-                severity='high', fix='3.0, 3.1', package=package_name, version='1.2',
-                package_include=f"intermediatepackage@1.0 ➜ {package_spec}")]
-        response = await self.collect(metric, get_request_json_return_value=vulnerabilities_json)
-        self.assert_measurement(response, value="2", entities=expected_entities)
+                key='eca52530c6b45833ee55fb8fee9c76c4',
+                directdependency='laravel/laravel@6.18.34',
+                numbervulns=2,examplevuln='SNYK-PHP-LARAVELLARAVEL-609736',
+                url='https://snyk.io/vuln/SNYK-PHP-LARAVELLARAVEL-609736',
+                examplepath='laravel/laravel@6.18.34',
+                severity='high')
+                ]
+        response = await self.collect(self.metric, get_request_json_return_value=vulnerabilities_json)
+        self.assert_measurement(response, value="1", entities=expected_entities)
