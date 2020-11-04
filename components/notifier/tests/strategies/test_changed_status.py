@@ -186,3 +186,48 @@ class StrategiesTestCase(unittest.TestCase):
             scale="count",
             status=self.white_status)
         self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+
+    def test_multiple_reports_with_same_destination(self):
+        """Test that the correct metrics are notified when multiple reports notify the same destination."""
+        old_count = dict(status="target_met", value="5")
+        new_count = dict(status="target_not_met", value="10")
+        red_metric1 = dict(
+            type="tests",
+            name="metric1",
+            scale="count",
+            unit="units",
+            status="target_not_met",
+            recent_measurements=[
+                dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
+                dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
+        red_metric2 = dict(
+            type="tests",
+            name="metric2",
+            scale="count",
+            unit="units",
+            status="target_met",
+            recent_measurements=[
+                dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
+                dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
+        subject1 = dict(metrics=dict(metric1=red_metric1))
+        subject2 = dict(metrics=dict(metric1=red_metric2))
+        report1 = dict(
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
+            subjects=dict(subject1=subject1))
+        report2 = dict(
+            title="Title", report_uuid="report2", teams_webhook="webhook", url="https://report2",
+            subjects=dict(subject1=subject2))
+        reports_json = dict(reports=[report1, report2])
+        self.assertEqual(
+            [dict(
+                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
+                metrics=[dict(
+                    metric_type="tests",
+                    metric_name="metric1",
+                    metric_unit="units",
+                    new_metric_status="red (target not met)",
+                    new_metric_value="10",
+                    old_metric_status="green (target met)",
+                    old_metric_value="5"
+                )])],
+            get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))

@@ -19,6 +19,7 @@ def get_notable_metrics_from_json(
             notifications.append(
                 dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
                      url=report.get("url"), metrics=notable_metrics))
+            notable_metrics = []
     return notifications
 
 
