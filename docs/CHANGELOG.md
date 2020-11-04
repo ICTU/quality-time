@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
+- Fixed notifications also containing the notable metrics of other reports.
 
 ## [3.12.0] - [2020-10-31]
 

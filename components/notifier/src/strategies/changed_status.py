@@ -7,8 +7,8 @@ def get_notable_metrics_from_json(
         data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[str, int]]]:
     """Return the reports that have a webhook and metrics that require notifying."""
     notifications = []
-    notable_metrics = []
     for report in json["reports"]:
+        notable_metrics = []
         webhook = report.get("teams_webhook")
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
@@ -19,7 +19,6 @@ def get_notable_metrics_from_json(
             notifications.append(
                 dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
                      url=report.get("url"), metrics=notable_metrics))
-            notable_metrics = []
     return notifications
 
 
