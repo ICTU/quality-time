@@ -26,6 +26,8 @@ class StrategiesTestCase(unittest.TestCase):
         self.second_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
         self.white_status = "unknown"
+        self.red_metric_status = "red (target not met)"
+        self.green_metric_status = "green (target met)"
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
@@ -96,9 +98,9 @@ class StrategiesTestCase(unittest.TestCase):
                     metric_type="tests",
                     metric_name="metric1",
                     metric_unit="units",
-                    new_metric_status="red (target not met)",
+                    new_metric_status=self.red_metric_status,
                     new_metric_value="10",
-                    old_metric_status="green (target met)",
+                    old_metric_status=self.green_metric_status,
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
@@ -128,9 +130,9 @@ class StrategiesTestCase(unittest.TestCase):
                     metric_type="tests",
                     metric_name="Tests",
                     metric_unit="units",
-                    new_metric_status="red (target not met)",
+                    new_metric_status=self.red_metric_status,
                     new_metric_value="10",
-                    old_metric_status="green (target met)",
+                    old_metric_status=self.green_metric_status,
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
@@ -225,9 +227,9 @@ class StrategiesTestCase(unittest.TestCase):
                     metric_type="tests",
                     metric_name="metric1",
                     metric_unit="units",
-                    new_metric_status="red (target not met)",
+                    new_metric_status=self.red_metric_status,
                     new_metric_value="10",
-                    old_metric_status="green (target met)",
+                    old_metric_status=self.green_metric_status,
                     old_metric_value="5"
                 )])],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
