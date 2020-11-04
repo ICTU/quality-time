@@ -29,6 +29,13 @@ class StrategiesTestCase(unittest.TestCase):
         self.red_metric_status = "red (target not met)"
         self.green_metric_status = "green (target met)"
 
+    @staticmethod
+    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None):
+        """Create a metric."""
+        return dict(
+            name=name, scale=scale, status=status, type="tests", unit="units",
+            recent_measurements=recent_measurements or [])
+
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
         self.assertEqual(
@@ -37,9 +44,7 @@ class StrategiesTestCase(unittest.TestCase):
     def test_no_red_metrics(self):
         """Test that there is nothing to notify when there are no red metrics."""
         count = dict(status="target_met", value="0")
-        green_metric = dict(
-            status="target_met",
-            scale="count",
+        green_metric = self.metric(
             recent_measurements=[dict(start=self.first_timestamp, end=self.second_timestamp, count=count)])
         subject1 = dict(metrics=dict(metric1=green_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
@@ -50,11 +55,7 @@ class StrategiesTestCase(unittest.TestCase):
     def test_old_red_metric(self):
         """Test that there is nothing to notify if the red metric was already red."""
         count = dict(status="target_not_met", value="10")
-        red_metric = dict(
-            type="test",
-            name="metric1",
-            scale="count",
-            unit="units",
+        red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[dict(start=self.first_timestamp, end=self.second_timestamp, count=count)])
         subject1 = dict(metrics=dict(metric1=red_metric))
@@ -65,8 +66,8 @@ class StrategiesTestCase(unittest.TestCase):
 
     def test_red_metric_without_recent_measurements(self):
         """Test that there is nothing to notify if the red metric has no recent measurements."""
-        red_metric1 = dict(status="target_not_met", scale="count")
-        red_metric2 = dict(status="target_not_met", scale="count", recent_measurements=[])
+        red_metric1 = self.metric(status="target_not_met")
+        red_metric2 = self.metric(status="target_not_met")
         subject1 = dict(metrics=dict(metric1=red_metric1, metric2=red_metric2))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
@@ -77,11 +78,7 @@ class StrategiesTestCase(unittest.TestCase):
         """Test that a metric that has become red is included."""
         old_count = dict(status="target_met", value="5")
         new_count = dict(status="target_not_met", value="10")
-        red_metric = dict(
-            type="tests",
-            name="metric1",
-            scale="count",
-            unit="units",
+        red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
@@ -109,12 +106,8 @@ class StrategiesTestCase(unittest.TestCase):
         """Test that a metric that doesn't have a count scale that has become red is included."""
         old_percentage = dict(status="target_met", value="5")
         new_percentage = dict(status="target_not_met", value="10")
-        red_metric = dict(
-            type="tests",
-            name="",
-            scale="percentage",
-            unit="units",
-            status="target_not_met",
+        red_metric = self.metric(
+            name="", scale="percentage", status="target_not_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, percentage=old_percentage),
                 dict(start=self.second_timestamp, end=self.second_timestamp, percentage=new_percentage)])
@@ -139,75 +132,46 @@ class StrategiesTestCase(unittest.TestCase):
 
     def test_new_white_metric(self):
         """Test that a metric that turns white is added."""
-        metric = dict(
-            scale="count",
+        metric = self.metric(
             status=self.white_status,
             recent_measurements=[
-                dict(
-                    start=self.second_timestamp,
-                    count=dict(
-                        status="target_met")),
-                dict(
-                    start=self.first_timestamp,
-                    count=dict(
-                        status=self.white_status))])
+                dict(start=self.second_timestamp, count=dict(status="target_met")),
+                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
         result = has_new_status(metric, self.white_status,self.most_recent_measurement_seen)
         self.assertTrue(result)
 
     def test_old_white_metric(self):
         """Test that a metric that was already white isn't added."""
-        metric = dict(
-            scale="count",
+        metric = self.metric(
             status=self.white_status,
             recent_measurements=[
-                dict(
-                    start=self.second_timestamp,
-                    count=dict(
-                        status=self.white_status)),
-                dict(
-                    start=self.first_timestamp,
-                    count=dict(
-                        status=self.white_status))])
+                dict(start=self.second_timestamp, count=dict( status=self.white_status)),
+                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
         self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
 
     def test_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
-        metric = dict(
-            scale="count",
+        metric = self.metric(
             status=self.white_status,
-            recent_measurements=[
-                dict(
-                    start=self.first_timestamp,
-                    count=dict(
-                        status=self.white_status))])
+            recent_measurements=[dict(start=self.first_timestamp, count=dict(status=self.white_status))])
         self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
 
     def test_no_measurements(self):
-        """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
-        metric = dict(
-            scale="count",
-            status=self.white_status)
+        """Test that metrics without measurements (and therefore no changes in value) aren't added."""
+        metric = self.metric(status=self.white_status)
         self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
 
     def test_multiple_reports_with_same_destination(self):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
         old_count = dict(status="target_met", value="5")
         new_count = dict(status="target_not_met", value="10")
-        red_metric1 = dict(
-            type="tests",
-            name="metric1",
-            scale="count",
-            unit="units",
+        red_metric1 = self.metric(
             status="target_not_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
-        red_metric2 = dict(
-            type="tests",
-            name="metric2",
-            scale="count",
-            unit="units",
-            status="target_met",
+        red_metric2 = self.metric(
+            name="metric2", status="target_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
