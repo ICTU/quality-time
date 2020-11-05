@@ -39,9 +39,11 @@ async def notify(log_level: int = None) -> NoReturn:
 
         notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
         for notification in notifications:
-            destination = str(notification["teams_webhook"])
-            text = build_notification_text(notification)
-            send_notification_to_teams(destination, text)
+            for configuration in notification["notification_destinations"].values():
+                if configuration["teams_webhook"] != "":
+                    destination = str(configuration["teams_webhook"])
+                    text = build_notification_text(notification)
+                    send_notification_to_teams(destination, text)
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)

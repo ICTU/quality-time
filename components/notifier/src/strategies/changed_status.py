@@ -9,16 +9,17 @@ def get_notable_metrics_from_json(
     notifications = []
     for report in json["reports"]:
         notable_metrics = []
-        webhook = report.get("teams_webhook")
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
                 if has_new_status(metric, "target_not_met", most_recent_measurement_seen) \
                         or has_new_status(metric, "unknown", most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
-        if webhook and len(notable_metrics) > 0:
+        destination_configured = "notification_destinations" in report
+        if destination_configured and len(notable_metrics) > 0:
             notifications.append(
-                dict(report_uuid=report["report_uuid"], report_title=report["title"], teams_webhook=webhook,
-                     url=report.get("url"), metrics=notable_metrics))
+                dict(report_uuid=report["report_uuid"], report_title=report["title"],
+                     url=report.get("url"), metrics=notable_metrics,
+                     notification_destinations=report["notification_destinations"]))
     return notifications
 
 

@@ -21,7 +21,7 @@ def post_new_notification_destination(report_uuid: ReportId,
     if "notification_destinations" not in data.report:
         data.report["notification_destinations"] = {}
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = \
-        dict(teams_webhook="", name="new", url="")
+        dict(teams_webhook="", name="new")
 
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -33,29 +33,45 @@ def post_new_notification_destination(report_uuid: ReportId,
     return result
 
 
-@bottle.post("/api/v3/report/<report_uuid>"
-             "/notification_destination/<notification_destination_uuid>"
-             "/attribute/<notification_destination_attribute>")
-def post_notification_destination_attribute(report_uuid: ReportId,
+@bottle.delete("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>")
+def delete_notification_destination(report_uuid: ReportId,
+                                    notification_destination_uuid: NotificationDestinationId,
+                                    database: Database):
+    """Delete a destination from a report."""
+    data_model = latest_datamodel(database)
+    reports = latest_reports(database)
+    data = ReportData(data_model, reports, report_uuid)
+    destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
+    del data.report["notification_destinations"][notification_destination_uuid]
+    user = sessions.user(database)
+    data.report["delta"] = dict(
+        uuids=[report_uuid], email=user["email"],
+        description=f"{user['user']} deleted destination {destination_name} the report '{data.report_name}'.")
+    return insert_new_report(database, data.report)
+
+
+@bottle.post("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes")
+def post_notification_destination_attributes(report_uuid: ReportId,
                                             notification_destination_uuid: NotificationDestinationId,
-                                            notification_destination_attribute: str, database: Database):
-    """Set a specified notification destination attribute."""
+                                            database: Database):
+    """Set specified notification destination attributes."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
     data = ReportData(data_model, reports, report_uuid)
     notification_destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
-    value = dict(bottle.request.json)[notification_destination_attribute]
-    old_value = data.report["notification_destinations"][notification_destination_uuid].get(
-        notification_destination_attribute) or ""
-    data.report["notification_destinations"][notification_destination_uuid][notification_destination_attribute] = value
+    attributes = dict(bottle.request.json)
+    old_values = []
+    for key in attributes:
+        old_values.append(data.report["notification_destinations"][notification_destination_uuid].get(key) or "")
+        data.report["notification_destinations"][notification_destination_uuid][key] = attributes[key]
 
-    if old_value == value:
+    if set(old_values) == set(attributes.values()):
         return dict(ok=True)  # Nothing to do
     user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[data.report_uuid, notification_destination_uuid],
         email=user["email"],
-        description=f"{user['user']} changed the {notification_destination_attribute} of notification destination "
+        description=f"{user['user']} changed the {' and '.join(attributes.keys())} of notification destination "
                     f"'{notification_destination_name}' in report '{data.report_name}' "
-                    f"from '{old_value}' to '{value}'.")
+                    f"from '{' and '.join(old_values)}' to '{' and '.join(attributes.values())}'.")
     return insert_new_report(database, data.report)

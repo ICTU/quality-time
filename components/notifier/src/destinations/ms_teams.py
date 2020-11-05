@@ -25,7 +25,7 @@ def build_notification_text(text_parameters) -> str:
 
 def send_notification_to_teams(destination: str, text: str) -> None:
     """Send notification to Microsoft Teams using a Webhook."""
-    logging.info("Sending notification to configured webhook")
+    logging.info("Sending notification to configured teams webhook")
     my_teams_message = pymsteams.connectorcard(destination)
     my_teams_message.text(text)
     try:
