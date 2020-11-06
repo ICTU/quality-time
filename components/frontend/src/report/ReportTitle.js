@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon } from 'semantic-ui-react';
+import { Grid, Icon, Segment } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
@@ -54,8 +54,8 @@ export function ReportTitle(props) {
         if(destinations){
             Object.entries(destinations).forEach(([destination_uuid, destination]) => {
                 result.push(
-                    <Grid.Row columns={3}>
-                        <Grid.Column>
+                    <Segment.Group horizontal>
+                        <Segment>
                             <StringInput
                                 id={destination_uuid}
                                 label='Name'
@@ -64,6 +64,8 @@ export function ReportTitle(props) {
                                 }}
                                 value={destination.name}
                             />
+                        </Segment>
+                        <Segment>
                             <StringInput
                                 label={label}
                                 set_value={(value) => {
@@ -71,31 +73,33 @@ export function ReportTitle(props) {
                                 }}
                                 value={destination.teams_webhook}
                             />
+                        </Segment>
+                        <Segment>
                             <DeleteButton
                                 item_type='notification destination'
                                 onClick={() => delete_notification_destination(report_uuid, destination_uuid, props.reload)}
                             />
-                        </Grid.Column>
-                    </Grid.Row>
+                        </Segment>
+                    </Segment.Group>
                 )
             })
         }
         result.push(
-            <Grid stackable>
-                <Grid.Row>
-                    <Grid.Column>
-                        <AddButton
-                            item_type="notification destinations"
-                            report_uuid={report_uuid}
-                            onClick={() => add_notification_destination(report_uuid, props.reload)}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+            <Segment basic>
+                <AddButton
+                    item_type="notification destinations"
+                    report_uuid={report_uuid}
+                    onClick={() => add_notification_destination(report_uuid, props.reload)}
+                />
+            </Segment>
         )
         return (
             <Grid.Row>
-                {result}
+                <Grid.Column>
+                    <Segment basic>
+                        {result}
+                    </Segment>
+                </Grid.Column>
             </Grid.Row>
         )
     }

@@ -182,3 +182,34 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         except RuntimeError:
             pass
         self.assertEqual(2, mocked_log_warning.call_count)
+
+
+    @patch('pymsteams.connectorcard.send')
+    @patch("asyncio.sleep")
+    @patch("aiohttp.ClientSession.get")
+    async def test_no_webhook_in_notification_destination(self, mocked_get, mocked_sleep, mocked_send):
+        """Test that the notifier continues if a destination doesnt have a webhook configured."""
+        history = "2020-01-01T00:23:59+59:00"
+        report = dict(
+            report_uuid="report1", title="Report 1", url="https://report1",
+            notification_destinations=dict(
+                destination1=dict(
+                    name="destination name", teams_webhook="")),
+            subjects=dict(
+                subject1=dict(
+                    metrics=dict(
+                        metric1=dict(
+                            type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                            recent_measurements=[
+                                dict(start=history, end=history, count=dict(status="target_met", value="5"))])))))
+        now = datetime.now().isoformat()
+        report2 = deepcopy(report)
+        report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
+            dict(start=now, end=now, count=dict(status="target_not_met", value="10")))
+        mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
+        mocked_sleep.side_effect = [None, RuntimeError]
+        try:
+            await notify()
+        except RuntimeError:
+            pass
+        mocked_send.assert_not_called()
