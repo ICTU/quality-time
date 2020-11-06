@@ -45,8 +45,8 @@ def delete_notification_destination(report_uuid: ReportId,
     del data.report["notification_destinations"][notification_destination_uuid]
     user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid], email=user["email"],
-        description=f"{user['user']} deleted destination {destination_name} the report '{data.report_name}'.")
+        uuids=[report_uuid, notification_destination_uuid], email=user["email"],
+        description=f"{user['user']} deleted destination {destination_name} from report '{data.report_name}'.")
     return insert_new_report(database, data.report)
 
 
