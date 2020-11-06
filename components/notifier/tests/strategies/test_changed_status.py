@@ -216,7 +216,7 @@ class StrategiesTestCase(unittest.TestCase):
         subject1 = dict(metrics=dict(metric1=red_metric))
         report = dict(
             title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
-            subjects=dict(subject1=subject1), notification_destinations=dict())
+            subjects=dict(subject1=subject1), notification_destinations={})
         report_json = dict(reports=[report])
         self.assertEqual(
             [],

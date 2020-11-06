@@ -1,7 +1,5 @@
 """Strategies for notifying users about metrics."""
 
-import logging
-
 from typing import Dict, List, Union
 
 

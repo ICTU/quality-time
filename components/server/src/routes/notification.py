@@ -1,4 +1,4 @@
-"""notification routes"""
+"""notification routes."""
 
 import bottle
 from pymongo.database import Database
@@ -52,8 +52,8 @@ def delete_notification_destination(report_uuid: ReportId,
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes")
 def post_notification_destination_attributes(report_uuid: ReportId,
-                                            notification_destination_uuid: NotificationDestinationId,
-                                            database: Database):
+                                             notification_destination_uuid: NotificationDestinationId,
+                                             database: Database):
     """Set specified notification destination attributes."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)

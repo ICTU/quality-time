@@ -70,6 +70,11 @@ class FakeResponse:
 class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
+    def setUp(self):
+        self.url = "https://report1"
+        self.title = "Report 1"
+        self.history = "2020-01-01T00:23:59+59:00"
+
     @classmethod
     def setUpClass(cls) -> None:
         """Provide the data_model to the class."""
@@ -121,9 +126,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is not sent if there is one new red metric."""
-        history = "2020-01-01T00:23:59+59:00"
+        history = self.history
         report = dict(
-            report_uuid="report1", title="Report 1", url="https://report1",
+            report_uuid="report1", title=self.title, url=self.url,
             notification_destinations=dict(
                 destination1=dict(
                     name="destination name", teams_webhook="www.webhook.com")),
@@ -151,9 +156,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_one_old_red_metric_with_one_measurement(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is not sent if there is one old red metric."""
-        history = "2020-01-01T00:23:59+59:00"
+        history = self.history
         report = dict(
-            report_uuid="report1", title="Report 1", url="https://report1", teams_webhook="https://webhook",
+            report_uuid="report1", title=self.title, url=self.url, teams_webhook="https://webhook",
             subjects=dict(
                 subject1=dict(
                     metrics=dict(
@@ -189,9 +194,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("aiohttp.ClientSession.get")
     async def test_no_webhook_in_notification_destination(self, mocked_get, mocked_sleep, mocked_send):
         """Test that the notifier continues if a destination doesnt have a webhook configured."""
-        history = "2020-01-01T00:23:59+59:00"
+        history = self.history
         report = dict(
-            report_uuid="report1", title="Report 1", url="https://report1",
+            report_uuid="report1", title=self.title, url=self.url,
             notification_destinations=dict(
                 destination1=dict(
                     name="destination name", teams_webhook="")),

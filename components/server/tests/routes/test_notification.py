@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from routes.notification import (
     post_new_notification_destination, delete_notification_destination, post_notification_destination_attributes)
 
-from ..fixtures import REPORT_ID, REPORT_ID2, NOTIFICATION_DESTINATION_ID, create_report
+from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 @patch("bottle.request")
 class PostSubjectAttributeTest(unittest.TestCase):
