@@ -73,7 +73,7 @@ export function ReportTitle(props) {
                             />
                             <DeleteButton
                                 item_type='notification destination'
-                                onClick={() => delete_notification_destination(report_uuid, destination_uuid)}
+                                onClick={() => delete_notification_destination(report_uuid, destination_uuid, props.reload)}
                             />
                         </Grid.Column>
                     </Grid.Row>

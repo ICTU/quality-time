@@ -1,5 +1,7 @@
 """Strategies for notifying users about metrics."""
 
+import logging
+
 from typing import Dict, List, Union
 
 
@@ -16,10 +18,11 @@ def get_notable_metrics_from_json(
                     notable_metrics.append(create_notification(data_model, metric))
         destination_configured = "notification_destinations" in report
         if destination_configured and len(notable_metrics) > 0:
-            notifications.append(
-                dict(report_uuid=report["report_uuid"], report_title=report["title"],
-                     url=report.get("url"), metrics=notable_metrics,
-                     notification_destinations=report["notification_destinations"]))
+            if len(report["notification_destinations"]) > 0:
+                notifications.append(
+                    dict(report_uuid=report["report_uuid"], report_title=report["title"],
+                         url=report.get("url"), metrics=notable_metrics,
+                         notification_destinations=report["notification_destinations"]))
     return notifications
 
 
