@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [Unreleased
+## [Unreleased]
+
+### Removed
+
+- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](METRICS_AND_SOURCES.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
 
 ### Changed
 
@@ -18,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
-- When using the same Micosoft Teams webhook in multiple reports, notifications for one report could also contain metrics of other reports.
+- When using the same Microsoft Teams webhook in multiple reports, notifications for one report could also contain metrics of other reports.
 
 ## [3.12.0] - [2020-10-31]
 

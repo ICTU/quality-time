@@ -113,8 +113,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect commented out code | abap:S125, apex:S125, c:CommentedCode, cpp:CommentedCode, csharpsquid:S125, flex:CommentedCode, java:S125, javascript:CommentedCode, javascript:S125, kotlin:S125, objc:CommentedCode, php:S125, plsql:S125, python:S125, scala:S125, squid:CommentedOutCodeLine, swift:S125, typescript:S125, Web:AvoidCommentedOutCodeCheck, xml:S125 |
 
 ### Complex units from SonarQube
 
@@ -123,8 +126,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect complex units | csharpsquid:S1541, csharpsquid:S3776, flex:FunctionComplexity, go:S3776, java:S1541, javascript:FunctionComplexity, javascript:S1541, javascript:S3776, kotlin:S3776, php:S1541, php:S3776, python:FunctionComplexity, python:S3776, ruby:S3776, scala:S3776, squid:MethodCyclomaticComplexity, squid:S3776, typescript:S1541, typescript:S3776, vbnet:S1541, vbnet:S3776 |
 
 ### Dependencies from Composer
 
@@ -277,8 +283,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect long units | abap:S104, c:FileLoc, cpp:FileLoc, csharpsquid:S104, csharpsquid:S138, flex:S138, go:S104, go:S138, java:S138, javascript:S104, javascript:S138, kotlin:S104, kotlin:S138, objc:FileLoc, php:S104, php:S138, php:S2042, Pylint:R0915, python:S104, ruby:S104, ruby:S138, scala:S104, scala:S138, squid:S00104, squid:S1188, squid:S138, squid:S2972, swift:S104, typescript:S104, typescript:S138, vbnet:S104, vbnet:S138, Web:FileLengthCheck, Web:LongJavaScriptCheck |
 
 ### Manual test duration from Jira
 
@@ -308,8 +317,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect units with many parameters | c:S107, cpp:S107, csharpsquid:S107, csharpsquid:S2436, flex:S107, java:S107, javascript:ExcessiveParameterList, javascript:S107, objc:S107, php:S107, plsql:PlSql.FunctionAndProcedureExcessiveParameters, python:S107, squid:S00107, tsql:S107, typescript:S107 |
 
 ### Metrics from Quality-time
 
@@ -734,10 +746,13 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect suppressed violations | csharpsquid:S1309, java:NoSonar, java:S1309, java:S1310, java:S1315, php:NoSonar, Pylint:I0011, Pylint:I0020, squid:NoSonar, squid:S1309, squid:S1310, squid:S1315 |
 
 ### Tests from Azure DevOps Server
 

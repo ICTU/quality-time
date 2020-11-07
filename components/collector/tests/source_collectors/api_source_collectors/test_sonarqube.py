@@ -243,10 +243,12 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         response = await self.collect(
             metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json])
         expected_entities = [
-            self.entity("a", "bug", "info", "",
-                creation_date="2020-07-30T22:48:52+0200", update_date="2020-09-30T21:48:52+0200"),
-            self.entity("b", "code_smell", "major", "won't fix",
-                creation_date="2019-08-15:48:52+0200", update_date="2019-09-30T20:48:52+0200")]
+            self.entity(
+                "a", "bug", "info", "", creation_date="2020-07-30T22:48:52+0200",
+                update_date="2020-09-30T21:48:52+0200"),
+            self.entity(
+                "b", "code_smell", "major", "won't fix", creation_date="2019-08-15:48:52+0200",
+                update_date="2019-09-30T20:48:52+0200")]
         self.assert_measurement(
             response, value="2", total="4", entities=expected_entities,
             landing_url=f"{self.issues_landing_url}&rules=csharpsquid:S1309,php:NoSonar,Pylint:I0011,Pylint:I0020,"
@@ -280,6 +282,20 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
         response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100", entities=[], landing_url=self.metric_landing_url.format("lines"))
+
+    async def test_loc_ignore_languages(self):
+        """Test that languages can be ignored."""
+        self.sources["source_id"]["parameters"]["languages_to_ignore"] = ["js"]
+        json = dict(
+            component=dict(
+                measures=[
+                    dict(metric="ncloc", value="1500"),
+                    dict(metric="ncloc_language_distribution", value="py=1000;js=500")]))
+        metric = dict(type="loc", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=json)
+        self.assert_measurement(
+            response, value="1000", total="100", entities=[dict(key="py", language="Python", ncloc="1000")],
+            landing_url=self.metric_landing_url.format("ncloc"))
 
     async def test_remediation_effort(self):
         """Test that the remediation effort is returned, as selected by the user."""
@@ -343,10 +359,12 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 "b", "security_hotspot", vulnerability_probability="low",
                 creation_date="2011-10-26T13:34:12+0000", update_date="2020-08-31T08:19:00+0000")]
         self.vulnerability_entities = [
-            self.entity("a", "vulnerability", "info",
-                creation_date="2020-08-30T22:48:52+0200", update_date="2020-09-30T22:48:52+0200"),
-            self.entity("b", "vulnerability", "major",
-                creation_date="2019-08-30T22:48:52+0200", update_date="2019-09-30T22:48:52+0200")]
+            self.entity(
+                "a", "vulnerability", "info", creation_date="2020-08-30T22:48:52+0200",
+                update_date="2020-09-30T22:48:52+0200"),
+            self.entity(
+                "b", "vulnerability", "major", creation_date="2019-08-30T22:48:52+0200",
+                update_date="2019-09-30T22:48:52+0200")]
 
     async def test_security_warnings(self):
         """Test that all security warnings are returned."""

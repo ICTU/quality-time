@@ -34,7 +34,7 @@ class SonarQubeCollector(SourceCollector):
 class SonarQubeViolations(SonarQubeCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
-    rules_parameter = ""  # Subclass responsibility
+    rules_configuration = ""  # Subclass responsibility
     types_parameter = "types"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -56,7 +56,8 @@ class SonarQubeViolations(SonarQubeCollector):
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
+        rules = self._data_model["sources"][self.source_type]["configuration"][self.rules_configuration]["value"] \
+            if self.rules_configuration else []
         return f"&rules={','.join(rules)}" if rules else ""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -103,7 +104,7 @@ class SonarQubeCommentedOutCode(SonarQubeViolations):
     # so we can't compute a percentage of commented out code. And hence this collector is not a subclass of
     # SonarQubeViolationsWithPercentageScale.
 
-    rules_parameter = "commented_out_rules"
+    rules_configuration = "commented_out_rules"
 
 
 class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
@@ -133,28 +134,28 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube complex methods/functions collector."""
 
-    rules_parameter = "complex_unit_rules"
+    rules_configuration = "complex_unit_rules"
     total_metric = "functions"
 
 
 class SonarQubeLongUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube long methods/functions collector."""
 
-    rules_parameter = "long_unit_rules"
+    rules_configuration = "long_unit_rules"
     total_metric = "functions"
 
 
 class SonarQubeManyParameters(SonarQubeViolationsWithPercentageScale):
     """SonarQube many parameters collector."""
 
-    rules_parameter = "many_parameter_rules"
+    rules_configuration = "many_parameter_rules"
     total_metric = "functions"
 
 
 class SonarQubeSuppressedViolations(SonarQubeViolations):
     """SonarQube suppressed violations collector."""
 
-    rules_parameter = "suppression_rules"
+    rules_configuration = "suppression_rules"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get the suppressed violations from SonarQube.

@@ -119,8 +119,11 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertTrue(field in parameter_value, error_message)
 
     def test_parameter_api_values(self):
-        """Test that the api values are only used for single or multiple choice parameters and that the keys match with
-        the possible regular values. The api values are the values used in the source."""
+        """Test the api values.
+
+        Check that the api values are only used for single or multiple choice parameters and that the keys match with
+        the possible regular values. The api values are the values used in the source.
+        """
         for source_id, source in self.data_model["sources"].items():
             for parameter_key, parameter in source["parameters"].items():
                 if "api_values" not in parameter:
@@ -142,6 +145,9 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertEqual(list, type(parameter["default_value"]))
                     if parameter["type"] == "multiple_choice":
                         self.assertTrue("values" in parameter)
+                    if parameter["type"] == "multiple_choice_with_addition":
+                        self.assertFalse("values" in parameter)
+                        self.assertEqual([], parameter["default_value"])
 
     def test_mandatory_parameters(self):
         """Test that each metric has a mandatory field with true or false value."""
@@ -180,8 +186,7 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertTrue(parameter_key in parameter_keys)
 
     def test_source_parameter_help(self):
-        """Test that source parameters have either a help url or a help text, but not both.
-        Test that help texts end with a dot."""
+        """Test that source parameters have a help url or text, but not both, and that they are formatted correctly."""
         for source in self.data_model["sources"].values():
             for parameter_key, parameter in source["parameters"].items():
                 parameter_description = f"The parameter '{parameter_key}' of the source '{source['name']}'"
@@ -229,6 +234,17 @@ class DataModelSourcesTest(DataModelTestCase):
                     for attribute in entities["attributes"]:
                         if measured_attribute == attribute["key"]:
                             self.assertIn(attribute["type"], ["integer", "float", "minutes"])
+
+    def test_configuration(self):
+        """Test that sources with a configuration have a correct configuration."""
+        for source_id, source in self.data_model["sources"].items():
+            if "configuration" in source:
+                for configuration in source["configuration"].values():
+                    self.assertIn("name", configuration)
+                    self.assertIn("value", configuration)
+                    self.assertTrue(len(configuration["metrics"]) > 0)
+                    for metric in configuration["metrics"]:
+                        self.assertIn(source_id, self.data_model["metrics"][metric]["sources"])
 
 
 class DataModelSpecificSourcesTest(DataModelTestCase):
