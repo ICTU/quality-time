@@ -2537,7 +2537,7 @@
                 "jobs_to_include": {
                     "name": "Jobs to include (regular expressions or job names)",
                     "short_name": "jobs to include",
-                    "help": "Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. If empty, all jobs will be included.",
+                    "help": "Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "all",
                     "mandatory":  false,
@@ -4089,6 +4089,19 @@
                     "help": "Transactions to ignore can be specified by transaction name or by regular expression.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
+                    "mandatory":  false,
+                    "default_value": [],
+                    "metrics": [
+                        "slow_transactions",
+                        "tests"
+                    ]
+                },
+                "transactions_to_include": {
+                    "name": "Transactions to include (regular expressions or transaction names)",
+                    "short_name": "transactions to include",
+                    "help": "Transactions to include can be specified by transaction name or by regular expression.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "all",
                     "mandatory":  false,
                     "default_value": [],
                     "metrics": [

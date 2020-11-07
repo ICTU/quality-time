@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- When using the Performancetest-runner as source for the 'slow transactions' or 'tests' metric, add a transactions-to-include parameter in addition to the transactions-to-ignore parameter to make it easier to select the relevant transactions. Closes [#1647](https://github.com/ICTU/quality-time/issues/1647).
+
 ### Removed
 
 - The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](METRICS_AND_SOURCES.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).

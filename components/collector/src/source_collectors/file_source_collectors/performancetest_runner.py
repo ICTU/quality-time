@@ -43,11 +43,15 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     async def __slow_transactions(self, responses: SourceResponses) -> List[Tag]:
         """Return the slow transactions in the performance test report."""
         thresholds = self._parameter("thresholds")
+        transactions_to_include = self._parameter("transactions_to_include")
         transactions_to_ignore = self._parameter("transactions_to_ignore")
 
         def include(transaction) -> bool:
             """Return whether the transaction should be included."""
-            return not match_string_or_regular_expression(self._name(transaction), transactions_to_ignore)
+            name = self._name(transaction)
+            if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
+                return False
+            return not match_string_or_regular_expression(name, transactions_to_ignore)
 
         slow_transactions: List[Tag] = []
         for response in responses:
@@ -92,6 +96,7 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of performance test transactions."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        transactions_to_include = self._parameter("transactions_to_include")
         transactions_to_ignore = self._parameter("transactions_to_ignore")
         count = dict(failed=0, success=0)
         column_indices = dict(failed=7, success=1)
@@ -99,7 +104,10 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
         for response in responses:
             soup = await self._soup(response)
             for transaction in soup.find(id="responsetimestable_begin").select("tr.transaction"):
-                if match_string_or_regular_expression(self._name(transaction), transactions_to_ignore):
+                name = self._name(transaction)
+                if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
+                    continue
+                if match_string_or_regular_expression(name, transactions_to_ignore):
                     continue
                 columns = transaction.find_all("td")
                 for status, column_index in column_indices.items():
