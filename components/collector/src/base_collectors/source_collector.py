@@ -34,8 +34,11 @@ class SourceCollector(ABC):
 
     @classmethod
     def get_subclass(cls, source_type: str, metric_type: str) -> Type["SourceCollector"]:
-        """Return the subclass registered for the source/metric name. First try to find a match on both source type
-        and metric type. If no match is found, return the generic collector for the source type."""
+        """Return the subclass registered for the source/metric name.
+
+        First try to find a match on both source type and metric type. If no match is found, return the generic
+        collector for the source type.
+        """
         for class_name in (f"{source_type}{metric_type}", source_type):
             matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == class_name.replace("_", "")]
             if matching_subclasses:
@@ -80,8 +83,11 @@ class SourceCollector(ABC):
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     async def __safely_get_source_responses(self) -> SourceResponses:
-        """Connect to the source and get the data, without failing. This method should not be overridden
-        because it makes sure the collection of source data never causes the collector to fail."""
+        """Connect to the source and get the data, without failing. i
+
+        This method should not be overridden because it makes sure the collection of source data never causes the
+        collector to fail.
+        """
         api_url = safe_api_url = self.__class__.__name__
         try:
             api_url = await self._api_url()
@@ -121,8 +127,11 @@ class SourceCollector(ABC):
         return {}
 
     async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Parse the data from the responses, without failing. This method should not be overridden because it
-        makes sure that the parsing of source data never causes the collector to fail."""
+        """Parse the data from the responses, without failing.
+
+        This method should not be overridden because it makes sure that the parsing of source data never causes the
+        collector to fail.
+        """
         if responses.connection_error:
             measurement = SourceMeasurement(total=None)
         else:
@@ -134,21 +143,29 @@ class SourceCollector(ABC):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
-        This method should be overridden by collectors to parse the retrieved sources data."""
+
+        This method should be overridden by collectors to parse the retrieved sources data.
+        """
         # pylint: disable=no-self-use,unused-argument
         raise NotImplementedError
 
     async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:
-        """Parse the responses to get the landing url, without failing. This method should not be overridden because
-        it makes sure that the parsing of source data never causes the collector to fail."""
+        """Parse the responses to get the landing url, without failing.
+
+        This method should not be overridden because it makes sure that the parsing of source data never causes the
+        collector to fail.
+        """
         try:
             return await self._landing_url(responses)
         except Exception:  # pylint: disable=broad-except
             return await self._api_url()
 
     async def _landing_url(self, responses: SourceResponses) -> URL:  # pylint: disable=unused-argument
-        """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
-        a default landing url."""
+        """Return a user-friendly landing url.
+
+        Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
+        a default landing url.
+        """
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
             return URL(landing_url)
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
@@ -159,6 +176,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
     """Base class for unmerged branches source collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
         entities = [
             Entity(
                 key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
@@ -183,12 +201,14 @@ class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the datetime from the parse data time method that subclasses should implement."""
         date_times = await self._parse_source_response_date_times(responses)
         return SourceMeasurement(value=str(days_ago(min(date_times))))
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
+        """Parse the source update datetimes from the responses and return the datetimes."""
         return await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        """Parse the date time from the source."""
+        """Parse the datetime from the source."""
         raise NotImplementedError  # pragma: no cover
