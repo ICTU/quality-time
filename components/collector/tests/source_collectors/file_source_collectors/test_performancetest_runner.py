@@ -11,14 +11,16 @@ class PerformanceTestRunnerTestCase(SourceCollectorTestCase):
     """Base class for testing the Performancetest-runner collectors."""
 
     def setUp(self):
+        """Extend to set up the metric sources."""
         super().setUp()
         self.sources = dict(source_id=dict(type="performancetest_runner", parameters=dict(url="report.html")))
 
 
 class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner slow transaction collector."""
+    """Unit tests for the Performancetest-runner slow transaction collector."""
 
     def setUp(self):
+        """Set up a metric fixture."""
         super().setUp()
         self.metric = dict(type="slow_transactions", sources=self.sources, addition="sum")
 
@@ -76,7 +78,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
 
 
 class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner source up-to-dateness collector."""
+    """Unit tests for the Performancetest-runner source up-to-dateness collector."""
 
     async def test_source_up_to_dateness(self):
         """Test that the test age is returned."""
@@ -89,7 +91,7 @@ class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase)
 
 
 class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner duration collector."""
+    """Unit tests for the Performancetest-runner duration collector."""
 
     async def test_duration(self):
         """Test that the test duration is returned."""
@@ -101,10 +103,12 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
 
 
 class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner tests collector."""
+    """Unit tests for the Performancetest-runner tests collector."""
 
     def setUp(self):
+        """Prepare a Performancetest-runner HTML-report and the tests metric."""
         super().setUp()
+        self.metric = dict(type="tests", sources=self.sources, addition="sum")
         self.html = '''
 <html>
     <table id="responsetimestable_begin">
@@ -115,55 +119,47 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
 
     async def test_tests(self):
         """Test that the number of performance test transactions is returned."""
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="28", total="28")
 
     async def test_failed_tests(self):
         """Test that the number of failed performance test transactions is returned."""
         # We also pass an obsolete status ("canceled") to test that obsolete statuses are ignored:
         self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="8", total="28")
 
     async def test_succeeded_tests(self):
         """Test that the number of succeeded performance test transactions is returned."""
         self.sources["source_id"]["parameters"]["test_result"] = ["success"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="20", total="28")
 
     async def test_ignored_tests(self):
         """Test that the number of performance test transactions is returned for transactions that are not ignored."""
         self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="10", total="10")
 
     async def test_failed_and_ignored_tests(self):
-        """Test that the number of failed performance test transactions is returned for transactions that are not
-        ignored."""
+        """Test that the number of not ignored failed performance test transactions is returned."""
         self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
         self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="3", total="10")
 
     async def test_included_tests(self):
         """Test that the number of performance test transactions is returned for transactions that are included."""
         self.sources["source_id"]["parameters"]["transactions_to_include"] = ["T1"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
-        response = await self.collect(metric, get_request_text=self.html)
+        response = await self.collect(self.metric, get_request_text=self.html)
         self.assert_measurement(response, value="10", total="10")
 
 
 class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner performance test stability collector."""
+    """Unit tests for the Performancetest-runner performance test stability collector."""
 
     async def test_stability(self):
-        """Test that the percentage of the duration of the performancetest at which the test becomes unstable is
-        returned."""
+        """Test that the percentage of the duration at which the performance test becomes unstable is returned."""
         html = '''<html><table class="config">
             <tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">90</td></tr>
             </table></html>'''
@@ -173,15 +169,15 @@ class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
 
 
 class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
-    """Unit tests for the performancetest-runner performance test scalability collector."""
+    """Unit tests for the Performancetest-runner performance test scalability collector."""
 
     def setUp(self):
+        """Set up the scalability metric."""
         super().setUp()
         self.metric = dict(type="scalability", sources=self.sources, addition="min")
 
     async def test_scalability(self):
-        """Test that the percentage of the max users of the performancetest at which the ramp-up of throughput breaks is
-        returned."""
+        """Test that the percentage of the max users at which the ramp-up of throughput breaks is returned."""
         html = '''<html><table class="config">
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">74</td></tr>
             </table></html>'''
@@ -189,8 +185,11 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
         self.assert_measurement(response, value="74")
 
     async def test_scalability_without_breaking_point(self):
-        """Test that if the percentage of the max users of the performancetest at which the ramp-up of throughput breaks
-        is 100%, the metric reports an error (since there is no breaking point)."""
+        """Test the scalability without breaking point.
+
+        Test that if the percentage of the max users at which the ramp-up of throughput breaks is 100%, the metric
+        reports an error (since there is no breaking point).
+        """
         html = '''<html><table class="config">
             <tr><td class="name">Trendbreak 'scalability' (%)</td><td id="trendbreak_scalability">100</td></tr>
             </table></html>'''
