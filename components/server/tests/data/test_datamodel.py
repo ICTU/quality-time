@@ -142,6 +142,9 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertEqual(list, type(parameter["default_value"]))
                     if parameter["type"] == "multiple_choice":
                         self.assertTrue("values" in parameter)
+                    if parameter["type"] == "multiple_choice_with_addition":
+                        self.assertFalse("values" in parameter)
+                        self.assertEqual([], parameter["default_value"])
 
     def test_mandatory_parameters(self):
         """Test that each metric has a mandatory field with true or false value."""
@@ -229,6 +232,14 @@ class DataModelSourcesTest(DataModelTestCase):
                     for attribute in entities["attributes"]:
                         if measured_attribute == attribute["key"]:
                             self.assertIn(attribute["type"], ["integer", "float", "minutes"])
+
+    def test_configuration(self):
+        """Test that sources with a configuration have a correct configuration."""
+        for source_id, source in self.data_model["sources"].items():
+            if "configuration" in source:
+                for configuration in source["configuration"].values():
+                    self.assertIn("name", configuration)
+                    self.assertIn("value", configuration)
 
 
 class DataModelSpecificSourcesTest(DataModelTestCase):
