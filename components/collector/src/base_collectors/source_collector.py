@@ -16,8 +16,11 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class SourceCollector(ABC):
-    """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
-    measurement data for one specific metric from one specific source."""
+    """Base class for source collectors.
+
+    Source collectors are subclasses of this class that know how to collect the
+    measurement data for one specific metric from one specific source.
+    """
 
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
@@ -83,7 +86,7 @@ class SourceCollector(ABC):
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     async def __safely_get_source_responses(self) -> SourceResponses:
-        """Connect to the source and get the data, without failing. i
+        """Connect to the source and get the data, without failing.
 
         This method should not be overridden because it makes sure the collection of source data never causes the
         collector to fail.
