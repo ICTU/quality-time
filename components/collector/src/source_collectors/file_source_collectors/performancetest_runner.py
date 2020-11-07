@@ -2,7 +2,7 @@
 
 from abc import ABC
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, cast
 
 from bs4 import BeautifulSoup, Tag
 
@@ -103,8 +103,8 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the transactions from the responses and return the transactions with the desired status."""
-        transactions_to_include = self._parameter("transactions_to_include")
-        transactions_to_ignore = self._parameter("transactions_to_ignore")
+        transactions_to_include = cast(List[str], self._parameter("transactions_to_include"))
+        transactions_to_ignore = cast(List[str], self._parameter("transactions_to_ignore"))
         counts = dict(failed=0, success=0)
         for response in responses:
             count = await self.__parse_response(response, transactions_to_include, transactions_to_ignore)
