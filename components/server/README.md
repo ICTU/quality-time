@@ -266,6 +266,37 @@ In most cases, the measured attribute is simply one of the attributes. In other 
 
 Of course, the collector needs to compute the extra attribute and add it to the measurement entities.
 
+#### Configuration
+
+In cases where *Quality-time* needs information about sources that doesn't need to be parameterizable, a configuration object can be added to the source. A configuration object consists of a key and another object with a list of metrics to which the configuration applies, a name, and a value. For example:
+
+```json
+{
+    "sources": {
+        "sonarqube": {
+            "name": "SonarQube",
+            "configuration": {
+                "commented_out_rules": {
+                    "metrics": [
+                        "commented_out_code"
+                    ],
+                    "name": "Rules used to detect commented out code",
+                    "value": [
+                        "abap:S125",
+                        "apex:S125",
+                        "c:CommentedCode",
+                        "cpp:CommentedCode",
+                        "flex:CommentedCode",
+                        "csharpsquid:S125",
+                        "..."
+                    ]
+                }
+            }
+        }
+    }
+}
+```
+
 ## Subjects
 
 The `subjects` part of the data model is an object where the keys are the subject types and the values are objects describing the subject type. A subject type, for example the `software` subject, is described as follows:
