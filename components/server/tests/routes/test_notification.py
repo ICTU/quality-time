@@ -51,7 +51,8 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.assertEqual(
             dict(uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID], email=self.email,
                  description="John changed the name and url of notification destination 'notification_destination' "
-                             "in report 'Report' from 'notification_destination' and '' to 'new name' and 'https://newurl'."),
+                             "in report 'Report' from 'notification_destination' and '' to 'new name' and "
+                             "'https://newurl'."),
             self.report["delta"])
 
 
@@ -60,12 +61,12 @@ class NotificationDestinationTest(unittest.TestCase):
 
     def setUp(self):
         """Define variables that are used in multiple tests."""
-        self.database = Mock()
-        self.email = "jenny@example.org"
-        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
         self.report = create_report()
+        self.database = Mock()
         self.database.reports.find.return_value = [self.report]
         self.database.datamodels.find_one.return_value = dict(_id="id")
+        self.email = "jenny@example.org"
+        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
 
     def test_add_new_notification_destination(self):
         """Test that a notification destination can be added."""
@@ -91,7 +92,8 @@ class NotificationDestinationTest(unittest.TestCase):
 
     def test_delete_subject(self):
         """Test that a notification destination can be deleted."""
-        self.assertEqual(dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database))
+        self.assertEqual(
+            dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database))
         self.assertEqual(
             dict(uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID], email=self.email,
                  description="Jenny deleted destination notification_destination from report 'Report'."),
