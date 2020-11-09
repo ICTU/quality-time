@@ -4,7 +4,7 @@ from typing import Dict, List, Union
 
 
 def get_notable_metrics_from_json(
-        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[str, int, Dict]]]:
+        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[Dict[str], str, int]]]:
     """Return the reports that have a webhook and metrics that require notifying."""
     notifications = []
     for report in json["reports"]:
