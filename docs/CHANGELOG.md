@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise OJAudit reports can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655). 
+- Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655). 
+- When using folders and/or files in GitLab as source for the 'source up-to-dateness' metric, *Quality-time* would use HEAD requests to get the ids of commits from GitLab. For issue [#1638](https://github.com/ICTU/quality-time/issues/1638), it was necessary to pass the private token as header instead of URL parameter. Unfortunately, this results in 403 (access forbidden) responses for HEAD requests. It's unclear why. Using GET requests instead does work, so we use that as a work-around. Fixes [#1656](https://github.com/ICTU/quality-time/issues/1656).
 
 ## [3.13.0] - [2020-11-08]
 
