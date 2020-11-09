@@ -22,9 +22,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
                 name="notification_destination",
                 url="")})
         self.database.reports.find.return_value = [self.report]
-        self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id", subjects=dict(subject_type=dict(name="subject2")))
+        self.database.datamodels.find_one.return_value = dict(_id="id")
         self.email = "john@example.org"
         self.database.sessions.find_one.return_value = dict(user="John", email=self.email)
 
@@ -67,12 +65,7 @@ class NotificationDestinationTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
-        self.database.measurements.find.return_value = []
-        self.database.datamodels.find_one.return_value = dict(
-            _id="id",
-            metrics=dict(metric_type=dict(name="Metric type")),
-            subjects=dict(subject_type=dict(name="Subject", description="")),
-            sources=dict(source_type=dict(name="Source type")))
+        self.database.datamodels.find_one.return_value = dict(_id="id")
 
     def test_add_new_notification_destination(self):
         """Test that a notification destination can be added."""

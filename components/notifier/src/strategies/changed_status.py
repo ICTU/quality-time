@@ -14,12 +14,11 @@ def get_notable_metrics_from_json(
                 if has_new_status(metric, "target_not_met", most_recent_measurement_seen) \
                         or has_new_status(metric, "unknown", most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
-        if "notification_destinations" in report and len(notable_metrics) > 0:
-            if len(report["notification_destinations"]) > 0:
-                notifications.append(
-                    dict(report_uuid=report["report_uuid"], report_title=report["title"],
-                         url=report.get("url"), metrics=notable_metrics,
-                         notification_destinations=report["notification_destinations"]))
+        if report.get("notification_destinations") and notable_metrics:
+            notifications.append(
+                dict(report_uuid=report["report_uuid"], report_title=report["title"],
+                     url=report.get("url"), metrics=notable_metrics,
+                     notification_destinations=report["notification_destinations"]))
     return notifications
 
 
@@ -27,7 +26,7 @@ def create_notification(data_model, metric) -> Dict[str, str]:
     """Create the notification dictionary."""
     recent_measurements = metric["recent_measurements"]
     scale = metric["scale"]
-    result = dict(
+    return dict(
         metric_type=metric["type"],
         metric_name=metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}',
         metric_unit=metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}',
@@ -35,7 +34,6 @@ def create_notification(data_model, metric) -> Dict[str, str]:
         new_metric_value=recent_measurements[-1][scale]["value"],
         old_metric_status=get_status(data_model, recent_measurements[-2][scale]["status"]),
         old_metric_value=recent_measurements[-2][scale]["value"])
-    return result
 
 
 def get_status(data_model, status) -> str:
