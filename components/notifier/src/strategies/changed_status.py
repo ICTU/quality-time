@@ -14,8 +14,7 @@ def get_notable_metrics_from_json(
                 if has_new_status(metric, "target_not_met", most_recent_measurement_seen) \
                         or has_new_status(metric, "unknown", most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
-        destination_configured = "notification_destinations" in report
-        if destination_configured and len(notable_metrics) > 0:
+        if "notification_destinations" in report and len(notable_metrics) > 0:
             if len(report["notification_destinations"]) > 0:
                 notifications.append(
                     dict(report_uuid=report["report_uuid"], report_title=report["title"],

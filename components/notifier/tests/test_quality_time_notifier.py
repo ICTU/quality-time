@@ -71,6 +71,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the notify method."""
 
     def setUp(self):
+        """Define info that is used in multiple tests."""
         self.url = "https://report1"
         self.title = "Report 1"
         self.history = "2020-01-01T00:23:59+59:00"

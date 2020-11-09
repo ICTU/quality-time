@@ -13,6 +13,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
     """Unit tests for the post notification destination attribute route."""
 
     def setUp(self):
+        """Define variables that are used in multiple tests."""
         self.database = Mock()
         self.report = dict(
             _id="id", report_uuid=REPORT_ID, title="Report",
@@ -60,6 +61,7 @@ class NotificationDestinationTest(unittest.TestCase):
     """Unit tests for adding and deleting notification destinations."""
 
     def setUp(self):
+        """Define variables that are used in multiple tests."""
         self.database = Mock()
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
