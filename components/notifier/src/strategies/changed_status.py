@@ -4,7 +4,7 @@ from typing import Dict, List, Union
 
 
 def get_notable_metrics_from_json(
-        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[Dict[str], str, int]]]:
+        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[Dict[str, str], str]]]:
     """Return the reports that have a webhook and metrics that require notifying."""
     notifications = []
     for report in json["reports"]:
@@ -23,7 +23,7 @@ def get_notable_metrics_from_json(
     return notifications
 
 
-def create_notification(data_model, metric):
+def create_notification(data_model, metric) -> Dict[str, str]:
     """Create the notification dictionary."""
     recent_measurements = metric["recent_measurements"]
     scale = metric["scale"]

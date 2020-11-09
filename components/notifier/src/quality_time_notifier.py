@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Final, NoReturn, cast
+from typing import Dict, Final, NoReturn, cast
 
 import aiohttp
 
@@ -39,7 +39,7 @@ async def notify(log_level: int = None) -> NoReturn:
 
         notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
         for notification in notifications:
-            for configuration in notification["notification_destinations"].values():
+            for configuration in cast(Dict, notification["notification_destinations"]).values():
                 if configuration["teams_webhook"] != "":
                     destination = str(configuration["teams_webhook"])
                     text = build_notification_text(notification)
