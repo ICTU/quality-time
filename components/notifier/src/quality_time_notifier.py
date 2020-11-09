@@ -37,8 +37,7 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
 
-        notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        for notification in notifications:
+        for notification in get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen):
             for configuration in cast(Dict, notification["notification_destinations"]).values():
                 if configuration["teams_webhook"] != "":
                     destination = str(configuration["teams_webhook"])
