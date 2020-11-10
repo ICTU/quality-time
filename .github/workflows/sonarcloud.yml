@@ -41,6 +41,15 @@ jobs:
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+    - name: Prepare scan
+      run: |
+        touch components/__init__.py
+        touch components/server/__init__.py
+        touch components/server/src/__init__.py
+        touch components/collector/__init__.py
+        touch components/collector/src/__init__.py
+        touch components/notifier/__init__.py
+        touch components/notifier/src/__init__.py
     - name: SonarQube scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
