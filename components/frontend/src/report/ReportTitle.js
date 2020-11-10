@@ -54,7 +54,7 @@ export function ReportTitle(props) {
         if(destinations){
             Object.entries(destinations).forEach(([destination_uuid, destination]) => {
                 result.push(
-                    <Segment.Group horizontal>
+                    <Segment.Group horizontal key={destination_uuid}>
                         <Segment>
                             <StringInput
                                 id={destination_uuid}
@@ -74,24 +74,28 @@ export function ReportTitle(props) {
                                 value={destination.teams_webhook}
                             />
                         </Segment>
-                        <Segment>
-                            <DeleteButton
-                                item_type='notification destination'
-                                onClick={() => delete_notification_destination(report_uuid, destination_uuid, props.reload)}
-                            />
-                        </Segment>
+                        <ReadOnlyOrEditable editableComponent={
+                            <Segment>
+                                <DeleteButton
+                                    item_type='notification destination'
+                                    onClick={() => delete_notification_destination(report_uuid, destination_uuid, props.reload)}
+                                />
+                            </Segment>}
+                        />
                     </Segment.Group>
                 )
             })
         }
         result.push(
-            <Segment basic>
-                <AddButton
-                    item_type="notification destinations"
-                    report_uuid={report_uuid}
-                    onClick={() => add_notification_destination(report_uuid, props.reload)}
-                />
-            </Segment>
+            <ReadOnlyOrEditable key="1" editableComponent={
+                <Segment basic>
+                    <AddButton
+                        item_type="notification destination"
+                        report_uuid={report_uuid}
+                        onClick={() => add_notification_destination(report_uuid, props.reload)}
+                    />
+                </Segment>}
+            />
         )
         return (
             <Grid.Row>

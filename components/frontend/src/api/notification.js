@@ -1,7 +1,6 @@
 import { fetch_server_api } from "./fetch_server_api";
 
 export function add_notification_destination(report_uuid, reload) {
-    console.log("add notification destination", report_uuid, reload);
     return fetch_server_api('post', `report/${report_uuid}/notification_destination/new`, {}).then(reload)
 }
 
