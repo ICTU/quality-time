@@ -18,19 +18,26 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.9.0'
-    - name: Collector
+    - name: Prerequisites
       run: |
         sudo apt-get install libxml2-dev libxslt-dev python-dev
-        cd components/collector
         python -m pip install --upgrade pip
         python -m pip install wheel
+    - name: Collector
+      run: |
+        cd components/collector
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
     - name: Notifier
       run: |
         cd components/notifier
-        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+        ci/unittest.sh
+        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+    - name: Server
+      run: |
+        cd components/server
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
