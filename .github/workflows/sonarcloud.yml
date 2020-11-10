@@ -27,29 +27,17 @@ jobs:
       run: |
         cd components/collector
         pip install -r requirements.txt -r requirements-dev.txt
-        ci/unittest.sh
-        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+        nosetests --nocapture --with-coverage --with-xunit --xunit-file=build/nosetests.xml tests
     - name: Notifier
       run: |
         cd components/notifier
         pip install -r requirements.txt -r requirements-dev.txt
-        ci/unittest.sh
-        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+        nosetests --nocapture --with-coverage --with-xunit --xunit-file=build/nosetests.xml tests
     - name: Server
       run: |
         cd components/server
         pip install -r requirements.txt -r requirements-dev.txt
-        ci/unittest.sh
-        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-    - name: Prepare scan
-      run: |
-        touch components/__init__.py
-        touch components/server/__init__.py
-        touch components/server/src/__init__.py
-        touch components/collector/__init__.py
-        touch components/collector/src/__init__.py
-        touch components/notifier/__init__.py
-        touch components/notifier/src/__init__.py
+        nosetests --nocapture --with-coverage --with-xunit --xunit-file=build/nosetests.xml tests
     - name: SonarQube scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
