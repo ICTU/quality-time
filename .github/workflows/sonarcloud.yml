@@ -18,34 +18,27 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.9.0'
-    - name: Prerequisites
+    - name: Prepare scan
       run: |
         sudo apt-get install libxml2-dev libxslt-dev python-dev
         python -m pip install --upgrade pip
         python -m pip install wheel
-    - name: Collector
-      run: |
         cd components/collector
         mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-    - name: Notifier
-      run: |
-        cd components/notifier
+        cd ../../components/notifier
         mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-    - name: Server
-      run: |
-        cd components/server
+        cd ../../components/server
         mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-    - name: Prepare SonarQube scan
-      run: |
+        cd ../..
         touch components/__init__.py
         touch components/server/__init__.py
         touch components/server/src/__init__.py
@@ -53,7 +46,7 @@ jobs:
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
         touch components/notifier/src/__init__.py
-    - name: SonarQube scan
+    - name: Sonarcloud scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
