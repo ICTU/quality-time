@@ -26,16 +26,19 @@ jobs:
     - name: Collector
       run: |
         cd components/collector
+        mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         nosetests --nocapture --with-coverage --cover-branches --cover-tests --cover-inclusive --cover-xml --cover-xml-file=build/unittest-coverage.xml --with-xunit --xunit-file=build/nosetests.xml tests
     - name: Notifier
       run: |
         cd components/notifier
+        mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         nosetests --nocapture --with-coverage --cover-branches --cover-tests --cover-inclusive --cover-xml --cover-xml-file=build/unittest-coverage.xml --with-xunit --xunit-file=build/nosetests.xml tests
     - name: Server
       run: |
         cd components/server
+        mkdir build
         pip install -r requirements.txt -r requirements-dev.txt
         nosetests --nocapture --with-coverage --cover-branches --cover-tests --cover-inclusive --cover-xml --cover-xml-file=build/unittest-coverage.xml --with-xunit --xunit-file=build/nosetests.xml tests
     - name: SonarQube scan
