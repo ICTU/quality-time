@@ -46,6 +46,11 @@ jobs:
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
         touch components/notifier/src/__init__.py
+    - name: Fix code coverage paths (this is needed because the Sonar scanner runs in a container with different file paths)
+      run: |
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
     - name: Sonarcloud scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
