@@ -33,7 +33,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID], email=self.email,
-                 description="John changed the name of notification destination 'notification_destination' "
+                 description="John changed the 'name' of notification destination 'notification_destination' "
                              "in report 'Report' from 'notification_destination' to 'new name'."),
             self.report["delta"])
 
@@ -50,7 +50,7 @@ class PostSubjectAttributeTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
             dict(uuids=[REPORT_ID, NOTIFICATION_DESTINATION_ID], email=self.email,
-                 description="John changed the name and url of notification destination 'notification_destination' "
+                 description="John changed the 'name' and 'url' of notification destination 'notification_destination' "
                              "in report 'Report' from 'notification_destination' and '' to 'new name' and "
                              "'https://newurl'."),
             self.report["delta"])
