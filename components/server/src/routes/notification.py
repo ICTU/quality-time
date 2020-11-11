@@ -68,8 +68,9 @@ def post_notification_destination_attributes(report_uuid: ReportId,
     if set(old_values) == set(attributes.values()):
         return dict(ok=True)  # Nothing to do
     user = sessions.user(database)
+
     keys = "' and '".join(attributes.keys())
-    old_values = "' and '".join(old_values)
+    old_values = "' and '".join([value for value in old_values])
     new_values = "' and '".join(attributes.values())
     data.report["delta"] = dict(
         uuids=[data.report_uuid, notification_destination_uuid],
