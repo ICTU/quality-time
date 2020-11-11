@@ -23,22 +23,30 @@ jobs:
         sudo apt-get install libxml2-dev libxslt-dev python-dev
         python -m pip install --upgrade pip
         python -m pip install wheel
-        cd components/collector
-        mkdir build
+    - name: Collector
+      working-directory: components/collector
+      run: |
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-        cd ../../components/notifier
-        mkdir build
+    - name: Notifier
+      working-directory: components/notifier
+      run: |
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-        cd ../../components/server
-        mkdir build
+    - name: Server
+      working-directory: components/server
+      run: |
         pip install -r requirements.txt -r requirements-dev.txt
         ci/unittest.sh
         nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
-        cd ../..
+    - name: Frontend
+      working-directory: components/frontend
+      run: |
+        npm test -- --coverage
+    - name: Create packages
+      run: |
         touch components/__init__.py
         touch components/server/__init__.py
         touch components/server/src/__init__.py
@@ -46,7 +54,7 @@ jobs:
         touch components/collector/src/__init__.py
         touch components/notifier/__init__.py
         touch components/notifier/src/__init__.py
-    - name: Fix code coverage paths (this is needed because the Sonar scanner runs in a container with different file paths)
+    - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
       run: |
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
         sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
