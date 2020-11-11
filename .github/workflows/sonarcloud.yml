@@ -20,6 +20,7 @@ jobs:
         python-version: '3.9.0'
     - name: Prepare scan
       run: |
+        nvm install 13
         sudo apt-get install libxml2-dev libxslt-dev python-dev
         python -m pip install --upgrade pip
         python -m pip install wheel
