@@ -1,13 +1,11 @@
 import React from 'react';
-import { Grid, Icon, Segment } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
-import { AddButton, DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
-import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { HyperLink } from '../widgets/HyperLink';
 import { NotificationDestinations } from '../notifications/NotificationDestinations';
 
 export function ReportTitle(props) {
