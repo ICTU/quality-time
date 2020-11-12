@@ -52,7 +52,6 @@ export function Logo(props) {
         npm: npm,
         openvas: OpenVAS,
         owasp_dependency_check: OWASPDependencyCheck,
-        owasp_dependency_check_jenkins_plugin: OWASPDependencyCheck,
         owasp_zap: OWASPZAP,
         pip: Python,
         pyupio_safety: Pyupio,
