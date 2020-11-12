@@ -69,13 +69,11 @@ def post_notification_destination_attributes(report_uuid: ReportId,
         return dict(ok=True)  # Nothing to do
 
     user = sessions.user(database)
-    keys = "' and '".join(attributes.keys())
-    delta_old_values = "' and '".join(old_values)
-    delta_new_values = "' and '".join(attributes.values())
+    separator = "' and '"
     data.report["delta"] = dict(
         uuids=[data.report_uuid, notification_destination_uuid],
         email=user["email"],
-        description=f"{user['user']} changed the '{keys}' of notification destination "
+        description=f"{user['user']} changed the '{separator.join(attributes.keys())}' of notification destination "
                     f"'{notification_destination_name}' in report '{data.report_name}' "
-                    f"from '{delta_old_values}' to '{delta_new_values}'.")
+                    f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'.")
     return insert_new_report(database, data.report)
