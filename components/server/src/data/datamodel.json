@@ -4364,7 +4364,6 @@
                         "OJAudit",
                         "OpenVAS",
                         "OWASP Dependency Check",
-                        "OWASP Dependency Check Jenkins plugin",
                         "OWASP ZAP",
                         "Performancetest-runner",
                         "pip",
