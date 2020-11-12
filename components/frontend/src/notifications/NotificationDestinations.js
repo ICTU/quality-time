@@ -25,6 +25,7 @@ function NotificationDestination({report_uuid, destination_uuid, destination, re
                     </Grid.Column>
                     <Grid.Column width={12}>
                         <StringInput
+                            placeholder="url"
                             label={label}
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, {teams_webhook: value, url: window.location.href}, reload)

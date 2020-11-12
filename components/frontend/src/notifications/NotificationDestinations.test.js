@@ -20,7 +20,7 @@ it('creates the first notification destination when the add notification destina
   await act(async () => {
     render(
       <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={{}} report_uuid={"report_uuid"} reload={() => {}}/>
+        <NotificationDestinations report_uuid={"report_uuid"} reload={() => {}}/>
       </ReadOnlyContext.Provider>);
   });
   await act(async () => {
@@ -43,7 +43,7 @@ it('creates a new notification destination when the add notification destination
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/new`, {});
 });
 
-it('edits notification destination attributes when these are changed in the input fields', async () => {
+it('edits notification destination attribute when it is changed in the input field', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
     render(
@@ -54,6 +54,19 @@ it('edits notification destination attributes when these are changed in the inpu
   userEvent.type(screen.getByLabelText(/Name/), ' changed{enter}');
 
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {name: "new changed"});
+});
+
+it('edits multiple notification destination attributes when they are changed in the input fields', async () => {
+  fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+  await act(async () => {
+    render(
+      <ReadOnlyContext.Provider value={false}>
+        <NotificationDestinations destinations={notification_destinations} report_uuid={"report_uuid"} reload={() => {}}/>
+      </ReadOnlyContext.Provider>);
+  });
+  userEvent.type(screen.getByPlaceholderText(/url/), 'new.webhook.com{enter}');
+
+  expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {teams_webhook: "new.webhook.com", url: "http://localhost/"});
 });
 
 it('removes the notification destination when the delete notification destination button is clicked', async () => {
