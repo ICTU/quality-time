@@ -13,8 +13,6 @@ from .api_source_collectors.jenkins import JenkinsFailedJobs, JenkinsJobs
 from .api_source_collectors.jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
 from .api_source_collectors.jira import (
     JiraIssues, JiraManualTestDuration, JiraManualTestExecution, JiraUserStoryPoints, JiraVelocity)
-from .api_source_collectors.owasp_dependency_check_jenkins_plugin import (
-    OWASPDependencyCheckJenkinsPluginSecurityWarnings, OWASPDependencyCheckJenkinsPluginSourceUpToDateness)
 from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
 from .api_source_collectors.robot_framework_jenkins_plugin import (
     RobotFrameworkJenkinsPluginSourceUpToDateness, RobotFrameworkJenkinsPluginTests)
