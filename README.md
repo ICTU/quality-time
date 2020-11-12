@@ -1,6 +1,5 @@
 # Quality-time
 
-[![Build Status](https://travis-ci.org/ICTU/quality-time.svg?branch=master)](https://travis-ci.org/ICTU/quality-time)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=alert_status)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=security_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=nl.ictu%3Aquality-time&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=nl.ictu%3Aquality-time)
