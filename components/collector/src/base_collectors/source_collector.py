@@ -99,12 +99,17 @@ class SourceCollector(ABC):
             logging.info("Retrieved %s", safe_api_url)
             return responses
         except aiohttp.ClientError as reason:
-            error = tokenless(str(reason)) if str(reason) else reason.__class__.__name__
+            error = self.__logsafe_exception(reason)
             logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.error("Failed to retrieve %s: %s", safe_api_url, reason)
+            logging.error("Failed to retrieve %s: %s", safe_api_url, self.__logsafe_exception(reason))
         return SourceResponses(api_url=URL(api_url), connection_error=error)
+
+    @staticmethod
+    def __logsafe_exception(exception: Exception) -> str:
+        """Return a log-safe version of the exception."""
+        return tokenless(str(exception)) if str(exception) else exception.__class__.__name__
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
