@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [3.13.1-rc.5] - [2020-11-12]
 
+### Removed
+- Remove support for the source "OWASP Dependency Check Jenkins plugin". Fixes [#1666](https://github.com/ICTU/quality-time/issues/1666).
+
 ### Fixed
 
 - Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655). 
