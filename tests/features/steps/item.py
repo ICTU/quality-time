@@ -44,7 +44,10 @@ def move_item(context, item, container):
 @when("the client deletes the {item}")
 def delete_item(context, item):
     """Delete the item."""
-    context.delete(f"{item}/{context.uuid[item]}")
+    if item == "notification_destination":
+        context.delete(f"report/{context.uuid['report']}/{item}/{context.uuid[item]}")
+    else:
+        context.delete(f"{item}/{context.uuid[item]}")
 
 
 @when('the client changes the {item} {attribute} to "{value}"')
@@ -55,7 +58,10 @@ def change_item_attribute(context, item, attribute, value):
         value = value.split(", ")
     else:
         value = dict(true=True, false=False).get(value.lower(), value)
-    context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
+    if item == "notification_destination":
+        context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
+    else:
+        context.post(f"{item_fragment}/attribute/{attribute}", json={attribute: value})
 
 
 def get_item(context, item):
@@ -65,7 +71,11 @@ def get_item(context, item):
         item_instance = [
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]][0]
         if item != "report":
-            item_instance = item_instance["subjects"][context.uuid["subject"]]
+            if item == "notification_destination":
+                item_instance = item_instance["notification_destinations"][context.uuid["notification_destination"]]
+                return item_instance
+            else:
+                item_instance = item_instance["subjects"][context.uuid["subject"]]
             if item != "subject":
                 item_instance = item_instance["metrics"][context.uuid["metric"]]
                 if item != "metric":
