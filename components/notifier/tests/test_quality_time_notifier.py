@@ -76,12 +76,12 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         self.title = "Report 1"
         self.history = "2020-01-01T00:23:59+59:00"
         self.subjects = dict(
-                subject1=dict(
-                    metrics=dict(
-                        metric1=dict(
-                            type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
-                            recent_measurements=[
-                                dict(start=self.history, end=self.history, count=dict(status="target_met", value="5"))]))))
+            subject1=dict(
+                metrics=dict(
+                    metric1=dict(
+                        type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                        recent_measurements=[
+                            dict(start=self.history, end=self.history, count=dict(status="target_met", value="5"))]))))
 
     @classmethod
     def setUpClass(cls) -> None:
