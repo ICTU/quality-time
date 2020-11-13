@@ -10,7 +10,19 @@ let mockHistory = {};
 
 function subjects() {
     return (
-        shallow(<Subjects datamodel={datamodel} reports={[report]} report={report} subject_uuid="subject_uuid" tags={[]} history={mockHistory} />)
+        shallow(
+            <Subjects
+                clearHiddenColumns={() => {}}
+                datamodel={datamodel}
+                hiddenColumns={[]}
+                history={mockHistory}
+                reports={[report]}
+                report={report}
+                subject_uuid="subject_uuid"
+                tags={[]}
+                toggleHiddenColumn={() => {}}
+            />
+        )
     )
 }
 
@@ -43,33 +55,6 @@ describe("<Subjects />", () => {
         mockHistory.location.search = "?hide_metrics_not_requiring_action=false"
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-    });
-    it('hides columns', () => {
-        const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-    });
-    it('hides columns on load', () => {
-        mockHistory.location.search = "?hidden_columns=trend"
-        const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([]);
-    });
-    it('hides multiple columns on load', () => {
-        mockHistory.location.search = "?hidden_columns=trend,tags"
-        const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['trend', 'tags'])
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("ColumnMenuItem").at(0).dive().find("DropdownItem").simulate("click");
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual(['tags']);
-    });
-    it('can handle missing columns', () => {
-        mockHistory.location.search = "?hidden_columns="
-        const wrapper = subjects();
-        expect(wrapper.find("Subject").prop("hiddenColumns")).toStrictEqual([])
     });
     it('toggles tabs', () => {
         const wrapper = subjects();

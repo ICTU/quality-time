@@ -10,7 +10,6 @@ import { useDelayedRender, useURLSearchQuery } from '../utils';
 export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
-  const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
   const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(props.history, "trend_table_nr_dates", "integer", 7);
   const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(props.history, "trend_table_interval", "integer", 1);
@@ -21,10 +20,10 @@ export function Subjects(props) {
         visible || index < 3 ?
           <Subject
             {...props}
-            clearHiddenColumns={clearHiddenColumns}
+            clearHiddenColumns={props.clearHiddenColumns}
             clearVisibleDetailsTabs={clearVisibleDetailsTabs}
             first_subject={index === 0}
-            hiddenColumns={hiddenColumns}
+            hiddenColumns={props.hiddenColumns}
             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
             key={subject_uuid}
             last_subject={index === last_index}
@@ -32,7 +31,7 @@ export function Subjects(props) {
             setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
             setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
             subject_uuid={subject_uuid}
-            toggleHiddenColumn={(column) => toggleHiddenColumn(column)}
+            toggleHiddenColumn={props.toggleHiddenColumn}
             toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}
             trendTableInterval={trendTableInterval}
             trendTableNrDates={trendTableNrDates}
