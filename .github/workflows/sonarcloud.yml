@@ -1,0 +1,74 @@
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9.0'
+    - name: Set up Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '13'
+    - name: Prepare scan
+      run: |
+        sudo apt-get install libxml2-dev libxslt-dev python-dev
+        python -m pip install --upgrade pip
+        python -m pip install wheel
+    - name: Collector
+      working-directory: components/collector
+      run: |
+        pip install -r requirements.txt -r requirements-dev.txt
+        ci/unittest.sh
+        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+    - name: Notifier
+      working-directory: components/notifier
+      run: |
+        pip install -r requirements.txt -r requirements-dev.txt
+        ci/unittest.sh
+        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+    - name: Server
+      working-directory: components/server
+      run: |
+        pip install -r requirements.txt -r requirements-dev.txt
+        ci/unittest.sh
+        nosetests --nocapture --with-xunit --xunit-file=build/nosetests.xml tests
+    - name: Frontend
+      working-directory: components/frontend
+      run: |
+        npm install
+        npm run build --if-present
+        npm test -- --coverage
+      env:
+        CI: true
+    - name: Create packages
+      run: |
+        touch components/__init__.py
+        touch components/server/__init__.py
+        touch components/server/src/__init__.py
+        touch components/collector/__init__.py
+        touch components/collector/src/__init__.py
+        touch components/notifier/__init__.py
+        touch components/notifier/src/__init__.py
+    - name: Fix code coverage paths  # Needed because the Sonar scanner runs in a container with different file paths
+      run: |
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/collector/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/notifier/build/unittest-coverage.xml
+        sed -i 's/\/home\/runner\/work\/quality-time\/quality-time\//\/github\/workspace\//g' components/server/build/unittest-coverage.xml
+    - name: Sonarcloud scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

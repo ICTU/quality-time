@@ -13,16 +13,18 @@ def before_all(context):
         """Return the cookies."""
         return dict(session_id=context.session_id) if context.session_id else {}
 
-    def get(api, headers=None):
+    def get(api, headers=None, internal=False):
         """Get the resource."""
+        base_api_url = context.base_api_url.format("internal-" if internal else "")
         if context.report_date:
             api += f"?report_date={context.report_date}"
-        context.response = response = requests.get(f"{context.base_api_url}/{api}", headers=headers)
+        context.response = response = requests.get(f"{base_api_url}/{api}", headers=headers)
         return response.json() if response.headers.get('Content-Type') == "application/json" else response
 
-    def post(api, json=None):
+    def post(api, json=None, internal=False):
         """Post the resource."""
-        context.response = response = requests.post(f"{context.base_api_url}/{api}", json=json, cookies=cookies())
+        base_api_url = context.base_api_url.format("internal-" if internal else "")
+        context.response = response = requests.post(f"{base_api_url}/{api}", json=json, cookies=cookies())
         if not response.ok:
             return response
         if "session_id" in response.cookies:
@@ -32,11 +34,11 @@ def before_all(context):
 
     def delete(api):
         """Delete the resource."""
-        context.response = response = requests.delete(f"{context.base_api_url}/{api}", cookies=cookies())
+        context.response = response = requests.delete(f"{context.base_api_url.format('')}/{api}", cookies=cookies())
         time.sleep(1)  # Give server and database time to process the previous request
         return response.json()
 
-    context.base_api_url = "http://localhost:5001/api/v3"
+    context.base_api_url = "http://localhost:5001/{0}api/v3"
     context.session_id = None
     context.report_date = None
     context.response = None

@@ -21,10 +21,10 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Performancetest duration | The duration of the performancetest in minutes | ≧ 30 minutes | count | performance | [Performancetest-runner](#performancetest-duration-from-performancetest-runner) |
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | percentage | performance | [Performancetest-runner](#performancetest-stability-from-performancetest-runner) |
 | Scalability | The percentage of (max) users at which ramp-up of throughput breaks. | ≧ 75% of the users | percentage | performance | [Performancetest-runner](#scalability-from-performancetest-runner) |
-| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | count | security | [Anchore](#security-warnings-from-anchore), [Bandit](#security-warnings-from-bandit), [Checkmarx CxSAST](#security-warnings-from-checkmarx-cxsast), [JSON file with security warnings](#security-warnings-from-json-file-with-security-warnings), [OWASP Dependency Check Jenkins plugin](#security-warnings-from-owasp-dependency-check-jenkins-plugin), [OWASP Dependency Check](#security-warnings-from-owasp-dependency-check), [OWASP ZAP](#security-warnings-from-owasp-zap), [OpenVAS](#security-warnings-from-openvas), [Pyupio Safety](#security-warnings-from-pyupio-safety), [Snyk](#security-warnings-from-snyk), [SonarQube](#security-warnings-from-sonarqube) |
+| Security warnings | The number of security warnings about the software. | ≦ 0 security warnings | count | security | [Anchore](#security-warnings-from-anchore), [Bandit](#security-warnings-from-bandit), [Checkmarx CxSAST](#security-warnings-from-checkmarx-cxsast), [JSON file with security warnings](#security-warnings-from-json-file-with-security-warnings), [OWASP Dependency Check](#security-warnings-from-owasp-dependency-check), [OWASP ZAP](#security-warnings-from-owasp-zap), [OpenVAS](#security-warnings-from-openvas), [Pyupio Safety](#security-warnings-from-pyupio-safety), [Snyk](#security-warnings-from-snyk), [SonarQube](#security-warnings-from-sonarqube) |
 | Size (LOC) | The size of the software in lines of code. | ≦ 30000 lines | count | maintainability | [SonarQube](#size-(loc)-from-sonarqube), [cloc](#size-(loc)-from-cloc) |
 | Slow transactions | The number of transactions slower than their performance threshold. | ≦ 0 transactions | count | performance | [Performancetest-runner](#slow-transactions-from-performancetest-runner) |
-| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check Jenkins plugin](#source-up-to-dateness-from-owasp-dependency-check-jenkins-plugin), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework Jenkins plugin](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan), [axe-selenium-python](#source-up-to-dateness-from-axe-selenium-python) |
+| Source up-to-dateness | The number of days since the source was last updated. | ≦ 3 days | count | ci | [Anchore](#source-up-to-dateness-from-anchore), [Azure DevOps Server](#source-up-to-dateness-from-azure-devops-server), [Bandit](#source-up-to-dateness-from-bandit), [Calendar date](#source-up-to-dateness-from-calendar-date), [Checkmarx CxSAST](#source-up-to-dateness-from-checkmarx-cxsast), [Cobertura Jenkins plugin](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Cobertura](#source-up-to-dateness-from-cobertura), [GitLab](#source-up-to-dateness-from-gitlab), [JUnit XML report](#source-up-to-dateness-from-junit-xml-report), [JaCoCo Jenkins plugin](#source-up-to-dateness-from-jacoco-jenkins-plugin), [JaCoCo](#source-up-to-dateness-from-jacoco), [Jenkins test report](#source-up-to-dateness-from-jenkins-test-report), [NCover](#source-up-to-dateness-from-ncover), [OWASP Dependency Check](#source-up-to-dateness-from-owasp-dependency-check), [OWASP ZAP](#source-up-to-dateness-from-owasp-zap), [OpenVAS](#source-up-to-dateness-from-openvas), [Performancetest-runner](#source-up-to-dateness-from-performancetest-runner), [Quality-time](#source-up-to-dateness-from-quality-time), [Robot Framework Jenkins plugin](#source-up-to-dateness-from-robot-framework-jenkins-plugin), [Robot Framework](#source-up-to-dateness-from-robot-framework), [SonarQube](#source-up-to-dateness-from-sonarqube), [TestNG](#source-up-to-dateness-from-testng), [Trello](#source-up-to-dateness-from-trello), [Wekan](#source-up-to-dateness-from-wekan), [axe-selenium-python](#source-up-to-dateness-from-axe-selenium-python) |
 | Suppressed violations | The amount of violations suppressed in the source. | ≦ 0 suppressed violations | count (default), percentage | maintainability | [SonarQube](#suppressed-violations-from-sonarqube) |
 | Test branch coverage | The amount of code branches not covered by tests. | ≦ 0 uncovered branches | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-branch-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-branch-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-branch-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-branch-coverage-from-jacoco), [NCover](#test-branch-coverage-from-ncover), [SonarQube](#test-branch-coverage-from-sonarqube) |
 | Test line coverage | The amount of lines of code not covered by tests. | ≦ 0 uncovered lines | count (default), percentage | test quality | [Cobertura Jenkins plugin](#test-line-coverage-from-cobertura-jenkins-plugin), [Cobertura](#test-line-coverage-from-cobertura), [JaCoCo Jenkins plugin](#test-line-coverage-from-jacoco-jenkins-plugin), [JaCoCo](#test-line-coverage-from-jacoco), [NCover](#test-line-coverage-from-ncover), [SonarQube](#test-line-coverage-from-sonarqube) |
@@ -61,7 +61,6 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [NCover](https://www.ncover.com/) | A .NET code coverage solution | [Source up-to-dateness](#source-up-to-dateness-from-ncover), [Test branch coverage](#test-branch-coverage-from-ncover), [Test line coverage](#test-line-coverage-from-ncover) |
 | [OJAudit](https://www.oracle.com/technetwork/developer-tools/jdev) | An Oracle JDeveloper program to audit Java code against JDeveloper's audit rules. | [Violations](#violations-from-ojaudit) |
 | [OWASP Dependency Check](https://www.owasp.org/index.php/OWASP_Dependency_Check) | Dependency-Check is a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | [Dependencies](#dependencies-from-owasp-dependency-check), [Source up-to-dateness](#source-up-to-dateness-from-owasp-dependency-check), [Security warnings](#security-warnings-from-owasp-dependency-check) |
-| [OWASP Dependency Check Jenkins plugin](https://plugins.jenkins.io/dependency-check-jenkins-plugin) | Jenkins plugin for the OWASP Dependency Check, a utility that identifies project dependencies and checks if there are any known, publicly disclosed, vulnerabilities. | [Source up-to-dateness](#source-up-to-dateness-from-owasp-dependency-check-jenkins-plugin), [Security warnings](#security-warnings-from-owasp-dependency-check-jenkins-plugin) |
 | [OWASP ZAP](https://www.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project) | The OWASP Zed Attack Proxy (ZAP) can help automatically find security vulnerabilities in web applications while the application is being developed and tested. | [Source up-to-dateness](#source-up-to-dateness-from-owasp-zap), [Security warnings](#security-warnings-from-owasp-zap) |
 | [OpenVAS](http://www.openvas.org) | OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools offering vulnerability scanning and vulnerability management. | [Source up-to-dateness](#source-up-to-dateness-from-openvas), [Security warnings](#security-warnings-from-openvas) |
 | [Performancetest-runner](https://github.com/ICTU/performancetest-runner) | An open source tool to run performancetests and create performancetest reports. | [Performancetest duration](#performancetest-duration-from-performancetest-runner), [Performancetest stability](#performancetest-stability-from-performancetest-runner), [Scalability](#scalability-from-performancetest-runner), [Slow transactions](#slow-transactions-from-performancetest-runner), [Source up-to-dateness](#source-up-to-dateness-from-performancetest-runner), [Tests](#tests-from-performancetest-runner) |
@@ -113,8 +112,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect commented out code | abap:S125, apex:S125, c:CommentedCode, cpp:CommentedCode, csharpsquid:S125, flex:CommentedCode, java:S125, javascript:CommentedCode, javascript:S125, kotlin:S125, objc:CommentedCode, php:S125, plsql:S125, python:S125, scala:S125, squid:CommentedOutCodeLine, swift:S125, typescript:S125, Web:AvoidCommentedOutCodeCheck, xml:S125 |
 
 ### Complex units from SonarQube
 
@@ -123,8 +125,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect complex units | csharpsquid:S1541, csharpsquid:S3776, flex:FunctionComplexity, go:S3776, java:S1541, javascript:FunctionComplexity, javascript:S1541, javascript:S3776, kotlin:S3776, php:S1541, php:S3776, python:FunctionComplexity, python:S3776, ruby:S3776, scala:S3776, squid:MethodCyclomaticComplexity, squid:S3776, typescript:S1541, typescript:S3776, vbnet:S1541, vbnet:S3776 |
 
 ### Dependencies from Composer
 
@@ -191,6 +196,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :-------- | :--- |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Jobs to include (regular expressions or job names) | Multiple choice with addition | No | Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |
 | Username for basic authentication | String | No |  |
@@ -276,8 +282,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect long units | abap:S104, c:FileLoc, cpp:FileLoc, csharpsquid:S104, csharpsquid:S138, flex:S138, go:S104, go:S138, java:S138, javascript:S104, javascript:S138, kotlin:S104, kotlin:S138, objc:FileLoc, php:S104, php:S138, php:S2042, Pylint:R0915, python:S104, ruby:S104, ruby:S138, scala:S104, scala:S138, squid:S00104, squid:S1188, squid:S138, squid:S2972, swift:S104, typescript:S104, typescript:S138, vbnet:S104, vbnet:S138, Web:FileLengthCheck, Web:LongJavaScriptCheck |
 
 ### Manual test duration from Jira
 
@@ -307,8 +316,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect units with many parameters | c:S107, cpp:S107, csharpsquid:S107, csharpsquid:S2436, flex:S107, java:S107, javascript:ExcessiveParameterList, javascript:S107, objc:S107, php:S107, plsql:PlSql.FunctionAndProcedureExcessiveParameters, python:S107, squid:S00107, tsql:S107, typescript:S107 |
 
 ### Metrics from Quality-time
 
@@ -366,6 +378,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Private token | Password | No |  |
 | Thresholds | Multiple choice | No | If provided, only count transactions that surpass the selected thresholds. |
 | Transactions to ignore (regular expressions or transaction names) | Multiple choice with addition | No | Transactions to ignore can be specified by transaction name or by regular expression. |
+| Transactions to include (regular expressions or transaction names) | Multiple choice with addition | No | Transactions to include can be specified by transaction name or by regular expression. |
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
@@ -527,14 +540,6 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
-### Source up-to-dateness from OWASP Dependency Check Jenkins plugin
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| URL to Jenkins job | URL | Yes |  |
-| Username for basic authentication | String | No |  |
-
 ### Source up-to-dateness from OWASP ZAP
 
 | Parameter | Type | Mandatory | Help |
@@ -663,15 +668,6 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | URL to an OWASP Dependency Check report in XML format or to a zip with OWASP Dependency Check reports in XML format | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
-### Security warnings from OWASP Dependency Check Jenkins plugin
-
-| Parameter | Type | Mandatory | Help |
-| :-------- | :--- | :-------- | :--- |
-| Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
-| Severities | Multiple choice | No | If provided, only count security warnings with the selected severities. |
-| URL to Jenkins job | URL | Yes |  |
-| Username for basic authentication | String | No |  |
-
 ### Security warnings from OWASP ZAP
 
 | Parameter | Type | Mandatory | Help |
@@ -733,10 +729,13 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Branch (only supported by commercial SonarQube editions) | String | No | [https://docs.sonarqube.org/latest/branches/overview/](https://docs.sonarqube.org/latest/branches/overview/) |
 | Private token | Password | No | [https://docs.sonarqube.org/latest/user-guide/user-token/](https://docs.sonarqube.org/latest/user-guide/user-token/) |
 | Project key | String | Yes | The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right. |
-| Rules | Multiple choice with addition | No | [https://rules.sonarsource.com](https://rules.sonarsource.com) |
 | Severities | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/issues/](https://docs.sonarqube.org/latest/user-guide/issues/) |
 | Types | Multiple choice | No | [https://docs.sonarqube.org/latest/user-guide/rules/](https://docs.sonarqube.org/latest/user-guide/rules/) |
 | URL | URL | Yes | URL of the SonarQube instance, with port if necessary, but without path. For example, 'https://sonarcloud.io'. |
+
+| Configuration | Value |
+| :------------ | :---- |
+| Rules used to detect suppressed violations | csharpsquid:S1309, java:NoSonar, java:S1309, java:S1310, java:S1315, php:NoSonar, Pylint:I0011, Pylint:I0020, squid:NoSonar, squid:S1309, squid:S1310, squid:S1315 |
 
 ### Tests from Azure DevOps Server
 
@@ -776,6 +775,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Private token | Password | No |  |
 | Test result | Multiple choice | No | Limit which test results to count. Note: depending on which results are selected, the direction of the metric may need to be adapted. For example, when counting passed tests, more is better, but when counting failed tests, fewer is better. |
 | Transactions to ignore (regular expressions or transaction names) | Multiple choice with addition | No | Transactions to ignore can be specified by transaction name or by regular expression. |
+| Transactions to include (regular expressions or transaction names) | Multiple choice with addition | No | Transactions to include can be specified by transaction name or by regular expression. |
 | URL to a Performancetest-runner HTML report or a zip with Performancetest-runner HTML reports | URL | Yes |  |
 | Username for basic authentication | String | No |  |
 
@@ -973,6 +973,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
+| Jobs to include (regular expressions or job names) | Multiple choice with addition | No | Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Number of days without builds after which to consider CI-jobs unused. | Integer | No |  |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
 | URL | URL | Yes | URL of the Jenkins instance, with port if necessary, but without path. For example, 'https://jenkins.example.org'. |

@@ -207,8 +207,9 @@ def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, 
 
 def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict[str, Union[int, str]]:
     """Check the availability of the URL."""
+    # Allow for mal-configured sources:
     try:
-        response = requests.get(  # nosec
+        response = requests.get(  # noqa: DUO123, # nosec
             url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False)
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except

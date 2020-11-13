@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
+import { TrendTable } from './TrendTable';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
@@ -51,8 +52,20 @@ export function MeasurementDetails(props) {
   if (measurements.length > 0) {
     panes.push(
       {
-        menuItem: <Menu.Item key='trend'><FocusableTab>{'Trend'}</FocusableTab></Menu.Item>,
-        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} reload={reload} /></Tab.Pane>
+        menuItem: <Menu.Item key='trend_graph'><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,
+        render: () => <Tab.Pane><TrendGraph unit={capitalize(props.unit)} title={props.metric_name} measurements={measurements} {...props} /></Tab.Pane>
+      },
+      {
+        menuItem: <Menu.Item key='trend_table'><FocusableTab>{'Trend table'}</FocusableTab></Menu.Item>,
+        render: () => (
+          <Tab.Pane>
+            <TrendTable
+              data_model={props.datamodel} measurements={measurements} metric={metric} report_date={props.report_date}
+              scale={props.scale} setTrendTableInterval={props.setTrendTableInterval}
+              setTrendTableNrDates={props.setTrendTableNrDates} trendTableInterval={props.trendTableInterval}
+              trendTableNrDates={props.trendTableNrDates} unit={props.unit} />
+          </Tab.Pane>
+        )
       }
     );
     const last_measurement = measurements[measurements.length - 1];

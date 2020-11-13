@@ -16,8 +16,10 @@ def build_notification_text(text_parameters) -> str:
         name = metric["metric_name"]
         unit = metric["metric_unit"]
         unit = unit if unit.startswith("%") else f" {unit}"
+        new_value = '?' if metric["new_metric_value"] is None else metric["new_metric_value"]
+        old_value = '?' if metric["old_metric_value"] is None else metric["old_metric_value"]
         result += f'* {name} status is {metric["new_metric_status"]}, was {metric["old_metric_status"]}. ' \
-                  f'Value is {metric["new_metric_value"]}{unit}, was {metric["old_metric_value"]}{unit}.\n'
+                  f'Value is {new_value}{unit}, was {old_value}{unit}.\n'
     return result
 
 

@@ -11,11 +11,54 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Removed
+- Remove support for the source "OWASP Dependency Check Jenkins plugin". Fixes [#1666](https://github.com/ICTU/quality-time/issues/1666).
+
+### Fixed
+
+- In Microsoft Teams notifications, show missing values as "?" rather than "None". Fixes [#1637](https://github.com/ICTU/quality-time/issues/1637). 
+- Turn on processing of DTD's (despite the fact that security tools complain that this is insecure) because otherwise some XML reports (notably OJAudit) can't be read. Fixes [#1655](https://github.com/ICTU/quality-time/issues/1655). 
+- When using folders and/or files in GitLab as source for the 'source up-to-dateness' metric, *Quality-time* would use HEAD requests to get the ids of commits from GitLab. For issue [#1638](https://github.com/ICTU/quality-time/issues/1638), it was necessary to pass the private token as header instead of URL parameter. Unfortunately, this results in 403 (access forbidden) responses for HEAD requests. It's unclear why. Using GET requests instead does work, so we use that as a work-around. Fixes [#1656](https://github.com/ICTU/quality-time/issues/1656).
+
+## [3.13.0] - [2020-11-08]
+
+### Added
+
+- When using the Performancetest-runner as source for the 'slow transactions' or 'tests' metric, add a transactions-to-include parameter in addition to the transactions-to-ignore parameter to make it easier to select the relevant transactions. Closes [#1647](https://github.com/ICTU/quality-time/issues/1647).
+
+### Removed
+
+- The SonarQube rules that *Quality-time* uses to query SonarQube for the 'commented out code', 'complex units', 'long units', 'many parameters', and 'suppressed violations' metrics are no longer a parameter that the user can change. The reason is that it's hardly ever necessary to change these parameters and at the same time it's very easy to accidentally remove a rule and get incorrect results as a consequence. The used rules are documented in the [metrics and sources overview](METRICS_AND_SOURCES.md). Closes [#1648](https://github.com/ICTU/quality-time/issues/1648).
+
+### Changed
+
+- When using GitLab as source with a private token, pass the token to GitLab as header instead of URL parameter to prevent redirection. Closes [#1638](https://github.com/ICTU/quality-time/issues/1638).
+
+### Fixed
+
+- Introduce separate namespace for internal API's. Fixes [#1632](https://github.com/ICTU/quality-time/issues/1632).
+- When using the same Microsoft Teams webhook in multiple reports, notifications for one report could also contain metrics of other reports.
+
+## [3.12.0] - [2020-10-31]
+
+### Added
+
+- When a report has a Microsoft Teams webhook configured, in addition to sending notifications for metrics turned red (target not met), also send notifications when metrics turn white (error parsing source data or troubles connecting to source). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Add a trend table to each metric to see the trend of a metric in tabular form. The number of dates shown and the time between dates can be adjusted through the 'hamburger' menu in the table header. Closes [#1536](https://github.com/ICTU/quality-time/issues/1536).
+- When measuring with SonarQube as source, include the creation date and last update date of issues such as violations and security warnings in the metric details. Closes [#1564](https://github.com/ICTU/quality-time/issues/1564).
+- In addition to ignoring Jenkins jobs by name or regular expression, also allow for including Jenkins jobs by name or regular expression. Closes [#1596](https://github.com/ICTU/quality-time/issues/1596).
+
+### Fixed
+
+- When a source zip file doesn't contain any files with the expected extension, report an error instead of continuing with an empty list of files, because that may result in incorrect measurements. Fixes [#1618](https://github.com/ICTU/quality-time/issues/1618).
+
+## [3.11.0] - [2020-10-25]
+
 ### Added
 
 - Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [user manual](USAGE.md#generic-json-for-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
-- In the Microsoft Teams notifications, include which metric turned red. 
+- In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## [3.10.0] - [2020-10-18]
 

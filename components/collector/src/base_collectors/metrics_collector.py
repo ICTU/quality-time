@@ -41,6 +41,7 @@ async def post(session: aiohttp.ClientSession, api: URL, data) -> None:
 
 class MetricsCollector:
     """Collect measurements for all metrics."""
+
     API_VERSION = "v3"
 
     def __init__(self) -> None:
@@ -96,7 +97,7 @@ class MetricsCollector:
 
     async def collect_metrics(self, session: aiohttp.ClientSession, measurement_frequency: int) -> None:
         """Collect measurements for all metrics."""
-        metrics = await get(session, URL(f"{self.server_url}/api/{self.API_VERSION}/metrics"))
+        metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
         tasks = [self.collect_metric(session, metric_uuid, metric, next_fetch)
                  for metric_uuid, metric in metrics.items() if self.__can_and_should_collect(metric_uuid, metric)]
@@ -109,7 +110,7 @@ class MetricsCollector:
         self.next_fetch[metric_uuid] = next_fetch
         measurement = await self.collect_sources(session, metric)
         measurement["metric_uuid"] = metric_uuid
-        await post(session, URL(f"{self.server_url}/api/{self.API_VERSION}/measurements"), measurement)
+        await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
 
     async def collect_sources(self, session: aiohttp.ClientSession, metric):
         """Collect the measurements from the metric's sources."""
@@ -138,8 +139,10 @@ class MetricsCollector:
         return bool(sources)
 
     def __should_collect(self, metric_uuid: str, metric) -> bool:
-        """Return whether the metric should be collected, either because the user changed the configuration or because
-        it has been collected too long ago."""
+        """Return whether the metric should be collected.
+
+        Metric should be collected when the user changes the configuration or when it has been collected too long ago.
+        """
         metric_changed = self.last_parameters.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min) <= datetime.now()
         return metric_changed or metric_due

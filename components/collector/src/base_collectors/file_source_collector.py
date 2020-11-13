@@ -16,7 +16,8 @@ from .source_collector import SourceCollector
 
 
 class FakeResponse:
-    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly. """
+    """Fake a response because aiohttp.ClientResponse can not easily be instantiated directly."""
+
     status = HTTPStatus.OK
 
     def __init__(self, contents: bytes = bytes()) -> None:
@@ -57,6 +58,8 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         """Unzip the response content and return a (new) response for each applicable file in the zip archive."""
         with zipfile.ZipFile(io.BytesIO(await response.read())) as response_zipfile:
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
+            if not names:
+                raise LookupError(f"Zipfile contains no files with extension {' or '.join(cls.file_extensions)}")
             responses = [FakeResponse(response_zipfile.read(name)) for name in names]
         return cast(Responses, responses)
 

@@ -16,8 +16,11 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 
 
 class SourceCollector(ABC):
-    """Base class for source collectors. Source collectors are subclasses of this class that know how to collect the
-    measurement data for one specific metric from one specific source."""
+    """Base class for source collectors.
+
+    Source collectors are subclasses of this class that know how to collect the
+    measurement data for one specific metric from one specific source.
+    """
 
     API_URL_PARAMETER_KEY = "url"
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
@@ -34,8 +37,11 @@ class SourceCollector(ABC):
 
     @classmethod
     def get_subclass(cls, source_type: str, metric_type: str) -> Type["SourceCollector"]:
-        """Return the subclass registered for the source/metric name. First try to find a match on both source type
-        and metric type. If no match is found, return the generic collector for the source type."""
+        """Return the subclass registered for the source/metric name.
+
+        First try to find a match on both source type and metric type. If no match is found, return the generic
+        collector for the source type.
+        """
         for class_name in (f"{source_type}{metric_type}", source_type):
             matching_subclasses = [sc for sc in cls.subclasses if sc.__name__.lower() == class_name.replace("_", "")]
             if matching_subclasses:
@@ -65,11 +71,11 @@ class SourceCollector(ABC):
             return urllib.parse.quote(parameter_value, safe="") if quote else parameter_value
 
         parameter_info = self._data_model["sources"][self.source_type]["parameters"][parameter_key]
-        if "values" in parameter_info and parameter_info["type"].startswith("multiple_choice"):
+        if parameter_info["type"] == "multiple_choice":
+            # If the user didn't pick any values, select all values:
             value = self.__parameters.get(parameter_key) or parameter_info["values"]
-            if parameter_info["type"] == "multiple_choice":
-                # Ensure all values picked by the user are still allowed. Remove any values that are no longer allowed:
-                value = [v for v in value if v in parameter_info["values"]] or parameter_info["values"]
+            # Ensure all values picked by the user are still allowed. Remove any values that are no longer allowed:
+            value = [v for v in value if v in parameter_info["values"]]
         else:
             default_value = parameter_info.get("default_value", "")
             value = self.__parameters.get(parameter_key) or default_value
@@ -80,8 +86,11 @@ class SourceCollector(ABC):
         return quote_if_needed(value) if isinstance(value, str) else [quote_if_needed(v) for v in value]
 
     async def __safely_get_source_responses(self) -> SourceResponses:
-        """Connect to the source and get the data, without failing. This method should not be overridden
-        because it makes sure the collection of source data never causes the collector to fail."""
+        """Connect to the source and get the data, without failing.
+
+        This method should not be overridden because it makes sure the collection of source data never causes the
+        collector to fail.
+        """
         api_url = safe_api_url = self.__class__.__name__
         try:
             api_url = await self._api_url()
@@ -90,12 +99,17 @@ class SourceCollector(ABC):
             logging.info("Retrieved %s", safe_api_url)
             return responses
         except aiohttp.ClientError as reason:
-            error = tokenless(str(reason)) if str(reason) else reason.__class__.__name__
+            error = self.__logsafe_exception(reason)
             logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except
             error = stable_traceback(traceback.format_exc())
-            logging.error("Failed to retrieve %s: %s", safe_api_url, reason)
+            logging.error("Failed to retrieve %s: %s", safe_api_url, self.__logsafe_exception(reason))
         return SourceResponses(api_url=URL(api_url), connection_error=error)
+
+    @staticmethod
+    def __logsafe_exception(exception: Exception) -> str:
+        """Return a log-safe version of the exception."""
+        return tokenless(str(exception)) if str(exception) else exception.__class__.__name__
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
@@ -121,8 +135,11 @@ class SourceCollector(ABC):
         return {}
 
     async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Parse the data from the responses, without failing. This method should not be overridden because it
-        makes sure that the parsing of source data never causes the collector to fail."""
+        """Parse the data from the responses, without failing.
+
+        This method should not be overridden because it makes sure that the parsing of source data never causes the
+        collector to fail.
+        """
         if responses.connection_error:
             measurement = SourceMeasurement(total=None)
         else:
@@ -134,21 +151,29 @@ class SourceCollector(ABC):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Parse the responses to get the measurement value, the total value, and the entities for the metric.
-        This method should be overridden by collectors to parse the retrieved sources data."""
+
+        This method should be overridden by collectors to parse the retrieved sources data.
+        """
         # pylint: disable=no-self-use,unused-argument
         raise NotImplementedError
 
     async def __safely_parse_landing_url(self, responses: SourceResponses) -> URL:
-        """Parse the responses to get the landing url, without failing. This method should not be overridden because
-        it makes sure that the parsing of source data never causes the collector to fail."""
+        """Parse the responses to get the landing url, without failing.
+
+        This method should not be overridden because it makes sure that the parsing of source data never causes the
+        collector to fail.
+        """
         try:
             return await self._landing_url(responses)
         except Exception:  # pylint: disable=broad-except
             return await self._api_url()
 
     async def _landing_url(self, responses: SourceResponses) -> URL:  # pylint: disable=unused-argument
-        """Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
-        a default landing url."""
+        """Return a user-friendly landing url.
+
+        Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
+        a default landing url.
+        """
         if landing_url := cast(str, self.__parameters.get("landing_url", "")).rstrip("/"):
             return URL(landing_url)
         url = cast(str, self.__parameters.get(self.API_URL_PARAMETER_KEY, "")).rstrip("/")
@@ -159,6 +184,7 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
     """Base class for unmerged branches source collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
         entities = [
             Entity(
                 key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
@@ -183,12 +209,14 @@ class SourceUpToDatenessCollector(SourceCollector):
     """Base class for source up-to-dateness collectors."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the datetime from the parse data time method that subclasses should implement."""
         date_times = await self._parse_source_response_date_times(responses)
         return SourceMeasurement(value=str(days_ago(min(date_times))))
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
+        """Parse the source update datetimes from the responses and return the datetimes."""
         return await asyncio.gather(*[self._parse_source_response_date_time(response) for response in responses])
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        """Parse the date time from the source."""
+        """Parse the datetime from the source."""
         raise NotImplementedError  # pragma: no cover

@@ -91,7 +91,7 @@ it('moves a metric when the move button is clicked and a metric is selected', as
       </ReadOnlyContext.Provider>)
     fireEvent.click(screen.getByText(/Move metric/));
   });
-  await act(async() => {
+  await act(async () => {
     fireEvent.click(screen.getByText(/Subject 2 title/));
   })
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {});

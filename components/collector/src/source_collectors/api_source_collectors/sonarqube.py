@@ -34,7 +34,7 @@ class SonarQubeCollector(SourceCollector):
 class SonarQubeViolations(SonarQubeCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
-    rules_parameter = ""  # Subclass responsibility
+    rules_configuration = ""  # Subclass responsibility
     types_parameter = "types"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -56,7 +56,8 @@ class SonarQubeViolations(SonarQubeCollector):
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = self._parameter(self.rules_parameter) if self.rules_parameter else []
+        rules = self._data_model["sources"][self.source_type]["configuration"][self.rules_configuration]["value"] \
+            if self.rules_configuration else []
         return f"&rules={','.join(rules)}" if rules else ""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -83,7 +84,9 @@ class SonarQubeViolations(SonarQubeCollector):
             message=issue["message"],
             severity=issue.get("severity", "no severity").lower(),
             type=issue["type"].lower(),
-            component=issue["component"])
+            component=issue["component"],
+            creation_date=issue["creationDate"],
+            update_date=issue["updateDate"])
 
     def _violation_types(self) -> str:
         """Return the violation types."""
@@ -101,7 +104,7 @@ class SonarQubeCommentedOutCode(SonarQubeViolations):
     # so we can't compute a percentage of commented out code. And hence this collector is not a subclass of
     # SonarQubeViolationsWithPercentageScale.
 
-    rules_parameter = "commented_out_rules"
+    rules_configuration = "commented_out_rules"
 
 
 class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
@@ -131,32 +134,35 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
 class SonarQubeComplexUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube complex methods/functions collector."""
 
-    rules_parameter = "complex_unit_rules"
+    rules_configuration = "complex_unit_rules"
     total_metric = "functions"
 
 
 class SonarQubeLongUnits(SonarQubeViolationsWithPercentageScale):
     """SonarQube long methods/functions collector."""
 
-    rules_parameter = "long_unit_rules"
+    rules_configuration = "long_unit_rules"
     total_metric = "functions"
 
 
 class SonarQubeManyParameters(SonarQubeViolationsWithPercentageScale):
     """SonarQube many parameters collector."""
 
-    rules_parameter = "many_parameter_rules"
+    rules_configuration = "many_parameter_rules"
     total_metric = "functions"
 
 
 class SonarQubeSuppressedViolations(SonarQubeViolations):
     """SonarQube suppressed violations collector."""
 
-    rules_parameter = "suppression_rules"
+    rules_configuration = "suppression_rules"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
-        as well as the total number of violations."""
+        """Get the suppressed violations from SonarQube.
+
+        In addition to the suppressed rules, also get issues closed as false positive and won't fix from SonarQube
+        as well as the total number of violations.
+        """
         url = await SourceCollector._api_url(self)  # pylint: disable=protected-access
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -230,13 +236,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
 
     async def __entity(self, hotspot) -> Entity:
+        """Create the security warning entity."""
         return Entity(
-            key=hotspot["key"],
-            component=hotspot["component"],
-            message=hotspot["message"],
-            type="security_hotspot",
+            key=hotspot["key"], component=hotspot["component"], message=hotspot["message"], type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
-            vulnerability_probability=hotspot["vulnerabilityProbability"].lower())
+            vulnerability_probability=hotspot["vulnerabilityProbability"].lower(),
+            creation_date=hotspot["creationDate"], update_date=hotspot["updateDate"])
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""
@@ -350,8 +355,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         return await super()._entities(metrics)
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
-        """Return the languages and non-commented lines of code per language, skipping languages the user wants to
-        ignore."""
+        """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = self._parameter("languages_to_ignore")
         return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
                 if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]

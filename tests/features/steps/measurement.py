@@ -10,7 +10,7 @@ from sseclient import SSEClient
 @when("the collector gets the metrics to measure")
 def get_metrics(context):
     """Get the metrics to measure from the server."""
-    context.get("metrics")
+    context.get("metrics", internal=True)
 
 
 @when('the collector measures "{number}"')
@@ -28,7 +28,8 @@ def measure(context, number, total="100"):
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total=total, entities=entities)]))
+                     total=total, entities=entities)]),
+        internal=True)
 
 
 @when("the collector encounters a parse error")
@@ -40,7 +41,8 @@ def parse_error(context):
             metric_uuid=context.uuid["metric"],
             sources=[
                 dict(source_uuid=context.uuid["source"], parse_error="Parse error", connection_error=None, value=None,
-                     total=None, entities=[])]))
+                     total=None, entities=[])]),
+        internal=True)
 
 
 @when('the client sets the {attribute} of entity {key} to "{value}"')
@@ -55,7 +57,7 @@ def set_entity_attribute(context, attribute, key, value):
 def connect_to_nr_of_measurements_stream(context, stream):
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
-    for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no cover-behave
+    for message in SSEClient(f"{context.base_api_url.format('')}/nr_measurements"):  # pragma: no cover-behave
         context.sse_messages.append(message)
         if stream == "stream":
             break

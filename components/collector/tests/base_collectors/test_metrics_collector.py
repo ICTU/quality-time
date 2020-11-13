@@ -34,7 +34,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics_collector = MetricsCollector()
         self.metrics_collector.data_model = self.data_model
         self.url = "https://url"
-        self.measurement_api_url = "http://localhost:5001/api/v3/measurements"
+        self.measurement_api_url = "http://localhost:5001/internal-api/v3/measurements"
         self.metrics = dict(
             metric_uuid=dict(
                 addition="sum", type="metric",
@@ -88,8 +88,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("aiohttp.ClientSession.post")
     async def test_fetch_with_empty_client_error(self, mocked_post):
-        """Test fetching measurement when getting measurements fails with an 'empty' exception, i.e. an exception that
-        returns an empty string when converted to string."""
+        """Test fetching measurement when getting measurements fails with an 'empty' exception.
+
+        This can happen when an exception returns an empty string when converted to string.
+        """
         mock_async_get_request = AsyncMock()
         mock_async_get_request.close = Mock()
         mock_async_get_request.json.return_value = self.metrics
@@ -174,8 +176,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     @patch("aiohttp.ClientSession.post")
     async def test_missing_mandatory_parameter_with_default_value(self, mocked_post):
-        """Test that a metric with sources and a missing mandatory parameter, but with a default value, is not
-        skipped."""
+        """Test that a metric with sources and a missing mandatory parameter that has a default value is not skipped."""
         self.data_model["sources"]["source"]["parameters"]["token"] = dict(
             default_value="xxx", mandatory=True, metrics=["metric"])
         mock_async_get_request = AsyncMock()

@@ -107,6 +107,21 @@ def metric_source_table(dm, metric_key, source_key) -> str:
     return markdown
 
 
+def metric_source_configuration_table(dm, metric_key, source_key) -> str:
+    """Return the metric source combination's configuration as Markdown table."""
+    configurations = dm["sources"][source_key].get("configuration", {}).values()
+    relevant_configurations = [config for config in configurations if metric_key in config["metrics"]]
+    if not relevant_configurations:
+        return ""
+    markdown = markdown_table_header("Configuration", "Value")
+    for configuration in sorted(relevant_configurations, key=lambda config: config["name"]):
+        name = configuration["name"]
+        values = ", ".join(sorted(configuration["value"], key=lambda value: value.lower()))
+        markdown += markdown_table_row(name, values)
+    markdown += "\n"
+    return markdown
+
+
 def data_model_as_table(dm) -> str:
     """Return the data model as Markdown table."""
     markdown = markdown_header("Quality-time metrics and sources")
@@ -125,6 +140,7 @@ def data_model_as_table(dm) -> str:
             if source_key not in universal_sources:
                 markdown += markdown_header(f"{metric['name']} from {dm['sources'][source_key]['name']}", 3)
                 markdown += metric_source_table(dm, metric_key, source_key)
+                markdown += metric_source_configuration_table(dm, metric_key, source_key)
     return markdown
 
 

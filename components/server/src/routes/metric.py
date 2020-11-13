@@ -15,7 +15,7 @@ from server_utilities.functions import sanitize_html, uuid
 from server_utilities.type import MetricId, SubjectId
 
 
-@bottle.get("/api/v3/metrics")
+@bottle.get("/internal-api/v3/metrics")
 def get_metrics(database: Database):
     """Get all metrics."""
     metrics: Dict[str, Any] = {}
