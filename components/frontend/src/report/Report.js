@@ -6,7 +6,7 @@ import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { set_report_attribute } from '../api/report';
-import { get_subject_name } from '../utils';
+import { get_subject_name, useURLSearchQuery } from '../utils';
 import { ReportTitle } from './ReportTitle';
 
 function ReportDashboard(props) {
@@ -62,6 +62,7 @@ export function Report(props) {
         // Make sure we only filter by tags that are actually used in this report
         setTags(prev_tags => prev_tags.filter(tag => Object.keys(props.report.summary_by_tag || {}).includes(tag)))
     }, [props.report]);
+    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery(props.history, "hidden_columns", "array");
 
     if (!props.report) {
         return <ReportErrorMessage report_date={props.report_date} />
@@ -75,7 +76,13 @@ export function Report(props) {
                 tags={tags}
                 {...props}
             />
-            <Subjects tags={tags} {...props} />
+            <Subjects
+                clearHiddenColumns={clearHiddenColumns}
+                hiddenColumns={hiddenColumns}
+                tags={tags}
+                toggleHiddenColumn={toggleHiddenColumn}
+                {...props}
+            />
         </div>
     )
 }
