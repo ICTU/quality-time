@@ -21,7 +21,7 @@ function ReportDashboard(props) {
         );
     }
     function tag_cards() {
-        return Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
+        return props.hideTags ? [] : Object.entries(props.report.summary_by_tag).map(([tag, summary]) =>
             <MetricSummaryCard
                 header={<Tag tag={tag} color={props.tags.includes(tag) ? "blue" : null} />}
                 key={tag}
@@ -72,6 +72,7 @@ export function Report(props) {
             <ReportTitle {...props} />
             <ReportDashboard
                 onClick={(e, s) => navigate_to_subject(e, s)}
+                hideTags={hiddenColumns.includes("tags")}
                 setTags={setTags}
                 tags={tags}
                 {...props}
