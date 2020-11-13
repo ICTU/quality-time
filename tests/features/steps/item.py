@@ -74,8 +74,7 @@ def get_item(context, item):
             if item == "notification_destination":
                 item_instance = item_instance["notification_destinations"][context.uuid["notification_destination"]]
                 return item_instance
-            else:
-                item_instance = item_instance["subjects"][context.uuid["subject"]]
+            item_instance = item_instance["subjects"][context.uuid["subject"]]
             if item != "subject":
                 item_instance = item_instance["metrics"][context.uuid["metric"]]
                 if item != "metric":
