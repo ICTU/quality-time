@@ -7,7 +7,7 @@ Feature: notification destinations
 
   Scenario: add notification destination
     When the client adds a new notification destination
-    Then the notification_destination name is "new"
+    Then the notification_destination name is "New Microsoft Teams webhook"
 
   Scenario: change notification destination name
     Given a notification destination
