@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Final, NoReturn, cast
+from typing import Dict, Final, NoReturn, cast
 
 import aiohttp
 
@@ -21,10 +21,11 @@ async def notify(log_level: int = None) -> NoReturn:
     sleep_duration = int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
     server_host = os.environ.get('SERVER_HOST', 'localhost')
     server_port = os.environ.get('SERVER_PORT', '5001')
-    reports_url = f"http://{server_host}:{server_port}/api/v3/reports"
+    api_version = "v3"
+    reports_url = f"http://{server_host}:{server_port}/api/{api_version}/reports"
     most_recent_measurement_seen = datetime.max.isoformat()
 
-    data_model = await retrieve_data_model()
+    data_model = await retrieve_data_model(api_version)
 
     while True:
         record_health()
@@ -37,23 +38,23 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
 
-        notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        for notification in notifications:
-            destination = str(notification["teams_webhook"])
-            text = build_notification_text(notification)
-            send_notification_to_teams(destination, text)
+        for notification in get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen):
+            for configuration in cast(Dict, notification["notification_destinations"]).values():
+                if configuration["teams_webhook"]:
+                    send_notification_to_teams(
+                        str(configuration["teams_webhook"]), build_notification_text(notification))
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
 
 
-async def retrieve_data_model():
+async def retrieve_data_model(api_version: str) -> JSON:
     """Retrieve data model from server."""
     max_sleep_duration = 60  # Make an environment variable
     timeout = aiohttp.ClientTimeout(total=120)
     async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, trust_env=True) as session:
-        data_model = await fetch_data_model(session, max_sleep_duration)
+        data_model = await fetch_data_model(session, max_sleep_duration, api_version)
     return data_model
 
 
@@ -77,13 +78,12 @@ def most_recent_measurement_timestamp(json) -> str:
     return most_recent
 
 
-async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
+async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int, api_version: str) -> JSON:
     """Fetch the data model."""
     # The first attempt is likely to fail because the collector starts up faster than the server,
     # so don't log tracebacks on the first attempt
     server_url: Final[URL] = \
         URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
-    api_version = "v3"
 
     first_attempt = True
     data_model_url = URL(f"{server_url}/api/{api_version}/datamodel")

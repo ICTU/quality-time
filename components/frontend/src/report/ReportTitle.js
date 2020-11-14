@@ -1,12 +1,12 @@
 import React from 'react';
-import { Grid, Icon } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { StringInput } from '../fields/StringInput';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { HyperLink } from '../widgets/HyperLink';
+import { NotificationDestinations } from '../notification/NotificationDestinations';
 
 export function ReportTitle(props) {
     const report_uuid = props.report.report_uuid;
@@ -45,24 +45,7 @@ export function ReportTitle(props) {
             </Grid.Row>
         )
     }
-    function NotifierRow() {
-        const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
-        const label = <label>Microsoft Teams webhook <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>;
-        return (
-            <Grid.Row>
-                <Grid.Column>
-                    <StringInput
-                        label={label}
-                        set_value={(value) => {
-                            set_report_attribute(report_uuid, "teams_webhook", value, props.reload).then(
-                            set_report_attribute(report_uuid, "url", window.location.href, props.reload))
-                        }}
-                        value={props.report.teams_webhook}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-        )
-    }
+
     function ChangeLogRow() {
         return (
             <Grid.Row>
@@ -76,7 +59,7 @@ export function ReportTitle(props) {
         <HeaderWithDetails level="h1" header={props.report.title} subheader={props.report.subtitle}>
             <Grid stackable>
                 <ReportAttributesRow />
-                <NotifierRow />
+                <NotificationDestinations destinations={props.report.notification_destinations || {}} report_uuid={report_uuid} reload={props.reload} />
                 <ChangeLogRow />
                 <ButtonRow />
             </Grid>

@@ -2,12 +2,13 @@
 
 from typing import cast
 
-from server_utilities.type import MetricId, ReportId, SourceId, SubjectId
+from server_utilities.type import MetricId, ReportId, SourceId, SubjectId, NotificationDestinationId
 
 METRIC_ID = cast(MetricId, "metric_uuid")
 METRIC_ID2 = cast(MetricId, "metric_uuid2")
 METRIC_ID3 = cast(MetricId, "metric_uuid3")
 METRIC_ID4 = cast(MetricId, "metric_uuid4")
+NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination_uuid")
 REPORT_ID = cast(ReportId, "report_uuid")
 REPORT_ID2 = cast(ReportId, "report_uuid2")
 SOURCE_ID = cast(SourceId, "source_uuid")
@@ -49,4 +50,9 @@ def create_report():
                                 name="Source",
                                 parameters=dict(
                                     url="https://url",
-                                    password="password"))})})})
+                                    password="password"))})})},
+        notification_destinations={
+            NOTIFICATION_DESTINATION_ID: dict(
+                teams_webhook="",
+                name="notification_destination",
+                url="https://reporturl")})

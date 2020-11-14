@@ -85,12 +85,13 @@ class StrategiesTestCase(unittest.TestCase):
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(
-            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
-            subjects=dict(subject1=subject1))
+            title="Title", report_uuid="report1", url=self.report_url,
+            subjects=dict(subject1=subject1),
+            notification_destinations=dict(name="destination1"))
         reports_json = dict(reports=[report1])
         self.assertEqual(
             [dict(
-                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
+                report_uuid="report1", report_title="Title", url=self.report_url,
                 metrics=[dict(
                     metric_type="tests",
                     metric_name="metric1",
@@ -99,7 +100,8 @@ class StrategiesTestCase(unittest.TestCase):
                     new_metric_value="10",
                     old_metric_status=self.green_metric_status,
                     old_metric_value="5"
-                )])],
+                )],
+                notification_destinations=dict(name="destination1"))],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
 
     def test_new_red_metric_without_count_scale(self):
@@ -113,12 +115,13 @@ class StrategiesTestCase(unittest.TestCase):
                 dict(start=self.second_timestamp, end=self.second_timestamp, percentage=new_percentage)])
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(
-            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
-            subjects=dict(subject1=subject1))
+            title="Title", report_uuid="report1", url=self.report_url,
+            subjects=dict(subject1=subject1),
+            notification_destinations=dict(name="destination1"))
         reports_json = dict(reports=[report1])
         self.assertEqual(
             [dict(
-                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
+                report_uuid="report1", report_title="Title", url=self.report_url,
                 metrics=[dict(
                     metric_type="tests",
                     metric_name="Tests",
@@ -127,7 +130,8 @@ class StrategiesTestCase(unittest.TestCase):
                     new_metric_value="10",
                     old_metric_status=self.green_metric_status,
                     old_metric_value="5"
-                )])],
+                )],
+                notification_destinations=dict(name="destination1"))],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
 
     def test_new_white_metric(self):
@@ -165,28 +169,31 @@ class StrategiesTestCase(unittest.TestCase):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
         old_count = dict(status="target_met", value="5")
         new_count = dict(status="target_not_met", value="10")
+
         red_metric1 = self.metric(
             status="target_not_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
+        subject1 = dict(metrics=dict(metric1=red_metric1))
+        report1 = dict(
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
+            subjects=dict(subject1=subject1), notification_destinations=dict(name="destination1"))
+
         red_metric2 = self.metric(
             name="metric2", status="target_met",
             recent_measurements=[
                 dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
                 dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
-        subject1 = dict(metrics=dict(metric1=red_metric1))
         subject2 = dict(metrics=dict(metric1=red_metric2))
-        report1 = dict(
-            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
-            subjects=dict(subject1=subject1))
         report2 = dict(
             title="Title", report_uuid="report2", teams_webhook="webhook", url="https://report2",
-            subjects=dict(subject1=subject2))
+            subjects=dict(subject1=subject2), notification_destinations=dict(name="destination2"))
+
         reports_json = dict(reports=[report1, report2])
         self.assertEqual(
             [dict(
-                report_uuid="report1", report_title="Title", teams_webhook="webhook", url=self.report_url,
+                report_uuid="report1", report_title="Title", url=self.report_url,
                 metrics=[dict(
                     metric_type="tests",
                     metric_name="metric1",
@@ -195,5 +202,40 @@ class StrategiesTestCase(unittest.TestCase):
                     new_metric_value="10",
                     old_metric_status=self.green_metric_status,
                     old_metric_value="5"
-                )])],
+                )],
+                notification_destinations=dict(name="destination1"))],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
+
+    def test_no_notification_destinations_configured(self):
+        """Test that no notification is to be send if there are no configurations in notification destinations."""
+        old_count = dict(status="target_met", value="5")
+        new_count = dict(status="target_not_met", value="10")
+        red_metric = self.metric(name="metric1", status="target_not_met", recent_measurements=[
+            dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
+            dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
+        subject1 = dict(metrics=dict(metric1=red_metric))
+        report = dict(
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
+            subjects=dict(subject1=subject1), notification_destinations={})
+        report_json = dict(reports=[report])
+        self.assertEqual(
+            [],
+            get_notable_metrics_from_json(self.data_model, report_json, self.most_recent_measurement_seen)
+        )
+
+    def test_no_notification_destinations_in_json(self):
+        """Test that no notification is to be send if notification destinations doesnt exist in the data."""
+        old_count = dict(status="target_met", value="5")
+        new_count = dict(status="target_not_met", value="10")
+        red_metric = self.metric(name="metric1", status="target_not_met", recent_measurements=[
+            dict(start=self.first_timestamp, end=self.second_timestamp, count=old_count),
+            dict(start=self.second_timestamp, end=self.second_timestamp, count=new_count)])
+        subject1 = dict(metrics=dict(metric1=red_metric))
+        report = dict(
+            title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
+            subjects=dict(subject1=subject1))
+        report_json = dict(reports=[report])
+        self.assertEqual(
+            [],
+            get_notable_metrics_from_json(self.data_model, report_json, self.most_recent_measurement_seen)
+        )

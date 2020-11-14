@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - When hiding the tags column, also hide the tag pie charts in the report dashboard. Closes [#1595](https://github.com/ICTU/quality-time/issues/1595).
+- Allow for adding more than one Microsoft Teams webhook to a report so notifications can be sent to more than one channel.
 
 ### Removed
 

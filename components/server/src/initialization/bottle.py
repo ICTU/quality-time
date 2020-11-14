@@ -8,7 +8,7 @@ from routes.plugins import AuthenticationPlugin, InjectionPlugin
 # isort: off
 # pylint: disable=unused-import
 from routes import (  # lgtm [py/unused-import]
-    auth, changelog, datamodel, documentation, measurement, metric, report, reports, source, subject)
+    auth, changelog, datamodel, documentation, measurement, metric, notification, report, reports, source, subject)
 # isort: on
 
 
