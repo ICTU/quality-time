@@ -15,13 +15,18 @@ const notification_destinations= {
     }
 };
 
+function render_notification_destinations(destionations) {
+  render(
+    <ReadOnlyContext.Provider value={false}>
+      <NotificationDestinations destinations={destionations} report_uuid={"report_uuid"} reload={() => {}}/>
+    </ReadOnlyContext.Provider>
+  )
+}
+
 it('creates the first notification destination when the add notification destination button is clicked', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
-    render(
-      <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={{}} report_uuid={"report_uuid"} reload={() => {}}/>
-      </ReadOnlyContext.Provider>);
+    render_notification_destinations({})
   });
   await act(async () => {
     fireEvent.click(screen.getByText(/Add notification destination/));
@@ -32,10 +37,7 @@ it('creates the first notification destination when the add notification destina
 it('creates a new notification destination when the add notification destination button is clicked', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
-    render(
-      <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={notification_destinations} report_uuid={"report_uuid"} reload={() => {}}/>
-      </ReadOnlyContext.Provider>);
+    render_notification_destinations(notification_destinations)
   });
   await act(async () => {
     fireEvent.click(screen.getByText(/Add notification destination/));
@@ -46,10 +48,7 @@ it('creates a new notification destination when the add notification destination
 it('edits notification destination attribute when it is changed in the input field', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
-    render(
-      <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={notification_destinations} report_uuid={"report_uuid"} reload={() => {}}/>
-      </ReadOnlyContext.Provider>);
+    render_notification_destinations(notification_destinations)
   });
   userEvent.type(screen.getByLabelText(/Name/), ' changed{enter}');
 
@@ -59,10 +58,7 @@ it('edits notification destination attribute when it is changed in the input fie
 it('edits multiple notification destination attributes when they are changed in the input fields', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
-    render(
-      <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={notification_destinations} report_uuid={"report_uuid"} reload={() => {}}/>
-      </ReadOnlyContext.Provider>);
+    render_notification_destinations(notification_destinations)
   });
   userEvent.type(screen.getByPlaceholderText(/url/), 'new.webhook.com{enter}');
 
@@ -72,10 +68,7 @@ it('edits multiple notification destination attributes when they are changed in 
 it('removes the notification destination when the delete notification destination button is clicked', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
-    render(
-      <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations destinations={notification_destinations} report_uuid={"report_uuid"} reload={() => {}}/>
-      </ReadOnlyContext.Provider>);
+    render_notification_destinations(notification_destinations)
   });
   await act(async () => {
     fireEvent.click(screen.getByText(/Delete notification destination/));
