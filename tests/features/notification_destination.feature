@@ -18,3 +18,9 @@ Feature: notification destinations
     Given a notification destination
     When the client deletes the notification_destination
     Then the notification_destination does not exist
+
+  Scenario: Add two notification destinations
+    Given a notification destination
+    When the client changes the notification_destination name to "New name"
+    And the client adds a new notification destination
+    Then the notification_destination name is "New Microsoft Teams webhook"
