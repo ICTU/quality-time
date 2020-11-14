@@ -14,6 +14,11 @@ Feature: notification destinations
     When the client changes the notification_destination name to "New name"
     Then the notification_destination name is "New name"
 
+  Scenario: change notification destination name to the same value
+    Given a notification destination
+    When the client changes the notification_destination name to "New Microsoft Teams webhook"
+    Then the notification_destination name is "New Microsoft Teams webhook"
+
   Scenario: Delete notification destination
     Given a notification destination
     When the client deletes the notification_destination
