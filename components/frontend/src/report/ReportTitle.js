@@ -6,7 +6,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { NotificationDestinations } from '../notifications/NotificationDestinations';
+import { NotificationDestinations } from '../notification/NotificationDestinations';
 
 export function ReportTitle(props) {
     const report_uuid = props.report.report_uuid;
@@ -59,7 +59,7 @@ export function ReportTitle(props) {
         <HeaderWithDetails level="h1" header={props.report.title} subheader={props.report.subtitle}>
             <Grid stackable>
                 <ReportAttributesRow />
-                <NotificationDestinations destinations={props.report.notification_destinations} report_uuid={report_uuid} reload={props.reload} />
+                <NotificationDestinations destinations={props.report.notification_destinations || {}} report_uuid={report_uuid} reload={props.reload} />
                 <ChangeLogRow />
                 <ButtonRow />
             </Grid>

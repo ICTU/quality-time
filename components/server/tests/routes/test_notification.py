@@ -1,4 +1,4 @@
-"""Unit tests for the subject routes."""
+"""Unit tests for the notification routes."""
 
 import unittest
 from unittest.mock import Mock, patch
@@ -9,8 +9,8 @@ from routes.notification import (
 from ..fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
 
 @patch("bottle.request")
-class PostSubjectAttributeTest(unittest.TestCase):
-    """Unit tests for the post notification destination attribute route."""
+class PostNotificationAttributesTest(unittest.TestCase):
+    """Unit tests for the post notification destination attributes route."""
 
     def setUp(self):
         """Define variables that are used in multiple tests."""

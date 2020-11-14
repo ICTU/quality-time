@@ -20,7 +20,7 @@ it('creates the first notification destination when the add notification destina
   await act(async () => {
     render(
       <ReadOnlyContext.Provider value={false}>
-        <NotificationDestinations report_uuid={"report_uuid"} reload={() => {}}/>
+        <NotificationDestinations destinations={{}} report_uuid={"report_uuid"} reload={() => {}}/>
       </ReadOnlyContext.Provider>);
   });
   await act(async () => {

@@ -184,7 +184,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         mocked_get.side_effect = [Exception]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
-            await retrieve_data_model()
+            await retrieve_data_model("v3")
         except RuntimeError:
             pass
         self.assertEqual(2, mocked_log_warning.call_count)

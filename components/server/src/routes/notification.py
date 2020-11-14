@@ -1,4 +1,4 @@
-"""notification routes."""
+"""Notification routes."""
 
 import bottle
 from pymongo.database import Database
@@ -12,8 +12,7 @@ from server_utilities.type import ReportId, NotificationDestinationId
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/new")
-def post_new_notification_destination(report_uuid: ReportId,
-                                      database: Database):
+def post_new_notification_destination(report_uuid: ReportId, database: Database):
     """Create a new notification destination."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
@@ -21,7 +20,7 @@ def post_new_notification_destination(report_uuid: ReportId,
     if "notification_destinations" not in data.report:
         data.report["notification_destinations"] = {}
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = \
-        dict(teams_webhook="", name="new")
+        dict(teams_webhook="", name="New Microsoft Teams webhook")
 
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -34,9 +33,8 @@ def post_new_notification_destination(report_uuid: ReportId,
 
 
 @bottle.delete("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>")
-def delete_notification_destination(report_uuid: ReportId,
-                                    notification_destination_uuid: NotificationDestinationId,
-                                    database: Database):
+def delete_notification_destination(
+        report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database):
     """Delete a destination from a report."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
@@ -51,9 +49,8 @@ def delete_notification_destination(report_uuid: ReportId,
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes")
-def post_notification_destination_attributes(report_uuid: ReportId,
-                                             notification_destination_uuid: NotificationDestinationId,
-                                             database: Database):
+def post_notification_destination_attributes(
+        report_uuid: ReportId, notification_destination_uuid: NotificationDestinationId, database: Database):
     """Set specified notification destination attributes."""
     data_model = latest_datamodel(database)
     reports = latest_reports(database)

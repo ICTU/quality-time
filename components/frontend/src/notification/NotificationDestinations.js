@@ -6,7 +6,7 @@ import { add_notification_destination, delete_notification_destination, set_noti
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { HyperLink } from '../widgets/HyperLink';
 
-function NotificationDestination({report_uuid, destination_uuid, destination, reload}){
+function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {
     const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
     const label = <label>Microsoft Teams webhook <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>;
     return (
@@ -18,7 +18,7 @@ function NotificationDestination({report_uuid, destination_uuid, destination, re
                             id={destination_uuid}
                             label='Name'
                             set_value={(value) => {
-                                set_notification_destination_attributes(report_uuid, destination_uuid, {name: value}, reload)
+                                set_notification_destination_attributes(report_uuid, destination_uuid, { name: value }, reload)
                             }}
                             value={destination.name}
                         />
@@ -28,7 +28,7 @@ function NotificationDestination({report_uuid, destination_uuid, destination, re
                             placeholder="url"
                             label={label}
                             set_value={(value) => {
-                                set_notification_destination_attributes(report_uuid, destination_uuid, {teams_webhook: value, url: window.location.href}, reload)
+                                set_notification_destination_attributes(report_uuid, destination_uuid, { teams_webhook: value, url: window.location.href }, reload)
                             }}
                             value={destination.teams_webhook}
                         />
@@ -49,30 +49,26 @@ function NotificationDestination({report_uuid, destination_uuid, destination, re
     )
 }
 
-export function NotificationDestinations({destinations, report_uuid, reload}) {
-    const result = [];
-    if(destinations){
-        Object.entries(destinations).forEach(([destination_uuid, destination]) => {
-            result.push(
-                <NotificationDestination key={destination_uuid} report_uuid={report_uuid} destination_uuid={destination_uuid} destination={destination} reload={reload}/>
-            )
-        })
-    }
-    result.push(
-        <ReadOnlyOrEditable key="1" editableComponent={
-            <Segment vertical>
-                <AddButton
-                    item_type="notification destination"
-                    report_uuid={report_uuid}
-                    onClick={() => add_notification_destination(report_uuid, reload)}
-                />
-            </Segment>}
-        />
-    )
+export function NotificationDestinations({ destinations, report_uuid, reload }) {
+    const notification_destinations = [];
+    Object.entries(destinations).forEach(([destination_uuid, destination]) => {
+        notification_destinations.push(
+            <NotificationDestination key={destination_uuid} report_uuid={report_uuid} destination_uuid={destination_uuid} destination={destination} reload={reload} />
+        )
+    })
     return (
         <Grid.Row>
             <Grid.Column>
-                {result}
+                {notification_destinations}
+                <ReadOnlyOrEditable key="1" editableComponent={
+                    <Segment vertical>
+                        <AddButton
+                            item_type="notification destination"
+                            report_uuid={report_uuid}
+                            onClick={() => add_notification_destination(report_uuid, reload)}
+                        />
+                    </Segment>}
+                />
             </Grid.Column>
         </Grid.Row>
     )
