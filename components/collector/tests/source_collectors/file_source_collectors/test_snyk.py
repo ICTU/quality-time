@@ -9,7 +9,7 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
     """Unit tests for the security warning metric."""
 
     def setUp(self):
-        """Setup basic configs for tests"""
+        """Prepare the security warnings metric and sources."""
         super().setUp()
         self.sources = dict(source_id=dict(type="snyk", parameters=dict(url="snyk.json")))
         self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")

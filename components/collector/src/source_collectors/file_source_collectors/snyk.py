@@ -8,6 +8,7 @@ from source_model import Entity, SourceMeasurement, SourceResponses
 
 Severity = Literal["low", "medium", "high"]
 
+
 class SnykSecurityWarnings(JSONFileSourceCollector):
     """Snyk collector for security warnings."""
 
@@ -46,6 +47,6 @@ class SnykSecurityWarnings(JSONFileSourceCollector):
         """Return the highest severity from a collection of severities."""
         if "high" in severities:
             return "high"
-        elif "medium" in severities:
+        if "medium" in severities:
             return "medium"
         return "low"
