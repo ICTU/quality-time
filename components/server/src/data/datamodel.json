@@ -4848,25 +4848,26 @@
                     "name_plural": "security warnings",
                     "attributes": [
                         {
-                            "name": "Direct dependency",
-                            "key": "directdependency"
+                            "name": "Dependency",
+                            "key": "dependency"
                         },
                         {
                             "name": "Number of vulnerabilities",
-                            "key": "numbervulns"
+                            "key": "nr_vulnerabilities",
+                            "type": "integer"
                         },
                         {
                             "name": "Example vulnerability",
-                            "key": "examplevuln",
+                            "key": "example_vulnerability",
                             "url": "url"
                         },
                         {
                             "name": "Example vulnerable path",
-                            "key": "examplepath"
+                            "key": "example_path"
                         },
                         {
-                            "name": "Severity",
-                            "key": "severity",
+                            "name": "Highest severity",
+                            "key": "highest_severity",
                             "color": {
                                 "high": "negative",
                                 "medium": "warning"
