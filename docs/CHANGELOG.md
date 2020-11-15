@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Group Snyk security warnings by top-level dependency. Closes [#1616](https://github.com/ICTU/quality-time/issues/1616).
+- Group Snyk security warnings by top-level dependency. Closes [#1616](https://github.com/ICTU/quality-time/issues/1616). Contributed by [@greckko](https://github.com/greckko).
 
 ### Removed
 
