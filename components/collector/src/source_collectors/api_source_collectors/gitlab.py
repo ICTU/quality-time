@@ -134,9 +134,7 @@ class GitLabSourceUpToDateness(GitLabBase):
         """Return the last, meaning the most recent, commit."""
         files_api_url = await self._gitlab_api_url(
             f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
-        # Would prefer to use self._session.head() instead of get() since we only need the response headers to get the
-        # last commit id, but for some reason this results in a 403:
-        response = await self._session.get(files_api_url, headers=self._headers())
+        response = await self._session.head(files_api_url, headers=self._headers())
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return await super()._get_source_responses(commit_api_url)
