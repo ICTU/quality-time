@@ -2,9 +2,8 @@
 
 from datetime import datetime
 
-from defusedxml import ElementTree
-
 from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
+from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 from source_model import SourceMeasurement, SourceResponses
 
@@ -17,9 +16,9 @@ class CoberturaCoverageBaseClass(XMLFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         valid, covered = 0, 0
         for response in responses:
-            tree = ElementTree.fromstring(await response.text(), forbid_dtd=True)
-            valid += int(tree.get(f"{self.coverage_type}-valid"))
-            covered += int(tree.get(f"{self.coverage_type}-covered"))
+            tree = await parse_source_response_xml(response)
+            valid += int(tree.get(f"{self.coverage_type}-valid", 0))
+            covered += int(tree.get(f"{self.coverage_type}-covered", 0))
         return SourceMeasurement(value=str(valid - covered), total=str(valid))
 
 
@@ -39,5 +38,5 @@ class CoberturaSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessColl
     """Collector to collect the Cobertura report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        tree = ElementTree.fromstring(await response.text(), forbid_dtd=True)
-        return datetime.utcfromtimestamp(int(tree.get("timestamp")) / 1000.)
+        tree = await parse_source_response_xml(response)
+        return datetime.utcfromtimestamp(int(tree.get("timestamp", 0)) / 1000.)
