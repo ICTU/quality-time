@@ -2,9 +2,8 @@
 
 from datetime import datetime
 
-from defusedxml import ElementTree
-
 from base_collectors import SourceUpToDatenessCollector, XMLFileSourceCollector
+from collector_utilities.functions import parse_source_response_xml
 from collector_utilities.type import Response
 from source_model import SourceMeasurement, SourceResponses
 
@@ -17,10 +16,10 @@ class JacocoCoverageBaseClass(XMLFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         missed, covered = 0, 0
         for response in responses:
-            tree = ElementTree.fromstring(await response.text(), forbid_dtd=True)
-            counter = [c for c in tree.findall("counter") if c.get("type").lower() == self.coverage_type][0]
-            missed += int(counter.get("missed"))
-            covered += int(counter.get("covered"))
+            tree = await parse_source_response_xml(response)
+            counter = [c for c in tree.findall("counter") if c.get("type", "").lower() == self.coverage_type][0]
+            missed += int(counter.get("missed", 0))
+            covered += int(counter.get("covered", 0))
         return SourceMeasurement(value=str(missed), total=str(missed + covered))
 
 
@@ -40,7 +39,7 @@ class JacocoSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollect
     """Collector to collect the Jacoco report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        tree = ElementTree.fromstring(await response.text(), forbid_dtd=True)
+        tree = await parse_source_response_xml(response)
         session_info = tree.find(".//sessioninfo")
-        timestamp = session_info.get("dump") if session_info is not None else "0"
+        timestamp = session_info.get("dump", 0) if session_info is not None else 0
         return datetime.utcfromtimestamp(int(timestamp) / 1000.)
