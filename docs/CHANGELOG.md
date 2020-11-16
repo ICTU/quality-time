@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Undo the fix for [#1656](https://github.com/ICTU/quality-time/issues/1656) as it causes timeouts. This fix was meant to prevent 403 responses (access forbidden) from GitLab when using HEAD requests. If they do still happen (can't reproduce at the moment) we'll need to find another solution. Fixes [#1675](https://github.com/ICTU/quality-time/issues/1675).
 - Turn on processing of all DTD's (despite the fact that security tools complain that this is insecure) because otherwise XML reports referring to a DTD can't be read. Fixes [#1676](https://github.com/ICTU/quality-time/issues/1676).
 
 ## [3.14.0] - [2020-11-15]
