@@ -62,9 +62,13 @@ class JiraIssues(SourceCollector):
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
         entity_attributes = dict(
-            summary=fields["summary"], url=f"{url}/browse/{issue['key']}", created=fields["created"],
-            updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
-            priority=fields.get("priority", {}).get("name"))
+            created=fields["created"],
+            priority=fields.get("priority", {}).get("name"),
+            status=fields.get("status", {}).get("name"),
+            summary=fields["summary"],
+            type=fields.get("issuetype", {}).get("name", "Unknown issue type"),
+            updated=fields.get("updated"),
+            url=f"{url}/browse/{issue['key']}")
         if sprint_field_id := self._field_ids.get("sprint"):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
@@ -76,7 +80,7 @@ class JiraIssues(SourceCollector):
     def _fields(self) -> str:  # pylint: disable=no-self-use
         """Return the fields to get from Jira."""
         sprint_field_id = self._field_ids.get("sprint")
-        return "summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
+        return "issuetype,summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
 
     @classmethod
     def __get_sprint_names(cls, sprint_texts: List[str]) -> str:

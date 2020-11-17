@@ -2943,6 +2943,10 @@
                             "url": "url"
                         },
                         {
+                            "name": "Issue type",
+                            "key": "type"
+                        },
+                        {
                             "name": "Status",
                             "key": "status"
                         },
@@ -3013,6 +3017,10 @@
                             "name": "Summary",
                             "key": "summary",
                             "url": "url"
+                        },
+                        {
+                            "name": "Issue type",
+                            "key": "type"
                         },
                         {
                             "name": "Status",

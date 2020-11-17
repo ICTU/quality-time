@@ -28,11 +28,11 @@ class JiraTestCase(SourceCollectorTestCase):
         """Create a Jira issue."""
         return dict(id=key, key=key, fields=dict(created=self.created, summary=f"Summary {key}", **fields))
 
-    def entity(self, key="1", created=None, updated=None, **kwargs):
+    def entity(self, key="1", created=None, updated=None, issuetype="Unknown issue type", **kwargs):
         """Create an entity."""
         return dict(
             key=key, summary=f"Summary {key}", url=f"{self.url}/browse/{key}", created=created or self.created,
-            updated=updated, status=None, priority=None, **kwargs)
+            updated=updated, status=None, priority=None, type=issuetype, **kwargs)
 
     async def get_response(self, issues_json, fields_json=None):
         """Get the collector's response."""

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When using Jira as source for the 'issues' and the 'user story points' metric, show the issue type in the metric details. Closes [#1674](https://github.com/ICTU/quality-time/issues/1674).
+
 ## [3.14.1] - [2020-11-17]
 
 ### Fixed
