@@ -28,6 +28,7 @@ class JiraIssues(SourceCollector):
         self._field_ids = {}
 
     async def _api_url(self) -> URL:
+        """Extend to get the fields from Jira and create a field name to field id mapping."""
         url = await super()._api_url()
         fields_url = URL(f"{url}/rest/api/2/field")
         response = (await super()._get_source_responses(fields_url))[0]
@@ -37,17 +38,20 @@ class JiraIssues(SourceCollector):
         return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults=500")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the JQL query to the landing URL."""
         url = await super()._landing_url(responses)
         jql = str(self._parameter("jql", quote=True))
         return URL(f"{url}/issues/?jql={jql}")
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> Union[str, List[str]]:
+        """Extend to replace field names with field ids, if the parameter is a field."""
         parameter_value = super()._parameter(parameter_key, quote)
         if parameter_key.endswith("field"):
             parameter_value = self._field_ids.get(str(parameter_value).lower(), parameter_value)
         return parameter_value
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to get the issues from the responses."""
         url = URL(str(self._parameter("url")))
         json = await responses[0].json()
         entities = [self._create_entity(issue, url) for issue in json.get("issues", []) if self._include_issue(issue)]
@@ -62,9 +66,13 @@ class JiraIssues(SourceCollector):
         """Create an entity from a Jira issue."""
         fields = issue["fields"]
         entity_attributes = dict(
-            summary=fields["summary"], url=f"{url}/browse/{issue['key']}", created=fields["created"],
-            updated=fields.get("updated"), status=fields.get("status", {}).get("name"),
-            priority=fields.get("priority", {}).get("name"))
+            created=fields["created"],
+            priority=fields.get("priority", {}).get("name"),
+            status=fields.get("status", {}).get("name"),
+            summary=fields["summary"],
+            type=fields.get("issuetype", {}).get("name", "Unknown issue type"),
+            updated=fields.get("updated"),
+            url=f"{url}/browse/{issue['key']}")
         if sprint_field_id := self._field_ids.get("sprint"):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
@@ -76,7 +84,7 @@ class JiraIssues(SourceCollector):
     def _fields(self) -> str:  # pylint: disable=no-self-use
         """Return the fields to get from Jira."""
         sprint_field_id = self._field_ids.get("sprint")
-        return "summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
+        return "issuetype,summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
 
     @classmethod
     def __get_sprint_names(cls, sprint_texts: List[str]) -> str:
@@ -90,15 +98,18 @@ class JiraManualTestExecution(JiraIssues):
     """Collector for the number of manual test cases that have not been executed recently enough."""
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
+        """Extend to also add the test information to the issue entity."""
         entity = super()._create_entity(issue, url)
         entity["last_test_date"] = str(self.__last_test_datetime(issue).date())
         entity["desired_test_frequency"] = str(self.__desired_test_execution_frequency(issue))
         return entity
 
     def _include_issue(self, issue: Dict) -> bool:
+        """Override to only include tests/issues that have been tested too long ago."""
         return days_ago(self.__last_test_datetime(issue)) > self.__desired_test_execution_frequency(issue)
 
     def _fields(self) -> str:
+        """Extend to also get the issue comments so we can get the date of the most recent comment."""
         return super()._fields() + ",comment"
 
     @staticmethod
@@ -122,22 +133,25 @@ class JiraFieldSumBase(JiraIssues):
 
     @classmethod
     def _compute_value(cls, entities: List[Entity]) -> Value:
-        # Sum the field, as specified by the entity key, from the entities.
+        """Override to sum the field, as specified by the entity key, from the entities."""
         return str(round(sum(float(entity[cls.entity_key]) for entity in entities)))
 
     def _create_entity(self, issue: Dict, url: URL) -> Entity:
+        """Extend to also add the summed field to the entity."""
         entity = super()._create_entity(issue, url)
         entity[self.entity_key] = str(cast(float, self.__value_of_field_to_sum(issue)))
         return entity
 
     def _include_issue(self, issue: Dict) -> bool:
+        """Override to only include issues that have a sum."""
         return self.__value_of_field_to_sum(issue) is not None
 
     def _fields(self) -> str:
+        """Extend to also get the field this collector needs to sum."""
         return super()._fields() + "," + cast(str, self._parameter(self.field_parameter))
 
     def __value_of_field_to_sum(self, issue: Dict) -> Optional[float]:
-        """Return the value of the issue field that this collectors is to sum."""
+        """Return the value of the issue field that this collector is to sum."""
         value = issue["fields"].get(self._parameter(self.field_parameter))
         return value if value is None else float(value)
 
@@ -165,11 +179,13 @@ class JiraVelocity(SourceCollector):
     SprintPoints = Dict[str, Points]
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to pass the Greenhopper velocity chart API."""
         board_id = await self.__board_id(urls[0])
         api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
         return await super()._get_source_responses(api_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the sprint values from the responses."""
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         entity_url = URL(
@@ -206,6 +222,7 @@ class JiraVelocity(SourceCollector):
             url=str(entity_url) + sprint_id)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to create a link to the Greenhopper velocity chart."""
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         return URL(f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=velocityChart")

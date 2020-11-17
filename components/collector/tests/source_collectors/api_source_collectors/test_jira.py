@@ -12,6 +12,7 @@ class JiraTestCase(SourceCollectorTestCase):
     METRIC_TYPE = "Subclass responsibility"
 
     def setUp(self):
+        """Extend to create sources and a metric of type METRIC_TYPE."""
         super().setUp()
         self.url = "https://jira"
         self.sources = dict(
@@ -28,11 +29,11 @@ class JiraTestCase(SourceCollectorTestCase):
         """Create a Jira issue."""
         return dict(id=key, key=key, fields=dict(created=self.created, summary=f"Summary {key}", **fields))
 
-    def entity(self, key="1", created=None, updated=None, **kwargs):
+    def entity(self, key="1", created=None, updated=None, issuetype="Unknown issue type", **kwargs):
         """Create an entity."""
         return dict(
             key=key, summary=f"Summary {key}", url=f"{self.url}/browse/{key}", created=created or self.created,
-            updated=updated, status=None, priority=None, **kwargs)
+            updated=updated, status=None, priority=None, type=issuetype, **kwargs)
 
     async def get_response(self, issues_json, fields_json=None):
         """Get the collector's response."""
@@ -57,6 +58,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
     METRIC_TYPE = "manual_test_execution"
 
     def setUp(self):
+        """Extend to create a date in the past."""
         super().setUp()
         self.ten_days_ago = str(datetime.now() - timedelta(days=10))
 
@@ -78,8 +80,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 self.entity(key="4", last_test_date=str(parse(self.ten_days_ago).date()), desired_test_frequency="5")])
 
     async def test_nr_of_test_cases_with_field_name(self):
-        """Test that the number of test cases is returned when the field name for the test frequency is specified
-        by name."""
+        """Test that the field name for the test frequency can be specified by name."""
         self.sources["source_id"]["parameters"]["manual_test_execution_frequency_field"] = "Required Test Frequency"
         test_cases_json = dict(
             issues=[self.issue(comment=dict(comments=[dict(updated=self.ten_days_ago)]), custom_field_001="5")])
@@ -138,6 +139,7 @@ class JiraVelocityTest(JiraTestCase):
     METRIC_TYPE = "velocity"
 
     def setUp(self):
+        """Extend to prepare fake Jira data."""
         super().setUp()
         base_url = f"{self.url}/secure/RapidBoard.jspa?rapidView=2&view=reporting&chart="
         self.sprint_url = f"{base_url}sprintRetrospective&sprint="
