@@ -33,7 +33,7 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
     """Return the latest reports overview."""
-    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp or iso_timestamp()})
+    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
     if overview:  # pragma: no cover-behave
         overview["_id"] = str(overview["_id"])

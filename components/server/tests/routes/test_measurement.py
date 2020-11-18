@@ -22,6 +22,15 @@ class GetMeasurementsTest(unittest.TestCase):
         self.assertEqual(
             dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database))
 
+    @patch("bottle.request")
+    def test_get_old_measurements(self, request):
+        """Test that the measurements for the requested metric and report date are returned."""
+        self.database.measurements.find_one.return_value = dict(start="1")
+        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
+        self.assertEqual(
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database))
+
     def test_get_measurements_when_there_are_none(self):
         """Tests that the measurements for the requested metric are returned."""
         self.database.measurements.find_one.return_value = None

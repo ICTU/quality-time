@@ -30,9 +30,7 @@ class UtilTests(unittest.TestCase):
         """Test that the report datetime is now if it's not present in the request."""
         with patch("server_utilities.functions.bottle.request") as request:
             request.query = {}
-            with patch("server_utilities.functions.datetime") as date_time:
-                date_time.now.return_value = self.now
-                self.assertEqual(self.expected_time_stamp, report_date_time())
+            self.assertEqual("", report_date_time())
 
     def test_uuid(self):
         """Test the expected length of the uuid."""

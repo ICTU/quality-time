@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - When using Jira as source for the 'issues' and the 'user story points' metric, show the issue type in the metric details. Closes [#1674](https://github.com/ICTU/quality-time/issues/1674).
 
+### Fixed
+
+- When invoking the reports API endpoint (api/v3/reports) without a `report_date` parameter, the server would sometimes return a deleted report. Fixes [#1683](https://github.com/ICTU/quality-time/issues/1683).
+
 ## [3.14.1] - [2020-11-17]
 
 ### Fixed
