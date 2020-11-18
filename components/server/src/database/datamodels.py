@@ -32,7 +32,9 @@ def default_source_parameters(database: Database, metric_type: str, source_type:
 
 def default_metric_attributes(database: Database, metric_type: str = ""):
     """Return the metric attributes with their default values for the specified metric type.
-    If no metric type is specified, use the first one from the data model."""
+
+    If no metric type is specified, use the first one from the data model.
+    """
     metric_types = latest_datamodel(database)["metrics"]
     if not metric_type:
         metric_type = list(metric_types.keys())[0]

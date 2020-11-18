@@ -1,8 +1,8 @@
 """Measurements collection."""
 
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Dict, List, Literal, Optional, cast
+from typing import Dict, List, Literal, Optional, Union, cast
 
 import pymongo
 from pymongo.database import Database
@@ -40,7 +40,7 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
 
 def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str = ""):
     """Return all measurements, without the entities, except for the most recent one."""
-    measurement_filter = {"metric_uuid": metric_uuid}
+    measurement_filter: Dict[str, Union[str, Dict[str, str]]] = {"metric_uuid": metric_uuid}
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_with_entities = database.measurements.find_one(
@@ -91,11 +91,13 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
         return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
     def value_of_entities_to_ignore(source) -> int:
-        """Return the value of the ignored entities, i.e. entities that have marked as fixed, false positive or
-        won't fix. If the entities have a measured attribute, return the sum of the measured attributes of the ignored
+        """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
+
+        If the entities have a measured attribute, return the sum of the measured attributes of the ignored
         entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
         user story points, the source entities are user stories and the measured attribute is the amount of story
-        points of each user story."""
+        points of each user story.
+        """
         entities = source.get("entity_user_data", {}).items()
         ignored_entities = [
             entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]

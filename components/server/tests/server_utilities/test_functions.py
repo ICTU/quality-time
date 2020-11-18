@@ -8,9 +8,10 @@ from server_utilities.functions import iso_timestamp, report_date_time, uuid
 
 
 class UtilTests(unittest.TestCase):
-    """Unit tests for the util methods."""
+    """Unit tests for the utility methods."""
 
     def setUp(self):
+        """Override to setup the 'current' time."""
         self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=timezone.utc)
         self.expected_time_stamp = "2019-03-03T10:04:05+00:00"
 
