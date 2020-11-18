@@ -10,7 +10,7 @@
     "query-string": "^6.13.7",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-grid-layout": "^1.1.1",
+    "react-grid-layout": "^1.2.0",
     "react-hash-link": "1.0.0",
     "react-scripts": "4.0.0",
     "react-semantic-toasts": "^0.6.5",
