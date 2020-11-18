@@ -273,7 +273,7 @@ class StreamNrMeasurementsTest(unittest.TestCase):
         """Test that the stream returns the number of measurements whenever it changes."""
 
         def sleep(seconds):
-            """Fake time.sleep()."""
+            """Fake the time.sleep method."""
             return seconds
 
         database = Mock()
