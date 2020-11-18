@@ -13,12 +13,22 @@ class GetMeasurementsTest(unittest.TestCase):
     """Unit tests for the get measurements route."""
 
     def setUp(self):
+        """Override to create a mock database fixture."""
         self.database = Mock()
 
     def test_get_measurements(self):
         """Tests that the measurements for the requested metric are returned."""
         self.database.measurements.find_one.return_value = dict(start="1")
         self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
+        self.assertEqual(
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database))
+
+    @patch("bottle.request")
+    def test_get_old_measurements(self, request):
+        """Test that the measurements for the requested metric and report date are returned."""
+        self.database.measurements.find_one.return_value = dict(start="1")
+        self.database.measurements.find.return_value = [dict(start="0"), dict(start="1")]
+        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
         self.assertEqual(
             dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database))
 
@@ -34,6 +44,7 @@ class PostMeasurementTests(unittest.TestCase):
     """Unit tests for the post measurement route."""
 
     def setUp(self):
+        """Override to setup a mock database fixture with some content."""
         self.database = Mock()
         self.report = dict(
             _id="id", report_uuid=REPORT_ID,
@@ -51,6 +62,7 @@ class PostMeasurementTests(unittest.TestCase):
             sources=dict(junit=dict(entities={})))
 
         def set_measurement_id(measurement):
+            """Fake setting a measurement id on the inserted measurement."""
             measurement["_id"] = "measurement_id"
 
         self.database.measurements.insert_one.side_effect = set_measurement_id
@@ -220,6 +232,7 @@ class PostMeasurementTests(unittest.TestCase):
 
 class SetEntityAttributeTest(unittest.TestCase):
     """Unit tests for the set entity attribute route."""
+
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""
         database = Mock()
@@ -233,6 +246,7 @@ class SetEntityAttributeTest(unittest.TestCase):
         database.measurements.find.return_value = [measurement]
 
         def insert_one(new_measurement):
+            """Fake setting an id on the inserted measurement."""
             new_measurement["_id"] = "id"
 
         database.measurements.insert_one = insert_one
@@ -257,8 +271,11 @@ class StreamNrMeasurementsTest(unittest.TestCase):
 
     def test_stream(self):
         """Test that the stream returns the number of measurements whenever it changes."""
+
         def sleep(seconds):
+            """Fake the time.sleep method."""
             return seconds
+
         database = Mock()
         database.measurements.count_documents.side_effect = [42, 42, 42, 43, 43, 43, 43, 43, 43, 43, 43]
         with patch("time.sleep", sleep):

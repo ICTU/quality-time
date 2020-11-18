@@ -1,8 +1,8 @@
 """Measurements collection."""
 
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Dict, List, Literal, Optional, cast
+from typing import Dict, List, Literal, Optional, Union, cast
 
 import pymongo
 from pymongo.database import Database
@@ -25,10 +25,10 @@ def latest_successful_measurement(database: Database, metric_uuid: MetricId):
         filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)])
 
 
-def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str, days=7):
+def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):
     """Return all recent measurements."""
-    min_iso_timestamp = (
-        min([datetime.now(timezone.utc), datetime.fromisoformat(max_iso_timestamp)]) - timedelta(days=days)).isoformat()
+    max_iso_timestamp = max_iso_timestamp or iso_timestamp()
+    min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     recent_measurements = database.measurements.find(
         filter={"end": {"$gt": min_iso_timestamp}, "start": {"$lt": max_iso_timestamp}},
         sort=[("start", pymongo.ASCENDING)], projection={"_id": False, "sources.entities": False})
@@ -38,15 +38,17 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     return measurements_by_metric_uuid
 
 
-def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
+def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str = ""):
     """Return all measurements, without the entities, except for the most recent one."""
-    measurement_filter = {"metric_uuid": metric_uuid, "start": {"$lt": max_iso_timestamp}}
+    measurement_filter: Dict[str, Union[str, Dict[str, str]]] = {"metric_uuid": metric_uuid}
+    if max_iso_timestamp:
+        measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_with_entities = database.measurements.find_one(
-        filter=measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False})
+        measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False})
     if not latest_with_entities:
         return []
     all_measurements_without_entities = database.measurements.find(
-        filter=measurement_filter, projection={"_id": False, "sources.entities": False})
+        measurement_filter, projection={"_id": False, "sources.entities": False})
     return list(all_measurements_without_entities)[:-1] + [latest_with_entities]
 
 
@@ -89,11 +91,13 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
         return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
     def value_of_entities_to_ignore(source) -> int:
-        """Return the value of the ignored entities, i.e. entities that have marked as fixed, false positive or
-        won't fix. If the entities have a measured attribute, return the sum of the measured attributes of the ignored
+        """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
+
+        If the entities have a measured attribute, return the sum of the measured attributes of the ignored
         entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
         user story points, the source entities are user stories and the measured attribute is the amount of story
-        points of each user story."""
+        points of each user story.
+        """
         entities = source.get("entity_user_data", {}).items()
         ignored_entities = [
             entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]

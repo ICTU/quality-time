@@ -8,6 +8,7 @@ from pymongo.database import Database
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId
 
+
 # Sort order:
 TIMESTAMP_DESCENDING = [("timestamp", pymongo.DESCENDING)]
 # Filters:
@@ -33,7 +34,7 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> Dict:
     """Return the latest reports overview."""
-    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp or iso_timestamp()})
+    timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
     if overview:  # pragma: no cover-behave
         overview["_id"] = str(overview["_id"])
@@ -87,8 +88,10 @@ def _prepare_documents_for_insertion(*documents, **extra_attributes) -> None:
 
 def changelog(database: Database, nr_changes: int, **uuids):
     """Return the changelog, narrowed to a single report, subject, metric, or source if so required.
+
     The uuids keyword arguments may contain report_uuid="report_uuid", and one of subject_uuid="subject_uuid",
-    metric_uuid="metric_uuid", and source_uuid="source_uuid"."""
+    metric_uuid="metric_uuid", and source_uuid="source_uuid".
+    """
     projection = {"delta.description": True, "delta.email": True, "timestamp": True}
     delta_filter: Dict[str, Union[Dict, List]] = {"delta": DOES_EXIST}
     changes: List[Change] = []
