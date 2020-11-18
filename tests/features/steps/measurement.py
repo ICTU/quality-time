@@ -77,10 +77,12 @@ def check_metrics(context):
     assert_true(context.uuid["metric"] in context.response.json().keys())
 
 
-@then("the metric has one measurement")
-@then("the metric has {count} measurements")
-def check_nr_of_measurements(context, count="one"):
+@then("the metric {has_or_had} one measurement")
+@then("the metric {has_or_had} {count} measurements")
+def check_nr_of_measurements(context, has_or_had, count="one"):
     """Check that the metric has the expected number of measurements."""
+    if has_or_had == "had":
+        context.report_date = "2020-11-17T10:00:00Z"
     expected_number = dict(no=0, one=1, two=2).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 

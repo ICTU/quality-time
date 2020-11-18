@@ -63,6 +63,11 @@ Feature: measurement
     And the collector measures "0"
     Then the metric has one measurement
 
+  Scenario: a new metric has no old measurements
+    Given an existing source
+    When the collector measures "0"
+    Then the metric had no measurements
+
   Scenario: when entities are unchanged a new measurement is not added
     Given an existing source
     When the collector measures "1"
