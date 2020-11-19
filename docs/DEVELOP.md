@@ -100,6 +100,10 @@ This section contains some notes on coding style used in this project. It's far 
 
 Most of the coding standard are enforced by the [quality checks](#quality-checks).
 
+To automate autoformatting of python code using black, a git pre-commit hook is provided at
+`git-hooks/pre-commit`. Since the black style is enforced by the [quality checks](#quality-checks), 
+it is recommended to copy this script into your local `.git/hooks` folder of this repo.
+
 Methods that can or should be overridden in subclasses have a name with one leading underscore, e.g. `_api_url(self) -> URL`. Methods that should only be used by a class instance itself have a name with two leading underscores, e.g. `__fields(self) -> List[str]`.
 
 Production code and unit tests are organized in parallel hierarchies. Each Python component has a `src` with the production code and a `tests` folder with the unit tests. The folder layout of the `tests` follows the layout of the `src` hierarchy.
