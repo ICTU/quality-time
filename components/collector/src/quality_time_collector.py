@@ -3,6 +3,7 @@
 import asyncio
 import logging
 
+
 from base_collectors import MetricsCollector
 # Make sure subclasses are registered
 from source_collectors import *  # lgtm [py/polluting-import] pylint: disable=unused-wildcard-import,wildcard-import
@@ -15,4 +16,5 @@ async def collect(log_level: int = None) -> None:
 
 
 if __name__ == "__main__":
+
     asyncio.run(collect(logging.INFO))  # pragma: no cover

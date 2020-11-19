@@ -1,0 +1,12 @@
+#!/bin/sh
+
+FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.py" | sed 's| |\\ |g')
+[ -z "$FILES" ] && exit 0
+
+# Prettify all selected files
+echo "$FILES" | xargs python3 -m black
+
+# Add back the modified/prettified files to staging
+echo "$FILES" | xargs git add
+
+exit 0
