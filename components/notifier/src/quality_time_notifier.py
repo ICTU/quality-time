@@ -9,6 +9,7 @@ from typing import Dict, Final, NoReturn, cast
 
 import aiohttp
 
+import outbox
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from notifier_utilities.type import JSON, URL
 from strategies.changed_status import get_notable_metrics_from_json
@@ -39,10 +40,15 @@ async def notify(log_level: int = None) -> NoReturn:
             json = dict(reports=[])
 
         for notification in get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen):
+            outbox.update_configurations(notification["notification_destinations"])
             for configuration in cast(Dict, notification["notification_destinations"]).values():
-                if configuration["teams_webhook"]:
-                    send_notification_to_teams(
-                        str(configuration["teams_webhook"]), build_notification_text(notification))
+                if "sleep_duration" in configuration:
+                    logging.info("sleep duration")
+
+                else:
+                    if configuration["teams_webhook"]:
+                        send_notification_to_teams(
+                            str(configuration["teams_webhook"]), build_notification_text(notification))
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)

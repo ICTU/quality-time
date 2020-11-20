@@ -1,6 +1,7 @@
 """Notification routes."""
 
 import bottle
+import os
 from pymongo.database import Database
 
 from database import sessions
@@ -20,7 +21,7 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     if "notification_destinations" not in data.report:
         data.report["notification_destinations"] = {}
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = \
-        dict(teams_webhook="", name="New Microsoft Teams webhook")
+        dict(teams_webhook="", name="New Microsoft Teams webhook",  sleep_duration=os.environ.get("NOTIFIER_SLEEP_DURATION"))
 
     user = sessions.user(database)
     data.report["delta"] = dict(
