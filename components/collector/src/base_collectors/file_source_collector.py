@@ -39,6 +39,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
     file_extensions: List[str] = []  # Subclass responsibility
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to unzip any zipped responses."""
         responses = await super()._get_source_responses(*urls)
         if urls[0].endswith(".zip"):
             unzipped_responses = await asyncio.gather(*[self.__unzip(response) for response in responses])
@@ -46,6 +47,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
         return responses
 
     def _headers(self) -> Dict[str, str]:
+        """Extend to add a private token to the headers, if present in the parameters."""
         headers = super()._headers()
         if token := cast(str, self._parameter("private_token")):
             # GitLab needs this header, see
