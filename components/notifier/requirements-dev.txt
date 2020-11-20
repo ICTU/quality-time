@@ -9,3 +9,4 @@ pylint==2.6.0
 pip==20.2.4
 safety==1.9.0
 vulture==2.1
+black==20.8b1
