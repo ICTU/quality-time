@@ -80,14 +80,14 @@ class SessionsTest(unittest.TestCase):
 
     def test_authorized_session_with_editors(self):
         """Test that a session is authorized when editors are defined and the session's user is an editor."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe"])
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe@example.org"])
         self.create_session()
         self.assertTrue(sessions.authorized(database=self.database, session_id=SessionId("5")))
         self.database.sessions.find_one.assert_called_with({"session_id": "5"})
 
     def test_unauthorized_session(self):
         """Test that a session is unauthorized when editors are defined and the session's user is not an editor."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jadoe"])
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jadoe@example.org"])
         self.create_session()
         self.assertFalse(sessions.authorized(database=self.database, session_id=SessionId("5")))
         self.database.sessions.find_one.assert_called_with({"session_id": "5"})
