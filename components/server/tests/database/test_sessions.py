@@ -2,7 +2,7 @@
 
 import unittest
 from datetime import datetime, timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 
 from database import sessions
 from server_utilities.type import SessionId
@@ -11,60 +11,65 @@ from server_utilities.type import SessionId
 class SessionsTest(unittest.TestCase):
     """Unit tests for sessions class."""
 
+    def setUp(self):
+        """Override to set up the database."""
+        self.database = Mock()
+
+    def create_session(self, session_expiration_datetime=None):
+        """Create a fake session in the mock database."""
+        session_expiration_datetime = session_expiration_datetime or datetime.now() + timedelta(seconds=5)
+        session = dict(user="user", session_expiration_datetime=session_expiration_datetime)
+        self.database.sessions.find_one.return_value = session
+
     def test_upsert(self):
         """Test upsert function."""
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.update = MagicMock()
         self.assertIsNone(
-            sessions.upsert(database=database, username='un', email="un@example.org", session_id=SessionId('5'),
-                            session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99)))
-        database.sessions.update.assert_called_with(
-            {'user': 'un'}, {'user': 'un', 'email': 'un@example.org', 'session_id': '5',
-                             'session_expiration_datetime': datetime(2019, 10, 18, 19, 22, 5, 99)}, upsert=True)
+            sessions.upsert(
+                database=self.database,
+                username="user",
+                email="user@example.org",
+                session_id=SessionId("5"),
+                session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99),
+            )
+        )
+        self.database.sessions.update.assert_called_with(
+            {"user": "user"},
+            {
+                "user": "user",
+                "email": "user@example.org",
+                "session_id": "5",
+                "session_expiration_datetime": datetime(2019, 10, 18, 19, 22, 5, 99),
+            },
+            upsert=True,
+        )
 
-    def test_delete(self):
+    def test_delete_session(self):
         """Test delete function."""
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.delete_one = MagicMock()
-        self.assertIsNone(sessions.delete(database=database, session_id=SessionId('5')))
-        database.sessions.delete_one.assert_called_with({'session_id': '5'})
+        self.assertIsNone(sessions.delete(database=self.database, session_id=SessionId("5")))
+        self.database.sessions.delete_one.assert_called_with({"session_id": "5"})
 
-    def test_valid(self):
-        """Test valid function."""
-        session_obj = MagicMock()
-        session_obj.get = MagicMock(return_value=(datetime.now() + timedelta(seconds=5)))
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.find_one = MagicMock(return_value=session_obj)
-        self.assertTrue(sessions.valid(database=database, session_id=SessionId('5')))
-        database.sessions.find_one.assert_called_with({'session_id': '5'})
+    def test_valid_session(self):
+        """Test that a non-expired session with the required roles is valid."""
+        self.create_session()
+        self.assertTrue(sessions.valid(database=self.database, session_id=SessionId("5")))
+        self.database.sessions.find_one.assert_called_with({"session_id": "5"})
 
-    def test_valid_min_date(self):
-        """Test valid function with min date."""
-        session_obj = MagicMock()
-        session_obj.get = MagicMock(return_value=datetime.min)
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.find_one = MagicMock(return_value=session_obj)
-        self.assertFalse(sessions.valid(database=database, session_id=SessionId('5')))
-        database.sessions.find_one.assert_called_with({'session_id': '5'})
+    def test_expired_session(self):
+        """Test that an expired session with the required roles is invalid."""
+        self.create_session(session_expiration_datetime=datetime.min)
+        self.assertFalse(sessions.valid(database=self.database, session_id=SessionId("5")))
+        self.database.sessions.find_one.assert_called_with({"session_id": "5"})
 
-    def test_valid_session_not_found(self):
-        """Test valid function when the session is not found."""
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.find_one = MagicMock(return_value=None)
-        self.assertFalse(sessions.valid(database=database, session_id=SessionId('5')))
-        database.sessions.find_one.assert_called_with({'session_id': '5'})
+    def test_no_session_with_id(self):
+        """Test that a session that is not found is invalid."""
+        self.database.sessions.find_one.return_value = None
+        self.assertFalse(sessions.valid(database=self.database, session_id=SessionId("5")))
+        self.database.sessions.find_one.assert_called_with({"session_id": "5"})
 
-    @patch('bottle.request')
+    @patch("bottle.request")
     def test_user(self, bottle_mock):
         """Test user function."""
-        bottle_mock.get_cookie = MagicMock(return_value=5)
-        database = MagicMock()
-        database.sessions = MagicMock()
-        database.sessions.find_one = MagicMock(return_value={"user": "OK"})
-        self.assertEqual('OK', sessions.user(database=database)["user"])
-        database.sessions.find_one.assert_called_with({'session_id': 5})
+        bottle_mock.get_cookie.return_value = 5
+        self.create_session()
+        self.assertEqual("user", sessions.user(database=self.database)["user"])
+        self.database.sessions.find_one.assert_called_with({"session_id": 5})
