@@ -18,7 +18,6 @@ class Session:
 
     def is_authorized(self, authorized_users: List[str]) -> bool:
         """Return whether the session's user is an authorized user."""
-        assert self.is_valid()
         if authorized_users:
             return self.__session_data["email"] in authorized_users
         return True  # No authorized users specified, so any (logged in) user is authorized

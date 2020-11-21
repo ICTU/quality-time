@@ -5,6 +5,8 @@ import logging
 import bottle
 
 from database import sessions
+from database.reports import latest_reports_overview
+from model.session import Session
 
 
 class AuthPlugin:  # pylint: disable=too-few-public-methods
@@ -24,10 +26,13 @@ class AuthPlugin:  # pylint: disable=too-few-public-methods
 
         def wrapper(*args, **kwargs):
             """Wrap the route."""
+            database = kwargs["database"]
             session_id = str(bottle.request.get_cookie("session_id"))
-            if not sessions.valid(kwargs["database"], session_id):
+            session = Session(sessions.find_session(database, session_id))
+            if not session.is_valid():
                 cls.abort(401, "%s-access to %s denied: session %s not authenticated", context, session_id)
-            if not sessions.authorized(kwargs["database"], session_id):
+            authorized_users = latest_reports_overview(database).get("editors")
+            if not session.is_authorized(authorized_users):
                 cls.abort(403, "%s-access to %s denied: session %s not authorized", context, session_id)
             return callback(*args, **kwargs)
 
