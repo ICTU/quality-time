@@ -7,6 +7,8 @@ from unittest.mock import Mock, patch
 from database import sessions
 from server_utilities.type import SessionId
 
+from ..fixtures import JOHN, JENNY
+
 
 class SessionsTest(unittest.TestCase):
     """Unit tests for sessions class."""
@@ -19,12 +21,7 @@ class SessionsTest(unittest.TestCase):
     def create_session(self, session_expiration_datetime=None):
         """Create a fake session in the mock database."""
         session_expiration_datetime = session_expiration_datetime or datetime.now() + timedelta(seconds=5)
-        session = dict(
-            user="jodoe",
-            email="jodoe@example.org",
-            session_id="5",
-            session_expiration_datetime=session_expiration_datetime,
-        )
+        session = JOHN | dict(session_id="5", session_expiration_datetime=session_expiration_datetime)
         self.database.sessions.find_one.return_value = session
 
     def test_upsert(self):
@@ -32,20 +29,15 @@ class SessionsTest(unittest.TestCase):
         self.assertIsNone(
             sessions.upsert(
                 database=self.database,
-                username="jadoe",
-                email="jadoe@example.org",
+                username=JENNY["user"],
+                email=JENNY["email"],
                 session_id=SessionId("6"),
                 session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99),
             )
         )
         self.database.sessions.update.assert_called_with(
-            {"user": "jadoe"},
-            {
-                "user": "jadoe",
-                "email": "jadoe@example.org",
-                "session_id": "6",
-                "session_expiration_datetime": datetime(2019, 10, 18, 19, 22, 5, 99),
-            },
+            {"user": JENNY["user"]},
+            JENNY | dict(session_id="6", session_expiration_datetime=datetime(2019, 10, 18, 19, 22, 5, 99)),
             upsert=True,
         )
 
@@ -80,14 +72,14 @@ class SessionsTest(unittest.TestCase):
 
     def test_authorized_session_with_editors(self):
         """Test that a session is authorized when editors are defined and the session's user is an editor."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe@example.org"])
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=[JOHN["email"]])
         self.create_session()
         self.assertTrue(sessions.authorized(database=self.database, session_id=SessionId("5")))
         self.database.sessions.find_one.assert_called_with({"session_id": "5"})
 
     def test_unauthorized_session(self):
         """Test that a session is unauthorized when editors are defined and the session's user is not an editor."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jadoe@example.org"])
+        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=[JENNY["email"]])
         self.create_session()
         self.assertFalse(sessions.authorized(database=self.database, session_id=SessionId("5")))
         self.database.sessions.find_one.assert_called_with({"session_id": "5"})
@@ -103,5 +95,5 @@ class SessionsTest(unittest.TestCase):
         """Test user function."""
         bottle_mock.get_cookie.return_value = 4
         self.create_session()
-        self.assertEqual("jodoe", sessions.user(database=self.database)["user"])
+        self.assertEqual("John", sessions.user(database=self.database)["user"])
         self.database.sessions.find_one.assert_called_with({"session_id": 4})
