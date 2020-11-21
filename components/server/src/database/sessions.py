@@ -1,5 +1,6 @@
 """Sessions collection."""
 
+import logging
 from datetime import datetime
 from typing import cast
 
@@ -7,6 +8,8 @@ import bottle
 from pymongo.database import Database
 
 from server_utilities.type import SessionId
+
+from .reports import latest_reports_overview
 
 
 def upsert(
@@ -32,6 +35,15 @@ def valid(database: Database, session_id: SessionId) -> bool:
     if session := _find_session(database, session_id):
         return bool(session.get("session_expiration_datetime", datetime.min) > datetime.now())
     return False  # No session with the requested session id found
+
+
+def authorized(database: Database, session_id: SessionId) -> bool:
+    """Return whether the session's user is authorized to edit contents."""
+    if session := _find_session(database, session_id):
+        if editors := latest_reports_overview(database).get("editors"):
+            return session["user"] in editors or session["email"] in editors
+        return True  # No editors defined, so any (logged in) user can edit
+    return False
 
 
 def user(database: Database):

@@ -16,6 +16,7 @@ class AuthenticationPluginTest(unittest.TestCase):
     def setUp(self):
         logging.disable()
         self.mock_database = Mock()
+        self.mock_database.reports_overviews.find_one.return_value = dict(_id="id")
         self.success = dict(ok=True)
         bottle.install(InjectionPlugin(self.mock_database, "database"))
         bottle.install(AuthenticationPlugin())
@@ -43,6 +44,15 @@ class AuthenticationPluginTest(unittest.TestCase):
     def test_missing_session(self):
         """Test that the session is invalid when it's missing."""
         self.mock_database.sessions.find_one.return_value = None
+        route = bottle.Route(bottle.app(), "/", "POST", self.route)
+        self.assertRaises(bottle.HTTPError, route.call)
+
+    def test_unauthorized_sessions(self):
+        """Test that an unauthorized session is invalid."""
+        self.mock_database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe"])
+        self.mock_database.sessions.find_one.return_value = dict(
+            user="jadoe", email="jadoe@example.org", session_expiration_datetime=datetime.max
+        )
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertRaises(bottle.HTTPError, route.call)
 
