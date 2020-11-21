@@ -1,4 +1,4 @@
-"""Route authentication plugin."""
+"""Route authentication and authorization plugin."""
 
 import logging
 
@@ -7,13 +7,13 @@ import bottle
 from database import sessions
 
 
-class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
-    """This plugin validates the session id for post routes. If not valid, an error is raised."""
+class AuthPlugin:  # pylint: disable=too-few-public-methods
+    """This plugin checks authentication and authorization for post and delete routes."""
 
     api = 2
 
     def __init__(self) -> None:
-        self.name = "route-authentication"
+        self.name = "route-auth"
 
     @staticmethod
     def apply(callback, context):
@@ -26,10 +26,14 @@ class AuthenticationPlugin:  # pylint: disable=too-few-public-methods
             """Wrap the route."""
             session_id = str(bottle.request.get_cookie("session_id"))
             if not sessions.valid(kwargs["database"], session_id):
-                logging.warning("Post attempted to %s with invalid session id %s", context.rule, session_id)
+                logging.warning(
+                    "%s-access to %s denied: session %s not authenticated", context.method, context.rule, session_id
+                )
                 bottle.abort(401, "Access denied")
             if not sessions.authorized(kwargs["database"], session_id):
-                logging.warning("Post attempted to %s with unauthorized session id %s", context.rule, session_id)
+                logging.warning(
+                    "%s-access to %s denied: session %s not authorized", context.method, context.rule, session_id
+                )
                 bottle.abort(403, "Forbidden")
             return callback(*args, **kwargs)
 

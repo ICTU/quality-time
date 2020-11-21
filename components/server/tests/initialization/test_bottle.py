@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import bottle
 
 from initialization.bottle import init_bottle
-from routes.plugins import AuthenticationPlugin, InjectionPlugin
+from routes.plugins import AuthPlugin, InjectionPlugin
 
 
 class BottleInitTest(unittest.TestCase):
@@ -19,5 +19,4 @@ class BottleInitTest(unittest.TestCase):
         """Test that bottle has been initialized."""
         init_bottle(Mock())
         self.assertEqual(1024 * 1024, bottle.BaseRequest.MEMFILE_MAX)
-        self.assertEqual(
-            [InjectionPlugin, AuthenticationPlugin], [plugin.__class__ for plugin in bottle.app().plugins[-2:]])
+        self.assertEqual([InjectionPlugin, AuthPlugin], [plugin.__class__ for plugin in bottle.app().plugins[-2:]])

@@ -7,11 +7,11 @@ from unittest.mock import Mock
 
 import bottle
 
-from routes.plugins import AuthenticationPlugin, InjectionPlugin
+from routes.plugins import AuthPlugin, InjectionPlugin
 
 
-class AuthenticationPluginTest(unittest.TestCase):
-    """Unit tests for the route authentication plugin."""
+class AuthPluginTest(unittest.TestCase):
+    """Unit tests for the route authentication and authorization plugin."""
 
     def setUp(self):
         logging.disable()
@@ -19,7 +19,7 @@ class AuthenticationPluginTest(unittest.TestCase):
         self.mock_database.reports_overviews.find_one.return_value = dict(_id="id")
         self.success = dict(ok=True)
         bottle.install(InjectionPlugin(self.mock_database, "database"))
-        bottle.install(AuthenticationPlugin())
+        bottle.install(AuthPlugin())
 
     def tearDown(self):
         bottle.app().uninstall(True)
