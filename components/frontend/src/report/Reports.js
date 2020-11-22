@@ -48,6 +48,7 @@ export function Reports(props) {
   return (
     <div id="dashboard">
       <ReportsTitle
+        editors={props.reports_overview.editors || []}
         reload={props.reload}
         subtitle={props.reports_overview.subtitle}
         title={props.reports_overview.title}

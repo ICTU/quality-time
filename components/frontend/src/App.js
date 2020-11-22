@@ -100,7 +100,8 @@ class App extends Component {
             loading: false,
             datamodel: data_model,
             reports: reports.reports || [],
-            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+            reports_overview: {
+              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, editors: reports.editors },
             last_update: now
           })
         }
@@ -125,7 +126,7 @@ class App extends Component {
   check_session(json) {
     if (json.ok === false && json.status === 401) {
       this.set_user(null);
-      if(this.login_forwardauth() === false){
+      if (this.login_forwardauth() === false) {
         show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
       }
     }
@@ -188,12 +189,12 @@ class App extends Component {
     let self = this;
     login("", "")
       .then(function (json) {
-        if(json.ok) {
+        if (json.ok) {
           self.set_user(json.email, json.email);
           return true;
         }
       });
-      return false;
+    return false;
   }
 
   set_user(username, email) {

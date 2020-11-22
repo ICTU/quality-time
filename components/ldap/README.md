@@ -4,11 +4,10 @@ This is a LDAP server included for test purposes. It is based on the `osixia/ope
 
 ## LDAP users
 
-The LDAP database has three users: 
+The LDAP database has three users:
 
-| User          | Username | Password |
-| ------------- | -------- | -------- |
-| Administrator | admin    | admin    |
-| Jane Doe      | jadoe    | secret   |
-| John Doe      | jodoe    | secret   |
-
+| User          | Email address       | Username | Password |
+| ------------- | ------------------- | -------- | -------- |
+| Administrator |                     | admin    | admin    |
+| Jane Doe      | janedoe@example.org | jadoe    | secret   |
+| John Doe      | johndoe@example.org | jodoe    | secret   |

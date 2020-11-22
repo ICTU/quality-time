@@ -17,4 +17,6 @@ class Session:
 
     def is_authorized(self, authorized_users: List[str]) -> bool:
         """Return whether the session's user is an authorized user."""
-        return self.__session_data["email"] in authorized_users if authorized_users else True
+        if authorized_users:
+            return bool(set([self.__session_data["user"], self.__session_data.get("email")]) & set(authorized_users))
+        return True
