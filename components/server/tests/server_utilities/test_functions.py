@@ -28,9 +28,15 @@ class UtilTests(unittest.TestCase):
             self.assertEqual(self.expected_time_stamp, report_date_time())
 
     def test_missing_report_date_time(self):
-        """Test that the report datetime is now if it's not present in the request."""
+        """Test that the report datetime is empty if it's not present in the request."""
         with patch("server_utilities.functions.bottle.request") as request:
             request.query = {}
+            self.assertEqual("", report_date_time())
+
+    def test_future_report_date_time(self):
+        """Test that the report datetime is empty if it's a future date."""
+        with patch("server_utilities.functions.bottle.request") as request:
+            request.query = dict(report_date="3000-01-01T00:00:00Z")
             self.assertEqual("", report_date_time())
 
     def test_uuid(self):
