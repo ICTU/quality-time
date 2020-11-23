@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Dict, Final, NoReturn, cast, Any, Union
+from typing import Dict, Final, NoReturn, cast, Union
 
 import aiohttp
 
@@ -18,15 +18,12 @@ from strategies.changed_status import get_notable_metrics_from_json
 async def notify(log_level: int = None) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
-
     sleep_duration = int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
-    server_host = os.environ.get('SERVER_HOST', 'localhost')
-    server_port = os.environ.get('SERVER_PORT', '5001')
     api_version = "v3"
-    reports_url = f"http://{server_host}:{server_port}/api/{api_version}/reports"
-    most_recent_measurement_seen = datetime.max.isoformat()
-
+    reports_url = f"http://{os.environ.get('SERVER_HOST', 'localhost')}:" \
+                  f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
     data_model = await retrieve_data_model(api_version)
+    most_recent_measurement_seen = datetime.max.isoformat()
     ready_to_send_metrics: Dict[str, Union[str, int]] = {}
     while True:
         record_health()
