@@ -1,4 +1,4 @@
-import { fetch_server_api } from "./fetch_server_api";
+import { api_with_report_date, fetch_server_api } from "./fetch_server_api";
 
 function add_report(reload) {
   return fetch_server_api('post', 'report/new', {}).then(reload)
@@ -13,11 +13,11 @@ function delete_report(report_uuid, go_home) {
 }
 
 function get_reports(date) {
-  return fetch_server_api('get', `reports?report_date=${date.toISOString()}`)
+  return fetch_server_api('get', api_with_report_date('reports', date))
 }
 
 function get_tag_report(tag, date) {
-  return fetch_server_api('get', `tagreport/${tag}?report_date=${date.toISOString()}`)
+  return fetch_server_api('get', api_with_report_date(`tagreport/${tag}`, date))
 }
 
 function set_report_attribute(report_uuid, attribute, value, reload) {
