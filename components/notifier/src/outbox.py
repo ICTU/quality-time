@@ -4,9 +4,10 @@ from datetime import datetime, timedelta
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from typing import Dict, Union
 
+
 def outbox(notable_metrics, outbox_contents, sleep_duration):
     """Method pattern for distributing notifications at the appropriate time."""
-    destinations = dict()
+    destinations = {}
     metrics = []
     for notification in notable_metrics:
         destinations[notification["report_uuid"]] = notification["notification_destinations"]
@@ -23,6 +24,7 @@ def outbox(notable_metrics, outbox_contents, sleep_duration):
 #         updated_configuration[key] = changed_configuration[key]
 #     return updated_configuration
 
+
 def add_configurations(new_configurations, existing_configurations, sleep_duration) -> Dict[str, Union[str, int]]:
     """Check if a configuration already exists, and if not adds it."""
     for new in new_configurations:
@@ -36,7 +38,7 @@ def add_configurations(new_configurations, existing_configurations, sleep_durati
             existing_configurations[new] = dict(
                 destination=new,
                 previous_notify=datetime.now() - timedelta(seconds=sleep_duration),
-                notifications=dict()
+                notifications={}
             )
     return existing_configurations
 

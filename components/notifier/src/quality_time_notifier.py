@@ -27,7 +27,7 @@ async def notify(log_level: int = None) -> NoReturn:
     most_recent_measurement_seen = datetime.max.isoformat()
 
     data_model = await retrieve_data_model(api_version)
-    ready_to_send_metrics: Dict[str, Union[str, int]] = dict()
+    ready_to_send_metrics: Dict[str, Union[str, int]] = {}
     while True:
         record_health()
         logging.info("Determining notifications...")
