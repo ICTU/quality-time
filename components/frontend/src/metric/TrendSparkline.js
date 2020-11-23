@@ -12,8 +12,8 @@ export function TrendSparkline(props) {
     measurements.push({ y: y, x: x1 });
     measurements.push({ y: y, x: x2 });
   }
-  const now = new Date();
-  let week_ago = new Date();
+  const now = props.report_date ? new Date(props.report_date) : new Date();
+  let week_ago = props.report_date ? new Date(props.report_date) : new Date();
   week_ago.setDate(week_ago.getDate() - 7);
   return (
     <VictoryGroup theme={VictoryTheme.material} scale={{ x: "time", y: "linear" }} domain={{ x: [week_ago, now] }} height={60} padding={0}>
