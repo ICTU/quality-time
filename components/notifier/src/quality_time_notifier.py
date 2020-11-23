@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Dict, Final, NoReturn, cast
+from typing import Dict, Final, NoReturn, cast, Any, Union
 
 import aiohttp
 
@@ -27,7 +27,7 @@ async def notify(log_level: int = None) -> NoReturn:
     most_recent_measurement_seen = datetime.max.isoformat()
 
     data_model = await retrieve_data_model(api_version)
-
+    ready_to_send_metrics: Dict[str, Union[str, int]] = dict()
     while True:
         record_health()
         logging.info("Determining notifications...")
@@ -38,9 +38,9 @@ async def notify(log_level: int = None) -> NoReturn:
         except Exception as reason:  # pylint: disable=broad-except
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
-
-        for notification in get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen):
-            outbox.update_configurations(notification["notification_destinations"])
+        notable_metrics = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
+        ready_to_send_metrics = outbox.outbox(notable_metrics, ready_to_send_metrics, sleep_duration)
+        for notification in notable_metrics:
             for configuration in cast(Dict, notification["notification_destinations"]).values():
                 if "sleep_duration" in configuration:
                     logging.info("sleep duration")

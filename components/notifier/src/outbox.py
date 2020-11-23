@@ -1,17 +1,20 @@
-"""."""
+"""Outbox for handling and sending collected notifications."""
 
-import os
-import logging
-
-from datetime import datetime
-
+from datetime import datetime, timedelta
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
+from typing import Dict, Union
 
 def outbox(notable_metrics, outbox_contents, sleep_duration):
     """Method pattern for distributing notifications at the appropriate time."""
-    outbox_configurations = add_configurations(notable_metrics["notification_destinations"], outbox_contents, sleep_duration)
-    add_notifications(notable_metrics["metrics"], outbox_configurations)
-    return send_notification_to_teams()
+    destinations = dict()
+    metrics = []
+    for notification in notable_metrics:
+        destinations[notification["report_uuid"]] = notification["notification_destinations"]
+        for metric in notification["metrics"]:
+            metrics.append(metric)
+    outbox_configurations = add_configurations(destinations, outbox_contents, sleep_duration)
+    result = add_notifications(metrics, outbox_configurations)
+    return send_notifications(result)
 
 # def update_configuration_parameters(changed_configuration, to_be_updated_configuration):
 #     """."""
@@ -20,7 +23,7 @@ def outbox(notable_metrics, outbox_contents, sleep_duration):
 #         updated_configuration[key] = changed_configuration[key]
 #     return updated_configuration
 
-def add_configurations(new_configurations, sleep_duration, existing_configurations):
+def add_configurations(new_configurations, existing_configurations, sleep_duration) -> Dict[str, Union[str, int]]:
     """Check if a configuration already exists, and if not adds it."""
     for new in new_configurations:
         is_new = True
@@ -32,25 +35,27 @@ def add_configurations(new_configurations, sleep_duration, existing_configuratio
         if is_new:
             existing_configurations[new] = dict(
                 destination=new,
-                previous_notify=datetime.now() - sleep_duration,
+                previous_notify=datetime.now() - timedelta(seconds=sleep_duration),
                 notifications=dict()
             )
     return existing_configurations
 
+
 def add_notifications(new_notifications, configurations):
     """Add notifications to the configurations."""
     for configuration_uuid in configurations:
-        for new_notification_uuid in new_notifications:
-            if new_notification_uuid in configuration_uuid:
-                configuration_uuid[new_notification_uuid] = dict(
+        for new_notification in new_notifications:
+            if new_notification in configuration_uuid:
+                configuration_uuid[new_notification] = dict(
                     metric_type="",
                     metric_name="",
                     metric_unit="",
                     new_metric_status="",
                     new_metric_value="",
                     old_metric_status="",
-                    old_metric_value=""
-                )
+                    old_metric_value="")
+    return configurations
+
 
 def send_notifications(metrics_per_configurations):
     """Send the notifications and remove them from the outbox."""
