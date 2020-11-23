@@ -1,19 +1,21 @@
 """Outbox for handling and sending collected notifications."""
 
+import os
+
 from datetime import datetime, timedelta
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from typing import Dict, Union
 
 
-def outbox(notable_metrics, outbox_contents, sleep_duration):
-    """Method pattern for distributing notifications at the appropriate time."""
+def outbox(notable_metrics, outbox_contents):
+    """Collect and distribute the generated notifications."""
     destinations = {}
     metrics = []
     for notification in notable_metrics:
         destinations[notification["report_uuid"]] = notification["notification_destinations"]
         for metric in notification["metrics"]:
             metrics.append(metric)
-    outbox_configurations = add_configurations(destinations, outbox_contents, sleep_duration)
+    outbox_configurations = add_configurations(destinations, outbox_contents)
     result = add_notifications(metrics, outbox_configurations)
     return send_notifications(result)
 
@@ -25,8 +27,9 @@ def outbox(notable_metrics, outbox_contents, sleep_duration):
 #     return updated_configuration
 
 
-def add_configurations(new_configurations, existing_configurations, sleep_duration) -> Dict[str, Union[str, int]]:
+def add_configurations(new_configurations, existing_configurations) -> Dict[str, Union[str, int]]:
     """Check if a configuration already exists, and if not adds it."""
+    sleep_duration = int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
     for new in new_configurations:
         is_new = True
         if len(existing_configurations) > 0:
@@ -38,8 +41,7 @@ def add_configurations(new_configurations, existing_configurations, sleep_durati
             existing_configurations[new] = dict(
                 destination=new,
                 previous_notify=datetime.now() - timedelta(seconds=sleep_duration),
-                notifications={}
-            )
+                notifications={})
     return existing_configurations
 
 

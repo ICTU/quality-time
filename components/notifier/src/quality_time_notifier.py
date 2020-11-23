@@ -36,7 +36,7 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
         notable_metrics = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        ready_to_send_metrics = outbox.outbox(notable_metrics, ready_to_send_metrics, sleep_duration)
+        ready_to_send_metrics = outbox.outbox(notable_metrics, ready_to_send_metrics)
         for notification in notable_metrics:
             for configuration in cast(Dict, notification["notification_destinations"]).values():
                 if "sleep_duration" in configuration:
