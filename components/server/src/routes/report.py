@@ -15,7 +15,7 @@ from initialization.report import import_json_report
 from model.actions import copy_report
 from model.data import ReportData
 from model.transformations import hide_credentials, summarize_report
-from server_utilities.functions import report_date_time, uuid
+from server_utilities.functions import iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
@@ -34,8 +34,11 @@ def post_report_new(database: Database):
     report_uuid = uuid()
     user = sessions.user(database)
     report = dict(
-        report_uuid=report_uuid, title="New report", subjects={},
-        delta=dict(uuids=[report_uuid], email=user["email"], description=f"{user['user']} created a new report."))
+        report_uuid=report_uuid,
+        title="New report",
+        subjects={},
+        delta=dict(uuids=[report_uuid], email=user["email"], description=f"{user['user']} created a new report."),
+    )
     result = insert_new_report(database, report)
     result["new_report_uuid"] = report_uuid
     return result
@@ -50,8 +53,10 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     report_copy = copy_report(data.report, data.datamodel)
     user = sessions.user(database)
     report_copy["delta"] = dict(
-        uuids=[report_uuid, report_copy["report_uuid"]], email=user["email"],
-        description=f"{user['user']} copied the report '{data.report_name}'.")
+        uuids=[report_uuid, report_copy["report_uuid"]],
+        email=user["email"],
+        description=f"{user['user']} copied the report '{data.report_name}'.",
+    )
     result = insert_new_report(database, report_copy)
     result["new_report_uuid"] = report_copy["report_uuid"]
     return result
@@ -85,8 +90,8 @@ def delete_report(report_uuid: ReportId, database: Database):
     data.report["deleted"] = "true"
     user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid], email=user["email"],
-        description=f"{user['user']} deleted the report '{data.report_name}'.")
+        uuids=[report_uuid], email=user["email"], description=f"{user['user']} deleted the report '{data.report_name}'."
+    )
     return insert_new_report(database, data.report)
 
 
@@ -102,9 +107,11 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
     user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[report_uuid], email=user["email"],
+        uuids=[report_uuid],
+        email=user["email"],
         description=f"{user['user']} changed the {report_attribute} of report '{data.report_name}'"
-                    f"{value_change_description}.")
+        f"{value_change_description}.",
+    )
     return insert_new_report(database, data.report)
 
 
@@ -116,8 +123,12 @@ def get_tag_report(tag: str, database: Database):
     data_model = latest_datamodel(database, date_time)
     subjects = _get_subjects_and_metrics_by_tag(data_model, reports, tag)
     tag_report = dict(
-        title=f'Report for tag "{tag}"', subtitle="Note: tag reports are read-only", report_uuid=f"tag-{tag}",
-        timestamp=date_time, subjects=subjects)
+        title=f'Report for tag "{tag}"',
+        subtitle="Note: tag reports are read-only",
+        report_uuid=f"tag-{tag}",
+        timestamp=iso_timestamp(),
+        subjects=subjects,
+    )
     hide_credentials(data_model, tag_report)
     summarize_report(tag_report, recent_measurements_by_metric_uuid(database, date_time), data_model)
     return tag_report

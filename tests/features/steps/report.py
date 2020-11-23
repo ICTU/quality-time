@@ -23,13 +23,21 @@ def import_report(context):
 
 @when("the client enters a report date that's too old")
 def time_travel_long_ago(context):
+    """Set a time before the first report existed."""
     context.report_date = "2020-08-31T23:00:00.000Z"
+
+
+@when("the client enters a future report date")
+def time_travel_future(context):
+    """Set a time in the future."""
+    context.report_date = "3000-01-01T10:00:00.000Z"
 
 
 @when("the client enters a report date that's not too old")
 def time_travel(context):
+    """Set a time in the past, but after the report was created."""
     time.sleep(1)  # Make sure the previously created report is older than the report date
-    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()[:-len("+00:00")] + "Z"
+    context.report_date = datetime.now(timezone.utc).replace(microsecond=0).isoformat()[: -len("+00:00")] + "Z"
     time.sleep(1)  # Make sure report date is in the past
 
 

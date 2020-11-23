@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
 
 import bottle
+
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
@@ -21,9 +22,12 @@ def iso_timestamp() -> str:
 
 
 def report_date_time() -> str:
-    """Return the report date requested as query parameter."""
-    report_date_string = dict(bottle.request.query).get("report_date")
-    return str(report_date_string).replace("Z", "+00:00") if report_date_string else ""
+    """Return the report date requested as query parameter if it's in the past, else return an empty string."""
+    if report_date_string := dict(bottle.request.query).get("report_date"):
+        iso_report_date_string = str(report_date_string).replace("Z", "+00:00")
+        if iso_report_date_string < iso_timestamp():
+            return iso_report_date_string
+    return ""
 
 
 def uuid() -> ReportId:
@@ -46,7 +50,7 @@ def sanitize_html(html_text: str) -> str:
     return sanitized_html
 
 
-Item = TypeVar('Item')
+Item = TypeVar("Item")
 
 
 def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:

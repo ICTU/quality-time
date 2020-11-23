@@ -62,7 +62,7 @@ class App extends Component {
       this.show_connection_messages(json);
       this.check_session(json)
     }
-    const report_date = this.report_date() || new Date(3000, 1, 1);
+    const report_date = this.report_date();
     const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
     if (this.state.report_uuid.slice(0, 4) === "tag-") {
       this.reload_tag_report(report_date, show_error);

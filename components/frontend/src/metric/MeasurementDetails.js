@@ -14,8 +14,7 @@ import { ChangeLog } from '../changelog/ChangeLog';
 import { capitalize, get_source_name } from '../utils';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
-  const report_date_parameter = report_date || new Date(3000, 1, 1);
-  get_measurements(metric_uuid, report_date_parameter)
+  get_measurements(metric_uuid, report_date)
     .then(function (json) {
       if (json.ok !== false) {
         setMeasurements(json.measurements);
