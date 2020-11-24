@@ -14,7 +14,7 @@ from ldap3 import ALL, Connection, Server
 from ldap3.core import exceptions
 from pymongo.database import Database
 
-from database import sessions
+from database import sessions, reports
 from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 
@@ -48,7 +48,7 @@ def check_password(ssha_ldap_salted_password, password) -> bool:
     """Check the OpenLDAP tagged digest against the given password."""
     # See https://www.openldap.org/doc/admin24/security.html#SSHA%20password%20storage%20scheme
     # We should (also) support SHA512 as SHA1 is no longer considered to be secure.
-    ssha_prefix = b'{SSHA}'
+    ssha_prefix = b"{SSHA}"
     if not ssha_ldap_salted_password.startswith(ssha_prefix):  # pragma: no cover-behave
         logging.warning("Only SSHA LDAP password digest supported!")
         raise exceptions.LDAPInvalidAttributeSyntaxResult
@@ -56,7 +56,7 @@ def check_password(ssha_ldap_salted_password, password) -> bool:
     digest_salt = base64.b64decode(digest_salt_b64)
     digest = digest_salt[:20]
     salt = digest_salt[20:]
-    sha = hashlib.sha1(bytes(password, 'utf-8'))  # noqa: DUO130, # nosec
+    sha = hashlib.sha1(bytes(password, "utf-8"))  # noqa: DUO130, # nosec
     sha.update(salt)  # nosec
     return digest == sha.digest()
 
@@ -72,6 +72,7 @@ def get_credentials() -> Tuple[str, str]:
 
 def verify_user(username: str, password: str) -> Tuple[bool, str]:
     """Authenticate the user and return whether they are authorized to login and their email address."""
+
     def user(username: str, email: str) -> str:
         """Format user and email for logging purposes."""
         return f"user {username} <{email or 'unknown email'}>"
@@ -89,7 +90,7 @@ def verify_user(username: str, password: str) -> Tuple[bool, str]:
             if not lookup_connection.bind():  # pragma: no cover-behave
                 username = ldap_lookup_user_dn
                 raise exceptions.LDAPBindError
-            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=['userPassword', 'mail'])
+            lookup_connection.search(ldap_root_dn, ldap_search_filter, attributes=["userPassword", "mail"])
             result = lookup_connection.entries[0]
         username, salted_password = result.entry_dn, result.userPassword.value
         email = result.mail.value or ""
@@ -119,7 +120,8 @@ def login(database: Database) -> Dict[str, Union[bool, str]]:
         verified, email = verify_user(username, password)
     if verified:
         create_session(database, username, email)
-    return dict(ok=verified, email=email)
+    editors = reports.latest_reports_overview(database).get("editors", [])
+    return dict(ok=verified, email=email, editor=not editors or username in editors or email in editors)
 
 
 @bottle.post("/api/v3/logout")
