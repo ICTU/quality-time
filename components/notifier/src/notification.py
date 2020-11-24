@@ -6,6 +6,7 @@ from typing import Dict, List
 
 
 class Notification:
+    """Handel notification contents and status."""
     def __init__(self, report, metrics, destination_uuid, destination):
         """Initialise the Notification with the required info."""
         self.report_title = report["title"]

@@ -54,7 +54,7 @@ class BuildNotificationTextTests(TestCase):
                         old_metric_value=5,
                         new_metric_status="red (target not met)",
                         new_metric_value=10)]
-        notification = Notification(self.report, metrics, "destination_uuid", dict())
+        notification = Notification(self.report, metrics, "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
@@ -72,7 +72,7 @@ class BuildNotificationTextTests(TestCase):
             old_metric_value=0,
             new_metric_status="white (unknown)",
             new_metric_value=None)]
-        notification = Notification(self.report, metrics, "destination_uuid", dict())
+        notification = Notification(self.report, metrics, "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"

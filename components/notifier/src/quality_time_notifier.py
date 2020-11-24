@@ -10,7 +10,6 @@ from typing import Final, List, NoReturn, cast
 import aiohttp
 
 import outbox
-from destinations.ms_teams import build_notification_text, send_notification_to_teams
 from notifier_utilities.type import JSON, URL
 from strategies.changed_status import get_notable_metrics_from_json
 
