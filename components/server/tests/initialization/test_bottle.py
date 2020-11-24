@@ -13,6 +13,7 @@ class BottleInitTest(unittest.TestCase):
     """Unit tests for the bottle initialization."""
 
     def tearDown(self):
+        """Override to remove the plugins."""
         bottle.app().uninstall(True)
 
     def test_init(self):

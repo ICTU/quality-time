@@ -14,6 +14,7 @@ class AuthPluginTest(unittest.TestCase):
     """Unit tests for the route authentication and authorization plugin."""
 
     def setUp(self):
+        """Override to set up a mock database and install the plugins."""
         logging.disable()
         self.mock_database = Mock()
         self.mock_database.reports_overviews.find_one.return_value = dict(_id="id")
@@ -22,6 +23,7 @@ class AuthPluginTest(unittest.TestCase):
         bottle.install(AuthPlugin())
 
     def tearDown(self):
+        """Override to remove the plugins and reset the logging."""
         bottle.app().uninstall(True)
         logging.disable(logging.NOTSET)
 

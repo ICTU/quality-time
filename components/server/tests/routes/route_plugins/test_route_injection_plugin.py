@@ -11,6 +11,7 @@ class RouteInjectionPluginTest(unittest.TestCase):
     """Unit tests for the route injection plugin."""
 
     def tearDown(self):
+        """Override to remove the plugins."""
         bottle.app().uninstall(True)
 
     def test_install_plugin(self):
@@ -27,6 +28,7 @@ class RouteInjectionPluginTest(unittest.TestCase):
         """Test that the plugin can be applied to a route."""
 
         def route(keyword):
+            """Fake route."""
             return keyword
 
         bottle.install(InjectionPlugin("value", "keyword"))
@@ -37,6 +39,7 @@ class RouteInjectionPluginTest(unittest.TestCase):
         """Test that the plugin can be applied to a route."""
 
         def route():
+            """Fake route."""
             return "route"
 
         bottle.install(InjectionPlugin("value", "keyword"))

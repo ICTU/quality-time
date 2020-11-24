@@ -12,6 +12,7 @@ class ReportsTest(unittest.TestCase):
     """Unit tests for the reports routes."""
 
     def setUp(self):
+        """Override to set up a mock database with contents."""
         self.database = Mock()
         self.email = "jenny@example.org"
         self.other_mail = "john@example.org"

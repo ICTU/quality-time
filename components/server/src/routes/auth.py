@@ -14,7 +14,7 @@ from ldap3 import ALL, Connection, Server
 from ldap3.core import exceptions
 from pymongo.database import Database
 
-from database import sessions, reports
+from database import sessions
 from server_utilities.functions import uuid
 from server_utilities.type import SessionId
 

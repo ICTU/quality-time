@@ -23,6 +23,7 @@ class AuthTestCase(unittest.TestCase):
         self.database = Mock()
 
     def tearDown(self):
+        """Override to remove the cookies and reset the logging."""
         bottle.response._cookies = None  # pylint: disable=protected-access
         logging.disable(logging.NOTSET)
 
