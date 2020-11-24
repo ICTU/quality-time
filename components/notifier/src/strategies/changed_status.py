@@ -1,10 +1,10 @@
 """Strategies for notifying users about metrics."""
 
-from typing import Dict, List, Union
+from typing import Dict, List
+from notification import Notification
 
 
-def get_notable_metrics_from_json(
-        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[Dict[str, str], str]]]:
+def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen: str) -> List[Notification]:
     """Return the reports that have a webhook and metrics that require notifying."""
     notifications = []
     for report in json["reports"]:
@@ -15,10 +15,8 @@ def get_notable_metrics_from_json(
                         or has_new_status(metric, "unknown", most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
         if report.get("notification_destinations") and notable_metrics:
-            notifications.append(
-                dict(report_uuid=report["report_uuid"], report_title=report["title"],
-                     url=report.get("url"), metrics=notable_metrics,
-                     notification_destinations=report["notification_destinations"]))
+            for destination_uuid, destination in report["notification_destinations"].items():
+                notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
     return notifications
 
 

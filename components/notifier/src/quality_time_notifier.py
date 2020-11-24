@@ -5,7 +5,7 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Dict, Final, NoReturn, cast, Union
+from typing import Final, List, NoReturn, cast
 
 import aiohttp
 
@@ -24,7 +24,7 @@ async def notify(log_level: int = None) -> NoReturn:
                   f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.isoformat()
-    ready_to_send_metrics: Dict[str, Union[str, int]] = {}
+    ready_to_send_metrics: List = []
     while True:
         record_health()
         logging.info("Determining notifications...")
@@ -35,17 +35,16 @@ async def notify(log_level: int = None) -> NoReturn:
         except Exception as reason:  # pylint: disable=broad-except
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
-        notable_metrics = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        ready_to_send_metrics = outbox.outbox(notable_metrics, ready_to_send_metrics)
-        for notification in notable_metrics:
-            for configuration in cast(Dict, notification["notification_destinations"]).values():
-                if "sleep_duration" in configuration:
-                    logging.info("sleep duration")
-
-                else:
-                    if configuration["teams_webhook"]:
-                        send_notification_to_teams(
-                            str(configuration["teams_webhook"]), build_notification_text(notification))
+        notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
+        ready_to_send_metrics = outbox.outbox(notifications, ready_to_send_metrics)
+        # for notification in notifications:
+        #     if notification.not_ready():
+        #         logging.info("sleep duration")
+        #
+        #     else:
+        #         if notification.destination["teams_webhook"]:
+        #             send_notification_to_teams(
+        #                 str(notification.destination["teams_webhook"]), build_notification_text(notification))
 
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
