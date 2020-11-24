@@ -14,16 +14,22 @@ class ReportsTest(unittest.TestCase):
     def setUp(self):
         self.database = Mock()
         self.email = "jenny@example.org"
-        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
+        self.other_mail = "john@example.org"
+        self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             sources=dict(source_type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))),
-            metrics=dict(metric_type=dict(default_scale="count")))
+            metrics=dict(metric_type=dict(default_scale="count")),
+        )
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.measurements.find.return_value = [
             dict(
-                _id="id", metric_uuid=METRIC_ID, status="red",
-                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
+                _id="id",
+                metric_uuid=METRIC_ID,
+                status="red",
+                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+            )
+        ]
 
     @patch("bottle.request")
     def test_post_reports_attribute_title(self, request):
@@ -32,9 +38,12 @@ class ReportsTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
         inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
         self.assertEqual(
-            dict(email=self.email,
-                 description="Jenny changed the title of the reports overview from 'Reports' to 'All the reports'."),
-            inserted["delta"])
+            dict(
+                email=self.email,
+                description="jenny changed the title of the reports overview from 'Reports' to 'All the reports'.",
+            ),
+            inserted["delta"],
+        )
 
     @patch("bottle.request")
     def test_post_reports_attribute_title_unchanged(self, request):
@@ -50,7 +59,56 @@ class ReportsTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
         inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
         self.assertEqual(
-            dict(email=self.email, description="Jenny changed the layout of the reports overview."), inserted["delta"])
+            dict(email=self.email, description="jenny changed the layout of the reports overview."), inserted["delta"]
+        )
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors(self, request):
+        """Test that the reports (overview) editors can be changed."""
+        request.json = dict(editors=[self.other_mail])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        self.assertEqual(
+            dict(
+                email=self.email,
+                description=f"jenny changed the editors of the reports overview from 'None' to '['{self.other_mail}', 'jenny']'.",
+            ),
+            inserted["delta"],
+        )
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors_clear(self, request):
+        """Test that the reports (overview) editors can be cleared."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+        )
+        request.json = dict(editors=[])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        self.assertEqual(
+            dict(
+                email=self.email,
+                description=f"jenny changed the editors of the reports overview from '['{self.other_mail}', '{self.email}']' to '[]'.",
+            ),
+            inserted["delta"],
+        )
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors_remove_others(self, request):
+        """Test that other editors can be removed from the reports (overview) editors."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+        )
+        request.json = dict(editors=[self.email])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        self.assertEqual(
+            dict(
+                email=self.email,
+                description=f"jenny changed the editors of the reports overview from '['{self.other_mail}', '{self.email}']' to '['{self.email}']'.",
+            ),
+            inserted["delta"],
+        )
 
     def test_get_report(self):
         """Test that a report can be retrieved and credentials are hidden."""
