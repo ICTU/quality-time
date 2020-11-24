@@ -31,19 +31,19 @@ class ReportsTest(unittest.TestCase):
             )
         ]
 
+    def assert_change_description(self, attribute: str, old_value=None, new_value=None) -> None:
+        """Assert that a change description is added to the new reports overview."""
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        delta = f" from '{old_value}' to '{new_value}'" if old_value and new_value else ""
+        description = f"jenny changed the {attribute} of the reports overview{delta}."
+        self.assertEqual(dict(email=self.email, description=description), inserted["delta"])
+
     @patch("bottle.request")
     def test_post_reports_attribute_title(self, request):
         """Test that a reports (overview) attribute can be changed."""
         request.json = dict(title="All the reports")
         self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(
-                email=self.email,
-                description="jenny changed the title of the reports overview from 'Reports' to 'All the reports'.",
-            ),
-            inserted["delta"],
-        )
+        self.assert_change_description("title", "Reports", "All the reports")
 
     @patch("bottle.request")
     def test_post_reports_attribute_title_unchanged(self, request):
@@ -57,24 +57,14 @@ class ReportsTest(unittest.TestCase):
         """Test that a reports (overview) layout can be changed."""
         request.json = dict(layout=[dict(x=1, y=2)])
         self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(email=self.email, description="jenny changed the layout of the reports overview."), inserted["delta"]
-        )
+        self.assert_change_description("layout")
 
     @patch("bottle.request")
     def test_post_reports_attribute_editors(self, request):
         """Test that the reports (overview) editors can be changed."""
         request.json = dict(editors=[self.other_mail])
         self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(
-                email=self.email,
-                description=f"jenny changed the editors of the reports overview from 'None' to '['{self.other_mail}', 'jenny']'.",
-            ),
-            inserted["delta"],
-        )
+        self.assert_change_description("editors", "None", f"['{self.other_mail}', 'jenny']")
 
     @patch("bottle.request")
     def test_post_reports_attribute_editors_clear(self, request):
@@ -84,14 +74,7 @@ class ReportsTest(unittest.TestCase):
         )
         request.json = dict(editors=[])
         self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(
-                email=self.email,
-                description=f"jenny changed the editors of the reports overview from '['{self.other_mail}', '{self.email}']' to '[]'.",
-            ),
-            inserted["delta"],
-        )
+        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", "[]")
 
     @patch("bottle.request")
     def test_post_reports_attribute_editors_remove_others(self, request):
@@ -101,14 +84,7 @@ class ReportsTest(unittest.TestCase):
         )
         request.json = dict(editors=[self.email])
         self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(
-                email=self.email,
-                description=f"jenny changed the editors of the reports overview from '['{self.other_mail}', '{self.email}']' to '['{self.email}']'.",
-            ),
-            inserted["delta"],
-        )
+        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", f"['{self.email}']")
 
     def test_get_report(self):
         """Test that a report can be retrieved and credentials are hidden."""
