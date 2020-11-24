@@ -81,7 +81,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
             with patch("bottle.request.get_header", Mock(return_value=self.user_email)):
-                self.assertEqual(dict(ok=True, email=self.user_email, editor=True), auth.login(self.database))
+                self.assertEqual(dict(ok=True, email=self.user_email), auth.login(self.database))
         self.assert_cookie_has_session_id()
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
@@ -91,7 +91,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         with patch.dict("os.environ", {"FORWARD_AUTH_ENABLED": "True", "FORWARD_AUTH_HEADER": "X-Forwarded-User"}):
             with patch("bottle.request.get_header", Mock(return_value=None)):
-                self.assertEqual(dict(ok=False, email=None, editor=True), auth.login(self.database))
+                self.assertEqual(dict(ok=False, email=None), auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 
@@ -100,18 +100,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=True, email=self.user_email, editor=True), auth.login(self.database))
-        self.assert_cookie_has_session_id()
-        self.assert_ldap_lookup_connection_created(connection_mock)
-        self.assert_ldap_connection_search_called()
-
-    def test_successful_login_without_edit_rights(self, connection_mock, connection_enter):
-        """Test successful login."""
-        self.database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jenny"])
-        connection_mock.return_value = None
-        self.ldap_entry.userPassword.value = b"{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr"
-        connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=True, email=self.user_email, editor=False), auth.login(self.database))
+        self.assertEqual(dict(ok=True, email=self.user_email), auth.login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
@@ -121,7 +110,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = None
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=True, email=self.user_email, editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=True, email=self.user_email), auth.login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_bind_connection_created(connection_mock)
@@ -132,7 +121,7 @@ class LoginTests(AuthTestCase):
     def test_login_server_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when a server creation error occurs."""
         connection_mock.return_value = None
-        self.assertEqual(dict(ok=False, email="", editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=""), auth.login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
         self.assert_log(logging_mock, exceptions.LDAPServerPoolError, USERNAME)
@@ -143,7 +132,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_connection.bind.return_value = False
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email="", editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=""), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logging_mock, exceptions.LDAPBindError, self.lookup_user_dn)
@@ -154,7 +143,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_connection.search.side_effect = exceptions.LDAPResponseTimeoutError
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email="", editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=""), auth.login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logging_mock, exceptions.LDAPResponseTimeoutError, USERNAME)
@@ -165,7 +154,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{XSHA}whatever-here"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email=self.user_email, editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=self.user_email), auth.login(self.database))
         self.assert_ldap_connection_search_called()
         self.assertEqual("Only SSHA LDAP password digest supported!", logging_mock.call_args_list[0][0][0])
         self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult, self.user_dn, self.user_email)
@@ -176,7 +165,7 @@ class LoginTests(AuthTestCase):
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{SSHA}W841/abcdefghijklmnopqrstuvwxyz0"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(dict(ok=False, email=self.user_email, editor=True), auth.login(self.database))
+        self.assertEqual(dict(ok=False, email=self.user_email), auth.login(self.database))
         self.assert_ldap_connection_search_called()
         self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult, self.user_dn, self.user_email)
 

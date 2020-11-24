@@ -120,8 +120,7 @@ def login(database: Database) -> Dict[str, Union[bool, str]]:
         verified, email = verify_user(username, password)
     if verified:
         create_session(database, username, email)
-    editors = reports.latest_reports_overview(database).get("editors", [])
-    return dict(ok=verified, email=email, editor=not editors or username in editors or email in editors)
+    return dict(ok=verified, email=email)
 
 
 @bottle.post("/api/v3/logout")

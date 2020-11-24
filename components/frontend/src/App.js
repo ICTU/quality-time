@@ -212,7 +212,9 @@ class App extends Component {
   render() {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
-    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
+    const editors = this.state.reports_overview.editors || [];
+    const editor = editors.length === 0 || editors.includes(this.state.user) || editors.includes(this.state.email);
+    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-" || !editor;
     const props = {
       reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };
