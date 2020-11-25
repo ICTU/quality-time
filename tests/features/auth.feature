@@ -10,3 +10,12 @@ Feature: authentication
   Scenario: wrong credentials
     When the client tries to log in with incorrect credentials
     Then the server tells the client the credentials are incorrect
+
+  Scenario: change editors
+    When jadoe logs in
+    When the client changes the reports editors to "jadoe, admin"
+    Then the reports editors is "jadoe, admin"
+    When the client logs out
+    And jodoe logs in
+    And the client changes the reports editors to "jodoe, admin"
+    Then the server tells the client they are not authorized

@@ -5,12 +5,14 @@ from behave import given, then, when
 
 
 @given("a logged-in client")
-def logged_in_client(context):
+@when("{username} logs in")
+def logged_in_client(context, username="admin"):
     """Log in the client."""
-    context.post("login", dict(username="admin", password="admin"))
+    context.post("login", dict(username=username, password="admin" if username == "admin" else "secret"))
 
 
 @given("a logged-out client")
+@when("the client logs out")
 def logged_out_client(context):
     """Log out the client."""
     context.post("logout")
@@ -29,6 +31,12 @@ def check_invalid_credentials(context):
 
 
 @then("the server tells the client to log in")
+def check_unauthenticated(context):
+    """Check that the server responded with an authenticated error message."""
+    assert_equal(401, context.response.status_code)
+
+
+@then("the server tells the client they are not authorized")
 def check_unauthorized(context):
     """Check that the server responded with an unauthorized error message."""
-    assert_equal(401, context.response.status_code)
+    assert_equal(403, context.response.status_code)
