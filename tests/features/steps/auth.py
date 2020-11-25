@@ -8,7 +8,8 @@ from behave import given, then, when
 @when("{username} logs in")
 def logged_in_client(context, username="admin"):
     """Log in the client."""
-    context.post("login", dict(username=username, password="admin" if username == "admin" else "secret"))
+    password = "admin" if username == "admin" else "secret"
+    context.post("login", dict(username=username, password=password))
 
 
 @given("a logged-out client")
