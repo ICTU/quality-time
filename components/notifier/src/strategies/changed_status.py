@@ -13,8 +13,8 @@ def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen
             for metric in subject["metrics"].values():
                 if has_new_status(metric, most_recent_measurement_seen, "target_not_met", "unknown"):
                     notable_metrics.append(create_notification(data_model, metric))
-        if report.get("notification_destinations") and notable_metrics:
-            for destination_uuid, destination in report["notification_destinations"].items():
+        if notable_metrics:
+            for destination_uuid, destination in report.get("notification_destinations", {}).items():
                 notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
     return notifications
 
