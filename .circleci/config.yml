@@ -61,10 +61,7 @@ jobs:
           working_directory: components/server
           command: |
             sudo apt update
-            sudo apt install software-properties-common
-            sudo add-apt-repository ppa:deadsnakes/ppa
-            sudo apt update
-            sudo apt install python3.9-venv
+            sudo apt install python3.9 python3.9-venv
             mkdir -p /tmp/log
             python3.9 -m venv venv
             . venv/bin/activate
