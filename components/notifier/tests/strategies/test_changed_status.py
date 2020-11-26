@@ -4,8 +4,11 @@ import datetime
 import json
 import pathlib
 import unittest
+from typing import List
 
 from strategies.changed_status import get_notable_metrics_from_json, has_new_status
+
+from notification import Notification
 
 
 class StrategiesTestCase(unittest.TestCase):
@@ -87,7 +90,7 @@ class StrategiesTestCase(unittest.TestCase):
         report1 = dict(
             title="Title", report_uuid="report1", url=self.report_url,
             subjects=dict(subject1=subject1),
-            notification_destinations=dict(name="destination1"))
+            notification_destinations=dict(uuid1=dict(name="destination1")))
         reports_json = dict(reports=[report1])
         self.assertEqual(
             [dict(
@@ -101,8 +104,10 @@ class StrategiesTestCase(unittest.TestCase):
                     old_metric_status=self.green_metric_status,
                     old_metric_value="5"
                 )],
-                notification_destinations=dict(name="destination1"))],
+                notification_destinations=dict(uuid1=dict(name="destination1")))],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
+        for destination_uuid, destination in report1["notification_destinations"].items():
+            Notification(report1, [red_metric], destination_uuid, destination)
 
     def test_new_red_metric_without_count_scale(self):
         """Test that a metric that doesn't have a count scale that has become red is included."""
@@ -178,7 +183,11 @@ class StrategiesTestCase(unittest.TestCase):
         subject1 = dict(metrics=dict(metric1=red_metric1))
         report1 = dict(
             title="Title", report_uuid="report1", teams_webhook="webhook", url=self.report_url,
-            subjects=dict(subject1=subject1), notification_destinations=dict(name="destination1"))
+            subjects=dict(
+                subject1=subject1),
+                notification_destinations=dict(
+                    destination_uuid="uuid1",
+                    name="destination1"))
 
         red_metric2 = self.metric(
             name="metric2", status="target_met",
@@ -188,9 +197,19 @@ class StrategiesTestCase(unittest.TestCase):
         subject2 = dict(metrics=dict(metric1=red_metric2))
         report2 = dict(
             title="Title", report_uuid="report2", teams_webhook="webhook", url="https://report2",
-            subjects=dict(subject1=subject2), notification_destinations=dict(name="destination2"))
+            subjects=dict(
+                subject1=subject2),
+                notification_destinations=dict(
+                    destination_uuid="uuid1",
+                    name="destination2"))
 
         reports_json = dict(reports=[report1, report2])
+        self.assertEqual(
+            [],
+            get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen))
+
+        notifications = get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)
+        self.assertEqual(notifications[0].destination_uuid, 1)
         self.assertEqual(
             [dict(
                 report_uuid="report1", report_title="Title", url=self.report_url,
