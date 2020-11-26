@@ -1,9 +1,5 @@
 """Outbox for handling and sending collected notifications."""
 
-import datetime
-import json
-import pathlib
-import unittest
 from typing import List
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams

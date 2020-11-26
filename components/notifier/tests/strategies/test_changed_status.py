@@ -4,11 +4,8 @@ import datetime
 import json
 import pathlib
 import unittest
-from typing import List
 
 from strategies.changed_status import get_notable_metrics_from_json, has_new_status
-
-from notification import Notification
 
 
 class StrategiesTestCase(unittest.TestCase):
@@ -198,7 +195,10 @@ class StrategiesTestCase(unittest.TestCase):
                         name="destination2")))
         result = []
         reports_json = dict(reports=[report1, report2])
-        for notification in get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen):
+        for notification in get_notable_metrics_from_json(
+                self.data_model,
+                reports_json,
+                self.most_recent_measurement_seen):
             result.append(notification.metrics)
         self.assertEqual(
             [[dict(

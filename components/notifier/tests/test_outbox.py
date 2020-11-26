@@ -21,8 +21,8 @@ class OutboxTestCase(unittest.TestCase):
         metric4 = dict(metric_name="default metric 4")
         metrics2 = [metric3, metric4]
         self.notifications = [
-            Notification(self.report, metrics1, "uuid1", dict(teams_webhook="www.url.com/1")),
-            Notification(self.report, metrics2, "uuid2", dict(teams_webhook="www.url.com/2"))]
+            Notification(self.report, metrics1, "uuid1", dict(teams_webhook="http://url/1")),
+            Notification(self.report, metrics2, "uuid2", dict(teams_webhook="http://url/2"))]
 
     def test_merge_notifications_into_nothing(self):
         """Test that notifications are merged, even if the destination is empty."""
@@ -42,7 +42,7 @@ class OutboxTestCase(unittest.TestCase):
                           dict(metric_name="new metric 2")])
 
     @patch('notification.Notification.not_ready')
-    @patch('destinations.ms_teams.send_notification_to_teams')
+    @patch('outbox.send_notification_to_teams')
     def test_send_notifications(self, mocked_send, mocked_ready):
         """Test that notifications can be send."""
         mocked_ready.side_effect = [False, True]
@@ -61,8 +61,22 @@ class OutboxTestCase(unittest.TestCase):
         send_notifications(self.notifications)
         mocked_send.assert_called_once()
 
-    @patch('pymsteams.connectorcard.send')
-    def test_deletion_of_notifications(self, mocked_send):
+    @patch('notification.Notification.not_ready')
+    @patch('outbox.send_notification_to_teams')
+    def test_deletion_of_notifications(self, mocked_send, mocked_ready):
         """Test that notifications are deleted after sending."""
-        send_notifications(self.notifications)
-        self.assertTrue(False)
+        mocked_ready.side_effect = [False, False]
+        for notification in self.notifications:
+            notification.metrics[0]["metric_unit"]="units"
+            notification.metrics[0]["new_metric_value"]=20
+            notification.metrics[0]["old_metric_value"]=10
+            notification.metrics[0]["new_metric_status"]="red (target not met)"
+            notification.metrics[0]["old_metric_status"]="green (target met)"
+
+            notification.metrics[1]["metric_unit"]="units"
+            notification.metrics[1]["new_metric_value"]=20
+            notification.metrics[1]["old_metric_value"]=10
+            notification.metrics[1]["new_metric_status"]="red (target not met)"
+            notification.metrics[1]["old_metric_status"]="green (target met)"
+
+        self.assertEqual([], send_notifications(self.notifications))
