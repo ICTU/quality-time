@@ -64,7 +64,7 @@ jobs:
             sudo apt install software-properties-common
             sudo add-apt-repository ppa:deadsnakes/ppa
             sudo apt update
-            sudo apt install python3.9
+            sudo apt install python3.9-venv
             mkdir -p /tmp/log
             python3.9 -m venv venv
             . venv/bin/activate
