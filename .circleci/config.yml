@@ -60,8 +60,13 @@ jobs:
       - run:
           working_directory: components/server
           command: |
+            sudo apt update
+            sudo apt install software-properties-common
+            sudo add-apt-repository ppa:deadsnakes/ppa
+            sudo apt update
+            sudo apt install python3.9
             mkdir -p /tmp/log
-            python3 -m venv venv
+            python3.9 -m venv venv
             . venv/bin/activate
             pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
       - run: |
@@ -82,7 +87,7 @@ jobs:
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
-            python3 -m venv venv
+            python3.9 -m venv venv
             . venv/bin/activate
             pip --quiet install --progress-bar off -r requirements-dev.txt
             export COVERAGE_RCFILE=.coveragerc-behave
