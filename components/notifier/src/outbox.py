@@ -3,7 +3,7 @@
 from typing import List
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
-from models.notification import Notification
+from notification import Notification
 
 
 class Outbox:

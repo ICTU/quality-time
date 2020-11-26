@@ -3,8 +3,7 @@
 import unittest
 from unittest.mock import patch
 
-from models.metric_notification_data import MetricNotificationData
-from models.notification import Notification
+from notification import Notification
 from outbox import Outbox
 
 
@@ -140,7 +139,7 @@ class OutboxTestCase(unittest.TestCase):
         outbox = Outbox(notifications)
         self.assertEqual(0, outbox.send_notifications())
 
-    @patch("models.notification.Notification.ready")
+    @patch("notification.Notification.ready")
     @patch("outbox.send_notification_to_teams")
     def test_deletion_of_notifications(self, mocked_send, mocked_ready):
         """Test that notifications are deleted after sending."""

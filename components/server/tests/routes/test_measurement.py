@@ -4,7 +4,12 @@ import unittest
 from datetime import date, timedelta
 from unittest.mock import Mock, patch
 
-from routes.measurement import get_measurements, post_measurement, set_entity_attribute, stream_nr_measurements
+from routes.measurement import (
+    get_measurements,
+    post_measurement,
+    set_entity_attribute,
+    stream_nr_measurements,
+)
 
 from ..fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, SUBJECT_ID2, create_report
 
@@ -24,10 +29,33 @@ class GetMeasurementsTest(unittest.TestCase):
         self.assertEqual(dict(measurements=self.measurements), get_measurements(METRIC_ID, self.database))
 
     @patch("bottle.request")
-    def test_get_old_measurements(self, request):
+    def test_get_old_but_not_new_measurements(self, request):
         """Test that the measurements for the requested metric and report date are returned."""
-        request.query = dict(report_date="2020-08-31T23:59:59.000Z")
-        self.assertEqual(dict(measurements=self.measurements), get_measurements(METRIC_ID, self.database))
+        database_entries = [dict(start="0"), dict(start="1"), dict(start="2")]
+
+        def find_side_effect(query, projection, sort=None):  # pylint: disable=unused-argument
+            """Side effect for mocking the database measurements."""
+            min_iso_timestamp = query["end"]["$gt"] if "end" in query else ""
+            max_iso_timestamp = query["start"]["$lt"] if "start" in query else ""
+            return [
+                m
+                for m in database_entries
+                if (not min_iso_timestamp or m["end"] > min_iso_timestamp)
+                and (not max_iso_timestamp or m["start"] < max_iso_timestamp)
+            ]
+
+        def find_one_side_effect(query, projection, sort=None):
+            """Side effect for mocking the last database measurement."""
+            return find_side_effect(query, projection, sort)[-1]
+
+        self.database.measurements.find_one.side_effect = find_one_side_effect
+        self.database.measurements.find.side_effect = find_side_effect
+
+        request.query = dict(report_date="2")
+
+        self.assertEqual(
+            dict(measurements=[dict(start="0"), dict(start="1")]), get_measurements(METRIC_ID, self.database)
+        )
 
     def test_get_measurements_when_there_are_none(self):
         """Tests that the measurements for the requested metric are returned."""

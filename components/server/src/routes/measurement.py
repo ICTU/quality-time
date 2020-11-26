@@ -11,7 +11,7 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import (
-    all_measurements,
+    measurements_by_metric,
     count_measurements,
     insert_new_measurement,
     latest_measurement,
@@ -139,4 +139,4 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 def get_measurements(metric_uuid: MetricId, database: Database) -> Dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    return dict(measurements=list(all_measurements(database, metric_uuid, report_date_time())))
+    return dict(measurements=list(measurements_by_metric(database, metric_uuid, max_iso_timestamp=report_date_time())))

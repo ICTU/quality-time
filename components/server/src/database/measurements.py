@@ -1,7 +1,7 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Union, cast
+from typing import Dict, List, Optional, cast
 
 import pymongo
 from pymongo.database import Database
@@ -39,9 +39,16 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     return measurements_by_metric_uuid
 
 
-def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str = ""):
-    """Return all measurements, without the entities, except for the most recent one."""
-    measurement_filter: Dict[str, Union[str, Dict[str, str]]] = {"metric_uuid": metric_uuid}
+def measurements_by_metric(
+    database: Database,
+    *metric_uuids: MetricId,
+    min_iso_timestamp: str = "",
+    max_iso_timestamp: str = "",
+):
+    """Return all measurements for one metric, without the entities, except for the most recent one."""
+    measurement_filter: Dict = {"metric_uuid": {"$in": metric_uuids}}
+    if min_iso_timestamp:
+        measurement_filter["end"] = {"$gt": min_iso_timestamp}
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_with_entities = database.measurements.find_one(
