@@ -17,9 +17,6 @@ class Notification:
         self.destination = destination
         self.creation_time = datetime.now()
 
-    def __eq__(self, other):
-        return self.metrics == other.metrics and self.destination_uuid == other.destination_uuid
-
     def not_ready(self):
         """Return whether this notification can be send out."""
         age = datetime.now() - self.creation_time

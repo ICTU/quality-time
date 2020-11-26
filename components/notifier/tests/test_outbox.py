@@ -62,6 +62,16 @@ class OutboxTestCase(unittest.TestCase):
         mocked_send.assert_called_once()
 
     @patch('notification.Notification.not_ready')
+    def test_notifications_without_destination(self, mocked_ready):
+        """Test that notifications without a destination aren't send."""
+        mocked_ready.side_effect = [False, False]
+        notifications = self.notifications
+        notifications[0].destination["teams_webhook"] = None
+        notifications[1].destination["teams_webhook"] = None
+
+        self.assertEqual(notifications, send_notifications(notifications))
+
+    @patch('notification.Notification.not_ready')
     @patch('outbox.send_notification_to_teams')
     def test_deletion_of_notifications(self, mocked_send, mocked_ready):
         """Test that notifications are deleted after sending."""
