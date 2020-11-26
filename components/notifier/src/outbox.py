@@ -13,7 +13,7 @@ def outbox(new_notifications: List[Notification], outbox_contents: List[Notifica
 
 
 def merge_notifications(notifications: List[Notification], outbox_contents: List[Notification]) -> List[Notification]:
-    """Check if a notification already exists, and if not adds it."""
+    """Check if a notification already exists, and if not, add it."""
     for new_notification in notifications:
         for old_notification in outbox_contents:
             if new_notification.destination_uuid == old_notification.destination_uuid:

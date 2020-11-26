@@ -93,7 +93,7 @@ class OutboxTestCase(unittest.TestCase):
     @patch("notification.Notification.ready")
     @patch("outbox.send_notification_to_teams")
     def test_send_notifications(self, mocked_send, mocked_ready):
-        """Test that notifications can be send."""
+        """Test that notifications can be sent."""
         mocked_ready.side_effect = [True, False]
 
         send_notifications(self.notifications)
@@ -101,7 +101,7 @@ class OutboxTestCase(unittest.TestCase):
 
     @patch("notification.Notification.ready")
     def test_notifications_without_destination(self, mocked_ready):
-        """Test that notifications without a destination aren't send."""
+        """Test that notifications without a destination aren't sent."""
         mocked_ready.side_effect = [True, True]
         notifications = self.notifications
         notifications[0].destination["teams_webhook"] = None
