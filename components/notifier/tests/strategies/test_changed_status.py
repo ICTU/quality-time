@@ -25,7 +25,7 @@ class StrategiesTestCase(unittest.TestCase):
         self.first_timestamp = "2019-01-01T00:23:59+59:00"
         self.second_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
-        self.white_status = "unknown"
+        self.white_metric_status = "unknown"
         self.red_metric_status = "red (target not met)"
         self.green_metric_status = "green (target met)"
 
@@ -100,7 +100,6 @@ class StrategiesTestCase(unittest.TestCase):
                  old_metric_value="5")],
             get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)[0].metrics)
 
-
     def test_new_red_metric_without_count_scale(self):
         """Test that a metric that doesn't have a count scale that has become red is included."""
         old_percentage = dict(status="target_met", value="5")
@@ -131,33 +130,34 @@ class StrategiesTestCase(unittest.TestCase):
     def test_new_white_metric(self):
         """Test that a metric that turns white is added."""
         metric = self.metric(
-            status=self.white_status,
+            status=self.white_metric_status,
             recent_measurements=[
                 dict(start=self.second_timestamp, count=dict(status="target_met")),
-                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
-        result = has_new_status(metric, self.white_status,self.most_recent_measurement_seen)
-        self.assertTrue(result)
+                dict(start=self.first_timestamp, count=dict(status=self.white_metric_status))])
+        self.assertTrue(has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status))
+        self.assertFalse(has_new_status(metric, self.most_recent_measurement_seen, self.red_metric_status))
+        self.assertTrue(has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status, self.red_metric_status))
 
     def test_old_white_metric(self):
         """Test that a metric that was already white isn't added."""
         metric = self.metric(
-            status=self.white_status,
+            status=self.white_metric_status,
             recent_measurements=[
-                dict(start=self.second_timestamp, count=dict( status=self.white_status)),
-                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
-        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+                dict(start=self.second_timestamp, count=dict(status=self.white_metric_status)),
+                dict(start=self.first_timestamp, count=dict(status=self.white_metric_status))])
+        self.assertFalse(has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status, self.red_metric_status))
 
     def test_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
         metric = self.metric(
-            status=self.white_status,
-            recent_measurements=[dict(start=self.first_timestamp, count=dict(status=self.white_status))])
-        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+            status=self.white_metric_status,
+            recent_measurements=[dict(start=self.first_timestamp, count=dict(status=self.white_metric_status))])
+        self.assertFalse(has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status, self.red_metric_status))
 
     def test_no_measurements(self):
         """Test that metrics without measurements (and therefore no changes in value) aren't added."""
-        metric = self.metric(status=self.white_status)
-        self.assertFalse(has_new_status(metric, self.white_status, self.most_recent_measurement_seen))
+        metric = self.metric(status=self.white_metric_status)
+        self.assertFalse(has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status, self.red_metric_status))
 
     def test_multiple_reports_with_same_destination(self):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
@@ -206,7 +206,6 @@ class StrategiesTestCase(unittest.TestCase):
                 new_metric_status='red (target not met)', new_metric_value='10',
                 old_metric_status='green (target met)', old_metric_value='5')]],
             result)
-
 
     def test_no_notification_destinations_configured(self):
         """Test that no notification is to be send if there are no configurations in notification destinations."""
