@@ -35,16 +35,10 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
         notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        ready_to_send_metrics = outbox.outbox(notifications, ready_to_send_metrics)
-        # for notification in notifications:
-        #     if notification.not_ready():
-        #         logging.info("sleep duration")
-        #
-        #     else:
-        #         if notification.destination["teams_webhook"]:
-        #             send_notification_to_teams(
-        #                 str(notification.destination["teams_webhook"]), build_notification_text(notification))
-
+        if len(notifications) > 0:
+            ready_to_send_metrics = outbox.outbox(notifications, ready_to_send_metrics)
+        else:
+            ready_to_send_metrics = notifications
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
