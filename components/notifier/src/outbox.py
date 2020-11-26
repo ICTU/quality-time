@@ -30,10 +30,9 @@ def merge_notifications(notifications: List[Notification], outbox_contents: List
 def send_notifications(notifications: List[Notification]):
     """Send the notifications and remove them from the outbox."""
     for notification in notifications[:]:
-        if not notification.not_ready():
-            if notification.destination["teams_webhook"]:
-                send_notification_to_teams(
-                    str(notification.destination["teams_webhook"]),
-                    build_notification_text(notification))
-                notifications.remove(notification)
+        if not notification.not_ready() and notification.destination["teams_webhook"]:
+            send_notification_to_teams(
+                str(notification.destination["teams_webhook"]),
+                build_notification_text(notification))
+            notifications.remove(notification)
     return notifications
