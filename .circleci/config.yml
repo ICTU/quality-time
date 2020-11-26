@@ -64,7 +64,7 @@ jobs:
             wget -q -O - https://packagecloud.io/circleci/trusty/gpgkey | sudo apt-key add -
             sudo apt update
             sudo apt-get install ca-certificates
-            sudo apt install software-properties-common
+            sudo apt install --yes software-properties-common
             sudo add-apt-repository ppa:deadsnakes/ppa
             sudo apt update
             sudo apt install python3.9 python3.9-venv
