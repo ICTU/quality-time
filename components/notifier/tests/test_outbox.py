@@ -43,8 +43,8 @@ class OutboxTestCase(unittest.TestCase):
                        old_metric_status=self.green_metric_status)
         metrics2 = [metric3, metric4]
         self.notifications = [
-            Notification(self.report, metrics1, "uuid1", dict(teams_webhook="http://url/1")),
-            Notification(self.report, metrics2, "uuid2", dict(teams_webhook="http://url/2"))]
+            Notification(self.report, metrics1, "uuid1", dict(teams_webhook="https://url/1")),
+            Notification(self.report, metrics2, "uuid2", dict(teams_webhook="https://url/2"))]
 
     def test_merge_notifications_into_nothing(self):
         """Test that notifications are merged, even if the destination is empty."""
