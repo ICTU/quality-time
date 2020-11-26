@@ -30,7 +30,8 @@ def create_notification(data_model, metric) -> Dict[str, str]:
         new_metric_status=get_status(data_model, recent_measurements[-1][scale]["status"]),
         new_metric_value=recent_measurements[-1][scale]["value"],
         old_metric_status=get_status(data_model, recent_measurements[-2][scale]["status"]),
-        old_metric_value=recent_measurements[-2][scale]["value"])
+        old_metric_value=recent_measurements[-2][scale]["value"],
+    )
 
 
 def get_status(data_model, status) -> str:
