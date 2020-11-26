@@ -66,6 +66,7 @@ class OutboxTestCase(unittest.TestCase):
     def test_deletion_of_notifications(self, mocked_send, mocked_ready):
         """Test that notifications are deleted after sending."""
         mocked_ready.side_effect = [False, False]
+        mocked_send.side_effect = [None, None]
         for notification in self.notifications:
             notification.metrics[0]["metric_unit"]="units"
             notification.metrics[0]["new_metric_value"]=20
