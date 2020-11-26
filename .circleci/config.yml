@@ -58,13 +58,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Set Python Version"
-          command: pyenv global 3.9.0
-      - run:
           working_directory: components/server
           command: |
+            sudo apt-get update
+            sudo apt-get install software-properties-common
+            sudo add-apt-repository ppa:deadsnakes/ppa
+            sudo apt-get update
+            sudo apt-get install python3.9 python3.9-venv
             mkdir -p /tmp/log
-            python -m venv venv
+            python3.9 -m venv venv
             . venv/bin/activate
             pip install --progress-bar off -r requirements.txt -r requirements-dev.txt &>> /tmp/log/pip.log
       - run: |
@@ -85,7 +87,7 @@ jobs:
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
-            python -m venv venv
+            python3.9 -m venv venv
             . venv/bin/activate
             pip --quiet install --progress-bar off -r requirements-dev.txt
             export COVERAGE_RCFILE=.coveragerc-behave
