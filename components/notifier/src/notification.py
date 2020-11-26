@@ -17,12 +17,12 @@ class Notification:
         self.destination = destination
         self.creation_time = datetime.now()
 
-    def not_ready(self):
+    def ready(self):
         """Return whether this notification can be send out."""
         age = datetime.now() - self.creation_time
-        minutes = self.destination.get("frequency", int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60)))
+        minutes = self.destination.get("frequency", int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60)))
         minimal_age = timedelta(minutes=minutes)
-        return age < minimal_age
+        return age >= minimal_age
 
     def merge_notification(self, new_metrics):
         """Merge new metrics into this notification."""
