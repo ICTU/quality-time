@@ -61,7 +61,7 @@ jobs:
           working_directory: components/server
           command: |
             wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            wget -q -O - https://packagecloud.io/circle/trusty/gpgkey | sudo apt-key add -
+            wget -q -O - https://packagecloud.io/circleci/trusty/gpgkey | sudo apt-key add -
             sudo apt update
             sudo apt-get install ca-certificates
             sudo apt install software-properties-common
