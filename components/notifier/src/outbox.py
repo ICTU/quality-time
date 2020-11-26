@@ -15,14 +15,11 @@ def outbox(new_notifications: List[Notification], outbox_contents: List[Notifica
 def merge_notifications(notifications: List[Notification], outbox_contents: List[Notification]) -> List[Notification]:
     """Check if a notification already exists, and if not adds it."""
     for new_notification in notifications:
-        is_new = True
-        if len(outbox_contents) > 0:
-            for old_notification in outbox_contents:
-                if new_notification.destination_uuid == old_notification.destination_uuid:
-                    old_notification.merge_notification(new_notification.metrics)
-                    is_new = False
-                    break
-        if is_new:
+        for old_notification in outbox_contents:
+            if new_notification.destination_uuid == old_notification.destination_uuid:
+                old_notification.merge_notification(new_notification.metrics)
+                break
+        else:
             outbox_contents.append(new_notification)
     return outbox_contents
 
@@ -32,7 +29,7 @@ def send_notifications(notifications: List[Notification]):
     for notification in notifications[:]:
         if not notification.not_ready() and notification.destination["teams_webhook"]:
             send_notification_to_teams(
-                str(notification.destination["teams_webhook"]),
-                build_notification_text(notification))
+                str(notification.destination["teams_webhook"]), build_notification_text(notification)
+            )
             notifications.remove(notification)
     return notifications
