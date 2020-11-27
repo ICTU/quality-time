@@ -3,6 +3,7 @@
 ## Table of contents
 
 - [Logging in and out](#logging-in-and-out)
+- [Limiting editing rights](#limiting-editing-rights)
 - [Configuring quality reports](#configuring-quality-reports)
   - [Configuring reports](#configuring-reports)
   - [Configuring subjects](#configuring-subjects)
@@ -45,6 +46,14 @@ After hitting "Submit" you should be logged in. The menu bar shows your username
 ![Logged in screenshot](screenshots/menubar_logged_in.png)
 
 Clicking "Logout" logs you out from *Quality-time*. Your user session expires after 24 hours and you need to log in again to be able to edit reports.
+
+## Limiting editing rights
+
+By default, any logged in user can edit reports and metrics. However, editing rights can be limited to certain people. On the homepage, expand the reports overview title and add the usernames or email addresses of people who will be allowed to edit reports and metrics. 
+
+If you forget to add yourself, your username will be added automatically. This means that you can't retract your own editing rights: add another user and ask them to remove your user name or email address.
+
+To restore the default situation where every logged in user can edit reports and metrics, simply remove all usernames and email addresses.
 
 ## Configuring quality reports
 

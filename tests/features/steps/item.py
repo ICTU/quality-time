@@ -54,10 +54,12 @@ def delete_item(context, item):
 def change_item_attribute(context, item, attribute, value):
     """Change the item attribute to value."""
     item_fragment = "reports" if item == "reports" else f"{item}/{context.uuid[item]}"
-    if attribute == "tags":
+    if attribute in ("tags", "editors"):
         value = value.split(", ")
+        if value == ["None"]:
+            value = []
     else:
-        value = dict(true=True, false=False).get(value.lower(), value)
+        value = dict(true=True, false=False, none=None).get(value.lower(), value)
     if item == "notification_destination":
         context.post(f"report/{context.uuid['report']}/{item_fragment}/attributes", {attribute: value})
     else:
@@ -69,7 +71,8 @@ def get_item(context, item):
     item_instance = context.get("reports")
     if item != "reports":
         item_instance = [
-            report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]][0]
+            report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
+        ][0]
         if item == "notification_destination":
             return item_instance["notification_destinations"][context.uuid["notification_destination"]]
         if item != "report":
@@ -84,7 +87,10 @@ def get_item(context, item):
 @then('the {item} {attribute} is "{value}"')
 def check_item_attribute(context, item, attribute, value):
     """Check that the item attribute equals value."""
-    value = None if value == "None" else value
+    if item == "reports" and attribute == "editors":
+        value = [] if value == "None" else value.split(", ")
+    else:
+        value = None if value == "None" else value
     assert_equal(value, get_item(context, item)[attribute])
 
 

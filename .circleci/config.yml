@@ -57,7 +57,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: osixia/openldap:1.4.0
+      - image: ictu/quality-time_testldap:v3.15.0-rc.4
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD

@@ -34,11 +34,14 @@ def post_reports_attribute(reports_attribute: str, database: Database):
     old_value = overview.get(reports_attribute)
     if value == old_value:
         return dict(ok=True)  # Nothing to do
+    user = sessions.user(database)
+    if reports_attribute == "editors" and len(value) > 0 and user["user"] not in value and user["email"] not in value:
+        value.append(user["user"])  # Make sure users don't remove themselves as editor by accident
     overview[reports_attribute] = value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
-    user = sessions.user(database)
     overview["delta"] = dict(
         email=user["email"],
         description=f"{user['user']} changed the {reports_attribute} of the reports overview"
-                    f"{value_change_description}.")
+        f"{value_change_description}.",
+    )
     return insert_new_reports_overview(database, overview)

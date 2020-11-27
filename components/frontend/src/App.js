@@ -100,7 +100,8 @@ class App extends Component {
             loading: false,
             datamodel: data_model,
             reports: reports.reports || [],
-            reports_overview: { layout: reports.layout, subtitle: reports.subtitle, title: reports.title },
+            reports_overview: {
+              layout: reports.layout, subtitle: reports.subtitle, title: reports.title, editors: reports.editors },
             last_update: now
           })
         }
@@ -125,7 +126,7 @@ class App extends Component {
   check_session(json) {
     if (json.ok === false && json.status === 401) {
       this.set_user(null);
-      if(this.login_forwardauth() === false){
+      if (this.login_forwardauth() === false) {
         show_message("warning", "Your session expired", "Please log in to renew your session", "user x");
       }
     }
@@ -188,12 +189,12 @@ class App extends Component {
     let self = this;
     login("", "")
       .then(function (json) {
-        if(json.ok) {
+        if (json.ok) {
           self.set_user(json.email, json.email);
           return true;
         }
       });
-      return false;
+    return false;
   }
 
   set_user(username, email) {
@@ -211,7 +212,9 @@ class App extends Component {
   render() {
     const report_date = this.report_date();
     const current_report = this.state.reports.filter((report) => report.report_uuid === this.state.report_uuid)[0] || null;
-    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-";
+    const editors = this.state.reports_overview.editors || [];
+    const editor = editors.length === 0 || editors.includes(this.state.user) || editors.includes(this.state.email);
+    const readOnly = this.state.user === null || this.state.report_date_string || this.state.report_uuid.slice(0, 4) === "tag-" || !editor;
     const props = {
       reload: (json) => this.reload(json), report_date: report_date, reports: this.state.reports, history: this.history
     };

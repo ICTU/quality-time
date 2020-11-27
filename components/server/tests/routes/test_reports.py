@@ -12,29 +12,39 @@ class ReportsTest(unittest.TestCase):
     """Unit tests for the reports routes."""
 
     def setUp(self):
+        """Override to set up a mock database with contents."""
         self.database = Mock()
         self.email = "jenny@example.org"
-        self.database.sessions.find_one.return_value = dict(user="Jenny", email=self.email)
+        self.other_mail = "john@example.org"
+        self.database.sessions.find_one.return_value = dict(user="jenny", email=self.email)
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             sources=dict(source_type=dict(parameters=dict(url=dict(type="url"), password=dict(type="password")))),
-            metrics=dict(metric_type=dict(default_scale="count")))
+            metrics=dict(metric_type=dict(default_scale="count")),
+        )
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.measurements.find.return_value = [
             dict(
-                _id="id", metric_uuid=METRIC_ID, status="red",
-                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")])]
+                _id="id",
+                metric_uuid=METRIC_ID,
+                status="red",
+                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
+            )
+        ]
+
+    def assert_change_description(self, attribute: str, old_value=None, new_value=None) -> None:
+        """Assert that a change description is added to the new reports overview."""
+        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
+        delta = f" from '{old_value}' to '{new_value}'" if old_value and new_value else ""
+        description = f"jenny changed the {attribute} of the reports overview{delta}."
+        self.assertEqual(dict(email=self.email, description=description), inserted["delta"])
 
     @patch("bottle.request")
     def test_post_reports_attribute_title(self, request):
         """Test that a reports (overview) attribute can be changed."""
         request.json = dict(title="All the reports")
         self.assertEqual(dict(ok=True), post_reports_attribute("title", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(email=self.email,
-                 description="Jenny changed the title of the reports overview from 'Reports' to 'All the reports'."),
-            inserted["delta"])
+        self.assert_change_description("title", "Reports", "All the reports")
 
     @patch("bottle.request")
     def test_post_reports_attribute_title_unchanged(self, request):
@@ -48,9 +58,34 @@ class ReportsTest(unittest.TestCase):
         """Test that a reports (overview) layout can be changed."""
         request.json = dict(layout=[dict(x=1, y=2)])
         self.assertEqual(dict(ok=True), post_reports_attribute("layout", self.database))
-        inserted = self.database.reports_overviews.insert.call_args_list[0][0][0]
-        self.assertEqual(
-            dict(email=self.email, description="Jenny changed the layout of the reports overview."), inserted["delta"])
+        self.assert_change_description("layout")
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors(self, request):
+        """Test that the reports (overview) editors can be changed."""
+        request.json = dict(editors=[self.other_mail])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        self.assert_change_description("editors", "None", f"['{self.other_mail}', 'jenny']")
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors_clear(self, request):
+        """Test that the reports (overview) editors can be cleared."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+        )
+        request.json = dict(editors=[])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", "[]")
+
+    @patch("bottle.request")
+    def test_post_reports_attribute_editors_remove_others(self, request):
+        """Test that other editors can be removed from the reports (overview) editors."""
+        self.database.reports_overviews.find_one.return_value = dict(
+            _id="id", title="Reports", subtitle="", editors=[self.other_mail, self.email]
+        )
+        request.json = dict(editors=[self.email])
+        self.assertEqual(dict(ok=True), post_reports_attribute("editors", self.database))
+        self.assert_change_description("editors", f"['{self.other_mail}', '{self.email}']", f"['{self.email}']")
 
     def test_get_report(self):
         """Test that a report can be retrieved and credentials are hidden."""

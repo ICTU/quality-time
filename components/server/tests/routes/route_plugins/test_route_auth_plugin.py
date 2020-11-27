@@ -7,20 +7,23 @@ from unittest.mock import Mock
 
 import bottle
 
-from routes.plugins import AuthenticationPlugin, InjectionPlugin
+from routes.plugins import AuthPlugin, InjectionPlugin
 
 
-class AuthenticationPluginTest(unittest.TestCase):
-    """Unit tests for the route authentication plugin."""
+class AuthPluginTest(unittest.TestCase):
+    """Unit tests for the route authentication and authorization plugin."""
 
     def setUp(self):
+        """Override to set up a mock database and install the plugins."""
         logging.disable()
         self.mock_database = Mock()
+        self.mock_database.reports_overviews.find_one.return_value = dict(_id="id")
         self.success = dict(ok=True)
         bottle.install(InjectionPlugin(self.mock_database, "database"))
-        bottle.install(AuthenticationPlugin())
+        bottle.install(AuthPlugin())
 
     def tearDown(self):
+        """Override to remove the plugins and reset the logging."""
         bottle.app().uninstall(True)
         logging.disable(logging.NOTSET)
 
@@ -43,6 +46,15 @@ class AuthenticationPluginTest(unittest.TestCase):
     def test_missing_session(self):
         """Test that the session is invalid when it's missing."""
         self.mock_database.sessions.find_one.return_value = None
+        route = bottle.Route(bottle.app(), "/", "POST", self.route)
+        self.assertRaises(bottle.HTTPError, route.call)
+
+    def test_unauthorized_sessions(self):
+        """Test that an unauthorized session is invalid."""
+        self.mock_database.reports_overviews.find_one.return_value = dict(_id="id", editors=["jodoe"])
+        self.mock_database.sessions.find_one.return_value = dict(
+            user="jadoe", email="jadoe@example.org", session_expiration_datetime=datetime.max
+        )
         route = bottle.Route(bottle.app(), "/", "POST", self.route)
         self.assertRaises(bottle.HTTPError, route.call)
 
