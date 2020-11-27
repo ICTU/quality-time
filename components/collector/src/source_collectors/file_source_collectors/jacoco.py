@@ -14,12 +14,14 @@ class JacocoCoverageBaseClass(XMLFileSourceCollector):
     coverage_type = "Subclass responsibility (Jacoco has: line, branch, instruction, complexity, method, class)"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the coverage from the JaCoCo XML."""
         missed, covered = 0, 0
         for response in responses:
             tree = await parse_source_response_xml(response)
-            counter = [c for c in tree.findall("counter") if c.get("type", "").lower() == self.coverage_type][0]
-            missed += int(counter.get("missed", 0))
-            covered += int(counter.get("covered", 0))
+            counters = [c for c in tree.findall("counter") if c.get("type", "").lower() == self.coverage_type]
+            if counters:
+                missed += int(counters[0].get("missed", 0))
+                covered += int(counters[0].get("covered", 0))
         return SourceMeasurement(value=str(missed), total=str(missed + covered))
 
 
@@ -39,7 +41,8 @@ class JacocoSourceUpToDateness(XMLFileSourceCollector, SourceUpToDatenessCollect
     """Collector to collect the Jacoco report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        """Override to parse the datetime from the JaCoCo XML."""
         tree = await parse_source_response_xml(response)
         session_info = tree.find(".//sessioninfo")
         timestamp = session_info.get("dump", 0) if session_info is not None else 0
-        return datetime.utcfromtimestamp(int(timestamp) / 1000.)
+        return datetime.utcfromtimestamp(int(timestamp) / 1000.0)

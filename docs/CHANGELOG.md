@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.15.0-rc.5] - [2020-11-27]
+## [Unreleased]
 
 ### Added
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - When invoking the reports API endpoint (api/v3/reports) without a `report_date` parameter, the server would sometimes return a deleted report. Fixes [#1683](https://github.com/ICTU/quality-time/issues/1683).
+- When measuring test branch coverage with a JaCoCo XML file that doesn't contain any branches, don't complain but simply report 100% coverage. Fixes [#1700](https://github.com/ICTU/quality-time/issues/1700).
 
 ## [3.14.1] - [2020-11-17]
 
