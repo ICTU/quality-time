@@ -13,9 +13,16 @@ Feature: authentication
 
   Scenario: change editors
     When jadoe logs in
-    When the client changes the reports editors to "jadoe, admin"
+    And the client changes the reports editors to "jadoe, admin"
     Then the reports editors is "jadoe, admin"
     When the client logs out
     And jodoe logs in
     And the client changes the reports editors to "jodoe, admin"
     Then the server tells the client they are not authorized
+
+  Scenario: change editors without including self
+    When jadoe logs in
+    And the client changes the reports editors to "jodoe"
+    Then the reports editors is "jodoe, jadoe"
+    When the client changes the reports editors to "None"
+    Then the reports editors is "None"
