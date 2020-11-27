@@ -44,3 +44,11 @@ jobs:
           repository: ictu/quality-time_frontend
           tag_with_ref: true
           path: components/frontend
+      - name: Push LDAP to Docker Hub
+          uses: docker/build-push-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+            repository: ictu/quality-time_testldap
+            tag_with_ref: true
+            path: components/ldap
