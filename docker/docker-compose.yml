@@ -41,7 +41,7 @@ services:
       - server
       - frontend
   frontend:
-    image: ictu/quality-time_frontend:v3.15.0-rc.2
+    image: ictu/quality-time_frontend:v3.15.0-rc.3
     environment:
       - FRONTEND_PORT=5000
     depends_on:
@@ -49,7 +49,7 @@ services:
     cap_drop:
       - ALL
   collector:
-    image: ictu/quality-time_collector:v3.15.0-rc.2
+    image: ictu/quality-time_collector:v3.15.0-rc.3
     environment:
       - SERVER_PORT=5001
       - SERVER_HOST=server
@@ -60,7 +60,7 @@ services:
     cap_drop:
       - ALL
   notifier:
-    image: ictu/quality-time_notifier:v3.15.0-rc.2
+    image: ictu/quality-time_notifier:v3.15.0-rc.3
     environment:
       - SERVER_PORT=5001
       - SERVER_HOST=server
@@ -70,7 +70,7 @@ services:
     cap_drop:
       - ALL
   server:
-    image: ictu/quality-time_server:v3.15.0-rc.2
+    image: ictu/quality-time_server:v3.15.0-rc.3
     environment:
       - SERVER_PORT=5001
       - PROXY_HOST=www
