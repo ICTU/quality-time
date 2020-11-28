@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: '3.9.0'
     - name: Set up Node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.2
       with:
         node-version: '13'
     - name: Prepare scan
