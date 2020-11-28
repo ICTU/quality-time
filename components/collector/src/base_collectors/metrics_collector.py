@@ -45,8 +45,9 @@ class MetricsCollector:
     API_VERSION = "v3"
 
     def __init__(self) -> None:
-        self.server_url: Final[URL] = \
-            URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
+        self.server_url: Final[URL] = URL(
+            f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
+        )
         self.data_model: JSON = {}
         self.last_parameters: Dict[str, Any] = {}
         self.next_fetch: Dict[str, datetime] = {}
@@ -71,13 +72,17 @@ class MetricsCollector:
             self.record_health()
             logging.info("Collecting...")
             async with aiohttp.ClientSession(
-                    connector=aiohttp.TCPConnector(limit_per_host=20, ssl=False), raise_for_status=True,
-                    timeout=timeout, trust_env=True) as session:
+                connector=aiohttp.TCPConnector(limit_per_host=20, ssl=False),
+                raise_for_status=True,
+                timeout=timeout,
+                trust_env=True,
+            ) as session:
                 with timer() as collection_timer:
                     await self.collect_metrics(session, measurement_frequency)
             sleep_duration = max(0, max_sleep_duration - collection_timer.duration)
             logging.info(
-                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration)
+                "Collecting took %.1f seconds. Sleeping %.1f seconds...", collection_timer.duration, sleep_duration
+            )
             await asyncio.sleep(sleep_duration)
 
     async def fetch_data_model(self, session: aiohttp.ClientSession, sleep_duration: int) -> JSON:
@@ -99,25 +104,29 @@ class MetricsCollector:
         """Collect measurements for all metrics."""
         metrics = await get(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/metrics"))
         next_fetch = datetime.now() + timedelta(seconds=measurement_frequency)
-        tasks = [self.collect_metric(session, metric_uuid, metric, next_fetch)
-                 for metric_uuid, metric in metrics.items() if self.__can_and_should_collect(metric_uuid, metric)]
+        tasks = [
+            self.collect_metric(session, metric_uuid, metric, next_fetch)
+            for metric_uuid, metric in metrics.items()
+            if self.__can_and_should_collect(metric_uuid, metric)
+        ]
         await asyncio.gather(*tasks)
 
-    async def collect_metric(
-            self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
+    async def collect_metric(self, session: aiohttp.ClientSession, metric_uuid, metric, next_fetch: datetime) -> None:
         """Collect measurements for the metric and post it to the server."""
         self.last_parameters[metric_uuid] = metric
         self.next_fetch[metric_uuid] = next_fetch
-        measurement = await self.collect_sources(session, metric)
-        measurement["metric_uuid"] = metric_uuid
-        await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
+        if measurement := await self.collect_sources(session, metric):
+            measurement["metric_uuid"] = metric_uuid
+            await post(session, URL(f"{self.server_url}/internal-api/{self.API_VERSION}/measurements"), measurement)
 
     async def collect_sources(self, session: aiohttp.ClientSession, metric):
         """Collect the measurements from the metric's sources."""
         collectors = []
         for source in metric["sources"].values():
-            collector_class = SourceCollector.get_subclass(source["type"], metric["type"])
-            collectors.append(collector_class(session, source, self.data_model).get())
+            if collector_class := SourceCollector.get_subclass(source["type"], metric["type"]):
+                collectors.append(collector_class(session, source, self.data_model).get())
+        if not collectors:
+            return
         measurements = await asyncio.gather(*collectors)
         for measurement, source_uuid in zip(measurements, metric["sources"]):
             measurement["source_uuid"] = source_uuid
@@ -133,8 +142,12 @@ class MetricsCollector:
         for source in sources.values():
             parameters = self.data_model.get("sources", {}).get(source["type"], {}).get("parameters", {})
             for parameter_key, parameter in parameters.items():
-                if parameter.get("mandatory") and metric["type"] in parameter.get("metrics") and \
-                        not source.get("parameters", {}).get(parameter_key) and not parameter.get("default_value"):
+                if (
+                    parameter.get("mandatory")
+                    and metric["type"] in parameter.get("metrics")
+                    and not source.get("parameters", {}).get(parameter_key)
+                    and not parameter.get("default_value")
+                ):
                     return False
         return bool(sources)
 

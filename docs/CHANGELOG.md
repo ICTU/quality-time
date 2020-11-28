@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - When invoking the reports API endpoint (api/v3/reports) without a `report_date` parameter, the server would sometimes return a deleted report. Fixes [#1683](https://github.com/ICTU/quality-time/issues/1683).
+- Make sure that the collector does not crash when a metric has a source that is no longer supported. Fixes [#1699](https://github.com/ICTU/quality-time/issues/1699).
 - When measuring test branch coverage with a JaCoCo XML file that doesn't contain any branches, don't complain but simply report 100% coverage. Fixes [#1700](https://github.com/ICTU/quality-time/issues/1700).
 
 ## [3.14.1] - [2020-11-17]
