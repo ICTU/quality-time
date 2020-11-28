@@ -36,7 +36,7 @@ class SourceCollector(ABC):
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_type: str, metric_type: str) -> Type["SourceCollector"]:
+    def get_subclass(cls, source_type: str, metric_type: str) -> Optional[Type["SourceCollector"]]:
         """Return the subclass registered for the source/metric name.
 
         First try to find a match on both source type and metric type. If no match is found, return the generic
@@ -47,7 +47,8 @@ class SourceCollector(ABC):
             if matching_subclasses:
                 matching_subclasses[0].source_type = source_type
                 return matching_subclasses[0]
-        raise LookupError(f"Couldn't find collector subclass for source {source_type} and metric {metric_type}")
+        logging.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
+        return None
 
     async def get(self):
         """Return the measurement from this source."""
@@ -55,9 +56,14 @@ class SourceCollector(ABC):
         measurement = await self.__safely_parse_source_responses(responses)
         landing_url = await self.__safely_parse_landing_url(responses)
         return dict(
-            api_url=responses.api_url, landing_url=landing_url, value=measurement.value, total=measurement.total,
-            entities=measurement.entities, connection_error=responses.connection_error,
-            parse_error=measurement.parse_error)
+            api_url=responses.api_url,
+            landing_url=landing_url,
+            value=measurement.value,
+            total=measurement.total,
+            entities=measurement.entities,
+            connection_error=responses.connection_error,
+            parse_error=measurement.parse_error,
+        )
 
     async def _api_url(self) -> URL:
         """Translate the url parameter into the API url."""
@@ -187,9 +193,13 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):  # pylint: disable=
         """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
         entities = [
             Entity(
-                key=branch["name"], name=branch["name"], commit_date=str(self._commit_datetime(branch).date()),
-                url=str(self._branch_landing_url(branch)))
-            for branch in await self._unmerged_branches(responses)]
+                key=branch["name"],
+                name=branch["name"],
+                commit_date=str(self._commit_datetime(branch).date()),
+                url=str(self._branch_landing_url(branch)),
+            )
+            for branch in await self._unmerged_branches(responses)
+        ]
         return SourceMeasurement(entities=entities)
 
     @abstractmethod
