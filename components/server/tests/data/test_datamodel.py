@@ -1,12 +1,13 @@
 """Unit tests for the data model."""
 
 import json
+import pathlib
 import unittest
 
 
 def setUpModule():  # pylint: disable=invalid-name
     """Read the data model once for all data model tests."""
-    with open("src/data/datamodel.json") as data_model_json:
+    with pathlib.Path("src/data/datamodel.json").open() as data_model_json:
         DataModelTestCase.data_model = json.load(data_model_json)
 
 
@@ -39,7 +40,8 @@ class DataModelTest(DataModelTestCase):
                 for parameter in parameters.values():
                     parameter_metrics.extend(parameter["metrics"])
                 self.assertTrue(
-                    metric_id in parameter_metrics, f"No parameters for metric '{metric_id}' in source '{source}'")
+                    metric_id in parameter_metrics, f"No parameters for metric '{metric_id}' in source '{source}'"
+                )
 
     def test_addition(self):
         """Test each metric had its addition defined correctly."""
@@ -77,7 +79,8 @@ class DataModelTest(DataModelTestCase):
             default_scale = metric["default_scale"]
             self.assertTrue(
                 default_scale in allowed_scales,
-                f"Default scale {default_scale} of metric {metric_id} not in allowed scales: {allowed_scales}")
+                f"Default scale {default_scale} of metric {metric_id} not in allowed scales: {allowed_scales}",
+            )
 
     def test_all_scales_are_used(self):
         """Test that all scales are used at least once."""
@@ -98,7 +101,8 @@ class DataModelSourcesTest(DataModelTestCase):
             if "landing_url" in self.data_model["sources"][source]["parameters"]:
                 self.assertTrue(
                     "url" in self.data_model["sources"][source]["parameters"],
-                    f"Source '{source}' has the 'landing_url' parameter, but not the 'url' parameter.")
+                    f"Source '{source}' has the 'landing_url' parameter, but not the 'url' parameter.",
+                )
 
     def test_source_parameter_metrics(self):
         """Test that the metrics listed for source parameters are metrics supported by the source."""
@@ -108,7 +112,8 @@ class DataModelSourcesTest(DataModelTestCase):
                     self.assertTrue(
                         source_id in self.data_model["metrics"][metric]["sources"],
                         f"Parameter '{parameter_key}' of source '{source_id}' lists metric '{metric}' as metric "
-                        f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source")
+                        f"needing this parameter, but that metric doesn't list '{source_id}' as allowed source",
+                    )
 
     def test_source_parameter_names(self):
         """Test that each source parameter has a name and short name."""
@@ -130,7 +135,8 @@ class DataModelSourcesTest(DataModelTestCase):
                     continue
                 self.assertTrue(
                     "values" in parameter,
-                    f"Parameter {parameter_key} of source {source_id} has api values, but no values.")
+                    f"Parameter {parameter_key} of source {source_id} has api values, but no values.",
+                )
                 self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))
 
     def test_multiple_choice_parameters(self):
@@ -140,8 +146,8 @@ class DataModelSourcesTest(DataModelTestCase):
                 if parameter["type"].startswith("multiple_choice"):
                     self.assertTrue("default_value" in parameter)
                     self.assertTrue(
-                        "placeholder" in parameter,
-                        f"Parameter {parameter_id} of source {source_id} has no placeholder")
+                        "placeholder" in parameter, f"Parameter {parameter_id} of source {source_id} has no placeholder"
+                    )
                     self.assertEqual(list, type(parameter["default_value"]))
                     if parameter["type"] == "multiple_choice":
                         self.assertTrue("values" in parameter)
@@ -155,11 +161,13 @@ class DataModelSourcesTest(DataModelTestCase):
             for parameter_id, parameter_values in source["parameters"].items():
                 self.assertTrue(
                     "mandatory" in parameter_values,
-                    f"The parameter '{parameter_id}' of source '{source_id}' has no 'mandatory' field")
+                    f"The parameter '{parameter_id}' of source '{source_id}' has no 'mandatory' field",
+                )
                 self.assertTrue(
                     parameter_values["mandatory"] in (True, False),
                     f"The 'mandatory' field of parameter '{parameter_id}' of source '{source_id}' is neither "
-                    "true nor false")
+                    "true nor false",
+                )
 
     def test_integer_parameter_unit(self):
         """Test that integer type parameters have a unit."""
@@ -168,7 +176,8 @@ class DataModelSourcesTest(DataModelTestCase):
                 if parameter_values["type"] == "integer":
                     self.assertTrue(
                         "unit" in parameter_values,
-                        f"Parameter '{parameter_id}' of source '{source_id}' has integer type but no unit parameter")
+                        f"Parameter '{parameter_id}' of source '{source_id}' has integer type but no unit parameter",
+                    )
 
     def test_invalid_characters_in_names(self):
         """Test that we don't use dots in metric or source names since we want to be able to use the names as keys."""
@@ -192,7 +201,8 @@ class DataModelSourcesTest(DataModelTestCase):
                 parameter_description = f"The parameter '{parameter_key}' of the source '{source['name']}'"
                 self.assertFalse(
                     "help" in parameter and "help_url" in parameter,
-                    f"{parameter_description} has both a help and a help_url")
+                    f"{parameter_description} has both a help and a help_url",
+                )
                 if "help" in parameter:
                     self.assertTrue(parameter["help"].endswith("."), f"{parameter_description} does not end with a dot")
 
@@ -211,7 +221,8 @@ class DataModelSourcesTest(DataModelTestCase):
                     for color_value in attribute.get("color", {}).values():
                         self.assertTrue(
                             color_value in ("active", "error", "negative", "positive", "warning"),
-                            f"Color {color_value} of {source_id}.{entity_key} is not correct")
+                            f"Color {color_value} of {source_id}.{entity_key} is not correct",
+                        )
 
     def test_entity_attribute_type(self):
         """Test that each entity attribute has a correct type."""
@@ -221,9 +232,11 @@ class DataModelSourcesTest(DataModelTestCase):
                 for attribute in entity_value["attributes"]:
                     if "type" in attribute:
                         self.assertIn(
-                            attribute["type"], allowed_types,
+                            attribute["type"],
+                            allowed_types,
                             f"Attribute {attribute['key']} of {source_id}.{entity_key} has an invalid type "
-                            f"({attribute['type']}); should be one of {allowed_types}")
+                            f"({attribute['type']}); should be one of {allowed_types}",
+                        )
 
     def test_measured_attribute(self):
         """Test that the measured attribute is actually a key of an entity attribute and has a computable type."""
@@ -246,6 +259,16 @@ class DataModelSourcesTest(DataModelTestCase):
                     for metric in configuration["metrics"]:
                         self.assertIn(source_id, self.data_model["metrics"][metric]["sources"])
 
+    def test_logos(self):
+        """Test that a logo exists for each source type and vice versa."""
+        sources = self.data_model["sources"]
+        logos_path = pathlib.Path("src/routes/logos")
+        for source_type in sources:
+            logo_path = logos_path / f"{source_type}.png"
+            self.assertTrue(logo_path.exists(), f"No logo exists for {source_type}")
+        for logo_path in logos_path.glob("*.png"):
+            self.assertTrue(logo_path.stem in sources, f"No source exists in the data model for {logo_path}")
+
 
 class DataModelSpecificSourcesTest(DataModelTestCase):
     """Unit tests for specific sources in the data model."""
@@ -254,12 +277,15 @@ class DataModelSpecificSourcesTest(DataModelTestCase):
         """Test that the source type parameter of the Quality-time source lists all source types."""
         all_source_names = {source["name"] for source in self.data_model["sources"].values()}
         quality_time_source_names = set(
-            self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["values"])
+            self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["values"]
+        )
         self.assertEqual(all_source_names, quality_time_source_names)
         all_source_api_values = {
-            (source["name"], source_id) for source_id, source in self.data_model["sources"].items()}
+            (source["name"], source_id) for source_id, source in self.data_model["sources"].items()
+        }
         quality_time_api_values = set(
-            self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["api_values"].items())
+            self.data_model["sources"]["quality_time"]["parameters"]["source_type"]["api_values"].items()
+        )
         self.assertEqual(all_source_api_values, quality_time_api_values)
 
     def test_quality_time_metric_type_parameter(self):
@@ -267,11 +293,14 @@ class DataModelSpecificSourcesTest(DataModelTestCase):
         all_metric_names = {metric["name"] for metric in self.data_model["metrics"].values()}
         all_metric_names.add("Ready user story points")  # Removed in first non-patch version after Quality-time v3.3.0
         quality_time_metric_names = set(
-            self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["values"])
+            self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["values"]
+        )
         self.assertEqual(all_metric_names, quality_time_metric_names)
         all_metric_api_values = {
-            (metric["name"], metric_id) for metric_id, metric in self.data_model["metrics"].items()}
+            (metric["name"], metric_id) for metric_id, metric in self.data_model["metrics"].items()
+        }
         all_metric_api_values.add(("Ready user story points", "ready_user_story_points"))
         quality_time_api_values = set(
-            self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items())
+            self.data_model["sources"]["quality_time"]["parameters"]["metric_type"]["api_values"].items()
+        )
         self.assertEqual(all_metric_api_values, quality_time_api_values)

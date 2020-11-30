@@ -12,6 +12,7 @@ from routes import (  # lgtm [py/unused-import]
     changelog,
     datamodel,
     documentation,
+    logo,
     measurement,
     metric,
     notification,

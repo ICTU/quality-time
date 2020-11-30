@@ -22,7 +22,8 @@ def change_source_parameter(context, parameter, value, scope="source"):
     """Change the source parameter to value."""
     context.post(
         f"source/{context.uuid['source']}/parameter/{parameter}",
-        json={parameter: sanitize_value(value), "edit_scope": scope})
+        json={parameter: sanitize_value(value), "edit_scope": scope},
+    )
 
 
 @then('the source parameter {parameter} equals "{value}" and the availability status code equals "{status_code}"')
@@ -68,3 +69,12 @@ def check_all_sources_parameter(context, parameter, value):
             for metric in subject["metrics"].values():
                 for source in metric["sources"].values():
                     assert_not_equal(value, source["parameters"].get(parameter))
+
+
+@then('"{path}" is returned as source logo')
+def check_source_logo(context, path):
+    """Check that the correct source logo is returned."""
+    source_type = get_item(context, "source")["type"]
+    logo_via_server = context.get(f"logo/{source_type}").content
+    logo_on_disk = open(path, "rb").read()
+    assert_equal(logo_via_server, logo_on_disk)
