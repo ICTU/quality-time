@@ -308,4 +308,4 @@ To export an older version of a report, add the `report_date` parameter with a d
 
 If a webhook has been configured, *Quality-time* will check for new red (target not met) and white (source unreachable or error parsing source data) metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
 
-For configurations that have a higher than default notification frequency any notifications generated before changes are send will still be send with the old configuration.
+To prevent too many notifications, it's possible to specify a notification frequency. Notifications will be bundled and sent once per period. Note that if you change the notification configuration, e.g. change a Microsoft Teams web hook, earlier notifications that haven't been sent yet, will still be sent using the old configuration.
