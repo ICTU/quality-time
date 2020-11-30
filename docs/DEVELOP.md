@@ -333,8 +333,10 @@ ci/quality.sh
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add "Cloc*" to the `NAMES_TO_IGNORE` in [components/collector/ci/quality.sh](../components/collector/ci/quality.sh) to suppress Vulture's warning.
+Add "Cloc*" to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](../components/collector/ci/quality.sh) to suppress Vulture's warning.
 
-#### Adding a logo for the new source to the frontend
+#### Adding a logo for the new source to the server
 
-Add a small png file of the logo in [`components/frontend/src/logos`](../components/frontend/src/logos) and update the [Logo.js](../components/frontend/src/logos/Logo.js) file.
+Add a small png file of the logo in [`components/server/src/routes/logos`](../components/server/src/routes/logos). Make sure the filename of the logo is `<source_type>.png`.
+
+The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.

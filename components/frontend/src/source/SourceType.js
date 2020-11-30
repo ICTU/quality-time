@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from 'semantic-ui-react';
-import { Logo } from '../logos/Logo';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { Logo } from './Logo';
 
 export function SourceType(props) {
   let options = [];

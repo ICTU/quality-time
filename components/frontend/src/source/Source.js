@@ -1,14 +1,14 @@
 import React from 'react';
 import { Grid, Header, Icon, Message } from 'semantic-ui-react';
-import { SourceType } from './SourceType';
-import { SourceParameters } from './SourceParameters';
 import { StringInput } from '../fields/StringInput';
-import { Logo } from '../logos/Logo';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { Logo } from './Logo';
+import { SourceParameters } from './SourceParameters';
+import { SourceType } from './SourceType';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
