@@ -6,10 +6,10 @@ from destinations.ms_teams import build_notification_text, send_notification_to_
 from notification import Notification
 
 
-def outbox(new_notifications: List[Notification], outbox_contents: List[Notification]):
+def process_outbox(outbox: List[Notification], new_notifications: List[Notification]):
     """Collect and distribute the generated notifications."""
-    outbox_contents = merge_notifications(new_notifications, outbox_contents)
-    return send_notifications(outbox_contents)
+    outbox = merge_notifications(outbox, new_notifications)
+    return send_notifications(outbox)
 
 
 def merge_notifications(outbox: List[Notification], notifications: List[Notification]) -> List[Notification]:
