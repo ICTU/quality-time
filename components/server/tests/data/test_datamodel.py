@@ -260,11 +260,11 @@ class DataModelSourcesTest(DataModelTestCase):
                         self.assertIn(source_id, self.data_model["metrics"][metric]["sources"])
 
     def test_logos(self):
-        """Test that a logo exists for each source type."""
+        """Test that a logo exists for each source type and vice versa."""
         sources = self.data_model["sources"]
         logos_path = pathlib.Path("src/routes/logos")
         for source_type in sources:
-            logo_path = logos_path / pathlib.Path(f"{source_type}.png")
+            logo_path = logos_path / f"{source_type}.png"
             self.assertTrue(logo_path.exists(), f"No logo exists for {source_type}")
         for logo_path in logos_path.glob("*.png"):
             self.assertTrue(logo_path.stem in sources, f"No source exists in the data model for {logo_path}")
