@@ -14,13 +14,16 @@ def process_outbox(outbox: List[Notification], new_notifications: List[Notificat
 
 def merge_notifications(outbox: List[Notification], notifications: List[Notification]) -> List[Notification]:
     """Check if a notification already exists, and if not, add it to the outbox."""
+    merged = False
     for new_notification in notifications:
         for old_notification in outbox:
             if new_notification.destination_uuid == old_notification.destination_uuid:
                 old_notification.merge_notification(new_notification.metrics)
+                merged = True
                 break
-        else:
+        if not merged:
             outbox.append(new_notification)
+            merged = False
     return outbox
 
 

@@ -26,4 +26,4 @@ class Notification:
 
     def merge_notification(self, new_metrics):
         """Merge new metrics into this notification."""
-        self.metric.extend(new_metrics)
+        self.metrics.extend(new_metrics)
