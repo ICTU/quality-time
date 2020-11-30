@@ -150,7 +150,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             await notify()
         except RuntimeError:
             pass
-        mocked_outbox.assert_called_once()
+        self.assertEqual(mocked_outbox.call_count, 2)
 
     @patch('pymsteams.connectorcard.send')
     @patch("asyncio.sleep")

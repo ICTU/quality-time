@@ -59,6 +59,14 @@ class OutboxTestCase(unittest.TestCase):
         """Test that notifications are merged, even if the destination is empty."""
         self.assertEqual(merge_notifications([], self.notifications), self.notifications)
 
+    def test_merge_nothing_into_notifications(self):
+        """Test that notifications are merged, even if the destination is empty."""
+        self.assertEqual(merge_notifications(self.notifications, []), self.notifications)
+
+    def test_merge_nothing_into_nothing(self):
+        """Test that notifications are merged, even if the destination is empty."""
+        self.assertEqual(merge_notifications([], []), [])
+
     def test_merge_notifications_with_same_destination_but_different_report(self):
         """Test that the metrics are merged into the correct notification."""
         report = dict(title="different_title", url="https://differentreport")
