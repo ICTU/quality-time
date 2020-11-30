@@ -4,6 +4,6 @@ import { api_version } from '../api/fetch_server_api';
 
 export function Logo(props) {
     return (
-        <Image onError={(e) => console.log(e)} src={`api/${api_version}/logo/${props.logo}`} alt={`${props.alt} logo`} size="mini" spaced="right" />
+        <Image src={`api/${api_version}/logo/${props.logo}`} alt={`${props.alt} logo`} size="mini" spaced="right" />
     )
 }
