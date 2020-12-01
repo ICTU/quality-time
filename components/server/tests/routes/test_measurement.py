@@ -83,7 +83,7 @@ class PostMeasurementTests(unittest.TestCase):
             _id="id",
             metric_uuid=METRIC_ID,
             count=dict(status="target_met"),
-            sources=[dict(source_uuid=SOURCE_ID, value="0", entities=[])],
+            sources=[self.source(value="0")],
         )
         self.database.measurements.find_one.return_value = self.old_measurement
         self.posted_measurement = dict(metric_uuid=METRIC_ID, sources=[])
@@ -96,11 +96,11 @@ class PostMeasurementTests(unittest.TestCase):
         )
 
     @staticmethod
-    def source(entities=None, entity_user_data=None, connection_error=None):
+    def source(value="1", entities=None, entity_user_data=None, connection_error=None):
         """Return a measurement source."""
         return dict(
             source_uuid=SOURCE_ID,
-            value="1",
+            value=value,
             total=None,
             parse_error=None,
             connection_error=connection_error,
@@ -142,7 +142,6 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_changed_measurement_entity_key(self, request):
         """Post a measurement whose value and entities are the same, except for a changed entity key."""
-        self.old_measurement["count"] = dict(status="target_met")
         self.old_measurement["sources"] = [
             self.source(entities=[dict(key="a")], entity_user_data=dict(a=dict(status="confirmed")))
         ]
@@ -174,7 +173,6 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_ignored_measurement_entities(self, request):
         """Post a measurement where the old one has ignored entities."""
-        self.old_measurement["count"] = dict(status="target_met")
         self.old_measurement["sources"] = [
             self.source(
                 entities=[dict(key="entity1")],
