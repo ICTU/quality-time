@@ -18,7 +18,7 @@ class Notification:
         self.creation_time = datetime.now()
 
     def __eq__(self, other):
-        """check if the notification itself is the same, regardless of it's metric content."""
+        """Check if the notification itself is the same, regardless of it's metric content."""
         return self.report_title == other.report_title and \
                self.destination_uuid == other.destination_uuid and \
                self.destination == other.destination
