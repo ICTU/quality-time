@@ -95,6 +95,19 @@ class PostMeasurementTests(unittest.TestCase):
             count=dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<"),
         )
 
+    @staticmethod
+    def source(entities=None, entity_user_data=None, connection_error=None):
+        """Return a measurement source."""
+        return dict(
+            source_uuid=SOURCE_ID,
+            value="1",
+            total=None,
+            parse_error=None,
+            connection_error=connection_error,
+            entities=entities or [],
+            entity_user_data=entity_user_data or {},
+        )
+
     def test_first_measurement(self, request):
         """Post the first measurement for a metric."""
         self.database.measurements.find_one.return_value = None
@@ -111,10 +124,7 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_changed_measurement_value(self, request):
         """Post a changed measurement for a metric."""
-        self.old_measurement["sources"] = [dict(source_uuid=SOURCE_ID, value="0", entities=[])]
-        self.posted_measurement["sources"].append(
-            dict(source_uuid=SOURCE_ID, value="1", total=None, parse_error=None, connection_error=None, entities=[])
-        )
+        self.posted_measurement["sources"].append(self.source())
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
@@ -122,20 +132,9 @@ class PostMeasurementTests(unittest.TestCase):
 
     def test_changed_measurement_entities(self, request):
         """Post a measurement whose value is the same, but with different entities."""
-        self.old_measurement["count"] = dict(status="near_target_met", status_start="2018-01-01")
-        self.old_measurement["sources"] = [
-            dict(source_uuid=SOURCE_ID, value="1", entities=[dict(key="a")], entity_user_data=dict(a="attributes"))
-        ]
-        self.posted_measurement["sources"].append(
-            dict(
-                source_uuid=SOURCE_ID,
-                value="1",
-                total=None,
-                parse_error=None,
-                connection_error=None,
-                entities=[dict(key="b")],
-            )
-        )
+        self.old_measurement["count"] = dict(status="near_target_met", status_start="2018-01-01", value="1")
+        self.old_measurement["sources"] = [self.source(entities=[dict(key="a")], entity_user_data=dict(a="attributes"))]
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2018-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
@@ -145,23 +144,9 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a measurement whose value and entities are the same, except for a changed entity key."""
         self.old_measurement["count"] = dict(status="target_met")
         self.old_measurement["sources"] = [
-            dict(
-                source_uuid=SOURCE_ID,
-                value="1",
-                entities=[dict(key="a")],
-                entity_user_data=dict(a=dict(status="confirmed")),
-            )
+            self.source(entities=[dict(key="a")], entity_user_data=dict(a=dict(status="confirmed")))
         ]
-        self.posted_measurement["sources"].append(
-            dict(
-                source_uuid=SOURCE_ID,
-                value="1",
-                total=None,
-                parse_error=None,
-                connection_error=None,
-                entities=[dict(old_key="a", key="b")],
-            )
-        )
+        self.posted_measurement["sources"].append(self.source(entities=[dict(old_key="a", key="b")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
@@ -169,14 +154,8 @@ class PostMeasurementTests(unittest.TestCase):
             dict(
                 metric_uuid=METRIC_ID,
                 sources=[
-                    dict(
-                        source_uuid=SOURCE_ID,
-                        value="1",
-                        total=None,
-                        parse_error=None,
-                        connection_error=None,
-                        entities=[dict(key="b", old_key="a")],
-                        entity_user_data=dict(b=dict(status="confirmed")),
+                    self.source(
+                        entities=[dict(key="b", old_key="a")], entity_user_data=dict(b=dict(status="confirmed"))
                     )
                 ],
                 count=dict(
@@ -197,17 +176,12 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a measurement where the old one has ignored entities."""
         self.old_measurement["count"] = dict(status="target_met")
         self.old_measurement["sources"] = [
-            dict(
-                value="1",
-                parse_error=None,
-                connection_error=None,
-                entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
+            self.source(
                 entities=[dict(key="entity1")],
+                entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
             )
         ]
-        self.posted_measurement["sources"].append(
-            dict(value="1", parse_error=None, connection_error=None, entities=[dict(key="entity1")])
-        )
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.assertEqual(dict(ok=True), post_measurement(self.database))
         self.database.measurements.update_one.assert_called_once_with(
@@ -220,34 +194,20 @@ class PostMeasurementTests(unittest.TestCase):
             dict(
                 _id="id1",
                 count=dict(status=None, status_start="2018-12-01"),
-                sources=[
-                    dict(source_uuid=SOURCE_ID, value=None, parse_error=None, connection_error="Error", entities=[])
-                ],
+                sources=[self.source()],
             ),
             dict(
                 _id="id2",
                 status="target_met",
                 sources=[
-                    dict(
-                        source_uuid=SOURCE_ID,
-                        value="1",
-                        parse_error=None,
-                        connection_error=None,
-                        entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
+                    self.source(
                         entities=[dict(key="entity1")],
+                        entity_user_data=dict(entity1=dict(status="false_positive", rationale="Rationale")),
                     )
                 ],
             ),
         ]
-        self.posted_measurement["sources"].append(
-            dict(
-                source_uuid=SOURCE_ID,
-                value="1",
-                parse_error=None,
-                connection_error=None,
-                entities=[dict(key="entity1")],
-            )
-        )
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="target_met", status_start="2019-01-01", value="0"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
@@ -256,24 +216,10 @@ class PostMeasurementTests(unittest.TestCase):
     def test_all_previous_measurements_were_failed_measurements(self, request):
         """Post a measurement without a last successful one."""
         self.database.measurements.find_one.side_effect = [
-            dict(
-                _id="id1",
-                count=dict(status=None),
-                sources=[
-                    dict(source_uuid=SOURCE_ID, value=None, parse_error=None, connection_error="Error", entities=[])
-                ],
-            ),
+            dict(_id="id1", count=dict(status=None), sources=[self.source(connection_error="Error")]),
             None,
         ]
-        self.posted_measurement["sources"].append(
-            dict(
-                source_uuid=SOURCE_ID,
-                value="1",
-                parse_error=None,
-                connection_error=None,
-                entities=[dict(key="entity1")],
-            )
-        )
+        self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
         self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
@@ -291,9 +237,7 @@ class PostMeasurementTests(unittest.TestCase):
         debt_end_date = date.today() - timedelta(days=1)
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_end_date"] = debt_end_date.isoformat()
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
-        self.posted_measurement["sources"].append(
-            dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None, entities=[])
-        )
+        self.posted_measurement["sources"].append(self.source())
         self.old_measurement["count"] = dict(
             value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
         )
@@ -306,9 +250,7 @@ class PostMeasurementTests(unittest.TestCase):
         """Test that a new measurement is added when technical debt has been turned off."""
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["debt_target"] = "100"
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"] = False
-        self.posted_measurement["sources"].append(
-            dict(source_uuid=SOURCE_ID, value="1", parse_error=None, connection_error=None, entities=[])
-        )
+        self.posted_measurement["sources"].append(self.source())
         self.old_measurement["count"] = dict(
             value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
         )
