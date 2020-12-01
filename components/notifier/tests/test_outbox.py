@@ -92,6 +92,35 @@ class OutboxTestCase(unittest.TestCase):
                     old_metric_value=10,
                     new_metric_status=self.red_metric_status,
                     old_metric_status=self.green_metric_status,
+                )
+            ],
+        )
+
+    def test_merge_notifications_with_same_destination(self):
+        """Test that the metrics are merged into the correct notification."""
+        report = dict(title="report_title", url="https://differentreport")
+        metric1 = dict(metric_name="new metric 1")
+        metric2 = dict(metric_name="new metric 2")
+        metrics1 = [metric1, metric2]
+        new_notifications = [Notification(report, metrics1, "uuid1", dict(teams_webhook="https://url/1"))]
+        self.assertEqual(
+            merge_notifications(self.notifications, new_notifications)[0].metrics,
+            [
+                dict(
+                    metric_name="default metric 1",
+                    metric_unit="units",
+                    new_metric_value=20,
+                    old_metric_value=10,
+                    new_metric_status=self.red_metric_status,
+                    old_metric_status=self.green_metric_status,
+                ),
+                dict(
+                    metric_name="default metric 2",
+                    metric_unit="units",
+                    new_metric_value=20,
+                    old_metric_value=10,
+                    new_metric_status=self.red_metric_status,
+                    old_metric_status=self.green_metric_status,
                 ),
                 dict(metric_name="new metric 1"),
                 dict(metric_name="new metric 2"),
