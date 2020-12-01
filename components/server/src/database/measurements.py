@@ -22,7 +22,8 @@ def latest_measurement(database: Database, metric_uuid: MetricId):
 def latest_successful_measurement(database: Database, metric_uuid: MetricId):
     """Return the latest successful measurement."""
     return database.measurements.find_one(
-        filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)])
+        filter={"metric_uuid": metric_uuid, "sources.value": {"$ne": None}}, sort=[("start", pymongo.DESCENDING)]
+    )
 
 
 def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: str = "", days=7):
@@ -31,7 +32,9 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     recent_measurements = database.measurements.find(
         filter={"end": {"$gt": min_iso_timestamp}, "start": {"$lt": max_iso_timestamp}},
-        sort=[("start", pymongo.ASCENDING)], projection={"_id": False, "sources.entities": False})
+        sort=[("start", pymongo.ASCENDING)],
+        projection={"_id": False, "sources.entities": False},
+    )
     measurements_by_metric_uuid: Dict[MetricId, List] = {}
     for measurement in recent_measurements:
         measurements_by_metric_uuid.setdefault(measurement["metric_uuid"], []).append(measurement)
@@ -44,11 +47,13 @@ def all_measurements(database: Database, metric_uuid: MetricId, max_iso_timestam
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lt": max_iso_timestamp}
     latest_with_entities = database.measurements.find_one(
-        measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False})
+        measurement_filter, sort=[("start", pymongo.DESCENDING)], projection={"_id": False}
+    )
     if not latest_with_entities:
         return []
     all_measurements_without_entities = database.measurements.find(
-        measurement_filter, projection={"_id": False, "sources.entities": False})
+        measurement_filter, projection={"_id": False, "sources.entities": False}
+    )
     return list(all_measurements_without_entities)[:-1] + [latest_with_entities]
 
 
@@ -62,20 +67,27 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
-def insert_new_measurement(database: Database, data_model, metric: Dict, measurement: Dict) -> Dict:
+def insert_new_measurement(
+    database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict = None
+) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
+    if not previous_measurement:
+        previous_measurement = measurement.copy()
     metric_type = data_model["metrics"][metric["type"]]
     direction = metric.get("direction") or metric_type["direction"]
+    measurement["start"] = measurement["end"] = now = iso_timestamp()
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = determine_measurement_status(metric, direction, value)
         measurement[scale] = dict(value=value, status=status, direction=direction)
+        if status_start := determine_status_start(status, previous_measurement, scale, now):
+            measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
             measurement[scale][target] = determine_target(
-                metric, measurement, metric_type, scale, cast(TargetType, target))
-    measurement["start"] = measurement["end"] = iso_timestamp()
+                metric, measurement, metric_type, scale, cast(TargetType, target)
+            )
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
@@ -100,14 +112,16 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
         """
         entities = source.get("entity_user_data", {}).items()
         ignored_entities = [
-            entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")]
+            entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")
+        ]
         source_type = metric["sources"][source["source_uuid"]]["type"]
         if attribute := get_measured_attribute(data_model, metric["type"], source_type):
             entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
             attribute_type = get_attribute_type(entity, attribute)
             convert = dict(float=float, integer=int, minutes=int)[attribute_type]
             value = sum(
-                convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
+                convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities
+            )
         else:
             value = len(ignored_entities)
         return int(value)
@@ -150,11 +164,25 @@ def determine_measurement_status(metric, direction: Direction, measurement_value
     return status
 
 
+def determine_status_start(
+    current_status: Optional[Status], previous_measurement: Dict, scale: Scale, now: str
+) -> Optional[str]:
+    """Determine the date time since when the metric has the current status."""
+    previous_status = previous_measurement.get(scale, {}).get("status")
+    if current_status == previous_status:
+        if status_start := previous_measurement.get(scale, {}).get("status_start"):
+            return str(status_start)
+        else:
+            return None
+    return now
+
+
 def determine_target(metric, measurement: Dict, metric_type, scale: Scale, target: TargetType):
     """Determine the (near) target."""
     metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
-    target_value = metric.get(target, metric_type.get(target)) if scale == metric_scale else \
-        measurement.get(scale, {}).get(target)
+    target_value = (
+        metric.get(target, metric_type.get(target)) if scale == metric_scale else measurement.get(scale, {}).get(target)
+    )
     if target == "debt_target":
         debt_target_expired = (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
         debt_target_off = metric.get("accept_debt") is False
@@ -166,5 +194,8 @@ def determine_target(metric, measurement: Dict, metric_type, scale: Scale, targe
 def changelog(database: Database, nr_changes: int, **uuids):
     """Return the changelog for the measurements belonging the items with the specific uuids."""
     return database.measurements.find(
-        filter={"delta.uuids": {"$in": list(uuids.values())}}, sort=[("start", pymongo.DESCENDING)],
-        limit=nr_changes, projection=["delta", "start"])
+        filter={"delta.uuids": {"$in": list(uuids.values())}},
+        sort=[("start", pymongo.DESCENDING)],
+        limit=nr_changes,
+        projection=["delta", "start"],
+    )
