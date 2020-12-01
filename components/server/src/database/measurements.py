@@ -192,7 +192,7 @@ def determine_target(metric, measurement: Dict, metric_type, scale: Scale, targe
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
-    """Return the changelog for the measurements belonging the items with the specific uuids."""
+    """Return the changelog for the measurements belonging to the items with the specific uuids."""
     return database.measurements.find(
         filter={"delta.uuids": {"$in": list(uuids.values())}},
         sort=[("start", pymongo.DESCENDING)],
