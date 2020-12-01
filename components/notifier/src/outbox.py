@@ -17,7 +17,7 @@ def merge_notifications(outbox: List[Notification], notifications: List[Notifica
     merged = False
     for new_notification in notifications:
         for old_notification in outbox:
-            if new_notification.destination_uuid == old_notification.destination_uuid:
+            if new_notification == old_notification:
                 old_notification.merge_notification(new_notification.metrics)
                 merged = True
                 break
