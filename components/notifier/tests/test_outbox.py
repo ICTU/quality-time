@@ -16,7 +16,7 @@ class OutboxTestCase(unittest.TestCase):
         self.red_metric_status = "red (target not met)"
         self.green_metric_status = "green (target met)"
         self.report = dict(title="report_title", url=self.report_url)
-        metric1 = dict(
+        self.metric1 = dict(
             metric_name="default metric 1",
             metric_unit="units",
             new_metric_value=20,
@@ -24,7 +24,7 @@ class OutboxTestCase(unittest.TestCase):
             new_metric_status=self.red_metric_status,
             old_metric_status=self.green_metric_status,
         )
-        metric2 = dict(
+        self.metric2 = dict(
             metric_name="default metric 2",
             metric_unit="units",
             new_metric_value=20,
@@ -32,7 +32,7 @@ class OutboxTestCase(unittest.TestCase):
             new_metric_status=self.red_metric_status,
             old_metric_status=self.green_metric_status,
         )
-        metrics1 = [metric1, metric2]
+        metrics1 = [self.metric1, self.metric2]
         metric3 = dict(
             metric_name="default metric 3",
             metric_unit="units",
@@ -77,22 +77,8 @@ class OutboxTestCase(unittest.TestCase):
         self.assertEqual(
             merge_notifications(self.notifications, new_notifications)[0].metrics,
             [
-                dict(
-                    metric_name="default metric 1",
-                    metric_unit="units",
-                    new_metric_value=20,
-                    old_metric_value=10,
-                    new_metric_status=self.red_metric_status,
-                    old_metric_status=self.green_metric_status,
-                ),
-                dict(
-                    metric_name="default metric 2",
-                    metric_unit="units",
-                    new_metric_value=20,
-                    old_metric_value=10,
-                    new_metric_status=self.red_metric_status,
-                    old_metric_status=self.green_metric_status,
-                )
+                self.metric1,
+                self.metric2
             ],
         )
 
@@ -106,22 +92,8 @@ class OutboxTestCase(unittest.TestCase):
         self.assertEqual(
             merge_notifications(self.notifications, new_notifications)[0].metrics,
             [
-                dict(
-                    metric_name="default metric 1",
-                    metric_unit="units",
-                    new_metric_value=20,
-                    old_metric_value=10,
-                    new_metric_status=self.red_metric_status,
-                    old_metric_status=self.green_metric_status,
-                ),
-                dict(
-                    metric_name="default metric 2",
-                    metric_unit="units",
-                    new_metric_value=20,
-                    old_metric_value=10,
-                    new_metric_status=self.red_metric_status,
-                    old_metric_status=self.green_metric_status,
-                ),
+                self.metric1,
+                self.metric2,
                 dict(metric_name="new metric 1"),
                 dict(metric_name="new metric 2"),
             ],
