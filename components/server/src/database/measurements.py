@@ -1,14 +1,13 @@
 """Measurements collection."""
 
 from datetime import date, datetime, timedelta
-from decimal import ROUND_HALF_UP, Decimal
 from typing import Dict, List, Literal, Optional, Union, cast
 
 import pymongo
 from pymongo.database import Database
 
 from model.queries import get_attribute_type, get_measured_attribute
-from server_utilities.functions import iso_timestamp
+from server_utilities.functions import iso_timestamp, percentage
 from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
 
 TargetType = Literal["target", "near_target", "debt_target"]
@@ -95,13 +94,6 @@ def insert_new_measurement(
 
 def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
-
-    def percentage(numerator: int, denominator: int, direction: Direction) -> int:
-        """Return the rounded percentage: numerator / denominator * 100%."""
-        if denominator == 0:
-            return 0 if direction == "<" else 100
-        return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
-
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
     values = [int(source["value"]) - value_of_entities_to_ignore(data_model, metric, source) for source in sources]
