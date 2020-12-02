@@ -98,7 +98,7 @@ def calculate_measurement_value(data_model, metric: Metric, sources, scale: Scal
     if scale == "percentage":
         direction = metric.direction()
         totals = [int(source["total"]) for source in sources]
-        if add == sum:
+        if add is sum:
             values, totals = [sum(values)], [sum(totals)]
         values = [percentage(value, total, direction) for value, total in zip(values, totals)]
     return str(add(values))
