@@ -1,6 +1,7 @@
 """Unit tests for the metric routes."""
 
 import unittest
+from typing import List
 from unittest.mock import Mock, patch
 
 from routes.metric import (
@@ -31,6 +32,7 @@ class PostMetricAttributeTest(unittest.TestCase):
     """Unit tests for the post metric attribute route."""
 
     def setUp(self):
+        """Override to set up the database."""
         self.report = dict(
             _id="id",
             report_uuid=REPORT_ID,
@@ -79,60 +81,43 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
         )
 
+    @staticmethod
+    def set_measurement_id(measurement):
+        """Simulate Mongo setting an id on the inserted measurement."""
+        measurement["_id"] = "measurement_id"
+
+    def assert_delta(self, description: str, uuids: List[str] = None, email: str = JOHN["email"]):
+        """Assert that the report delta contains the correct data."""
+        uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
+        description = f"John changed the {description}."
+        self.assertEqual(dict(uuids=uuids, email=email, description=description), self.report["delta"])
+
     def test_post_metric_name(self, request):
         """Test that the metric name can be changed."""
         request.json = dict(name="ABC")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the name of metric 'name' of subject 'Subject' in report 'Report' "
-                "from 'name' to 'ABC'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("name of metric 'name' of subject 'Subject' in report 'Report' from 'name' to 'ABC'")
 
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed."""
         request.json = dict(type="new_type")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the type of metric 'name' of subject 'Subject' in report 'Report' "
-                "from 'old_type' to 'new_type'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("type of metric 'name' of subject 'Subject' in report 'Report' from 'old_type' to 'new_type'")
 
     def test_post_metric_target_without_measurements(self, request):
-        """Test that changing the metric target doesnt't add a new measurement if none exist."""
+        """Test that changing the metric target does not add a new measurement if none exist."""
         self.database.measurements.find_one.return_value = None
         request.json = dict(target="10")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "target", self.database))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the target of metric 'name' of subject 'Subject' in report 'Report' "
-                "from '0' to '10'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'")
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_target_with_measurements(self, request):
         """Test that changing the metric target adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-
-        def set_measurement_id(measurement):
-            measurement["_id"] = "measurement_id"
-
-        self.database.measurements.insert_one.side_effect = set_measurement_id
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(target="10")
         self.assertEqual(
             dict(
@@ -144,25 +129,13 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "target", self.database),
         )
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the target of metric 'name' of subject 'Subject' in report 'Report' "
-                "from '0' to '10'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("target of metric 'name' of subject 'Subject' in report 'Report' from '0' to '10'")
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_technical_debt(self, request):
         """Test that accepting technical debt also sets the technical debt value."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-
-        def set_measurement_id(measurement):
-            measurement["_id"] = "measurement_id"
-
-        self.database.measurements.insert_one.side_effect = set_measurement_id
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(accept_debt=True)
         self.assertEqual(
             dict(
@@ -182,44 +155,19 @@ class PostMetricAttributeTest(unittest.TestCase):
             ),
             post_metric_attribute(METRIC_ID, "accept_debt", self.database),
         )
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the accept_debt of metric 'name' of subject 'Subject' in report 'Report' "
-                "from '' to 'True'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'")
 
     @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_debt_end_date_with_measurements(self, request):
         """Test that changing the metric debt end date adds a new measurement if one or more exist."""
         self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
-
-        def set_measurement_id(measurement):
-            measurement["_id"] = "measurement_id"
-
-        self.database.measurements.insert_one.side_effect = set_measurement_id
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
         request.json = dict(debt_end_date="2019-06-07")
-        self.assertEqual(
-            dict(
-                end="2019-01-01",
-                sources=[],
-                start="2019-01-01",
-                metric_uuid=METRIC_ID,
-                count=dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<"),
-            ),
-            post_metric_attribute(METRIC_ID, "debt_end_date", self.database),
-        )
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the debt_end_date of metric 'name' of subject 'Subject' in report "
-                "'Report' from '' to '2019-06-07'.",
-            ),
-            self.report["delta"],
+        count = dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<")
+        new_measurement = dict(end="2019-01-01", sources=[], start="2019-01-01", metric_uuid=METRIC_ID, count=count)
+        self.assertEqual(new_measurement, post_metric_attribute(METRIC_ID, "debt_end_date", self.database))
+        self.assert_delta(
+            "debt_end_date of metric 'name' of subject 'Subject' in report 'Report' from '' to '2019-06-07'"
         )
 
     def test_post_unsafe_comment(self, request):
@@ -227,14 +175,8 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(comment='Comment with script<script type="text/javascript">alert("Danger")</script>')
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "comment", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the comment of metric 'name' of subject 'Subject' in report 'Report' "
-                "from '' to 'Comment with script'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "comment of metric 'name' of subject 'Subject' in report 'Report' from '' to 'Comment with script'"
         )
 
     def test_post_comment_with_link(self, request):
@@ -242,14 +184,9 @@ class PostMetricAttributeTest(unittest.TestCase):
         request.json = dict(comment="Comment with url https://google.com")
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "comment", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="""John changed the comment of metric 'name' of subject 'Subject' in report 'Report' \
-from '' to '<p>Comment with url <a href="https://google.com">https://google.com</a></p>'.""",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            """comment of metric 'name' of subject 'Subject' in report 'Report' from '' to '<p>Comment with url """
+            """<a href="https://google.com">https://google.com</a></p>'"""
         )
 
     def test_post_position_first(self, request):
@@ -258,14 +195,9 @@ from '' to '<p>Comment with url <a href="https://google.com">https://google.com<
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID2],
-                email=JOHN["email"],
-                description="John changed the position of metric 'name2' of subject 'Subject' in report "
-                "'Report' from '1' to '0'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "position of metric 'name2' of subject 'Subject' in report 'Report' from '1' to '0'",
+            uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID2],
         )
 
     def test_post_position_last(self, request):
@@ -274,15 +206,7 @@ from '' to '<p>Comment with url <a href="https://google.com">https://google.com<
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the position of metric 'name' of subject 'Subject' in report "
-                "'Report' from '0' to '1'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("position of metric 'name' of subject 'Subject' in report 'Report' from '0' to '1'")
 
     def test_post_position_previous(self, request):
         """Test that a metric can be moved up."""
@@ -290,14 +214,9 @@ from '' to '<p>Comment with url <a href="https://google.com">https://google.com<
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID2, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID2],
-                email=JOHN["email"],
-                description="John changed the position of metric 'name2' of subject 'Subject' in report "
-                "'Report' from '1' to '0'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "position of metric 'name2' of subject 'Subject' in report 'Report' from '1' to '0'",
+            uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID2],
         )
 
     def test_post_position_next(self, request):
@@ -306,15 +225,7 @@ from '' to '<p>Comment with url <a href="https://google.com">https://google.com<
         self.assertEqual(dict(ok=True), post_metric_attribute(METRIC_ID, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John changed the position of metric 'name' of subject 'Subject' in report "
-                "'Report' from '0' to '1'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("position of metric 'name' of subject 'Subject' in report 'Report' from '0' to '1'")
 
     def test_post_position_first_previous(self, request):
         """Test that moving the first metric up does nothing."""
@@ -335,6 +246,7 @@ class MetricTest(unittest.TestCase):
     """Unit tests for adding and deleting metrics."""
 
     def setUp(self):
+        """Override to set up the mock database."""
         self.database = Mock()
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
@@ -356,16 +268,18 @@ class MetricTest(unittest.TestCase):
             sources=dict(source_type=dict(name="Source type")),
         )
 
+    def assert_delta(self, description: str, uuids: List[str] = None, email: str = JOHN["email"], report=None):
+        """Assert that the report delta contains the correct data."""
+        uuids = uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID]
+        report = report or self.report
+        self.assertEqual(dict(uuids=uuids, email=email, description=description), report["delta"])
+
     def test_add_metric(self):
         """Test that a metric can be added."""
         self.assertTrue(post_metric_new(SUBJECT_ID, self.database)["ok"])
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]],
-                email=JOHN["email"],
-                description="John added a new metric to subject 'Subject' in report 'Report'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "John added a new metric to subject 'Subject' in report 'Report'.",
+            uuids=[REPORT_ID, SUBJECT_ID, list(self.report["subjects"][SUBJECT_ID]["metrics"].keys())[1]],
         )
 
     def test_copy_metric(self):
@@ -374,14 +288,10 @@ class MetricTest(unittest.TestCase):
         self.database.reports.insert.assert_called_once()
         inserted_metrics = self.database.reports.insert.call_args[0][0]["subjects"][SUBJECT_ID]["metrics"]
         self.assertEqual(2, len(inserted_metrics))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, list(inserted_metrics.keys())[1]],
-                email=JOHN["email"],
-                description="John copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject "
-                "'Subject' in report 'Report'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "John copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject 'Subject' in report "
+            "'Report'.",
+            uuids=[REPORT_ID, SUBJECT_ID, list(inserted_metrics.keys())[1]],
         )
 
     def test_move_metric_within_report(self):
@@ -391,14 +301,10 @@ class MetricTest(unittest.TestCase):
         self.assertEqual(dict(ok=True), post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID],
-                email=JOHN["email"],
-                description="John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject "
-                "'Target' in report 'Report'.",
-            ),
-            self.report["delta"],
+        self.assert_delta(
+            "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
+            "'Report'.",
+            uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID],
         )
 
     def test_move_metric_across_reports(self):
@@ -413,31 +319,17 @@ class MetricTest(unittest.TestCase):
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
         self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
         expected_description = (
-            "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to "
-            "subject 'Target' in report 'Target'."
+            "John moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in report "
+            "'Target'."
         )
-        self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID], email=JOHN["email"], description=expected_description),
-            self.report["delta"],
-        )
-        self.assertEqual(
-            dict(uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID], email=JOHN["email"], description=expected_description),
-            target_report["delta"],
-        )
+        self.assert_delta(expected_description)
+        self.assert_delta(expected_description, uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID], report=target_report)
 
     def test_get_metrics(self):
         """Test that the metrics can be retrieved and deleted reports are skipped."""
         self.database.reports_overviews.find_one.return_value = dict(_id="id", title="Reports", subtitle="")
         self.database.reports.distinct.return_value = [REPORT_ID, "deleted_report"]
         self.database.reports.find_one.side_effect = [self.report, dict(deleted=True)]
-        self.database.measurements.find.return_value = [
-            dict(
-                _id="id",
-                metric_uuid=METRIC_ID,
-                status="red",
-                sources=[dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="42")],
-            )
-        ]
         self.assertEqual(
             {
                 METRIC_ID: dict(
@@ -462,11 +354,4 @@ class MetricTest(unittest.TestCase):
         """Test that the metric can be deleted."""
         self.assertEqual(dict(ok=True), delete_metric(METRIC_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assertEqual(
-            dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID],
-                email=JOHN["email"],
-                description="John deleted metric 'Metric' from subject 'Subject' in report 'Report'.",
-            ),
-            self.report["delta"],
-        )
+        self.assert_delta("John deleted metric 'Metric' from subject 'Subject' in report 'Report'.")

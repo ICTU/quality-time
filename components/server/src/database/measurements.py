@@ -102,33 +102,9 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
             return 0 if direction == "<" else 100
         return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
-    def value_of_entities_to_ignore(source) -> int:
-        """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
-
-        If the entities have a measured attribute, return the sum of the measured attributes of the ignored
-        entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
-        user story points, the source entities are user stories and the measured attribute is the amount of story
-        points of each user story.
-        """
-        entities = source.get("entity_user_data", {}).items()
-        ignored_entities = [
-            entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")
-        ]
-        source_type = metric["sources"][source["source_uuid"]]["type"]
-        if attribute := get_measured_attribute(data_model, metric["type"], source_type):
-            entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
-            attribute_type = get_attribute_type(entity, attribute)
-            convert = dict(float=float, integer=int, minutes=int)[attribute_type]
-            value = sum(
-                convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities
-            )
-        else:
-            value = len(ignored_entities)
-        return int(value)
-
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
-    values = [int(source["value"]) - value_of_entities_to_ignore(source) for source in sources]
+    values = [int(source["value"]) - value_of_entities_to_ignore(data_model, metric, source) for source in sources]
     addition = metric["addition"]
     add = dict(max=max, min=min, sum=sum)[addition]
     if scale == "percentage":
@@ -139,6 +115,29 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
             values, totals = [sum(values)], [sum(totals)]
         values = [percentage(value, total, direction) for value, total in zip(values, totals)]
     return str(add(values))  # type: ignore
+
+
+def value_of_entities_to_ignore(data_model, metric, source) -> int:
+    """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
+
+    If the entities have a measured attribute, return the sum of the measured attributes of the ignored
+    entities, otherwise return the number of ignored attributes. For example, if the metric is the amount of ready
+    user story points, the source entities are user stories and the measured attribute is the amount of story
+    points of each user story.
+    """
+    entities = source.get("entity_user_data", {}).items()
+    ignored_entities = [
+        entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")
+    ]
+    source_type = metric["sources"][source["source_uuid"]]["type"]
+    if attribute := get_measured_attribute(data_model, metric["type"], source_type):
+        entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
+        attribute_type = get_attribute_type(entity, attribute)
+        convert = dict(float=float, integer=int, minutes=int)[attribute_type]
+        value = sum(convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
+    else:
+        value = len(ignored_entities)
+    return int(value)
 
 
 def determine_measurement_status(metric, direction: Direction, measurement_value: Optional[str]) -> Optional[Status]:
@@ -172,8 +171,7 @@ def determine_status_start(
     if current_status == previous_status:
         if status_start := previous_measurement.get(scale, {}).get("status_start"):
             return str(status_start)
-        else:
-            return None
+        return None
     return now
 
 
