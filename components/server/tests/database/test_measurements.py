@@ -12,6 +12,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
     """Unit tests for calculating the measurement value from one or more source measurements."""
 
     def setUp(self):
+        """Override to set up a metric fixture."""
         self.data_model = dict(
             metrics=dict(metric_type=dict(direction="<")),
             sources=dict(
