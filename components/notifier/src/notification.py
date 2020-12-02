@@ -20,8 +20,8 @@ class Notification:
     def __eq__(self, other):
         """Check if the notification itself is the same, regardless of it's metric content."""
         return self.report_title == other.report_title and \
-               self.destination_uuid == other.destination_uuid and \
-               self.destination == other.destination
+            self.destination_uuid == other.destination_uuid and \
+            self.destination == other.destination
 
     def ready(self):
         """Return whether this notification can be sent."""

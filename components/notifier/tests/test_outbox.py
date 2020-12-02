@@ -70,8 +70,8 @@ class OutboxTestCase(unittest.TestCase):
     def test_merge_notifications_with_same_destination_but_different_report(self):
         """Test that the metrics are merged into the correct notification."""
         report = dict(title="different_title", url="https://differentreport")
-        metric1 = dict(metric_name="new metric 1")
-        metric2 = dict(metric_name="new metric 2")
+        metric1 = dict(metric_name="new_metric 1")
+        metric2 = dict(metric_name="new_metric 2")
         metrics1 = [metric1, metric2]
         new_notifications = [Notification(report, metrics1, "uuid1", {})]
         self.assertEqual(
