@@ -1,7 +1,7 @@
 """Measurements collection."""
 
-from datetime import date, datetime, timedelta
-from typing import Dict, List, Literal, Optional, Union, cast
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Union, cast
 
 import pymongo
 from pymongo.database import Database
@@ -9,9 +9,7 @@ from pymongo.database import Database
 from model.metric import Metric
 from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import MeasurementId, MetricId, Scale, Status
-
-TargetType = Literal["target", "near_target", "debt_target"]
+from server_utilities.type import MeasurementId, MetricId, Scale, Status, TargetType
 
 
 def latest_measurement(database: Database, metric_uuid: MetricId):
@@ -84,7 +82,7 @@ def insert_new_measurement(
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
-            target_value = determine_target_value(metric_data, measurement, metric_type, scale, target_type)
+            target_value = determine_target_value(metric, measurement, scale, target_type)
             measurement[scale][target] = target_value
     database.measurements.insert_one(measurement)
     del measurement["_id"]
@@ -142,18 +140,10 @@ def determine_status_start(
     return now
 
 
-def determine_target_value(metric: Dict, measurement: Dict, metric_type, scale: Scale, target: TargetType):
+def determine_target_value(metric: Metric, measurement: Dict, scale: Scale, target: TargetType):
     """Determine the target, near target or debt target value."""
-    metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
-    target_value = (
-        metric.get(target, metric_type.get(target)) if scale == metric_scale else measurement.get(scale, {}).get(target)
-    )
-    if target == "debt_target":
-        debt_target_expired = (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
-        debt_target_off = metric.get("accept_debt") is False
-        if debt_target_expired or debt_target_off:
-            target_value = None
-    return target_value
+    target_value = metric.get_target(target) if scale == metric.scale() else measurement.get(scale, {}).get(target)
+    return None if target == "debt_target" and metric.accept_debt_expired() else target_value
 
 
 def changelog(database: Database, nr_changes: int, **uuids):
