@@ -82,9 +82,8 @@ def insert_new_measurement(
         if status_start := determine_status_start(status, previous_measurement, scale, now):
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
-            measurement[scale][target] = determine_target(
-                metric, measurement, metric_type, scale, cast(TargetType, target)
-            )
+            target_value = determine_target_value(metric, measurement, metric_type, scale, cast(TargetType, target))
+            measurement[scale][target] = target_value
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
@@ -166,8 +165,8 @@ def determine_status_start(
     return now
 
 
-def determine_target(metric, measurement: Dict, metric_type, scale: Scale, target: TargetType):
-    """Determine the (near) target."""
+def determine_target_value(metric, measurement: Dict, metric_type, scale: Scale, target: TargetType):
+    """Determine the target, near target or debt target value."""
     metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
     target_value = (
         metric.get(target, metric_type.get(target)) if scale == metric_scale else measurement.get(scale, {}).get(target)

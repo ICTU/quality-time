@@ -30,9 +30,7 @@ def get_metrics(database: Database):
 @bottle.post("/api/v3/metric/new/<subject_uuid>")
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
-    data = SubjectData(data_model, reports, subject_uuid)
+    data = SubjectData(latest_datamodel(database), latest_reports(database), subject_uuid)
     data.subject["metrics"][(metric_uuid := uuid())] = default_metric_attributes(database)
     user = sessions.user(database)
     data.report["delta"] = dict(
@@ -49,8 +47,7 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
 @bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>")
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
     """Add a copy of the metric to the subject (new in v3)."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    data_model, reports = latest_datamodel(database), latest_reports(database)
     source = MetricData(data_model, reports, metric_uuid)
     target = SubjectData(data_model, reports, subject_uuid)
     target.subject["metrics"][(metric_copy_uuid := uuid())] = copy_metric(source.metric, source.datamodel)
@@ -70,8 +67,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
 @bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>")
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
+    data_model, reports = latest_datamodel(database), latest_reports(database)
     source = MetricData(data_model, reports, metric_uuid)
     target = SubjectData(data_model, reports, target_subject_uuid)
     user = sessions.user(database)
@@ -103,9 +99,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
 @bottle.delete("/api/v3/metric/<metric_uuid>")
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
-    data = MetricData(data_model, reports, metric_uuid)
+    data = MetricData(latest_datamodel(database), latest_reports(database), metric_uuid)
     user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid],
@@ -117,13 +111,14 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     return insert_new_report(database, data.report)
 
 
+ATTRIBUTES_IMPACTING_STATUS = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
+
+
 @bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>")
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
-    data = MetricData(data_model, reports, metric_uuid)
+    data = MetricData(latest_datamodel(database), latest_reports(database), metric_uuid)
     if metric_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
     old_value: Any
@@ -144,7 +139,6 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         f"of subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{new_value}'.",
     )
     insert_new_report(database, data.report)
-    attributes_impacting_status = ("accept_debt", "debt_target", "debt_end_date", "direction", "near_target", "target")
-    if metric_attribute in attributes_impacting_status and (latest := latest_measurement(database, metric_uuid)):
+    if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric_uuid)):
         return insert_new_measurement(database, data.datamodel, data.metric, latest.copy(), latest)
     return dict(ok=True)
