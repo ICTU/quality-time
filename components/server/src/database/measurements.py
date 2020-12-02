@@ -66,6 +66,42 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
+class Metric:
+    def __init__(self, data_model, metric_data):
+        self.__data_model = data_model
+        self.__data = metric_data
+
+    def metric_type(self):
+        return self.__data_model["metrics"][self.__data["type"]]
+
+    def direction(self):
+        return self.__data.get("direction") or self.metric_type()["direction"]
+
+    def accept_debt(self) -> bool:
+        """Return whether the metric has its technical debt accepted."""
+        return bool(self.__data["accept_debt"])
+
+    def accept_debt_unexpired(self) -> bool:
+        """Return whether the accepted debt hasn't expired yet."""
+        return self.accept_debt() and date.today().isoformat() <= self.debt_end_date()
+
+    def debt_end_date(self) -> str:
+        """Return the end date of the accepted technical debt."""
+        return str(self.__data.get("debt_end_date")) or date.max.isoformat()
+
+    def target(self) -> float:
+        """Return the metric target value."""
+        return float(self.__data.get("target") or 0)
+
+    def near_target(self) -> float:
+        """Return the metric near target value."""
+        return float(self.__data.get("near_target") or 0)
+
+    def debt_target(self) -> float:
+        """Return the metric debt target value."""
+        return float(self.__data.get("debt_target") or 0)
+
+
 def insert_new_measurement(
     database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict
 ) -> Dict:
@@ -75,9 +111,10 @@ def insert_new_measurement(
     metric_type = data_model["metrics"][metric["type"]]
     direction = metric.get("direction") or metric_type["direction"]
     measurement["start"] = measurement["end"] = now = iso_timestamp()
+    m = Metric(data_model, metric)
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
-        status = determine_measurement_status(metric, direction, value)
+        status = determine_measurement_status(m, value)
         measurement[scale] = dict(value=value, status=status, direction=direction)
         if status_start := determine_status_start(status, previous_measurement, scale, now):
             measurement[scale]["status_start"] = status_start
@@ -129,23 +166,19 @@ def value_of_entities_to_ignore(data_model, metric, source) -> int:
     return int(value)
 
 
-def determine_measurement_status(metric, direction: Direction, measurement_value: Optional[str]) -> Optional[Status]:
+def determine_measurement_status(metric: Metric, measurement_value: Optional[str]) -> Optional[Status]:
     """Determine the measurement status."""
-    debt_end_date = metric.get("debt_end_date") or date.max.isoformat()
     if measurement_value is None:
         # Allow for accepted debt even if there is no measurement yet so that the fact that a metric does not have a
         # source can be accepted as technical debt
-        return "debt_target_met" if metric["accept_debt"] and date.today().isoformat() <= debt_end_date else None
+        return "debt_target_met" if metric.accept_debt_unexpired() else None
     value = float(measurement_value)
-    target = float(metric.get("target") or 0)
-    near_target = float(metric.get("near_target") or 0)
-    debt_target = float(metric.get("debt_target") or 0)
-    better_or_equal = {">": float.__ge__, "<": float.__le__}[direction]
-    if better_or_equal(value, target):
+    better_or_equal = {">": float.__ge__, "<": float.__le__}[metric.direction()]
+    if better_or_equal(value, metric.target()):
         status: Status = "target_met"
-    elif metric["accept_debt"] and date.today().isoformat() <= debt_end_date and better_or_equal(value, debt_target):
+    elif metric.accept_debt_unexpired() and better_or_equal(value, metric.debt_target()):
         status = "debt_target_met"
-    elif better_or_equal(target, near_target) and better_or_equal(value, near_target):
+    elif better_or_equal(metric.target(), metric.near_target()) and better_or_equal(value, metric.near_target()):
         status = "near_target_met"
     else:
         status = "target_not_met"
