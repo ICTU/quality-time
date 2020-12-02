@@ -6,9 +6,10 @@ from typing import Dict, List, Literal, Optional, Union, cast
 import pymongo
 from pymongo.database import Database
 
+from model.metric import Metric
 from model.queries import get_attribute_type, get_measured_attribute
 from server_utilities.functions import iso_timestamp, percentage
-from server_utilities.type import Direction, MeasurementId, MetricId, Scale, Status
+from server_utilities.type import MeasurementId, MetricId, Scale, Status
 
 TargetType = Literal["target", "near_target", "debt_target"]
 
@@ -66,42 +67,6 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
     return database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
 
 
-class Metric:
-    def __init__(self, data_model, metric_data):
-        self.__data_model = data_model
-        self.__data = metric_data
-
-    def metric_type(self):
-        return self.__data_model["metrics"][self.__data["type"]]
-
-    def direction(self):
-        return self.__data.get("direction") or self.metric_type()["direction"]
-
-    def accept_debt(self) -> bool:
-        """Return whether the metric has its technical debt accepted."""
-        return bool(self.__data["accept_debt"])
-
-    def accept_debt_unexpired(self) -> bool:
-        """Return whether the accepted debt hasn't expired yet."""
-        return self.accept_debt() and date.today().isoformat() <= self.debt_end_date()
-
-    def debt_end_date(self) -> str:
-        """Return the end date of the accepted technical debt."""
-        return str(self.__data.get("debt_end_date")) or date.max.isoformat()
-
-    def target(self) -> float:
-        """Return the metric target value."""
-        return float(self.__data.get("target") or 0)
-
-    def near_target(self) -> float:
-        """Return the metric near target value."""
-        return float(self.__data.get("near_target") or 0)
-
-    def debt_target(self) -> float:
-        """Return the metric debt target value."""
-        return float(self.__data.get("debt_target") or 0)
-
-
 def insert_new_measurement(
     database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict
 ) -> Dict:
@@ -114,7 +79,7 @@ def insert_new_measurement(
     m = Metric(data_model, metric)
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
-        status = determine_measurement_status(m, value)
+        status = m.status(value)
         measurement[scale] = dict(value=value, status=status, direction=direction)
         if status_start := determine_status_start(status, previous_measurement, scale, now):
             measurement[scale]["status_start"] = status_start
@@ -164,25 +129,6 @@ def value_of_entities_to_ignore(data_model, metric, source) -> int:
     else:
         value = len(ignored_entities)
     return int(value)
-
-
-def determine_measurement_status(metric: Metric, measurement_value: Optional[str]) -> Optional[Status]:
-    """Determine the measurement status."""
-    if measurement_value is None:
-        # Allow for accepted debt even if there is no measurement yet so that the fact that a metric does not have a
-        # source can be accepted as technical debt
-        return "debt_target_met" if metric.accept_debt_unexpired() else None
-    value = float(measurement_value)
-    better_or_equal = {">": float.__ge__, "<": float.__le__}[metric.direction()]
-    if better_or_equal(value, metric.target()):
-        status: Status = "target_met"
-    elif metric.accept_debt_unexpired() and better_or_equal(value, metric.debt_target()):
-        status = "debt_target_met"
-    elif better_or_equal(metric.target(), metric.near_target()) and better_or_equal(value, metric.near_target()):
-        status = "near_target_met"
-    else:
-        status = "target_not_met"
-    return status
 
 
 def determine_status_start(
