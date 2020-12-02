@@ -27,7 +27,7 @@ class Notification:
         """Return whether this notification can be sent."""
         age = datetime.now() - self.creation_time
         notification_frequency = self.destination.get("frequency", int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60)))
-        minimal_age = timedelta(minutes=notification_frequency)
+        minimal_age = timedelta(minutes=int(notification_frequency))
         return age >= minimal_age
 
     def merge_notification(self, new_metrics):
