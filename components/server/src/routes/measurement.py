@@ -81,9 +81,7 @@ def set_entity_attribute(
     metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
 ) -> Dict:
     """Set an entity attribute."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
-    data = SourceData(data_model, reports, source_uuid)
+    data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
     old_measurement = latest_measurement(database, metric_uuid)
     new_measurement = old_measurement.copy()
     source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]

@@ -72,9 +72,8 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     target = SubjectData(data_model, reports, target_subject_uuid)
     user = sessions.user(database)
     delta_description = (
-        f"{user['user']} moved the metric '{source.metric_name}' from subject "
-        f"'{source.subject_name}' in report '{source.report_name}' to subject "
-        f"'{target.subject_name}' in report '{target.report_name}'."
+        f"{user['user']} moved the metric '{source.metric_name}' from subject '{source.subject_name}' in report "
+        f"'{source.report_name}' to subject '{target.subject_name}' in report '{target.report_name}'."
     )
     target.subject["metrics"][metric_uuid] = source.metric
     reports_to_insert = [target.report]
