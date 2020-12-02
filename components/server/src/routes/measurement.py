@@ -84,21 +84,22 @@ def set_entity_attribute(
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
     data = SourceData(data_model, reports, source_uuid)
-    measurement = latest_measurement(database, metric_uuid)
-    source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
+    old_measurement = latest_measurement(database, metric_uuid)
+    new_measurement = old_measurement.copy()
+    source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([entity[key] for key in entity.keys() if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
-    value = dict(bottle.request.json)[attribute]
-    source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
+    new_value = dict(bottle.request.json)[attribute]
+    source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
     user = sessions.user(database)
-    measurement["delta"] = dict(
+    new_measurement["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
         description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
-        f"'{value}'.",
+        f"'{new_value}'.",
         email=user["email"],
     )
-    return insert_new_measurement(database, data.datamodel, data.metric, measurement)
+    return insert_new_measurement(database, data.datamodel, data.metric, new_measurement, old_measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:

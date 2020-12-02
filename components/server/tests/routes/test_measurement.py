@@ -92,7 +92,15 @@ class PostMeasurementTests(unittest.TestCase):
             sources=self.posted_measurement["sources"],
             start="2019-01-01",
             end="2019-01-01",
-            count=dict(value=None, status=None, target="0", near_target="10", debt_target=None, direction="<"),
+            count=dict(
+                value=None,
+                status=None,
+                status_start="2019-01-01",
+                target="0",
+                near_target="10",
+                debt_target=None,
+                direction="<",
+            ),
         )
 
     @staticmethod
@@ -126,7 +134,7 @@ class PostMeasurementTests(unittest.TestCase):
         """Post a changed measurement for a metric."""
         self.posted_measurement["sources"].append(self.source())
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -147,7 +155,7 @@ class PostMeasurementTests(unittest.TestCase):
         ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(old_key="a", key="b")]))
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once_with(
             dict(
@@ -207,7 +215,7 @@ class PostMeasurementTests(unittest.TestCase):
         ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="target_met", status_start="2019-01-01", value="0"))
+        self.new_measurement["count"].update(dict(status="target_met", value="0"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -219,7 +227,7 @@ class PostMeasurementTests(unittest.TestCase):
         ]
         self.posted_measurement["sources"].append(self.source(entities=[dict(key="entity1")]))
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -240,7 +248,7 @@ class PostMeasurementTests(unittest.TestCase):
             value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
         )
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 
@@ -253,7 +261,7 @@ class PostMeasurementTests(unittest.TestCase):
             value="1", status="debt_target_met", target="0", near_target="10", debt_target="100"
         )
         request.json = self.posted_measurement
-        self.new_measurement["count"].update(dict(status="near_target_met", status_start="2019-01-01", value="1"))
+        self.new_measurement["count"].update(dict(status="near_target_met", value="1"))
         self.assertEqual(self.new_measurement, post_measurement(self.database))
         self.database.measurements.insert_one.assert_called_once()
 

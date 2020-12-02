@@ -67,13 +67,11 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict = None
+    database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict
 ) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    if not previous_measurement:
-        previous_measurement = measurement.copy()
     metric_type = data_model["metrics"][metric["type"]]
     direction = metric.get("direction") or metric_type["direction"]
     measurement["start"] = measurement["end"] = now = iso_timestamp()
@@ -159,11 +157,12 @@ def determine_status_start(
     current_status: Optional[Status], previous_measurement: Dict, scale: Scale, now: str
 ) -> Optional[str]:
     """Determine the date time since when the metric has the current status."""
-    previous_status = previous_measurement.get(scale, {}).get("status")
-    if current_status == previous_status:
-        if status_start := previous_measurement.get(scale, {}).get("status_start"):
-            return str(status_start)
-        return None
+    if previous_measurement:
+        previous_status = previous_measurement.get(scale, {}).get("status")
+        if current_status == previous_status:
+            if status_start := previous_measurement.get(scale, {}).get("status_start"):
+                return str(status_start)
+            return None
     return now
 
 
