@@ -17,9 +17,9 @@ class Metric:
         """Return the type of the metric."""
         return str(self.__data["type"])
 
-    def addition(self) -> str:
+    def addition(self):
         """Return the addition operator of the metric: sum, min, or max."""
-        return str(self.__data["addition"])
+        return dict(max=max, min=min, sum=sum)[self.__data["addition"]]
 
     def direction(self) -> Direction:
         """Return the direction of the metric: < or >."""

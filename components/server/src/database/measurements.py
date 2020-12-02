@@ -96,15 +96,14 @@ def calculate_measurement_value(data_model, metric: Metric, sources, scale: Scal
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
     values = [int(source["value"]) - value_of_entities_to_ignore(data_model, metric, source) for source in sources]
-    addition = metric.addition()
-    add = dict(max=max, min=min, sum=sum)[addition]
+    add = metric.addition()
     if scale == "percentage":
         direction = metric.direction()
         totals = [int(source["total"]) for source in sources]
-        if addition == "sum":
+        if add == sum:
             values, totals = [sum(values)], [sum(totals)]
         values = [percentage(value, total, direction) for value, total in zip(values, totals)]
-    return str(add(values))  # type: ignore
+    return str(add(values))
 
 
 def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
