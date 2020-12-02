@@ -68,39 +68,38 @@ def update_measurement_end(database: Database, measurement_id: MeasurementId):
 
 
 def insert_new_measurement(
-    database: Database, data_model, metric: Dict, measurement: Dict, previous_measurement: Dict
+    database: Database, data_model, metric_data: Dict, measurement: Dict, previous_measurement: Dict
 ) -> Dict:
     """Insert a new measurement."""
     if "_id" in measurement:
         del measurement["_id"]
-    metric_type = data_model["metrics"][metric["type"]]
-    direction = metric.get("direction") or metric_type["direction"]
+    metric = Metric(data_model, metric_data)
+    metric_type = data_model["metrics"][metric.type()]
     measurement["start"] = measurement["end"] = now = iso_timestamp()
-    m = Metric(data_model, metric)
     for scale in metric_type["scales"]:
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
-        status = m.status(value)
-        measurement[scale] = dict(value=value, status=status, direction=direction)
+        status = metric.status(value)
+        measurement[scale] = dict(value=value, status=status, direction=metric.direction())
         if status_start := determine_status_start(status, previous_measurement, scale, now):
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
-            target_value = determine_target_value(metric, measurement, metric_type, scale, cast(TargetType, target))
+            target_type = cast(TargetType, target)
+            target_value = determine_target_value(metric_data, measurement, metric_type, scale, target_type)
             measurement[scale][target] = target_value
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
 
 
-def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale) -> Optional[str]:
+def calculate_measurement_value(data_model, metric: Metric, sources, scale: Scale) -> Optional[str]:
     """Calculate the measurement value from the source measurements."""
     if not sources or any(source["parse_error"] or source["connection_error"] for source in sources):
         return None
     values = [int(source["value"]) - value_of_entities_to_ignore(data_model, metric, source) for source in sources]
-    addition = metric["addition"]
+    addition = metric.addition()
     add = dict(max=max, min=min, sum=sum)[addition]
     if scale == "percentage":
-        metric_type = data_model["metrics"][metric["type"]]
-        direction = metric.get("direction") or metric_type["direction"]
+        direction = metric.direction()
         totals = [int(source["total"]) for source in sources]
         if addition == "sum":
             values, totals = [sum(values)], [sum(totals)]
@@ -108,7 +107,7 @@ def calculate_measurement_value(data_model, metric: Dict, sources, scale: Scale)
     return str(add(values))  # type: ignore
 
 
-def value_of_entities_to_ignore(data_model, metric, source) -> int:
+def value_of_entities_to_ignore(data_model, metric: Metric, source) -> int:
     """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
 
     If the entities have a measured attribute, return the sum of the measured attributes of the ignored
@@ -120,9 +119,9 @@ def value_of_entities_to_ignore(data_model, metric, source) -> int:
     ignored_entities = [
         entity[0] for entity in entities if entity[1].get("status") in ("fixed", "false_positive", "wont_fix")
     ]
-    source_type = metric["sources"][source["source_uuid"]]["type"]
-    if attribute := get_measured_attribute(data_model, metric["type"], source_type):
-        entity = data_model["sources"][source_type]["entities"].get(metric["type"], {})
+    source_type = metric.sources()[source["source_uuid"]]["type"]
+    if attribute := get_measured_attribute(data_model, metric.type(), source_type):
+        entity = data_model["sources"][source_type]["entities"].get(metric.type(), {})
         attribute_type = get_attribute_type(entity, attribute)
         convert = dict(float=float, integer=int, minutes=int)[attribute_type]
         value = sum(convert(entity[attribute]) for entity in source["entities"] if entity["key"] in ignored_entities)
@@ -144,7 +143,7 @@ def determine_status_start(
     return now
 
 
-def determine_target_value(metric, measurement: Dict, metric_type, scale: Scale, target: TargetType):
+def determine_target_value(metric: Dict, measurement: Dict, metric_type, scale: Scale, target: TargetType):
     """Determine the target, near target or debt target value."""
     metric_scale = metric.get("scale", "count")  # The current scale chosen by the user
     target_value = (

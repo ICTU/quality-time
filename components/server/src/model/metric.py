@@ -13,13 +13,17 @@ class Metric:
         self.__data_model = data_model
         self.__data = metric_data
 
-    def metric_type(self) -> Dict:
+    def type(self) -> str:
         """Return the type of the metric."""
-        return cast(Dict, self.__data_model["metrics"][self.__data["type"]])
+        return str(self.__data["type"])
+
+    def addition(self) -> str:
+        """Return the addition operator of the metric: sum, min, or max."""
+        return str(self.__data["addition"])
 
     def direction(self) -> Direction:
         """Return the direction of the metric: < or >."""
-        return cast(Direction, self.__data.get("direction") or self.metric_type()["direction"])
+        return cast(Direction, self.__data.get("direction") or self.__data_model["metrics"][self.type()]["direction"])
 
     def accept_debt(self) -> bool:
         """Return whether the metric has its technical debt accepted."""
@@ -62,3 +66,7 @@ class Metric:
         else:
             status = "target_not_met"
         return status
+
+    def sources(self) -> Dict:
+        """Return the metric sources."""
+        return cast(Dict, self.__data.get("sources", {}))

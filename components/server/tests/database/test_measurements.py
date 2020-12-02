@@ -3,6 +3,7 @@
 import unittest
 
 from database.measurements import calculate_measurement_value
+from model.metric import Metric
 
 from ..fixtures import SOURCE_ID, SOURCE_ID2
 
@@ -17,19 +18,20 @@ class CalculateMeasurementValueTest(unittest.TestCase):
                 source_type=dict(entities=dict(metric_type=dict(attributes=[dict(key="story_points", type="integer")])))
             ),
         )
-        self.metric = dict(
+        self.metric_data = dict(
             addition="sum",
             direction="<",
             type="metric_type",
             sources={SOURCE_ID: dict(type="source_type"), SOURCE_ID2: dict(type="source_type")},
         )
+        self.metric = Metric(self.data_model, self.metric_data)
 
     def test_no_source_measurements(self):
         """Test that the measurement value is None if there are no sources."""
         self.assertEqual(None, calculate_measurement_value(self.data_model, self.metric, [], "count"))
 
     def test_error(self):
-        """Test that the measurement value is None if a source has an erro."""
+        """Test that the measurement value is None if a source has an error."""
         sources = [dict(source_uuid=SOURCE_ID, parse_error="error")]
         self.assertEqual(None, calculate_measurement_value(self.data_model, self.metric, sources, "count"))
 
@@ -43,7 +45,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
 
     def test_max_two_sources(self):
         """Test that the max value of two sources is returned."""
-        self.metric["addition"] = "max"
+        self.metric_data["addition"] = "max"
         sources = [
             dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="10", total=None),
             dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="20", total=None),
@@ -104,13 +106,13 @@ class CalculateMeasurementValueTest(unittest.TestCase):
 
     def test_percentage_is_100(self):
         """Test that the percentage is 100 when the total is zero and the direction is 'more is better'."""
-        self.metric["direction"] = ">"
+        self.metric_data["direction"] = ">"
         sources = [dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="0", total="0")]
         self.assertEqual("100", calculate_measurement_value(self.data_model, self.metric, sources, "percentage"))
 
     def test_min_of_percentages(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        self.metric["addition"] = "min"
+        self.metric_data["addition"] = "min"
         sources = [
             dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="10", total="70"),
             dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="20", total="50"),
@@ -119,7 +121,7 @@ class CalculateMeasurementValueTest(unittest.TestCase):
 
     def test_min_of_percentages_with_zero_denominator(self):
         """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        self.metric["addition"] = "min"
+        self.metric_data["addition"] = "min"
         sources = [
             dict(source_uuid=SOURCE_ID, parse_error=None, connection_error=None, value="10", total="70"),
             dict(source_uuid=SOURCE_ID2, parse_error=None, connection_error=None, value="0", total="0"),
