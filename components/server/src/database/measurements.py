@@ -82,8 +82,7 @@ def insert_new_measurement(
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
-            target_value = determine_target_value(metric, measurement, scale, target_type)
-            measurement[scale][target] = target_value
+            measurement[scale][target] = determine_target_value(metric, measurement, scale, target_type)
     database.measurements.insert_one(measurement)
     del measurement["_id"]
     return measurement
