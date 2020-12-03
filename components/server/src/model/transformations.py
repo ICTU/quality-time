@@ -78,7 +78,7 @@ def summarize_report(report, recent_measurements, data_model) -> None:
             metric["scale"] = scale
             last_measurement = recent[-1] if recent else {}
             metric["status"] = metric_status(metric, last_measurement, scale)
-            if status_start := last_measurement.get("status_start"):
+            if status_start := last_measurement.get(scale, {}).get("status_start"):
                 metric["status_start"] = status_start
             metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
             color = status_color_mapping.get(metric["status"], "white")
