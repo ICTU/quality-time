@@ -29,7 +29,7 @@ def recent_measurements_by_metric_uuid(database: Database, max_iso_timestamp: st
     max_iso_timestamp = max_iso_timestamp or iso_timestamp()
     min_iso_timestamp = (datetime.fromisoformat(max_iso_timestamp) - timedelta(days=days)).isoformat()
     recent_measurements = database.measurements.find(
-        filter={"end": {"$gt": min_iso_timestamp}, "start": {"$lt": max_iso_timestamp}},
+        filter={"end": {"$gte": min_iso_timestamp}, "start": {"$lte": max_iso_timestamp}},
         sort=[("start", pymongo.ASCENDING)],
         projection={"_id": False, "sources.entities": False},
     )
