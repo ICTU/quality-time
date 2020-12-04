@@ -64,7 +64,7 @@ export function Measurement(props) {
     <TableRowWithDetails id={props.metric_uuid} className={metric.status} details={details} expanded={expanded} onExpand={(state) => onExpand(state)}>
       <Table.Cell>{metric_name}</Table.Cell>
       {!props.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={latest_measurements} report_date={props.report_date} scale={metric.scale} /></Table.Cell>}
-      {!props.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} /></Table.Cell>}
+      {!props.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
       {!props.hiddenColumns.includes("measurement") && <Table.Cell><MeasurementValue /></Table.Cell>}
       {!props.hiddenColumns.includes("target") && <Table.Cell>{measurement_target()}</Table.Cell>}
       {!props.hiddenColumns.includes("source") && <Table.Cell>{measurement_sources()}</Table.Cell>}

@@ -4,6 +4,7 @@ import hashlib
 import re
 import uuid as _uuid
 from datetime import datetime, timezone
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable, Hashable, Iterable, Iterator, Set, TypeVar
 
 import bottle
@@ -13,7 +14,7 @@ import bottle
 # but we give autolink_html clean html, so ignore the warning:
 from lxml.html.clean import autolink_html, clean_html  # noqa: DUO107, # nosec, pylint: disable=no-name-in-module
 
-from server_utilities.type import ReportId
+from server_utilities.type import Direction, ReportId
 
 
 def iso_timestamp() -> str:
@@ -60,3 +61,10 @@ def unique(items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda i
         if (key := get_key(item)) not in seen:
             seen.add(key)
             yield item
+
+
+def percentage(numerator: int, denominator: int, direction: Direction) -> int:
+    """Return the rounded percentage: numerator / denominator * 100%."""
+    if denominator == 0:
+        return 0 if direction == "<" else 100
+    return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))

@@ -11,8 +11,13 @@ from pymongo.database import Database
 from database import sessions
 from database.datamodels import latest_datamodel
 from database.measurements import (
-    all_measurements, count_measurements, insert_new_measurement, latest_measurement, latest_successful_measurement,
-    update_measurement_end)
+    all_measurements,
+    count_measurements,
+    insert_new_measurement,
+    latest_measurement,
+    latest_successful_measurement,
+    update_measurement_end,
+)
 from database.reports import latest_metric, latest_reports
 from model.data import SourceData
 from server_utilities.functions import report_date_time
@@ -35,7 +40,7 @@ def post_measurement(database: Database) -> Dict:
             # If the new measurement is equal to the previous one, merge them together
             update_measurement_end(database, latest["_id"])
             return dict(ok=True)
-    return insert_new_measurement(database, data_model, metric, measurement)
+    return insert_new_measurement(database, data_model, metric, measurement, latest)
 
 
 def copy_entity_user_data(old_sources, new_sources) -> None:
@@ -45,7 +50,8 @@ def copy_entity_user_data(old_sources, new_sources) -> None:
         # Sometimes the key Quality-time generates for entities needs to change, e.g. when it turns out not to be
         # unique. Create a mapping of old keys to new keys so we can move the entity user data to the new keys
         changed_entity_keys = {
-            entity["old_key"]: entity["key"] for entity in new_source.get("entities", []) if "old_key" in entity}
+            entity["old_key"]: entity["key"] for entity in new_source.get("entities", []) if "old_key" in entity
+        }
         # Copy the user data of entities that still exist in the new measurement:
         for entity_key, attributes in old_source.get("entity_user_data", {}).items():
             if entity_key in changed_entity_keys:
@@ -64,31 +70,34 @@ def debt_target_expired(data_model, metric, measurement) -> bool:
     any_debt_target = any(measurement.get(scale, {}).get("debt_target") is not None for scale in metric_scales)
     if not any_debt_target:
         return False
-    return metric.get("accept_debt") is False or \
-           (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()  # pragma: no cover-behave
+    return (
+        metric.get("accept_debt") is False
+        or (metric.get("debt_end_date") or date.max.isoformat()) < date.today().isoformat()
+    )  # pragma: no cover-behave
 
 
 @bottle.post("/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>")
-def set_entity_attribute(metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str,
-                         database: Database) -> Dict:
+def set_entity_attribute(
+    metric_uuid: MetricId, source_uuid: SourceId, entity_key: str, attribute: str, database: Database
+) -> Dict:
     """Set an entity attribute."""
-    data_model = latest_datamodel(database)
-    reports = latest_reports(database)
-    data = SourceData(data_model, reports, source_uuid)
-    measurement = latest_measurement(database, metric_uuid)
-    source = [s for s in measurement["sources"] if s["source_uuid"] == source_uuid][0]
+    data = SourceData(latest_datamodel(database), latest_reports(database), source_uuid)
+    old_measurement = latest_measurement(database, metric_uuid)
+    new_measurement = old_measurement.copy()
+    source = [s for s in new_measurement["sources"] if s["source_uuid"] == source_uuid][0]
     entity = [e for e in source["entities"] if e["key"] == entity_key][0]
     entity_description = "/".join([entity[key] for key in entity.keys() if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
-    value = dict(bottle.request.json)[attribute]
-    source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = value
+    new_value = dict(bottle.request.json)[attribute]
+    source.setdefault("entity_user_data", {}).setdefault(entity_key, {})[attribute] = new_value
     user = sessions.user(database)
-    measurement["delta"] = dict(
+    new_measurement["delta"] = dict(
         uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
         description=f"{user['user']} changed the {attribute} of '{entity_description}' from '{old_value}' to "
-                    f"'{value}'.",
-        email=user["email"])
-    return insert_new_measurement(database, data.datamodel, data.metric, measurement)
+        f"'{new_value}'.",
+        email=user["email"],
+    )
+    return insert_new_measurement(database, data.datamodel, data.metric, new_measurement, old_measurement)
 
 
 def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
@@ -120,8 +129,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
             skipped = 0
             nr_measurements = new_nr_measurements
             event_id += 1
-            logging.info(
-                "Updating nr_measurements stream with %s measurements", nr_measurements)
+            logging.info("Updating nr_measurements stream with %s measurements", nr_measurements)
             yield sse_pack(event_id, "delta", nr_measurements)
         else:
             skipped += 1

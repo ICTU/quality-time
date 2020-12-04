@@ -19,12 +19,15 @@ def hide_credentials(data_model, *reports) -> None:
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> List[ItemId]:
-    """Change the parameter with the specified key of all sources of the specified type and with the same old value to
-    the new value. Return the ids of the changed reports, subjects, metrics, and sources."""
+    """Change the parameter of all sources of the specified type and the same old value to the new value.
+
+    Return the ids of the changed reports, subjects, metrics, and sources.
+    """
     changed_ids: List[ItemId] = []
     for source, uuids in _sources_to_change(data, scope):
-        if source["type"] == data.source["type"] and \
-                (source["parameters"].get(parameter_key) or None) == (old_value or None):
+        if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
+            old_value or None
+        ):
             source["parameters"][parameter_key] = new_value
             changed_ids.extend(uuids)
     return list(unique(changed_ids))
@@ -46,8 +49,9 @@ def _reports_to_change(data, scope: EditScope) -> Iterator:
 
 def _subjects_to_change(data, report, scope: EditScope) -> Iterator:
     """Return the subjects to change, given the scope."""
-    yield from {data.subject_uuid: data.subject}.items() if scope in ("subject", "metric", "source") else \
-        report["subjects"].items()
+    yield from {data.subject_uuid: data.subject}.items() if scope in ("subject", "metric", "source") else report[
+        "subjects"
+    ].items()
 
 
 def _metrics_to_change(data, subject, scope: EditScope) -> Iterator:
@@ -62,8 +66,10 @@ def __sources_to_change(data, metric, scope: EditScope) -> Iterator:
 
 def summarize_report(report, recent_measurements, data_model) -> None:
     """Add a summary of the measurements to each subject."""
-    status_color_mapping: Dict[Status, Color] = cast(Dict[Status, Color], dict(
-        target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"))
+    status_color_mapping: Dict[Status, Color] = cast(
+        Dict[Status, Color],
+        dict(target_met="green", debt_target_met="grey", near_target_met="yellow", target_not_met="red"),
+    )
     report["summary"] = dict(red=0, green=0, yellow=0, grey=0, white=0)
     report["summary_by_subject"] = {}
     report["summary_by_tag"] = {}
@@ -74,11 +80,14 @@ def summarize_report(report, recent_measurements, data_model) -> None:
             metric["scale"] = scale
             last_measurement = recent[-1] if recent else {}
             metric["status"] = metric_status(metric, last_measurement, scale)
+            if status_start := last_measurement.get(scale, {}).get("status_start"):
+                metric["status_start"] = status_start
             metric["value"] = last_measurement.get(scale, {}).get("value", last_measurement.get("value"))
             color = status_color_mapping.get(metric["status"], "white")
             report["summary"][color] += 1
-            report["summary_by_subject"].setdefault(
-                subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
+            report["summary_by_subject"].setdefault(subject_uuid, dict(red=0, green=0, yellow=0, grey=0, white=0))[
+                color
+            ] += 1
             for tag in metric.get("tags", []):
                 report["summary_by_tag"].setdefault(tag, dict(red=0, green=0, yellow=0, grey=0, white=0))[color] += 1
 

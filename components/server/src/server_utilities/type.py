@@ -6,9 +6,10 @@ Change = Dict[str, Union[str, Dict[str, str]]]
 Color = Literal["green", "grey", "red", "yellow", "white"]
 Direction = Literal["<", ">"]
 EditScope = Literal["source", "metric", "subject", "report", "reports"]
+Position = Literal["first", "last", "next", "previous"]
 Scale = Literal["count", "percentage"]
 Status = Literal["target_met", "debt_target_met", "near_target_met", "target_not_met"]
-Position = Literal["first", "last", "next", "previous"]
+TargetType = Literal["target", "near_target", "debt_target"]
 
 MeasurementId = NewType("MeasurementId", str)
 MetricId = NewType("MetricId", str)
