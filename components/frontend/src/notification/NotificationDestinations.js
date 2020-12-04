@@ -37,11 +37,12 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Column width={3}>
                         <IntegerInput
                             id={destination_uuid + "frequency"}
-                            min="1"
-                            label="minutes between notifications"
+                            label="Bundle notifications for:"
+                            min="0"
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { frequency: value }, reload)
                             }}
+                            unit="minutes"
                             value={destination.frequency}
                         />
                     </Grid.Column>

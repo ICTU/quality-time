@@ -26,7 +26,7 @@ class Notification:
     def ready(self):
         """Return whether this notification can be sent."""
         age = datetime.now() - self.creation_time
-        notification_frequency = self.destination.get("frequency", int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60)))
+        notification_frequency = self.destination.get("frequency", 0)
         minimal_age = timedelta(minutes=int(notification_frequency))
         return age >= minimal_age
 
