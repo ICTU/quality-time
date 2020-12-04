@@ -108,6 +108,7 @@ class ReportsTest(unittest.TestCase):
         self.assertEqual(dict(_id="id", title="Reports", subtitle="", reports=[report]), get_reports(self.database))
 
     def test_status_start(self):
+        """Test that the status start is part of the reports summary."""
         self.measurement["count"]["status_start"] = "2020-12-03:22:28:00+00:00"
         report = create_report()
         self.database.reports.find.return_value = [report]

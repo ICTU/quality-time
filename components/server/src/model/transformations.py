@@ -19,8 +19,10 @@ def hide_credentials(data_model, *reports) -> None:
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> List[ItemId]:
-    """Change the parameter with the specified key of all sources of the specified type and with the same old value to
-    the new value. Return the ids of the changed reports, subjects, metrics, and sources."""
+    """Change the parameter of all sources of the specified type and the same old value to the new value.
+
+    Return the ids of the changed reports, subjects, metrics, and sources.
+    """
     changed_ids: List[ItemId] = []
     for source, uuids in _sources_to_change(data, scope):
         if source["type"] == data.source["type"] and (source["parameters"].get(parameter_key) or None) == (
