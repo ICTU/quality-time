@@ -78,7 +78,9 @@ def insert_new_measurement(
         value = calculate_measurement_value(data_model, metric, measurement["sources"], scale)
         status = metric.status(value)
         measurement[scale] = dict(value=value, status=status, direction=metric.direction())
-        if status_start := determine_status_start(status, previous_measurement, scale, now):
+        # We can't cover determine_status_start() returning False in the feature tests because all new measurements have
+        # a status start timestamp, hence the pragma: no cover-behave:
+        if status_start := determine_status_start(status, previous_measurement, scale, now):  # pragma: no cover-behave
             measurement[scale]["status_start"] = status_start
         for target in ("target", "near_target", "debt_target"):
             target_type = cast(TargetType, target)
