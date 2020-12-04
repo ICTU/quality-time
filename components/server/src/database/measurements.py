@@ -135,9 +135,7 @@ def determine_status_start(
     if previous_measurement:
         previous_status = previous_measurement.get(scale, {}).get("status")
         if current_status == previous_status:
-            if status_start := previous_measurement.get(scale, {}).get("status_start"):
-                return str(status_start)
-            return None
+            return str(previous_measurement.get(scale, {}).get("status_start", "")) or None
     return now
 
 
