@@ -56,8 +56,10 @@ export function Measurement(props) {
     if (expand) {
       props.toggleVisibleDetailsTab(`${props.metric_uuid}:0`)
     } else {
-      const tab = props.visibleDetailsTabs.filter((each) => each.startsWith(props.metric_uuid))[0];
-      props.toggleVisibleDetailsTab(tab)
+      const tabs = props.visibleDetailsTabs.filter((each) => each.startsWith(props.metric_uuid));
+      if (tabs.length > 0) {
+        props.toggleVisibleDetailsTab(tabs[0])
+      }
     }
   }
   return (
