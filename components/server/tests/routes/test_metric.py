@@ -145,6 +145,32 @@ class PostMetricAttributeTest(unittest.TestCase):
                 metric_uuid=METRIC_ID,
                 count=dict(
                     value=None,
+                    status=None,
+                    target="0",
+                    near_target="10",
+                    debt_target=None,
+                    direction="<",
+                ),
+            ),
+            post_metric_attribute(METRIC_ID, "accept_debt", self.database),
+        )
+        self.assert_delta("accept_debt of metric 'name' of subject 'Subject' in report 'Report' from '' to 'True'")
+
+    @patch("database.measurements.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_post_metric_technical_debt_without_sources(self, request):
+        """Test that accepting technical debt when the metric has no sources also sets the status to debt target met."""
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = {}
+        self.database.measurements.find_one.return_value = dict(_id="id", metric_uuid=METRIC_ID, sources=[])
+        self.database.measurements.insert_one.side_effect = self.set_measurement_id
+        request.json = dict(accept_debt=True)
+        self.assertEqual(
+            dict(
+                end="2019-01-01",
+                sources=[],
+                start="2019-01-01",
+                metric_uuid=METRIC_ID,
+                count=dict(
+                    value=None,
                     status="debt_target_met",
                     status_start="2019-01-01",
                     target="0",

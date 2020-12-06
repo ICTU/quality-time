@@ -63,9 +63,9 @@ class Metric:
     def status(self, measurement_value: Optional[str]) -> Optional[Status]:
         """Return the metric status, given a measurement value."""
         if measurement_value is None:
-            # Allow for accepted debt even if there is no measurement yet so that the fact that a metric does not have a
+            # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
             # source can be accepted as technical debt
-            return None if self.accept_debt_expired() else "debt_target_met"
+            return None if self.accept_debt_expired() or self.sources() else "debt_target_met"
         value = float(measurement_value)
         better_or_equal = {">": float.__ge__, "<": float.__le__}[self.direction()]
         if better_or_equal(value, self.target()):
