@@ -1,9 +1,9 @@
 """Jenkins metric collector."""
 
-from datetime import datetime
+from datetime import datetime, date
 from typing import Iterator, cast
 
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -20,9 +20,14 @@ class JenkinsJobs(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = [
             Entity(
-                key=job["name"], name=job["name"], url=job["url"], build_status=self._build_status(job),
-                build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "")
-            for job in self.__jobs((await responses[0].json())["jobs"])]
+                key=job["name"],
+                name=job["name"],
+                url=job["url"],
+                build_status=self._build_status(job),
+                build_date=str(self._build_datetime(job).date()) if self._build_datetime(job) > datetime.min else "",
+            )
+            for job in self.__jobs((await responses[0].json())["jobs"])
+        ]
         return SourceMeasurement(entities=entities)
 
     def __jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
@@ -46,7 +51,7 @@ class JenkinsJobs(SourceCollector):
     def _build_datetime(job: Job) -> datetime:
         """Return the date and time of the most recent build of the job."""
         builds = job.get("builds")
-        return datetime.utcfromtimestamp(int(builds[0]["timestamp"]) / 1000.) if builds else datetime.min
+        return datetime.utcfromtimestamp(int(builds[0]["timestamp"]) / 1000.0) if builds else datetime.min
 
     @staticmethod
     def _build_status(job: Job) -> str:
@@ -74,3 +79,14 @@ class JenkinsUnusedJobs(JenkinsJobs):
             max_days = int(cast(str, self._parameter("inactive_days")))
             return days_ago(build_datetime) > max_days
         return False
+
+
+class JenkinsSourceUpToDateness(JenkinsJobs):
+    """Collector to get the last build date from Jenkins jobs."""
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Extend to calculate how many days ago the jobs were built."""
+        measurement = await super()._parse_source_responses(responses)
+        build_dates = [entity["build_date"] for entity in measurement.entities if entity["build_date"]]
+        measurement.value = str((date.today() - date.fromisoformat(max(build_dates))).days) if build_dates else None
+        return measurement
