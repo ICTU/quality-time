@@ -90,7 +90,7 @@ class NotificationDestinationTest(unittest.TestCase):
                  description="Jenny created a new destination for notifications in report 'Report'."),
             report_without_destinations["delta"])
 
-    def test_delete_subject(self):
+    def test_delete_notification_destination(self):
         """Test that a notification destination can be deleted."""
         self.assertEqual(
             dict(ok=True), delete_notification_destination(REPORT_ID, NOTIFICATION_DESTINATION_ID, self.database))

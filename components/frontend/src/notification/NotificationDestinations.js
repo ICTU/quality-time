@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Icon, Popup, Segment } from 'semantic-ui-react';
+import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
@@ -23,7 +24,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                             value={destination.name}
                         />
                     </Grid.Column>
-                    <Grid.Column width={12}>
+                    <Grid.Column width={9}>
                         <StringInput
                             placeholder="url"
                             label={label}
@@ -31,6 +32,18 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { teams_webhook: value, url: window.location.href }, reload)
                             }}
                             value={destination.teams_webhook}
+                        />
+                    </Grid.Column>
+                    <Grid.Column width={3}>
+                        <IntegerInput
+                            id={destination_uuid + "frequency"}
+                            label={<label>Time to wait for more notifications <Popup on={['hover', 'focus']} content={"Wait for the specified amount of time for more notifications and then bundle and send them"} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
+                            min="0"
+                            set_value={(value) => {
+                                set_notification_destination_attributes(report_uuid, destination_uuid, { frequency: value }, reload)
+                            }}
+                            unit="minutes"
+                            value={destination.frequency}
                         />
                     </Grid.Column>
                 </Grid.Row>

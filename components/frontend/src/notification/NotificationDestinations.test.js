@@ -15,10 +15,10 @@ const notification_destinations= {
     }
 };
 
-function render_notification_destinations(destionations) {
+function render_notification_destinations(destinations) {
   render(
     <ReadOnlyContext.Provider value={false}>
-      <NotificationDestinations destinations={destionations} report_uuid={"report_uuid"} reload={() => {}}/>
+      <NotificationDestinations destinations={destinations} report_uuid={"report_uuid"} reload={() => {}}/>
     </ReadOnlyContext.Provider>
   )
 }
@@ -45,7 +45,7 @@ it('creates a new notification destination when the add notification destination
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/new`, {});
 });
 
-it('edits notification destination attribute when it is changed in the input field', async () => {
+it('edits notification destination name attribute when it is changed in the input field', async () => {
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
   await act(async () => {
     render_notification_destinations(notification_destinations)
@@ -53,6 +53,16 @@ it('edits notification destination attribute when it is changed in the input fie
   userEvent.type(screen.getByLabelText(/Name/), ' changed{enter}');
 
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {name: "new changed"});
+});
+
+it('edits the notification destination frequency attribute when it is changed in the input field', async () => {
+  fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+  await act(async () => {
+    render_notification_destinations(notification_destinations)
+  });
+  userEvent.type(screen.getByLabelText(/Time to wait for more notifications/), '30{enter}');
+
+  expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {frequency: "030"});
 });
 
 it('edits multiple notification destination attributes when they are changed in the input fields', async () => {

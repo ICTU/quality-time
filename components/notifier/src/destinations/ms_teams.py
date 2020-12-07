@@ -4,15 +4,17 @@ import logging
 
 import pymsteams
 
+from notification import Notification
 
-def build_notification_text(text_parameters) -> str:
+
+def build_notification_text(notification: Notification) -> str:
     """Create and format the contents of the notification."""
-    nr_changed = len(text_parameters["metrics"])
+    nr_changed = len(notification.metrics)
     plural_s = "s" if nr_changed > 1 else ""
-    report_link = f'[{text_parameters["report_title"]}]({text_parameters["url"]})'
+    report_link = f'[{notification.report_title}]({notification.url})'
 
     result = f'{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n'
-    for metric in text_parameters["metrics"]:
+    for metric in notification.metrics:
         name = metric["metric_name"]
         unit = metric["metric_unit"]
         unit = unit if unit.startswith("%") else f" {unit}"

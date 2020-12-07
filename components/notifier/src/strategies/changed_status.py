@@ -1,24 +1,21 @@
 """Strategies for notifying users about metrics."""
 
-from typing import Dict, List, Union
+from typing import Dict, List
+from notification import Notification
 
 
-def get_notable_metrics_from_json(
-        data_model, json, most_recent_measurement_seen: str) -> List[Dict[str, Union[Dict[str, str], str]]]:
+def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen: str) -> List[Notification]:
     """Return the reports that have a webhook and metrics that require notifying."""
     notifications = []
     for report in json["reports"]:
         notable_metrics = []
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-                if has_new_status(metric, "target_not_met", most_recent_measurement_seen) \
-                        or has_new_status(metric, "unknown", most_recent_measurement_seen):
+                if has_new_status(metric, most_recent_measurement_seen, "target_not_met", "unknown"):
                     notable_metrics.append(create_notification(data_model, metric))
-        if report.get("notification_destinations") and notable_metrics:
-            notifications.append(
-                dict(report_uuid=report["report_uuid"], report_title=report["title"],
-                     url=report.get("url"), metrics=notable_metrics,
-                     notification_destinations=report["notification_destinations"]))
+        if notable_metrics:
+            for destination_uuid, destination in report.get("notification_destinations", {}).items():
+                notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
     return notifications
 
 
@@ -33,7 +30,8 @@ def create_notification(data_model, metric) -> Dict[str, str]:
         new_metric_status=get_status(data_model, recent_measurements[-1][scale]["status"]),
         new_metric_value=recent_measurements[-1][scale]["value"],
         old_metric_status=get_status(data_model, recent_measurements[-2][scale]["status"]),
-        old_metric_value=recent_measurements[-2][scale]["value"])
+        old_metric_value=recent_measurements[-2][scale]["value"],
+    )
 
 
 def get_status(data_model, status) -> str:
@@ -46,13 +44,13 @@ def get_status(data_model, status) -> str:
     return f"{color} ({human_readable_status})"
 
 
-def has_new_status(metric, new_status: str, most_recent_measurement_seen: str) -> bool:
+def has_new_status(metric, most_recent_measurement_seen: str, *new_statuses: str) -> bool:
     """Determine if a metric got a new status after the timestamp of the most recent measurement seen."""
     recent_measurements = metric.get("recent_measurements") or []
     if len(recent_measurements) < 2:
         return False  # If there are fewer than two measurements, the metric didn't recently change status
-    metric_has_status = metric["status"] == new_status
+    metric_has_status = metric["status"] in new_statuses
     scale = metric["scale"]
-    metric_had_other_status = recent_measurements[-2][scale]["status"] != new_status
+    metric_had_other_status = recent_measurements[-2][scale]["status"] != metric["status"]
     change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
     return bool(metric_has_status and metric_had_other_status and change_was_recent)

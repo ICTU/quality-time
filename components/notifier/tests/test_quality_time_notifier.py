@@ -129,10 +129,10 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch('pymsteams.connectorcard.send')
+    @patch('outbox.process_outbox')
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
-    async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_send):
+    async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_outbox):
         """Test that a notification is not sent if there is one new red metric."""
         report = dict(
             report_uuid="report1", title=self.title, url=self.url,
@@ -150,7 +150,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             await notify()
         except RuntimeError:
             pass
-        mocked_send.assert_called_once()
+        self.assertEqual(mocked_outbox.call_count, 2)
 
     @patch('pymsteams.connectorcard.send')
     @patch("asyncio.sleep")
