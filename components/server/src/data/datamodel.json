@@ -2568,7 +2568,7 @@
                     "name": "Build result type",
                     "short_name": "result type",
                     "type": "multiple_choice",
-                    "help": "Limit which build result types to include",
+                    "help": "Limit which build result types to include.",
                     "mandatory": false,
                     "default_value": [],
                     "placeholder": "all result types",
