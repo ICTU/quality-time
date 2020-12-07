@@ -444,6 +444,7 @@
                 "gitlab",
                 "jacoco",
                 "jacoco_jenkins_plugin",
+                "jenkins",
                 "jenkins_test_report",
                 "junit",
                 "ncover",
@@ -2494,6 +2495,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
                     ]
                 },
@@ -2505,6 +2507,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
                     ]
                 },
@@ -2517,6 +2520,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
                     ]
                 },
@@ -2542,6 +2546,7 @@
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
                     ]
                 },
@@ -2555,7 +2560,27 @@
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
+                    ]
+                },
+                "result_type": {
+                    "name": "Build result type",
+                    "short_name": "result type",
+                    "type": "multiple_choice",
+                    "help": "Limit which build result types to include.",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all result types",
+                    "values": [
+                        "Aborted",
+                        "Failure",
+                        "Not built",
+                        "Success",
+                        "Unstable"
+                    ],
+                    "metrics": [
+                        "source_up_to_dateness"
                     ]
                 },
                 "failure_type": {
@@ -2579,6 +2604,32 @@
             },
             "entities": {
                 "failed_jobs": {
+                    "name": "job",
+                    "name_plural": "jobs",
+                    "attributes": [
+                        {
+                            "name": "Job name",
+                            "key": "name",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Status of most recent build",
+                            "key": "build_status",
+                            "color": {
+                                "Success": "positive",
+                                "Failure": "negative",
+                                "Aborted": "active",
+                                "Unstable": "warning"
+                            }
+                        },
+                        {
+                            "name": "Date of most recent build",
+                            "key": "build_date",
+                            "type": "date"
+                        }
+                    ]
+                },
+                "source_up_to_dateness": {
                     "name": "job",
                     "name_plural": "jobs",
                     "attributes": [
