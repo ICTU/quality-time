@@ -11,7 +11,7 @@ def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen
         notable_metrics = []
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
-                if has_new_status(metric, most_recent_measurement_seen, "target_not_met", "unknown"):
+                if status_changed(metric, most_recent_measurement_seen):
                     notable_metrics.append(create_notification(data_model, metric))
         if notable_metrics:
             for destination_uuid, destination in report.get("notification_destinations", {}).items():
@@ -42,18 +42,6 @@ def get_status(data_model, status) -> str:
     inverted_statuses = {statuses[key]: key for key in statuses}
     human_readable_status, color = str(inverted_statuses[status]).strip(")").split(" (")
     return f"{color} ({human_readable_status})"
-
-
-def has_new_status(metric, most_recent_measurement_seen: str, *new_statuses: str) -> bool:
-    """Determine if a metric got a new status after the timestamp of the most recent measurement seen."""
-    recent_measurements = metric.get("recent_measurements") or []
-    if len(recent_measurements) < 2:
-        return False  # If there are fewer than two measurements, the metric didn't recently change status
-    metric_has_status = metric["status"] in new_statuses
-    scale = metric["scale"]
-    metric_had_other_status = recent_measurements[-2][scale]["status"] != metric["status"]
-    change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
-    return bool(metric_has_status and metric_had_other_status and change_was_recent)
 
 
 def status_changed(metric, most_recent_measurement_seen: str) -> bool:
