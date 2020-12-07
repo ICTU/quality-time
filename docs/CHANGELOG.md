@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.16.0-rc.1] - [2020-12-06]
+## [Unreleased]
 
 ### Added
 
@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Collapsing an expanded metric would sometimes result in a crash of the frontend. Fixes [#1717](https://github.com/ICTU/quality-time/issues/1717).
-- Accepting the technical debt of a metric with one ore more unreachable sources would set the metric status to 'technical debt target met' instead of 'unknown'. Fixes [#1636](https://github.com/ICTU/quality-time/issues/1636).
+- Accepting the technical debt of a metric with one or more unreachable sources would set the metric status to 'technical debt target met' instead of 'unknown'. Fixes [#1636](https://github.com/ICTU/quality-time/issues/1636).
+- When adding a notification destination, it's possible to specify how long *Quality-time* should wait before sending a notification. If more notifications happen during the wait period, they will be bundled. Also see the [user manual](USAGE.md#notifications).
 
 ## [3.15.0] - [2020-11-29]
 
