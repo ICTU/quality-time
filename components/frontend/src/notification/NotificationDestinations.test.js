@@ -60,7 +60,7 @@ it('edits the notification destination frequency attribute when it is changed in
   await act(async () => {
     render_notification_destinations(notification_destinations)
   });
-  userEvent.type(screen.getByLabelText(/Bundle notifications for:/), '30{enter}');
+  userEvent.type(screen.getByLabelText(/Time to wait for more notifications/), '30{enter}');
 
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {frequency: "030"});
 });
