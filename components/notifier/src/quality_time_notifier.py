@@ -17,10 +17,12 @@ from strategies.changed_status import get_notable_metrics_from_json
 async def notify(log_level: int = None) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     logging.getLogger().setLevel(log_level or logging.ERROR)
-    sleep_duration = int(os.environ.get('NOTIFIER_SLEEP_DURATION', 60))
+    sleep_duration = int(os.environ.get("NOTIFIER_SLEEP_DURATION", 60))
     api_version = "v3"
-    reports_url = f"http://{os.environ.get('SERVER_HOST', 'localhost')}:" \
-                  f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
+    reports_url = (
+        f"http://{os.environ.get('SERVER_HOST', 'localhost')}:"
+        f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
+    )
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.isoformat()
     ready_to_send_metrics: List = []
@@ -50,7 +52,7 @@ async def retrieve_data_model(api_version: str) -> JSON:
     return data_model
 
 
-def record_health(filename: str = "/tmp/health_check.txt") -> None:
+def record_health(filename: str = "/home/notifier/health_check.txt") -> None:
     """Record the current date and time in a file to allow for health checks."""
     try:
         with open(filename, "w") as health_check:
@@ -74,8 +76,9 @@ async def fetch_data_model(session: aiohttp.ClientSession, sleep_duration: int, 
     """Fetch the data model."""
     # The first attempt is likely to fail because the collector starts up faster than the server,
     # so don't log tracebacks on the first attempt
-    server_url: Final[URL] = \
-        URL(f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}")
+    server_url: Final[URL] = URL(
+        f"http://{os.environ.get('SERVER_HOST', 'localhost')}:{os.environ.get('SERVER_PORT', '5001')}"
+    )
 
     first_attempt = True
     data_model_url = URL(f"{server_url}/api/{api_version}/datamodel")
