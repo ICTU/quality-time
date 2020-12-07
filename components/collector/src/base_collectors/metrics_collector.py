@@ -53,7 +53,7 @@ class MetricsCollector:
         self.next_fetch: Dict[str, datetime] = {}
 
     @staticmethod
-    def record_health(filename: str = "/tmp/health_check.txt") -> None:
+    def record_health(filename: str = "/home/collector/health_check.txt") -> None:
         """Record the current date and time in a file to allow for health checks."""
         try:
             with open(filename, "w") as health_check:
