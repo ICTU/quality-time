@@ -487,6 +487,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Build result type | Multiple choice | No | Limit which build result types to include. |
 | Jobs to ignore (regular expressions or job names) | Multiple choice with addition | No | Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Jobs to include (regular expressions or job names) | Multiple choice with addition | No | Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs. |
 | Password or API token for basic authentication | Password | No | [https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients) |
