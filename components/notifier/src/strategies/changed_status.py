@@ -54,3 +54,14 @@ def has_new_status(metric, most_recent_measurement_seen: str, *new_statuses: str
     metric_had_other_status = recent_measurements[-2][scale]["status"] != metric["status"]
     change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
     return bool(metric_has_status and metric_had_other_status and change_was_recent)
+
+
+def status_changed(metric, most_recent_measurement_seen: str) -> bool:
+    """Determine if a metric got a new status after the given timestamp."""
+    recent_measurements = metric.get("recent_measurements") or []
+    if len(recent_measurements) < 2:
+        return False  # If there are fewer than two measurements, the metric couldn't have recently changed status
+    scale = metric["scale"]
+    metric_had_other_status = recent_measurements[-2][scale]["status"] != recent_measurements[-1][scale]["status"]
+    change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
+    return bool(metric_had_other_status and change_was_recent)

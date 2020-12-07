@@ -5,7 +5,7 @@ import json
 import pathlib
 import unittest
 
-from strategies.changed_status import get_notable_metrics_from_json, has_new_status
+from strategies.changed_status import get_notable_metrics_from_json, has_new_status, status_changed
 
 
 class StrategiesTestCase(unittest.TestCase):
@@ -24,6 +24,7 @@ class StrategiesTestCase(unittest.TestCase):
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
         self.first_timestamp = "2019-01-01T00:23:59+59:00"
         self.second_timestamp = "2020-01-01T00:23:59+59:00"
+        self.third_timestamp = "2018-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
         self.red_metric_status = "red (target not met)"
@@ -199,6 +200,48 @@ class StrategiesTestCase(unittest.TestCase):
         self.assertFalse(
             has_new_status(metric, self.most_recent_measurement_seen, self.white_metric_status, self.red_metric_status)
         )
+
+
+    def test_recently_changed_metric_status(self):
+        """Test that a metric that turns white is added."""
+        metric = self.metric(
+            status=self.white_status,
+            recent_measurements=[
+                dict(start=self.second_timestamp, count=dict(status="target_met")),
+                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
+        result = status_changed(metric, self.most_recent_measurement_seen)
+        self.assertTrue(result)
+
+    def test_new_measurement_same_status(self):
+        """Test that a metric that was already white isn't added."""
+        metric = self.metric(
+            status=self.white_status,
+            recent_measurements=[
+                dict(start=self.second_timestamp, count=dict( status=self.white_status)),
+                dict(start=self.first_timestamp, count=dict( status=self.white_status))])
+        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+
+    def test_new_measurement_different_status_outside_time_period(self):
+        """Test that a metric that was already white isn't added."""
+        metric = self.metric(
+            status=self.white_status,
+            recent_measurements=[
+                dict(start=self.first_timestamp, count=dict( status=self.white_status)),
+                dict(start=self.third_timestamp, count=dict( status="target_not_met"))])
+        self.assertFalse(status_changed(metric, self.second_timestamp))
+
+    def test_no_change_due_to_only_one_measurement(self):
+        """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
+        metric = self.metric(
+            status=self.white_status,
+            recent_measurements=[dict(start=self.first_timestamp, count=dict(status=self.white_status))])
+        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+
+    def test_no_change_due_to_no_measurements(self):
+        """Test that metrics without measurements (and therefore no changes in value) aren't added."""
+        metric = self.metric(status=self.white_status)
+        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+
 
     def test_multiple_reports_with_same_destination(self):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
