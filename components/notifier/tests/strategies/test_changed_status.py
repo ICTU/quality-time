@@ -23,8 +23,7 @@ class StrategiesTestCase(unittest.TestCase):
         """Set variables for the other testcases."""
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
         self.old_timestamp = "2019-01-01T00:23:59+59:00"
-        self.newest_timestamp = "2020-01-01T00:23:59+59:00"
-        self.oldest_timestamp = "2018-01-01T00:23:59+59:00"
+        self.new_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
         self.red_metric_status = "red (target not met)"
@@ -52,7 +51,7 @@ class StrategiesTestCase(unittest.TestCase):
         """Test that there is nothing to notify when there are no red metrics."""
         count = dict(status="target_met", value="0")
         green_metric = self.metric(
-            recent_measurements=[dict(start=self.old_timestamp, end=self.newest_timestamp, count=count)]
+            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)]
         )
         subject1 = dict(metrics=dict(metric1=green_metric))
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
@@ -66,7 +65,7 @@ class StrategiesTestCase(unittest.TestCase):
         count = dict(status="target_not_met", value="10")
         red_metric = self.metric(
             status="target_not_met",
-            recent_measurements=[dict(start=self.old_timestamp, end=self.newest_timestamp, count=count)],
+            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
@@ -93,8 +92,8 @@ class StrategiesTestCase(unittest.TestCase):
         red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, count=old_count),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, count=new_count),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=old_count),
+                dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
@@ -129,8 +128,8 @@ class StrategiesTestCase(unittest.TestCase):
             scale="percentage",
             status="target_not_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, percentage=old_percentage),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, percentage=new_percentage),
+                dict(start=self.old_timestamp, end=self.new_timestamp, percentage=old_percentage),
+                dict(start=self.new_timestamp, end=self.new_timestamp, percentage=new_percentage),
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
@@ -161,7 +160,7 @@ class StrategiesTestCase(unittest.TestCase):
         metric = self.metric(
             status=self.white_metric_status,
             recent_measurements=[
-                dict(start=self.newest_timestamp, count=dict(status="target_met")),
+                dict(start=self.new_timestamp, count=dict(status="target_met")),
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
         result = status_changed(metric, self.most_recent_measurement_seen)
         self.assertTrue(result)
@@ -171,18 +170,19 @@ class StrategiesTestCase(unittest.TestCase):
         metric = self.metric(
             status=self.white_metric_status,
             recent_measurements=[
-                dict(start=self.newest_timestamp, count=dict(status=self.white_metric_status)),
+                dict(start=self.new_timestamp, count=dict(status=self.white_metric_status)),
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
         self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
 
     def test_new_measurement_different_status_outside_time_period(self):
         """Test that a metric that was already white isn't added."""
+        oldest_timestamp = "2018-01-01T00:23:59+59:00"
         metric = self.metric(
             status=self.white_metric_status,
             recent_measurements=[
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status)),
-                dict(start=self.oldest_timestamp, count=dict(status="target_not_met"))])
-        self.assertFalse(status_changed(metric, self.newest_timestamp))
+                dict(start=oldest_timestamp, count=dict(status="target_not_met"))])
+        self.assertFalse(status_changed(metric, self.new_timestamp))
 
     def test_no_change_due_to_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
@@ -204,8 +204,8 @@ class StrategiesTestCase(unittest.TestCase):
         red_metric1 = self.metric(
             status="target_not_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, count=old_count),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, count=new_count),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=old_count),
+                dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric1))
@@ -221,8 +221,8 @@ class StrategiesTestCase(unittest.TestCase):
             name="metric2",
             status="target_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, count=old_count),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, count=new_count),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=old_count),
+                dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
         subject2 = dict(metrics=dict(metric1=red_metric2))
@@ -246,9 +246,9 @@ class StrategiesTestCase(unittest.TestCase):
                         metric_type="tests",
                         metric_name="metric1",
                         metric_unit="units",
-                        new_metric_status="red (target not met)",
+                        new_metric_status=self.red_metric_status,
                         new_metric_value="10",
-                        old_metric_status="green (target met)",
+                        old_metric_status=self.green_metric_status,
                         old_metric_value="5",
                     )
                 ],
@@ -257,9 +257,9 @@ class StrategiesTestCase(unittest.TestCase):
                         metric_type="tests",
                         metric_name="metric2",
                         metric_unit="units",
-                        new_metric_status="red (target not met)",
+                        new_metric_status=self.red_metric_status,
                         new_metric_value="10",
-                        old_metric_status="green (target met)",
+                        old_metric_status=self.green_metric_status,
                         old_metric_value="5",
                     )
                 ]
@@ -275,8 +275,8 @@ class StrategiesTestCase(unittest.TestCase):
             name="metric1",
             status="target_not_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, count=old_count),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, count=new_count),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=old_count),
+                dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
@@ -300,8 +300,8 @@ class StrategiesTestCase(unittest.TestCase):
             name="metric1",
             status="target_not_met",
             recent_measurements=[
-                dict(start=self.old_timestamp, end=self.newest_timestamp, count=old_count),
-                dict(start=self.newest_timestamp, end=self.newest_timestamp, count=new_count),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=old_count),
+                dict(start=self.new_timestamp, end=self.new_timestamp, count=new_count),
             ],
         )
         subject1 = dict(metrics=dict(metric1=red_metric))
