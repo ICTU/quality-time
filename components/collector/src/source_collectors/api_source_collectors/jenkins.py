@@ -3,7 +3,7 @@
 from datetime import datetime, date
 from typing import Iterator, cast
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector
 from collector_utilities.functions import days_ago, match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
 from source_model import Entity, SourceMeasurement, SourceResponses
