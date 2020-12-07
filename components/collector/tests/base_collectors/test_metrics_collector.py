@@ -283,7 +283,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test that the current time is written to the health check file."""
         mocked_datetime.now.return_value = now = datetime.now()
         self.metrics_collector.record_health()
-        mocked_open.assert_called_once_with("/tmp/health_check.txt", "w")
+        mocked_open.assert_called_once_with("/home/collector/health_check.txt", "w")
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("builtins.open")
@@ -293,5 +293,5 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mocked_open.side_effect = io_error = OSError("Some error")
         self.metrics_collector.record_health()
         mocked_log.assert_called_once_with(
-            "Could not write health check time stamp to %s: %s", "/tmp/health_check.txt", io_error
+            "Could not write health check time stamp to %s: %s", "/home/collector/health_check.txt", io_error
         )
