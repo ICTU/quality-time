@@ -190,3 +190,15 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
         expected_entities = [dict(build_date="", build_status="Not built", key="job", name="job", url=self.job_url)]
         self.assert_measurement(response, value=None, entities=expected_entities)
+
+    async def test_ignore_failed_builds(self):
+        """Test that failed builds can be ignored."""
+        self.sources["source_id"]["parameters"]["result_type"] = ["Success"]
+        self.builds.append(dict(result="SUCCESS", timestamp="1553686540953"))
+        jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
+        response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)
+        expected_value = str((date.today() - date.fromisoformat("2019-03-27")).days)
+        expected_entities = [
+            dict(build_date="2019-03-27", build_status="Success", key="job", name="job", url=self.job_url)
+        ]
+        self.assert_measurement(response, value=expected_value, entities=expected_entities)

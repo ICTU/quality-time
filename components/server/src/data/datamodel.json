@@ -2564,6 +2564,25 @@
                         "unused_jobs"
                     ]
                 },
+                "result_type": {
+                    "name": "Build result type",
+                    "short_name": "result type",
+                    "type": "multiple_choice",
+                    "help": "Limit which build result types to include",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all result types",
+                    "values": [
+                        "Aborted",
+                        "Failure",
+                        "Not built",
+                        "Success",
+                        "Unstable"
+                    ],
+                    "metrics": [
+                        "source_uo_to_dateness"
+                    ]
+                },
                 "failure_type": {
                     "name": "Failure type",
                     "short_name": "failure type",
