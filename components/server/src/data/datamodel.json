@@ -2580,7 +2580,7 @@
                         "Unstable"
                     ],
                     "metrics": [
-                        "source_uo_to_dateness"
+                        "source_up_to_dateness"
                     ]
                 },
                 "failure_type": {
