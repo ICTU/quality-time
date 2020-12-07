@@ -32,7 +32,7 @@ class HealthCheckTest(unittest.TestCase):
 
     def setUp(self):
         """Set variables required by testcases."""
-        self.filename = "/tmp/health_check.txt"
+        self.filename = "/home/notifier/health_check.txt"
 
     @patch("builtins.open", new_callable=mock_open)
     @patch("quality_time_notifier.datetime")
@@ -79,9 +79,18 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             subject1=dict(
                 metrics=dict(
                     metric1=dict(
-                        type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                        type="tests",
+                        name="metric1",
+                        unit="units",
+                        status="target_not_met",
+                        scale="count",
                         recent_measurements=[
-                            dict(start=self.history, end=self.history, count=dict(status="target_met", value="5"))]))))
+                            dict(start=self.history, end=self.history, count=dict(status="target_met", value="5"))
+                        ],
+                    )
+                )
+            )
+        )
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -116,7 +125,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_log_error.assert_called_once()
 
-    @patch('pymsteams.connectorcard.send')
+    @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_no_new_red_metrics(self, mocked_get, mocked_sleep, mocked_send):
@@ -129,21 +138,23 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch('outbox.process_outbox')
+    @patch("outbox.process_outbox")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_outbox):
         """Test that a notification is not sent if there is one new red metric."""
         report = dict(
-            report_uuid="report1", title=self.title, url=self.url,
-            notification_destinations=dict(
-                destination1=dict(
-                    name="destination name", teams_webhook="www.webhook.com")),
-            subjects=self.subjects)
+            report_uuid="report1",
+            title=self.title,
+            url=self.url,
+            notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="www.webhook.com")),
+            subjects=self.subjects,
+        )
         now = datetime.now().isoformat()
         report2 = deepcopy(report)
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
-            dict(start=now, end=now, count=dict(status="target_not_met", value="10")))
+            dict(start=now, end=now, count=dict(status="target_not_met", value="10"))
+        )
         mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
@@ -152,21 +163,34 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         self.assertEqual(mocked_outbox.call_count, 2)
 
-    @patch('pymsteams.connectorcard.send')
+    @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_old_red_metric_with_one_measurement(self, mocked_get, mocked_sleep, mocked_send):
         """Test that a notification is not sent if there is one old red metric."""
         history = self.history
         report = dict(
-            report_uuid="report1", title=self.title, url=self.url, teams_webhook="https://webhook",
+            report_uuid="report1",
+            title=self.title,
+            url=self.url,
+            teams_webhook="https://webhook",
             subjects=dict(
                 subject1=dict(
                     metrics=dict(
                         metric1=dict(
-                            type="tests", name="metric1", unit="units", status="target_not_met", scale="count",
+                            type="tests",
+                            name="metric1",
+                            unit="units",
+                            status="target_not_met",
+                            scale="count",
                             recent_measurements=[
-                                dict(start=history, end=history, count=dict(status="target_met", value="5"))])))))
+                                dict(start=history, end=history, count=dict(status="target_met", value="5"))
+                            ],
+                        )
+                    )
+                )
+            ),
+        )
         mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
@@ -189,22 +213,23 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         self.assertEqual(2, mocked_log_warning.call_count)
 
-
-    @patch('pymsteams.connectorcard.send')
+    @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_no_webhook_in_notification_destination(self, mocked_get, mocked_sleep, mocked_send):
         """Test that the notifier continues if a destination doesnt have a webhook configured."""
         report = dict(
-            report_uuid="report1", title=self.title, url=self.url,
-            notification_destinations=dict(
-                destination1=dict(
-                    name="destination name", teams_webhook="")),
-            subjects=self.subjects)
+            report_uuid="report1",
+            title=self.title,
+            url=self.url,
+            notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="")),
+            subjects=self.subjects,
+        )
         now = datetime.now().isoformat()
         report2 = deepcopy(report)
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
-            dict(start=now, end=now, count=dict(status="target_met", value="10")))
+            dict(start=now, end=now, count=dict(status="target_met", value="10"))
+        )
         mocked_get.side_effect = [self.return_data_model(), self.return_report(report), self.return_report(report2)]
         mocked_sleep.side_effect = [None, RuntimeError]
         try:
