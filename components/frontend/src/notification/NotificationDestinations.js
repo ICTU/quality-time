@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Icon, Popup, Segment } from 'semantic-ui-react';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
 import { AddButton, DeleteButton } from '../widgets/Button';
@@ -37,7 +37,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Column width={3}>
                         <IntegerInput
                             id={destination_uuid + "frequency"}
-                            label="Bundle notifications for:"
+                            label={<label>Time to wait for more notifications <Popup on={['hover', 'focus']} content={"Wait for the specified amount of time for more notifications and then bundle and send them"} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
                             min="0"
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { frequency: value }, reload)
