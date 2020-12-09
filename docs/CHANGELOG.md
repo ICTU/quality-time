@@ -14,14 +14,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Show since when a metric has its current status via a popup over the status icon. Closes [#1091](https://github.com/ICTU/quality-time/issues/1091).
-- Allow using Jenkins jobs as source for the 'source up-to-dateness' metric. Closes [#1680](https://github.com/ICTU/quality-time/issues/1680).
 - When adding a notification destination, it's possible to specify how long *Quality-time* should wait before sending a notification. If more notifications happen during the wait period, they will be bundled. Also see the [user manual](USAGE.md#notifications). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Notifications will now be sent for all status changes. Previously, notifications were only sent when a metric either turned red or white. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Allow using Jenkins jobs as source for the 'source up-to-dateness' metric. Closes [#1680](https://github.com/ICTU/quality-time/issues/1680).
 
 ### Fixed
 
 - Accepting the technical debt of a metric with one or more unreachable sources would set the metric status to 'technical debt target met' instead of 'unknown'. Fixes [#1636](https://github.com/ICTU/quality-time/issues/1636).
 - Collapsing an expanded metric would sometimes result in a crash of the frontend. Fixes [#1717](https://github.com/ICTU/quality-time/issues/1717).
-- Notifications will now be sent for all status changes. Previously, notifications were only sent when a metric either turned red or white.
 
 ## [3.15.0] - [2020-11-29]
 
