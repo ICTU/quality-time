@@ -27,7 +27,7 @@ class Outbox:
                 merged = False
 
     def send_notifications(self):
-        """Send the notifications that are ready to be sent, remove them from the outbox and return the number of notifications sent."""
+        """Send the notifications that are ready to be sent, remove them from the outbox."""
         nr_sent = 0
         for notification in self.notifications[:]:
             if notification.ready() and notification.destination["teams_webhook"]:

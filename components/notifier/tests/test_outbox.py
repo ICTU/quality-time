@@ -7,7 +7,6 @@ from notification import Notification
 from outbox import Outbox
 
 
-
 class OutboxTestCase(unittest.TestCase):
     """Unit tests for the outbox."""
 
