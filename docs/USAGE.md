@@ -306,6 +306,6 @@ To export an older version of a report, add the `report_date` parameter with a d
 
 *Quality-time* can send notifications about metrics that change status to Microsoft Teams channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
-If a webhook has been configured, *Quality-time* will check for new red (target not met) and white (source unreachable or error parsing source data) metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
+If a webhook has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
 
 To prevent too many notifications, it's possible to make *Quality-time* wait before sending a notification. If more notifications occur during the wait period, they will be bundled with the first notification and sent together at the end of the wait period. Note that if you change the notification configuration, e.g. change a Microsoft Teams web hook, earlier notifications that haven't been sent yet, will still be sent using the old configuration.
