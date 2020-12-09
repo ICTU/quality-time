@@ -162,8 +162,7 @@ class StrategiesTestCase(unittest.TestCase):
             recent_measurements=[
                 dict(start=self.new_timestamp, count=dict(status="target_met")),
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
-        result = status_changed(metric, self.most_recent_measurement_seen)
-        self.assertTrue(result)
+        self.assertTrue(status_changed(metric, self.most_recent_measurement_seen))
 
     def test_new_measurement_same_status(self):
         """Test that a metric that was already white isn't added."""
