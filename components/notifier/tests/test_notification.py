@@ -5,7 +5,7 @@ import unittest
 from notification import Notification
 
 
-class StrategiesTestCase(unittest.TestCase):
+class NotificationTestCase(unittest.TestCase):
     """Unit tests for the notification class."""
 
     def setUp(self):
