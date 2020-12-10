@@ -57,7 +57,7 @@ class OutboxTestCase(unittest.TestCase):
 
     def test_merge_notifications_into_nothing(self):
         """Test that notifications are merged, even if the outbox is currently empty."""
-        outbox = Outbox([])
+        outbox = Outbox()
         outbox.add_notifications(self.notifications)
         self.assertEqual(outbox.notifications, self.notifications)
 
