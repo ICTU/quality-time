@@ -26,7 +26,7 @@ class Outbox:
                 self.notifications.append(new_notification)
                 merged = False
 
-    def send_notifications(self):
+    def send_notifications(self) -> int:
         """Send the notifications that are ready to be sent, remove them from the outbox."""
         nr_sent = 0
         for notification in self.notifications[:]:
