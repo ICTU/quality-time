@@ -69,7 +69,7 @@ class OutboxTestCase(unittest.TestCase):
 
     def test_merge_nothing_into_nothing(self):
         """Test that notifications are merged, even if the destination is empty."""
-        outbox = Outbox([])
+        outbox = Outbox()
         outbox.add_notifications([])
         self.assertEqual(outbox.notifications, [])
 
