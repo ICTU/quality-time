@@ -11,7 +11,7 @@ class Outbox:
 
     def __init__(self, notifications: List[Notification] = None) -> None:
         """Initialise the Notification with the required info."""
-        self.notifications = notifications
+        self.notifications = notifications or []
 
     def add_notifications(self, notifications: List[Notification]):
         """Check if a notification is already in the outbox, and if not, add it."""
