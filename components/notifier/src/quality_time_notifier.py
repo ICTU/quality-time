@@ -25,7 +25,7 @@ async def notify(log_level: int = None) -> NoReturn:
     )
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.isoformat()
-    outbox = Outbox([])
+    outbox = Outbox()
     while True:
         record_health()
         logging.info("Determining notifications...")
