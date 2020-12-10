@@ -9,7 +9,7 @@ from notification import Notification
 class Outbox:
     """Handle storing and sending notifications."""
 
-    def __init__(self, notifications: List[Notification]):
+    def __init__(self, notifications: List[Notification] = None) -> None:
         """Initialise the Notification with the required info."""
         self.notifications = notifications
 
