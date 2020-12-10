@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from notification import Notification
-from outbox import merge_notifications, send_notifications
+from outbox import Outbox
 
 
 class OutboxTestCase(unittest.TestCase):
@@ -56,16 +56,22 @@ class OutboxTestCase(unittest.TestCase):
         ]
 
     def test_merge_notifications_into_nothing(self):
-        """Test that notifications are merged, even if the destination is empty."""
-        self.assertEqual(merge_notifications([], self.notifications), self.notifications)
+        """Test that notifications are merged, even if the outbox is currently empty."""
+        outbox = Outbox()
+        outbox.add_notifications(self.notifications)
+        self.assertEqual(outbox.notifications, self.notifications)
 
     def test_merge_nothing_into_notifications(self):
-        """Test that notifications are merged, even if the destination is empty."""
-        self.assertEqual(merge_notifications(self.notifications, []), self.notifications)
+        """Test that notifications are merged, even if no new metrics are given to be added."""
+        outbox = Outbox(self.notifications)
+        outbox.add_notifications([])
+        self.assertEqual(outbox.notifications, self.notifications)
 
     def test_merge_nothing_into_nothing(self):
         """Test that notifications are merged, even if the destination is empty."""
-        self.assertEqual(merge_notifications([], []), [])
+        outbox = Outbox()
+        outbox.add_notifications([])
+        self.assertEqual(outbox.notifications, [])
 
     def test_merge_notifications_with_same_destination_but_different_report(self):
         """Test that the metrics are merged into the correct notification."""
@@ -74,8 +80,10 @@ class OutboxTestCase(unittest.TestCase):
         metric2 = dict(metric_name="new_metric 2")
         metrics1 = [metric1, metric2]
         new_notifications = [Notification(report, metrics1, "uuid1", {})]
+        outbox = Outbox(self.notifications)
+        outbox.add_notifications(new_notifications)
         self.assertEqual(
-            merge_notifications(self.notifications, new_notifications)[0].metrics,
+            outbox.notifications[0].metrics,
             [
                 self.metric1,
                 self.metric2
@@ -89,8 +97,10 @@ class OutboxTestCase(unittest.TestCase):
         metric2 = dict(metric_name="new metric 2")
         metrics1 = [metric1, metric2]
         new_notifications = [Notification(report, metrics1, "uuid1", dict(teams_webhook="https://url/1"))]
+        outbox = Outbox(self.notifications)
+        outbox.add_notifications(new_notifications)
         self.assertEqual(
-            merge_notifications(self.notifications, new_notifications)[0].metrics,
+            outbox.notifications[0].metrics,
             [
                 self.metric1,
                 self.metric2,
@@ -104,8 +114,8 @@ class OutboxTestCase(unittest.TestCase):
     def test_send_notifications(self, mocked_send, mocked_ready):
         """Test that notifications can be sent."""
         mocked_ready.side_effect = [True, False]
-
-        send_notifications(self.notifications)
+        outbox = Outbox(self.notifications)
+        outbox.send_notifications()
         mocked_send.assert_called_once()
 
     @patch("notification.Notification.ready")
@@ -115,8 +125,8 @@ class OutboxTestCase(unittest.TestCase):
         notifications = self.notifications
         notifications[0].destination["teams_webhook"] = None
         notifications[1].destination["teams_webhook"] = None
-
-        self.assertEqual(notifications, send_notifications(notifications))
+        outbox = Outbox(notifications)
+        self.assertEqual(0, outbox.send_notifications())
 
     @patch("notification.Notification.ready")
     @patch("outbox.send_notification_to_teams")
@@ -124,5 +134,5 @@ class OutboxTestCase(unittest.TestCase):
         """Test that notifications are deleted after sending."""
         mocked_ready.side_effect = [True, True]
         mocked_send.side_effect = [None, None]
-
-        self.assertEqual([], send_notifications(self.notifications))
+        outbox = Outbox(self.notifications)
+        self.assertEqual(2, outbox.send_notifications())

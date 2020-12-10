@@ -5,12 +5,12 @@ import logging
 import os
 import traceback
 from datetime import datetime
-from typing import Final, List, NoReturn, cast
+from typing import Final, NoReturn, cast
 
 import aiohttp
 
-import outbox
 from notifier_utilities.type import JSON, URL
+from outbox import Outbox
 from strategies.changed_status import get_notable_metrics_from_json
 
 
@@ -25,7 +25,7 @@ async def notify(log_level: int = None) -> NoReturn:
     )
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.isoformat()
-    ready_to_send_metrics: List = []
+    outbox = Outbox()
     while True:
         record_health()
         logging.info("Determining notifications...")
@@ -37,7 +37,8 @@ async def notify(log_level: int = None) -> NoReturn:
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
         notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
-        ready_to_send_metrics = outbox.process_outbox(notifications, ready_to_send_metrics)
+        outbox.add_notifications(notifications)
+        outbox.send_notifications()
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)

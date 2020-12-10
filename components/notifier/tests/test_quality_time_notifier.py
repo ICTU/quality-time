@@ -138,7 +138,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             pass
         mocked_send.assert_not_called()
 
-    @patch("outbox.process_outbox")
+    @patch("outbox.Outbox.send_notifications")
     @patch("asyncio.sleep")
     @patch("aiohttp.ClientSession.get")
     async def test_one_new_red_metric(self, mocked_get, mocked_sleep, mocked_outbox):
