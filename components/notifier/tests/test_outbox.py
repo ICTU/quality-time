@@ -16,10 +16,7 @@ class OutboxTestCase(unittest.TestCase):
         self.data_model = dict(metrics=dict(metric_type=dict(name="type")),
                                sources=dict(quality_time=dict(parameters=dict(status=dict(api_values={
                                    "target met (green)": "target_met",
-                                   "near target met (yellow)": "near_target_met",
-                                   "target not met (red)": "target_not_met",
-                                   "technical debt target met (grey)": "debt_target_met",
-                                   "unknown (white)": "unknown"
+                                   "target not met (red)": "target_not_met"
                                })))))
         self.report_url = "https://report1"
         self.report = dict(title="report_title", url=self.report_url)

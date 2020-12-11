@@ -133,7 +133,9 @@ class StrategiesTestCase(unittest.TestCase):
             notification_destinations=dict(name="destination1"),
         )
         reports_json = dict(reports=[report1])
-        result = get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)[0].metrics
+        result = get_notable_metrics_from_json(self.data_model,
+                                               reports_json,
+                                               self.most_recent_measurement_seen)[0].metrics
         self.assertEqual(
             ["Tests"],
             [result[0].metric_name],

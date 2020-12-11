@@ -6,17 +6,14 @@ from models.metric_notification_data import MetricNotificationData
 
 
 class MetricNotificationDataModelTestCase(unittest.TestCase):
-    """."""
+    """Unit tests for the metric notification data."""
 
     def setUp(self):
-        """."""
+        """Set variables for the other testcases."""
         self.data_model = dict(metrics=dict(metric_type=dict(name="type")),
                                sources=dict(quality_time=dict(parameters=dict(status=dict(api_values={
                                    "target met (green)": "target_met",
-                                   "near target met (yellow)": "near_target_met",
                                    "target not met (red)": "target_not_met",
-                                   "technical debt target met (grey)": "debt_target_met",
-                                   "unknown (white)": "unknown"
                                })))))
         self.metric1 = dict(
             type="metric_type",
@@ -28,6 +25,6 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
                                  dict(count=dict(value=20,
                                                  status="target_not_met"))])
 
-    def test_Initialisation(self):
-        """."""
+    def test_initialisation(self):
+        """test that an object can be initialised."""
         MetricNotificationData(self.metric1, self.data_model)

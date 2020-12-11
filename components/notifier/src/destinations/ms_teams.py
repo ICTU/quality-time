@@ -18,9 +18,12 @@ def build_notification_text(notification: Notification) -> str:
         name = metric_notification_data.metric_name
         unit = metric_notification_data.metric_unit
         unit = unit if unit.startswith("%") else f" {unit}"
-        new_value = '?' if metric_notification_data.new_metric_value is None else metric_notification_data.new_metric_value
-        old_value = '?' if metric_notification_data.old_metric_value is None else metric_notification_data.old_metric_value
-        result += f'* {name} status is {metric_notification_data.new_metric_status}, was {metric_notification_data.old_metric_status}. ' \
+        new_value = '?' if metric_notification_data.new_metric_value is None \
+            else metric_notification_data.new_metric_value
+        old_value = '?' if metric_notification_data.old_metric_value is None \
+            else metric_notification_data.old_metric_value
+        result += f'* {name} status is ' \
+                  f'{metric_notification_data.new_metric_status}, was {metric_notification_data.old_metric_status}. ' \
                   f'Value is {new_value}{unit}, was {old_value}{unit}.\n'
     return result
 
