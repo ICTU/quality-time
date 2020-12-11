@@ -26,5 +26,5 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
                                                  status="target_not_met"))])
 
     def test_initialisation(self):
-        """test that an object can be initialised."""
+        """Test that an object can be initialised."""
         MetricNotificationData(self.metric1, self.data_model)
