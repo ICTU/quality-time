@@ -3,7 +3,8 @@
 import unittest
 from unittest.mock import patch
 
-from notification import Notification
+from models.metric_notification_data import MetricNotificationData
+from models.notification import Notification
 from outbox import Outbox
 
 
