@@ -26,8 +26,6 @@ class StrategiesTestCase(unittest.TestCase):
         self.new_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
-        self.red_metric_status = "red (target not met)"
-        self.green_metric_status = "green (target met)"
 
     @staticmethod
     def metric(name="metric1", status="target_met", scale="count", recent_measurements=None):
@@ -104,23 +102,18 @@ class StrategiesTestCase(unittest.TestCase):
             notification_destinations=dict(uuid1=dict(name="destination1")),
         )
         reports_json = dict(reports=[report1])
+        result = get_notable_metrics_from_json(self.data_model,
+                                               reports_json,
+                                               self.most_recent_measurement_seen)
         self.assertEqual(
-            [
-                dict(
-                    metric_type="tests",
-                    metric_name="metric1",
-                    metric_unit="units",
-                    new_metric_status=self.red_metric_status,
-                    new_metric_value="10",
-                    old_metric_status=self.green_metric_status,
-                    old_metric_value="5",
-                )
-            ],
-            get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)[0].metrics,
+            ["metric1",
+             "red (target not met)"],
+            [result[0].metrics[0].metric_name,
+             result[0].metrics[0].new_metric_status]
         )
 
     def test_new_red_metric_without_count_scale(self):
-        """Test that a metric that doesn't have a count scale that has become red is included."""
+        """Test that a metric that doesn't have a count scale that became red is included."""
         old_percentage = dict(status="target_met", value="5")
         new_percentage = dict(status="target_not_met", value="10")
         red_metric = self.metric(
@@ -140,19 +133,10 @@ class StrategiesTestCase(unittest.TestCase):
             notification_destinations=dict(name="destination1"),
         )
         reports_json = dict(reports=[report1])
+        result = get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)[0].metrics
         self.assertEqual(
-            [
-                dict(
-                    metric_type="tests",
-                    metric_name="Tests",
-                    metric_unit="units",
-                    new_metric_status=self.red_metric_status,
-                    new_metric_value="10",
-                    old_metric_status=self.green_metric_status,
-                    old_metric_value="5",
-                )
-            ],
-            get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)[0].metrics,
+            ["Tests"],
+            [result[0].metric_name],
         )
 
     def test_recently_changed_metric_status(self):
@@ -235,35 +219,11 @@ class StrategiesTestCase(unittest.TestCase):
         result = []
         reports_json = dict(reports=[report1, report2])
         for notification in get_notable_metrics_from_json(
-            self.data_model, reports_json, self.most_recent_measurement_seen
-        ):
+            self.data_model, reports_json, self.most_recent_measurement_seen):
             result.append(notification.metrics)
         self.assertEqual(
-            [
-                [
-                    dict(
-                        metric_type="tests",
-                        metric_name="metric1",
-                        metric_unit="units",
-                        new_metric_status=self.red_metric_status,
-                        new_metric_value="10",
-                        old_metric_status=self.green_metric_status,
-                        old_metric_value="5",
-                    )
-                ],
-                [
-                    dict(
-                        metric_type="tests",
-                        metric_name="metric2",
-                        metric_unit="units",
-                        new_metric_status=self.red_metric_status,
-                        new_metric_value="10",
-                        old_metric_status=self.green_metric_status,
-                        old_metric_value="5",
-                    )
-                ]
-            ],
-            result,
+            ["metric1", "metric2"],
+            [result[0][0].metric_name, result[1][0].metric_name]
         )
 
     def test_no_notification_destinations_configured(self):

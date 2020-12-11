@@ -1,7 +1,9 @@
 """Notification."""
 
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import List
+
+from models.metric_notification_data import MetricNotificationData
 
 
 class Notification:
@@ -11,7 +13,7 @@ class Notification:
         """Initialise the Notification with the required info."""
         self.report_title = report["title"]
         self.url = report.get("url")
-        self.metrics: List[Dict] = metrics
+        self.metrics: List[MetricNotificationData] = metrics
         self.destination_uuid = destination_uuid
         self.destination = destination
         self.creation_time = datetime.now()

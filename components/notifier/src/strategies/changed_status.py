@@ -1,7 +1,8 @@
 """Strategies for notifying users about metrics."""
 
-from typing import Dict, List
-from notification import Notification
+from typing import List
+from models.notification import Notification
+from models.metric_notification_data import MetricNotificationData
 
 
 def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen: str) -> List[Notification]:
@@ -12,36 +13,11 @@ def get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
                 if status_changed(metric, most_recent_measurement_seen):
-                    notable_metrics.append(create_notification(data_model, metric))
+                    notable_metrics.append(MetricNotificationData(metric, data_model))
         if notable_metrics:
             for destination_uuid, destination in report.get("notification_destinations", {}).items():
                 notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
     return notifications
-
-
-def create_notification(data_model, metric) -> Dict[str, str]:
-    """Create the notification dictionary."""
-    recent_measurements = metric["recent_measurements"]
-    scale = metric["scale"]
-    return dict(
-        metric_type=metric["type"],
-        metric_name=metric["name"] or f'{data_model["metrics"][metric["type"]]["name"]}',
-        metric_unit=metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}',
-        new_metric_status=get_status(data_model, recent_measurements[-1][scale]["status"]),
-        new_metric_value=recent_measurements[-1][scale]["value"],
-        old_metric_status=get_status(data_model, recent_measurements[-2][scale]["status"]),
-        old_metric_value=recent_measurements[-2][scale]["value"],
-    )
-
-
-def get_status(data_model, status) -> str:
-    """Get the user friendly status name."""
-    statuses = data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"]
-    # The statuses have the human readable version of the status as key and the status itself as value so we need to
-    # invert the dictionary:
-    inverted_statuses = {statuses[key]: key for key in statuses}
-    human_readable_status, color = str(inverted_statuses[status]).strip(")").split(" (")
-    return f"{color} ({human_readable_status})"
 
 
 def status_changed(metric, most_recent_measurement_seen: str) -> bool:

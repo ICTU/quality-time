@@ -4,7 +4,8 @@ import logging
 from unittest import mock, TestCase
 
 from destinations.ms_teams import build_notification_text, send_notification_to_teams
-from notification import Notification
+from models.notification import Notification
+from models.metric_notification_data import MetricNotificationData
 
 
 @mock.patch('pymsteams.connectorcard.send')
@@ -37,24 +38,38 @@ class BuildNotificationTextTests(TestCase):
         self.report = dict(
             title = "Report 1",
             url = "https://report1")
+        self.data_model = dict(metrics=dict(metric_type=dict(name="type")),
+                               sources=dict(quality_time=dict(parameters=dict(status=dict(api_values={
+                                    "target met (green)": "target_met",
+                                    "near target met (yellow)": "near_target_met",
+                                    "target not met (red)": "target_not_met",
+                                    "technical debt target met (grey)": "debt_target_met",
+                                    "unknown (white)": "unknown"
+                               })))))
 
     def test_text(self):
         """Test that the text is correct."""
-        metrics = [dict(metric_type="metric_type",
-                        metric_name="Metric",
-                        metric_unit="units",
-                        old_metric_status="yellow (near target met)",
-                        old_metric_value=0,
-                        new_metric_status="red (target not met)",
-                        new_metric_value=42),
-                   dict(metric_type="metric_type",
-                        metric_name="Metric",
-                        metric_unit="units",
-                        old_metric_status="green (target met)",
-                        old_metric_value=5,
-                        new_metric_status="red (target not met)",
-                        new_metric_value=10)]
-        notification = Notification(self.report, metrics, "destination_uuid", {})
+        scale = "count"
+        metric1 = dict(type="metric_type",
+                       name="Metric",
+                       unit="units",
+                       scale=scale,
+                       recent_measurements=[dict(count=dict(value=0,
+                                                            status="near_target_met")),
+                                            dict(count=dict(value=42,
+                                                            status="target_not_met"))])
+        metric2 = dict(type="metric_type",
+                       name="Metric",
+                       unit="units",
+                       scale=scale,
+                       recent_measurements=[dict(count=dict(value=5,
+                                                            status="target_met")),
+                                            dict(count=dict(value=10,
+                                                            status="target_not_met"))])
+        metric_notification_data1 = MetricNotificationData(metric1, self.data_model)
+        metric_notification_data2 = MetricNotificationData(metric2, self.data_model)
+        notification = Notification(self.report, [metric_notification_data1,
+                                                  metric_notification_data2], "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that changed status:\n\n"
@@ -64,15 +79,16 @@ class BuildNotificationTextTests(TestCase):
 
     def test_unknown_text(self):
         """Test that the text is correct."""
-        metrics = [dict(
-            metric_type="metric_type",
-            metric_name="Metric",
-            metric_unit="units",
-            old_metric_status="yellow (near target met)",
-            old_metric_value=0,
-            new_metric_status="white (unknown)",
-            new_metric_value=None)]
-        notification = Notification(self.report, metrics, "destination_uuid", {})
+        metric1 = dict(type="metric_type",
+                       name="Metric",
+                       unit="units",
+                       scale="count",
+                       recent_measurements=[dict(count=dict(value=0,
+                                                                      status="near_target_met")),
+                                            dict(count=dict(value=None,
+                                                           status="unknown"))])
+        metric_notification_data1 = MetricNotificationData(metric1, self.data_model)
+        notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that changed status:\n\n"
