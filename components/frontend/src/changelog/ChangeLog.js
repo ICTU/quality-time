@@ -11,7 +11,7 @@ function Event({ description, email, timestamp }) {
             <Feed.Label><Avatar email={email} /></Feed.Label>
             <Feed.Content>
                 <Feed.Summary>
-                    <span dangerouslySetInnerHTML={{ __html: description }} />
+                    {description}
                     <Feed.Date>{(new Date(timestamp)).toLocaleString()}, <TimeAgo date={timestamp} /></Feed.Date>
                 </Feed.Summary>
             </Feed.Content>
