@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Accepting the technical debt of a metric with one or more unreachable sources would set the metric status to 'technical debt target met' instead of 'unknown'. Fixes [#1636](https://github.com/ICTU/quality-time/issues/1636).
 - Collapsing an expanded metric would sometimes result in a crash of the frontend. Fixes [#1717](https://github.com/ICTU/quality-time/issues/1717).
 
+### Changed
+
+- MongoDB was upgraded to 4.2.11. No migration steps are needed. Simply update the MongoDB version number in your composition configuration.
+
 ## [3.15.0] - [2020-11-29]
 
 ### Added
