@@ -42,7 +42,7 @@ def delete_session(database: Database) -> None:
 def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:
     """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     # Monkey patch support for SameSite, see https://github.com/bottlepy/bottle/issues/982#issuecomment-315064376
-    Morsel._reserved["same-site"] = "SameSite"  # pylint: disable=protected-access
+    Morsel._reserved["same-site"] = "SameSite"  # type: ignore  # pylint: disable=protected-access
     options = dict(expires=expires_datetime, path="/", httponly=True, same_site="strict")
     bottle.response.set_cookie("session_id", session_id, **options)
 
