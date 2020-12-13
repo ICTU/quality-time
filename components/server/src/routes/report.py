@@ -23,6 +23,10 @@ from server_utilities.type import ReportId
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
+    user = sessions.user(database)
+    report["delta"] = dict(
+        uuids=[report["report_uuid"]], email=user["email"], description=f"{user['user']} imported a report."
+    )
     result = import_json_report(database, report)
     result["new_report_uuid"] = report["report_uuid"]
     return result
