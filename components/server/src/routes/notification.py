@@ -3,7 +3,6 @@
 import bottle
 from pymongo.database import Database
 
-from database import sessions
 from database.datamodels import latest_datamodel
 from database.reports import insert_new_report, latest_reports
 from model.data import ReportData
@@ -20,12 +19,9 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
         teams_webhook="", name="Microsoft Teams webhook", sleep_duration=0
     )
-
-    user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[report_uuid, notification_destination_uuid],
-        email=user["email"],
-        description=f"{user['user']} created a new destination for notifications in report '{data.report_name}'.",
+        description=f"{{user}} created a new destination for notifications in report '{data.report_name}'.",
     )
     result = insert_new_report(database, data.report)
     result["new_destination_uuid"] = notification_destination_uuid
@@ -40,11 +36,9 @@ def delete_notification_destination(
     data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
     destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
     del data.report["notification_destinations"][notification_destination_uuid]
-    user = sessions.user(database)
     data.report["delta"] = dict(
         uuids=[report_uuid, notification_destination_uuid],
-        email=user["email"],
-        description=f"{user['user']} deleted destination {destination_name} from report '{data.report_name}'.",
+        description=f"{{user}} deleted destination {destination_name} from report '{data.report_name}'.",
     )
     return insert_new_report(database, data.report)
 
@@ -65,12 +59,10 @@ def post_notification_destination_attributes(
     if set(old_values) == set(attributes.values()):
         return dict(ok=True)  # Nothing to do
 
-    user = sessions.user(database)
     separator = "' and '"
     data.report["delta"] = dict(
         uuids=[data.report_uuid, notification_destination_uuid],
-        email=user["email"],
-        description=f"{user['user']} changed the '{separator.join(attributes.keys())}' of notification destination "
+        description=f"{{user}} changed the '{separator.join(attributes.keys())}' of notification destination "
         f"'{notification_destination_name}' in report '{data.report_name}' "
         f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'.",
     )

@@ -6,7 +6,6 @@ import bottle
 import requests
 from pymongo.database import Database
 
-from database import sessions
 from database.datamodels import default_source_parameters, latest_datamodel
 from database.reports import insert_new_report, latest_reports
 from model.actions import copy_source, move_item
@@ -27,11 +26,11 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     source_type = data_model["metrics"][metric_type]["default_source"]
     parameters = default_source_parameters(database, metric_type, source_type)
     data.metric["sources"][(source_uuid := uuid())] = dict(type=source_type, parameters=parameters)
-    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid], email=user["email"],
-        description=f"{user['user']} added a new source to metric '{data.metric_name}' of subject "
-                    f"'{data.subject_name}' in report '{data.report_name}'.")
+        uuids=[data.report_uuid, data.subject_uuid, metric_uuid, source_uuid],
+        description=f"{{user}} added a new source to metric '{data.metric_name}' of subject "
+        f"'{data.subject_name}' in report '{data.report_name}'.",
+    )
     result = insert_new_report(database, data.report)
     result["new_source_uuid"] = source_uuid
     return result
@@ -45,13 +44,13 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     source = SourceData(data_model, reports, source_uuid)
     target = MetricData(data_model, reports, metric_uuid)
     target.metric["sources"][(source_copy_uuid := uuid())] = copy_source(source.source, source.datamodel)
-    user = sessions.user(database)
     target.report["delta"] = dict(
-        uuids=[target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid], email=user["email"],
-        description=f"{user['user']} copied the source '{source.source_name}' of metric "
-                    f"'{source.metric_name}' of subject '{source.subject_name}' from report '{source.report_name}' to "
-                    f"metric '{target.metric_name}' of subject '{target.subject_name}' in report "
-                    f"'{target.report_name}'.")
+        uuids=[target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid],
+        description=f"{{user}} copied the source '{source.source_name}' of metric "
+        f"'{source.metric_name}' of subject '{source.subject_name}' from report '{source.report_name}' to "
+        f"metric '{target.metric_name}' of subject '{target.subject_name}' in report "
+        f"'{target.report_name}'.",
+    )
     result = insert_new_report(database, target.report)
     result["new_source_uuid"] = source_copy_uuid
     return result
@@ -64,14 +63,16 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     reports = latest_reports(database)
     source = SourceData(data_model, reports, source_uuid)
     target = MetricData(data_model, reports, target_metric_uuid)
-    user = sessions.user(database)
-    delta_description = f"{user['user']} moved the source '{source.source_name}' from metric " \
-                        f"'{source.metric_name}' of subject '{source.subject_name}' in report '{source.report_name}' " \
-                        f"to metric '{target.metric_name}' of subject '{target.subject_name}' in report " \
-                        f"'{target.report_name}'."
+    delta_description = (
+        f"{{user}} moved the source '{source.source_name}' from metric "
+        f"'{source.metric_name}' of subject '{source.subject_name}' in report '{source.report_name}' "
+        f"to metric '{target.metric_name}' of subject '{target.subject_name}' in report "
+        f"'{target.report_name}'."
+    )
     target.metric["sources"][source_uuid] = source.source
-    target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = \
-        [target.report_uuid]
+    target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = [
+        target.report_uuid
+    ]
     reports_to_insert = [target.report]
     if target.report_uuid == source.report_uuid:
         # Source is moved within the same report
@@ -85,11 +86,11 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         reports_to_insert.append(source.report)
         del source.metric["sources"][source_uuid]
         source.report["delta"] = dict(
-            uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid], email=user["email"],
-            description=delta_description)
+            uuids=[source.report_uuid, source.subject_uuid, source.metric_uuid, source_uuid],
+            description=delta_description,
+        )
         target_uuids.append(target.subject_uuid)
-    target.report["delta"] = dict(
-        uuids=target_uuids + [target_metric_uuid, source_uuid], email=user["email"], description=delta_description)
+    target.report["delta"] = dict(uuids=target_uuids + [target_metric_uuid, source_uuid], description=delta_description)
     return insert_new_report(database, *reports_to_insert)
 
 
@@ -99,11 +100,11 @@ def delete_source(source_uuid: SourceId, database: Database):
     data_model = latest_datamodel(database)
     reports = latest_reports(database)
     data = SourceData(data_model, reports, source_uuid)
-    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid], email=user["email"],
-        description=f"{user['user']} deleted the source '{data.source_name}' from metric "
-                    f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.")
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid],
+        description=f"{{user}} deleted the source '{data.source_name}' from metric "
+        f"'{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}'.",
+    )
     del data.metric["sources"][source_uuid]
     return insert_new_report(database, data.report)
 
@@ -123,12 +124,12 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
         data.source[source_attribute] = value
     if old_value == value:
         return dict(ok=True)  # Nothing to do
-    user = sessions.user(database)
     data.report["delta"] = dict(
-        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid], email=user["email"],
-        description=f"{user['user']} changed the {source_attribute} of source '{data.source_name}' "
-                    f"of metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
-                    f"from '{old_value}' to '{value}'.")
+        uuids=[data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid],
+        description=f"{{user}} changed the {source_attribute} of source '{data.source_name}' "
+        f"of metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
+        f"from '{old_value}' to '{value}'.",
+    )
     if source_attribute == "type":
         data.source["parameters"] = default_source_parameters(database, data.metric["type"], value)
     return insert_new_report(database, data.report)
@@ -149,11 +150,11 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
 
     source_description = _source_description(data, edit_scope, parameter_key, old_value)
-    user = sessions.user(database)
     delta = dict(
-        uuids=changed_ids, email=user["email"],
-        description=f"{user['user']} changed the {parameter_key} of {source_description} "
-                    f"from '{old_value}' to '{new_value}'.")
+        uuids=changed_ids,
+        description=f"{{user}} changed the {parameter_key} of {source_description} "
+        f"from '{old_value}' to '{new_value}'.",
+    )
     reports_to_insert = [report for report in data.reports if report["report_uuid"] in changed_ids]
     for report in reports_to_insert:
         report["delta"] = delta
@@ -176,8 +177,11 @@ def new_parameter_value(data, parameter_key: str):
 def _source_description(data, edit_scope, parameter_key, old_value):
     """Return the description of the source."""
     source_type_name = data.datamodel["sources"][data.source["type"]]["name"]
-    source_description = f"source '{data.source_name}'" if edit_scope == "source" else \
-        f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
+    source_description = (
+        f"source '{data.source_name}'"
+        if edit_scope == "source"
+        else f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
+    )
     if edit_scope in ["source", "metric"]:
         source_description += f" of metric '{data.metric_name}'"
     if edit_scope in ["subject", "metric", "source"]:
@@ -191,16 +195,18 @@ def _availability_checks(data, parameter_key: str) -> List[Dict[str, Union[str, 
     parameters = data.datamodel["sources"][data.source["type"]]["parameters"]
     source_parameters = data.source["parameters"]
     url_parameter_keys = [
-        key for key, value in parameters.items()
-        if value['type'] == 'url' and parameter_key == key or parameter_key in value.get("validate_on", [])]
+        key
+        for key, value in parameters.items()
+        if value["type"] == "url" and parameter_key == key or parameter_key in value.get("validate_on", [])
+    ]
     availability_checks = []
     for url_parameter_key in url_parameter_keys:
         url = source_parameters.get(url_parameter_key, "")
         if not url:
             continue
         availability = _check_url_availability(url, source_parameters)
-        availability['parameter_key'] = url_parameter_key
-        availability['source_uuid'] = data.source_uuid
+        availability["parameter_key"] = url_parameter_key
+        availability["source_uuid"] = data.source_uuid
         availability_checks.append(availability)
     return availability_checks
 
@@ -210,10 +216,11 @@ def _check_url_availability(url: URL, source_parameters: Dict[str, str]) -> Dict
     # Allow for mal-configured sources:
     try:
         response = requests.get(  # noqa: DUO123, # nosec
-            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False)
+            url, auth=_basic_auth_credentials(source_parameters), headers=_headers(source_parameters), verify=False
+        )
         return dict(status_code=response.status_code, reason=response.reason)
     except Exception:  # pylint: disable=broad-except
-        return dict(status_code=-1, reason='Unknown error')
+        return dict(status_code=-1, reason="Unknown error")
 
 
 def _basic_auth_credentials(source_parameters) -> Optional[Tuple[str, str]]:

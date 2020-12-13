@@ -7,6 +7,7 @@ from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp, unique
 from server_utilities.type import Change, MetricId, ReportId, SubjectId
+from . import sessions
 
 
 # Sort order:
@@ -67,7 +68,7 @@ def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> List[Metr
 
 def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_documents_for_insertion(*reports, last=True)
+    _prepare_documents_for_insertion(database, *reports, last=True)
     report_uuids = [report["report_uuid"] for report in reports]
     database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
     if len(reports) > 1:
@@ -79,18 +80,24 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
 
 def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    _prepare_documents_for_insertion(reports_overview)
+    _prepare_documents_for_insertion(database, reports_overview)
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
 
 
-def _prepare_documents_for_insertion(*documents, **extra_attributes) -> None:
+def _prepare_documents_for_insertion(database: Database, *documents, **extra_attributes) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
     for document in documents:
         if "_id" in document:
             del document["_id"]
         document["timestamp"] = now
+        if "delta" not in document:
+            document["delta"] = {}
+        user = sessions.user(database)
+        document["delta"]["email"] = user.get("email", "unknown@email.address")
+        if "description" in document["delta"]:
+            document["delta"]["description"] = document["delta"]["description"].format(user=user["user"])
         for key, value in extra_attributes.items():
             document[key] = value
 
