@@ -966,6 +966,10 @@
                         {
                             "name": "Description",
                             "key": "description"
+                        },
+                        {
+                            "name": "Tags",
+                            "key": "tags"
                         }
                     ]
                 }

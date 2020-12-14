@@ -72,7 +72,8 @@ class JiraIssues(SourceCollector):
             summary=fields["summary"],
             type=fields.get("issuetype", {}).get("name", "Unknown issue type"),
             updated=fields.get("updated"),
-            url=f"{url}/browse/{issue['key']}")
+            url=f"{url}/browse/{issue['key']}",
+        )
         if sprint_field_id := self._field_ids.get("sprint"):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
         return Entity(key=issue["id"], **entity_attributes)
@@ -122,7 +123,8 @@ class JiraManualTestExecution(JiraIssues):
         """Return the desired test frequency for this issue."""
         frequency = issue["fields"].get(self._parameter("manual_test_execution_frequency_field"))
         return int(
-            round(float(frequency)) if frequency else str(self._parameter("manual_test_execution_frequency_default")))
+            round(float(frequency)) if frequency else str(self._parameter("manual_test_execution_frequency_default"))
+        )
 
 
 class JiraFieldSumBase(JiraIssues):
@@ -189,7 +191,8 @@ class JiraVelocity(SourceCollector):
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         entity_url = URL(
-            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint=")
+            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint="
+        )
         json = await responses[0].json()
         # The JSON contains a list with sprints and a dict with the committed and completed points, indexed by sprint id
         sprints, points = json["sprints"], json["velocityStatEntries"]
@@ -199,7 +202,8 @@ class JiraVelocity(SourceCollector):
         sprint_values = [self.__velocity(points[str(sprint["id"])], velocity_type) for sprint in sprints[:nr_sprints]]
         entities = [self.__entity(sprint, points[str(sprint["id"])], velocity_type, entity_url) for sprint in sprints]
         return SourceMeasurement(
-            value=str(round(sum(sprint_values)/len(sprint_values))) if sprint_values else "0", entities=entities)
+            value=str(round(sum(sprint_values) / len(sprint_values))) if sprint_values else "0", entities=entities
+        )
 
     @staticmethod
     def __velocity(sprint_points: SprintPoints, velocity_type: str) -> float:
@@ -217,9 +221,15 @@ class JiraVelocity(SourceCollector):
         difference = str(float(sprint_points["completed"]["value"] - sprint_points["estimated"]["value"]))
         measured = dict(completed=completed, estimated=committed, difference=difference)[velocity_type]
         return Entity(
-            key=sprint["id"], name=sprint["name"], goal=sprint.get("goal") or "", points_completed=completed,
-            points_committed=committed, points_measured=measured, points_difference=difference,
-            url=str(entity_url) + sprint_id)
+            key=sprint_id,
+            name=sprint["name"],
+            goal=sprint.get("goal") or "",
+            points_completed=completed,
+            points_committed=committed,
+            points_measured=measured,
+            points_difference=difference,
+            url=str(entity_url) + sprint_id,
+        )
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to create a link to the Greenhopper velocity chart."""
@@ -233,17 +243,20 @@ class JiraVelocity(SourceCollector):
         start_at = 0
         boards: List[JiraVelocity.Board] = []
         while not last:
-            response = (
-                await super()._get_source_responses(URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")))[0]
+            response = (await super()._get_source_responses(URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")))[
+                0
+            ]
             json = await response.json()
             boards.extend(json["values"])
             start_at += json["maxResults"]
             last = json["isLast"]
         board_name_or_id = str(self._parameter("board")).lower()
         matching_boards = [
-            board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())]
+            board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())
+        ]
         try:
             return str(matching_boards[0]["id"])
         except IndexError as error:
             raise JiraException(
-                f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}") from error
+                f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
+            ) from error
