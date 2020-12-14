@@ -37,7 +37,7 @@ def get_report(database: Database, report_uuid: ReportId):
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
-    report["delta"] = dict(uuids=[report["report_uuid"]], description=f"{{user}} imported a report.")
+    report["delta"] = dict(uuids=[report["report_uuid"]])
     result = import_json_report(database, report)
     result["new_report_uuid"] = report["report_uuid"]
     return result
@@ -47,13 +47,9 @@ def post_report_import(database: Database):
 def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
-    report = dict(
-        report_uuid=report_uuid,
-        title="New report",
-        subjects={},
-        delta=dict(uuids=[report_uuid], description="{user} created a new report."),
-    )
-    result = insert_new_report(database, report)
+    delta_description = "{user} created a new report."
+    report = dict(report_uuid=report_uuid, title="New report", subjects={})
+    result = insert_new_report(database, delta_description, (report, [report_uuid]))
     result["new_report_uuid"] = report_uuid
     return result
 
@@ -65,11 +61,9 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     reports = latest_reports(database)
     data = ReportData(data_model, reports, report_uuid)
     report_copy = copy_report(data.report, data.datamodel)
-    report_copy["delta"] = dict(
-        uuids=[report_uuid, report_copy["report_uuid"]],
-        description=f"{{user}} copied the report '{data.report_name}'.",
-    )
-    result = insert_new_report(database, report_copy)
+    delta_description = f"{{user}} copied the report '{data.report_name}'."
+    uuids = [report_uuid, report_copy["report_uuid"]]
+    result = insert_new_report(database, delta_description, (report_copy, uuids))
     result["new_report_uuid"] = report_copy["report_uuid"]
     return result
 
@@ -100,8 +94,8 @@ def delete_report(report_uuid: ReportId, database: Database):
     reports = latest_reports(database)
     data = ReportData(data_model, reports, report_uuid)
     data.report["deleted"] = "true"
-    data.report["delta"] = dict(uuids=[report_uuid], description=f"{{user}} deleted the report '{data.report_name}'.")
-    return insert_new_report(database, data.report)
+    delta_description = f"{{user}} deleted the report '{data.report_name}'."
+    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
 @bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>")
@@ -114,12 +108,10 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     old_value = data.report.get(report_attribute) or ""
     data.report[report_attribute] = value
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
-    data.report["delta"] = dict(
-        uuids=[report_uuid],
-        description=f"{{user}} changed the {report_attribute} of report '{data.report_name}'"
-        f"{value_change_description}.",
+    delta_description = (
+        f"{{user}} changed the {report_attribute} of report '{data.report_name}'" f"{value_change_description}."
     )
-    return insert_new_report(database, data.report)
+    return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
 
 @bottle.get("/api/v3/tagreport/<tag>")

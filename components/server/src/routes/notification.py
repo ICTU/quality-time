@@ -19,11 +19,9 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
         teams_webhook="", name="Microsoft Teams webhook", sleep_duration=0
     )
-    data.report["delta"] = dict(
-        uuids=[report_uuid, notification_destination_uuid],
-        description=f"{{user}} created a new destination for notifications in report '{data.report_name}'.",
-    )
-    result = insert_new_report(database, data.report)
+    delta_description = f"{{user}} created a new destination for notifications in report '{data.report_name}'."
+    uuids = [report_uuid, notification_destination_uuid]
+    result = insert_new_report(database, delta_description, (data.report, uuids))
     result["new_destination_uuid"] = notification_destination_uuid
     return result
 
@@ -36,11 +34,9 @@ def delete_notification_destination(
     data = ReportData(latest_datamodel(database), latest_reports(database), report_uuid)
     destination_name = data.report["notification_destinations"][notification_destination_uuid]["name"]
     del data.report["notification_destinations"][notification_destination_uuid]
-    data.report["delta"] = dict(
-        uuids=[report_uuid, notification_destination_uuid],
-        description=f"{{user}} deleted destination {destination_name} from report '{data.report_name}'.",
-    )
-    return insert_new_report(database, data.report)
+    delta_description = f"{{user}} deleted destination {destination_name} from report '{data.report_name}'."
+    uuids = [report_uuid, notification_destination_uuid]
+    return insert_new_report(database, delta_description, (data.report, uuids))
 
 
 @bottle.post("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes")
@@ -60,10 +56,10 @@ def post_notification_destination_attributes(
         return dict(ok=True)  # Nothing to do
 
     separator = "' and '"
-    data.report["delta"] = dict(
-        uuids=[data.report_uuid, notification_destination_uuid],
-        description=f"{{user}} changed the '{separator.join(attributes.keys())}' of notification destination "
+    delta_description = (
+        f"{{user}} changed the '{separator.join(attributes.keys())}' of notification destination "
         f"'{notification_destination_name}' in report '{data.report_name}' "
-        f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'.",
+        f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'."
     )
-    return insert_new_report(database, data.report)
+    uuids = [data.report_uuid, notification_destination_uuid]
+    return insert_new_report(database, delta_description, (data.report, uuids))

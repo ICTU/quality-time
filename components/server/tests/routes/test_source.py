@@ -6,15 +6,38 @@ from unittest.mock import Mock, patch
 import requests
 
 from routes.source import (
-    delete_source, post_move_source, post_source_attribute, post_source_copy, post_source_new, post_source_parameter)
+    delete_source,
+    post_move_source,
+    post_source_attribute,
+    post_source_copy,
+    post_source_new,
+    post_source_parameter,
+)
 
 from ..fixtures import (
-    METRIC_ID, METRIC_ID2, METRIC_ID3, METRIC_ID4, REPORT_ID, REPORT_ID2, SOURCE_ID, SOURCE_ID2, SOURCE_ID3, SOURCE_ID4,
-    SOURCE_ID5, SOURCE_ID6, SOURCE_ID7, SUBJECT_ID, SUBJECT_ID2, SUBJECT_ID3, create_report)
+    METRIC_ID,
+    METRIC_ID2,
+    METRIC_ID3,
+    METRIC_ID4,
+    REPORT_ID,
+    REPORT_ID2,
+    SOURCE_ID,
+    SOURCE_ID2,
+    SOURCE_ID3,
+    SOURCE_ID4,
+    SOURCE_ID5,
+    SOURCE_ID6,
+    SOURCE_ID7,
+    SUBJECT_ID,
+    SUBJECT_ID2,
+    SUBJECT_ID3,
+    create_report,
+)
 
 
 class SourceTestCase(unittest.TestCase):
     """Common fixtures for the source route unit tests."""
+
     def setUp(self):
         self.url = "https://url"
         self.database = Mock()
@@ -26,19 +49,24 @@ class SourceTestCase(unittest.TestCase):
             metrics=dict(metric_type=dict(default_source="source_type")),
             sources=dict(
                 source_type=dict(
-                    name='Source type',
+                    name="Source type",
                     parameters=dict(
                         url=dict(type="url", metrics=["metric_type"], default_value=""),
                         username=dict(type="string", metrics=["metric_type"], default_value=""),
                         password=dict(type="password", metrics=["metric_type"], default_value=""),
                         private_token=dict(type="password", metrics=["metric_type"], default_value=""),
                         choices=dict(
-                            type="multiple_choice", metrics=["metric_type"], values=["A", "B", "C"],
-                            default_value=[]))),
-                new_source_type=dict(parameters={})))
+                            type="multiple_choice", metrics=["metric_type"], values=["A", "B", "C"], default_value=[]
+                        ),
+                    ),
+                ),
+                new_source_type=dict(parameters={}),
+            ),
+        )
         self.sources = {
             SOURCE_ID: dict(name="Source", type="source_type", parameters=dict(username="username", choices=["D"])),
-            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username"))}
+            SOURCE_ID2: dict(name="Source 2", type="source_type", parameters=dict(username="username")),
+        }
         self.database.datamodels.find_one.return_value = self.data_model
 
 
@@ -49,13 +77,15 @@ class PostSourceAttributeTest(SourceTestCase):
     def setUp(self):
         super().setUp()
         self.report = dict(
-            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
+            _id=REPORT_ID,
+            title="Report",
+            report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
-                    name="Subject",
-                    metrics={
-                        METRIC_ID: dict(
-                            name="Metric", type="metric_type", sources=self.sources)})})
+                    name="Subject", metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)}
+                )
+            },
+        )
         self.database.reports.find.return_value = [self.report]
 
     def test_name(self, request):
@@ -64,10 +94,14 @@ class PostSourceAttributeTest(SourceTestCase):
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny changed the name of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from 'Source' to 'New source name'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny changed the name of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                "report 'Report' from 'Source' to 'New source name'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_post_source_type(self, request):
         """Test that the source type can be changed."""
@@ -75,10 +109,14 @@ class PostSourceAttributeTest(SourceTestCase):
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID, "type", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny changed the type of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from 'source_type' to 'new_source_type'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny changed the type of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                "report 'Report' from 'source_type' to 'new_source_type'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_post_position(self, request):
         """Test that a metric can be moved."""
@@ -86,12 +124,17 @@ class PostSourceAttributeTest(SourceTestCase):
         self.assertEqual(dict(ok=True), post_source_attribute(SOURCE_ID2, "position", self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys()))
+            [SOURCE_ID2, SOURCE_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())
+        )
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID2], email=self.email,
-                 description="Jenny changed the position of source 'Source 2' of metric 'Metric' of subject 'Subject' "
-                             "in report 'Report' from '1' to '0'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID2],
+                email=self.email,
+                description="Jenny changed the position of source 'Source 2' of metric 'Metric' of subject 'Subject' "
+                "in report 'Report' from '1' to '0'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_no_change(self, request):
         """Test that no new report is inserted when the attribute is unchanged."""
@@ -110,14 +153,18 @@ class PostSourceParameterTest(SourceTestCase):
     def setUp(self):
         super().setUp()
         self.report = dict(
-            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
+            _id=REPORT_ID,
+            title="Report",
+            report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
-                    name="Subject",
-                    metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)}),
+                    name="Subject", metrics={METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources)}
+                ),
                 SUBJECT_ID2: dict(
-                    name="Subject 2",
-                    metrics={METRIC_ID2: dict(name="Metric 2", type="metric_type", sources={})})})
+                    name="Subject 2", metrics={METRIC_ID2: dict(name="Metric 2", type="metric_type", sources={})}
+                ),
+            },
+        )
         self.database.reports.find.return_value = [self.report]
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
@@ -130,11 +177,12 @@ class PostSourceParameterTest(SourceTestCase):
             dict(
                 ok=True,
                 availability=[
-                    dict(
-                        status_code=status_code, reason=status_code_reason, source_uuid=SOURCE_ID,
-                        parameter_key="url")]))
+                    dict(status_code=status_code, reason=status_code_reason, source_uuid=SOURCE_ID, parameter_key="url")
+                ],
+            ),
+        )
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_url(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
         mock_get.return_value = self.url_check_get_response
@@ -144,12 +192,16 @@ class PostSourceParameterTest(SourceTestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         mock_get.assert_called_once_with(self.url, auth=None, headers={}, verify=False)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             f"report 'Report' from '' to '{self.url}'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                f"report 'Report' from '' to '{self.url}'.",
+            ),
+            self.report["delta"],
+        )
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_url_http_error(self, mock_get, request):
         """Test that the error is reported if a request exception occurs, while checking connection of a url."""
         mock_get.side_effect = requests.exceptions.RequestException
@@ -158,24 +210,28 @@ class PostSourceParameterTest(SourceTestCase):
         self.assert_url_check(response, -1, "Unknown error")
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             f"report 'Report' from '' to '{self.url}'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny changed the url of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                f"report 'Report' from '' to '{self.url}'.",
+            ),
+            self.report["delta"],
+        )
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_url_with_user(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
-        self.sources[SOURCE_ID]['parameters']['username'] = 'un'
-        self.sources[SOURCE_ID]['parameters']['password'] = 'pwd'
+        self.sources[SOURCE_ID]["parameters"]["username"] = "un"
+        self.sources[SOURCE_ID]["parameters"]["password"] = "pwd"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=('un', 'pwd'), headers={}, verify=False)
+        mock_get.assert_called_once_with(self.url, auth=("un", "pwd"), headers={}, verify=False)
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_url_no_url_type(self, mock_get, request):
         """Test that the source url can be changed and that the availability is not checked if it's not a url type."""
         self.data_model["sources"]["source_type"]["parameters"]["url"]["type"] = "string"
@@ -194,24 +250,24 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_url_with_token(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
         mock_get.return_value = self.url_check_get_response
         request.json = dict(url=self.url)
-        self.sources[SOURCE_ID]['parameters']['private_token'] = 'xxx'
+        self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        mock_get.assert_called_once_with(self.url, auth=('xxx', ''), headers={"Private-Token": "xxx"}, verify=False)
+        mock_get.assert_called_once_with(self.url, auth=("xxx", ""), headers={"Private-Token": "xxx"}, verify=False)
 
-    @patch.object(requests, 'get')
+    @patch.object(requests, "get")
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the all urls availability is checked when a parameter that it depends on is changed."""
         self.data_model["sources"]["source_type"]["parameters"]["url"]["validate_on"] = "password"
         mock_get.return_value = self.url_check_get_response
         request.json = dict(password="changed")
-        self.sources[SOURCE_ID]['parameters']['url'] = self.url
+        self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assert_url_check(response)
         self.database.reports.insert.assert_called_once_with(self.report)
@@ -223,10 +279,14 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(response, dict(ok=True))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny changed the password of source 'Source' of metric 'Metric' of subject 'Subject' in "
-                             "report 'Report' from '' to '******'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny changed the password of source 'Source' of metric 'Metric' of subject 'Subject' in "
+                "report 'Report' from '' to '******'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_no_change(self, request):
         """Test that no new report is inserted if the parameter value is unchanged."""
@@ -258,33 +318,49 @@ class PostSourceParameterMassEditTest(SourceTestCase):
     def setUp(self):
         super().setUp()
         self.sources[SOURCE_ID3] = dict(
-            name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE))
+            name="Source 3", type="source_type", parameters=dict(username=self.UNCHANGED_VALUE)
+        )
         self.sources[SOURCE_ID4] = dict(
-            name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE))
+            name="Source 4", type="different_type", parameters=dict(username=self.OLD_VALUE)
+        )
         self.sources2 = {
-            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))}
+            SOURCE_ID5: dict(name="Source 5", type="source_type", parameters=dict(username=self.OLD_VALUE))
+        }
         self.sources3 = {
-            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))}
+            SOURCE_ID6: dict(name="Source 6", type="source_type", parameters=dict(username=self.OLD_VALUE))
+        }
         self.sources4 = {
-            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))}
+            SOURCE_ID7: dict(name="Source 7", type="source_type", parameters=dict(username=self.OLD_VALUE))
+        }
         self.report = dict(
-            _id=REPORT_ID, title="Report", report_uuid=REPORT_ID,
+            _id=REPORT_ID,
+            title="Report",
+            report_uuid=REPORT_ID,
             subjects={
                 SUBJECT_ID: dict(
                     name="Subject",
                     metrics={
                         METRIC_ID: dict(name="Metric", type="metric_type", sources=self.sources),
-                        METRIC_ID2: dict(name="Metric 2", type="metric_type", sources=self.sources2)}),
+                        METRIC_ID2: dict(name="Metric 2", type="metric_type", sources=self.sources2),
+                    },
+                ),
                 SUBJECT_ID2: dict(
                     name="Subject 2",
-                    metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)})})
+                    metrics={METRIC_ID3: dict(name="Metric 3", type="metric_type", sources=self.sources3)},
+                ),
+            },
+        )
         self.report2 = dict(
-            _id=REPORT_ID2, title="Report 2", report_uuid=REPORT_ID2,
+            _id=REPORT_ID2,
+            title="Report 2",
+            report_uuid=REPORT_ID2,
             subjects={
                 SUBJECT_ID3: dict(
                     name="Subject 3",
-                    metrics={
-                        METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)})})
+                    metrics={METRIC_ID4: dict(name="Metric 4", type="metric_type", sources=self.sources4)},
+                )
+            },
+        )
         self.database.reports.find.return_value = [self.report, self.report2]
 
     def assert_value(self, value_sources_mapping):
@@ -298,29 +374,68 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         request.json = dict(username=self.NEW_VALUE, edit_scope="reports")
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
-        self.database.reports.insert_many.assert_called_once_with((self.report, self.report2), ordered=False)
-        self.assert_value({
-            self.NEW_VALUE: [
-                self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5],
-                self.sources3[SOURCE_ID6], self.sources4[SOURCE_ID7]],
-            self.OLD_VALUE: [self.sources[SOURCE_ID4]],
-            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
+        self.database.reports.insert_many.assert_called_once_with([self.report, self.report2], ordered=False)
+        self.assert_value(
+            {
+                self.NEW_VALUE: [
+                    self.sources[SOURCE_ID],
+                    self.sources[SOURCE_ID2],
+                    self.sources2[SOURCE_ID5],
+                    self.sources3[SOURCE_ID6],
+                    self.sources4[SOURCE_ID7],
+                ],
+                self.OLD_VALUE: [self.sources[SOURCE_ID4]],
+                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+            }
+        )
         self.assertEqual(
             dict(
                 uuids=[
-                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
-                    METRIC_ID3, SOURCE_ID6, REPORT_ID2, SUBJECT_ID3, METRIC_ID4, SOURCE_ID7], email=self.email,
+                    REPORT_ID,
+                    SUBJECT_ID,
+                    METRIC_ID,
+                    SOURCE_ID,
+                    SOURCE_ID2,
+                    METRIC_ID2,
+                    SOURCE_ID5,
+                    SUBJECT_ID2,
+                    METRIC_ID3,
+                    SOURCE_ID6,
+                    REPORT_ID2,
+                    SUBJECT_ID3,
+                    METRIC_ID4,
+                    SOURCE_ID7,
+                ],
+                email=self.email,
                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
-                            "in all reports from 'username' to 'new username'."),
-            self.report["delta"])
+                "in all reports from 'username' to 'new username'.",
+            ),
+            self.report["delta"],
+        )
         self.assertEqual(
             dict(
                 uuids=[
-                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
-                    METRIC_ID3, SOURCE_ID6, REPORT_ID2, SUBJECT_ID3, METRIC_ID4, SOURCE_ID7], email=self.email,
+                    REPORT_ID,
+                    SUBJECT_ID,
+                    METRIC_ID,
+                    SOURCE_ID,
+                    SOURCE_ID2,
+                    METRIC_ID2,
+                    SOURCE_ID5,
+                    SUBJECT_ID2,
+                    METRIC_ID3,
+                    SOURCE_ID6,
+                    REPORT_ID2,
+                    SUBJECT_ID3,
+                    METRIC_ID4,
+                    SOURCE_ID7,
+                ],
+                email=self.email,
                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
-                            "in all reports from 'username' to 'new username'."),
-            self.report2["delta"])
+                "in all reports from 'username' to 'new username'.",
+            ),
+            self.report2["delta"],
+        )
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""
@@ -328,20 +443,38 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assert_value({
-            self.NEW_VALUE: [
-                self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5],
-                self.sources3[SOURCE_ID6]],
-            self.OLD_VALUE: [self.sources[SOURCE_ID4]],
-            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
+        self.assert_value(
+            {
+                self.NEW_VALUE: [
+                    self.sources[SOURCE_ID],
+                    self.sources[SOURCE_ID2],
+                    self.sources2[SOURCE_ID5],
+                    self.sources3[SOURCE_ID6],
+                ],
+                self.OLD_VALUE: [self.sources[SOURCE_ID4]],
+                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+            }
+        )
         self.assertEqual(
             dict(
                 uuids=[
-                    REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5, SUBJECT_ID2,
-                    METRIC_ID3, SOURCE_ID6], email=self.email,
+                    REPORT_ID,
+                    SUBJECT_ID,
+                    METRIC_ID,
+                    SOURCE_ID,
+                    SOURCE_ID2,
+                    METRIC_ID2,
+                    SOURCE_ID5,
+                    SUBJECT_ID2,
+                    METRIC_ID3,
+                    SOURCE_ID6,
+                ],
+                email=self.email,
                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
-                            "in report 'Report' from 'username' to 'new username'."),
-            self.report["delta"])
+                "in report 'Report' from 'username' to 'new username'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_mass_edit_subject(self, request):
         """Test that a source parameter can be mass edited."""
@@ -349,16 +482,22 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assert_value({
-            self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
-            self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources3[SOURCE_ID6]],
-            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
+        self.assert_value(
+            {
+                self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
+                self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources3[SOURCE_ID6]],
+                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+            }
+        )
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5],
-                 email=self.email,
-                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
-                             "of subject 'Subject' in report 'Report' from 'username' to 'new username'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2, METRIC_ID2, SOURCE_ID5],
+                email=self.email,
+                description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                "of subject 'Subject' in report 'Report' from 'username' to 'new username'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_mass_edit_metric(self, request):
         """Test that a source parameter can be mass edited."""
@@ -366,16 +505,23 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         response = post_source_parameter(SOURCE_ID, "username", self.database)
         self.assertEqual(dict(ok=True), response)
         self.database.reports.insert.assert_called_once_with(self.report)
-        self.assert_value({
-            self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
-            self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
-            self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]]})
+        self.assert_value(
+            {
+                self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
+                self.OLD_VALUE: [self.sources[SOURCE_ID4], self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
+                self.UNCHANGED_VALUE: [self.sources[SOURCE_ID3]],
+            }
+        )
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2], email=self.email,
-                 description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
-                             "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to "
-                             "'new username'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2],
+                email=self.email,
+                description="Jenny changed the username of all sources of type 'Source type' with username 'username' "
+                "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to "
+                "'new username'.",
+            ),
+            self.report["delta"],
+        )
 
 
 class SourceTest(SourceTestCase):
@@ -393,38 +539,50 @@ class SourceTest(SourceTestCase):
         self.database.reports.insert.assert_called_once_with(self.report)
         source_uuid = list(self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid], email=self.email,
-                 description="Jenny added a new source to metric 'Metric' of subject 'Subject' in report "
-                             "'Report'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid],
+                email=self.email,
+                description="Jenny added a new source to metric 'Metric' of subject 'Subject' in report " "'Report'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_copy_source(self):
         """Test that a source can be copied."""
         self.assertTrue(post_source_copy(SOURCE_ID, METRIC_ID, self.database)["ok"])
         self.database.reports.insert.assert_called_once_with(self.report)
         copied_source_uuid, copied_source = list(
-            self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items())[1]
+            self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items()
+        )[1]
         self.assertEqual("Source (copy)", copied_source["name"])
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, copied_source_uuid], email=self.email,
-                 description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report "
-                             "'Report' to metric 'Metric' of subject 'Subject' in report 'Report'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, copied_source_uuid],
+                email=self.email,
+                description="Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report "
+                "'Report' to metric 'Metric' of subject 'Subject' in report 'Report'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_move_source_within_subject(self):
         """Test that a source can be moved to a different metric in the same subject."""
         source = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
         target_metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = dict(
-            name=self.target_metric_name, type="metric_type", sources={})
+            name=self.target_metric_name, type="metric_type", sources={}
+        )
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         self.assertEqual(
             dict(
-                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, SOURCE_ID],
+                email=self.email,
                 description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
-                            f"'Report' to metric '{self.target_metric_name}' of subject 'Subject' in report 'Report'."),
-            self.report["delta"])
+                f"'Report' to metric '{self.target_metric_name}' of subject 'Subject' in report 'Report'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_move_source_within_report(self):
         """Test that a source can be moved to a different metric in the same report."""
@@ -437,11 +595,14 @@ class SourceTest(SourceTestCase):
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         self.assertEqual(
             dict(
-                uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID], email=self.email,
+                uuids=[REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID],
+                email=self.email,
                 description="Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
-                            f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in report "
-                            "'Report'."),
-            self.report["delta"])
+                f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in report "
+                "'Report'.",
+            ),
+            self.report["delta"],
+        )
 
     def test_move_source_across_reports(self):
         """Test that a source can be moved to a different metric in a different report."""
@@ -449,29 +610,42 @@ class SourceTest(SourceTestCase):
         target_metric = dict(name=self.target_metric_name, type="metric_type", sources={})
         target_subject = dict(name="Target subject", metrics={METRIC_ID2: target_metric})
         target_report = dict(
-            _id="target_report", title="Target report", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject})
+            _id="target_report", title="Target report", report_uuid=REPORT_ID2, subjects={SUBJECT_ID2: target_subject}
+        )
         self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual(dict(ok=True), post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
-        expected_description = "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report " \
-                               f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in " \
-                               "report 'Target report'."
+        expected_description = (
+            "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
+            f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in "
+            "report 'Target report'."
+        )
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description=expected_description),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email, description=expected_description
+            ),
+            self.report["delta"],
+        )
         self.assertEqual(
-            dict(uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID2, SOURCE_ID], email=self.email,
-                 description=expected_description),
-            target_report["delta"])
+            dict(
+                uuids=[REPORT_ID2, SUBJECT_ID2, METRIC_ID2, SOURCE_ID],
+                email=self.email,
+                description=expected_description,
+            ),
+            target_report["delta"],
+        )
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
         self.assertEqual(dict(ok=True), delete_source(SOURCE_ID, self.database))
         self.database.reports.insert.assert_called_once_with(self.report)
         self.assertEqual(
-            dict(uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], email=self.email,
-                 description="Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in "
-                             "report 'Report'."),
-            self.report["delta"])
+            dict(
+                uuids=[REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                email=self.email,
+                description="Jenny deleted the source 'Source' from metric 'Metric' of subject 'Subject' in "
+                "report 'Report'.",
+            ),
+            self.report["delta"],
+        )

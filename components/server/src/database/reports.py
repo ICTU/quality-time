@@ -66,9 +66,10 @@ def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> List[Metr
     return list(report["subjects"][subject_uuid]["metrics"].keys())
 
 
-def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
+def insert_new_report(database: Database, delta_description: str, *reports_and_uuids) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
-    _prepare_documents_for_insertion(database, *reports, last=True)
+    _prepare_documents_for_insertion(database, delta_description, *reports_and_uuids, last=True)
+    reports = [report for report, uuids in reports_and_uuids]
     report_uuids = [report["report_uuid"] for report in reports]
     database.reports.update_many({"report_uuid": {"$in": report_uuids}, "last": DOES_EXIST}, {"$unset": {"last": ""}})
     if len(reports) > 1:
@@ -78,26 +79,29 @@ def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     return dict(ok=True)
 
 
-def insert_new_reports_overview(database: Database, reports_overview) -> Dict[str, Any]:
+def insert_new_reports_overview(database: Database, delta_description: str, reports_overview) -> Dict[str, Any]:
     """Insert a new reports overview in the reports overview collection."""
-    _prepare_documents_for_insertion(database, reports_overview)
+    _prepare_documents_for_insertion(database, delta_description, (reports_overview, []))
     database.reports_overviews.insert(reports_overview)
     return dict(ok=True)
 
 
-def _prepare_documents_for_insertion(database: Database, *documents, **extra_attributes) -> None:
+def _prepare_documents_for_insertion(
+    database: Database, delta_description: str, *documents, **extra_attributes
+) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    for document in documents:
+    user = sessions.user(database)
+    email = user.get("email", "")
+    username = user.get("user", "An unknown user")
+    description = delta_description.format(user=username)
+    for document, uuids in documents:
         if "_id" in document:
             del document["_id"]
         document["timestamp"] = now
-        if "delta" not in document:
-            document["delta"] = {}
-        user = sessions.user(database)
-        document["delta"]["email"] = user.get("email", "unknown@email.address")
-        if "description" in document["delta"]:
-            document["delta"]["description"] = document["delta"]["description"].format(user=user["user"])
+        document["delta"] = dict(description=description, email=email)
+        if uuids:
+            document["delta"]["uuids"] = uuids
         for key, value in extra_attributes.items():
             document[key] = value
 

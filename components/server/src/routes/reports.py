@@ -39,7 +39,5 @@ def post_reports_attribute(reports_attribute: str, database: Database):
         value.append(user["user"])  # Make sure users don't remove themselves as editor by accident
     overview[reports_attribute] = value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{value}'"
-    overview["delta"] = dict(
-        description=f"{{user}} changed the {reports_attribute} of the reports overview{value_change_description}.",
-    )
-    return insert_new_reports_overview(database, overview)
+    delta_description = f"{{user}} changed the {reports_attribute} of the reports overview{value_change_description}."
+    return insert_new_reports_overview(database, delta_description, overview)
