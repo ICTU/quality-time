@@ -81,23 +81,24 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_warning_without_indirect_dependencies(self):
         """Test that warnings are also collected if they have no indirect dependencies."""
+        dependency = "laravel/laravel@6.18.34"
         self.vulnerabilities_json["vulnerabilities"].append(
             {
                 "id": "SNYK-PHP-LARAVELLARAVEL-609736",
                 "severity": "high",
                 "title": "Improper Input Validation",
-                "from": ["laravel/laravel@6.18.34"],
+                "from": [dependency],
             }
         )
         expected_entities = [
             self.expected_entity,
             dict(
                 key="laravel-laravel@6_18_34",
-                dependency="laravel/laravel@6.18.34",
+                dependency=dependency,
                 nr_vulnerabilities=1,
                 example_vulnerability="SNYK-PHP-LARAVELLARAVEL-609736",
                 url="https://snyk.io/vuln/SNYK-PHP-LARAVELLARAVEL-609736",
-                example_path="laravel/laravel@6.18.34",
+                example_path=dependency,
                 highest_severity="high",
             ),
         ]
