@@ -28,32 +28,46 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
         self.json = dict(
             url=self.tested_url,
             violations=[
-                dict(id="aria-input-field-name", description="description1", helpUrl="https://help1",
-                     nodes=[dict(impact="serious", html="html1")]),
-                dict(id="aria-hidden-focus", description="description2", helpUrl="https://help2",
-                     nodes=[dict(impact="moderate", html="html2")])])
+                dict(
+                    id="aria-input-field-name",
+                    description="description1",
+                    helpUrl="https://help1",
+                    tags=["cat.color", "wcag2aa", "wcag143"],
+                    nodes=[dict(impact="serious", html="html1")],
+                ),
+                dict(
+                    id="aria-hidden-focus",
+                    description="description2",
+                    helpUrl="https://help2",
+                    nodes=[dict(impact="moderate", html="html2")],
+                ),
+            ],
+        )
         self.metric = dict(type="accessibility", addition="sum", sources=self.sources)
         self.expected_entities = [
             {
-                'description': 'description1',
-                'element': 'html1',
-                'help': 'https://help1',
-                'impact': 'serious',
-                'page': self.tested_url,
-                'url': self.tested_url,
-                'violation_type': 'aria-input-field-name'
+                "description": "description1",
+                "element": "html1",
+                "help": "https://help1",
+                "impact": "serious",
+                "page": self.tested_url,
+                "url": self.tested_url,
+                "violation_type": "aria-input-field-name",
+                "tags": "cat.color, wcag143, wcag2aa",
             },
             {
-                'description': 'description2',
-                'element': 'html2',
-                'help': 'https://help2',
-                'impact': 'moderate',
-                'page': self.tested_url,
-                'url': self.tested_url,
-                'violation_type': 'aria-hidden-focus'
-            }]
+                "description": "description2",
+                "element": "html2",
+                "help": "https://help2",
+                "impact": "moderate",
+                "page": self.tested_url,
+                "url": self.tested_url,
+                "violation_type": "aria-hidden-focus",
+                "tags": "",
+            },
+        ]
         for entity in self.expected_entities:
-            entity["key"] = md5_hash(",".join(str(value) for value in entity.values()))
+            entity["key"] = md5_hash(",".join(str(value) for key, value in entity.items() if key != "tags"))
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""

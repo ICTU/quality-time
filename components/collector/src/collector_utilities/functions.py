@@ -5,7 +5,7 @@ import hashlib
 import re
 import urllib
 from datetime import datetime
-from typing import Any, Collection, Generator, Pattern, Tuple, cast
+from typing import Collection, Generator, Pattern, Tuple, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
 from defusedxml import ElementTree
@@ -22,11 +22,12 @@ async def parse_source_response_xml(response: Response, allowed_root_tags: Colle
 
 
 async def parse_source_response_xml_with_namespace(
-        response: Response, allowed_root_tags: Collection[str] = None) -> Tuple[Element, Namespaces]:
+    response: Response, allowed_root_tags: Collection[str] = None
+) -> Tuple[Element, Namespaces]:
     """Parse the XML with namespace from the source response."""
     tree = await parse_source_response_xml(response, allowed_root_tags)
     # ElementTree has no API to get the namespace so we extract it from the root tag:
-    namespaces = dict(ns=tree.tag.split('}')[0][1:])
+    namespaces = dict(ns=tree.tag.split("}")[0][1:])
     return tree, namespaces
 
 
@@ -56,11 +57,6 @@ def hashless(url: URL) -> URL:
     query = re.sub(HASH_SUB[0], HASH_SUB[1], query)
     fragment = re.sub(HASH_SUB[0], HASH_SUB[1], fragment)
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
-
-
-def safe_entity_key(key: Any) -> str:
-    """Return a escaped version of the key that is safe in URLs and as Mongo document key."""
-    return str(key).replace("/", "-").replace(".", "_")
 
 
 def md5_hash(string: str) -> str:

@@ -24,12 +24,23 @@ class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
                     if node.get("impact") not in impact_levels:
                         continue
                     entity_attributes.append(
-                        dict(description=violation.get("description"), element=node.get("html"),
-                             help=violation.get("helpUrl"), impact=node.get("impact"), page=url, url=url,
-                             violation_type=violation.get("id")))
+                        dict(
+                            description=violation.get("description"),
+                            element=node.get("html"),
+                            help=violation.get("helpUrl"),
+                            impact=node.get("impact"),
+                            page=url,
+                            url=url,
+                            tags=", ".join(sorted(violation.get("tags", []))),
+                            violation_type=violation.get("id"),
+                        )
+                    )
         entities = [
-            Entity(key=md5_hash(",".join(str(value) for value in attributes.values())), **attributes)
-            for attributes in entity_attributes]
+            Entity(
+                key=md5_hash(",".join(str(value) for key, value in attributes.items() if key != "tags")), **attributes
+            )
+            for attributes in entity_attributes
+        ]
         return SourceMeasurement(entities=entities)
 
 
