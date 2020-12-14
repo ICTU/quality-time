@@ -45,10 +45,9 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     target = MetricData(data_model, reports, metric_uuid)
     target.metric["sources"][(source_copy_uuid := uuid())] = copy_source(source.source, source.datamodel)
     delta_description = (
-        f"{{user}} copied the source '{source.source_name}' of metric "
-        f"'{source.metric_name}' of subject '{source.subject_name}' from report '{source.report_name}' to "
-        f"metric '{target.metric_name}' of subject '{target.subject_name}' in report "
-        f"'{target.report_name}'."
+        f"{{user}} copied the source '{source.source_name}' of metric '{source.metric_name}' of subject "
+        f"'{source.subject_name}' from report '{source.report_name}' to metric '{target.metric_name}' of subject "
+        f"'{target.subject_name}' in report '{target.report_name}'."
     )
     uuids = [target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid]
     result = insert_new_report(database, delta_description, (target.report, uuids))
@@ -64,10 +63,9 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     source = SourceData(data_model, reports, source_uuid)
     target = MetricData(data_model, reports, target_metric_uuid)
     delta_description = (
-        f"{{user}} moved the source '{source.source_name}' from metric "
-        f"'{source.metric_name}' of subject '{source.subject_name}' in report '{source.report_name}' "
-        f"to metric '{target.metric_name}' of subject '{target.subject_name}' in report "
-        f"'{target.report_name}'."
+        f"{{user}} moved the source '{source.source_name}' from metric '{source.metric_name}' of subject "
+        f"'{source.subject_name}' in report '{source.report_name}' to metric '{target.metric_name}' of subject "
+        f"'{target.subject_name}' in report '{target.report_name}'."
     )
     target.metric["sources"][source_uuid] = source.source
     target_uuids: List[Union[Optional[ReportId], Optional[SubjectId], Optional[MetricId], Optional[SourceId]]] = [
@@ -122,9 +120,8 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     if old_value == value:
         return dict(ok=True)  # Nothing to do
     delta_description = (
-        f"{{user}} changed the {source_attribute} of source '{data.source_name}' "
-        f"of metric '{data.metric_name}' of subject '{data.subject_name}' in report '{data.report_name}' "
-        f"from '{old_value}' to '{value}'."
+        f"{{user}} changed the {source_attribute} of source '{data.source_name}' of metric '{data.metric_name}' of "
+        f"subject '{data.subject_name}' in report '{data.report_name}' from '{old_value}' to '{value}'."
     )
     uuids = [data.report_uuid, data.subject_uuid, data.metric_uuid, source_uuid]
     if source_attribute == "type":
@@ -148,7 +145,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
 
     source_description = _source_description(data, edit_scope, parameter_key, old_value)
     delta_description = (
-        f"{{user}} changed the {parameter_key} of {source_description} " f"from '{old_value}' to '{new_value}'."
+        f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
     reports_to_insert = [(report, changed_ids) for report in data.reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, *reports_to_insert)

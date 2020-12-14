@@ -109,7 +109,7 @@ def post_report_attribute(report_uuid: ReportId, report_attribute: str, database
     data.report[report_attribute] = value
     value_change_description = "" if report_attribute == "layout" else f" from '{old_value}' to '{value}'"
     delta_description = (
-        f"{{user}} changed the {report_attribute} of report '{data.report_name}'" f"{value_change_description}."
+        f"{{user}} changed the {report_attribute} of report '{data.report_name}'{value_change_description}."
     )
     return insert_new_report(database, delta_description, (data.report, [report_uuid]))
 
