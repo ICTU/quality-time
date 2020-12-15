@@ -2,7 +2,7 @@
 
 import unittest
 
-from notification import Notification
+from models.notification import Notification
 
 
 class NotificationTestCase(unittest.TestCase):

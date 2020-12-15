@@ -4,7 +4,7 @@ import logging
 
 import pymsteams
 
-from notification import Notification
+from models.notification import Notification
 
 
 def build_notification_text(notification: Notification) -> str:
@@ -14,13 +14,16 @@ def build_notification_text(notification: Notification) -> str:
     report_link = f'[{notification.report_title}]({notification.url})'
 
     result = f'{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n'
-    for metric in notification.metrics:
-        name = metric["metric_name"]
-        unit = metric["metric_unit"]
+    for metric_notification_data in notification.metrics:
+        name = metric_notification_data.metric_name
+        unit = metric_notification_data.metric_unit
         unit = unit if unit.startswith("%") else f" {unit}"
-        new_value = '?' if metric["new_metric_value"] is None else metric["new_metric_value"]
-        old_value = '?' if metric["old_metric_value"] is None else metric["old_metric_value"]
-        result += f'* {name} status is {metric["new_metric_status"]}, was {metric["old_metric_status"]}. ' \
+        new_value = '?' if metric_notification_data.new_metric_value is None \
+            else metric_notification_data.new_metric_value
+        old_value = '?' if metric_notification_data.old_metric_value is None \
+            else metric_notification_data.old_metric_value
+        result += f'* {name} status is ' \
+                  f'{metric_notification_data.new_metric_status}, was {metric_notification_data.old_metric_status}. ' \
                   f'Value is {new_value}{unit}, was {old_value}{unit}.\n'
     return result
 
