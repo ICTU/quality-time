@@ -24,7 +24,7 @@ async def notify(log_level: int = None) -> NoReturn:
         f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
     )
     data_model = await retrieve_data_model(api_version)
-    most_recent_measurement_seen = datetime.max.isoformat()
+    most_recent_measurement_seen = datetime.max.isoformat() + "+00:00"
     outbox = Outbox()
     while True:
         record_health()

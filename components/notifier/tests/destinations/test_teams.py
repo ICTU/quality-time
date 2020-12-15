@@ -66,8 +66,8 @@ class BuildNotificationTextTests(TestCase):
                                                             status="target_met")),
                                             dict(count=dict(value=10,
                                                             status="target_not_met"))])
-        metric_notification_data1 = MetricNotificationData(metric1, self.data_model)
-        metric_notification_data2 = MetricNotificationData(metric2, self.data_model)
+        metric_notification_data1 = MetricNotificationData(metric1, self.data_model, "status_changed")
+        metric_notification_data2 = MetricNotificationData(metric2, self.data_model, "status_changed")
         notification = Notification(self.report, [metric_notification_data1,
                                                   metric_notification_data2], "destination_uuid", {})
         text = build_notification_text(notification)
@@ -87,7 +87,7 @@ class BuildNotificationTextTests(TestCase):
                                                                       status="near_target_met")),
                                             dict(count=dict(value=None,
                                                            status="unknown"))])
-        metric_notification_data1 = MetricNotificationData(metric1, self.data_model)
+        metric_notification_data1 = MetricNotificationData(metric1, self.data_model, "status_changed")
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
