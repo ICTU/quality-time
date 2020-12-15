@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add the tags of accessibility rules to the detail information of axe-selenium-python sources. Closes [#1751](https://github.com/ICTU/quality-time/issues/1751).
+- Allow for filtering axe-selenium-python accessibility violations by tag. Closes [#1752](https://github.com/ICTU/quality-time/issues/1752).
 
 ## [3.16.0] - [2020-12-12]
 

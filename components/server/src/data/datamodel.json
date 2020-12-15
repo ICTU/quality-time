@@ -921,6 +921,30 @@
                         "source_up_to_dateness"
                     ]
                 },
+                "tags_to_include": {
+                    "name": "Tags to include (regular expressions or tags)",
+                    "short_name": "tags to include",
+                    "help": "Tags to include can be specified by tag or by regular expression.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "all",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "accessibility"
+                    ]
+                },
+                "tags_to_ignore": {
+                    "name": "Tags to ignore (regular expressions or tags)",
+                    "short_name": "tags to ignore",
+                    "help": "Tags to ignore can be specified by tag or by regular expression.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "accessibility"
+                    ]
+                },
                 "impact": {
                     "name": "Impact levels",
                     "short_name": "impact levels",
@@ -1373,7 +1397,7 @@
                     "help": "Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
@@ -2314,7 +2338,7 @@
                     "help": "Jobs to ignore can be specified by job name or by regular expression.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
@@ -2546,7 +2570,7 @@
                     "help": "Jobs to include can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "all",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
@@ -2560,7 +2584,7 @@
                     "help": "Jobs to ignore can be specified by job name or by regular expression. Use {parent job name}/{child job name} for the names of nested jobs.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
@@ -4061,7 +4085,7 @@
                     "help": "Transactions to ignore can be specified by transaction name or by regular expression.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "slow_transactions",
@@ -4074,7 +4098,7 @@
                     "help": "Transactions to include can be specified by transaction name or by regular expression.",
                     "type": "multiple_choice_with_addition",
                     "placeholder": "all",
-                    "mandatory":  false,
+                    "mandatory": false,
                     "default_value": [],
                     "metrics": [
                         "slow_transactions",
@@ -5143,7 +5167,7 @@
                 "component": {
                     "name": "Project key",
                     "short_name": "project key",
-                    "help":  "The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.",
+                    "help": "The project key can be found by opening the project in SonarQube and looking at the bottom of the grey column on the right.",
                     "type": "string",
                     "mandatory": true,
                     "default_value": "",
