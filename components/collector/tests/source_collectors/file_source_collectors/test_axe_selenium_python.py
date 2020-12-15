@@ -86,6 +86,18 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1")
 
+    async def test_filter_by_tag_include(self):
+        """Test that violations can be filtered by tag."""
+        self.sources["source_id"]["parameters"]["tags_to_include"] = ["wcag2aa"]
+        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+
+    async def test_filter_by_tag_ignore(self):
+        """Test that violations can be filtered by tag."""
+        self.sources["source_id"]["parameters"]["tags_to_ignore"] = ["wcag2aa"]
+        response = await self.collect(self.metric, get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
+
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
         self.sources["source_id"]["parameters"]["url"] = f"{self.axe_json_url}.zip"

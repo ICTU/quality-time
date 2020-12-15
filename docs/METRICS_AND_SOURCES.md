@@ -101,6 +101,8 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Impact levels | Multiple choice | No | If provided, only count accessibility violations with the impact levels. |
 | Password for basic authentication | Password | No |  |
 | Private token | Password | No |  |
+| Tags to ignore (regular expressions or tags) | Multiple choice with addition | No | Tags to ignore can be specified by tag or by regular expression. |
+| Tags to include (regular expressions or tags) | Multiple choice with addition | No | Tags to include can be specified by tag or by regular expression. |
 | URL to an axe-selenium-python report in JSON format or to a zip with axe-selenium-python reports in JSON format | URL | Yes |  |
 | URL to an axe-selenium-python report in a human readable format | String | No | If provided, users clicking the source URL will visit this URL instead of the axe-selenium-report report in JSON format. |
 | Username for basic authentication | String | No |  |
