@@ -1,7 +1,7 @@
 """Metric data needed for notifications."""
 
 
-class MetricNotificationData:
+class MetricNotificationData:  # pylint: disable=too-few-public-methods
     """Handle metric data needed for notifications."""
 
     def __init__(self, metric, data_model):
