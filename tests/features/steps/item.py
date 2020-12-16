@@ -68,7 +68,7 @@ def change_item_attribute(context, item, attribute, value):
 
 def get_item(context, item):
     """Return the item instance of type item."""
-    item_instance = context.get("reports")
+    item_instance = context.get("reports") if item == "reports" else context.get(f"report/{context.uuid['report']}")
     if item != "reports":
         item_instance = [
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
@@ -98,7 +98,7 @@ def check_item_attribute(context, item, attribute, value):
 def check_item_does_not_exist(context, item):
     """Check that the item does not exist."""
     uuids = []
-    reports = context.get("reports")
+    reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("reports")
     for report in reports["reports"]:
         uuids.append(report["report_uuid"])
         uuids.extend(report["subjects"].keys())

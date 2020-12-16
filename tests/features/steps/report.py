@@ -45,3 +45,10 @@ def time_travel(context):
 def check_pdf(context):
     """Check the pdf."""
     assert_equal("application/pdf", context.response.headers["Content-Type"])
+
+
+@when("the client gets a non-existing report")
+def get_non_existing_report(context):
+    """Get a non-existing report."""
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.get(f"report/{report_uuid}")

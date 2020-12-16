@@ -64,17 +64,21 @@ Feature: report
       """
     Then the report title is "Imported report"
 
-  Scenario:
+  Scenario: time travel to the past, before the report existed
     When the client creates a report
     And the client enters a report date that's too old
     Then the report does not exist
 
-  Scenario:
+  Scenario: time travel to the future
     When the client creates a report
     And the client enters a future report date
     Then the report title is "New report"
 
-  Scenario:
+  Scenario: time travel to the past
     When the client creates a report
     And the client enters a report date that's not too old
     Then the report title is "New report"
+
+  Scenario: get non-existent report
+    When the client gets a non-existing report
+    Then the report does not exist
