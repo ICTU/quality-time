@@ -16,6 +16,10 @@ function get_reports(date) {
   return fetch_server_api('get', api_with_report_date('reports', date))
 }
 
+function get_report(report_uuid, date) {
+  return fetch_server_api('get', api_with_report_date(`report/${report_uuid}`, date))
+}
+
 function get_tag_report(tag, date) {
   return fetch_server_api('get', api_with_report_date(`tagreport/${tag}`, date))
 }
@@ -33,5 +37,5 @@ function get_report_pdf(report_uuid, query_string) {
 }
 
 export {
-  add_report, copy_report, delete_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute,
+  add_report, copy_report, delete_report, get_report, get_reports, get_report_pdf, get_tag_report, set_report_attribute,
   set_reports_attribute }

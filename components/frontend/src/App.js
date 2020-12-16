@@ -14,7 +14,7 @@ import { parse, stringify } from 'query-string';
 
 import { ReadOnlyContext } from './context/ReadOnly';
 import { get_datamodel } from './api/datamodel';
-import { get_reports, get_tag_report } from './api/report';
+import { get_report, get_reports, get_tag_report } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { isValidDate_YYYYMMDD, show_message } from './utils'
@@ -64,11 +64,30 @@ class App extends Component {
     }
     const report_date = this.report_date();
     const show_error = () => show_message("error", "Server unreachable", "Couldn't load data from the server. Please try again later.");
-    if (this.state.report_uuid.slice(0, 4) === "tag-") {
+    if (this.state.report_uuid === "") {
+      this.reload_reports(report_date, show_error)
+    } else if (this.state.report_uuid.slice(0, 4) === "tag-") {
       this.reload_tag_report(report_date, show_error);
     } else {
-      this.reload_reports(report_date, show_error)
+      this.reload_report(report_date, show_error)
     }
+  }
+
+  reload_report(report_date, show_error) {
+    Promise.all([get_datamodel(report_date), get_report(this.state.report_uuid, report_date)]).then(
+      ([data_model, reports]) => {
+        if (data_model.ok === false || reports.ok === false) {
+          show_error();
+        } else {
+          const now = new Date();
+          this.setState({
+            loading: false,
+            datamodel: data_model,
+            reports: reports.reports || [],
+            last_update: now
+          });
+        }
+      }).catch(show_error);
   }
 
   reload_tag_report(report_date, show_error) {

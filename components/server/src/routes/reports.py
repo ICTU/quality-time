@@ -13,7 +13,7 @@ from server_utilities.functions import report_date_time
 
 @bottle.get("/api/v3/reports")
 def get_reports(database: Database):
-    """Return the quality reports."""
+    """Return all the quality reports."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     overview = latest_reports_overview(database, date_time)

@@ -19,6 +19,21 @@ from server_utilities.functions import iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
 
+@bottle.get("/api/v3/report/<report_uuid>")
+def get_report(database: Database, report_uuid: ReportId):
+    """Return the quality report, including information about other reports needed for move/copy actions."""
+    date_time = report_date_time()
+    data_model = latest_datamodel(database, date_time)
+    reports = latest_reports(database, date_time)
+    for report in reports:
+        if report["report_uuid"] == report_uuid:
+            recent_measurements = recent_measurements_by_metric_uuid(database, date_time)
+            summarize_report(report, recent_measurements, data_model)
+            break
+    hide_credentials(data_model, *reports)
+    return dict(reports=reports)
+
+
 @bottle.post("/api/v3/report/import")
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""

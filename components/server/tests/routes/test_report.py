@@ -8,6 +8,7 @@ from unittest.mock import Mock, patch
 from routes.report import (
     delete_report,
     export_report_as_pdf,
+    get_report,
     get_tag_report,
     post_report_attribute,
     post_report_copy,
@@ -16,7 +17,7 @@ from routes.report import (
 )
 from server_utilities.type import ReportId
 
-from ..fixtures import JENNY, JOHN, REPORT_ID, SUBJECT_ID, create_report
+from ..fixtures import JENNY, JOHN, REPORT_ID, REPORT_ID2, SUBJECT_ID, create_report
 
 
 @patch("bottle.request")
@@ -68,11 +69,25 @@ class ReportTest(unittest.TestCase):
             _id="id",
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(metric_type=dict(name="Metric type")),
-            sources=dict(source_type=dict(name="Source type")),
+            sources=dict(source_type=dict(name="Source type", parameters={})),
         )
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
+
+    def test_get_report(self):
+        """Test that a report can be retrieved."""
+        self.assertEqual(REPORT_ID, get_report(self.database, REPORT_ID)["reports"][0]["report_uuid"])
+
+    def test_get_report_and_info_about_other_reports(self):
+        """Test that a report can be retrieved, and that other reports are also returned."""
+        self.database.reports.find.return_value.insert(0, dict(_id="id2", report_uuid=REPORT_ID2))
+        self.assertEqual(2, len(get_report(self.database, REPORT_ID)["reports"]))
+
+    def test_get_report_missing(self):
+        """Test that a report can be retrieved."""
+        self.database.reports.find.return_value = []
+        self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
 
     def test_add_report(self):
         """Test that a report can be added."""
