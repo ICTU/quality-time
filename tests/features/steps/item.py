@@ -68,7 +68,7 @@ def change_item_attribute(context, item, attribute, value):
 
 def get_item(context, item):
     """Return the item instance of type item."""
-    item_instance = context.get("reports")
+    item_instance = context.get("reports") if item == "reports" else context.get(f"report/{context.uuid['report']}")
     if item != "reports":
         item_instance = [
             report for report in item_instance["reports"] if report["report_uuid"] == context.uuid["report"]
