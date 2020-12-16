@@ -50,4 +50,5 @@ def check_pdf(context):
 @when("the client gets a non-existing report")
 def get_non_existing_report(context):
     """Get a non-existing report."""
-    context.get("report/report-does-not-exist")
+    context.uuid["report"] = report_uuid = "report-does-not-exist"
+    context.get(f"report/{report_uuid}")

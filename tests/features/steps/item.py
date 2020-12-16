@@ -98,7 +98,7 @@ def check_item_attribute(context, item, attribute, value):
 def check_item_does_not_exist(context, item):
     """Check that the item does not exist."""
     uuids = []
-    reports = context.get(f"report/{context.uuid['item']}") if item == "report" else context.get("reports")
+    reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("reports")
     for report in reports["reports"]:
         uuids.append(report["report_uuid"])
         uuids.extend(report["subjects"].keys())
