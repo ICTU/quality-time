@@ -282,6 +282,17 @@ class StrategiesTestCase(unittest.TestCase):
                 "red_metric",
                 str(time_since_status_change)))
 
+    def test_long_unchanged_status_already_notified(self):
+        """Test that metric is not notable if a notification has already been generated for the long status."""
+        time_since_status_change = datetime.datetime.fromisoformat(self.most_recent_measurement_seen) + \
+                                   datetime.timedelta(days=21, hours=1)
+        self.notable.already_notified.append("red_metric")
+        self.assertFalse(
+            self.notable.long_unchanged_status(
+                self.red_metric,
+                "red_metric",
+                str(time_since_status_change)))
+
     def test_too_long_unchanged_status(self):
         """Test that metric isn't notable if it's status has been the same for more than 3 weeks."""
         time_since_status_change = datetime.datetime.fromisoformat(self.most_recent_measurement_seen) + \
