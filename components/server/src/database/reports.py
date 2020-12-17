@@ -6,7 +6,7 @@ import pymongo
 from pymongo.database import Database
 
 from server_utilities.functions import iso_timestamp, unique
-from server_utilities.type import Change, MetricId, ReportId
+from server_utilities.type import Change, MetricId, ReportId, SubjectId
 
 
 # Sort order:
@@ -56,6 +56,15 @@ def latest_metric(database: Database, metric_uuid: MetricId):
     return None
 
 
+def metrics_of_subject(database: Database, subject_uuid: SubjectId) -> List[MetricId]:
+    """Return all metric uuid's for one subject, without the entities, except for the most recent one."""
+    report_filter: Dict = {f"subjects.{subject_uuid}": DOES_EXIST, "last": True}
+    projection: Dict = {"_id": False, f"subjects.{subject_uuid}.metrics": True}
+    report = database.reports.find_one(report_filter, projection=projection)
+
+    return list(report["subjects"][subject_uuid]["metrics"].keys())
+
+
 def insert_new_report(database: Database, *reports) -> Dict[str, Any]:
     """Insert one or more new reports in the reports collection."""
     _prepare_documents_for_insertion(*reports, last=True)
@@ -96,13 +105,19 @@ def changelog(database: Database, nr_changes: int, **uuids):
     delta_filter: Dict[str, Union[Dict, List]] = {"delta": DOES_EXIST}
     changes: List[Change] = []
     if not uuids:
-        changes.extend(database.reports_overviews.find(
-            filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes*2, projection=projection))
+        changes.extend(
+            database.reports_overviews.find(
+                filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes * 2, projection=projection
+            )
+        )
     old_report_delta_filter = {f"delta.{key}": value for key, value in uuids.items() if value}
     new_report_delta_filter = {"delta.uuids": {"$in": list(uuids.values())}}
     delta_filter["$or"] = [old_report_delta_filter, new_report_delta_filter]
-    changes.extend(database.reports.find(
-        filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes*2, projection=projection))
+    changes.extend(
+        database.reports.find(
+            filter=delta_filter, sort=TIMESTAMP_DESCENDING, limit=nr_changes * 2, projection=projection
+        )
+    )
     changes = sorted(changes, reverse=True, key=lambda change: cast(str, change["timestamp"]))
     # Weed out potential duplicates, because when a user moves items between reports both reports get the same delta
     return list(unique(changes, lambda change: cast(Dict[str, str], change["delta"])["description"]))[:nr_changes]
