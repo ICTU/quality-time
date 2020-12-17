@@ -74,6 +74,10 @@ class ReportTest(unittest.TestCase):
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
+        self.options = (
+            "emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&"
+            "pdf.margin.top=25&pdf.margin.bottom=25&pdf.margin.left=25&pdf.margin.right=25"
+        )
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
@@ -123,12 +127,8 @@ class ReportTest(unittest.TestCase):
         response.content = b"PDF"
         requests_get.return_value = response
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "report_uuid")))
-        options = (
-            "emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&pdf.margin.top=25&pdf.margin.bottom=25&"
-            "pdf.margin.left=25&pdf.margin.right=25"
-        )
         requests_get.assert_called_once_with(
-            f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{options}"
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{self.options}"
         )
 
     @patch("requests.get")
@@ -136,12 +136,8 @@ class ReportTest(unittest.TestCase):
         """Test that a PDF version of a tag report can be retrieved."""
         requests_get.return_value = Mock(content=b"PDF")
         self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security")))
-        options = (
-            "emulateScreenMedia=false&goto.timeout=60000&pdf.scale=0.7&pdf.margin.top=25&pdf.margin.bottom=25&"
-            "pdf.margin.left=25&pdf.margin.right=25"
-        )
         requests_get.assert_called_once_with(
-            f"http://renderer:9000/api/render?url=http%3A//www%3A80/tag-security&{options}"
+            f"http://renderer:9000/api/render?url=http%3A//www%3A80/tag-security&{self.options}"
         )
 
     def test_delete_report(self):
