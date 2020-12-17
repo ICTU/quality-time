@@ -5,7 +5,7 @@ import json
 import pathlib
 import unittest
 
-from strategies.changed_status import get_notable_metrics_from_json, status_changed
+from strategies.changed_status import NotableEvents
 
 
 class StrategiesTestCase(unittest.TestCase):
@@ -26,9 +26,15 @@ class StrategiesTestCase(unittest.TestCase):
         self.new_timestamp = "2020-01-01T00:23:59+59:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
+        self.notable = NotableEvents(self.data_model)
+        count = dict(status="target_not_met", value="10")
+        self.red_metric = self.metric(
+            status="target_not_met",
+            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
+            status_start=str(datetime.datetime.fromisoformat(self.most_recent_measurement_seen)))
 
     @staticmethod
-    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None):
+    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
         """Create a metric."""
         return dict(
             name=name,
@@ -37,12 +43,13 @@ class StrategiesTestCase(unittest.TestCase):
             type="tests",
             unit="units",
             recent_measurements=recent_measurements or [],
+            status_start=status_start or ""
         )
 
     def test_no_reports(self):
         """Test that there is nothing to notify when there are no reports."""
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, dict(reports=[]), self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(dict(reports=[]), self.most_recent_measurement_seen)
         )
 
     def test_no_red_metrics(self):
@@ -55,21 +62,16 @@ class StrategiesTestCase(unittest.TestCase):
         report1 = dict(report_uuid="report1", title="report_title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(reports_json, self.most_recent_measurement_seen)
         )
 
     def test_old_red_metric(self):
         """Test that there is nothing to notify if the red metric was already red."""
-        count = dict(status="target_not_met", value="10")
-        red_metric = self.metric(
-            status="target_not_met",
-            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
-        )
-        subject1 = dict(metrics=dict(metric1=red_metric))
+        subject1 = dict(metrics=dict(metric1=self.red_metric))
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(reports_json, self.most_recent_measurement_seen)
         )
 
     def test_red_metric_without_recent_measurements(self):
@@ -80,7 +82,7 @@ class StrategiesTestCase(unittest.TestCase):
         report1 = dict(report_uuid="report1", title="Title", subjects=dict(subject1=subject1))
         reports_json = dict(reports=[report1])
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, reports_json, self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(reports_json, self.most_recent_measurement_seen)
         )
 
     def test_new_red_metric(self):
@@ -102,9 +104,8 @@ class StrategiesTestCase(unittest.TestCase):
             notification_destinations=dict(uuid1=dict(name="destination1")),
         )
         reports_json = dict(reports=[report1])
-        result = get_notable_metrics_from_json(self.data_model,
-                                               reports_json,
-                                               self.most_recent_measurement_seen)
+        result = self.notable.get_notable_metrics_from_json(reports_json,
+                                                            self.most_recent_measurement_seen)
         self.assertEqual(
             ["metric1",
              "red (target not met)"],
@@ -133,9 +134,8 @@ class StrategiesTestCase(unittest.TestCase):
             notification_destinations=dict(name="destination1"),
         )
         reports_json = dict(reports=[report1])
-        result = get_notable_metrics_from_json(self.data_model,
-                                               reports_json,
-                                               self.most_recent_measurement_seen)[0].metrics
+        result = self.notable.get_notable_metrics_from_json(reports_json,
+                                                            self.most_recent_measurement_seen)[0].metrics
         self.assertEqual(
             ["Tests"],
             [result[0].metric_name],
@@ -148,7 +148,7 @@ class StrategiesTestCase(unittest.TestCase):
             recent_measurements=[
                 dict(start=self.new_timestamp, count=dict(status="target_met")),
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
-        self.assertTrue(status_changed(metric, self.most_recent_measurement_seen))
+        self.assertTrue(self.notable.status_changed(metric, self.most_recent_measurement_seen))
 
     def test_new_measurement_same_status(self):
         """Test that a metric that was already white isn't added."""
@@ -157,7 +157,7 @@ class StrategiesTestCase(unittest.TestCase):
             recent_measurements=[
                 dict(start=self.new_timestamp, count=dict(status=self.white_metric_status)),
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
-        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+        self.assertFalse(self.notable.status_changed(metric, self.most_recent_measurement_seen))
 
     def test_new_measurement_different_status_outside_time_period(self):
         """Test that a metric that was already white isn't added."""
@@ -167,19 +167,19 @@ class StrategiesTestCase(unittest.TestCase):
             recent_measurements=[
                 dict(start=self.old_timestamp, count=dict(status=self.white_metric_status)),
                 dict(start=oldest_timestamp, count=dict(status="target_not_met"))])
-        self.assertFalse(status_changed(metric, self.new_timestamp))
+        self.assertFalse(self.notable.status_changed(metric, self.new_timestamp))
 
     def test_no_change_due_to_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
         metric = self.metric(
             status=self.white_metric_status,
             recent_measurements=[dict(start=self.old_timestamp, count=dict(status=self.white_metric_status))])
-        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+        self.assertFalse(self.notable.status_changed(metric, self.most_recent_measurement_seen))
 
     def test_no_change_due_to_no_measurements(self):
         """Test that metrics without measurements (and therefore no changes in value) aren't added."""
         metric = self.metric(status=self.white_metric_status)
-        self.assertFalse(status_changed(metric, self.most_recent_measurement_seen))
+        self.assertFalse(self.notable.status_changed(metric, self.most_recent_measurement_seen))
 
     def test_multiple_reports_with_same_destination(self):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
@@ -220,8 +220,8 @@ class StrategiesTestCase(unittest.TestCase):
         )
         result = []
         reports_json = dict(reports=[report1, report2])
-        for notification in get_notable_metrics_from_json(
-            self.data_model, reports_json, self.most_recent_measurement_seen):
+        for notification in self.notable.get_notable_metrics_from_json(
+            reports_json, self.most_recent_measurement_seen):
             result.append(notification.metrics)
         self.assertEqual(
             ["metric1", "metric2"],
@@ -250,7 +250,7 @@ class StrategiesTestCase(unittest.TestCase):
         )
         report_json = dict(reports=[report])
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, report_json, self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(report_json, self.most_recent_measurement_seen)
         )
 
     def test_no_notification_destinations_in_json(self):
@@ -269,5 +269,35 @@ class StrategiesTestCase(unittest.TestCase):
         report = dict(title="Title", report_uuid="report1", teams_webhook="webhook", subjects=dict(subject1=subject1))
         report_json = dict(reports=[report])
         self.assertEqual(
-            [], get_notable_metrics_from_json(self.data_model, report_json, self.most_recent_measurement_seen)
+            [], self.notable.get_notable_metrics_from_json(report_json, self.most_recent_measurement_seen)
         )
+
+    def test_long_unchanged_status(self):
+        """Test that metric is notable if it's status has been the same for 3 weeks."""
+        time_since_status_change = datetime.datetime.fromisoformat(self.most_recent_measurement_seen) + \
+                                   datetime.timedelta(days=21, hours=1)
+        self.assertTrue(
+            self.notable.long_unchanged_status(
+                self.red_metric,
+                "red_metric",
+                str(time_since_status_change)))
+
+    def test_too_long_unchanged_status(self):
+        """Test that metric isn't notable if it's status has been the same for more than 3 weeks."""
+        time_since_status_change = datetime.datetime.fromisoformat(self.most_recent_measurement_seen) + \
+                                   datetime.timedelta(days=24, hours=1)
+        self.assertFalse(
+            self.notable.long_unchanged_status(
+                self.red_metric,
+                "red_metric",
+                str(time_since_status_change)))
+
+    def test_short_unchanged_status(self):
+        """Test that metric isn't notable if it's current status has been different in the last 3 weeks."""
+        time_since_status_change = datetime.datetime.fromisoformat(self.most_recent_measurement_seen) + \
+                    datetime.timedelta(days=20, hours=23)
+        self.assertFalse(
+            self.notable.long_unchanged_status(
+                self.red_metric,
+                "red_metric",
+                str(time_since_status_change)))

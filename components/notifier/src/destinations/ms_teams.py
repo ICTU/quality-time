@@ -11,9 +11,10 @@ def build_notification_text(notification: Notification) -> str:
     """Create and format the contents of the notification."""
     nr_changed = len(notification.metrics)
     plural_s = "s" if nr_changed > 1 else ""
+    plural_are = "are" if nr_changed > 1 else "is"
     report_link = f'[{notification.report_title}]({notification.url})'
 
-    result = f'{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n'
+    result = f'{report_link} has {nr_changed} metric{plural_s} that {plural_are} notable:\n\n'
     for metric_notification_data in notification.metrics:
         name = metric_notification_data.metric_name
         new_status = metric_notification_data.new_metric_status
@@ -28,7 +29,7 @@ def build_notification_text(notification: Notification) -> str:
                       f'{new_status}, was {metric_notification_data.old_metric_status}. ' \
                       f'Value is {new_value}{unit}, was {old_value}{unit}.\n'
         else:
-            result += f'{name} has been {new_status} for three weeks. Value: {new_value} {unit}.'
+            result += f'* {name} has been {new_status} for three weeks. Value: {new_value}{unit}.\n'
     return result
 
 

@@ -11,7 +11,7 @@ import aiohttp
 
 from notifier_utilities.type import JSON, URL
 from outbox import Outbox
-from strategies.changed_status import get_notable_metrics_from_json
+from strategies.changed_status import NotableEvents
 
 
 async def notify(log_level: int = None) -> NoReturn:
@@ -26,6 +26,7 @@ async def notify(log_level: int = None) -> NoReturn:
     data_model = await retrieve_data_model(api_version)
     most_recent_measurement_seen = datetime.max.isoformat() + "+00:00"
     outbox = Outbox()
+    notable = NotableEvents(data_model)
     while True:
         record_health()
         logging.info("Determining notifications...")
@@ -36,7 +37,7 @@ async def notify(log_level: int = None) -> NoReturn:
         except Exception as reason:  # pylint: disable=broad-except
             logging.error("Could not get reports from %s: %s", reports_url, reason)
             json = dict(reports=[])
-        notifications = get_notable_metrics_from_json(data_model, json, most_recent_measurement_seen)
+        notifications = notable.get_notable_metrics_from_json(json, most_recent_measurement_seen)
         outbox.add_notifications(notifications)
         outbox.send_notifications()
         most_recent_measurement_seen = most_recent_measurement_timestamp(json)
