@@ -91,9 +91,9 @@ def _prepare_documents_for_insertion(
 ) -> None:
     """Prepare the documents for insertion in the database by removing any ids and setting the extra attributes."""
     now = iso_timestamp()
-    user = sessions.user(database)
+    user = sessions.user(database) or {}
     email = user.get("email", "")
-    username = user.get("user", "An unknown user")
+    username = user.get("user", "An operator")
     description = delta_description.format(user=username)
     for document, uuids in documents:
         if "_id" in document:
