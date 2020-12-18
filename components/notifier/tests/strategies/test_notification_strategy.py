@@ -358,7 +358,7 @@ class CheckIfMetricIsNotableTestCase(unittest.TestCase):
         )
 
     def test_metric_not_notable_if_no_recent_measurements(self):
-        """."""
+        """Test that a metric is not notable if it doesnt contain any recent measurements."""
         self.assertIsNone(
             self.notable.check_if_metric_is_notable(
                 self.red_metric, self.metric_uuid, datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())
@@ -366,7 +366,7 @@ class CheckIfMetricIsNotableTestCase(unittest.TestCase):
         )
 
     def test_metric_is_notable_because_status_changed(self):
-        """."""
+        """Test that a metric is notable because the status changed."""
         metric = self.metric(
             recent_measurements=[
                 dict(start=self.old_timestamp, end=self.old_timestamp, count=dict(status="target_not_met", value="10")),
