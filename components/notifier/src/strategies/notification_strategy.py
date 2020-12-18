@@ -10,7 +10,7 @@ class NotableEvents:
     """Handle notification contents and status."""
 
     def __init__(self, data_model):
-        """."""
+        """initialise already notified list and store data model."""
         self.already_notified = []
         self.data_model = data_model
 
