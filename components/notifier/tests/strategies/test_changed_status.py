@@ -337,6 +337,24 @@ class CheckIfMetricIsNotableTestCase(unittest.TestCase):
                 datetime.datetime.fromisoformat(
                     datetime.datetime.min.isoformat())))
         self.notable = NotableEvents(self.data_model)
+        self.metric_with_recent_measurements = self.metric(
+            recent_measurements=[
+                dict(
+                    start=self.old_timestamp,
+                    end=self.old_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="10")),
+                dict(
+                    start=self.old_timestamp,
+                    end=self.new_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="0",
+                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
+            ],
+            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
+        )
 
     @staticmethod
     def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
@@ -393,28 +411,10 @@ class CheckIfMetricIsNotableTestCase(unittest.TestCase):
 
     def test_metric_is_notable_because_status_unchanged_3weeks(self):
         """Test that a metric is notable for long unchanged status."""
-        metric = self.metric(
-            recent_measurements=[
-                dict(
-                    start=self.old_timestamp,
-                    end=self.old_timestamp,
-                    count=dict(
-                        status="target_not_met",
-                        value="10")),
-                dict(
-                    start=self.old_timestamp,
-                    end=self.new_timestamp,
-                    count=dict(
-                        status="target_not_met",
-                        value="0",
-                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
-            ],
-            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
-        )
         self.assertEqual(
             "status_long_unchanged",
             self.notable.check_if_metric_is_notable(
-                metric,
+                self.metric_with_recent_measurements,
                 self.metric_uuid,
                 str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()) +
                                                 datetime.timedelta(days=21, hours=1))))
@@ -422,28 +422,10 @@ class CheckIfMetricIsNotableTestCase(unittest.TestCase):
 
     def test_metric_not_notable_if_already_notified(self):
         """Test that a metric isn't notable for long unchanged status if a notification has already been generated."""
-        metric = self.metric(
-            recent_measurements=[
-                dict(
-                    start=self.old_timestamp,
-                    end=self.old_timestamp,
-                    count=dict(
-                        status="target_not_met",
-                        value="10")),
-                dict(
-                    start=self.old_timestamp,
-                    end=self.new_timestamp,
-                    count=dict(
-                        status="target_not_met",
-                        value="0",
-                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
-            ],
-            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
-        )
         self.notable.already_notified.append(self.metric_uuid)
         self.assertIsNone(
             self.notable.check_if_metric_is_notable(
-                metric,
+                self.metric_with_recent_measurements,
                 self.metric_uuid,
                 str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()) +
                                                 datetime.timedelta(days=21, hours=1))))
