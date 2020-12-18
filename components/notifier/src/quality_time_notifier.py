@@ -11,7 +11,7 @@ import aiohttp
 
 from notifier_utilities.type import JSON, URL
 from outbox import Outbox
-from strategies.NotificationStrategy import NotableEvents
+from strategies.notification_strategy import NotableEvents
 
 
 async def notify(log_level: int = None) -> NoReturn:

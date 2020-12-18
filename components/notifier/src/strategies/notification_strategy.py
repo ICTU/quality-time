@@ -31,10 +31,12 @@ class NotableEvents:
 
     def check_if_metric_is_notable(self, metric, metric_uuid, most_recent_measurement_seen) -> Optional[str]:
         """Determine whether a notification should be generated for the given metric."""
-        if len(metric["recent_measurements"]) > 0 and \
-                "status_start" in metric["recent_measurements"][-1][metric["scale"]] and \
-                self.long_unchanged_status(metric, metric_uuid, most_recent_measurement_seen):
-                return "status_long_unchanged"
+        if (
+            len(metric["recent_measurements"]) > 0
+            and "status_start" in metric["recent_measurements"][-1][metric["scale"]]
+            and self.long_unchanged_status(metric, metric_uuid, most_recent_measurement_seen)
+        ):
+            return "status_long_unchanged"
         if self.status_changed(metric, most_recent_measurement_seen):
             if self.already_notified.__contains__(metric_uuid):
                 self.already_notified.remove(metric_uuid)
@@ -57,8 +59,9 @@ class NotableEvents:
         status_start = datetime.fromisoformat(metric["status_start"])
         datetime_most_recent_measurement_seen = datetime.fromisoformat(most_recent_measurement_seen)
         difference = datetime_most_recent_measurement_seen - status_start
-        if timedelta(days=21).total_seconds() < difference.total_seconds() < timedelta(days=22).total_seconds() and \
-                not self.already_notified.__contains__(metric_uuid):
+        if timedelta(days=21).total_seconds() < difference.total_seconds() < timedelta(
+            days=22
+        ).total_seconds() and not self.already_notified.__contains__(metric_uuid):
             self.already_notified.append(metric_uuid)
             return True
         return False
