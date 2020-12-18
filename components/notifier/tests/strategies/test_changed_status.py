@@ -5,7 +5,7 @@ import json
 import pathlib
 import unittest
 
-from strategies.changed_status import NotableEvents
+from strategies.NotificationStrategy import NotableEvents
 
 
 class StrategiesTestCase(unittest.TestCase):
