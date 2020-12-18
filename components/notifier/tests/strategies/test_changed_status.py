@@ -312,3 +312,138 @@ class StrategiesTestCase(unittest.TestCase):
                 self.red_metric,
                 "red_metric",
                 str(time_since_status_change)))
+
+
+class CheckIfMetricIsNotableTestCase(unittest.TestCase):
+    """Testcases for the check_if_metric_is_notable method."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Provide the data_model to the class."""
+        module_dir = pathlib.Path(__file__).resolve().parent
+        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
+        with data_model_path.open() as json_data_model:
+            cls.data_model = json.load(json_data_model)
+
+    def setUp(self):
+        """Set variables for the tests."""
+        self.old_timestamp = "2019-01-01T00:23:59+59:00"
+        self.new_timestamp = "2020-01-01T00:23:59+59:00"
+        self.metric_uuid = "metric_uuid"
+        self.red_metric = self.metric(
+            status="target_not_met",
+            recent_measurements=[],
+            status_start=str(
+                datetime.datetime.fromisoformat(
+                    datetime.datetime.min.isoformat())))
+        self.notable = NotableEvents(self.data_model)
+
+    @staticmethod
+    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
+        """Create a metric."""
+        return dict(
+            name=name,
+            scale=scale,
+            status=status,
+            type="tests",
+            unit="units",
+            recent_measurements=recent_measurements or [],
+            status_start=status_start or ""
+        )
+
+    def test_metric_not_notable_if_no_recent_measurements(self):
+        """."""
+        self.assertIsNone(
+            self.notable.check_if_metric_is_notable(
+                self.red_metric,
+                self.metric_uuid,
+                datetime.datetime.fromisoformat(
+                    datetime.datetime.min.isoformat())))
+
+    def test_metric_is_notable_because_status_changed(self):
+        """."""
+        metric = self.metric(
+            recent_measurements=[
+                dict(start=self.old_timestamp, end=self.old_timestamp, count=dict(status="target_not_met", value="10")),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=dict(status="target_met", value="0"))
+            ]
+        )
+        self.assertEqual(
+            "status_changed",
+            self.notable.check_if_metric_is_notable(
+                metric,
+                self.metric_uuid,
+                str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
+
+
+    def test_metric_already_notified_is_removed_because_status_changed(self):
+        """Test that the metric is removed from already notified when the status changes."""
+        metric = self.metric(
+            recent_measurements=[
+                dict(start=self.old_timestamp, end=self.old_timestamp, count=dict(status="target_not_met", value="10")),
+                dict(start=self.old_timestamp, end=self.new_timestamp, count=dict(status="target_met", value="0"))
+            ]
+        )
+        self.notable.already_notified.append(self.metric_uuid)
+        self.notable.check_if_metric_is_notable(
+            metric,
+            self.metric_uuid,
+            str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())))
+        self.assertEqual(self.notable.already_notified, [])
+
+    def test_metric_is_notable_because_status_unchanged_3weeks(self):
+        """Test that a metric is notable for long unchanged status."""
+        metric = self.metric(
+            recent_measurements=[
+                dict(
+                    start=self.old_timestamp,
+                    end=self.old_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="10")),
+                dict(
+                    start=self.old_timestamp,
+                    end=self.new_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="0",
+                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
+            ],
+            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
+        )
+        self.assertEqual(
+            "status_long_unchanged",
+            self.notable.check_if_metric_is_notable(
+                metric,
+                self.metric_uuid,
+                str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()) +
+                                                datetime.timedelta(days=21, hours=1))))
+
+
+    def test_metric_not_notable_if_already_notified(self):
+        """Test that a metric isn't notable for long unchanged status if a notification has already been generated."""
+        metric = self.metric(
+            recent_measurements=[
+                dict(
+                    start=self.old_timestamp,
+                    end=self.old_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="10")),
+                dict(
+                    start=self.old_timestamp,
+                    end=self.new_timestamp,
+                    count=dict(
+                        status="target_not_met",
+                        value="0",
+                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))))
+            ],
+            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
+        )
+        self.notable.already_notified.append(self.metric_uuid)
+        self.assertIsNone(
+            self.notable.check_if_metric_is_notable(
+                metric,
+                self.metric_uuid,
+                str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()) +
+                                                datetime.timedelta(days=21, hours=1))))
