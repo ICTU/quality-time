@@ -23,9 +23,7 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     data.report["subjects"][(subject_uuid := uuid())] = default_subject_attributes(database)
     delta_description = f"{{user}} created a new subject in report '{data.report_name}'."
     uuids = [report_uuid, subject_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
-    result["new_subject_uuid"] = subject_uuid
-    return result
+    return insert_new_report(database, delta_description, (data.report, uuids))
 
 
 @bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>")
@@ -41,9 +39,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
         f"'{source.report_name}' to report '{target.report_name}'."
     )
     uuids = [target.report_uuid, subject_copy_uuid]
-    result = insert_new_report(database, delta_description, (target.report, uuids))
-    result["new_subject_uuid"] = subject_copy_uuid
-    return result
+    return insert_new_report(database, delta_description, (target.report, uuids))
 
 
 @bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>")

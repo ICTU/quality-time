@@ -38,9 +38,7 @@ def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
     report["delta"] = dict(uuids=[report["report_uuid"]])
-    result = import_json_report(database, report)
-    result["new_report_uuid"] = report["report_uuid"]
-    return result
+    return import_json_report(database, report)
 
 
 @bottle.post("/api/v3/report/new")
@@ -49,9 +47,7 @@ def post_report_new(database: Database):
     report_uuid = uuid()
     delta_description = "{user} created a new report."
     report = dict(report_uuid=report_uuid, title="New report", subjects={})
-    result = insert_new_report(database, delta_description, (report, [report_uuid]))
-    result["new_report_uuid"] = report_uuid
-    return result
+    return insert_new_report(database, delta_description, (report, [report_uuid]))
 
 
 @bottle.post("/api/v3/report/<report_uuid>/copy")
@@ -63,9 +59,7 @@ def post_report_copy(report_uuid: ReportId, database: Database):
     report_copy = copy_report(data.report, data.datamodel)
     delta_description = f"{{user}} copied the report '{data.report_name}'."
     uuids = [report_uuid, report_copy["report_uuid"]]
-    result = insert_new_report(database, delta_description, (report_copy, uuids))
-    result["new_report_uuid"] = report_copy["report_uuid"]
-    return result
+    return insert_new_report(database, delta_description, (report_copy, uuids))
 
 
 @bottle.get("/api/v3/report/<report_uuid>/pdf")

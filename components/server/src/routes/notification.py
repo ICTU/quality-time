@@ -21,9 +21,7 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     )
     delta_description = f"{{user}} created a new destination for notifications in report '{data.report_name}'."
     uuids = [report_uuid, notification_destination_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
-    result["new_destination_uuid"] = notification_destination_uuid
-    return result
+    return insert_new_report(database, delta_description, (data.report, uuids))
 
 
 @bottle.delete("/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>")

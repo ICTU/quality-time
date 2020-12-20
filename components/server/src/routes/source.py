@@ -31,9 +31,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
         f"'{data.subject_name}' in report '{data.report_name}'."
     )
     uuids = [data.report_uuid, data.subject_uuid, metric_uuid, source_uuid]
-    result = insert_new_report(database, delta_description, (data.report, uuids))
-    result["new_source_uuid"] = source_uuid
-    return result
+    return insert_new_report(database, delta_description, (data.report, uuids))
 
 
 @bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>")
@@ -50,9 +48,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
         f"'{target.subject_name}' in report '{target.report_name}'."
     )
     uuids = [target.report_uuid, target.subject_uuid, target.metric_uuid, source_copy_uuid]
-    result = insert_new_report(database, delta_description, (target.report, uuids))
-    result["new_source_uuid"] = source_copy_uuid
-    return result
+    return insert_new_report(database, delta_description, (target.report, uuids))
 
 
 @bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>")
