@@ -5,7 +5,7 @@ from behave import given, when
 
 @given('a notification destination')
 @when('the client adds a new notification destination')
-def add_notitfication_destination(context):
+def add_notification_destination(context):
     """Add a notification destination to the report."""
     report_uuid = context.uuid["report"]
     context.uuid["notification_destination"] = context.post(
