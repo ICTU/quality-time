@@ -19,6 +19,19 @@ class Base(unittest.TestCase):
         with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
 
+    @staticmethod
+    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
+        """Create a metric."""
+        return dict(
+            name=name,
+            scale=scale,
+            status=status,
+            type="tests",
+            unit="units",
+            recent_measurements=recent_measurements or [],
+            status_start=status_start or "",
+        )
+
 
 class StrategiesTestCase(Base):
     """Unit tests for the 'amount of new red metrics per report' notification strategy."""
@@ -36,19 +49,6 @@ class StrategiesTestCase(Base):
             status="target_not_met",
             recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
             status_start=str(datetime.datetime.fromisoformat(self.most_recent_measurement_seen)),
-        )
-
-    @staticmethod
-    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
-        """Create a metric."""
-        return dict(
-            name=name,
-            scale=scale,
-            status=status,
-            type="tests",
-            unit="units",
-            recent_measurements=recent_measurements or [],
-            status_start=status_start or "",
         )
 
     def test_no_reports(self):
@@ -368,19 +368,6 @@ class CheckIfMetricIsNotableTestCase(Base):
                 ),
             ],
             status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())),
-        )
-
-    @staticmethod
-    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
-        """Create a metric."""
-        return dict(
-            name=name,
-            scale=scale,
-            status=status,
-            type="tests",
-            unit="units",
-            recent_measurements=recent_measurements or [],
-            status_start=status_start or "",
         )
 
     def test_metric_not_notable_if_no_recent_measurements(self):
