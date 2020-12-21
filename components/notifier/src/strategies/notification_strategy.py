@@ -6,7 +6,7 @@ from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
 
 
-class NotableEvents:
+class NotificationFinder:
     """Handle notification contents and status."""
 
     def __init__(self, data_model):
@@ -14,14 +14,14 @@ class NotableEvents:
         self.already_notified = []
         self.data_model = data_model
 
-    def get_notable_metrics_from_json(self, json, most_recent_measurement_seen: str) -> List[Notification]:
+    def get_notifications(self, json, most_recent_measurement_seen: str) -> List[Notification]:
         """Return the reports that have a webhook and metrics that require notifying."""
         notifications = []
         for report in json["reports"]:
             notable_metrics = []
             for subject in report["subjects"].values():
                 for metric_uuid, metric in subject["metrics"].items():
-                    notable = self.check_if_metric_is_notable(metric, metric_uuid, most_recent_measurement_seen)
+                    notable = self.get_notification(metric, metric_uuid, most_recent_measurement_seen)
                     if notable:
                         notable_metrics.append(MetricNotificationData(metric, self.data_model, notable))
             if notable_metrics:
@@ -29,7 +29,7 @@ class NotableEvents:
                     notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
         return notifications
 
-    def check_if_metric_is_notable(self, metric, metric_uuid, most_recent_measurement_seen) -> Optional[str]:
+    def get_notification(self, metric, metric_uuid, most_recent_measurement_seen) -> Optional[str]:
         """Determine whether a notification should be generated for the given metric."""
         if (
             len(metric["recent_measurements"]) > 0
@@ -55,7 +55,7 @@ class NotableEvents:
         return bool(metric_had_other_status and change_was_recent)
 
     def long_unchanged_status(self, metric, metric_uuid, most_recent_measurement_seen: str) -> bool:
-        """Determine if a metric has been red for 3 weeks."""
+        """Determine if a metric has had the same status for 3 weeks."""
         status_start = datetime.fromisoformat(metric["status_start"])
         datetime_most_recent_measurement_seen = datetime.fromisoformat(most_recent_measurement_seen)
         difference = datetime_most_recent_measurement_seen - status_start
