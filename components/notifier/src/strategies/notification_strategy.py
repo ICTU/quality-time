@@ -59,9 +59,7 @@ class NotificationFinder:
         status_start = datetime.fromisoformat(metric["status_start"])
         datetime_most_recent_measurement_seen = datetime.fromisoformat(most_recent_measurement_seen)
         difference = datetime_most_recent_measurement_seen - status_start
-        if timedelta(days=21).total_seconds() < difference.total_seconds() < timedelta(
-            days=22
-        ).total_seconds() and not self.already_notified.__contains__(metric_uuid):
+        if timedelta(days=21) < difference < timedelta(days=22) and metric_uuid not in self.already_notified:
             self.already_notified.append(metric_uuid)
             return True
         return False
