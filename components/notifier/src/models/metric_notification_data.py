@@ -4,7 +4,7 @@
 class MetricNotificationData:  # pylint: disable=too-few-public-methods
     """Handle metric data needed for notifications."""
 
-    def __init__(self, metric, data_model, reason):
+    def __init__(self, metric, data_model, reason: str) -> None:
         """Initialise the Notification with metric data."""
         recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
