@@ -8,8 +8,8 @@ import unittest
 from strategies.notification_strategy import NotificationFinder
 
 
-class StrategiesTestCase(unittest.TestCase):
-    """Unit tests for the 'amount of new red metrics per report' notification strategy."""
+class Base(unittest.TestCase):
+    """Base data needed by the other test classes."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -18,6 +18,10 @@ class StrategiesTestCase(unittest.TestCase):
         data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
         with data_model_path.open() as json_data_model:
             cls.data_model = json.load(json_data_model)
+
+
+class StrategiesTestCase(Base):
+    """Unit tests for the 'amount of new red metrics per report' notification strategy."""
 
     def setUp(self):
         """Set variables for the other testcases."""
@@ -269,22 +273,14 @@ class StrategiesTestCase(unittest.TestCase):
         self.assertEqual([], self.notification_finder.get_notifications(report_json, self.most_recent_measurement_seen))
 
 
-class LongUnchangedTestCase(unittest.TestCase):
+class LongUnchangedTestCase(Base):
     """Unit tests for the 'status long unchanged' notification strategy."""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Provide the data_model to the class."""
-        module_dir = pathlib.Path(__file__).resolve().parent
-        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
-        with data_model_path.open() as json_data_model:
-            cls.data_model = json.load(json_data_model)
 
     def setUp(self):
         """."""
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
-        self.old_timestamp = "2019-01-01T00:23:59+59:00"
-        self.new_timestamp = "2020-01-01T00:23:59+59:00"
+        self.old_timestamp = "2019-02-01T00:23:59+59:00"
+        self.new_timestamp = "2020-02-01T00:23:59+59:00"
         self.notification_finder = NotificationFinder(self.data_model)
         count = dict(status="target_not_met", value="34")
         self.red_metric = self.metric(
@@ -344,21 +340,13 @@ class LongUnchangedTestCase(unittest.TestCase):
         )
 
 
-class CheckIfMetricIsNotableTestCase(unittest.TestCase):
+class CheckIfMetricIsNotableTestCase(Base):
     """Testcases for the check_if_metric_is_notable method."""
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        """Provide the data_model to the class."""
-        module_dir = pathlib.Path(__file__).resolve().parent
-        data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
-        with data_model_path.open() as json_data_model:
-            cls.data_model = json.load(json_data_model)
 
     def setUp(self):
         """Set variables for the tests."""
-        self.old_timestamp = "2019-01-01T00:23:59+59:00"
-        self.new_timestamp = "2020-01-01T00:23:59+59:00"
+        self.old_timestamp = "2019-03-01T00:23:59+59:00"
+        self.new_timestamp = "2020-03-01T00:23:59+59:00"
         self.metric_uuid = "metric_uuid"
         self.red_metric = self.metric(
             status="target_not_met",
