@@ -34,12 +34,16 @@ function AttributesRow(props) {
         <Grid.Row columns={2}>
             <Grid.Column>
                 <SourceType
+                    datamodel={props.datamodel}
+                    metric_type={props.metric_type} 
+                    set_source_attribute={(a, v) => set_source_attribute(props.source_uuid, a, v, props.reload)} 
+                    source_uuid={props.source_uuid}
                     source_type={props.source.type}
-                    metric_type={props.metric_type} datamodel={props.datamodel}
-                    set_source_attribute={(a, v) => set_source_attribute(props.source_uuid, a, v, props.reload)} />
+                />
             </Grid.Column>
             <Grid.Column>
                 <StringInput
+                    id="source-name"
                     label="Source name"
                     placeholder={props.source_type.name}
                     set_value={(value) => set_source_attribute(props.source_uuid, "name", value, props.reload)}

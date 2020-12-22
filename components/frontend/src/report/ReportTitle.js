@@ -13,6 +13,7 @@ function ReportAttributesRow(props) {
         <Grid.Row columns={2}>
             <Grid.Column>
                 <StringInput
+                    id="report-title"
                     label="Report title"
                     set_value={(value) => set_report_attribute(props.report_uuid, "title", value, props.reload)}
                     value={props.title}
@@ -20,6 +21,7 @@ function ReportAttributesRow(props) {
             </Grid.Column>
             <Grid.Column>
                 <StringInput
+                    id="report-subtitle"
                     label="Report subtitle"
                     set_value={(value) => set_report_attribute(props.report_uuid, "subtitle", value, props.reload)}
                     value={props.subtitle}
