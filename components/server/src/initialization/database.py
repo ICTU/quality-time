@@ -28,6 +28,7 @@ def init_database() -> Database:  # pragma: no cover-behave
         import_example_reports(database)
     add_last_flag_to_reports(database)
     rename_ready_user_story_points_metric(database)
+    rename_teams_webhook_notification_destination(database)
     return database
 
 
@@ -75,11 +76,12 @@ def rename_teams_webhook_notification_destination(database: Database) -> None:
     reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
     for report in reports:
         changed = False
-        for notification_destination in report["notification_destination"]:
-            if "teams_webhook" in notification_destination:
-                notification_destination["webhook"] = notification_destination.pop("teams_webhook")
-                changed = True
-        if changed:
-            report_id = report["_id"]
-            del report["_id"]
-            database.reports.replace_one({"_id": report_id}, report)
+        if "notification_destinations" in report:
+            for notification_destination in report["notification_destinations"].values():
+                if "teams_webhook" in notification_destination:
+                    notification_destination["webhook"] = notification_destination.pop("teams_webhook")
+                    changed = True
+            if changed:
+                report_id = report["_id"]
+                del report["_id"]
+                database.reports.replace_one({"_id": report_id}, report)

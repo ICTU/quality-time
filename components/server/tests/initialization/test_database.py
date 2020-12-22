@@ -72,17 +72,59 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.reports.find.return_value = [
             {"_id": "1", "subjects": {}},
             {"_id": "2", "subjects": {"subject1": {"metrics": {}}}},
-            {"_id": "3", "subjects": {
-                "subject2": {
-                    "metrics": {
-                        "metric1": {"type": "violations"},
-                        "metric2": {"type": "ready_user_story_points"},
-                        "metric3": {"type": "ready_user_story_points", "name": "Don't change the name"}}}}}]
+            {
+                "_id": "3",
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "violations"},
+                            "metric2": {"type": "ready_user_story_points"},
+                            "metric3": {"type": "ready_user_story_points", "name": "Don't change the name"},
+                        }
+                    }
+                },
+            },
+        ]
         self.init_database("{}")
         self.database.reports.replace_one.assert_called_once_with(
             {"_id": "3"},
-            {"subjects": {
-                "subject2": {
-                    "metrics": {"metric1": {"type": "violations"},
-                                "metric2": {"type": "user_story_points", "name": "Ready user story points"},
-                                "metric3": {"type": "user_story_points", "name": "Don't change the name"}}}}})
+            {
+                "subjects": {
+                    "subject2": {
+                        "metrics": {
+                            "metric1": {"type": "violations"},
+                            "metric2": {"type": "user_story_points", "name": "Ready user story points"},
+                            "metric3": {"type": "user_story_points", "name": "Don't change the name"},
+                        }
+                    }
+                }
+            },
+        )
+
+    def test_rename_teams_webhook_notification_destination(self):
+        """Test that the teams_webhook notification destination is correctly renamed."""
+        self.database.reports.find.return_value = [
+            {"_id": "1", "subjects": {}, "notification_destinations": {}},
+            {
+                "_id": "2",
+                "subjects": {},
+                "notification_destinations": {
+                    "notification_destination1": {"Do_not_change_me": "Don't change me either"},
+                    "notification_destination2": {"teams_webhook": "https://www.url1.com"},
+                    "notification_destination3": {"webhook": "https://www.url2.com"},
+                },
+            },
+        ]
+
+        self.init_database("{}")
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "2"},
+            {
+                "subjects": {},
+                "notification_destinations": {
+                    "notification_destination1": {"Do_not_change_me": "Don't change me either"},
+                    "notification_destination2": {"webhook": "https://www.url1.com"},
+                    "notification_destination3": {"webhook": "https://www.url2.com"},
+                },
+            },
+        )
