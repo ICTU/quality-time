@@ -9,7 +9,7 @@ jest.mock("../api/fetch_server_api.js")
 
 const notification_destinations= {
     destination_uuid1: {
-        teams_webhook: "",
+        webhook: "",
         name: "new",
         url: ""
     }
@@ -72,7 +72,7 @@ it('edits multiple notification destination attributes when they are changed in 
   });
   userEvent.type(screen.getByPlaceholderText(/url/), 'new.webhook.com{enter}');
 
-  expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {teams_webhook: "new.webhook.com", url: "http://localhost/"});
+  expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith('post', `report/report_uuid/notification_destination/destination_uuid1/attributes`, {webhook: "new.webhook.com", url: "http://localhost/"});
 });
 
 it('removes the notification destination when the delete notification destination button is clicked', async () => {
