@@ -4,6 +4,6 @@ LABEL maintainer="Frank Niessink <frank.niessink@ictu.nl>"
 LABEL description="Quality-time testdata"
 
 WORKDIR /work
-ADD . /work
+COPY . /work
 
 CMD ["python", "-u", "-m", "http.server"]
