@@ -19,7 +19,7 @@ function Event({ description, email, timestamp }) {
     )
 }
 
-export function ChangeLog(props) {
+function ChangeLogWithoutMemo(props) {
     const [changes, setChanges] = useState([]);
     const [nrChanges, setNrChanges] = useState(5);
     useEffect(() => {
@@ -29,6 +29,7 @@ export function ChangeLog(props) {
         if (props.subject_uuid) { uuids.subject_uuid = props.subject_uuid }
         if (props.metric_uuid) { uuids.metric_uuid = props.metric_uuid }
         if (props.source_uuid) { uuids.source_uuid = props.source_uuid }
+        console.log(props.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.timestamp, nrChanges);
         get_changelog(nrChanges, uuids).then(function (json) {
             if (!didCancel) {
                 setChanges(json.changelog || []);
@@ -62,3 +63,6 @@ export function ChangeLog(props) {
         </Form>
     )
 }
+
+// Use React.memo so the ChangeLog is not re-rendered on reload, but only when one of its props change 
+export const ChangeLog = React.memo(props => <ChangeLogWithoutMemo {...props} />)
