@@ -29,7 +29,6 @@ function ChangeLogWithoutMemo(props) {
         if (props.subject_uuid) { uuids.subject_uuid = props.subject_uuid }
         if (props.metric_uuid) { uuids.metric_uuid = props.metric_uuid }
         if (props.source_uuid) { uuids.source_uuid = props.source_uuid }
-        console.log(props.report_uuid, props.subject_uuid, props.metric_uuid, props.source_uuid, props.timestamp, nrChanges);
         get_changelog(nrChanges, uuids).then(function (json) {
             if (!didCancel) {
                 setChanges(json.changelog || []);
