@@ -67,3 +67,19 @@ def rename_ready_user_story_points_metric(database: Database) -> None:  # pragma
             report_id = report["_id"]
             del report["_id"]
             database.reports.replace_one({"_id": report_id}, report)
+
+
+def rename_teams_webhook_notification_destination(database: Database) -> None:
+    """Rename the teams_webhook of notification_destination to webhook."""
+    # Introduced when the most recent version of Quality-time was 3.#.#.
+    reports = list(database.reports.find({"last": True, "deleted": {"$exists": False}}))
+    for report in reports:
+        changed = False
+        for notification_destination in report["notification_destination"]:
+            if "teams_webhook" in notification_destination:
+                notification_destination["webhook"] = notification_destination.pop("teams_webhook")
+                changed = True
+        if changed:
+            report_id = report["_id"]
+            del report["_id"]
+            database.reports.replace_one({"_id": report_id}, report)
