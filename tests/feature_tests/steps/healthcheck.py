@@ -1,13 +1,12 @@
 """Test the healthcheck feature."""
 
 from asserts import assert_equal
-from behave import when, then
+from behave import given, when, then
 
 
 @given("a healthy server")
 def healthy_server(context):
-    """Server should be healthy by default."""
-    pass
+    """Server should be healthy by default, so no step implementation needed."""
 
 
 @when("a client checks the server health")
