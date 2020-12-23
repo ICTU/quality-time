@@ -131,7 +131,7 @@ class OutboxTestCase(unittest.TestCase):
         )
 
     @patch("models.notification.Notification.ready")
-    @patch("outbox.send_notification_to_teams")
+    @patch("outbox.send_notification")
     def test_send_notifications(self, mocked_send, mocked_ready):
         """Test that notifications can be sent."""
         mocked_ready.side_effect = [True, False]
@@ -150,7 +150,7 @@ class OutboxTestCase(unittest.TestCase):
         self.assertEqual(0, outbox.send_notifications())
 
     @patch("models.notification.Notification.ready")
-    @patch("outbox.send_notification_to_teams")
+    @patch("outbox.send_notification")
     def test_deletion_of_notifications(self, mocked_send, mocked_ready):
         """Test that notifications are deleted after sending."""
         mocked_ready.side_effect = [True, True]

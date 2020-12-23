@@ -3,12 +3,12 @@
 import logging
 from unittest import mock, TestCase
 
-from destinations.ms_teams import build_notification_text, send_notification_to_teams
+from destinations.ms_teams import build_notification_text, send_notification
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
 
 
-@mock.patch('pymsteams.connectorcard.send')
+@mock.patch("pymsteams.connectorcard.send")
 class SendNotificationToTeamsTests(TestCase):
     """Unit tests for the Teams destination for notifications."""
 
@@ -20,13 +20,13 @@ class SendNotificationToTeamsTests(TestCase):
         """Test that exceptions are caught."""
         logging.disable(logging.CRITICAL)  # Don't log to stderr during this unit test
         mock_send.side_effect = OSError("Some error")
-        send_notification_to_teams("invalid_webhook", self.message)
+        send_notification("invalid_webhook", self.message)
         mock_send.assert_called()
         logging.disable(logging.NOTSET)  # Reset the logging
 
     def test_valid_webhook(self, mock_send):
         """Test that a valid message is sent to a valid webhook."""
-        send_notification_to_teams("valid_webhook", self.message)
+        send_notification("valid_webhook", self.message)
         mock_send.assert_called()
 
 
@@ -35,15 +35,9 @@ class BuildNotificationTextTests(TestCase):
 
     def setUp(self):
         """Provide a default report for the rest of the class."""
-        self.report = dict(
-            title = "Report 1",
-            url = "https://report1")
+        self.report = dict(title="Report 1", url="https://report1")
         self.data_model = dict(
-            metrics=dict(
-                metric_type=dict(
-                    name="type"
-                )
-            ),
+            metrics=dict(metric_type=dict(name="type")),
             sources=dict(
                 quality_time=dict(
                     parameters=dict(
@@ -53,43 +47,49 @@ class BuildNotificationTextTests(TestCase):
                                 "near target met (yellow)": "near_target_met",
                                 "target not met (red)": "target_not_met",
                                 "technical debt target met (grey)": "debt_target_met",
-                                "unknown (white)": "unknown"
+                                "unknown (white)": "unknown",
                             }
                         )
                     )
                 )
-            )
+            ),
         )
 
     def test_changed_status_text(self):
         """Test that the text is correct."""
         scale = "count"
-        metric1 = dict(type="metric_type",
-                       name="Metric",
-                       unit="units",
-                       scale=scale,
-                       recent_measurements=[dict(count=dict(value=0,
-                                                            status="near_target_met")),
-                                            dict(count=dict(value=42,
-                                                            status="target_not_met"))])
-        metric2 = dict(type="metric_type",
-                       name="Metric",
-                       unit="units",
-                       scale=scale,
-                       recent_measurements=[dict(count=dict(value=5,
-                                                            status="target_met")),
-                                            dict(count=dict(value=10,
-                                                            status="target_not_met"))])
+        metric1 = dict(
+            type="metric_type",
+            name="Metric",
+            unit="units",
+            scale=scale,
+            recent_measurements=[
+                dict(count=dict(value=0, status="near_target_met")),
+                dict(count=dict(value=42, status="target_not_met")),
+            ],
+        )
+        metric2 = dict(
+            type="metric_type",
+            name="Metric",
+            unit="units",
+            scale=scale,
+            recent_measurements=[
+                dict(count=dict(value=5, status="target_met")),
+                dict(count=dict(value=10, status="target_not_met")),
+            ],
+        )
         metric_notification_data1 = MetricNotificationData(metric1, self.data_model, "status_changed")
         metric_notification_data2 = MetricNotificationData(metric2, self.data_model, "status_changed")
-        notification = Notification(self.report, [metric_notification_data1,
-                                                  metric_notification_data2], "destination_uuid", {})
+        notification = Notification(
+            self.report, [metric_notification_data1, metric_notification_data2], "destination_uuid", {}
+        )
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 2 metrics that are notable:\n\n"
             "* Metric status is red (target not met), was yellow (near target met). Value is 42 units, was 0 units.\n"
             "* Metric status is red (target not met), was green (target met). Value is 10 units, was 5 units.\n",
-            text)
+            text,
+        )
 
     def test_unchanged_status_text(self):
         """Test that the text is correct."""
@@ -123,18 +123,21 @@ class BuildNotificationTextTests(TestCase):
 
     def test_unknown_text(self):
         """Test that the text is correct."""
-        metric1 = dict(type="metric_type",
-                       name="Metric",
-                       unit="units",
-                       scale="count",
-                       recent_measurements=[dict(count=dict(value=0,
-                                                                      status="near_target_met")),
-                                            dict(count=dict(value=None,
-                                                           status="unknown"))])
+        metric1 = dict(
+            type="metric_type",
+            name="Metric",
+            unit="units",
+            scale="count",
+            recent_measurements=[
+                dict(count=dict(value=0, status="near_target_met")),
+                dict(count=dict(value=None, status="unknown")),
+            ],
+        )
         metric_notification_data1 = MetricNotificationData(metric1, self.data_model, "status_changed")
         notification = Notification(self.report, [metric_notification_data1], "destination_uuid", {})
         text = build_notification_text(notification)
         self.assertEqual(
             "[Report 1](https://report1) has 1 metric that is notable:\n\n"
             "* Metric status is white (unknown), was yellow (near target met). Value is ? units, was 0 units.\n",
-            text)
+            text,
+        )

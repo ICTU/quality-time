@@ -2,7 +2,7 @@
 
 from typing import List
 
-from destinations.ms_teams import build_notification_text, send_notification_to_teams
+from destinations.ms_teams import build_notification_text, send_notification
 from models.notification import Notification
 
 
@@ -31,9 +31,7 @@ class Outbox:
         nr_sent = 0
         for notification in self.notifications[:]:
             if notification.ready() and notification.destination["teams_webhook"]:
-                send_notification_to_teams(
-                    str(notification.destination["teams_webhook"]), build_notification_text(notification)
-                )
+                send_notification(str(notification.destination["teams_webhook"]), build_notification_text(notification))
                 nr_sent += 1
                 self.notifications.remove(notification)
         return nr_sent
