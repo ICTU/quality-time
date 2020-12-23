@@ -17,7 +17,7 @@ const datamodel = {
 const source = { type: "source_type1" };
 const report = { report_uuid: "report_uuid", subjects: {} };
 
-function render_source() {
+function render_source(props) {
     render(
         <ReadOnlyContext.Provider value={false}>
             <Source 
@@ -27,6 +27,7 @@ function render_source() {
                 reports={[report]} 
                 source={source} 
                 source_uuid="source_uuid" 
+                {...props}
             />
         </ReadOnlyContext.Provider>
     )
@@ -56,4 +57,18 @@ it('changes the source name', async () => {
     })
     userEvent.type(screen.getByLabelText(/Source name/), 'New source name{enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", {name: "New source name"});
+});
+
+it('shows a connection error message', async () => {
+    await act(async () => {
+        render_source({connection_error: "Oops"});
+    });
+    expect(screen.getAllByText(/Connection error/).length).toBe(1);
+});
+
+it('shows a parse error message', async () => {
+    await act(async () => {
+        render_source({parse_error: "Oops"});
+    });
+    expect(screen.getAllByText(/Parse error/).length).toBe(1);
 });
