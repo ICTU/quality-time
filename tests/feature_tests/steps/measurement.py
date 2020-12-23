@@ -27,9 +27,18 @@ def measure(context, number, total="100"):
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
-                dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total=total, entities=entities)]),
-        internal=True)
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error=None,
+                    connection_error=None,
+                    value=number,
+                    total=total,
+                    entities=entities,
+                )
+            ],
+        ),
+        internal=True,
+    )
 
 
 @when("the collector encounters a parse error")
@@ -40,9 +49,18 @@ def parse_error(context):
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
-                dict(source_uuid=context.uuid["source"], parse_error="Parse error", connection_error=None, value=None,
-                     total=None, entities=[])]),
-        internal=True)
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error="Parse error",
+                    connection_error=None,
+                    value=None,
+                    total=None,
+                    entities=[],
+                )
+            ],
+        ),
+        internal=True,
+    )
 
 
 @when('the client sets the {attribute} of entity {key} to "{value}"')
@@ -50,7 +68,8 @@ def set_entity_attribute(context, attribute, key, value):
     """Set the entity attribute to the specified value."""
     context.post(
         f"measurement/{context.uuid['metric']}/source/{context.uuid['source']}/entity/{key}/{attribute}",
-        json={attribute: value})
+        json={attribute: value},
+    )
 
 
 @when("the client connects to the number of measurements {stream}")

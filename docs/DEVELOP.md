@@ -152,7 +152,7 @@ docker-compose up -d ldap database renderer www frontend server  # And optionall
 ci/behave.sh
 ```
 
-The `behave.sh` shell script will start a server under coverage and then run the behave [feature tests](../tests/features).
+The `behave.sh` shell script will start a server under coverage and then run the behave [feature tests](../tests/feature_tests).
 
 ### Application tests
 

@@ -19,7 +19,7 @@ def before_all(context):
         if context.report_date:
             api += f"?report_date={context.report_date}"
         context.response = response = requests.get(f"{base_api_url}/{api}", headers=headers)
-        return response.json() if response.headers.get('Content-Type') == "application/json" else response
+        return response.json() if response.headers.get("Content-Type") == "application/json" else response
 
     def post(api, json=None, internal=False):
         """Post the resource."""
