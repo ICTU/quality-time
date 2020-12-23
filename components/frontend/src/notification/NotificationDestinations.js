@@ -42,7 +42,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { webhook: value, url: window.location.href }, reload)
                             }}
-                            value={destination.teams_webhook}
+                            value={destination.webhook}
                         />
                     </Grid.Column>
                     <Grid.Column width={3}>
