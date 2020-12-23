@@ -13,7 +13,7 @@ export function HeaderWithDetails(props) {
                 style={props.style}
                 tabIndex="0"
             >
-                <Icon className="Caret" name={show_details ? "caret down" : "caret right"} size='large' />
+                <Icon className="Caret" title="expand" name={show_details ? "caret down" : "caret right"} size='large' />
                 <Header.Content>
                     {props.header}
                     <Header.Subheader>{props.subheader}</Header.Subheader>

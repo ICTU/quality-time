@@ -37,7 +37,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Column width={3}>
                         <IntegerInput
                             id={destination_uuid + "frequency"}
-                            label={<label>Time to wait for more notifications <Popup on={['hover', 'focus']} content={"Wait for the specified amount of time for more notifications and then bundle and send them"} trigger={<Icon tabIndex="0" name="help circle"/>}/></label>}
+                            label={<label>Time to wait for more notifications <Popup on={['hover', 'focus']} content={"Wait for the specified amount of time for more notifications and then bundle and send them"} trigger={<Icon tabIndex="0" name="help circle" />} /></label>}
                             min="0"
                             set_value={(value) => {
                                 set_notification_destination_attributes(report_uuid, destination_uuid, { frequency: value }, reload)
@@ -70,19 +70,17 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
         )
     })
     return (
-        <Grid.Row>
-            <Grid.Column>
-                {notification_destinations}
-                <ReadOnlyOrEditable key="1" editableComponent={
-                    <Segment vertical>
-                        <AddButton
-                            item_type="notification destination"
-                            report_uuid={report_uuid}
-                            onClick={() => add_notification_destination(report_uuid, reload)}
-                        />
-                    </Segment>}
-                />
-            </Grid.Column>
-        </Grid.Row>
+        <>
+            {notification_destinations}
+            <ReadOnlyOrEditable key="1" editableComponent={
+                <Segment vertical>
+                    <AddButton
+                        item_type="notification destination"
+                        report_uuid={report_uuid}
+                        onClick={() => add_notification_destination(report_uuid, reload)}
+                    />
+                </Segment>}
+            />
+        </>
     )
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ReadOnlyContext } from '../context/ReadOnly';
 import { NotificationDestinations } from './NotificationDestinations';
 import * as fetch_server_api from '../api/fetch_server_api';
-import userEvent from '@testing-library/user-event';
 
 jest.mock("../api/fetch_server_api.js")
 
