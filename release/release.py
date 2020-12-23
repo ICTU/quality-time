@@ -45,7 +45,7 @@ def check_preconditions(bump: str):
         messages.append("The current branch is not the master branch.")
     if repo.is_dirty():
         messages.append("The workspace has uncommitted changes.")
-    subprocess.run(["python3", "../docs/ci/create_metrics_and_sources_md.py"], check=True)  # skipcq: BAN-B603
+    subprocess.run(["python3", "../docs/ci/create_metrics_and_sources_md.py"], check=True)  # skipcq: BAN-B603,BAN-B607
     if repo.is_dirty(path="docs/METRICS_AND_SOURCES.md"):
         messages.append(
             "The generated data model documentation is not up-to-date, please commit ../docs/METRICS_AND_SOURCES.md."
