@@ -11,6 +11,7 @@ class element_has_no_css_class:
     locator - used to find the element
     returns the WebElement once it has the particular css class
     """
+
     def __init__(self, locator):
         self.locator = locator
 
@@ -65,7 +66,8 @@ class OpenReportTest(unittest.TestCase):
         report_title = report.find_element_by_class_name("header")
         report.click()
         self.assertTrue(
-            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title))
+            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title)
+        )
 
     def test_login_and_logout(self):
         """Test that the admin user can login and logout."""
