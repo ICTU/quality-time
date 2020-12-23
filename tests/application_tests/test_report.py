@@ -1,3 +1,5 @@
+"""Report tests."""
+
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -36,6 +38,7 @@ class OpenReportTest(unittest.TestCase):
     """Open a report."""
 
     def setUp(self):
+        """Override to setup the driver."""
         chrome_options = webdriver.ChromeOptions()
         for argument in "headless no-sandbox single-process disable-dev-shm-usage disable-gpu".split(" "):
             chrome_options.add_argument(f"--{argument}")
@@ -45,6 +48,7 @@ class OpenReportTest(unittest.TestCase):
         self.driver.get("http://www:80")
 
     def tearDown(self):
+        """Override to close the driver."""
         self.driver.close()
 
     def login(self):
