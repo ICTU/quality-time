@@ -165,7 +165,7 @@ docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 cir
 
 ## Release
 
-See [Release README](../ci/README.md).
+See [release README](../release/README.md).
 
 ## Software components
 

@@ -2,17 +2,18 @@
 
 ## Preparation
 
-Make sure you have the dependencies for the release script installed:
+Make sure the release folder is the current directory and you have the dependencies for the release script installed:
 
 ```console
+cd release
 python3 -m venv venv
 . venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 ```
 
 ## Pick the release type
 
-Check the [current most recent release](https://github.com/ICTU/quality-time/releases). There are two scenario's:
+Check the [current most recent release](https://github.com/ICTU/quality-time/releases). There are two scenarios:
 
 1. the current most recent release is a major (e.g. v2.0.0), minor (e.g. v2.3.0), or patch (e.g. v2.3.2) release, or
 2. the current most recent release is a release candidate (e.g. v2.4.0-rc.2).
@@ -33,7 +34,7 @@ In the second scenario, you have two options:
 The release script will check a number of preconditions before actually creating the release. To check the preconditions without releasing, invoke the release script as follows:
 
 ```console
-python ci/release.py --check-preconditions-only major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
+python release.py --check-preconditions-only major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
 ```
 
 ## Create the release
@@ -41,7 +42,7 @@ python ci/release.py --check-preconditions-only major|minor|patch|rc-major|rc-mi
 To release *Quality-time*, issue the release command (in the project root folder) using the type of release you picked:
 
 ```console
-python ci/release.py major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
+python release.py major|minor|patch|rc-major|rc-minor|rc-patch|rc|drop-rc
 ```
 
 The `release.py` script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to Github. The GitHub release workflow will then build the Docker containers and push them to [Docker Hub](https://cloud.docker.com/u/ictu/repository/list?name=quality-time&namespace=ictu).
