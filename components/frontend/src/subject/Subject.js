@@ -1,13 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
-import { Metric } from '../metric/Metric';
-import { SubjectTitle } from './SubjectTitle';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
-import { CopyButton, AddButton, MoveButton } from '../widgets/Button';
-import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { add_metric, copy_metric, move_metric } from '../api/metric';
+import { get_subject_measurements } from '../api/subject';
+import { ReadOnlyOrEditable } from '../context/ReadOnly';
+import { Metric } from '../metric/Metric';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
+import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
+import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { metric_options } from '../widgets/menu_options';
+import { SubjectTitle } from './SubjectTitle';
+
+function fetch_measurements(subject_uuid, subject, report_date, setMeasurements) {
+  console.log(subject)
+  get_subject_measurements(subject_uuid, report_date).then(json => {
+    if (json.ok !== false) {
+      console.log(json)
+      setMeasurements(json.measurements)
+    }
+  })
+}
+
+function create_metric_components(props, setSortColumn) {
+  const subject = props.report.subjects[props.subject_uuid];
+  const last_index = Object.entries(subject.metrics).length - 1;
+
+  let components = [];
+  Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
+    const status = metric.status;
+    if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
+    if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
+    components.push(
+      <Metric
+        first_metric={index === 0}
+        hiddenColumns={props.hiddenColumns}
+        key={metric_uuid}
+        last_metric={index === last_index}
+        metric_uuid={metric_uuid}
+        metric={metric}
+        stop_sort={() => setSortColumn(null)}
+        {...props}
+      />)
+  });
+  return components
+}
 
 export function Subject(props) {
   function handleSort(column) {
@@ -22,31 +57,20 @@ export function Subject(props) {
   }
 
   const subject = props.report.subjects[props.subject_uuid];
-  const last_index = Object.entries(subject.metrics).length - 1;
 
-  function create_metric_components() {
-    let components = [];
-    Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
-      const status = metric.status;
-      if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
-      if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
-      components.push(
-        <Metric
-          first_metric={index === 0}
-          hiddenColumns={props.hiddenColumns}
-          key={metric_uuid}
-          last_metric={index === last_index}
-          metric_uuid={metric_uuid}
-          metric={metric}
-          stop_sort={() => setSortColumn(null)}
-          {...props}
-        />)
-    });
-    return components
-  }
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
-  const metric_components = create_metric_components();
+  const [view, setView] = useState('details');
+  const metric_components = create_metric_components(props, setSortColumn);
+  const [measurements, setMeasurements] = useState([]);
+
+  useEffect(() => {
+    if (view === 'measurements') {
+      fetch_measurements(props.subject_uuid, subject, props.report_date, setMeasurements);
+    } 
+    // eslint-disable-next-line
+  }, [view]);
+  // create_measurement_rows()
 
   if (sortColumn !== null) {
     const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
@@ -119,6 +143,13 @@ export function Subject(props) {
     return (
       <Table.HeaderCell collapsing textAlign="center">
         <HamburgerMenu>
+          <Dropdown.Header>Views</Dropdown.Header>
+          <Dropdown.Item onClick={() => setView('details')}>
+            Details
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setView('measurements')}>
+            Measurements
+          </Dropdown.Item>
           <Dropdown.Header>Rows</Dropdown.Header>
           <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
             {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
@@ -190,7 +221,7 @@ export function Subject(props) {
       <SubjectTitle subject={subject} {...props} />
       <Table sortable>
         <SubjectTableHeader />
-        <Table.Body>{metric_components}</Table.Body>
+        <Table.Body>{view === 'details' ? metric_components : metric_components}</Table.Body>
         <SubjectTableFooter />
       </Table>
     </div>

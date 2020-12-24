@@ -19,3 +19,7 @@ export function delete_subject(subject_uuid, reload) {
 export function set_subject_attribute(subject_uuid, attribute, value, reload) {
   return fetch_server_api('post', `subject/${subject_uuid}/attribute/${attribute}`, { [attribute]: value }).then(reload)
 }
+
+export function get_subject_measurements(subject_uuid, date) {
+  return fetch_server_api('get', `subject/${subject_uuid}/measurements`, date)
+}
