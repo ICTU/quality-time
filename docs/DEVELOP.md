@@ -145,10 +145,9 @@ ci/quality.sh
 
 ### Feature tests
 
-The feature tests currently test all features through the server API. They touch all components except the frontend, the collector, and the notifier. To run the feature tests start the following components and then start the tests:
+The feature tests currently test all features through the server API. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will start all the necessary components, run the tests, and gather coverage information:
 
 ```console
-docker-compose up -d ldap database renderer www frontend server  # And optionally mongo-express
 tests/feature_tests/ci/test.sh
 ```
 
