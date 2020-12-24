@@ -49,9 +49,9 @@ jobs:
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker-compose build && docker-compose up -d
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.1-browsers ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 circleci/python:3.9.1-browsers tests/application_tests/ci/test.sh
 
-  integration_tests:
+  feature_tests:
     docker:
       - image: circleci/python:3.9.1-buster
         auth:
@@ -93,18 +93,20 @@ jobs:
           working_directory: components/server
           command: |
             . venv/bin/activate
-            export COVERAGE_PROCESS_START=../../.coveragerc-behave
+            export COVERAGE_PROCESS_START=../../tests/feature_tests/.coveragerc
             export RENDERER_HOST=localhost
             export PROXY_HOST=localhost
             export PROXY_PORT=5000
             python tests/quality_time_server_under_coverage.py &>> /tmp/log/server.log
       - run:
           command: |
+            cd tests/feature_tests
             python3 -m venv venv
             . venv/bin/activate
-            pip --quiet install --progress-bar off -r requirements-dev.txt
-            export COVERAGE_RCFILE=.coveragerc-behave
-            coverage run -m behave --format progress tests/features
+            pip --quiet install --progress-bar off -r requirements.txt
+            cd ../..
+            export COVERAGE_RCFILE=tests/feature_tests/.coveragerc
+            coverage run -m behave --format progress tests/feature_tests
             kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
             sleep 2  # Give the server time to write the coverage data
             coverage combine . components/server
@@ -121,7 +123,7 @@ workflows:
     jobs:
       - application_tests:
           context: QualityTime
-      - integration_tests:
+      - feature_tests:
           context: QualityTime
       - unittest_backend:
           context: QualityTime

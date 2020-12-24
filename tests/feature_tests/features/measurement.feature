@@ -57,6 +57,14 @@ Feature: measurement
     And the client changes the metric debt_target to "100"
     Then the metric status is "debt_target_met"
 
+  Scenario: the metric is measured and has expired accepted technical debt
+    Given an existing source
+    When the collector measures "100"
+    And the client changes the metric accept_debt to "True"
+    And the client changes the metric debt_target to "100"
+    When the collector measures "100"
+    Then the metric has three measurements
+
   Scenario: a measurement that's unchanged is updated
     Given an existing source
     When the collector measures "0"

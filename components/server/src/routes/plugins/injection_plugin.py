@@ -5,7 +5,9 @@ import inspect
 
 class InjectionPlugin:
     """This plugin passes a value to route callbacks that accept a specific keyword argument.
-    If a callback does not expect such a parameter, no value is passed."""
+
+    If a callback does not expect such a parameter, no value is passed.
+    """
 
     api = 2
 

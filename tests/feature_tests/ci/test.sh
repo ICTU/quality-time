@@ -7,7 +7,7 @@
 # so we can discover dead code in the tests.
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
-export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
+export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 docker-compose up -d database ldap renderer www
 cd components/server || exit
 python3 -m venv venv
@@ -23,11 +23,13 @@ cd ../..
 # We need to start a second server for the renderer. We start it after the server under
 # coverage so we can measure the coverage of the startup code.
 docker-compose up -d server
+cd tests/feature_tests
 python3 -m venv venv
 . venv/bin/activate
-pip --quiet install --progress-bar off -r requirements-dev.txt
+pip --quiet install --progress-bar off -r requirements.txt
+cd ../..
 coverage erase
-coverage run -m behave "${1:-tests/features}"
+coverage run -m behave "${1:-tests/feature_tests/features}"
 kill -s TERM "$(pgrep -n -f tests/quality_time_server_under_coverage.py)"
 sleep 2  # Give the server time to write the coverage data
 coverage combine . components/server

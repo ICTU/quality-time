@@ -9,6 +9,7 @@ from pymongo.database import Database
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
 
+
 # For some reason the init_database() function gets reported as partially uncovered by the feature tests. Ignore.
 
 
@@ -43,7 +44,8 @@ def add_last_flag_to_reports(database: Database) -> None:
     report_ids = []
     for report_uuid in database.reports.distinct("report_uuid"):
         report = database.reports.find_one(
-            filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)])
+            filter={"report_uuid": report_uuid}, sort=[("timestamp", pymongo.DESCENDING)]
+        )
         report_ids.append(report["_id"])
     database.reports.update_many({"_id": {"$in": report_ids}}, {"$set": {"last": True}})
 

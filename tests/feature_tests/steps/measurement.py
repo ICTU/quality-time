@@ -27,9 +27,18 @@ def measure(context, number, total="100"):
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
-                dict(source_uuid=context.uuid["source"], parse_error=None, connection_error=None, value=number,
-                     total=total, entities=entities)]),
-        internal=True)
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error=None,
+                    connection_error=None,
+                    value=number,
+                    total=total,
+                    entities=entities,
+                )
+            ],
+        ),
+        internal=True,
+    )
 
 
 @when("the collector encounters a parse error")
@@ -40,9 +49,18 @@ def parse_error(context):
         json=dict(
             metric_uuid=context.uuid["metric"],
             sources=[
-                dict(source_uuid=context.uuid["source"], parse_error="Parse error", connection_error=None, value=None,
-                     total=None, entities=[])]),
-        internal=True)
+                dict(
+                    source_uuid=context.uuid["source"],
+                    parse_error="Parse error",
+                    connection_error=None,
+                    value=None,
+                    total=None,
+                    entities=[],
+                )
+            ],
+        ),
+        internal=True,
+    )
 
 
 @when('the client sets the {attribute} of entity {key} to "{value}"')
@@ -50,7 +68,8 @@ def set_entity_attribute(context, attribute, key, value):
     """Set the entity attribute to the specified value."""
     context.post(
         f"measurement/{context.uuid['metric']}/source/{context.uuid['source']}/entity/{key}/{attribute}",
-        json={attribute: value})
+        json={attribute: value},
+    )
 
 
 @when("the client connects to the number of measurements {stream}")
@@ -83,7 +102,7 @@ def check_nr_of_measurements(context, has_or_had, count="one"):
     """Check that the metric has the expected number of measurements."""
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
-    expected_number = dict(no=0, one=1, two=2).get(count, count)
+    expected_number = dict(no=0, one=1, two=2, three=3).get(count, count)
     assert_equal(int(expected_number), len(context.get(f"measurements/{context.uuid['metric']}")["measurements"]))
 
 

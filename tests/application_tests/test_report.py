@@ -1,3 +1,5 @@
+"""Report tests."""
+
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -11,6 +13,7 @@ class element_has_no_css_class:
     locator - used to find the element
     returns the WebElement once it has the particular css class
     """
+
     def __init__(self, locator):
         self.locator = locator
 
@@ -35,6 +38,7 @@ class OpenReportTest(unittest.TestCase):
     """Open a report."""
 
     def setUp(self):
+        """Override to setup the driver."""
         chrome_options = webdriver.ChromeOptions()
         for argument in "headless no-sandbox single-process disable-dev-shm-usage disable-gpu".split(" "):
             chrome_options.add_argument(f"--{argument}")
@@ -44,6 +48,7 @@ class OpenReportTest(unittest.TestCase):
         self.driver.get("http://www:80")
 
     def tearDown(self):
+        """Override to close the driver."""
         self.driver.close()
 
     def login(self):
@@ -65,7 +70,8 @@ class OpenReportTest(unittest.TestCase):
         report_title = report.find_element_by_class_name("header")
         report.click()
         self.assertTrue(
-            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title))
+            expect.text_to_be_present_in_element(self.driver.find_element_by_class_name("header"), report_title)
+        )
 
     def test_login_and_logout(self):
         """Test that the admin user can login and logout."""
