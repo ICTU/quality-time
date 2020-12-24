@@ -7,7 +7,7 @@
 # so we can discover dead code in the tests.
 
 trap "kill 0" EXIT  # Kill server on Ctrl-C
-export COVERAGE_RCFILE="$(pwd)"/.coveragerc-behave
+export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 docker-compose up -d database ldap renderer www
 cd components/server || exit
 python3 -m venv venv
