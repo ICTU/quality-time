@@ -16,6 +16,7 @@ services:
     depends_on:
       - ldap
   database:
+    build: ../components/database
     ports:
       - "27017:27017"
   ldap:

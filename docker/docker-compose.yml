@@ -89,7 +89,7 @@ services:
     cap_drop:
       - ALL
   database:
-    image: mongo:4.2.11
+    image: ictu/quality-time_database:v3.17.0-rc.3
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
