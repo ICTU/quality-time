@@ -6,6 +6,24 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/tests/application_tests"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/tests/feature_tests"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+- package-ecosystem: pip
+  directory: "/release"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: "/components/frontend"
   schedule:
