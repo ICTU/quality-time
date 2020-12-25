@@ -14,8 +14,7 @@ jobs:
           case $CIRCLE_NODE_INDEX in
           	0) component=collector;;
           	1) component=notifier;;
-          	2) component=server
-                   sudo apt-get install libsasl2-dev libldap2-dev libssl-dev;;
+          	2) component=server;;
           esac
           cd components/$component
           python -m venv venv
