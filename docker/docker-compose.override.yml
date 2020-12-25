@@ -16,6 +16,7 @@ services:
       - ldap
       - renderer
   database:
+    build: ../components/database
     ports:
       - "27017:27017"
   testdata:

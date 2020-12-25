@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.17.0-rc.3] - [2020-12-24]
+## [Unreleased]
 
 ### Changed
 
+- Add a Dockerfile for MongoDB to *Quality-time* so the database container has the same version number as the other containers and doesn't need to be updated separately. Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to pdf. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
   
 ### Fixed

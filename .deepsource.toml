@@ -37,6 +37,7 @@ enabled = true
   [analyzers.meta]
   dockerfile_paths = [
     "components/collector/Dockerfile",
+    "components/database/Dockerfile",
     "components/notifier/Dockerfile",
     "components/frontend/Dockerfile",
     "components/ldap/Dockerfile",
