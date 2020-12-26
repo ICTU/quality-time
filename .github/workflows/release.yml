@@ -20,6 +20,14 @@ jobs:
           repository: ictu/quality-time_database
           tag_with_ref: true
           path: components/database
+      - name: Push Renderer to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ictu/quality-time_renderer
+          tag_with_ref: true
+          path: components/renderer
       - name: Push Collector to Docker Hub
         uses: docker/build-push-action@v1
         with:

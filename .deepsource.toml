@@ -41,6 +41,7 @@ enabled = true
     "components/notifier/Dockerfile",
     "components/frontend/Dockerfile",
     "components/ldap/Dockerfile",
+    "components/renderer/Dockerfile",
     "components/server/Dockerfile",
     "components/testdata/Dockerfile",
   ]

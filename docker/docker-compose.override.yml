@@ -19,6 +19,10 @@ services:
     build: ../components/database
     ports:
       - "27017:27017"
+  renderer:
+    build: ../components/renderer
+    ports:
+      - "9000:9000"
   testdata:
     build: ../components/testdata
     ports:
@@ -47,6 +51,3 @@ services:
       - "3890:80"
     depends_on:
       - ldap
-  renderer:
-    ports:
-      - "9000:9000"

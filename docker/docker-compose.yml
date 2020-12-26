@@ -97,7 +97,7 @@ services:
     volumes:
       - "dbdata:/data/db"
   renderer:
-    image: ictu/url-to-pdf-api:v1.0.0
+    image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
       - ALLOW_HTTP=true
       - LC_ALL=en_GB.UTF-8  # Set the date format in the PDF export to DD-MM-YYYY
