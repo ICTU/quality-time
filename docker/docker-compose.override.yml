@@ -2,6 +2,8 @@
 
 version: "3"
 services:
+  www:
+    build: ../components/proxy
   frontend:
     build: ../components/frontend
   collector:
