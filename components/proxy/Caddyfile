@@ -1,6 +1,5 @@
 :80 {
     tls off
-    log stdout
     errors stdout
     gzip {
         not /api/v3/nr_measurements
