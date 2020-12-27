@@ -31,6 +31,14 @@ services:
             X-Frame-Options "DENY"
             Cache-Control "no-cache"
           }
+          header /api/v3/logo {
+            -Server
+            Strict-Transport-Security "max-age=31536000;"
+            X-XSS-Protection "1; mode=block"
+            X-Content-Type-Options "nosniff"
+            X-Frame-Options "DENY"
+            Cache-Control "no-cache"
+          }
           proxy /api/v3/nr_measurements http://server:${SERVER_PORT:-5001} {
             timeout 0
           }
