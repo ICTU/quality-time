@@ -13,6 +13,7 @@ class OutboxTestCase(unittest.TestCase):
 
     def setUp(self):
         """Set variables for the other testcases."""
+        self.reason1 = "status_changed"
         self.data_model = dict(
             metrics=dict(metric_type=dict(name="type")),
             sources=dict(
@@ -47,8 +48,8 @@ class OutboxTestCase(unittest.TestCase):
                 dict(count=dict(value=20, status="target_not_met")),
             ],
         )
-        self.metric_notification_data1 = MetricNotificationData(metric1, self.data_model)
-        self.metric_notification_data2 = MetricNotificationData(metric2, self.data_model)
+        self.metric_notification_data1 = MetricNotificationData(metric1, self.data_model, self.reason1)
+        self.metric_notification_data2 = MetricNotificationData(metric2, self.data_model, self.reason1)
         metrics1 = [self.metric_notification_data1, self.metric_notification_data2]
         metric3 = dict(
             type="metric_type",
@@ -70,8 +71,8 @@ class OutboxTestCase(unittest.TestCase):
                 dict(count=dict(value=20, status="target_not_met")),
             ],
         )
-        metric_notification_data3 = MetricNotificationData(metric3, self.data_model)
-        metric_notification_data4 = MetricNotificationData(metric4, self.data_model)
+        metric_notification_data3 = MetricNotificationData(metric3, self.data_model, self.reason1)
+        metric_notification_data4 = MetricNotificationData(metric4, self.data_model, self.reason1)
         metrics2 = [metric_notification_data3, metric_notification_data4]
         self.notifications = [
             Notification(self.report, metrics1, "uuid1", dict(teams_webhook="https://url/1")),

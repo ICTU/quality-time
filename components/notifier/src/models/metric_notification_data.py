@@ -4,7 +4,7 @@
 class MetricNotificationData:  # pylint: disable=too-few-public-methods
     """Handle metric data needed for notifications."""
 
-    def __init__(self, metric, data_model):
+    def __init__(self, metric, data_model, reason: str) -> None:
         """Initialise the Notification with metric data."""
         recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
@@ -18,6 +18,7 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
         self.old_metric_status = self.__get_correct_userfriendly_status(
             data_model["sources"]["quality_time"]["parameters"]["status"]["api_values"],
             recent_measurements[-2][scale]["status"])
+        self.reason = reason
 
     @staticmethod
     def __get_correct_userfriendly_status(userfriendly_statuses, metric_status) -> str:
