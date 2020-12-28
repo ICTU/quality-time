@@ -9,7 +9,18 @@ import { HyperLink } from '../widgets/HyperLink';
 
 function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {
     const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
-    const label = <label>Microsoft Teams webhook <HyperLink url={help_url}><Icon name="help circle" link /></HyperLink></label>;
+    const teams_hyperlink = <HyperLink url={help_url}>Microsoft Teams</HyperLink>
+    const label = <label>
+        Webhook
+        <Popup
+            hoverable={true}
+            on={['hover', 'focus']}
+            trigger={<Icon tabIndex="0" name="help circle" />}>
+            <Popup.Content>
+                Paste a {teams_hyperlink} webhook URL here.
+            </Popup.Content>
+        </Popup>
+    </label>;
     return (
         <Segment vertical key={destination_uuid}>
             <Grid stackable>
