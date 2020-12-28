@@ -38,7 +38,7 @@ class NotificationFinder:
         ):
             return "status_long_unchanged"
         if self.status_changed(metric, most_recent_measurement_seen):
-            if self.already_notified.__contains__(metric_uuid):
+            if metric_uuid in self.already_notified:
                 self.already_notified.remove(metric_uuid)
             return "status_changed"
         return None
