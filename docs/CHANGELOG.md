@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](../docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to pdf. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
-- Add no-cache config for /api/v3/logo to the Caddy config. See the example [docker-compose.yml](../docker/docker-compose.yml).
+- Add no-cache config for /api/v3/logo to the [Caddy config](../components/proxy/Caddyfile).
   
 ### Fixed
 
