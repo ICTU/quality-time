@@ -28,49 +28,13 @@ class OutboxTestCase(unittest.TestCase):
         )
         self.report_url = "https://report1"
         self.report = dict(title="report_title", url=self.report_url)
-        metric1 = dict(
-            type="metric_type",
-            name="default metric 1",
-            unit="units",
-            scale="count",
-            recent_measurements=[
-                dict(count=dict(value=10, status="target_met")),
-                dict(count=dict(value=20, status="target_not_met")),
-            ],
-        )
-        metric2 = dict(
-            type="metric_type",
-            name="default metric 2",
-            unit="units",
-            scale="count",
-            recent_measurements=[
-                dict(count=dict(value=10, status="target_met")),
-                dict(count=dict(value=20, status="target_not_met")),
-            ],
-        )
+        metric1 = self.create_metric("default metric 1")
+        metric2 = self.create_metric("default metric 2")
         self.metric_notification_data1 = MetricNotificationData(metric1, self.data_model, self.reason1)
         self.metric_notification_data2 = MetricNotificationData(metric2, self.data_model, self.reason1)
         metrics1 = [self.metric_notification_data1, self.metric_notification_data2]
-        metric3 = dict(
-            type="metric_type",
-            name="default metric 3",
-            unit="units",
-            scale="count",
-            recent_measurements=[
-                dict(count=dict(value=10, status="target_met")),
-                dict(count=dict(value=20, status="target_not_met")),
-            ],
-        )
-        metric4 = dict(
-            type="metric_type",
-            name="default metric 4",
-            unit="units",
-            scale="count",
-            recent_measurements=[
-                dict(count=dict(value=10, status="target_met")),
-                dict(count=dict(value=20, status="target_not_met")),
-            ],
-        )
+        metric3 = self.create_metric("default metric 3")
+        metric4 = self.create_metric("default metric 4")
         metric_notification_data3 = MetricNotificationData(metric3, self.data_model, self.reason1)
         metric_notification_data4 = MetricNotificationData(metric4, self.data_model, self.reason1)
         metrics2 = [metric_notification_data3, metric_notification_data4]
@@ -78,6 +42,20 @@ class OutboxTestCase(unittest.TestCase):
             Notification(self.report, metrics1, "uuid1", dict(teams_webhook="https://url/1")),
             Notification(self.report, metrics2, "uuid2", dict(teams_webhook="https://url/2")),
         ]
+
+    @staticmethod
+    def create_metric(name):
+        """Create a metric fixture."""
+        return dict(
+            type="metric_type",
+            name=name,
+            unit="units",
+            scale="count",
+            recent_measurements=[
+                dict(count=dict(value=10, status="target_met")),
+                dict(count=dict(value=20, status="target_not_met")),
+            ],
+        )
 
     def test_merge_notifications_into_nothing(self):
         """Test that notifications are merged, even if the outbox is currently empty."""
