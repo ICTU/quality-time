@@ -17,7 +17,7 @@ def post_new_notification_destination(report_uuid: ReportId, database: Database)
     if "notification_destinations" not in data.report:
         data.report["notification_destinations"] = {}
     data.report["notification_destinations"][(notification_destination_uuid := uuid())] = dict(
-        teams_webhook="", name="Microsoft Teams webhook", sleep_duration=0
+        webhook="", name="Microsoft Teams webhook", sleep_duration=0
     )
     delta_description = f"{{user}} created a new destination for notifications in report '{data.report_name}'."
     uuids = [report_uuid, notification_destination_uuid]
