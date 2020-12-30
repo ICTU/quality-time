@@ -11,10 +11,8 @@ import { metric_options } from '../widgets/menu_options';
 import { SubjectTitle } from './SubjectTitle';
 
 function fetch_measurements(subject_uuid, subject, report_date, setMeasurements) {
-  console.log(subject)
   get_subject_measurements(subject_uuid, report_date).then(json => {
     if (json.ok !== false) {
-      console.log(json)
       setMeasurements(json.measurements)
     }
   })
@@ -61,7 +59,6 @@ export function Subject(props) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('ascending');
   const [view, setView] = useState('details');
-  const metric_components = create_metric_components(props, setSortColumn);
   const [measurements, setMeasurements] = useState([]);
 
   useEffect(() => {
@@ -72,58 +69,97 @@ export function Subject(props) {
   }, [view]);
   // create_measurement_rows()
 
-  if (sortColumn !== null) {
-    const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
-    const sorters = {
-      name: (m1, m2) => {
-        const attribute1 = get_metric_name(m1.props.metric, props.datamodel);
-        const attribute2 = get_metric_name(m2.props.metric, props.datamodel);
-        return attribute1.localeCompare(attribute2)
-      },
-      measurement: (m1, m2) => {
-        const attribute1 = m1.props.metric.value || "";
-        const attribute2 = m2.props.metric.value || "";
-        return attribute1.localeCompare(attribute2)
-      },
-      target: (m1, m2) => {
-        const attribute1 = get_metric_target(m1.props.metric);
-        const attribute2 = get_metric_target(m2.props.metric);
-        return attribute1.localeCompare(attribute2)
-      },
-      comment: (m1, m2) => {
-        const attribute1 = m1.props.metric.comment || '';
-        const attribute2 = m2.props.metric.comment || '';
-        return attribute1.localeCompare(attribute2)
-      },
-      status: (m1, m2) => {
-        const attribute1 = status_order[m1.props.metric.status || ""];
-        const attribute2 = status_order[m2.props.metric.status || ""];
-        return attribute1.localeCompare(attribute2)
-      },
-      source: (m1, m2) => {
-        let m1_sources = Object.values(m1.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
-        m1_sources.sort();
-        let m2_sources = Object.values(m2.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
-        m2_sources.sort();
-        const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
-        const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
-        return attribute1.localeCompare(attribute2)
-      },
-      tags: (m1, m2) => {
-        let m1_tags = m1.props.metric.tags;
-        m1_tags.sort();
-        let m2_tags = m2.props.metric.tags;
-        m2_tags.sort();
-        const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
-        const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
-        return attribute1.localeCompare(attribute2)
+  let metric_components = []
+  let measurement_components = []
+  if (view === 'details') {
+    metric_components = create_metric_components(props, setSortColumn);
+    if (sortColumn !== null) {
+      const status_order = { "": "0", target_not_met: "1", debt_target_met: "2", near_target_met: "3", target_met: "4" };
+      const sorters = {
+        name: (m1, m2) => {
+          const attribute1 = get_metric_name(m1.props.metric, props.datamodel);
+          const attribute2 = get_metric_name(m2.props.metric, props.datamodel);
+          return attribute1.localeCompare(attribute2)
+        },
+        measurement: (m1, m2) => {
+          const attribute1 = m1.props.metric.value || "";
+          const attribute2 = m2.props.metric.value || "";
+          return attribute1.localeCompare(attribute2)
+        },
+        target: (m1, m2) => {
+          const attribute1 = get_metric_target(m1.props.metric);
+          const attribute2 = get_metric_target(m2.props.metric);
+          return attribute1.localeCompare(attribute2)
+        },
+        comment: (m1, m2) => {
+          const attribute1 = m1.props.metric.comment || '';
+          const attribute2 = m2.props.metric.comment || '';
+          return attribute1.localeCompare(attribute2)
+        },
+        status: (m1, m2) => {
+          const attribute1 = status_order[m1.props.metric.status || ""];
+          const attribute2 = status_order[m2.props.metric.status || ""];
+          return attribute1.localeCompare(attribute2)
+        },
+        source: (m1, m2) => {
+          let m1_sources = Object.values(m1.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
+          m1_sources.sort();
+          let m2_sources = Object.values(m2.props.metric.sources).map((source) => get_source_name(source, props.datamodel));
+          m2_sources.sort();
+          const attribute1 = m1_sources.length > 0 ? m1_sources[0] : '';
+          const attribute2 = m2_sources.length > 0 ? m2_sources[0] : '';
+          return attribute1.localeCompare(attribute2)
+        },
+        tags: (m1, m2) => {
+          let m1_tags = m1.props.metric.tags;
+          m1_tags.sort();
+          let m2_tags = m2.props.metric.tags;
+          m2_tags.sort();
+          const attribute1 = m1_tags.length > 0 ? m1_tags[0] : '';
+          const attribute2 = m2_tags.length > 0 ? m2_tags[0] : '';
+          return attribute1.localeCompare(attribute2)
+        }
+      }
+      metric_components.sort(sorters[sortColumn]);
+      if (sortDirection === 'descending') {
+        metric_components.reverse()
       }
     }
-    metric_components.sort(sorters[sortColumn]);
-    if (sortDirection === 'descending') {
-      metric_components.reverse()
-    }
   }
+  else if (view === 'measurements') {
+    let trendTableNrDates = 7
+    let trendTableInterval = 1
+    
+    const baseDate = props.report_date ? new Date(props.report_date) : new Date();
+    const intervalLength = trendTableInterval * 7;  // trendTableInterval is in weeks, convert to days
+    const columnDates = []
+    for (let offset = 0; offset < trendTableNrDates * intervalLength; offset += intervalLength) {
+      let date = new Date(baseDate.getTime());
+      date.setDate(date.getDate() - offset);
+      columnDates.push(date)
+  }
+    Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
+      measurement_components.push(<Table.Row key={metric_uuid}>
+        <Table.Cell>{get_metric_name(metric, props.datamodel)}</Table.Cell>
+        {columnDates.map((columnDate) => {
+          const measurement = measurements.find((measurement) => {
+            
+            if (measurement.metric_uuid === metric_uuid) {
+              console.log(measurement?.end)
+              console.log(measurement)
+            }
+            
+            return measurement.metric_uuid === metric_uuid && measurement.start <= columnDate.toISOString() && columnDate.toISOString() <= measurement.end
+          })
+          const metric_value = !measurement?.count?.value ? "?" : measurement.count.value;
+          const status = !measurement?.count?.status ? "unknown" : measurement.count.status;
+          return <Table.Cell className={status} key={columnDate} textAlign="right">{metric_value}{metric.unit}</Table.Cell>
+        })}
+      </Table.Row>)
+    });
+  }
+
+  
   function SortableHeader({ column, label, textAlign }) {
     const sorted = sortColumn === column ? sortDirection : null;
     return (
@@ -221,7 +257,7 @@ export function Subject(props) {
       <SubjectTitle subject={subject} {...props} />
       <Table sortable>
         <SubjectTableHeader />
-        <Table.Body>{view === 'details' ? metric_components : metric_components}</Table.Body>
+        <Table.Body>{view === 'details' ? metric_components : measurement_components}</Table.Body>
         <SubjectTableFooter />
       </Table>
     </div>
