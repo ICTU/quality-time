@@ -1,14 +1,14 @@
 import React from 'react';
-import { Table, Popup } from 'semantic-ui-react';
 import TimeAgo from 'react-timeago';
-import { SourceStatus } from './SourceStatus';
-import { TrendSparkline } from './TrendSparkline';
-import { MeasurementDetails } from './MeasurementDetails';
-import { StatusIcon } from './StatusIcon';
-import { Tag } from '../widgets/Tag';
+import { Popup, Table } from 'semantic-ui-react';
+import { formatMetricScaleAndUnit, format_minutes, get_metric_direction, get_metric_name, get_metric_target } from '../utils';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { get_metric_direction, get_metric_name, get_metric_target, format_metric_unit, format_minutes } from '../utils';
+import { Tag } from '../widgets/Tag';
 import "./Measurement.css";
+import { MeasurementDetails } from './MeasurementDetails';
+import { SourceStatus } from './SourceStatus';
+import { StatusIcon } from './StatusIcon';
+import { TrendSparkline } from './TrendSparkline';
 
 export function Measurement(props) {
   function MeasurementValue() {
@@ -48,9 +48,9 @@ export function Measurement(props) {
   const latest_measurements = metric.recent_measurements;
   const latest_measurement = latest_measurements.length > 0 ? latest_measurements[latest_measurements.length - 1] : null;
   const sources = (latest_measurement && latest_measurement.sources) || [];
-  const metric_unit = format_metric_unit(metric_type, metric);
+  const metric_unit = formatMetricScaleAndUnit(metric_type, metric);
   const metric_name = get_metric_name(metric, props.datamodel);
-  const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={format_metric_unit(metric_type, metric, false)} {...props} />
+  const details = <MeasurementDetails measurement={latest_measurement} metric_name={metric_name} scale={metric.scale} unit={formatMetricScaleAndUnit(metric_type, metric, false)} {...props} />
   const expanded = props.visibleDetailsTabs.filter((tab) => tab.startsWith(props.metric_uuid)).length > 0;
   function onExpand(expand) {
     if (expand) {
