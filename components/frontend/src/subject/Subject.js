@@ -4,18 +4,53 @@ import { add_metric, copy_metric, move_metric } from '../api/metric';
 import { get_subject_measurements } from '../api/subject';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Metric } from '../metric/Metric';
-import { get_metric_name, get_metric_target, get_source_name } from '../utils';
+import { format_metric_unit, get_metric_name, get_metric_target, get_source_name } from '../utils';
 import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { metric_options } from '../widgets/menu_options';
 import { SubjectTitle } from './SubjectTitle';
 
-function fetch_measurements(subject_uuid, subject, report_date, setMeasurements) {
-  get_subject_measurements(subject_uuid, report_date).then(json => {
-    if (json.ok !== false) {
-      setMeasurements(json.measurements)
+function formatted_metric_unit(datamodel, metric) {
+  const metric_type = datamodel.metrics[metric.type];
+  return format_metric_unit(metric_type, metric);
+}
+
+function sortedMetricMeasurements(measurements) {
+  // sor measurements with descending start
+  const sortedMeasurements = measurements.sort((m1, m2) => {
+    return m1.start < m2.start
+  })
+
+  // put all measurements in a dictionary with metric as key
+  const metricMeasurements = {}
+  sortedMeasurements.forEach(measurement => {
+    if (metricMeasurements[measurement.metric_uuid] === undefined) {
+      metricMeasurements[measurement.metric_uuid] = [measurement]
+    } else {
+      metricMeasurements[measurement.metric_uuid].push(measurement)
     }
   })
+
+  return metricMeasurements
+}
+
+function fetchSortedMeasurements(subject_uuid, report_date, setMeasurements) {
+  get_subject_measurements(subject_uuid, report_date).then(json => {
+    if (json.ok !== false) {
+      const sortedMeasurements = sortedMetricMeasurements(json.measurements)
+      setMeasurements(sortedMeasurements)
+    }
+  })
+}
+
+function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
+  const metrics = {}
+  Object.entries(allMetrics).forEach(([metric_uuid, metric]) => {
+    if (hideMetricsNotRequiringAction && (metric.status === "target_met" || metric.status === "debt_target_met")) { return }
+    if (tags.length > 0 && tags.filter(value => metric.tags.includes(value)).length === 0) { return }
+    metrics[metric_uuid] = metric
+  })
+  return metrics
 }
 
 function create_metric_components(props, setSortColumn) {
@@ -23,10 +58,8 @@ function create_metric_components(props, setSortColumn) {
   const last_index = Object.entries(subject.metrics).length - 1;
 
   let components = [];
-  Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
-    const status = metric.status;
-    if (props.hideMetricsNotRequiringAction && (status === "target_met" || status === "debt_target_met")) { return }
-    if (props.tags.length > 0 && props.tags.filter(value => metric.tags.includes(value)).length === 0) { return }
+  const metrics = displayedMetrics(subject.metrics, props.hideMetricsNotRequiringAction, props.tags)
+  Object.entries(metrics).forEach(([metric_uuid, metric], index) => {
     components.push(
       <Metric
         first_metric={index === 0}
@@ -63,7 +96,7 @@ export function Subject(props) {
 
   useEffect(() => {
     if (view === 'measurements') {
-      fetch_measurements(props.subject_uuid, subject, props.report_date, setMeasurements);
+      fetchSortedMeasurements(props.subject_uuid, props.report_date, setMeasurements);
     } 
     // eslint-disable-next-line
   }, [view]);
@@ -137,25 +170,32 @@ export function Subject(props) {
       let date = new Date(baseDate.getTime());
       date.setDate(date.getDate() - offset);
       columnDates.push(date)
-  }
-    Object.entries(subject.metrics).forEach(([metric_uuid, metric], index) => {
-      measurement_components.push(<Table.Row key={metric_uuid}>
-        <Table.Cell>{get_metric_name(metric, props.datamodel)}</Table.Cell>
-        {columnDates.map((columnDate) => {
-          const measurement = measurements.find((measurement) => {
-            
-            if (measurement.metric_uuid === metric_uuid) {
-              console.log(measurement?.end)
-              console.log(measurement)
+    }
+
+    const metrics = displayedMetrics(subject.metrics, props.hideMetricsNotRequiringAction, props.tags)
+
+    Object.entries(metrics).forEach(([metricUuid, metric]) => {
+      const meatricMeasurements = measurements[metricUuid]
+      measurement_components.push(
+        <Table.Row key={metricUuid}>
+          <Table.Cell>{get_metric_name(metric, props.datamodel)}</Table.Cell>
+          {columnDates.map((columnDate, index) => {
+
+            let measurement;
+            if (index === 0) {
+              measurement = meatricMeasurements?.[0]
+            } else {
+              measurement = meatricMeasurements?.find((measurement) => {
+                return measurement.start <= columnDate.toISOString() && columnDate.toISOString() <= measurement.end
+              })
             }
             
-            return measurement.metric_uuid === metric_uuid && measurement.start <= columnDate.toISOString() && columnDate.toISOString() <= measurement.end
-          })
-          const metric_value = !measurement?.count?.value ? "?" : measurement.count.value;
-          const status = !measurement?.count?.status ? "unknown" : measurement.count.status;
-          return <Table.Cell className={status} key={columnDate} textAlign="right">{metric_value}{metric.unit}</Table.Cell>
-        })}
-      </Table.Row>)
+            const metric_value = !measurement?.count?.value ? "?" : measurement.count.value;
+            const status = !measurement?.count?.status ? "unknown" : measurement.count.status;
+            const unit = formatted_metric_unit(props.datamodel, metric)
+            return <Table.Cell className={status} key={columnDate} textAlign="right">{metric_value}{unit}</Table.Cell>
+          })}
+        </Table.Row>)
     });
   }
 
