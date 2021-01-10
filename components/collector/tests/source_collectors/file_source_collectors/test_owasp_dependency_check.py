@@ -15,15 +15,17 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
         self.sources = dict(
             sourceid=dict(type="owasp_dependency_check", parameters=dict(url="https://owasp_dependency_check.xml"))
         )
+        self.file_name = "jquery.min.js"
+        self.file_path = f"/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/{self.file_name}"
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        xml = """<?xml version="1.0"?>
+        xml = f"""<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
             <dependency isVirtual="false">
                 <sha1>12345</sha1>
-                <fileName>jquery.min.js</fileName>
-                <filePath>/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js</filePath>
+                <fileName>{self.file_name}</fileName>
+                <filePath>{self.file_path}</filePath>
                 <vulnerabilities>
                     <vulnerability source="NVD">
                         <cvssV2>
@@ -46,20 +48,20 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
                 url="https://owasp_dependency_check.html#l1_12345",
                 highest_severity="Medium",
                 nr_vulnerabilities="2",
-                file_name="jquery.min.js",
-                file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js",
+                file_name=self.file_name,
+                file_path=self.file_path,
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_low_warnings(self):
         """Test that the number of warnings is returned."""
-        xml = """<?xml version="1.0"?>
+        xml = f"""<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
             <dependency isVirtual="false">
                 <sha1>12345</sha1>
-                <fileName>jquery.min.js</fileName>
-                <filePath>/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js</filePath>
+                <fileName>{self.file_name}</fileName>
+                <filePath>{self.file_path}</filePath>
                 <vulnerabilities>
                     <vulnerability source="NVD">
                         <cvssV2>
@@ -77,8 +79,8 @@ class OWASPDependencyCheckTest(SourceCollectorTestCase):
                 url="https://owasp_dependency_check.html#l1_12345",
                 highest_severity="Low",
                 nr_vulnerabilities="1",
-                file_name="jquery.min.js",
-                file_path="/home/jenkins/workspace/hackazon-owaspdep/hackazon/js/jquery.min.js",
+                file_name=self.file_name,
+                file_path=self.file_path,
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
@@ -152,12 +154,12 @@ AssertionError: The XML root element should be one of \
 
     async def test_dependencies(self):
         """Test that the dependencies are returned."""
-        xml = """<?xml version="1.0"?>
+        xml = f"""<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.2.0.xsd">
             <dependency isVirtual="false">
                 <sha1>9999</sha1>
-                <fileName>jquery.min.js</fileName>
-                <filePath>/home/jenkins/workspace/hackazon/js/jquery.min.js</filePath>
+                <fileName>{self.file_name}</fileName>
+                <filePath>{self.file_path}</filePath>
                 <vulnerabilities>
                     <vulnerability source="NVD">
                         <cvssV2>
@@ -173,8 +175,8 @@ AssertionError: The XML root element should be one of \
             dict(
                 key="9999",
                 url="https://owasp_dependency_check.html#l1_9999",
-                file_name="jquery.min.js",
-                file_path="/home/jenkins/workspace/hackazon/js/jquery.min.js",
+                file_name=self.file_name,
+                file_path=self.file_path,
             )
         ]
         self.assert_measurement(response, value="1", entities=expected_entities)
