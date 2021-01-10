@@ -3808,6 +3808,10 @@
                             "url": "url"
                         },
                         {
+                            "name": "File name",
+                            "key": "file_name"
+                        },
+                        {
                             "name": "Highest severity",
                             "key": "highest_severity",
                             "color": {
@@ -3831,6 +3835,10 @@
                             "name": "File path",
                             "key": "file_path",
                             "url": "url"
+                        },
+                        {
+                            "name": "File name",
+                            "key": "file_name"
                         }
                     ]
                 }

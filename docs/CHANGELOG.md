@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The frontend would reload the change log every time the server notified the frontend about the number of measurements, causing unnecessary updates of the UI. Fixes [#1555](https://github.com/ICTU/quality-time/issues/1555).
 - When the user opens a report in the frontend, don't send unneeded data to the frontend. Fixes [#1764](https://github.com/ICTU/quality-time/issues/1764).
 - Don't crash the notifier when a metric has an unknown (white) status. Fixes [#1802](https://github.com/ICTU/quality-time/issues/1802). 
+- Some dependencies in the OWASP Dependency Check report have no hash. In those cases *Quality-time* would create a hash based on the file path of the dependency. However, file paths aren't necessarily unique across dependencies. Add the file name to the hash to make it unique. Fixes [#1819](https://github.com/ICTU/quality-time/issues/1819).
 
 ### Added
 
