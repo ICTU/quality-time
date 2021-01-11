@@ -82,12 +82,27 @@ export function TrendTable({ data_model, measurements, metric, report_date, scal
             }
         })
     });
+
+    const targets = [];
+    table.forEach(([target, direction], date) => {
+        targets.push(<Table.Cell key={date} textAlign="right">{direction} {target}{unit}</Table.Cell>)
+    });
     return (
         <Table definition size='small'>
             <Header
                 dates={table.keys()} setTrendTableInterval={setTrendTableInterval} setTrendTableNrDates={setTrendTableNrDates}
                 trendTableInterval={trendTableInterval} trendTableNrDates={trendTableNrDates} />
             <Body table={table} unit={unit} />
+            <Table.Body>
+                <Table.Row>
+                    <Table.Cell>Measurement</Table.Cell>
+                    {measurements}
+                </Table.Row>
+                <Table.Row>
+                    <Table.Cell>Target</Table.Cell>
+                    {targets}
+                </Table.Row>
+            </Table.Body>
         </Table>
     )
 }
