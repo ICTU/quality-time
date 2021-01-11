@@ -40,10 +40,11 @@ function sortAndOrganizeMeasurements(measurements) {
 
 export function TrendTable({
     datamodel,
-    report_date,
+    reportDate,
     metrics,
     measurements,
     extraHamburgerItems,
+    showTargets,
     trendTableInterval,
     setTrendTableInterval,
     trendTableNrDates,
@@ -51,29 +52,32 @@ export function TrendTable({
     tableFooter,
 }) {
 
-  const dates = columnDates(report_date, trendTableInterval, trendTableNrDates)
+  const dates = columnDates(reportDate, trendTableInterval, trendTableNrDates)
   const orderedMeasurements = sortAndOrganizeMeasurements(measurements)
-
-  console.log(dates)
-
-  console.log(orderedMeasurements)
-
+    
   return (
     <Table>
-      <TrendTableHeader extraHamburgerItems={extraHamburgerItems} columnDates={dates} trendTableInterval={trendTableInterval} setTrendTableInterval={setTrendTableInterval} trendTableNrDates={trendTableNrDates} setTrendTableNrDates={setTrendTableNrDates} />
+      <TrendTableHeader 
+        extraHamburgerItems={extraHamburgerItems}
+        columnDates={dates}
+        trendTableInterval={trendTableInterval}
+        setTrendTableInterval={setTrendTableInterval}
+        trendTableNrDates={trendTableNrDates}
+        setTrendTableNrDates={setTrendTableNrDates} />
       <Table.Body>
         {Object.entries(metrics).map(([metric_uuid, metric]) => {
           const metricType = datamodel.metrics[metric.type]
-          const preCells = [<Table.Cell></Table.Cell>, <Table.Cell><strong>{get_metric_name(metric, datamodel)}</strong></Table.Cell>]
+          const metricName = get_metric_name(metric, datamodel)
           return (<MeasurementsRow 
-            metricType={metricType} 
-            metric={metric} 
+            metricType={metricType}
+            metricName={metricName}
+            metric={metric}
             dates={dates}
-            metricMeasurements={orderedMeasurements[metric_uuid]} 
-            report_date={report_date} 
-            trendTableInterval={trendTableInterval} 
-            trendTableNrDates={trendTableNrDates} 
-            preCells={preCells} />)
+            metricMeasurements={orderedMeasurements[metric_uuid]}
+            showTargetRow={showTargets}
+            report_date={reportDate}
+            trendTableInterval={trendTableInterval}
+            trendTableNrDates={trendTableNrDates} />)
           })
         }
       </Table.Body>

@@ -102,14 +102,14 @@ export function Subject(props) {
         </Table>
           : <TrendTable
             datamodel={props.datamodel}
-            report_date={props.report_date}
+            reportDate={props.report_date}
             metrics={metrics}
             measurements={measurements}
             extraHamburgerItems={hamburgerItems}
             trendTableInterval={props.trendTableInterval}
             setTrendTableInterval={props.setTrendTableInterval}
             trendTableNrDates={props.trendTableNrDates}
-            setTrendTableNrDates={props.setTrendTableInterval}
+            setTrendTableNrDates={props.setTrendTableNrDates}
             tableFooter={subjectFooter}
           />}
     </div>

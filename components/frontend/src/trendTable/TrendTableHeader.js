@@ -5,8 +5,8 @@ export function TrendTableHeader({extraHamburgerItems, columnDates, trendTableNr
     return (
         <Table.Header>
             <Table.Row>
-                <Table.HeaderCell collapsing textAlign="center">
-                    <HamburgerMenu onClick={() => {console.log("clicl")}}>
+                <Table.HeaderCell textAlign="left">
+                    <HamburgerMenu>
                     {extraHamburgerItems}
                     <Dropdown.Header>Number of dates</Dropdown.Header>
                         {[2, 3, 4, 5, 6, 7].map((nr) =>
@@ -18,7 +18,6 @@ export function TrendTableHeader({extraHamburgerItems, columnDates, trendTableNr
                         )}
                     </HamburgerMenu>
                 </Table.HeaderCell>
-                <Table.HeaderCell>Metric</Table.HeaderCell>
                 {columnDates.map(date => <Table.HeaderCell key={date} textAlign="right">{date.toLocaleDateString()}</Table.HeaderCell>)}
                 <Table.HeaderCell>Unit</Table.HeaderCell>
             </Table.Row>
