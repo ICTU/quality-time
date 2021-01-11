@@ -97,6 +97,7 @@ export function Subject(props) {
             setView={setView} 
             sortColumn={sortColumn} 
             setSortColumn={setSortColumn} 
+            extraHamburgerItems={hamburgerItems}
             {...props}/>
           {subjectFooter}
         </Table>

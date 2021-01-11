@@ -79,7 +79,6 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
   }
 }
 
-// --------------------------------- Component ------------------------------------------
 export function SubjectDetails(props) {
 
   const [sortDirection, setSortDirection] = useState('ascending');
@@ -120,17 +119,7 @@ export function SubjectDetails(props) {
     return (
       <Table.HeaderCell collapsing textAlign="center">
         <HamburgerMenu>
-          <Dropdown.Header>Views</Dropdown.Header>
-          <Dropdown.Item onClick={() => props.setView('details')}>
-            Details
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => props.setView('measurements')}>
-            Trend table
-          </Dropdown.Item>
-          <Dropdown.Header>Rows</Dropdown.Header>
-          <Dropdown.Item onClick={() => props.setHideMetricsNotRequiringAction(!props.hideMetricsNotRequiringAction)}>
-            {props.hideMetricsNotRequiringAction ? 'Show all metrics' : 'Hide metrics not requiring action'}
-          </Dropdown.Item>
+          {props.extraHamburgerItems}
           <Dropdown.Header>Columns</Dropdown.Header>
           <ColumnMenuItem column="trend" />
           <ColumnMenuItem column="status" />
