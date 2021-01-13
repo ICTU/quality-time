@@ -15,18 +15,55 @@ class GitLabTestCase(SourceCollectorTestCase):
             source_id=dict(
                 type="gitlab",
                 parameters=dict(
-                    url="https://gitlab/", project="namespace/project", file_path="file", branch="branch",
-                    inactive_days="7", branches_to_ignore=["ignored_.*"])))
+                    url="https://gitlab/",
+                    project="namespace/project",
+                    file_path="file",
+                    branch="branch",
+                    inactive_days="7",
+                    branches_to_ignore=["ignored_.*"],
+                ),
+            )
+        )
         self.gitlab_jobs_json = [
-            dict(id="1", status="failed", name="job1", stage="stage", created_at="2019-03-31T19:50:39.927Z",
-                 web_url="https://gitlab/job1", ref="master"),
-            dict(id="2", status="failed", name="job2", stage="stage", created_at="2019-03-31T19:50:39.927Z",
-                 web_url="https://gitlab/job2", ref="develop")]
+            dict(
+                id="1",
+                status="failed",
+                name="job1",
+                stage="stage",
+                created_at="2019-03-31T19:50:39.927Z",
+                web_url="https://gitlab/job1",
+                ref="master",
+            ),
+            dict(
+                id="2",
+                status="failed",
+                name="job2",
+                stage="stage",
+                created_at="2019-03-31T19:50:39.927Z",
+                web_url="https://gitlab/job2",
+                ref="develop",
+            ),
+        ]
         self.expected_entities = [
-            dict(key="1", name="job1", stage="stage", branch="master", url="https://gitlab/job1",
-                 build_date="2019-03-31", build_status="failed"),
-            dict(key="2", name="job2", stage="stage", branch="develop", url="https://gitlab/job2",
-                 build_date="2019-03-31", build_status="failed")]
+            dict(
+                key="1",
+                name="job1",
+                stage="stage",
+                branch="master",
+                url="https://gitlab/job1",
+                build_date="2019-03-31",
+                build_status="failed",
+            ),
+            dict(
+                key="2",
+                name="job2",
+                stage="stage",
+                branch="develop",
+                url="https://gitlab/job2",
+                build_date="2019-03-31",
+                build_status="failed",
+            ),
+        ]
 
 
 class CommonGitLabJobsTestsMixin:
@@ -49,7 +86,19 @@ class CommonGitLabJobsTestsMixin:
         self.sources["source_id"]["parameters"]["private_token"] = "token"
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(
-            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100")
+            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
+        )
+
+    async def test_pagination(self):
+        """Test that pagination works."""
+        response = await self.collect(
+            self.metric,
+            get_request_json_return_value=self.gitlab_jobs_json,
+            get_request_links=dict(next="https://next_page"),
+        )
+        self.assert_measurement(
+            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
+        )
 
 
 class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
@@ -75,8 +124,16 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.insert(
             0,
-            dict(id="3", status="success", name="job1", stage="stage", created_at="2019-03-31T19:51:39.927Z",
-                 web_url="https://gitlab/jobs/2", ref="master"))
+            dict(
+                id="3",
+                status="success",
+                name="job1",
+                stage="stage",
+                created_at="2019-03-31T19:51:39.927Z",
+                web_url="https://gitlab/jobs/2",
+                ref="master",
+            ),
+        )
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])
 
@@ -110,9 +167,11 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
         with patch("aiohttp.ClientSession.head", AsyncMock(return_value=self.head_response)):
             response = await self.collect(
                 self.metric,
-                get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")])
+                get_request_json_side_effect=[[], self.commit_json, dict(web_url="https://gitlab.com/project")],
+            )
         self.assert_measurement(
-            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
+            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file"
+        )
 
     async def test_source_up_to_dateness_folder(self):
         """Test that the age of a folder in a repo can be measured."""
@@ -121,10 +180,15 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
                 self.metric,
                 get_request_json_side_effect=[
                     [dict(type="blob", path="file.txt"), dict(type="tree", path="folder")],
-                    [dict(type="blob", path="file.txt")], self.commit_json, self.commit_json,
-                    dict(web_url="https://gitlab.com/project")])
+                    [dict(type="blob", path="file.txt")],
+                    self.commit_json,
+                    self.commit_json,
+                    dict(web_url="https://gitlab.com/project"),
+                ],
+            )
         self.assert_measurement(
-            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file")
+            response, value=str(self.expected_age), landing_url="https://gitlab.com/project/blob/branch/file"
+        )
 
     async def test_landing_url_on_failure(self):
         """Test that the landing url is the API url when GitLab cannot be reached."""
@@ -140,17 +204,36 @@ class GitlabUnmergedBranchesTest(GitLabTestCase):
         metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         gitlab_json = [
             dict(name="master", default=True, merged=False),
-            dict(name="unmerged_branch", default=False, merged=False,
-                 web_url="https://gitlab/namespace/project/-/tree/unmerged_branch",
-                 commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
-            dict(name="ignored_branch", default=False, merged=False,
-                 commit=dict(committed_date="2019-04-02T11:33:04.000+02:00")),
-            dict(name="active_unmerged_branch", default=False, merged=False,
-                 commit=dict(committed_date=datetime.now(timezone.utc).isoformat())),
-            dict(name="merged_branch", default=False, merged=True)]
+            dict(
+                name="unmerged_branch",
+                default=False,
+                merged=False,
+                web_url="https://gitlab/namespace/project/-/tree/unmerged_branch",
+                commit=dict(committed_date="2019-04-02T11:33:04.000+02:00"),
+            ),
+            dict(
+                name="ignored_branch",
+                default=False,
+                merged=False,
+                commit=dict(committed_date="2019-04-02T11:33:04.000+02:00"),
+            ),
+            dict(
+                name="active_unmerged_branch",
+                default=False,
+                merged=False,
+                commit=dict(committed_date=datetime.now(timezone.utc).isoformat()),
+            ),
+            dict(name="merged_branch", default=False, merged=True),
+        ]
         response = await self.collect(metric, get_request_json_return_value=gitlab_json)
         expected_entities = [
-            dict(key="unmerged_branch", name="unmerged_branch", commit_date="2019-04-02",
-                 url="https://gitlab/namespace/project/-/tree/unmerged_branch")]
+            dict(
+                key="unmerged_branch",
+                name="unmerged_branch",
+                commit_date="2019-04-02",
+                url="https://gitlab/namespace/project/-/tree/unmerged_branch",
+            )
+        ]
         self.assert_measurement(
-            response, value="1", entities=expected_entities, landing_url="https://gitlab/namespace/project/-/branches")
+            response, value="1", entities=expected_entities, landing_url="https://gitlab/namespace/project/-/branches"
+        )

@@ -27,6 +27,14 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url += f"{sep}per_page=100"
         return URL(api_url)
 
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to support GitLab pagination. See https://docs.gitlab.com/ce/api/README.html#pagination."""
+        responses = await super()._get_source_responses(*urls)
+        # For each response, get the link to the next page, if any:
+        if next_links := [link for response in responses if (link := response.links.get("next"))]:
+            responses.extend(await self._get_source_responses(*next_links))
+        return responses
+
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         return None  # The private token is passed as header
 
@@ -49,9 +57,16 @@ class GitLabJobsBase(GitLabBase):
         jobs = await self.__jobs(responses)
         entities = [
             Entity(
-                key=job["id"], name=job["name"], url=job["web_url"], build_status=job["status"], branch=job["ref"],
-                stage=job["stage"], build_date=str(parse(job["created_at"]).date()))
-            for job in jobs]
+                key=job["id"],
+                name=job["name"],
+                url=job["web_url"],
+                build_status=job["status"],
+                branch=job["ref"],
+                stage=job["stage"],
+                build_date=str(parse(job["created_at"]).date()),
+            )
+            for job in jobs
+        ]
         return SourceMeasurement(entities=entities)
 
     async def __jobs(self, responses: SourceResponses) -> Sequence[Job]:
@@ -70,8 +85,9 @@ class GitLabJobsBase(GitLabBase):
 
     def _count_job(self, job: Job) -> bool:
         """Return whether to count the job."""
-        return not match_string_or_regular_expression(job["name"], self._parameter("jobs_to_ignore")) and \
-            not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
+        return not match_string_or_regular_expression(
+            job["name"], self._parameter("jobs_to_ignore")
+        ) and not match_string_or_regular_expression(job["ref"], self._parameter("refs_to_ignore"))
 
 
 class GitLabFailedJobs(GitLabJobsBase):
@@ -104,8 +120,8 @@ class GitLabSourceUpToDateness(GitLabBase):
         if not responses:
             return await super()._landing_url(responses)
         web_url = (await responses[0].json())["web_url"]
-        branch = self._parameter('branch', quote=True)
-        file_path = self._parameter('file_path', quote=True)
+        branch = self._parameter("branch", quote=True)
+        file_path = self._parameter("file_path", quote=True)
         return URL(f"{web_url}/blob/{branch}/{file_path}")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -119,21 +135,24 @@ class GitLabSourceUpToDateness(GitLabBase):
     async def __get_commits_recursively(self, file_path: str, first_call: bool = True) -> SourceResponses:
         """Get the commits of files recursively."""
         tree_api = await self._gitlab_api_url(
-            f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}")
+            f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}"
+        )
         tree_response = (await super()._get_source_responses(tree_api))[0]
         tree = await tree_response.json()
         file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
         folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
         if not tree and first_call:
             file_paths = [file_path]
-        commits = [self.__last_commit(file_path) for file_path in file_paths] + \
-            [self.__get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths]
+        commits = [self.__last_commit(file_path) for file_path in file_paths] + [
+            self.__get_commits_recursively(folder_path, first_call=False) for folder_path in folder_paths
+        ]
         return SourceResponses(responses=list(itertools.chain(*(await asyncio.gather(*commits)))))
 
     async def __last_commit(self, file_path: str) -> SourceResponses:
         """Return the last, meaning the most recent, commit."""
         files_api_url = await self._gitlab_api_url(
-            f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}")
+            f"repository/files/{file_path}?ref={self._parameter('branch', quote=True)}"
+        )
         response = await self._session.head(files_api_url, headers=self._headers())
         last_commit_id = response.headers["X-Gitlab-Last-Commit-Id"]
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
@@ -160,9 +179,14 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
     async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
         """Override to return a list of unmerged and inactive branches."""
         branches = await responses[0].json()
-        return [branch for branch in branches if not branch["default"] and not branch["merged"] and
-                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
-                not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
+        return [
+            branch
+            for branch in branches
+            if not branch["default"]
+            and not branch["merged"]
+            and days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))
+            and not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))
+        ]
 
     def _commit_datetime(self, branch) -> datetime:
         """Override to parse the commit date from the branch."""
