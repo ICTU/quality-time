@@ -7,6 +7,7 @@ const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metric
 const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [], recent_measurements: [] } } } } };
 
 let mockHistory = {};
+const get_subject_measurements = jest.fn([])
 
 function subjects() {
     return (
@@ -41,9 +42,9 @@ describe("<Subjects />", () => {
     it('hides metrics not requiring action', () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(2).simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(true);
-        wrapper.find("Subject").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(2).simulate("click");
         expect(wrapper.find("Subject").prop("hideMetricsNotRequiringAction")).toBe(false);
     });
     it('hides metrics not requiring action on load', () => {
@@ -59,11 +60,11 @@ describe("<Subjects />", () => {
     it('toggles tabs', () => {
         const wrapper = subjects();
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
-        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:0"]);
-        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("MeasurementDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("MeasurementDetails").dive().find("Tab").dive().find("Menu").dive().find("MenuItem").at(1).dive().find("a").simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual(["metric_uuid:1"]);
-        wrapper.find("Subject").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
     });
 });

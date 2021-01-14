@@ -11,22 +11,22 @@ describe("MeasurementRow", () => {
     const measurements = [
         {
             metric_uuid: "1",
+            start: "2020-01-06T00:00:00+00:00",
+            end: "2020-01-08T00:00:00+00:00",
+            count: {
+                value: "value 1",
+                status: "near_target_met",
+                target: "target 1",
+            }
+        },
+        {
+            metric_uuid: "1",
             start: "2020-01-04T00:00:00+00:00",
             end: "2020-01-06T00:00:00+00:00",
             count: {
                 value: "value 0",
                 status: "near_target_met",
                 target: "target 0",
-            }
-        },
-        {
-            metric_uuid: "1",
-            start: "2020-01-06T00:00:00+00:00",
-            end: "2020-01-08T00:00:00+00:00",
-            count: {
-                value: "value 1",
-                status: "near_target_met",
-                target: "target_1",
             }
         },
     ]
