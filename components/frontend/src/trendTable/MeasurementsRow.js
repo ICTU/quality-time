@@ -18,7 +18,7 @@ export function MeasurementsRow({metricType, metricName, metric, metricMeasureme
         return measurement.start <= date.toISOString() && date.toISOString() <= measurement.end
       })
     }
-
+    
     const metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
     const status = !measurement?.[metric.scale]?.status ? "unknown" : measurement.[metric.scale].status;
     measurementCells.push(<Table.Cell className={status} key={date} textAlign="right">{metric_value}{formatMetricScale(metric)}</Table.Cell>)
