@@ -81,25 +81,6 @@ class CommonGitLabJobsTestsMixin:
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
-    async def test_private_token(self):
-        """Test that the private token is used."""
-        self.sources["source_id"]["parameters"]["private_token"] = "token"
-        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
-        self.assert_measurement(
-            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
-        )
-
-    async def test_pagination(self):
-        """Test that pagination works."""
-        response = await self.collect(
-            self.metric,
-            get_request_json_return_value=self.gitlab_jobs_json,
-            get_request_links=dict(next="https://next_page"),
-        )
-        self.assert_measurement(
-            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
-        )
-
 
 class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab failed jobs metric."""
@@ -137,6 +118,16 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])
 
+    async def test_private_token(self):
+        """Test that the private token is used."""
+        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(
+            response,
+            value="2",
+            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&scope=failed",
+        )
+
 
 class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
@@ -149,6 +140,14 @@ class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         """Test that the number of unused jobs is returned."""
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="2", entities=self.expected_entities)
+
+    async def test_private_token(self):
+        """Test that the private token is used."""
+        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(
+            response, value="2", api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100"
+        )
 
 
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
