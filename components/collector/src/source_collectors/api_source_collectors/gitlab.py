@@ -27,20 +27,6 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         api_url += f"{sep}per_page=100"
         return URL(api_url)
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to support GitLab pagination. See https://docs.gitlab.com/ce/api/README.html#pagination."""
-        from logging import warning
-
-        warning(">1> %s", urls)
-        responses = await super()._get_source_responses(*urls)
-        warning(">2> %s", len(responses))
-        # For each response, get the link to the next page, if any:
-        if next_links := [link for response in responses if (link := response.links.get("next", {}).get("url"))]:
-            warning(">3> %s", next_links)
-            responses.extend(await self._get_source_responses(*next_links))
-            warning(">4> %s", len(responses))
-        return responses
-
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         return None  # The private token is passed as header
 
@@ -98,6 +84,10 @@ class GitLabJobsBase(GitLabBase):
 
 class GitLabFailedJobs(GitLabJobsBase):
     """Collector class to get failed job counts from GitLab."""
+
+    async def _api_url(self) -> URL:
+        """Extend to return only failed jobs."""
+        return URL(str(await super()._api_url()) + "&scope=failed")
 
     def _count_job(self, job: Job) -> bool:
         """Return whether the job has failed."""
