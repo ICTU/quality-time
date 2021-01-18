@@ -52,18 +52,19 @@ it('shows the add subject button', () => {
 });
 
 it('changes the sort column when clicked', () => {
+  function table_header_cell(index) {
+    return wrapper.find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("SortableHeader").at(index).dive().find("TableHeaderCell");
+  }
   const wrapper = shallow(<Subject datamodel={datamodel} hiddenColumns={[]} report={report} subject_uuid="subject_uuid" tags={[]} visibleDetailsTabs={[]} />);
-  const sortableHeaders = wrapper.find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("SortableHeader");
-  sortableHeaders.forEach(sortableHeader => {
-    const tableHeaderCell = sortableHeader.dive().find("TableHeaderCell")
-    expect(tableHeaderCell.prop("sorted")).toBe(null);
-    tableHeaderCell.simulate("click");
-    expect(tableHeaderCell.prop("sorted")).toBe("ascending");
-    tableHeaderCell.simulate("click");
-    expect(tableHeaderCell.prop("sorted")).toBe("descending");
-    tableHeaderCell.simulate("click");
-    expect(tableHeaderCell.prop("sorted")).toBe(null);
-  })
+  for (let index of [0, 1, 2, 3, 4, 5, 6]) {
+    expect(table_header_cell(index).prop("sorted")).toBe(null);
+    table_header_cell(index).simulate("click");
+    expect(table_header_cell(index).prop("sorted")).toBe("ascending");
+    table_header_cell(index).simulate("click");
+    expect(table_header_cell(index).prop("sorted")).toBe("descending");
+    table_header_cell(index).simulate("click");
+    expect(table_header_cell(index).prop("sorted")).toBe(null);
+  }
 });
 
 it('copies a metric when the copy button is clicked and a metric is selected', async () => {
