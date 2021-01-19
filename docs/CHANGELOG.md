@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When measuring failed jobs with GitLab as source, *Quality-time* would get the 100 most recent jobs instead of the 100 most recent *failed* jobs. Fixes [#1813](https://github.com/ICTU/quality-time/issues/1813).
 - Make sure the notifier component does not crash when a metric has no recent measurements. Fixes [#1831](https://github.com/ICTU/quality-time/issues/1831).
 
+### Added
+
+- Allow using Azure DevOps jobs as source for the 'source up-to-dateness' metric. Closes [#1804](https://github.com/ICTU/quality-time/issues/1804).
+
 ## [3.17.0] - [2021-01-17]
 
 ### Changed
