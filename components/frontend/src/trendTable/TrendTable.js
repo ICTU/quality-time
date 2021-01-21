@@ -5,7 +5,7 @@ import { MeasurementsRow } from './MeasurementsRow';
 import { TrendTableHeader } from './TrendTableHeader';
 
 
-function columnDates(report_date, trendTableInterval, trendTableNrDates) {
+function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
   const baseDate = report_date ? new Date(report_date) : new Date();
   const intervalLength = trendTableInterval * 7;  // trendTableInterval is in weeks, convert to days
   const columnDates = []
@@ -52,7 +52,7 @@ export function TrendTable({
     tableFooter,
 }) {
 
-  const dates = columnDates(reportDate, trendTableInterval, trendTableNrDates)
+  const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
   const orderedMeasurements = sortAndOrganizeMeasurements(measurements)
     
   return (

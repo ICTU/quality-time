@@ -14,8 +14,8 @@ export function MeasurementsRow({metricType, metricName, metric, metricMeasureme
     if (index === 0) {
       measurement = metricMeasurements?.[0]  // for the first cell, always take the first available measurement
     } else {
-      measurement = metricMeasurements?.find((measurement) => {
-        return measurement.start <= date.toISOString() && date.toISOString() <= measurement.end
+      measurement = metricMeasurements?.find((metricMeasurement) => {
+        return metricMeasurement.start <= date.toISOString() && date.toISOString() <= metricMeasurement.end
       })
     }
     
