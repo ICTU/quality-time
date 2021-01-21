@@ -1,8 +1,8 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
-import { Subject } from './Subject';
+import { mount} from 'enzyme';
 import { SubjectDetails } from './SubjectDetails';
 import { Table } from 'semantic-ui-react';
+import { render } from '@testing-library/react';
 
 const datamodel = {
   subjects: {
@@ -33,6 +33,23 @@ const report = {
     }
   }
 };
+
+it('displays one row per metric', () => {
+    const { queryAllByText } = render(
+        <Table>
+            <SubjectDetails 
+                datamodel={datamodel}
+                subject_uuid="subject_uuid" 
+                metrics={report.subjects.subject_uuid.metrics} 
+                report={report}
+                hiddenColumns={[]}
+                visibleDetailsTabs={[]} />
+        </Table>
+    )
+
+    expect(queryAllByText("M1").length).toBe(1)
+    expect(queryAllByText("M2").length).toBe(1)
+})
 
 it('changes the sort column when clicked', () => {
   function table_header_cell(index) {
