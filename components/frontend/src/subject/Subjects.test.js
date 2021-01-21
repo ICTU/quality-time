@@ -7,7 +7,6 @@ const datamodel = { subjects: { subject_type: { name: "Subject type" } }, metric
 const report = { subjects: { subject_uuid: { type: "subject_type", name: "Subject title", metrics: { metric_uuid: { type: "metric_type", tags: [], recent_measurements: [] } } } } };
 
 let mockHistory = {};
-const get_subject_measurements = jest.fn([])
 
 function subjects() {
     return (

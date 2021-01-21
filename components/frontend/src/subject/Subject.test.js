@@ -3,37 +3,7 @@ import { Subject } from "./Subject";
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as TrendTable from '../trendTable/TrendTable';
 import * as SubjectDetails from './SubjectDetails';
-
-
-const datamodel = {
-  subjects: {
-    subject_type: { name: "Subject type", metrics: ["metric_type"] }
-  },
-  metrics: {
-    metric_type: { name: "Metric type", tags: [] }
-  }
-}
-const report = {
-  subjects: {
-    subject_uuid: {
-      type: "subject_type", name: "Subject 1 title", metrics: {
-        metric_uuid: {
-          name: "M1", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        },
-        metric_uuidi2: {
-          name: "M2", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        }
-      }
-    },
-    subject_uuid2: {
-      type: "subject_type", name: "Subject 2 title", metrics: {
-        metric_uuid3: {
-          name: "M3", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        }
-      }
-    }
-  }
-};
+import { datamodel, report } from "../__fixtures__/fixtures";
 
 it('can switch between measurements and subject details', async () => {
 

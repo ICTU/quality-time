@@ -3,36 +3,7 @@ import { mount} from 'enzyme';
 import { SubjectDetails } from './SubjectDetails';
 import { Table } from 'semantic-ui-react';
 import { render } from '@testing-library/react';
-
-const datamodel = {
-  subjects: {
-    subject_type: { name: "Subject type", metrics: ["metric_type"] }
-  },
-  metrics: {
-    metric_type: { name: "Metric type", tags: [] }
-  }
-}
-const report = {
-  subjects: {
-    subject_uuid: {
-      type: "subject_type", name: "Subject 1 title", metrics: {
-        metric_uuid: {
-          name: "M1", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        },
-        metric_uuidi2: {
-          name: "M2", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        }
-      }
-    },
-    subject_uuid2: {
-      type: "subject_type", name: "Subject 2 title", metrics: {
-        metric_uuid3: {
-          name: "M3", type: "metric_type", tags: [], sources: {}, recent_measurements: []
-        }
-      }
-    }
-  }
-};
+import { datamodel, report } from "../__fixtures__/fixtures";
 
 it('displays one row per metric', () => {
     const { queryAllByText } = render(
