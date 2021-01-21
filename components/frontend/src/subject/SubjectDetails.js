@@ -3,6 +3,7 @@ import { Dropdown, Table } from 'semantic-ui-react';
 import { Metric } from '../metric/Metric';
 import { get_metric_name, get_metric_target, get_source_name } from '../utils';
 import { HamburgerMenu } from '../widgets/HamburgerMenu';
+import { SubjectFooter } from './SubjectFooter';
 
 
 function createMetricComponents(props) {
@@ -82,25 +83,26 @@ function sortMetricComponents(datamodel, metricComponents, sortDirection, sortCo
 export function SubjectDetails(props) {
 
   const [sortDirection, setSortDirection] = useState('ascending');
+  const [sortColumn, setSortColumn] = useState(null);
 
   const metricComponents = createMetricComponents(props)
-  if (props.sortColumn !== null) {
-      sortMetricComponents(props.datamodel, metricComponents, sortDirection, props.sortColumn, props.etSortColumn)
+  if (sortColumn !== null) {
+      sortMetricComponents(props.datamodel, metricComponents, sortDirection, sortColumn, setSortColumn)
   }
 
   function handleSort(column) {
-    if (props.sortColumn === column) {
+    if (sortColumn === column) {
       if (sortDirection === 'descending') {
-        props.setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+        setSortColumn(null)  // Cycle through ascending->descending->no sort as long as the user clicks the same column
       }
       setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending')
     } else {
-      props.setSortColumn(column)
+      setSortColumn(column)
     }
   }
   
   function SortableHeader({ column, label, textAlign }) {
-    const sorted = props.sortColumn === column ? sortDirection : null;
+    const sorted = sortColumn === column ? sortDirection : null;
     return (
       <Table.HeaderCell onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
         {label}
@@ -155,6 +157,13 @@ export function SubjectDetails(props) {
     <>
         <SubjectTableHeader />
         <Table.Body>{metricComponents}</Table.Body>
+        <SubjectFooter 
+          datamodel={props.datamodel} 
+          subjectUuid={props.subject_uuid} 
+          subject={props.report.subjects[props.subject_uuid]} 
+          reload={props.reload} 
+          reports={props.reports} 
+          resetSortColumn={() => {setSortColumn(null)}} />
     </>
   )
 }

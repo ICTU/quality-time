@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
-import { add_metric, copy_metric, move_metric } from '../api/metric';
 import { get_subject_measurements } from '../api/subject';
-import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { TrendTable } from '../trendTable/TrendTable';
-import { AddButton, CopyButton, MoveButton } from '../widgets/Button';
-import { metric_options } from '../widgets/menu_options';
 import { SubjectDetails } from './SubjectDetails';
+import { SubjectFooter } from './SubjectFooter';
 import { SubjectTitle } from './SubjectTitle';
 
 
@@ -26,18 +23,19 @@ export function Subject(props) {
   const subject = props.report.subjects[props.subject_uuid];
   const metrics = displayedMetrics(subject.metrics, props.hideMetricsNotRequiringAction, props.tags)
 
-  const [sortColumn, setSortColumn] = useState(null);
   const [view, setView] = useState('details');
   const [measurements, setMeasurements] = useState([]);
 
   useEffect(() => {
-    get_subject_measurements(props.subject_uuid, props.report_date).then(json => {
-      if (json.ok !== false) {
-        setMeasurements(json.measurements)
-      }
-    })
+    if (view === 'measurements') {
+      get_subject_measurements(props.subject_uuid, props.report_date).then(json => {
+        if (json.ok !== false) {
+          setMeasurements(json.measurements)
+        }
+      })
+    }
   // eslint-disable-next-line
-  }, []);
+  }, [view]);
 
   const hamburgerItems = (
     <>
@@ -56,50 +54,25 @@ export function Subject(props) {
   )
 
   const subjectFooter = (
-    <ReadOnlyOrEditable editableComponent={
-      <Table.Footer>
-        <Table.Row>
-          <Table.HeaderCell colSpan='10'>
-            <AddButton item_type="metric" onClick={() => {
-              setSortColumn(null);
-              add_metric(props.subject_uuid, props.reload);
-            }}
-            />
-            <CopyButton
-              item_type="metric"
-              onChange={(source_metric_uuid) => {
-                setSortColumn(null);
-                copy_metric(source_metric_uuid, props.subject_uuid, props.reload);
-              }}
-              get_options={() => metric_options(props.reports, props.datamodel, subject.type)}
-            />
-            <MoveButton
-              item_type="metric"
-              onChange={(source_metric_uuid) => {
-                setSortColumn(null);
-                move_metric(source_metric_uuid, props.subject_uuid, props.reload);
-              }}
-              get_options={() => metric_options(props.reports, props.datamodel, subject.type, props.subject_uuid)}
-            />
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer>}
-    />
+    <SubjectFooter
+      datamodel={props.datamodel} 
+      subjectUuid={props.subject_uuid} 
+      subject={props.report.subjects[props.subject_uuid]} 
+      reload={props.reload} 
+      reports={props.reports}
+      resetSortColumn={() => {}} />
   )
+
   return (
     <div id={props.subject_uuid}>
       <SubjectTitle subject={subject} {...props} />
-      
         {view === 'details' ? 
         <Table sortable>
           <SubjectDetails 
             metrics={metrics} 
             setView={setView} 
-            sortColumn={sortColumn} 
-            setSortColumn={setSortColumn} 
             extraHamburgerItems={hamburgerItems}
             {...props}/>
-          {subjectFooter}
         </Table>
           : <TrendTable
             datamodel={props.datamodel}
