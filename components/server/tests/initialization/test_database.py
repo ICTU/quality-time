@@ -4,8 +4,6 @@ import pathlib
 import unittest
 from unittest.mock import Mock, mock_open, patch
 
-import bottle
-
 from initialization.database import init_database
 
 

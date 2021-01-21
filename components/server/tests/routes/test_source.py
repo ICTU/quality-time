@@ -35,7 +35,7 @@ from ..fixtures import (
 )
 
 
-class SourceTestCase(unittest.TestCase):  # noqa: PTC-W0046
+class SourceTestCase(unittest.TestCase):  # skipcq: PTC-W0046
     """Common fixtures for the source route unit tests."""
 
     def setUp(self):
