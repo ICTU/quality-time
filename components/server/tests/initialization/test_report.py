@@ -17,18 +17,29 @@ class ReportInitTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="name", description="")),
-            metrics=dict(
-                metric_type=dict(default_scale="count", addition="sum", target="0", near_target="0", tags=[])),
+            metrics=dict(metric_type=dict(default_scale="count", addition="sum", target="0", near_target="0", tags=[])),
             sources=dict(
                 source_type=dict(
                     parameters=dict(
                         p1=dict(default_value="p1", metrics=["metric_type"]),
-                        p2=dict(default_value="p2", metrics=["metric_type"])))))
+                        p2=dict(default_value="p2", metrics=["metric_type"]),
+                    )
+                )
+            ),
+        )
         self.report_json = json.dumps(
-            dict(report_uuid="id", subjects=[
-                dict(name="name", type="subject_type", metrics=[
-                    dict(type="metric_type", sources=[
-                        dict(type="source_type", parameters=dict(p1={}))])])]))
+            dict(
+                report_uuid="id",
+                subjects=[
+                    dict(
+                        name="name",
+                        type="subject_type",
+                        metrics=[dict(type="metric_type", sources=[dict(type="source_type", parameters=dict(p1={}))])],
+                    )
+                ],
+            )
+        )
+        self.database.sessions.find_one.return_value = dict(user="jadoe")
 
     def import_report(self, report_json: str) -> None:
         """Import the report."""

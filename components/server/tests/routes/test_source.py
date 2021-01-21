@@ -59,6 +59,9 @@ class SourceTestCase(unittest.TestCase):
                         choices=dict(
                             type="multiple_choice", metrics=["metric_type"], values=["A", "B", "C"], default_value=[]
                         ),
+                        choices_with_addition=dict(
+                            type="multiple_choice_with_addition", metrics=["metric_type"], values=[], default_value=[]
+                        ),
                     ),
                 ),
                 new_source_type=dict(parameters={}),
@@ -272,6 +275,21 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(response, dict(ok=True))
         self.assertEqual(["A"], parameters["choices"])
         self.database.reports.insert.assert_called_once_with(self.report)
+
+    def test_regexp_with_curly_braces(self, request):
+        """Test that regular expressions with curly braces work.
+
+        Curly braces shouldn't be interpreted as string formatting fields."""
+        parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        request.json = dict(choices_with_addition=[r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"])
+        response = post_source_parameter(SOURCE_ID, "choices_with_addition", self.database)
+        self.assertEqual(response, dict(ok=True))
+        self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["choices_with_addition"])
+        self.database.reports.insert.assert_called_once_with(self.report)
+        self.assert_delta(
+            "choices_with_addition of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
+            r"from '' to '['[\\w]{3}-[\\w]{3}-[\\w]{4}-[\\w]{3}\\/']'"
+        )
 
 
 @patch("bottle.request")

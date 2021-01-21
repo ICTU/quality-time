@@ -94,7 +94,8 @@ def _prepare_documents_for_insertion(
     user = sessions.user(database) or {}
     email = user.get("email", "")
     username = user.get("user", "An operator")
-    description = delta_description.format(user=username)
+    # Don't use str.format because there may be curly braces in the delta description, e.g. due to regular expressions:
+    description = delta_description.replace("{user}", username, 1)
     for document, uuids in documents:
         if "_id" in document:
             del document["_id"]

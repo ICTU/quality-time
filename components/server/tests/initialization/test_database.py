@@ -20,6 +20,7 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.datamodels.find_one.return_value = None
         self.database.reports_overviews.find_one.return_value = None
         self.database.reports.count_documents.return_value = 0
+        self.database.sessions.find_one.return_value = dict(user="jodoe")
         self.database.measurements.count_documents.return_value = 0
         self.mongo_client().quality_time_db = self.database
 
