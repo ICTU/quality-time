@@ -13,6 +13,7 @@ class DatabaseInitTest(unittest.TestCase):
     """Unit tests for database initialization."""
 
     def setUp(self):
+        """Override to set up the database fixture."""
         self.mongo_client = Mock()
         self.database = Mock()
         self.database.reports.find.return_value = []
@@ -23,9 +24,6 @@ class DatabaseInitTest(unittest.TestCase):
         self.database.sessions.find_one.return_value = dict(user="jodoe")
         self.database.measurements.count_documents.return_value = 0
         self.mongo_client().quality_time_db = self.database
-
-    def tearDown(self):
-        bottle.app().uninstall(True)
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""

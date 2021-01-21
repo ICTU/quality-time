@@ -12,6 +12,7 @@ class ReportInitTest(unittest.TestCase):
     """Unit tests for the report import code."""
 
     def setUp(self) -> None:
+        """Override to create database and JSON fixtures."""
         self.database = Mock()
         self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = dict(

@@ -35,7 +35,7 @@ from ..fixtures import (
 )
 
 
-class SourceTestCase(unittest.TestCase):
+class SourceTestCase(unittest.TestCase):  # noqa: PTC-W0046
     """Common fixtures for the source route unit tests."""
 
     def setUp(self):
@@ -279,7 +279,8 @@ class PostSourceParameterTest(SourceTestCase):
     def test_regexp_with_curly_braces(self, request):
         """Test that regular expressions with curly braces work.
 
-        Curly braces shouldn't be interpreted as string formatting fields."""
+        Curly braces shouldn't be interpreted as string formatting fields.
+        """
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
         request.json = dict(choices_with_addition=[r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"])
         response = post_source_parameter(SOURCE_ID, "choices_with_addition", self.database)
