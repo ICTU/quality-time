@@ -87,7 +87,7 @@ export function SubjectDetails(props) {
 
   const metricComponents = createMetricComponents(props)
   if (sortColumn !== null) {
-      sortMetricComponents(props.datamodel, metricComponents, sortDirection, sortColumn, setSortColumn)
+      sortMetricComponents(props.datamodel, metricComponents, sortDirection, sortColumn)
   }
 
   function handleSort(column) {
