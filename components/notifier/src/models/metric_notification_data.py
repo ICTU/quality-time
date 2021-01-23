@@ -10,10 +10,20 @@ class MetricNotificationData:  # pylint: disable=too-few-public-methods
         self.metric_unit = metric["unit"] or f'{data_model["metrics"][metric["type"]]["unit"]}'
         recent_measurements = metric["recent_measurements"]
         scale = metric["scale"]
-        self.new_metric_value = recent_measurements[-1][scale]["value"]
-        self.old_metric_value = recent_measurements[-2][scale]["value"]
-        self.new_metric_status = self.__user_friendly_status(data_model, recent_measurements[-1][scale]["status"])
-        self.old_metric_status = self.__user_friendly_status(data_model, recent_measurements[-2][scale]["status"])
+
+        self.new_metric_value = None
+        self.old_metric_value = None
+        self.new_metric_status = self.__user_friendly_status(data_model, None)
+        self.old_metric_status = self.__user_friendly_status(data_model, None)
+
+        if len(recent_measurements) >= 1:
+            self.new_metric_value = recent_measurements[-1][scale]["value"]
+            self.new_metric_status = self.__user_friendly_status(data_model, recent_measurements[-1][scale]["status"])
+
+        if len(recent_measurements) >= 2:
+            self.old_metric_value = recent_measurements[-2][scale]["value"]
+            self.old_metric_status = self.__user_friendly_status(data_model, recent_measurements[-2][scale]["status"])
+
         self.reason = reason
 
     @staticmethod
