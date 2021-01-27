@@ -24,8 +24,8 @@ async def notify(log_level: int = None) -> NoReturn:
         f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
     )
     data_model = await retrieve_data_model(api_version)
-    # needs to be aware for comparison in long_unchanged_status
-    most_recent_measurement_seen = datetime.max.isoformat() + "+00:00"
+    # needs to be timezone aware for comparison in long_unchanged_status
+    most_recent_measurement_seen = datetime.max.replace(microsecond=0).isoformat() + "+00:00"
     outbox = Outbox()
     notification_finder = NotificationFinder(data_model)
     while True:

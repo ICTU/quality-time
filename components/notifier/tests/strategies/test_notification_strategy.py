@@ -278,8 +278,8 @@ class LongUnchangedTestCase(Base):
 
     def setUp(self):
         """Override to set up a metric fixture."""
-        self.old_timestamp = "2019-02-01T00:00:00"
-        self.new_timestamp = "2020-02-01T00:00:00"
+        self.old_timestamp = "2019-02-01T00:00:00+00:00"
+        self.new_timestamp = "2020-02-01T00:00:00+00:00"
         self.notification_finder = NotificationFinder(self.data_model)
         self.red_metric = self.metric(
             status="target_not_met",
