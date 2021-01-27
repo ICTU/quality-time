@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Make sure the notifier component does not crash when .... Fixes [#1830](https://github.com/ICTU/quality-time/issues/1830).
+- Make sure the notifier component does not crash when starting up. Fixes [#1830](https://github.com/ICTU/quality-time/issues/1830).
 
 ## [3.17.1] - [2021-01-24]
 
