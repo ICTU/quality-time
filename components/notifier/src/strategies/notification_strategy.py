@@ -33,8 +33,8 @@ class NotificationFinder:
         """Determine whether a notification should be generated for the given metric."""
         if (
             len(metric["recent_measurements"]) > 0
-            and "status_start" in metric["recent_measurements"][-1][metric["scale"]]
-            and self.long_unchanged_status(metric, metric_uuid, most_recent_measurement_seen)
+            and metric.get("status_start")
+            and self.__long_unchanged_status(metric, metric_uuid, most_recent_measurement_seen)
         ):
             return "status_long_unchanged"
         if self.status_changed(metric, most_recent_measurement_seen):
@@ -54,7 +54,7 @@ class NotificationFinder:
         change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
         return bool(metric_had_other_status and change_was_recent)
 
-    def long_unchanged_status(self, metric, metric_uuid, most_recent_measurement_seen: str) -> bool:
+    def __long_unchanged_status(self, metric, metric_uuid, most_recent_measurement_seen: str) -> bool:
         """Determine if a metric has had the same status for 3 weeks."""
         status_start = datetime.fromisoformat(metric["status_start"])
         datetime_most_recent_measurement_seen = datetime.fromisoformat(most_recent_measurement_seen)
