@@ -39,8 +39,8 @@ class StrategiesTestCase(Base):
     def setUp(self):
         """Set variables for the other testcases."""
         self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
-        self.old_timestamp = "2019-01-01T00:23:59+59:00"
-        self.new_timestamp = "2020-01-01T00:23:59+59:00"
+        self.old_timestamp = "2019-01-01T00:00:00"
+        self.new_timestamp = "2020-01-01T00:00:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
         self.notification_finder = NotificationFinder(self.data_model)
@@ -277,67 +277,42 @@ class LongUnchangedTestCase(Base):
     """Unit tests for the 'status long unchanged' notification strategy."""
 
     def setUp(self):
-        """."""
-        self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
-        self.old_timestamp = "2019-02-01T00:23:59+59:00"
-        self.new_timestamp = "2020-02-01T00:23:59+59:00"
+        """Override to set up a metric fixture."""
+        self.old_timestamp = "2019-02-01T00:00:00"
+        self.new_timestamp = "2020-02-01T00:00:00"
         self.notification_finder = NotificationFinder(self.data_model)
-        count = dict(status="target_not_met", value="34")
         self.red_metric = self.metric(
             status="target_not_met",
-            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
-            status_start=str(datetime.datetime.fromisoformat(self.most_recent_measurement_seen)),
-        )
-
-    @staticmethod
-    def metric(name="metric1", status="target_met", scale="count", recent_measurements=None, status_start=None):
-        """Create a metric."""
-        return dict(
-            name=name,
-            scale=scale,
-            status=status,
-            type="tests",
-            unit="units",
-            recent_measurements=recent_measurements or [],
-            status_start=status_start or "",
+            recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp)],
+            status_start=self.old_timestamp,
         )
 
     def test_long_unchanged_status(self):
-        """Test that metric is notable if it's status has been the same for 3 weeks."""
-        time_since_status_change = datetime.datetime.fromisoformat(
-            self.most_recent_measurement_seen
-        ) + datetime.timedelta(days=21, hours=1)
-        self.assertTrue(
-            self.notification_finder.long_unchanged_status(self.red_metric, "red_metric", str(time_since_status_change))
+        """Test that a metric is notable if its status has been the same for 3 weeks."""
+        now = datetime.datetime.now()
+        self.red_metric["status_start"] = str(now - datetime.timedelta(days=21, hours=1))
+        self.assertEqual(
+            "status_long_unchanged", self.notification_finder.get_notification(self.red_metric, "red_metric", str(now))
         )
 
     def test_long_unchanged_status_already_notified(self):
-        """Test that metric is not notable if a notification has already been generated for the long status."""
-        time_since_status_change = datetime.datetime.fromisoformat(
-            self.most_recent_measurement_seen
-        ) + datetime.timedelta(days=21, hours=1)
+        """Test that a metric is not notable if a notification has already been generated for the long status."""
+        now = datetime.datetime.now()
+        self.red_metric["status_start"] = str(now - datetime.timedelta(days=21, hours=1))
         self.notification_finder.already_notified.append("red_metric")
-        self.assertFalse(
-            self.notification_finder.long_unchanged_status(self.red_metric, "red_metric", str(time_since_status_change))
-        )
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
 
     def test_too_long_unchanged_status(self):
-        """Test that metric isn't notable if it's status has been the same for more than 3 weeks."""
-        time_since_status_change = datetime.datetime.fromisoformat(
-            self.most_recent_measurement_seen
-        ) + datetime.timedelta(days=24, hours=1)
-        self.assertFalse(
-            self.notification_finder.long_unchanged_status(self.red_metric, "red_metric", str(time_since_status_change))
-        )
+        """Test that a metric isn't notable if its status has been the same for more than 3 weeks."""
+        now = datetime.datetime.now()
+        self.red_metric["status_start"] = str(now - datetime.timedelta(days=100))
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
 
     def test_short_unchanged_status(self):
-        """Test that metric isn't notable if it's current status has been different in the last 3 weeks."""
-        time_since_status_change = datetime.datetime.fromisoformat(
-            self.most_recent_measurement_seen
-        ) + datetime.timedelta(days=20, hours=23)
-        self.assertFalse(
-            self.notification_finder.long_unchanged_status(self.red_metric, "red_metric", str(time_since_status_change))
-        )
+        """Test that a metric isn't notable if its current status has been different in the last 3 weeks."""
+        now = datetime.datetime.now()
+        self.red_metric["status_start"] = str(now - datetime.timedelta(days=20, hours=23))
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
 
 
 class CheckIfMetricIsNotableTestCase(Base):
