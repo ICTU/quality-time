@@ -6,7 +6,7 @@ import { HamburgerMenu } from '../widgets/HamburgerMenu';
 import { SubjectFooter } from './SubjectFooter';
 
 
-function createMetricComponents(props) {
+function createMetricComponents(props, setSortColumn) {
   const subject = props.report.subjects[props.subject_uuid];
   const last_index = Object.entries(subject.metrics).length - 1;
 
@@ -20,7 +20,7 @@ function createMetricComponents(props) {
         last_metric={index === last_index}
         metric_uuid={metric_uuid}
         metric={metric}
-        stop_sort={() => props.setSortColumn(null)}
+        stop_sort={() => setSortColumn(null)}
         {...props}
       />)
   });
@@ -85,7 +85,7 @@ export function SubjectDetails(props) {
   const [sortDirection, setSortDirection] = useState('ascending');
   const [sortColumn, setSortColumn] = useState(null);
 
-  const metricComponents = createMetricComponents(props)
+  const metricComponents = createMetricComponents(props, setSortColumn)
   if (sortColumn !== null) {
       sortMetricComponents(props.datamodel, metricComponents, sortDirection, sortColumn)
   }
