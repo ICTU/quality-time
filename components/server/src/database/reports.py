@@ -33,6 +33,12 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
     return reports
 
 
+def latest_report(database: Database, report_uuid: str):
+    report = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
+    report["_id"] = str(report["_id"])
+    return report
+
+
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
     """Return the latest reports overview."""
     timestamp_filter = dict(timestamp={"$lt": max_iso_timestamp}) if max_iso_timestamp else None

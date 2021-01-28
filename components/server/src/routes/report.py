@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
-from database.reports import insert_new_report, latest_reports
+from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.report import import_json_report
 from model.actions import copy_report
 from model.data import ReportData
@@ -85,6 +85,16 @@ def export_report_as_pdf(report_uuid: ReportId):
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
     return response.content
+
+
+@bottle.get("/api/v3/report/<report_uuid>/json")
+def export_report_as_json(database: Database, report_uuid: ReportId, public_key: str = None):
+    """Return the quality report, including information about other reports needed for move/copy actions."""
+    date_time = report_date_time()
+    data_model = latest_datamodel(database, date_time)
+    report = latest_report(database, report_uuid)
+    hide_credentials(data_model, report)
+    return report
 
 
 @bottle.delete("/api/v3/report/<report_uuid>")
