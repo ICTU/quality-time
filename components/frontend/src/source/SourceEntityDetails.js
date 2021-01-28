@@ -15,10 +15,10 @@ function entity_status_option(status, text, content, subheader) {
 function entity_status_options(entity_type) {
   return [
     entity_status_option('unconfirmed', status_name.unconfirmed, 'Unconfirm', `This ${entity_type} should be reviewed to decide what to do with it.`),
-    entity_status_option('confirmed', status_name.confirmed, 'Confirm', `This ${entity_type} has been reviewed and should be dealt with.`),
     entity_status_option('fixed', status_name.fixed, "Resolve as fixed", `This ${entity_type} has been fixed and will disappear shortly.`),
     entity_status_option('false_positive', status_name.false_positive, 'Resolve as false positive', `This ${entity_type} can be ignored because it's been incorrectly identified as ${entity_type}.`),
-    entity_status_option('wont_fix', status_name.wont_fix, "Resolve as won't fix", `This ${entity_type} will not be fixed.`)
+    entity_status_option('wont_fix', status_name.wont_fix, "Resolve as won't fix", `This ${entity_type} will not be fixed.`),
+    entity_status_option('confirmed', status_name.confirmed, 'Confirm', `This ${entity_type} has been reviewed and should be dealt with.`),
   ]
 }
 
@@ -32,6 +32,7 @@ export function SourceEntityDetails(props) {
             options={entity_status_options(props.name)}
             set_value={(value) => set_source_entity_attribute(props.metric_uuid, props.source_uuid, props.entity.key, "status", value, props.reload)}
             value={props.status}
+            sort={false}
           />
         </Grid.Column>
         <Grid.Column width={12}>
