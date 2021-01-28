@@ -4,8 +4,13 @@ import { ReadOnlyOrEditable } from '../context/ReadOnly';
 
 export function SingleChoiceInput(props) {
   const value_text = props.options.filter(({ value }) => value === props.value)[0].text;
-  let { editableLabel, set_value, options, ...otherProps } = props;
-  options.sort((a, b) => a.text.localeCompare(b.text));
+  let { editableLabel, set_value, options, sort, ...otherProps } = props;
+
+  // default should be sorted
+  if (sort || sort === undefined) {
+    options.sort((a, b) => a.text.localeCompare(b.text));
+  }
+  
   function Dropdown() {
     return (
       <Form.Dropdown
