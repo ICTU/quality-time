@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tab, Menu } from 'semantic-ui-react';
 import { TrendGraph } from './TrendGraph';
-import { TrendTable } from './TrendTable';
 import { ReadOnlyOrEditable } from '../context/ReadOnly';
 import { Sources } from '../source/Sources';
 import { SourceEntities } from '../source/SourceEntities';
@@ -12,6 +11,7 @@ import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_measurements } from '../api/measurement';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { capitalize, get_source_name } from '../utils';
+import { TrendTable } from '../trendTable/TrendTable';
 
 function fetch_measurements(report_date, metric_uuid, setMeasurements) {
   get_measurements(metric_uuid, report_date)
@@ -59,10 +59,16 @@ export function MeasurementDetails(props) {
         render: () => (
           <Tab.Pane>
             <TrendTable
-              data_model={props.datamodel} measurements={measurements} metric={metric} report_date={props.report_date}
-              scale={props.scale} setTrendTableInterval={props.setTrendTableInterval}
-              setTrendTableNrDates={props.setTrendTableNrDates} trendTableInterval={props.trendTableInterval}
-              trendTableNrDates={props.trendTableNrDates} unit={props.unit} />
+              datamodel={props.datamodel}
+              reportDate={props.report_date}
+              metrics={{[props.metric_uuid]: metric}}
+              showTargets={true}
+              measurements={measurements}
+              trendTableInterval={props.trendTableInterval}
+              setTrendTableInterval={props.setTrendTableInterval}
+              trendTableNrDates={props.trendTableNrDates}
+              setTrendTableNrDates={props.setTrendTableNrDates}
+          />
           </Tab.Pane>
         )
       }
