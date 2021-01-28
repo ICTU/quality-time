@@ -13,7 +13,7 @@ describe('<SourceEntityDetails />', () => {
             <ReadOnlyContext.Provider value={false}>
                 <SourceEntityDetails entity={{key: "key"}} status="unconfirmed" name="violation" />
             </ReadOnlyContext.Provider>);
-        wrapper.find("div.item").at(0).simulate("click");
+        wrapper.find("div.item").at(1).simulate("click");
         expect(source.set_source_entity_attribute).toHaveBeenCalled();
     });
     it('invokes the callback on changing the comment', () => {
