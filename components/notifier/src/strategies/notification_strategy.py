@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta
 from typing import List, Optional
+
 from models.notification import Notification
 from models.metric_notification_data import MetricNotificationData
 
@@ -14,7 +15,7 @@ class NotificationFinder:
         self.already_notified = []
         self.data_model = data_model
 
-    def get_notifications(self, json, most_recent_measurement_seen: str) -> List[Notification]:
+    def get_notifications(self, json, most_recent_measurement_seen: datetime) -> List[Notification]:
         """Return the reports that have a webhook and metrics that require notifying."""
         notifications = []
         for report in json["reports"]:
@@ -29,7 +30,7 @@ class NotificationFinder:
                     notifications.append(Notification(report, notable_metrics, destination_uuid, destination))
         return notifications
 
-    def get_notification(self, metric, metric_uuid, most_recent_measurement_seen) -> Optional[str]:
+    def get_notification(self, metric, metric_uuid, most_recent_measurement_seen: datetime) -> Optional[str]:
         """Determine whether a notification should be generated for the given metric."""
         if (
             len(metric["recent_measurements"]) > 0
@@ -44,21 +45,20 @@ class NotificationFinder:
         return None
 
     @staticmethod
-    def status_changed(metric, most_recent_measurement_seen: str) -> bool:
+    def status_changed(metric, most_recent_measurement_seen: datetime) -> bool:
         """Determine if a metric got a new status after the given timestamp."""
         recent_measurements = metric.get("recent_measurements") or []
         if len(recent_measurements) < 2:
             return False  # If there are fewer than two measurements, the metric couldn't have recently changed status
         scale = metric["scale"]
         metric_had_other_status = recent_measurements[-2][scale]["status"] != recent_measurements[-1][scale]["status"]
-        change_was_recent = recent_measurements[-1]["start"] > most_recent_measurement_seen
+        change_was_recent = datetime.fromisoformat(recent_measurements[-1]["start"]) > most_recent_measurement_seen
         return bool(metric_had_other_status and change_was_recent)
 
-    def __long_unchanged_status(self, metric, metric_uuid, most_recent_measurement_seen: str) -> bool:
+    def __long_unchanged_status(self, metric, metric_uuid, most_recent_measurement_seen: datetime) -> bool:
         """Determine if a metric has had the same status for 3 weeks."""
         status_start = datetime.fromisoformat(metric["status_start"])
-        datetime_most_recent_measurement_seen = datetime.fromisoformat(most_recent_measurement_seen)
-        difference = datetime_most_recent_measurement_seen - status_start
+        difference = most_recent_measurement_seen - status_start
         if timedelta(days=21) < difference < timedelta(days=22) and metric_uuid not in self.already_notified:
             self.already_notified.append(metric_uuid)
             return True

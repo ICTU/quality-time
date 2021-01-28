@@ -1,6 +1,6 @@
 """"Unit tests for the notification strategies."""
 
-import datetime
+from datetime import datetime, timedelta, timezone
 import json
 import pathlib
 import unittest
@@ -38,9 +38,9 @@ class StrategiesTestCase(Base):
 
     def setUp(self):
         """Set variables for the other testcases."""
-        self.most_recent_measurement_seen = datetime.datetime.min.isoformat()
-        self.old_timestamp = "2019-01-01T00:00:00"
-        self.new_timestamp = "2020-01-01T00:00:00"
+        self.most_recent_measurement_seen = datetime.min.replace(tzinfo=timezone.utc)
+        self.old_timestamp = "2019-01-01T00:00:00+00:00"
+        self.new_timestamp = "2020-01-01T00:00:00+00:00"
         self.report_url = "https://report1"
         self.white_metric_status = "unknown"
         self.notification_finder = NotificationFinder(self.data_model)
@@ -48,7 +48,7 @@ class StrategiesTestCase(Base):
         self.red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[dict(start=self.old_timestamp, end=self.new_timestamp, count=count)],
-            status_start=str(datetime.datetime.fromisoformat(self.most_recent_measurement_seen)),
+            status_start=str(self.most_recent_measurement_seen),
         )
 
     def test_no_reports(self):
@@ -164,18 +164,6 @@ class StrategiesTestCase(Base):
         )
         self.assertFalse(self.notification_finder.status_changed(metric, self.most_recent_measurement_seen))
 
-    def test_new_measurement_different_status_outside_time_period(self):
-        """Test that a metric that was already white isn't added."""
-        oldest_timestamp = "2018-01-01T00:23:59+59:00"
-        metric = self.metric(
-            status=self.white_metric_status,
-            recent_measurements=[
-                dict(start=self.old_timestamp, count=dict(status=self.white_metric_status)),
-                dict(start=oldest_timestamp, count=dict(status="target_not_met")),
-            ],
-        )
-        self.assertFalse(self.notification_finder.status_changed(metric, self.new_timestamp))
-
     def test_no_change_due_to_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
         metric = self.metric(
@@ -289,30 +277,30 @@ class LongUnchangedTestCase(Base):
 
     def test_long_unchanged_status(self):
         """Test that a metric is notable if its status has been the same for 3 weeks."""
-        now = datetime.datetime.now()
-        self.red_metric["status_start"] = str(now - datetime.timedelta(days=21, hours=1))
+        now = datetime.now()
+        self.red_metric["status_start"] = str(now - timedelta(days=21, hours=1))
         self.assertEqual(
-            "status_long_unchanged", self.notification_finder.get_notification(self.red_metric, "red_metric", str(now))
+            "status_long_unchanged", self.notification_finder.get_notification(self.red_metric, "red_metric", now)
         )
 
     def test_long_unchanged_status_already_notified(self):
         """Test that a metric is not notable if a notification has already been generated for the long status."""
-        now = datetime.datetime.now()
-        self.red_metric["status_start"] = str(now - datetime.timedelta(days=21, hours=1))
+        now = datetime.now()
+        self.red_metric["status_start"] = str(now - timedelta(days=21, hours=1))
         self.notification_finder.already_notified.append("red_metric")
-        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", now))
 
     def test_too_long_unchanged_status(self):
         """Test that a metric isn't notable if its status has been the same for more than 3 weeks."""
-        now = datetime.datetime.now()
-        self.red_metric["status_start"] = str(now - datetime.timedelta(days=100))
-        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
+        now = datetime.now()
+        self.red_metric["status_start"] = str(now - timedelta(days=100))
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", now))
 
     def test_short_unchanged_status(self):
         """Test that a metric isn't notable if its current status has been different in the last 3 weeks."""
-        now = datetime.datetime.now()
-        self.red_metric["status_start"] = str(now - datetime.timedelta(days=20, hours=23))
-        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", str(now)))
+        now = datetime.now()
+        self.red_metric["status_start"] = str(now - timedelta(days=20, hours=23))
+        self.assertEqual(None, self.notification_finder.get_notification(self.red_metric, "red_metric", now))
 
 
 class CheckIfMetricIsNotableTestCase(Base):
@@ -320,13 +308,13 @@ class CheckIfMetricIsNotableTestCase(Base):
 
     def setUp(self):
         """Set variables for the tests."""
-        self.old_timestamp = "2019-03-01T00:23:59+59:00"
-        self.new_timestamp = "2020-03-01T00:23:59+59:00"
+        self.old_timestamp = "2019-03-01T00:00:00+00:00"
+        self.new_timestamp = "2020-03-01T00:00:00+00:00"
         self.metric_uuid = "metric_uuid"
         self.red_metric = self.metric(
             status="target_not_met",
             recent_measurements=[],
-            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())),
+            status_start=str(datetime.fromisoformat(datetime.min.isoformat())),
         )
         self.notification_finder = NotificationFinder(self.data_model)
         self.metric_with_recent_measurements = self.metric(
@@ -338,18 +326,18 @@ class CheckIfMetricIsNotableTestCase(Base):
                     count=dict(
                         status="target_not_met",
                         value="0",
-                        status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())),
+                        status_start=self.old_timestamp,
                     ),
                 ),
             ],
-            status_start=str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())),
+            status_start=self.old_timestamp,
         )
 
     def test_metric_not_notable_if_no_recent_measurements(self):
-        """Test that a metric is not notable if it doesnt contain any recent measurements."""
+        """Test that a metric is not notable if it does not contain any recent measurements."""
         self.assertIsNone(
             self.notification_finder.get_notification(
-                self.red_metric, self.metric_uuid, datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())
+                self.red_metric, self.metric_uuid, datetime.min.replace(tzinfo=timezone.utc)
             )
         )
 
@@ -364,7 +352,7 @@ class CheckIfMetricIsNotableTestCase(Base):
         self.assertEqual(
             "status_changed",
             self.notification_finder.get_notification(
-                metric, self.metric_uuid, str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
+                metric, self.metric_uuid, datetime.min.replace(tzinfo=timezone.utc)
             ),
         )
 
@@ -377,9 +365,7 @@ class CheckIfMetricIsNotableTestCase(Base):
             ]
         )
         self.notification_finder.already_notified.append(self.metric_uuid)
-        self.notification_finder.get_notification(
-            metric, self.metric_uuid, str(datetime.datetime.fromisoformat(datetime.datetime.min.isoformat()))
-        )
+        self.notification_finder.get_notification(metric, self.metric_uuid, datetime.min.replace(tzinfo=timezone.utc))
         self.assertEqual(self.notification_finder.already_notified, [])
 
     def test_metric_is_notable_because_status_unchanged_3weeks(self):
@@ -389,10 +375,7 @@ class CheckIfMetricIsNotableTestCase(Base):
             self.notification_finder.get_notification(
                 self.metric_with_recent_measurements,
                 self.metric_uuid,
-                str(
-                    datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())
-                    + datetime.timedelta(days=21, hours=1)
-                ),
+                datetime.fromisoformat(self.old_timestamp) + timedelta(days=21, hours=12),
             ),
         )
 
@@ -403,9 +386,6 @@ class CheckIfMetricIsNotableTestCase(Base):
             self.notification_finder.get_notification(
                 self.metric_with_recent_measurements,
                 self.metric_uuid,
-                str(
-                    datetime.datetime.fromisoformat(datetime.datetime.min.isoformat())
-                    + datetime.timedelta(days=21, hours=1)
-                ),
+                datetime.fromisoformat(self.old_timestamp) + timedelta(days=21, hours=12),
             )
         )
