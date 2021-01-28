@@ -4,7 +4,7 @@ import asyncio
 import logging
 import os
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Final, NoReturn, cast
 
 import aiohttp
@@ -24,8 +24,7 @@ async def notify(log_level: int = None) -> NoReturn:
         f"{os.environ.get('SERVER_PORT', '5001')}/api/{api_version}/reports"
     )
     data_model = await retrieve_data_model(api_version)
-    # needs to be timezone aware for comparison in long_unchanged_status
-    most_recent_measurement_seen = datetime.max.replace(microsecond=0).isoformat() + "+00:00"
+    most_recent_measurement_seen = datetime.max.replace(tzinfo=timezone.utc)
     outbox = Outbox()
     notification_finder = NotificationFinder(data_model)
     while True:
@@ -64,14 +63,14 @@ def record_health(filename: str = "/home/notifier/health_check.txt") -> None:
         logging.error("Could not write health check time stamp to %s: %s", filename, reason)
 
 
-def most_recent_measurement_timestamp(json) -> str:
+def most_recent_measurement_timestamp(json) -> datetime:
     """Return the most recent measurement timestamp."""
-    most_recent = datetime.min.isoformat()
+    most_recent = datetime.min
     for report in json["reports"]:
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():
                 if recent_measurements := metric.get("recent_measurements"):
-                    most_recent = max(most_recent, recent_measurements[-1]["end"])
+                    most_recent = max(most_recent, datetime.fromisoformat(recent_measurements[-1]["end"]))
     return most_recent
 
 
