@@ -28,6 +28,7 @@ class AzureDevopsIssues(SourceCollector):
     # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
 
     async def _api_url(self) -> URL:
+        """Extend to add the WIQL API path."""
         return URL(f"{await super()._api_url()}/_apis/wit/wiql?api-version=4.1")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -45,6 +46,7 @@ class AzureDevopsIssues(SourceCollector):
         return work_items
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the work items from the WIQL query response."""
         value = str(len((await responses[0].json())["workItems"]))
         entities = [
             Entity(
@@ -69,6 +71,7 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
     """Collector to get user story points from Azure Devops Server."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the story points from the work items."""
         measurement = await super()._parse_source_responses(responses)
         value = 0
         for entity, work_item in zip(measurement.entities, await self._work_items(responses)):
@@ -94,15 +97,22 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
     """Collector for unmerged branches."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the branches API path."""
         api_url = str(await super()._api_url())
         return URL(f"{api_url}/_apis/git/repositories/{await self._repository_id()}/stats/branches?api-version=4.1")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the branches path."""
         landing_url = str(await super()._landing_url(responses))
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         return URL(f"{landing_url}/_git/{repository}/branches")
 
     async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
+        """Override to get the unmerged branches response.
+
+        Branches are considered unmerged if they have a base branch, have commits that are not on the base branch,
+        have not been committed to for a minimum number of days, and are not to be ignored.
+        """
         return [
             branch
             for branch in (await responses[0].json())["value"]
@@ -113,9 +123,11 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         ]
 
     def _commit_datetime(self, branch) -> datetime:
+        """Override to get the date and time of the most recent commit."""
         return parse(branch["commit"]["committer"]["date"])
 
     def _branch_landing_url(self, branch) -> URL:
+        """Override to return the landing URL for the branch."""
         return URL(branch["commit"]["url"])
 
 
@@ -123,6 +135,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
     """Collector class to measure the up-to-dateness of a repo or folder/file in a repo."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the commit API path and associated parameters."""
         api_url = str(await super()._api_url())
         repository_id = await self._repository_id()
         path = self._parameter("file_path", quote=True)
@@ -133,6 +146,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         return URL(f"{api_url}/_apis/git/repositories/{repository_id}/commits?{search_criteria}&api-version=4.1")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add a path to the file."""
         landing_url = str(await super()._landing_url(responses))
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
         path = self._parameter("file_path", quote=True)
@@ -140,6 +154,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         return URL(f"{landing_url}/_git/{repository}?path={path}&version=GB{branch}")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        """Override to get the date and time of the commit."""
         return parse((await response.json())["value"][0]["committer"]["date"])
 
 
@@ -147,6 +162,7 @@ class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
     """Represent an Azure DevOps test run."""
 
     def __init__(self, build_nr: int = 0) -> None:
+        """Override to add test run attributes to the namespace."""
         super().__init__(build_nr=build_nr, test_count=0, total_test_count=0, entities=[])
 
 
@@ -154,10 +170,12 @@ class AzureDevopsTests(SourceCollector):
     """Collector for the tests metric."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the test run API path."""
         api_url = await super()._api_url()
         return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$api-version=5.0")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the test runs."""
         test_results = cast(List[str], self._parameter("test_result"))
         test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
         test_run_states_to_include = [value.lower() for value in self._parameter("test_run_states_to_include")] or [
@@ -209,12 +227,15 @@ class AzureDevopsJobs(SourceCollector):
     """Base class for job collectors."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the build definitions API path."""
         return URL(f"{await super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to add the builds path."""
         return URL(f"{await super()._api_url()}/_build")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the jobs/pipelines."""
         entities = []
         for job in (await responses[0].json())["value"]:
             if not self._include_job(job):
@@ -267,6 +288,7 @@ class AzureDevopsUnusedJobs(AzureDevopsJobs):
     """Collector for the unused jobs metric."""
 
     def _include_job(self, job: Job) -> bool:
+        """Extend to filter unused jobs."""
         if not super()._include_job(job):
             return False
         max_days = int(cast(str, self._parameter("inactive_job_days")))

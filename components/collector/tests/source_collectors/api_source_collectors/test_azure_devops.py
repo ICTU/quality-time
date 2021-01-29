@@ -11,6 +11,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):
     """Base class for testing Azure DevOps collectors."""
 
     def setUp(self):
+        """Extend to add Azure DevOps fixtures."""
         super().setUp()
         self.url = "https://azure_devops/org/project"
         self.work_item_url = "https://work_item"
@@ -32,6 +33,7 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
     """Unit tests for the Azure Devops Server issues metric."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.metric = dict(type="issues", sources=self.sources, addition="sum")
 
@@ -75,6 +77,7 @@ class AzureDevopsStoryPointsTest(AzureDevopsTestCase):
     """Unit tests for the Azure Devops Server story points metric."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.metric = dict(type="user_story_points", sources=self.sources, addition="sum")
 
@@ -99,6 +102,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server unmerged branches."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.sources["source_id"]["parameters"]["branches_to_ignore"] = ["ignored_.*"]
         self.metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
@@ -262,6 +266,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
     """Unit tests for the Azure Devops Server failed jobs collector."""
 
     def setUp(self):
+        """Extend to set up test fixtures."""
         super().setUp()
         self.path = r"\\folder"
         self.pipeline = r"folder/include_pipeline"
