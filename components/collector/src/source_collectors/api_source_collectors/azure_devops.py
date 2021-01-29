@@ -38,7 +38,7 @@ class AzureDevopsIssues(SourceCollector):
         ids = [str(work_item["id"]) for work_item in (await response.json()).get("workItems", [])]
         if not ids:
             return SourceResponses(responses=[response], api_url=api_url)
-        ids_string = ",".join(ids[:min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)])
+        ids_string = ",".join(ids[: min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)])
         work_items_url = URL(f"{await super()._api_url()}/_apis/wit/workitems?ids={ids_string}&api-version=4.1")
         work_items = await super()._get_source_responses(work_items_url)
         work_items.insert(0, response)
@@ -48,10 +48,15 @@ class AzureDevopsIssues(SourceCollector):
         value = str(len((await responses[0].json())["workItems"]))
         entities = [
             Entity(
-                key=work_item["id"], project=work_item["fields"]["System.TeamProject"],
-                title=work_item["fields"]["System.Title"], work_item_type=work_item["fields"]["System.WorkItemType"],
-                state=work_item["fields"]["System.State"], url=work_item["url"])
-            for work_item in await self._work_items(responses)]
+                key=work_item["id"],
+                project=work_item["fields"]["System.TeamProject"],
+                title=work_item["fields"]["System.Title"],
+                work_item_type=work_item["fields"]["System.WorkItemType"],
+                state=work_item["fields"]["System.State"],
+                url=work_item["url"],
+            )
+            for work_item in await self._work_items(responses)
+        ]
         return SourceMeasurement(value=value, entities=entities)
 
     @staticmethod
@@ -98,10 +103,14 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
         return URL(f"{landing_url}/_git/{repository}/branches")
 
     async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
-        return [branch for branch in (await responses[0].json())["value"] if not branch["isBaseVersion"] and
-                int(branch["aheadCount"]) > 0 and
-                days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days"))) and
-                not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))]
+        return [
+            branch
+            for branch in (await responses[0].json())["value"]
+            if not branch["isBaseVersion"]
+            and int(branch["aheadCount"]) > 0
+            and days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))
+            and not match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))
+        ]
 
     def _commit_datetime(self, branch) -> datetime:
         return parse(branch["commit"]["committer"]["date"])
@@ -118,8 +127,9 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
         repository_id = await self._repository_id()
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
-        search_criteria = \
+        search_criteria = (
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
+        )
         return URL(f"{api_url}/_apis/git/repositories/{repository_id}/commits?{search_criteria}&api-version=4.1")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
@@ -135,6 +145,7 @@ class AzureDevopsSourceUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepo
 
 class TestRun(SimpleNamespace):  # pylint: disable=too-few-public-methods
     """Represent an Azure DevOps test run."""
+
     def __init__(self, build_nr: int = 0) -> None:
         super().__init__(build_nr=build_nr, test_count=0, total_test_count=0, entities=[])
 
@@ -149,14 +160,16 @@ class AzureDevopsTests(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         test_results = cast(List[str], self._parameter("test_result"))
         test_run_names_to_include = cast(List[str], self._parameter("test_run_names_to_include")) or ["all"]
-        test_run_states_to_include = [
-            value.lower() for value in self._parameter("test_run_states_to_include")] or ["all"]
+        test_run_states_to_include = [value.lower() for value in self._parameter("test_run_states_to_include")] or [
+            "all"
+        ]
         runs = (await responses[0].json()).get("value", [])
         highest_build: Dict[str, TestRun] = defaultdict(TestRun)
         for run in runs:
             name = run.get("name", "Unknown test run name")
-            if test_run_names_to_include != ["all"] and \
-                    not match_string_or_regular_expression(name, test_run_names_to_include):
+            if test_run_names_to_include != ["all"] and not match_string_or_regular_expression(
+                name, test_run_names_to_include
+            ):
                 continue
             state = run.get("state", "Unknown test run state")
             if test_run_states_to_include != ["all"] and state.lower() not in test_run_states_to_include:
@@ -171,12 +184,21 @@ class AzureDevopsTests(SourceCollector):
             highest_build[name].total_test_count += run.get("totalTests", 0)
             highest_build[name].entities.append(
                 Entity(
-                    key=run["id"], name=name, state=state, build_id=str(build_nr), url=run.get("webAccessUrl", ""),
-                    started_date=run.get("startedDate", ""), completed_date=run.get("completedDate", ""),
-                    counted_tests=str(counted_tests), incomplete_tests=str(run.get("incompleteTests", 0)),
+                    key=run["id"],
+                    name=name,
+                    state=state,
+                    build_id=str(build_nr),
+                    url=run.get("webAccessUrl", ""),
+                    started_date=run.get("startedDate", ""),
+                    completed_date=run.get("completedDate", ""),
+                    counted_tests=str(counted_tests),
+                    incomplete_tests=str(run.get("incompleteTests", 0)),
                     not_applicable_tests=str(run.get("notApplicableTests", 0)),
-                    passed_tests=str(run.get("passedTests", 0)), unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
-                    total_tests=str(run.get("totalTests", 0))))
+                    passed_tests=str(run.get("passedTests", 0)),
+                    unanalyzed_tests=str(run.get("unanalyzedTests", 0)),
+                    total_tests=str(run.get("totalTests", 0)),
+                )
+            )
         test_count = sum(build.test_count for build in highest_build.values())
         total_test_count = sum(build.total_test_count for build in highest_build.values())
         test_runs = list(itertools.chain.from_iterable([build.entities for build in highest_build.values()]))
@@ -195,21 +217,22 @@ class AzureDevopsJobs(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         entities = []
         for job in (await responses[0].json())["value"]:
-            if self._ignore_job(job):
+            if not self._include_job(job):
                 continue
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
             build_status = self._latest_build_result(job)
             build_date_time = self._latest_build_date_time(job)
             entities.append(
-                Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status))
+                Entity(key=name, name=name, url=url, build_date=str(build_date_time.date()), build_status=build_status)
+            )
         return SourceMeasurement(entities=entities)
 
-    def _ignore_job(self, job: Job) -> bool:
-        """Return whether this job should be ignored"""
+    def _include_job(self, job: Job) -> bool:
+        """Return whether this job should be included."""
         if not job.get("latestCompletedBuild", {}).get("result"):
-            return True  # The job has no completed builds
-        return match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
+            return False  # The job has no completed builds
+        return not match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
 
     @staticmethod
     def _latest_build_result(job: Job) -> str:
@@ -230,18 +253,19 @@ class AzureDevopsJobs(SourceCollector):
 class AzureDevopsFailedJobs(AzureDevopsJobs):
     """Collector for the failed jobs metric."""
 
-    def _ignore_job(self, job: Job) -> bool:
-        if super()._ignore_job(job):
-            return True
-        return self._latest_build_result(job) not in self._parameter("failure_type")
+    def _include_job(self, job: Job) -> bool:
+        """Extend to check for failure type."""
+        if not super()._include_job(job):
+            return False
+        return self._latest_build_result(job) in self._parameter("failure_type")
 
 
 class AzureDevopsUnusedJobs(AzureDevopsJobs):
     """Collector for the unused jobs metric."""
 
-    def _ignore_job(self, job: Job) -> bool:
-        if super()._ignore_job(job):
-            return True
+    def _include_job(self, job: Job) -> bool:
+        if not super()._include_job(job):
+            return False
         max_days = int(cast(str, self._parameter("inactive_job_days")))
         actual_days = days_ago(self._latest_build_date_time(job))
-        return actual_days <= max_days
+        return actual_days > max_days
