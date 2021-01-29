@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Subjects can now metrics in a trend table view. Use the hamburger menu to switch between the default detail view and the trend table view. Closes [#1649](https://github.com/ICTU/quality-time/issues/1649).
+- When measuring failed pipelines or unused pipelines with Azure DevOps as source, allow for including pipelines by name or by regular expression. Prepares for [#1804](https://github.com/ICTU/quality-time/issues/1804).
+- Allow using Azure DevOps pipelines as source for the 'source up-to-dateness' metric. Closes [#1804](https://github.com/ICTU/quality-time/issues/1804).
 
 ## [3.17.1] - [2021-01-24]
 
@@ -27,10 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When measuring failed jobs with GitLab as source, *Quality-time* would get the 100 most recent jobs instead of the 100 most recent *failed* jobs. Fixes [#1813](https://github.com/ICTU/quality-time/issues/1813).
 - Make sure the notifier component does not crash when a metric has no recent measurements. Fixes [#1831](https://github.com/ICTU/quality-time/issues/1831).
 - Adding or removing the OWASP ZAP "Parts of URLs to ignore" parameter would fail. Fixes [#1846](https://github.com/ICTU/quality-time/issues/1846).
-
-### Added
-
-- Allow using Azure DevOps jobs as source for the 'source up-to-dateness' metric. Closes [#1804](https://github.com/ICTU/quality-time/issues/1804).
 
 ## [3.17.0] - [2021-01-17]
 

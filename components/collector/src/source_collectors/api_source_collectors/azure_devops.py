@@ -232,6 +232,9 @@ class AzureDevopsJobs(SourceCollector):
         """Return whether this job should be included."""
         if not job.get("latestCompletedBuild", {}).get("result"):
             return False  # The job has no completed builds
+        jobs_to_include = self._parameter("jobs_to_include")
+        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(job["name"], jobs_to_include):
+            return False
         return not match_string_or_regular_expression(self.__job_name(job), self._parameter("jobs_to_ignore"))
 
     @staticmethod
