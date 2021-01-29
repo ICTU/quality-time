@@ -1404,6 +1404,19 @@
                         "unused_jobs"
                     ]
                 },
+                "jobs_to_include": {
+                    "name": "Pipelines to include (regular expressions or pipeline names)",
+                    "short_name": "pipelines to include",
+                    "help": "Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "all",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "failed_jobs",
+                        "unused_jobs"
+                    ]
+                },
                 "failure_type": {
                     "name": "Failure type",
                     "short_name": "failure type",
