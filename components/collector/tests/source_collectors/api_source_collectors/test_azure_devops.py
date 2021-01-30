@@ -147,7 +147,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
 class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
-    async def test_age(self):
+    async def test_age_of_file(self):
         """Test that the age of the file is returned."""
         self.sources["source_id"]["parameters"]["repository"] = "repo"
         self.sources["source_id"]["parameters"]["file_path"] = "README.md"
@@ -160,6 +160,27 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
         self.assert_measurement(
             response, value=expected_age, landing_url=f"{self.url}/_git/repo?path=README.md&version=GBmaster"
         )
+
+    async def test_age_of_pipeline(self):
+        """Test that the age of the pipeline is returned."""
+        self.sources["source_id"]["parameters"]["jobs_to_include"] = ["pipeline"]
+        metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
+        timestamp = "2019-09-03T20:43:00.1905758Z"
+        response = await self.collect(
+            metric,
+            get_request_json_return_value=dict(
+                value=[
+                    dict(
+                        path=r"\\folder",
+                        name="pipeline",
+                        _links=dict(web=dict(href=f"{self.url}/build")),
+                        latestCompletedBuild=dict(result="failed", finishTime=timestamp),
+                    )
+                ]
+            ),
+        )
+        expected_age = str(days_ago(parse(timestamp)))
+        self.assert_measurement(response, value=expected_age, landing_url=f"{self.url}/_build")
 
 
 class AzureDevopsTestsTest(AzureDevopsTestCase):
