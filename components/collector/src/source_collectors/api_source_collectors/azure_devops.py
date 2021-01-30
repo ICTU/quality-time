@@ -317,3 +317,7 @@ class AzureDevopsSourceUpToDateness(SourceCollector, ABC):
         instance = collector_class(session, source, data_model)
         instance.source_type = cls.source_type
         return instance
+
+    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to document that this class does not parse responses itself."""
+        raise NotImplementedError
