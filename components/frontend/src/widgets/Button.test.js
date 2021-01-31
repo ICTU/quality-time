@@ -30,7 +30,7 @@ describe('<CopyButton />', () => {
     it('can be used to select an item', () => {
         item_types.forEach((item_type) => {
             const mockCallBack = jest.fn();
-            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{key: "1", text: "Report", value: "1"}] }} />);
+            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Report", value: "1" }] }} />);
             wrapper.find("div.button").simulate("click");
             wrapper.find("DropdownItem").simulate("click");
             expect(mockCallBack).toHaveBeenCalledWith("1");
@@ -40,7 +40,7 @@ describe('<CopyButton />', () => {
         item_types.forEach((item_type) => {
             const mockCallBack = jest.fn();
             let get_options_called = 0;
-            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { get_options_called++; return [{key: "1", text: "Report", value: "1"}] }} />);
+            const wrapper = mount(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { get_options_called++; return [{ key: "1", text: "Report", value: "1" }] }} />);
             wrapper.find("div.button").simulate("click");
             wrapper.find("DropdownItem").simulate("click");
             wrapper.find("div.button").simulate("click");
@@ -60,7 +60,7 @@ describe('<MoveButton />', () => {
     it('can be used to select an item', () => {
         item_types.forEach((item_type) => {
             const mockCallBack = jest.fn();
-            const wrapper = mount(<MoveButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{key: "1", text: "Report", value: "1"}] }} />);
+            const wrapper = mount(<MoveButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Report", value: "1" }] }} />);
             wrapper.find("div.button").simulate("click");
             wrapper.find("DropdownItem").simulate("click");
             expect(mockCallBack).toHaveBeenCalledWith("1");
@@ -85,13 +85,13 @@ const test_report = {
 describe("<DownloadAsPDFButton/>", () => {
     it('indicates loading on click', () => {
         fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+        const wrapper = mount(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
         wrapper.find("button").simulate("click");
         expect(wrapper.find("button").hasClass("loading")).toBe(true);
     });
     it('ignores a second click', () => {
         fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
-        const wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+        const wrapper = mount(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
         wrapper.find("button").simulate("click");
         wrapper.find("button").simulate("click");
         expect(wrapper.find("button").hasClass("loading")).toBe(true);
@@ -101,7 +101,7 @@ describe("<DownloadAsPDFButton/>", () => {
         window.URL.createObjectURL = jest.fn();
         let wrapper;
         await act(async () => {
-            wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+            wrapper = mount(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
             wrapper.find("button").simulate("click");
         });
         expect(wrapper.find("button").hasClass("loading")).toBe(false);
@@ -110,7 +110,7 @@ describe("<DownloadAsPDFButton/>", () => {
         fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false });
         let wrapper;
         await act(async () => {
-            wrapper = mount(<DownloadAsPDFButton report={test_report} />);
+            wrapper = mount(<DownloadAsPDFButton report={test_report} history={{ location: { search: "" } }} />);
             wrapper.find("button").simulate("click");
         });
         expect(wrapper.find("button").hasClass("loading")).toBe(false);

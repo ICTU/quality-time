@@ -55,7 +55,7 @@ function ButtonRow(props) {
     return (
         <Grid.Row>
             <Grid.Column>
-                <DownloadAsPDFButton report_uuid={props.report_uuid} query_string={props.query_string} />
+                <DownloadAsPDFButton report_uuid={props.report_uuid} history={props.history} />
                 <ReadOnlyOrEditable editableComponent={
                     <DeleteButton
                         item_type='report'
@@ -75,7 +75,7 @@ export function ReportTitle(props) {
                 <ReportAttributesRow report_uuid={report_uuid} reload={props.reload} title={props.report.title} subtitle={props.report.subtitle} />
                 <NotificationDestinationsRow destinations={props.report.notification_destinations || {}} report_uuid={report_uuid} reload={props.reload} />
                 <ChangeLogRow report_uuid={report_uuid} timestamp={props.report.timestamp} />
-                <ButtonRow report_uuid={report_uuid} go_home={props.go_home} query_string={props.history.location.search} />
+                <ButtonRow report_uuid={report_uuid} go_home={props.go_home} history={props.history} />
             </Grid>
         </HeaderWithDetails>
     )
