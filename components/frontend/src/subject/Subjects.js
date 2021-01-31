@@ -11,6 +11,7 @@ export function Subjects(props) {
   const visible = useDelayedRender();
   const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery(props.history, "hide_metrics_not_requiring_action", "boolean");
   const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery(props.history, "tabs", "array");
+  const [subjectTrendTable, setSubjectTrendTable] = useURLSearchQuery(props.history, "subject_trend_table", "boolean")
   const [trendTableNrDates, setTrendTableNrDates] = useURLSearchQuery(props.history, "trend_table_nr_dates", "integer", 7);
   const [trendTableInterval, setTrendTableInterval] = useURLSearchQuery(props.history, "trend_table_interval", "integer", 1);
   const last_index = Object.keys(props.report.subjects).length - 1;
@@ -28,8 +29,10 @@ export function Subjects(props) {
             key={subject_uuid}
             last_subject={index === last_index}
             setHideMetricsNotRequiringAction={(state) => setHideMetricsNotRequiringAction(state)}
+            setSubjectTrendTable={(state) => setSubjectTrendTable(state)}
             setTrendTableNrDates={(nr) => setTrendTableNrDates(nr)}
             setTrendTableInterval={(interval) => setTrendTableInterval(interval)}
+            subjectTrendTable={subjectTrendTable}
             subject_uuid={subject_uuid}
             toggleHiddenColumn={props.toggleHiddenColumn}
             toggleVisibleDetailsTab={(...tabs) => toggleVisibleDetailsTab(...tabs)}

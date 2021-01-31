@@ -49,15 +49,15 @@ Clicking "Logout" logs you out from *Quality-time*. Your user session expires af
 
 ## Limiting editing rights
 
-By default, any logged in user can edit reports and metrics. However, editing rights can be limited to certain people. On the homepage, expand the reports overview title and add the usernames or email addresses of people who will be allowed to edit reports and metrics. 
+By default, any logged-in user can edit reports and metrics. However, editing rights can be limited to certain people. On the homepage, expand the reports overview title and add the usernames or email addresses of people who will be allowed to edit reports and metrics. 
 
-If you forget to add yourself, your username will be added automatically. This means that you can't retract your own editing rights: add another user and ask them to remove your user name or email address.
+If you forget to add yourself, your username will be added automatically. This means that you can't retract your own editing rights: add another user and ask them to remove your username or email address.
 
 To restore the default situation where every logged in user can edit reports and metrics, simply remove all usernames and email addresses.
 
 ## Configuring quality reports
 
-Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application or the number of ready user story points for a Scrum team. To collect the measurement data, each metric has one ore more sources that *Quality-time* will use to measure the metric.
+Each *Quality-time* instance can serve multiple quality reports. A quality report consists of one or more subjects - things such as software products, projects, and processes - that you want to measure the quality of. Each subject has one or more metrics that tell you something about the quality of the subject. For example, the number of failing test cases of an application, or the number of ready user story points for a Scrum team. To collect the measurement data, each metric has one or more sources that *Quality-time* will use to measure the metric.
 
 > You need to be logged in to be able to edit quality reports.
 
@@ -117,15 +117,15 @@ After you've added a metric, the metric is visible in the subject's metric table
 
 ![Editing metric screenshot](screenshots/editing_metric.png)
 
-The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported metric types. By default the name of the metric is equal to its type, in the example below "Duplicated lines", but you can change the metric name using the "Metric name" field.
+The first parameter is the "Metric type". The metric type determines what gets measured. When you change the metric type, the sources you can select in the "Sources" tab change accordingly. See the overview of [supported metrics and sources](METRICS_AND_SOURCES.md) for the list of supported metric types. By default, the name of the metric is equal to its type, "Duplicated lines" in the example below, but you can change the metric name using the "Metric name" field.
 
 Metrics can have zero or more arbitrary "Tags". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
 
 ![Dashboard tags](screenshots/dashboard_tags.png)
 
-The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
+The "Metric scale" field determines what scale to use to measure the metric. All metrics currently support either the "Count" scale, or the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
-The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But when used to measure the number of failing tests, fewer is better.
+The "Metric direction" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.
 
 The "Metric unit" derives its default value from the metric type. Override as needed.
 
@@ -135,7 +135,7 @@ If a metric doesn't meet the target value, but your team isn't able to fix the s
 
 #### Reordering metrics
 
-To reorder metrics, expand the metric in the metric table and use the buttons on the lower left hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by e.g. name or status.
+To reorder metrics, expand the metric in the metric table and use the buttons on the lower left-hand side to move the metric one row higher or lower, or to the top or bottom of the table. The order is saved on the server. Users can temporarily override the default ordering of the metrics by clicking the column headers thus sorting by e.g. name or status.
 
 #### Deleting metrics
 
@@ -157,13 +157,13 @@ If you add multiple sources for one metric the measurement values of each source
 
 After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. SonarQube supports the commented out code metric type, but GitLab does not so GitLab is not shown.
 
-By default, the name of the source equals the source type but this can overridden using the "Source name" field.
+By default, the name of the source equals the source type but this can be overridden using the "Source name" field.
 
 The parameters that sources need differ per source type. Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. If a parameter is required, this is indicated with a red outline as shown below.
 
 ![Editing source screenshot](screenshots/editing_source.png)
 
-Source parameter (URL's, user names, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
+Source parameter (URL's, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
 
 #### Deleting sources
 
@@ -181,7 +181,7 @@ After adding *Quality-time* as a source to a "Metrics"-metric, one can configure
 
 ![Editing *Quality-time* source screenshot](screenshots/editing_quality_time_source.png)
 
-Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
+Note that when the "Metrics" metric is itself part of the set of metrics it counts, a peculiar situation may occur: when you've configured the "Metrics" to count red metrics and its target is not met, the metric itself will become red and thus be counted as well. For example, if the target is at most five red metrics, and the number of red metrics increases from five to six, the "Metrics" value will go from five to seven. You can prevent this by making sure the "Metrics" metric is not in the set of counted metrics, e.g. by putting it in a different report and only count metrics in the other report(s).
 
 ### Unmerged branches
 
@@ -197,7 +197,7 @@ To ignore branches that people are actively working on, use the "Number of days 
 
 Some metric sources are documents in JSON, XML, CSV or HTML format. Examples include JUnit XML reports, Jacoco XML reports and Axe CSV reports. If such a document is stored in GitLab, *Quality-time* needs to use the GitLab API to retrieve the report. This means you need to provide the correct GitLab API URL to *Quality-time*.
 
-There are two scenario's: the source is a build artifact of a GitLab CI pipeline or the source is stored in a GitLab repository.
+There are two scenarios: the source is a build artifact of a GitLab CI pipeline, or the source is stored in a GitLab repository.
 
 #### GitLab CI pipeline build artifact
 
@@ -221,7 +221,7 @@ If the repository is private, you also need to enter an [personal access token](
 
 ### Jenkins, Jenkins test report, JaCoCo Jenkins plugin, and OWASP dependency check Jenkins plugin
 
-To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the user name to which the token belongs.
+To authorize *Quality-time* for (non-public resources in) Jenkins, you can either use a username and password or a username and [API token](https://wiki.jenkins.io/display/JENKINS/Authenticating+scripted+clients). Note that, unlike other sources, when using the API token Jenkins also requires the username to which the token belongs.
 
 ### Generic JSON for security warnings
 
@@ -254,7 +254,11 @@ Users can customize quality reports on an individual basis by changing the dashb
 
 ### Customizing dashboards
 
-Both the reports dashboard on the *Quality-time* landing page as well as the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
+Both the reports dashboard on the *Quality-time* landing page and the dashboard of individual projects can be customized by dragging and dropping the cards. The dashboard layout is persisted in the database and thus shared with other users.
+
+### Subject trend table
+
+By default, subjects show the current measurement value of each metric, together with other details such as the target value, comments and tags. Subjects can also show multiple recent measurement values of each metric in the form of a trend table. Use the 'hamburger' menu on the top left-hand side of the metric table to switch between the 'details' and 'trend table' views.
 
 ### Sorting metrics
 
@@ -266,13 +270,13 @@ In a report's dashboard, click on a tag card to show only metrics that have the 
 
 ### Filtering metrics by status
 
-Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide metrics that need no action.
+Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide metrics that need no action.
 
 ![Metric table columns](screenshots/metric_table_columns.png)
 
 ### Hiding columns
 
-Each metric table has a 'hamburger' menu on the top left hand side that can be used to hide specific columns from the metric tables.
+Each metric table has a 'hamburger' menu on the top left-hand side that can be used to hide specific columns from the metric tables.
 
 ## Exporting quality reports
 
@@ -297,6 +301,8 @@ To hide metrics that do not need any action, set the `hide_metrics_not_requiring
 To hide columns from the report, set the `hidden_columns` parameter, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, and `tags`.
 
 To expand metrics and set the active tab of the metric detail information, use the `tabs` parameter, i.e. `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `http://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
+
+The use the subject trend table view instead of the default details view, use the `subject_trend_table` parameter and set it to true, for example `http://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?subject_trend_table=true`.
 
 To change the number of dates and the time between dates shown in the trend table, use the `trend_table_nr_dates` and the `trend_table_interval` parameters. The number of dates should be an integer between 2 and 7. The interval should be an integer between 1 and 4 and is in weeks.
 

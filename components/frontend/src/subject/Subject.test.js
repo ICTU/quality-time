@@ -1,27 +1,25 @@
-import { act, fireEvent, render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { Subject } from "./Subject";
 import * as fetch_server_api from '../api/fetch_server_api';
 import * as TrendTable from '../trendTable/TrendTable';
 import * as SubjectDetails from './SubjectDetails';
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-it('can switch between measurements and subject details', async () => {
+it('fetches measurements', async () => {
 
   jest.mock("../api/fetch_server_api.js")
   fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, measurements: [] });
   
   await act(async () => {
-    const { getByText, getByRole } = render(
+    render(
       <Subject 
         datamodel={datamodel} 
         report={report} 
         subject_uuid="subject_uuid" 
         tags={[]} 
         hiddenColumns={[]}
+        subjectTrendTable={true}
         visibleDetailsTabs={[]} />);
-
-    fireEvent.click(getByRole("listbox"));
-    fireEvent.click(getByText("Trend table"));
   });
 
   expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "subject/subject_uuid/measurements", undefined);
