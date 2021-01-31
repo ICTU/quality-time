@@ -65,7 +65,7 @@ def record_health(filename: str = "/home/notifier/health_check.txt") -> None:
 
 def most_recent_measurement_timestamp(json) -> datetime:
     """Return the most recent measurement timestamp."""
-    most_recent = datetime.min
+    most_recent = datetime.min.replace(tzinfo=timezone.utc)
     for report in json["reports"]:
         for subject in report["subjects"].values():
             for metric in subject["metrics"].values():

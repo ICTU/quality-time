@@ -4,7 +4,7 @@ import json
 import pathlib
 import unittest
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, mock_open, patch
 
 from quality_time_notifier import most_recent_measurement_timestamp, notify, record_health, retrieve_data_model
@@ -17,11 +17,11 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
         """Test without measurements."""
         report = dict(subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[])))))
         json_data = dict(reports=[report])
-        self.assertEqual(datetime.min, most_recent_measurement_timestamp(json_data))
+        self.assertEqual(datetime.min.replace(tzinfo=timezone.utc), most_recent_measurement_timestamp(json_data))
 
     def test_one_measurement(self):
         """Test that the end timestamp of the measurement is returned."""
-        now = datetime.now()
+        now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc)
         report = dict(
             subjects=dict(subject1=dict(metrics=dict(metric1=dict(recent_measurements=[dict(end=now.isoformat())]))))
         )
@@ -76,7 +76,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Define info that is used in multiple tests."""
         self.url = "https://report1"
         self.title = "Report 1"
-        self.history = "2020-01-01T23:59:00"
+        self.history = "2020-01-01T23:59:00+00:00"
         self.subjects = dict(
             subject1=dict(
                 metrics=dict(
@@ -152,7 +152,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="www.webhook.com")),
             subjects=self.subjects,
         )
-        now = datetime.now().isoformat()
+        now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
         report2 = deepcopy(report)
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
             dict(start=now, end=now, count=dict(status="target_not_met", value="10"))
@@ -227,7 +227,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             notification_destinations=dict(destination1=dict(name="destination name", teams_webhook="")),
             subjects=self.subjects,
         )
-        now = datetime.now().isoformat()
+        now = datetime.now().replace(microsecond=0, tzinfo=timezone.utc).isoformat()
         report2 = deepcopy(report)
         report2["subjects"]["subject1"]["metrics"]["metric1"]["recent_measurements"].append(
             dict(start=now, end=now, count=dict(status="target_met", value="10"))
