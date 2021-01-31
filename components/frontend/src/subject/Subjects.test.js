@@ -66,4 +66,12 @@ describe("<Subjects />", () => {
         wrapper.find("Subject").dive().find("SubjectDetails").dive().find("Metric").dive().find("Measurement").dive().find("TableRowWithDetails").dive().find("TableCell").at(0).simulate("click");
         expect(wrapper.find("Subject").prop("visibleDetailsTabs")).toStrictEqual([]);
     });
+    it('toggles subject trend table', () => {
+        const wrapper = subjects();
+        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
+        wrapper.find("Subject").dive().find("SubjectDetails").dive().find("SubjectTableHeader").dive().find("HamburgerHeader").dive().find("DropdownItem").at(1).simulate("click");
+        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(true);
+        wrapper.find("Subject").dive().find("TrendTable").dive().find("TrendTableHeader").dive().find("HamburgerMenu").dive().find("DropdownItem").at(0).simulate("click");
+        expect(wrapper.find("Subject").prop("subjectTrendTable")).toBe(false);
+    })
 });
