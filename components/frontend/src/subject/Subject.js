@@ -23,27 +23,26 @@ export function Subject(props) {
   const subject = props.report.subjects[props.subject_uuid];
   const metrics = displayedMetrics(subject.metrics, props.hideMetricsNotRequiringAction, props.tags)
 
-  const [view, setView] = useState('details');
   const [measurements, setMeasurements] = useState([]);
 
   useEffect(() => {
-    if (view === 'measurements') {
+    if (props.subjectTrendTable) {
       get_subject_measurements(props.subject_uuid, props.report_date).then(json => {
         if (json.ok !== false) {
           setMeasurements(json.measurements)
         }
       })
     }
-  // eslint-disable-next-line
-  }, [view]);
+    // eslint-disable-next-line
+  }, [props.subjectTrendTable]);
 
   const hamburgerItems = (
     <>
       <Dropdown.Header>Views</Dropdown.Header>
-      <Dropdown.Item onClick={() => setView('details')}>
+      <Dropdown.Item onClick={() => props.setSubjectTrendTable(false)}>
         Details
       </Dropdown.Item>
-      <Dropdown.Item onClick={() => setView('measurements')}>
+      <Dropdown.Item onClick={() => props.setSubjectTrendTable(true)}>
         Trend table
       </Dropdown.Item>
       <Dropdown.Header>Rows</Dropdown.Header>
@@ -55,37 +54,38 @@ export function Subject(props) {
 
   const subjectFooter = (
     <SubjectFooter
-      datamodel={props.datamodel} 
-      subjectUuid={props.subject_uuid} 
-      subject={props.report.subjects[props.subject_uuid]} 
-      reload={props.reload} 
+      datamodel={props.datamodel}
+      subjectUuid={props.subject_uuid}
+      subject={props.report.subjects[props.subject_uuid]}
+      reload={props.reload}
       reports={props.reports}
-      resetSortColumn={() => {}} />
+      resetSortColumn={() => { }} />
   )
 
   return (
     <div id={props.subject_uuid}>
       <SubjectTitle subject={subject} {...props} />
-        {view === 'details' ? 
+      {props.subjectTrendTable ?
+        <TrendTable
+          datamodel={props.datamodel}
+          reportDate={props.report_date}
+          metrics={metrics}
+          measurements={measurements}
+          extraHamburgerItems={hamburgerItems}
+          trendTableInterval={props.trendTableInterval}
+          setTrendTableInterval={props.setTrendTableInterval}
+          trendTableNrDates={props.trendTableNrDates}
+          setTrendTableNrDates={props.setTrendTableNrDates}
+          tableFooter={subjectFooter}
+        />
+        :
         <Table sortable>
-          <SubjectDetails 
-            metrics={metrics} 
-            setView={setView} 
-            extraHamburgerItems={hamburgerItems}
-            {...props}/>
-        </Table>
-          : <TrendTable
-            datamodel={props.datamodel}
-            reportDate={props.report_date}
+          <SubjectDetails
             metrics={metrics}
-            measurements={measurements}
             extraHamburgerItems={hamburgerItems}
-            trendTableInterval={props.trendTableInterval}
-            setTrendTableInterval={props.setTrendTableInterval}
-            trendTableNrDates={props.trendTableNrDates}
-            setTrendTableNrDates={props.setTrendTableNrDates}
-            tableFooter={subjectFooter}
-          />}
+            {...props} />
+        </Table>
+      }
     </div>
   )
 }
