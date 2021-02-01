@@ -39,10 +39,10 @@ export function Subject(props) {
   const hamburgerItems = (
     <>
       <Dropdown.Header>Views</Dropdown.Header>
-      <Dropdown.Item onClick={() => props.setSubjectTrendTable(false)}>
+      <Dropdown.Item onClick={() => props.setSubjectTrendTable(false)} active={!props.subjectTrendTable} >
         Details
       </Dropdown.Item>
-      <Dropdown.Item onClick={() => props.setSubjectTrendTable(true)}>
+      <Dropdown.Item onClick={() => props.setSubjectTrendTable(true)} active={props.subjectTrendTable} >
         Trend table
       </Dropdown.Item>
       <Dropdown.Header>Rows</Dropdown.Header>
