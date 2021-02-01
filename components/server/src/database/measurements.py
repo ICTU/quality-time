@@ -2,7 +2,6 @@
 
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, cast
-import logging
 
 import pymongo
 from pymongo.database import Database
@@ -47,12 +46,6 @@ def measurements_by_metric(
     max_iso_timestamp: str = "",
 ):
     """Return all measurements for one metric, without the entities, except for the most recent one."""
-    logging.info(
-        ">>> metric_uuids='%s' min_iso_timestamp='%s' max_iso_timestamp='%s'",
-        ", ".join(metric_uuids),
-        min_iso_timestamp,
-        max_iso_timestamp,
-    )
     measurement_filter: Dict = {"metric_uuid": {"$in": metric_uuids}}
     if min_iso_timestamp:
         measurement_filter["end"] = {"$gt": min_iso_timestamp}
