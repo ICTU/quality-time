@@ -19,45 +19,45 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 
 
 function sortAndOrganizeMeasurements(measurements) {
-    // sort measurements with descending start
-    const sortedMeasurements = measurements.sort((m1, m2) => {
-        return m1.start < m2.start
-    })
+  // sort measurements with descending start
+  const sortedMeasurements = measurements.sort((m1, m2) => {
+    return m1.start < m2.start
+  })
 
-    // put all measurements in a dictionary with metric as key
-    const metricMeasurements = {}
-    sortedMeasurements.forEach(measurement => {
-        if (metricMeasurements[measurement.metric_uuid] === undefined) {
-        metricMeasurements[measurement.metric_uuid] = [measurement]
-        } else {
-        metricMeasurements[measurement.metric_uuid].push(measurement)
-        }
-    })
+  // put all measurements in a dictionary with metric as key
+  const metricMeasurements = {}
+  sortedMeasurements.forEach(measurement => {
+    if (metricMeasurements[measurement.metric_uuid] === undefined) {
+      metricMeasurements[measurement.metric_uuid] = [measurement]
+    } else {
+      metricMeasurements[measurement.metric_uuid].push(measurement)
+    }
+  })
 
-    return metricMeasurements
+  return metricMeasurements
 }
 
 
 export function TrendTable({
-    datamodel,
-    reportDate,
-    metrics,
-    measurements,
-    extraHamburgerItems,
-    showTargets,
-    trendTableInterval,
-    setTrendTableInterval,
-    trendTableNrDates,
-    setTrendTableNrDates,
-    tableFooter,
+  datamodel,
+  reportDate,
+  metrics,
+  measurements,
+  extraHamburgerItems,
+  showTargets,
+  trendTableInterval,
+  setTrendTableInterval,
+  trendTableNrDates,
+  setTrendTableNrDates,
+  tableFooter,
 }) {
 
   const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
   const orderedMeasurements = sortAndOrganizeMeasurements(measurements)
-    
+
   return (
     <Table>
-      <TrendTableHeader 
+      <TrendTableHeader
         extraHamburgerItems={extraHamburgerItems}
         columnDates={dates}
         trendTableInterval={trendTableInterval}
@@ -68,17 +68,17 @@ export function TrendTable({
         {Object.entries(metrics).map(([metric_uuid, metric], index) => {
           const metricType = datamodel.metrics[metric.type]
           const metricName = get_metric_name(metric, datamodel)
-          return (<MeasurementsRow key={index}
-            metricType={metricType}
-            metricName={metricName}
-            metric={metric}
-            dates={dates}
-            metricMeasurements={orderedMeasurements[metric_uuid]}
-            showTargetRow={showTargets}
-            report_date={reportDate}
-            trendTableInterval={trendTableInterval}
-            trendTableNrDates={trendTableNrDates} />)
-          })
+          return (
+            <MeasurementsRow key={index}
+              metricType={metricType}
+              metricName={metricName}
+              metric={metric}
+              dates={dates}
+              metricMeasurements={orderedMeasurements[metric_uuid]}
+              showTargetRow={showTargets}
+            />
+          )
+        })
         }
       </Table.Body>
       {tableFooter}

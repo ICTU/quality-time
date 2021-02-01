@@ -8,6 +8,7 @@ export function MeasurementsRow({metricType, metricName, metric, metricMeasureme
   const unit = formatMetricUnit(metricType, metric)
   const targetCells = []
   const measurementCells = []
+  console.log(metricType, metricName, metric, metricMeasurements);
 
   dates.forEach((date, index) => {
     let measurement;
