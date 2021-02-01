@@ -21,7 +21,7 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 function sortAndOrganizeMeasurements(measurements) {
   // sort measurements with descending start
   const sortedMeasurements = measurements.sort((m1, m2) => {
-    return m1.start < m2.start
+    return m1.start > m2.start
   })
 
   // put all measurements in a dictionary with metric as key
