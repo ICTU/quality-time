@@ -8,9 +8,11 @@ export function MeasurementsRow({ metricType, metricName, metric, measurements, 
   const unit = formatMetricUnit(metricType, metric)
   const targetCells = []
   const measurementCells = []
+  // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
+  measurements.sort((m1, m2) => m1.start < m2.start ? 1 : -1)
 
   dates.forEach((date) => {
-    const iso_date_string = date.toISOString().split(".")[0];
+    const iso_date_string = date.toISOString().split("T")[0];
     const measurement = measurements?.find((m) => { return m.start <= iso_date_string && iso_date_string <= m.end })
     const metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
     const status = !measurement?.[metric.scale]?.status ? "unknown" : measurement[metric.scale].status;
