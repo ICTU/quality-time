@@ -3,21 +3,20 @@ import { formatMetricScale, formatMetricUnit, format_metric_direction } from "..
 import './TrendTable.css'
 
 
-export function MeasurementsRow({metricType, metricName, metric, metricMeasurements, dates, showTargetRow}) {
+export function MeasurementsRow({metricType, metricName, metric, measurements, dates, showTargetRow}) {
 
   const unit = formatMetricUnit(metricType, metric)
   const targetCells = []
   const measurementCells = []
-  console.log(metricType, metricName, metric, metricMeasurements);
 
   dates.forEach((date, index) => {
     let measurement;
     if (index === 0) {
-      measurement = metricMeasurements?.[0]  // for the first cell, always take the first available measurement
+      if (measurements?.length > 0) {
+        measurement = measurements.reduce((max, m) => m.start > max.start ? m : max)  // for the first cell, always take the most recent measurement
+      }
     } else {
-      measurement = metricMeasurements?.find((metricMeasurement) => {
-        return metricMeasurement.start <= date.toISOString() && date.toISOString() <= metricMeasurement.end
-      })
+      measurement = measurements?.find((m) => { return m.start <= date.toISOString() && date.toISOString() <= m.end })
     }
     
     const metric_value = !measurement?.[metric.scale]?.value ? "?" : measurement[metric.scale].value;
