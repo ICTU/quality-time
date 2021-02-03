@@ -18,26 +18,6 @@ function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
 }
 
 
-function sortAndOrganizeMeasurements(measurements) {
-  // sort measurements with descending start
-  const sortedMeasurements = measurements.sort((m1, m2) => {
-    return m1.start < m2.start
-  })
-
-  // put all measurements in a dictionary with metric as key
-  const metricMeasurements = {}
-  sortedMeasurements.forEach(measurement => {
-    if (metricMeasurements[measurement.metric_uuid] === undefined) {
-      metricMeasurements[measurement.metric_uuid] = [measurement]
-    } else {
-      metricMeasurements[measurement.metric_uuid].push(measurement)
-    }
-  })
-
-  return metricMeasurements
-}
-
-
 export function TrendTable({
   datamodel,
   reportDate,
@@ -53,7 +33,6 @@ export function TrendTable({
 }) {
 
   const dates = getColumnDates(reportDate, trendTableInterval, trendTableNrDates)
-  const orderedMeasurements = sortAndOrganizeMeasurements(measurements)
 
   return (
     <Table>
@@ -74,7 +53,7 @@ export function TrendTable({
               metricName={metricName}
               metric={metric}
               dates={dates}
-              metricMeasurements={orderedMeasurements[metric_uuid]}
+              measurements={measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)}
               showTargetRow={showTargets}
             />
           )

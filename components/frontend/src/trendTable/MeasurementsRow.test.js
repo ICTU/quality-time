@@ -31,15 +31,15 @@ describe("MeasurementRow", () => {
         },
     ]
     const dates = [
-        new Date("2020-01-03T00:00:00+00:00"),
-        new Date("2020-01-05T00:00:00+00:00"),
         new Date("2020-01-09T00:00:00+00:00"),
+        new Date("2020-01-05T00:00:00+00:00"),
+        new Date("2020-01-03T00:00:00+00:00"),
     ]
 
     it('Renders one single row with metric name, measurement values and unit', () => {
     
         const { queryAllByText } = render(
-          <table><tbody><MeasurementsRow metricType={{}} metricName="testName" metric={metric} metricMeasurements={measurements} dates={dates} /></tbody></table>
+          <table><tbody><MeasurementsRow metricType={{}} metricName="testName" metric={metric} measurements={measurements} dates={dates} /></tbody></table>
         );
     
         expect(queryAllByText("testName").length).toBe(1) // measurement name cell
@@ -52,7 +52,7 @@ describe("MeasurementRow", () => {
     it('Renders two rows, one with values and one with targets', () => {
     
         const { queryAllByText } = render(
-        <table><tbody><MeasurementsRow metricType={{}} metricName="testName" metric={metric} metricMeasurements={measurements} dates={dates} showTargetRow/></tbody></table>
+        <table><tbody><MeasurementsRow metricType={{}} metricName="testName" metric={metric} measurements={measurements} dates={dates} showTargetRow/></tbody></table>
         );
         
         expect(queryAllByText("Measurement").length).toBe(1) // measurement name cell
