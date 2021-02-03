@@ -189,6 +189,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :-------- | :--- |
 | Failure type | Multiple choice | No | Limit which failure types to count as failed. |
 | Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
+| Pipelines to include (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
@@ -967,6 +968,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :-------- | :--- | :-------- | :--- |
 | Number of days since last build after which to consider pipelines inactive | Integer | No |  |
 | Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
+| Pipelines to include (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
