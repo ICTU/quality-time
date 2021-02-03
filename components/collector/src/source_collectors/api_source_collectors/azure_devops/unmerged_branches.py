@@ -19,13 +19,12 @@ class AzureDevopsUnmergedBranches(UnmergedBranchesSourceCollector, AzureDevopsRe
     async def _api_url(self) -> URL:
         """Extend to add the branches API path."""
         api_url = str(await super()._api_url())
-        return URL(f"{api_url}/_apis/git/repositories/{await self._repository_id()}/stats/branches?api-version=4.1")
+        return URL(f"{api_url}/stats/branches?api-version=4.1")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the branches path."""
         landing_url = str(await super()._landing_url(responses))
-        repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
-        return URL(f"{landing_url}/_git/{repository}/branches")
+        return URL(f"{landing_url}/branches")
 
     async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
         """Override to get the unmerged branches response.
