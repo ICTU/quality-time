@@ -1266,8 +1266,10 @@
                 "file_path": {
                     "name": "File or folder path",
                     "short_name": "path",
+                    "help": "Use the date and time the path was last changed to determine the up-to-dateness. Note that if a pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is ignored.",
                     "type": "string",
-                    "mandatory": true,
+                    "placeholder": "none",
+                    "mandatory": false,
                     "default_value": "",
                     "metrics": [
                         "source_up_to_dateness"
@@ -1391,19 +1393,6 @@
                         "tests"
                     ]
                 },
-                "jobs_to_ignore": {
-                    "name": "Pipelines to ignore (regular expressions or pipeline names)",
-                    "short_name": "pipelines to ignore",
-                    "help": "Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.",
-                    "type": "multiple_choice_with_addition",
-                    "placeholder": "none",
-                    "mandatory": false,
-                    "default_value": [],
-                    "metrics": [
-                        "failed_jobs",
-                        "unused_jobs"
-                    ]
-                },
                 "jobs_to_include": {
                     "name": "Pipelines to include (regular expressions or pipeline names)",
                     "short_name": "pipelines to include",
@@ -1414,6 +1403,21 @@
                     "default_value": [],
                     "metrics": [
                         "failed_jobs",
+                        "source_up_to_dateness",
+                        "unused_jobs"
+                    ]
+                },
+                "jobs_to_ignore": {
+                    "name": "Pipelines to ignore (regular expressions or pipeline names)",
+                    "short_name": "pipelines to ignore",
+                    "help": "Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders.",
+                    "type": "multiple_choice_with_addition",
+                    "placeholder": "none",
+                    "mandatory": false,
+                    "default_value": [],
+                    "metrics": [
+                        "failed_jobs",
+                        "source_up_to_dateness",
                         "unused_jobs"
                     ]
                 },

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.18.0-rc.6] - [2021-02-03]
+## [Unreleased]
 
 ### Fixed
 
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Subjects can now metrics in a trend table view. Use the hamburger menu to switch between the default detail view and the trend table view. Closes [#1649](https://github.com/ICTU/quality-time/issues/1649).
+- Subjects can now show metrics in a trend table view. Use the hamburger menu to switch between the default detail view and the trend table view. Closes [#1649](https://github.com/ICTU/quality-time/issues/1649).
 - When measuring failed pipelines or unused pipelines with Azure DevOps as source, allow for including pipelines by name or by regular expression. Prepares for [#1804](https://github.com/ICTU/quality-time/issues/1804).
 - Allow using Azure DevOps pipelines as source for the 'source up-to-dateness' metric. Closes [#1804](https://github.com/ICTU/quality-time/issues/1804).
 
