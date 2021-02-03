@@ -410,7 +410,9 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | Branch | String | No |  |
-| File or folder path | String | Yes |  |
+| File or folder path | String | No | Use the date and time the path was last changed to determine the up-to-dateness. Note that if a pipeline is specified, the pipeline is used to determine the up-to-dateness, and the path is ignored. |
+| Pipelines to ignore (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to ignore can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
+| Pipelines to include (regular expressions or pipeline names) | Multiple choice with addition | No | Pipelines to include can be specified by pipeline name or by regular expression. Use {folder name}/{pipeline name} for the names of pipelines in folders. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Repository (name or id) | String | No |  |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
