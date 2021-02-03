@@ -12,7 +12,7 @@ describe("MeasurementRow", () => {
         {
             metric_uuid: "1",
             start: "2020-01-06T00:00:00+00:00",
-            end: "2020-01-08T00:00:00+00:00",
+            end: "2020-01-09T00:00:00+00:00",
             count: {
                 value: "value 1",
                 status: "near_target_met",
@@ -20,7 +20,7 @@ describe("MeasurementRow", () => {
             }
         },
         {
-            metric_uuid: "1",
+            metric_uuid: "0",
             start: "2020-01-04T00:00:00+00:00",
             end: "2020-01-06T00:00:00+00:00",
             count: {

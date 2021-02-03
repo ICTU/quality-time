@@ -6,7 +6,9 @@ import { TrendTableHeader } from './TrendTableHeader';
 
 
 function getColumnDates(report_date, trendTableInterval, trendTableNrDates) {
-  const baseDate = report_date ? new Date(report_date) : new Date();
+  let now = new Date();
+  now.setMinutes(now.getMinutes() - 15)  // Make sure "now" is earlier than the end time of the most recent measurements
+  const baseDate = report_date ? new Date(report_date) : now;
   const intervalLength = trendTableInterval * 7;  // trendTableInterval is in weeks, convert to days
   const columnDates = []
   for (let offset = 0; offset < trendTableNrDates * intervalLength; offset += intervalLength) {

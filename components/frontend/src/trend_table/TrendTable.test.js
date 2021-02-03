@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { TrendTable } from '../trendTable/TrendTable';
+import { TrendTable } from '../trend_table/TrendTable';
 
 const metric = {
   unit: "testUnit",

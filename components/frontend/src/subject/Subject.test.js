@@ -1,7 +1,7 @@
 import { act, render } from "@testing-library/react";
 import { Subject } from "./Subject";
 import * as fetch_server_api from '../api/fetch_server_api';
-import * as TrendTable from '../trendTable/TrendTable';
+import * as TrendTable from '../trend_table/TrendTable';
 import * as SubjectDetails from './SubjectDetails';
 import { datamodel, report } from "../__fixtures__/fixtures";
 
@@ -30,7 +30,7 @@ it('shows the subject title and subject details', async () => {
   // mock child components to check which one gets rendered
   jest.mock("./SubjectDetails")
   SubjectDetails.SubjectDetails = () => <tbody data-testid="subject-details"></tbody>
-  jest.mock("../trendTable/TrendTable")
+  jest.mock("../trend_table/TrendTable")
   TrendTable.TrendTable = () => <tbody data-testid="subject-table"></tbody>
 
   const { queryAllByText, queryAllByTestId } = render(

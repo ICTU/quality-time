@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
 import { get_subject_measurements } from '../api/subject';
-import { TrendTable } from '../trendTable/TrendTable';
+import { TrendTable } from '../trend_table/TrendTable';
 import { SubjectDetails } from './SubjectDetails';
 import { SubjectFooter } from './SubjectFooter';
 import { SubjectTitle } from './SubjectTitle';
