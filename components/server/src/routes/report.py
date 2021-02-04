@@ -13,7 +13,7 @@ from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.report import import_json_report
 from model.actions import copy_report
 from model.data import ReportData
-from model.transformations import hide_credentials, summarize_report
+from model.transformations import encrypt_credentials, hide_credentials, summarize_report
 from server_utilities.functions import iso_timestamp, report_date_time, uuid
 from server_utilities.type import ReportId
 
@@ -88,12 +88,19 @@ def export_report_as_pdf(report_uuid: ReportId):
 
 
 @bottle.get("/api/v3/report/<report_uuid>/json")
-def export_report_as_json(database: Database, report_uuid: ReportId, public_key: str = None):
+def export_report_as_json(database: Database, report_uuid: ReportId):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
     data_model = latest_datamodel(database, date_time)
     report = latest_report(database, report_uuid)
-    hide_credentials(data_model, report)
+
+    if "public_key" in bottle.request.query:
+        public_key = parse.unquote(bottle.request.query["public_key"])
+    else:  # default to own public key
+        with open("components/server/credentials_export_public_key.pem", "rb") as key_file:
+            public_key = key_file.read()
+
+    encrypt_credentials(data_model, public_key, report)
     return report
 
 

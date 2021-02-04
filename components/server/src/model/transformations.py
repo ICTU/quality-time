@@ -1,10 +1,11 @@
 """Model transformations."""
 
 from collections.abc import Iterator
+import json
 from datetime import date
 from typing import Optional, cast
 
-from server_utilities.functions import unique
+from server_utilities.functions import asymmetric_encrypt, unique
 from server_utilities.type import Color, EditScope, ItemId, Status
 
 from .iterators import sources as iter_sources
@@ -17,6 +18,21 @@ def hide_credentials(data_model, *reports) -> None:
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 source["parameters"][parameter_key] = "this string replaces credentials"
+
+
+def encrypt_credentials(data_model, public_key: str, *reports: dict):
+    """Encrypt all credentials in the reports."""
+    for source in iter_sources(reports):
+        for parameter_key, parameter_value in source.get("parameters", {}).items():
+            if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
+                password = source["parameters"][parameter_key]
+                if type(password) is list or type(password) is dict:
+                    password = json.dumps(password)
+
+                password_bytes = password.encode()
+                key_encrypted_value = asymmetric_encrypt(public_key, password_bytes)
+
+                source["parameters"][parameter_key] = key_encrypted_value
 
 
 def change_source_parameter(data, parameter_key: str, old_value, new_value, scope: EditScope) -> list[ItemId]:
