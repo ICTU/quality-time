@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class AzureDevopsTestCase(SourceCollectorTestCase):
+class AzureDevopsTestCase(SourceCollectorTestCase):  # skipqc: PTC-W0046
     """Base class for testing Azure DevOps collectors."""
 
     def setUp(self):

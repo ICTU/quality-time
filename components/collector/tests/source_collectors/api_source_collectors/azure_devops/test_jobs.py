@@ -14,8 +14,10 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
         self.api_url = f"{self.url}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1"
 
     async def test_nr_of_failed_jobs(self):
-        """Test that the number of failed jobs is returned, that pipelines can be included and ignored by status,
-        by name, and by regular expression."""
+        """Test that the number of failed jobs is returned.
+
+        Also test that pipelines can be included and ignored by status, by name, and by regular expression.
+        """
         self.sources["source_id"]["parameters"]["failure_type"] = ["failed"]
         self.sources["source_id"]["parameters"]["jobs_to_include"] = ["include.*"]
         self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["include_but_ignore_by_name", "folder/.*ignore.*"]
@@ -58,8 +60,10 @@ class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
         )
 
     async def test_nr_of_unused_jobs(self):
-        """Test that the number of unused jobs is returned, that pipelines can be included and ignored by name and by
-        regular expression."""
+        """Test that the number of unused jobs is returned.
+
+        Also test that pipelines can be included and ignored by name and by regular expression.
+        """
         self.sources["source_id"]["parameters"]["jobs_to_include"] = ["include.*"]
         self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["include_but_ignore_by_name", "folder/.*ignore.*"]
         metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
