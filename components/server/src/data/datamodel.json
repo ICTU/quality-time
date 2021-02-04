@@ -288,6 +288,30 @@
                 "maintainability"
             ]
         },
+        "merge_requests": {
+            "name": "Merge requests",
+            "description": "The amount of merge requests.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
+            "unit": "merge requests",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "10",
+            "default_source": "gitlab",
+            "sources": [
+                "azure_devops",
+                "gitlab",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "metrics": {
             "name": "Metrics",
             "description": "The amount of metrics from one more quality reports, with specific states and/or tags.",
@@ -1227,6 +1251,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
+                        "merge_requests",
                         "user_story_points",
                         "source_up_to_dateness",
                         "tests",
@@ -1244,6 +1269,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
+                        "merge_requests",
                         "user_story_points",
                         "source_up_to_dateness",
                         "tests",
@@ -1283,6 +1309,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches"
                     ]
@@ -2228,6 +2255,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -2242,6 +2270,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -2256,6 +2285,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -3324,6 +3354,7 @@
                         "manual_test_duration",
                         "manual_test_execution",
                         "many_parameters",
+                        "merge_requests",
                         "metrics",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -4388,6 +4419,7 @@
                         "Manual test duration",
                         "Manual test execution",
                         "Many parameters",
+                        "Merge requests",
                         "Metrics",
                         "Performancetest duration",
                         "Performancetest stability",
@@ -4419,6 +4451,7 @@
                         "Manual test duration": "manual_test_duration",
                         "Manual test execution": "manual_test_execution",
                         "Many parameters": "many_parameters",
+                        "Merge requests": "merge_requests",
                         "Metrics": "metrics",
                         "Performancetest duration": "performancetest_duration",
                         "Performancetest stability": "performancetest_stability",
@@ -6019,6 +6052,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "merge_requests",
                 "performancetest_duration",
                 "source_up_to_dateness",
                 "unmerged_branches",
@@ -6032,7 +6066,7 @@
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
-                "user_story_points",
+                "merge_requests",
                 "source_up_to_dateness",
                 "unmerged_branches",
                 "user_story_points",
@@ -6056,14 +6090,15 @@
                 "dependencies",
                 "duplicated_lines",
                 "issues",
-                "remediation_effort",
                 "loc",
+                "long_units",
                 "manual_test_duration",
                 "manual_test_execution",
                 "many_parameters",
-                "long_units",
+                "merge_requests",
                 "performancetest_duration",
                 "performancetest_stability",
+                "remediation_effort",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",
