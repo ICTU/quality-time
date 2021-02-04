@@ -10,6 +10,7 @@ class GitlabSourceUpToDatenessTest(GitLabTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
         self.commit_json = dict(committed_date="2019-01-01T09:06:12+00:00")

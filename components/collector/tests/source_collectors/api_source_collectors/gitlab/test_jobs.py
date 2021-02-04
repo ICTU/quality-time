@@ -23,6 +23,7 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab failed jobs metric."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
 
@@ -70,6 +71,7 @@ class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
 
     def setUp(self):
+        """Extend to set up the metric under test."""
         super().setUp()
         self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
 

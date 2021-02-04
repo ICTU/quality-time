@@ -1,12 +1,13 @@
 """GitLab unit test base classes."""
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class GitLabTestCase(SourceCollectorTestCase):
+class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing GitLab collectors."""
 
     def setUp(self):
+        """Extend to add generic test fixtures."""
         super().setUp()
         self.sources = dict(
             source_id=dict(

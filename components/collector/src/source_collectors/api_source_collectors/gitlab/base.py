@@ -20,9 +20,11 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return URL(api_url)
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
-        return None  # The private token is passed as header
+        """Override to return None, as the private token is passed as header."""
+        return None
 
     def _headers(self) -> Dict[str, str]:
+        """Extend to add the private token, if any, to the headers."""
         headers = super()._headers()
         if private_token := self._parameter("private_token"):
             headers["Private-Token"] = str(private_token)
