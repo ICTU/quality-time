@@ -13,6 +13,7 @@ from .api_source_collectors.cobertura_jenkins_plugin import (
 )
 from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJobs
+from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
 from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .api_source_collectors.gitlab.unmerged_branches import GitLabUnmergedBranches
 from .api_source_collectors.jacoco_jenkins_plugin import (

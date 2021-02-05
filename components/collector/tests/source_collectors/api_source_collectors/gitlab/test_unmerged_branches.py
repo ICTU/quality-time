@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from .base import GitLabTestCase
 
 
-class GitlabUnmergedBranchesTest(GitLabTestCase):
+class GitLabUnmergedBranchesTest(GitLabTestCase):
     """Unit tests for the unmerged branches metric."""
 
     async def test_unmerged_branches(self):
