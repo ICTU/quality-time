@@ -2427,6 +2427,37 @@
                         }
                     ]
                 },
+                "merge_requests": {
+                    "name": "merge request",
+                    "name_plural": "merge requests",
+                    "attributes": [
+                        {
+                            "name": "Merge request",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "created",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "updated",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Merged",
+                            "key": "merged",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Closed",
+                            "key": "closed",
+                            "type": "datetime"
+                        }
+                    ]
+                },
                 "unmerged_branches": {
                     "name": "branch",
                     "name_plural": "branches",

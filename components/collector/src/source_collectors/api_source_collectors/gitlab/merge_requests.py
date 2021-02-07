@@ -23,6 +23,11 @@ class GitLabMergeRequests(GitLabBase):
             Entity(
                 key=merge_request["title"],
                 title=merge_request["title"],
+                url=merge_request["web_url"],
+                created=merge_request["created_at"],
+                updated=merge_request["updated_at"],
+                merged=merge_request["merged_at"],
+                closed=merge_request["closed_at"],
             )
             for merge_request in await self._merge_requests(responses)
         ]
