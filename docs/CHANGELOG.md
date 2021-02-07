@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Prevent traceback when a timeout collecting measurement data occurs. Fixes [#1898](https://github.com/ICTU/quality-time/issues/1898).
+
 ## [3.18.0] - [2021-02-03]
 
 ### Fixed

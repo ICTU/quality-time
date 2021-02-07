@@ -126,7 +126,11 @@ class SourceCollector(ABC):
         if headers := self._headers():
             kwargs["headers"] = headers
         tasks = [self._session.get(url, **kwargs) for url in urls if url]
-        return SourceResponses(responses=list(await asyncio.gather(*tasks)), api_url=urls[0])
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        for response in responses:
+            if isinstance(response, Exception):
+                raise response
+        return SourceResponses(responses=list(responses), api_url=urls[0])
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Return the basic authentication credentials, if any."""
