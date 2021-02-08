@@ -21,7 +21,7 @@ class GitLabMergeRequests(GitLabBase):
         """Override to get the merge requests."""
         entities = [
             Entity(
-                key=merge_request["title"],
+                key=merge_request["id"],
                 title=merge_request["title"],
                 url=merge_request["web_url"],
                 created=merge_request["created_at"],

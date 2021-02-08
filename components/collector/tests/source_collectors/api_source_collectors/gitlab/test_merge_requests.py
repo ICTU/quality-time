@@ -11,10 +11,11 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         metric = dict(type="merge_requests", sources=self.sources, addition="sum")
         gitlab_json = [
             dict(
+                id=1,
                 title="Merge request 1",
                 web_url="https://gitlab/mr1",
                 created_at="2017-04-29T08:46:00Z",
-                updated_at="2017-04-29T08:46:00Z",
+                updated_at="2017-04-29T09:40:00Z",
                 merged_at="2018-09-07T11:16:17.520Z",
                 closed_at=None,
             )
@@ -23,10 +24,10 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         expected_entities = [
             dict(
                 title="Merge request 1",
-                key="Merge request 1",
+                key="1",
                 url="https://gitlab/mr1",
                 created="2017-04-29T08:46:00Z",
-                updated="2017-04-29T08:46:00Z",
+                updated="2017-04-29T09:40:00Z",
                 merged="2018-09-07T11:16:17.520Z",
                 closed=None,
             )
