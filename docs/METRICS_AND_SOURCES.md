@@ -17,6 +17,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Manual test duration | The duration of the manual test in minutes | ≦ 0 minutes | count | test quality | [Jira](#manual-test-duration-from-jira) |
 | Manual test execution | Measure the number of manual test cases that have not been tested on time. | ≦ 0 manual test cases | count | test quality | [Jira](#manual-test-execution-from-jira) |
 | Many parameters | The amount of units (functions, methods, procedures) that have too many parameters. | ≦ 0 units with too many parameters | count (default), percentage | maintainability | [SonarQube](#many-parameters-from-sonarqube) |
+| Merge requests | The amount of merge requests. | ≦ 0 merge requests | count (default), percentage | ci | [GitLab](#merge-requests-from-gitlab) |
 | Metrics | The amount of metrics from one more quality reports, with specific states and/or tags. | ≦ 0 metrics | count (default), percentage |  | [Quality-time](#metrics-from-quality-time) |
 | Performancetest duration | The duration of the performancetest in minutes | ≧ 30 minutes | count | performance | [Performancetest-runner](#performancetest-duration-from-performancetest-runner) |
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | percentage | performance | [Performancetest-runner](#performancetest-stability-from-performancetest-runner) |
@@ -49,7 +50,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | [Cobertura](https://cobertura.github.io/cobertura/) | Cobertura is a free Java tool that calculates the percentage of code accessed by tests. | [Source up-to-dateness](#source-up-to-dateness-from-cobertura), [Test branch coverage](#test-branch-coverage-from-cobertura), [Test line coverage](#test-line-coverage-from-cobertura) |
 | [Cobertura Jenkins plugin](https://plugins.jenkins.io/cobertura/) | Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed by tests. | [Source up-to-dateness](#source-up-to-dateness-from-cobertura-jenkins-plugin), [Test branch coverage](#test-branch-coverage-from-cobertura-jenkins-plugin), [Test line coverage](#test-line-coverage-from-cobertura-jenkins-plugin) |
 | [Composer](https://getcomposer.org/) | A Dependency Manager for PHP. | [Dependencies](#dependencies-from-composer) |
-| [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
+| [GitLab](https://gitlab.com/) | GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous deployment pipelines. | [Failed CI-jobs](#failed-ci-jobs-from-gitlab), [Merge requests](#merge-requests-from-gitlab), [Source up-to-dateness](#source-up-to-dateness-from-gitlab), [Unmerged branches](#unmerged-branches-from-gitlab), [Unused CI-jobs](#unused-ci-jobs-from-gitlab) |
 | [JSON file with security warnings](https://github.com/ICTU/quality-time/blob/master/docs/USAGE.md#generic-json-for-security-warnings) | A generic vulnerability report with security warnings in JSON format | [Security warnings](#security-warnings-from-json-file-with-security-warnings) |
 | [JUnit XML report](https://junit.org) | Test reports in the JUnit XML format. | [Source up-to-dateness](#source-up-to-dateness-from-junit-xml-report), [Tests](#tests-from-junit-xml-report) |
 | [JaCoCo](https://www.eclemma.org/jacoco/) | JaCoCo is an open-source tool for measuring and reporting Java code coverage. | [Source up-to-dateness](#source-up-to-dateness-from-jacoco), [Test branch coverage](#test-branch-coverage-from-jacoco), [Test line coverage](#test-line-coverage-from-jacoco) |
@@ -324,6 +325,17 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Configuration | Value |
 | :------------ | :---- |
 | Rules used to detect units with many parameters | c:S107, cpp:S107, csharpsquid:S107, csharpsquid:S2436, flex:S107, java:S107, javascript:ExcessiveParameterList, javascript:S107, objc:S107, php:S107, plsql:PlSql.FunctionAndProcedureExcessiveParameters, python:S107, squid:S00107, tsql:S107, typescript:S107 |
+
+### Merge requests from GitLab
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
+| Merge request state | Multiple choice | No | Limit which merge request states to count |
+| Minimum number of upvotes | Integer | No | Only count merge requests with fewer than the minimum number of upvotes |
+| Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
+| Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
+| Target branches to include (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
 
 ### Metrics from Quality-time
 
