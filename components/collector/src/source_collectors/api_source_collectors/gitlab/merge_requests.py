@@ -54,5 +54,5 @@ class GitLabMergeRequests(GitLabBase):
         request_matches_state = merge_request["state"] in self._parameter("merge_request_state")
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["target_branch"]
-        request_matches_branches = branches and match_string_or_regular_expression(target_branch, branches)
+        request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
         return request_has_fewer_than_min_upvotes and request_matches_state and request_matches_branches
