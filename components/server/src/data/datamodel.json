@@ -2391,6 +2391,24 @@
                         "failed_jobs",
                         "unused_jobs"
                     ]
+                },
+                "merge_request_state": {
+                    "name": "Merge request state",
+                    "short_name": "state",
+                    "help": "Limit which merge request states to count",
+                    "type": "multiple_choice",
+                    "placeholder": "all states",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "opened",
+                        "locked",
+                        "merged",
+                        "closed"
+                    ],
+                    "metrics": [
+                        "merge_requests"
+                    ]
                 }
             },
             "entities": {

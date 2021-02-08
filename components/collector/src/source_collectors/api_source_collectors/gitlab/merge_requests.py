@@ -31,6 +31,7 @@ class GitLabMergeRequests(GitLabBase):
                 closed=merge_request.get("closed_at"),
             )
             for merge_request in await self._merge_requests(responses)
+            if self._include_merge_request(merge_request)
         ]
         return SourceMeasurement(entities=entities)
 
@@ -39,3 +40,7 @@ class GitLabMergeRequests(GitLabBase):
         """Return the list of merge requests."""
         merge_requests = await responses[0].json()
         return [merge_request for merge_request in merge_requests]
+
+    def _include_merge_request(self, merge_request) -> bool:
+        """Return whether the merge request should be counted."""
+        return merge_request["state"] in self._parameter("merge_request_state")
