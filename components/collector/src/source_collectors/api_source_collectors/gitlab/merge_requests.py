@@ -22,7 +22,7 @@ class GitLabMergeRequests(GitLabBase):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the merge requests."""
-        merge_requests = await self._merge_requests(responses)
+        merge_requests = await responses[0].json()
         entities = [
             Entity(
                 key=merge_request["id"],
@@ -41,12 +41,6 @@ class GitLabMergeRequests(GitLabBase):
             if self._include_merge_request(merge_request)
         ]
         return SourceMeasurement(entities=entities, total=str(len(merge_requests)))
-
-    @staticmethod
-    async def _merge_requests(responses: SourceResponses):
-        """Return the list of merge requests."""
-        merge_requests = await responses[0].json()
-        return [merge_request for merge_request in merge_requests]
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""

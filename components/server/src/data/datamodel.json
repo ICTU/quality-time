@@ -303,6 +303,7 @@
             "near_target": "10",
             "default_source": "gitlab",
             "sources": [
+                "azure_devops",
                 "gitlab",
                 "manual_number",
                 "random"
@@ -2394,7 +2395,7 @@
                 "merge_request_state": {
                     "name": "Merge request state",
                     "short_name": "state",
-                    "help": "Limit which merge request states to count",
+                    "help": "Limit which merge request states to count.",
                     "type": "multiple_choice",
                     "placeholder": "all states",
                     "mandatory": false,
@@ -2412,7 +2413,7 @@
                 "upvotes": {
                     "name": "Minimum number of upvotes",
                     "short_name": "minimum upvotes",
-                    "help": "Only count merge requests with fewer than the minimum number of upvotes",
+                    "help": "Only count merge requests with fewer than the minimum number of upvotes.",
                     "type": "integer",
                     "mandatory": false,
                     "default_value": "0",
