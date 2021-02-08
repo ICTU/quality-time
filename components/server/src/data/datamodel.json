@@ -2459,6 +2459,16 @@
                             "key": "state"
                         },
                         {
+                            "name": "Upvotes",
+                            "key": "upvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Downvotes",
+                            "key": "downvotes",
+                            "type": "integer"
+                        },
+                        {
                             "name": "Created",
                             "key": "created",
                             "type": "datetime"

@@ -29,6 +29,8 @@ class GitLabMergeRequests(GitLabBase):
                 updated=merge_request.get("updated_at"),
                 merged=merge_request.get("merged_at"),
                 closed=merge_request.get("closed_at"),
+                downvotes=str(merge_request.get("downvotes", 0)),
+                upvotes=str(merge_request.get("upvotes", 0)),
             )
             for merge_request in await self._merge_requests(responses)
             if self._include_merge_request(merge_request)

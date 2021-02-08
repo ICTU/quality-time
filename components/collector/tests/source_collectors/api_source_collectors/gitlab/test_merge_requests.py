@@ -20,6 +20,8 @@ class GitLabMergeRequestsTest(GitLabTestCase):
                 updated_at="2017-04-29T09:40:00Z",
                 merged_at="2018-09-07T11:16:17.520Z",
                 closed_at=None,
+                upvotes=2,
+                downvotes=0,
             ),
             dict(
                 id=2,
@@ -39,6 +41,8 @@ class GitLabMergeRequestsTest(GitLabTestCase):
                 updated="2017-04-29T09:40:00Z",
                 merged="2018-09-07T11:16:17.520Z",
                 closed=None,
+                upvotes="2",
+                downvotes="0",
             )
         ]
         self.assert_measurement(
