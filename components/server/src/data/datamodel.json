@@ -2437,6 +2437,10 @@
                             "url": "url"
                         },
                         {
+                            "name": "State",
+                            "key": "state"
+                        },
+                        {
                             "name": "Created",
                             "key": "created",
                             "type": "datetime"

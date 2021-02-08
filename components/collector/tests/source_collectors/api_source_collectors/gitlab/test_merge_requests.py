@@ -13,6 +13,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             dict(
                 id=1,
                 title="Merge request 1",
+                state="merged",
                 web_url="https://gitlab/mr1",
                 created_at="2017-04-29T08:46:00Z",
                 updated_at="2017-04-29T09:40:00Z",
@@ -25,6 +26,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             dict(
                 title="Merge request 1",
                 key="1",
+                state="merged",
                 url="https://gitlab/mr1",
                 created="2017-04-29T08:46:00Z",
                 updated="2017-04-29T09:40:00Z",

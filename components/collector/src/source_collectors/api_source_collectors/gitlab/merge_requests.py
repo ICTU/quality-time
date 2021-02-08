@@ -24,10 +24,11 @@ class GitLabMergeRequests(GitLabBase):
                 key=merge_request["id"],
                 title=merge_request["title"],
                 url=merge_request["web_url"],
-                created=merge_request["created_at"],
-                updated=merge_request["updated_at"],
-                merged=merge_request["merged_at"],
-                closed=merge_request["closed_at"],
+                state=merge_request["state"],
+                created=merge_request.get("created_at"),
+                updated=merge_request.get("updated_at"),
+                merged=merge_request.get("merged_at"),
+                closed=merge_request.get("closed_at"),
             )
             for merge_request in await self._merge_requests(responses)
         ]
