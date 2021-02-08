@@ -303,7 +303,6 @@
             "near_target": "10",
             "default_source": "gitlab",
             "sources": [
-                "azure_devops",
                 "gitlab",
                 "manual_number",
                 "random"
@@ -2419,6 +2418,18 @@
                     "default_value": "0",
                     "min_value": "0",
                     "unit": "upvotes",
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "target_branches_to_include": {
+                    "name": "Target branches to include (regular expressions or branch names)",
+                    "short_name": "target branches to include",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all target branches",
                     "metrics": [
                         "merge_requests"
                     ]
