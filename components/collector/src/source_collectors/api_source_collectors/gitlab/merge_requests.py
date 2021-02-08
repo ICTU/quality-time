@@ -1,5 +1,7 @@
 """GitLab merge requests collector."""
 
+from typing import cast
+
 from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -23,6 +25,7 @@ class GitLabMergeRequests(GitLabBase):
             Entity(
                 key=merge_request["id"],
                 title=merge_request["title"],
+                target_branch=merge_request["target_branch"],
                 url=merge_request["web_url"],
                 state=merge_request["state"],
                 created=merge_request.get("created_at"),
@@ -45,4 +48,6 @@ class GitLabMergeRequests(GitLabBase):
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        return merge_request["state"] in self._parameter("merge_request_state")
+        min_upvotes = int(cast(str, self._parameter("upvotes")))
+        states = self._parameter("merge_request_state")
+        return merge_request["state"] in states and int(merge_request["upvotes"]) < min_upvotes

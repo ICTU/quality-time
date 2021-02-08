@@ -2409,6 +2409,19 @@
                     "metrics": [
                         "merge_requests"
                     ]
+                },
+                "upvotes": {
+                    "name": "Minimum number of upvotes",
+                    "short_name": "minimum upvotes",
+                    "help": "Only count merge requests with fewer than the minimum number of upvotes",
+                    "type": "integer",
+                    "mandatory": false,
+                    "default_value": "0",
+                    "min_value": "0",
+                    "unit": "upvotes",
+                    "metrics": [
+                        "merge_requests"
+                    ]
                 }
             },
             "entities": {
@@ -2453,6 +2466,10 @@
                             "name": "Merge request",
                             "key": "title",
                             "url": "url"
+                        },
+                        {
+                            "name": "Target branch",
+                            "key": "target_branch"
                         },
                         {
                             "name": "State",
