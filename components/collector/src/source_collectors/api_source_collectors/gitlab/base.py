@@ -21,7 +21,7 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         return URL(api_url)
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to implement pagination."""
+        """Extend to follow GitLab pagination links, if necessary."""
         responses = await super()._get_source_responses(*urls)
         next_urls = [next_url for response in responses if (next_url := response.links.get("next", {}).get("url"))]
         if next_urls:
