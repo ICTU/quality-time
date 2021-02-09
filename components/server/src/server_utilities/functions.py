@@ -77,16 +77,25 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
 
-def symmetric_encrypt(value: bytes) -> tuple[bytes, bytes]:
+def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
+    """
+    Encrypt the given value using Fernet 32 byte key.
+    Returns the generated key and the encrypted message.
+    """
     key = Fernet.generate_key()
-    f = Fernet(key)
-    token = f.encrypt(value)
+    fernet = Fernet(key)
+    token = fernet.encrypt(message)
     return key, token
 
 
-def asymmetric_encrypt(public_key_bytes: bytes, value: bytes) -> bytes:
-
-    fernet_key, fernet_token = symmetric_encrypt(value)
+def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, str]:
+    """
+    Encrypts the message using symmetric Fernet encryption.
+    The key of the Fernet encryption is encrypted using RSA for public/private key authentication
+    and base64 encoded to be able to convert the result into a string.
+    Returns a tuple with encrypted Fernet key and encrypted message.
+    """
+    fernet_key, fernet_token = symmetric_encrypt(message)
 
     public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
     encrypted_key = public_key_obj.encrypt(
