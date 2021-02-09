@@ -17,7 +17,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | Manual test duration | The duration of the manual test in minutes | ≦ 0 minutes | count | test quality | [Jira](#manual-test-duration-from-jira) |
 | Manual test execution | Measure the number of manual test cases that have not been tested on time. | ≦ 0 manual test cases | count | test quality | [Jira](#manual-test-execution-from-jira) |
 | Many parameters | The amount of units (functions, methods, procedures) that have too many parameters. | ≦ 0 units with too many parameters | count (default), percentage | maintainability | [SonarQube](#many-parameters-from-sonarqube) |
-| Merge requests | The amount of merge requests. | ≦ 0 merge requests | count (default), percentage | ci | [GitLab](#merge-requests-from-gitlab) |
+| Merge requests | The amount of merge requests. | ≦ 0 merge requests | count (default), percentage | ci | [Azure DevOps Server](#merge-requests-from-azure-devops-server), [GitLab](#merge-requests-from-gitlab) |
 | Metrics | The amount of metrics from one more quality reports, with specific states and/or tags. | ≦ 0 metrics | count (default), percentage |  | [Quality-time](#metrics-from-quality-time) |
 | Performancetest duration | The duration of the performancetest in minutes | ≧ 30 minutes | count | performance | [Performancetest-runner](#performancetest-duration-from-performancetest-runner) |
 | Performancetest stability | The duration of the performancetest at which throughput or error count increases. | ≧ 100% of the minutes | percentage | performance | [Performancetest-runner](#performancetest-stability-from-performancetest-runner) |
@@ -43,7 +43,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :--- | :---------- | :------ |
 | [Anchore](https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/) | Anchore image scan analysis report in JSON format | [Source up-to-dateness](#source-up-to-dateness-from-anchore), [Security warnings](#security-warnings-from-anchore) |
 | [Axe CSV](https://github.com/ICTU/axe-reports) | An Axe accessibility report in CSV format. | [Accessibility violations](#accessibility-violations-from-axe-csv) |
-| [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | [Failed CI-jobs](#failed-ci-jobs-from-azure-devops-server), [Issues](#issues-from-azure-devops-server), [Source up-to-dateness](#source-up-to-dateness-from-azure-devops-server), [Tests](#tests-from-azure-devops-server), [Unmerged branches](#unmerged-branches-from-azure-devops-server), [Unused CI-jobs](#unused-ci-jobs-from-azure-devops-server), [User story points](#user-story-points-from-azure-devops-server) |
+| [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/) | Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code management, reporting, requirements management, project management, automated builds, testing and release management. | [Failed CI-jobs](#failed-ci-jobs-from-azure-devops-server), [Issues](#issues-from-azure-devops-server), [Merge requests](#merge-requests-from-azure-devops-server), [Source up-to-dateness](#source-up-to-dateness-from-azure-devops-server), [Tests](#tests-from-azure-devops-server), [Unmerged branches](#unmerged-branches-from-azure-devops-server), [Unused CI-jobs](#unused-ci-jobs-from-azure-devops-server), [User story points](#user-story-points-from-azure-devops-server) |
 | [Bandit](https://github.com/PyCQA/bandit) | Bandit is a tool designed to find common security issues in Python code. | [Source up-to-dateness](#source-up-to-dateness-from-bandit), [Security warnings](#security-warnings-from-bandit) |
 | Calendar date | Warn when the date is too long ago. Can be used to, for example, warn when it is time for the next security test. | [Source up-to-dateness](#source-up-to-dateness-from-calendar-date) |
 | [Checkmarx CxSAST](https://www.checkmarx.com/products/static-application-security-testing/) | Static analysis software to identify security vulnerabilities in both custom code and open source components. | [Source up-to-dateness](#source-up-to-dateness-from-checkmarx-cxsast), [Security warnings](#security-warnings-from-checkmarx-cxsast) |
@@ -326,13 +326,21 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 | :------------ | :---- |
 | Rules used to detect units with many parameters | c:S107, cpp:S107, csharpsquid:S107, csharpsquid:S2436, flex:S107, java:S107, javascript:ExcessiveParameterList, javascript:S107, objc:S107, php:S107, plsql:PlSql.FunctionAndProcedureExcessiveParameters, python:S107, squid:S00107, tsql:S107, typescript:S107 |
 
+### Merge requests from Azure DevOps Server
+
+| Parameter | Type | Mandatory | Help |
+| :-------- | :--- | :-------- | :--- |
+| Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
+| Repository (name or id) | String | No |  |
+| URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
+
 ### Merge requests from GitLab
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
 | GitLab instance URL | URL | Yes | URL of the GitLab instance, with port if necessary, but without path. For example, 'https://gitlab.com'. |
-| Merge request state | Multiple choice | No | Limit which merge request states to count |
-| Minimum number of upvotes | Integer | No | Only count merge requests with fewer than the minimum number of upvotes |
+| Merge request state | Multiple choice | No | Limit which merge request states to count. |
+| Minimum number of upvotes | Integer | No | Only count merge requests with fewer than the minimum number of upvotes. |
 | Private token | Password | No | [https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) |
 | Project (name with namespace or id) | String | Yes | [https://docs.gitlab.com/ee/user/project/](https://docs.gitlab.com/ee/user/project/) |
 | Target branches to include (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |

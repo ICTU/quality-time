@@ -1500,6 +1500,45 @@
                         }
                     ]
                 },
+                "merge_requests": {
+                    "name": "merge request",
+                    "name_plural": "merge requests",
+                    "attributes": [
+                        {
+                            "name": "Merge request",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Target branch",
+                            "key": "target_branch"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state"
+                        },
+                        {
+                            "name": "Upvotes",
+                            "key": "upvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Downvotes",
+                            "key": "downvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "created",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Closed",
+                            "key": "closed",
+                            "type": "datetime"
+                        }
+                    ]
+                },
                 "tests": {
                     "name": "test run",
                     "name_plural": "test runs",

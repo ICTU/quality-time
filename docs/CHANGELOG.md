@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Add a 'merge requests' metric and add GitLab as source. Closes [#1644](https://github.com/ICTU/quality-time/issues/1644).
+- Add a 'merge requests' metric and add Azure Devops and GitLab as possible sources. Closes [#1644](https://github.com/ICTU/quality-time/issues/1644).
 
 ## [3.18.0] - [2021-02-03]
 
