@@ -2,6 +2,7 @@
 
 from .api_source_collectors.azure_devops.issues import AzureDevopsIssues
 from .api_source_collectors.azure_devops.jobs import AzureDevopsFailedJobs, AzureDevopsUnusedJobs
+from .api_source_collectors.azure_devops.merge_requests import AzureDevopsMergeRequests
 from .api_source_collectors.azure_devops.tests import AzureDevopsTests
 from .api_source_collectors.azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
 from .api_source_collectors.azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
