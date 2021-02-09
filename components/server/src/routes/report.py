@@ -97,7 +97,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     if "public_key" in bottle.request.query:
         public_key = parse.unquote(bottle.request.query["public_key"])
     else:  # default to own public key
-        with open("components/server/credentials_export_public_key.pem", "rb") as key_file:
+        with open("components/server/credentials_export_public_key.pem", "r") as key_file:
             public_key = key_file.read()
 
     encrypt_credentials(data_model, public_key, report)
