@@ -22,7 +22,9 @@ class GitLabMergeRequests(GitLabBase):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the merge requests."""
-        merge_requests = await responses[0].json()
+        merge_requests = []
+        for response in responses:
+            merge_requests.extend(await response.json())
         entities = [
             Entity(
                 key=merge_request["id"],
@@ -44,7 +46,8 @@ class GitLabMergeRequests(GitLabBase):
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        request_has_fewer_than_min_upvotes = int(merge_request["upvotes"]) < int(cast(str, self._parameter("upvotes")))
+        min_upvotes = int(cast(str, self._parameter("upvotes")))
+        request_has_fewer_than_min_upvotes = min_upvotes == 0 or int(merge_request["upvotes"]) < min_upvotes
         request_matches_state = merge_request["state"] in self._parameter("merge_request_state")
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["target_branch"]
