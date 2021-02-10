@@ -27,12 +27,13 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
         merge_requests = []
         for response in responses:
             merge_requests.extend((await response.json())["value"])
+        landing_url = (await self._landing_url(responses)).rstrip("s")
         entities = [
             Entity(
                 key=merge_request["pullRequestId"],
                 title=merge_request["title"],
                 target_branch=merge_request["targetRefName"],
-                url=merge_request["url"],
+                url=f"{landing_url}/{merge_request['pullRequestId']}",
                 state=merge_request["status"],
                 created=merge_request.get("creationDate"),
                 closed=merge_request.get("closedDate"),

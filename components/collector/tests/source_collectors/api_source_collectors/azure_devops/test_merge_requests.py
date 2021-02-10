@@ -11,6 +11,7 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
         super().setUp()
         self.metric = dict(type="merge_requests", sources=self.sources, addition="sum")
         self.repositories = dict(value=[dict(id="id", name="project")])
+        self.landing_url = "https://azure_devops/org/project/_git/project/pullrequests"
 
     @staticmethod
     def create_merge_request(number: int, status: str = "active", vote: int = 0, branch: str = "main"):
@@ -20,7 +21,6 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
             title=f"Pull request {number}",
             targetRefName=f"refs/heads/{branch}",
             status=status,
-            url=f"https://azure/pr{number}",
             creationDate="2021-02-09T17:10:11.0326704Z",
             reviewers=[dict(vote=10), dict(vote=vote)],
         )
@@ -45,7 +45,7 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
                 title="Pull request 1",
                 target_branch="refs/heads/main",
                 state="active",
-                url="https://azure/pr1",
+                url=f"{self.landing_url.rstrip('s')}/1",
                 created="2021-02-09T17:10:11.0326704Z",
                 closed=None,
                 upvotes="1",
@@ -53,9 +53,5 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
             )
         ]
         self.assert_measurement(
-            response,
-            value="1",
-            total="4",
-            entities=expected_entities,
-            landing_url="https://azure_devops/org/project/_git/project/pullrequests",
+            response, value="1", total="4", entities=expected_entities, landing_url=self.landing_url
         )
