@@ -65,7 +65,6 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     async def test_pagination(self):
         """Test that pagination works."""
-        self.maxDiff = None
         response = await self.collect(
             self.metric,
             get_request_json_side_effect=[[self.merge_request1], [self.merge_request2]],
