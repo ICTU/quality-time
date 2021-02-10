@@ -6,7 +6,7 @@ from urllib import parse
 
 from dateutil.parser import parse as parse_datetime
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceCollectorException, SourceUpToDatenessCollector
 from collector_utilities.type import URL, Response, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -26,11 +26,14 @@ class QualityTimeCollector(SourceCollector):
         """Get the relevant reports from the reports response."""
         report_titles_or_ids = set(self._parameter("reports"))
         reports = list((await response.json())["reports"])
-        reports = [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})] \
-            if report_titles_or_ids else reports
+        reports = (
+            [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})]
+            if report_titles_or_ids
+            else reports
+        )
         if not reports:
-            raise ValueError(
-                "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else ""))
+            message = "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else "")
+            raise SourceCollectorException(message)
         return reports
 
 

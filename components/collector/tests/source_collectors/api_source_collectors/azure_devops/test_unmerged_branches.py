@@ -47,3 +47,14 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
             landing_url=self.landing_url,
             entities=[dict(name="branch", key="branch", commit_date="2019-09-03", url="https://commit")],
         )
+
+    async def test_wrong_repository(self):
+        """Test that if the repository cannot be found, an error message is returned."""
+        self.sources["source_id"]["parameters"]["repository"] = "wrong_repo"
+        response = await (self.collect(self.metric, get_request_json_return_value=self.repositories))
+        self.assert_measurement(
+            response,
+            landing_url=f"{self.url}/_git/wrong_repo/branches",
+            entities=[],
+            connection_error="Repository 'wrong_repo' not found",
+        )
