@@ -137,7 +137,10 @@ class DataModelSourcesTest(DataModelTestCase):
                     "values" in parameter,
                     f"Parameter {parameter_key} of source {source_id} has api values, but no values.",
                 )
-                self.assertEqual(set(parameter["api_values"].keys()), set(parameter["values"]))
+                self.assertTrue(
+                    set(parameter["api_values"].keys()).issubset(set(parameter["values"])),
+                    f"The api values of parameter {parameter_key} are not a subset of the values.",
+                )
 
     def test_multiple_choice_parameters(self):
         """Test that multiple choice parameters have both a default value and a list of options."""
