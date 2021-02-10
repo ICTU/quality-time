@@ -330,8 +330,11 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
+| Merge request state | Multiple choice | No | Limit which merge request states to count. |
+| Minimum number of upvotes | Integer | No | Only count merge requests with fewer than the minimum number of upvotes. |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Repository (name or id) | String | No |  |
+| Target branches to include (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops) |
 | URL including organization and project | URL | Yes | URL of the Azure DevOps instance, with port if necessary, and with organization and project. For example: 'https://dev.azure.com/{organization}/{project}'. |
 
 ### Merge requests from GitLab
@@ -968,7 +971,7 @@ This document lists all [metrics](#metrics) that *Quality-time* can measure and 
 
 | Parameter | Type | Mandatory | Help |
 | :-------- | :--- | :-------- | :--- |
-| Branches to ignore (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.gitlab.com/ee/user/project/repository/branches/](https://docs.gitlab.com/ee/user/project/repository/branches/) |
+| Branches to ignore (regular expressions or branch names) | Multiple choice with addition | No | [https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops) |
 | Number of days since last commit after which to consider branches inactive | Integer | No |  |
 | Private token | Password | No | [https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops) |
 | Repository (name or id) | String | No |  |

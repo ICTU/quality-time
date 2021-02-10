@@ -1,5 +1,8 @@
 """Azure Devops Server merge requests collector."""
 
+from typing import cast
+
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -33,8 +36,8 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
                 state=merge_request["status"],
                 created=merge_request.get("creationDate"),
                 closed=merge_request.get("closedDate"),
-                downvotes=str(len([r for r in merge_request.get("reviewers", []) if r["vote"] < 0])),
-                upvotes=str(len([r for r in merge_request.get("reviewers", []) if r["vote"] > 0])),
+                downvotes=str(self._downvotes(merge_request)),
+                upvotes=str(self._upvotes(merge_request)),
             )
             for merge_request in merge_requests
             if self._include_merge_request(merge_request)
@@ -43,4 +46,20 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        return True
+        min_upvotes = int(cast(str, self._parameter("upvotes")))
+        request_has_fewer_than_min_upvotes = min_upvotes == 0 or self._upvotes(merge_request) < min_upvotes
+        request_matches_state = merge_request["status"] in self._parameter("merge_request_state")
+        branches = self._parameter("target_branches_to_include")
+        target_branch = merge_request["targetRefName"]
+        request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
+        return request_has_fewer_than_min_upvotes and request_matches_state and request_matches_branches
+
+    @staticmethod
+    def _downvotes(merge_request) -> int:
+        """Return the number of downvotes the merge request has."""
+        return len([r for r in merge_request.get("reviewers", []) if r.get("vote", 0) < 0])
+
+    @staticmethod
+    def _upvotes(merge_request) -> int:
+        """Return the number of upvotes the merge request has."""
+        return len([r for r in merge_request.get("reviewers", []) if r.get("vote", 0) > 0])

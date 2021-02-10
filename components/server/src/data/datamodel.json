@@ -1330,7 +1330,7 @@
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory": false,
-                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
                     "default_value": [],
                     "metrics": [
                         "unmerged_branches"
@@ -1463,13 +1463,57 @@
                         "partially succeeded"
                     ],
                     "api_values": {
-                        "canceled": "canceled",
-                        "failed": "failed",
                         "no result": "none",
                         "partially succeeded": "partiallySucceeded"
                     },
                     "metrics": [
                         "failed_jobs"
+                    ]
+                },
+                "merge_request_state": {
+                    "name": "Merge request state",
+                    "short_name": "state",
+                    "help": "Limit which merge request states to count.",
+                    "type": "multiple_choice",
+                    "placeholder": "all states",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "abandoned",
+                        "active",
+                        "completed",
+                        "not set"
+                    ],
+                    "api_values": {
+                        "not set": "notSet"
+                    },
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "upvotes": {
+                    "name": "Minimum number of upvotes",
+                    "short_name": "minimum upvotes",
+                    "help": "Only count merge requests with fewer than the minimum number of upvotes.",
+                    "type": "integer",
+                    "mandatory": false,
+                    "default_value": "0",
+                    "min_value": "0",
+                    "unit": "upvotes",
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "target_branches_to_include": {
+                    "name": "Target branches to include (regular expressions or branch names)",
+                    "short_name": "target branches to include",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all target branches",
+                    "metrics": [
+                        "merge_requests"
                     ]
                 }
             },
