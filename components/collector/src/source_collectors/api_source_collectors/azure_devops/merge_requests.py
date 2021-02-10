@@ -15,7 +15,7 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
     async def _api_url(self) -> URL:
         """Extend to add the pull requests API path."""
         api_url = str(await super()._api_url())
-        return URL(f"{api_url}/pullrequests?api-version=4.1")
+        return URL(f"{api_url}/pullrequests?api-version=4.1&searchCriteria.status=all")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the pull requests path."""
