@@ -1,12 +1,17 @@
 """Unit tests for the report routes."""
 
 import unittest
+from unittest import mock
+import urllib
 from datetime import datetime
 from typing import cast
 from unittest.mock import Mock, patch
+import copy
+from bottle import request
 
 from routes.report import (
     delete_report,
+    export_report_as_json,
     export_report_as_pdf,
     get_report,
     get_tag_report,
@@ -63,16 +68,33 @@ class ReportTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up a database with a report and a user session."""
+        self.public_key = """-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApLaktGOguW3bcC0xILmf
+ToucM7eYx3oXKSKKg2aX8TNwX6qendovmUw0X6ooM+vcKEqL/h8F26RdmvIxoJLa
+uK7BrqW4zDlYtLqmnsVE7rXLAFfgc+r8vxhlAvXGZIMqLd6KM/WTJu6+cxDwNJT7
+TVr9Fxy6vP7CxqYrzPFcau/iNZQxvUSp8M7vHgRRsF4Ux8uQk2WqEjJ9gFYF6y/l
+2MYGTjHSe2FzdzvpmPdwiSeZU42+zd9hqvjNdhc04rxNKu1xvpQthBY2d497Idkg
+5380siuYrFMb46VtL3hdIoOH5934/nBVU35aXDirPcoZazMN2D3BaWULeEcvmKq1
+pmUcidkMuTLeiOksl/d3GBT6dvdSVEsHG5rg9SB3XCrA3Fk3R1Dp/b9WHZko+tqx
+nivGYzlaMI/gzLCiWSiL4FuJIttiqdZM2xWFTHIdpQXO3jmogV2ouYJ/IoDIyIR9
+M9uddlTPkf3y6mSLwtl3tJ6eDk4EoWFKc8q8F0hza5PLQD5P8O7ddLZ5SAVEoeLP
+oRo4ZewdU/XOhYKw3Jgpj1GFPwO/wxpKmYmjGR7lzG4uzae4o/3pEBi2KnSlUhC9
+Fm+YDdqKwPSXu1L2DfJBISqpc2ua29O1WBQlsFo9QfSuESSRBnwvt4IbIwH5CVMJ
+hv23LX3At2kFGKAPC0jM1YUCAwEAAQ==
+-----END PUBLIC KEY-----
+"""
+
         self.database = Mock()
         self.database.sessions.find_one.return_value = JENNY
         self.database.datamodels.find_one.return_value = dict(
             _id="id",
             subjects=dict(subject_type=dict(name="Subject type")),
             metrics=dict(metric_type=dict(name="Metric type")),
-            sources=dict(source_type=dict(name="Source type", parameters={})),
+            sources=dict(source_type=dict(name="Source type", parameters={"url": {"type": "not a password"}})),
         )
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
+        self.database.secrets.find_one.return_value = {"public_key": self.public_key}
         self.database.measurements.find.return_value = []
         self.options = (
             "emulateScreenMedia=false&goto.timeout=60000&scrollPage=true&waitFor=10000&pdf.scale=0.7&"
@@ -130,6 +152,44 @@ class ReportTest(unittest.TestCase):
         requests_get.assert_called_once_with(
             f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{self.options}"
         )
+
+    @patch("routes.report.bottle.request")
+    def test_get_json_report(self, request):
+        """Test that a JSON version of the report can be retrieved with encrypted credentials."""
+        expected_report = copy.deepcopy(self.report)
+        expected_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"][
+            "parameters"
+        ].pop("password")
+        self.database.reports.find_one.return_value = copy.deepcopy(self.report)
+
+        # without provided public key
+        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
+        exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
+            "source_uuid"
+        ]["parameters"].pop("password")
+
+        self.assertDictEqual(exported_report, expected_report)
+        self.assertTrue(isinstance(exported_password, tuple))
+        self.assertTrue(len(exported_password) == 2)
+
+        # with provided public key
+        request.query = {"public_key": self.public_key}
+        mocked_report = copy.deepcopy(self.report)
+        mocked_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"]["parameters"][
+            "password"
+        ] = [
+            "0",
+            "1",
+        ]  # use a list as password for coverage of the last line
+        self.database.reports.find_one.return_value = mocked_report
+        exported_report = export_report_as_json(self.database, cast(ReportId, REPORT_ID))
+        exported_password = exported_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"][
+            "source_uuid"
+        ]["parameters"].pop("password")
+
+        self.assertDictEqual(exported_report, expected_report)
+        self.assertTrue(type(exported_password) is tuple)
+        self.assertTrue(len(exported_password) == 2)
 
     @patch("requests.get")
     def test_get_pdf_tag_report(self, requests_get):

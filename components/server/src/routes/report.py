@@ -96,7 +96,7 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     report = latest_report(database, report_uuid)
 
     if "public_key" in bottle.request.query:
-        public_key = parse.unquote(bottle.request.query["public_key"])
+        public_key = bottle.request.query["public_key"]
     else:  # default to own public key
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         if not document:
