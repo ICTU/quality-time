@@ -28,32 +28,35 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
         for response in responses:
             merge_requests.extend((await response.json())["value"])
         landing_url = (await self._landing_url(responses)).rstrip("s")
-        entities = [
-            Entity(
-                key=merge_request["pullRequestId"],
-                title=merge_request["title"],
-                target_branch=merge_request["targetRefName"],
-                url=f"{landing_url}/{merge_request['pullRequestId']}",
-                state=merge_request["status"],
-                created=merge_request.get("creationDate"),
-                closed=merge_request.get("closedDate"),
-                downvotes=str(self._downvotes(merge_request)),
-                upvotes=str(self._upvotes(merge_request)),
-            )
-            for merge_request in merge_requests
-            if self._include_merge_request(merge_request)
-        ]
+        entities = [self._create_entity(mr, landing_url) for mr in merge_requests if self._include_merge_request(mr)]
         return SourceMeasurement(entities=entities, total=str(len(merge_requests)))
+
+    def _create_entity(self, merge_request, landing_url: str) -> Entity:
+        """Create an entity from a Azure Devops JSON result."""
+        return Entity(
+            key=merge_request["pullRequestId"],
+            title=merge_request["title"],
+            target_branch=merge_request["targetRefName"],
+            url=f"{landing_url}/{merge_request['pullRequestId']}",
+            state=merge_request["status"],
+            created=merge_request.get("creationDate"),
+            closed=merge_request.get("closedDate"),
+            downvotes=str(self._downvotes(merge_request)),
+            upvotes=str(self._upvotes(merge_request)),
+        )
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        min_upvotes = int(cast(str, self._parameter("upvotes")))
-        request_has_fewer_than_min_upvotes = min_upvotes == 0 or self._upvotes(merge_request) < min_upvotes
         request_matches_state = merge_request["status"] in self._parameter("merge_request_state")
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["targetRefName"]
         request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
-        return request_has_fewer_than_min_upvotes and request_matches_state and request_matches_branches
+        # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
+        # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
+        # than the minimum number of upvotes are included in the count:
+        required_upvotes = int(cast(str, self._parameter("upvotes")))
+        request_has_fewer_than_min_upvotes = required_upvotes == 0 or self._upvotes(merge_request) < required_upvotes
+        return request_matches_state and request_matches_branches and request_has_fewer_than_min_upvotes
 
     @staticmethod
     def _downvotes(merge_request) -> int:

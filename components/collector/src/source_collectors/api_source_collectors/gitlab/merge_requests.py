@@ -25,31 +25,35 @@ class GitLabMergeRequests(GitLabBase):
         merge_requests = []
         for response in responses:
             merge_requests.extend(await response.json())
-        entities = [
-            Entity(
-                key=merge_request["id"],
-                title=merge_request["title"],
-                target_branch=merge_request["target_branch"],
-                url=merge_request["web_url"],
-                state=merge_request["state"],
-                created=merge_request.get("created_at"),
-                updated=merge_request.get("updated_at"),
-                merged=merge_request.get("merged_at"),
-                closed=merge_request.get("closed_at"),
-                downvotes=str(merge_request.get("downvotes", 0)),
-                upvotes=str(merge_request.get("upvotes", 0)),
-            )
-            for merge_request in merge_requests
-            if self._include_merge_request(merge_request)
-        ]
+        entities = [self._create_entity(mr) for mr in merge_requests if self._include_merge_request(mr)]
         return SourceMeasurement(entities=entities, total=str(len(merge_requests)))
+
+    @staticmethod
+    def _create_entity(merge_request) -> Entity:
+        """Create an entity from a GitLab JSON result."""
+        return Entity(
+            key=merge_request["id"],
+            title=merge_request["title"],
+            target_branch=merge_request["target_branch"],
+            url=merge_request["web_url"],
+            state=merge_request["state"],
+            created=merge_request.get("created_at"),
+            updated=merge_request.get("updated_at"),
+            merged=merge_request.get("merged_at"),
+            closed=merge_request.get("closed_at"),
+            downvotes=str(merge_request.get("downvotes", 0)),
+            upvotes=str(merge_request.get("upvotes", 0)),
+        )
 
     def _include_merge_request(self, merge_request) -> bool:
         """Return whether the merge request should be counted."""
-        min_upvotes = int(cast(str, self._parameter("upvotes")))
-        request_has_fewer_than_min_upvotes = min_upvotes == 0 or int(merge_request["upvotes"]) < min_upvotes
         request_matches_state = merge_request["state"] in self._parameter("merge_request_state")
         branches = self._parameter("target_branches_to_include")
         target_branch = merge_request["target_branch"]
         request_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
-        return request_has_fewer_than_min_upvotes and request_matches_state and request_matches_branches
+        # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
+        # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
+        # than the minimum number of upvotes are included in the count:
+        required_upvotes = int(cast(str, self._parameter("upvotes")))
+        request_has_fewer_than_min_upvotes = required_upvotes == 0 or int(merge_request["upvotes"]) < required_upvotes
+        return request_matches_state and request_matches_branches and request_has_fewer_than_min_upvotes
