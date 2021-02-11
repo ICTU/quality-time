@@ -1,13 +1,10 @@
 """Unit tests for the report routes."""
 
 import unittest
-from unittest import mock
-import urllib
 from datetime import datetime
 from typing import cast
 from unittest.mock import Mock, patch
 import copy
-from bottle import request
 
 from routes.report import (
     delete_report,
@@ -188,7 +185,7 @@ hv23LX3At2kFGKAPC0jM1YUCAwEAAQ==
         ]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
-        self.assertTrue(type(exported_password) is tuple)
+        self.assertTrue(isinstance(exported_password, tuple))
         self.assertTrue(len(exported_password) == 2)
 
     @patch("requests.get")

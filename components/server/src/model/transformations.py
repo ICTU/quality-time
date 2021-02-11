@@ -26,7 +26,7 @@ def encrypt_credentials(data_model, public_key: str, *reports: dict):
         for parameter_key, parameter_value in source.get("parameters", {}).items():
             if parameter_value and is_password_parameter(data_model, source["type"], parameter_key):
                 password = source["parameters"][parameter_key]
-                if isinstance(password, list) or isinstance(password, dict):
+                if isinstance(password, (dict, list)):
                     password = json.dumps(password)
 
                 password_bytes = password.encode()

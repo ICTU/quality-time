@@ -34,6 +34,7 @@ def latest_reports(database: Database, max_iso_timestamp: str = ""):
 
 
 def latest_report(database: Database, report_uuid: str):
+    """Get latest report with this uuid."""
     report = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
     report["_id"] = str(report["_id"])
     return report

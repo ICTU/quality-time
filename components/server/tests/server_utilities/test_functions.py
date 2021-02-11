@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
-from base64 import b64decode, b64encode
+from base64 import b64decode
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend

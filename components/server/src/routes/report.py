@@ -95,8 +95,9 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     data_model = latest_datamodel(database, date_time)
     report = latest_report(database, report_uuid)
 
-    if "public_key" in bottle.request.query:
-        public_key = bottle.request.query["public_key"]
+    # pylint doesn't seem to be able to see that bottle.request.query is dict(like) at runtime
+    if "public_key" in bottle.request.query:  # pylint: disable=unsupported-membership-test
+        public_key = bottle.request.query["public_key"]  # pylint: disable=unsupported-membership-test
     else:  # default to own public key
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         if not document:
