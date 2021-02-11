@@ -11,6 +11,7 @@ from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements_by_metric_uuid
 from database.reports import insert_new_report, latest_report, latest_reports
 from initialization.report import import_json_report
+from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.data import ReportData
 from model.transformations import encrypt_credentials, hide_credentials, summarize_report
@@ -97,8 +98,10 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
     if "public_key" in bottle.request.query:
         public_key = parse.unquote(bottle.request.query["public_key"])
     else:  # default to own public key
-        with open("components/server/credentials_export_public_key.pem", "r") as key_file:
-            public_key = key_file.read()
+        document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
+        if not document:
+            raise Exception("Could not find keys dor encryting api credentials.")
+        public_key = document["public_key"]
 
     encrypt_credentials(data_model, public_key, report)
     return report
