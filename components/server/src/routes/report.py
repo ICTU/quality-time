@@ -100,8 +100,6 @@ def export_report_as_json(database: Database, report_uuid: ReportId):
         public_key = bottle.request.query["public_key"]  # pylint: disable=unsupported-membership-test
     else:  # default to own public key
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
-        if not document:
-            raise Exception("Could not find keys dor encryting api credentials.")
         public_key = document["public_key"]
 
     encrypt_credentials(data_model, public_key, report)
