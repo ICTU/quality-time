@@ -35,6 +35,16 @@ Feature: report
     And the client downloads the report as pdf
     Then the client receives the pdf
 
+  Scenario: export report as json
+    When the client creates a report
+    And the client downloads the report as json
+    Then the client receives the json
+
+  Scenario: export report as json with own public key
+    When the client creates a report
+    And the client downloads the report as json with his own public key
+    Then the client receives the json
+
   Scenario: import report
     When the client imports a report
       """

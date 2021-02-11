@@ -14,6 +14,18 @@ def download_report_as_pdf(context):
     context.get(f"report/{context.uuid['report']}/pdf")
 
 
+@when("the client downloads the report as json")
+def download_report_as_pdf(context):
+    """Download the report as pdf."""
+    context.get(f"report/{context.uuid['report']}/json")
+
+
+@when("the client downloads the report as json with his own public key")
+def download_report_as_pdf(context):
+    """Download the report as pdf."""
+    context.get(f"report/{context.uuid['report']}/json?public_key={context.public_key}")
+
+
 @when("the client imports a report")
 def import_report(context):
     """Import a JSON report."""
@@ -45,6 +57,12 @@ def time_travel(context):
 def check_pdf(context):
     """Check the pdf."""
     assert_equal("application/pdf", context.response.headers["Content-Type"])
+
+
+@then("the client receives the json")
+def check_json(context):
+    """Check the pdf."""
+    assert_equal("application/json", context.response.headers["Content-Type"])
 
 
 @when("the client gets a non-existing report")
