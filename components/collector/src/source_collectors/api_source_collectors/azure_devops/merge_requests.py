@@ -12,15 +12,26 @@ from .base import AzureDevopsRepositoryBase
 class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
     """Collector for merge requests (pull requests in Azure Devops)."""
 
+    PAGE_SIZE = 100  # Page size for Azure Devops pagination
+
     async def _api_url(self) -> URL:
         """Extend to add the pull requests API path."""
         api_url = str(await super()._api_url())
-        return URL(f"{api_url}/pullrequests?api-version=4.1&searchCriteria.status=all")
+        return URL(f"{api_url}/pullrequests?api-version=4.1&searchCriteria.status=all&$top={self.PAGE_SIZE}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the pull requests path."""
         landing_url = str(await super()._landing_url(responses))
         return URL(f"{landing_url}/pullrequests")
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to use Azure Devops pagination, if necessary."""
+        nr_merge_requests_to_skip = 0
+        responses = await super()._get_source_responses(*urls)
+        while len((await responses[-1].json())["value"]) == self.PAGE_SIZE:
+            nr_merge_requests_to_skip += self.PAGE_SIZE
+            responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&$skip={nr_merge_requests_to_skip}")))
+        return responses
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the merge requests from the responses."""
