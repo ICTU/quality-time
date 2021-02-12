@@ -64,20 +64,13 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
     async def test_pagination(self):
         """Test that pagination works."""
         AzureDevopsMergeRequests.PAGE_SIZE = 1
-        azure_devops_json1 = dict(value=[self.create_merge_request(1)])
-        azure_devops_json2 = dict(value=[self.create_merge_request(2)])
-        azure_devops_json3 = dict(value=[])
+        azure_devops_json = [
+            dict(value=[self.create_merge_request(1)]),
+            dict(value=[self.create_merge_request(2)]),
+            dict(value=[]),
+        ]
         response = await self.collect(
-            self.metric,
-            get_request_json_side_effect=[
-                self.repositories,
-                azure_devops_json1,
-                azure_devops_json2,
-                azure_devops_json3,
-                azure_devops_json1,
-                azure_devops_json2,
-                azure_devops_json3,
-            ],
+            self.metric, get_request_json_side_effect=[self.repositories] + 2 * azure_devops_json
         )
         self.assert_measurement(
             response,
