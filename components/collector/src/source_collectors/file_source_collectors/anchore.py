@@ -23,9 +23,9 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
             entities.extend(
                 [
                     Entity(
-                        # Include the filename in the hash so that it is unique even when multiple images contain the same
-                        # package with the same vulnerability. Don't add a colon so existing hashes stay the same if the
-                        # source is not a zipped report (filename is an empty string in that case).
+                        # Include the filename in the hash so that it is unique even when multiple images contain the
+                        # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
+                        # if the source is not a zipped report (filename is an empty string in that case).
                         key=md5_hash(f'{response.filename}{vulnerability["vuln"]}:{vulnerability["package"]}'),
                         cve=vulnerability["vuln"],
                         filename=response.filename,
