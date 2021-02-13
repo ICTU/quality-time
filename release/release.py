@@ -26,7 +26,7 @@ def parse_arguments() -> Tuple[str, str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     parser = argparse.ArgumentParser(description=f"Release Quality-time. Current version is {current_version}.")
-    allowed_bumps_in_rc_mode = ["rc", "drop-rc"]  # rc = release candidate
+    allowed_bumps_in_rc_mode = ["rc", "rc-major", "rc-minor", "rc-patch", "drop-rc"]  # rc = release candidate
     allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
     bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
     parser.add_argument("bump", choices=bumps)
