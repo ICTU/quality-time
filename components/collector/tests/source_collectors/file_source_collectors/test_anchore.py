@@ -5,6 +5,8 @@ import json
 import zipfile
 from datetime import datetime, timezone
 
+from collector_utilities.functions import md5_hash
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -12,15 +14,21 @@ class AnchoreTestCase(SourceCollectorTestCase):
     """Base class for Anchore unit tests."""
 
     def setUp(self):
+        """Extend to set up Anchore fixtures."""
+        super().setUp()
         self.url = "https://cve"
         self.sources = dict(
             source_id=dict(
                 type="anchore",
-                parameters=dict(url="image-vuln.json", details_url="image-details.json", severities=["Low"])))
+                parameters=dict(url="image-vuln.json", details_url="image-details.json", severities=["Low"]),
+            )
+        )
         self.vulnerabilities_json = dict(
             vulnerabilities=[
                 dict(vuln="CVE-000", package="package", fix="None", url=self.url, severity="Low"),
-                dict(vuln="CVE-000", package="package2", fix="None", url=self.url, severity="Unknown")])
+                dict(vuln="CVE-000", package="package2", fix="None", url=self.url, severity="Unknown"),
+            ]
+        )
         self.details_json = [dict(analyzed_at="2020-02-07T22:53:43Z")]
 
 
@@ -28,27 +36,47 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
     """Unit tests for the security warning metric."""
 
     def setUp(self):
+        """Extend to set up security warning fixtures."""
         super().setUp()
         self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
-        self.expected_entities = [
-            dict(
-                key="1fe53aa1061841cbd9fcdab1179191dc", cve="CVE-000", url=self.url, fix="None", severity="Low",
-                package="package")]
 
     async def test_warnings(self):
         """Test the number of security warnings."""
         response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        expected_entities = [
+            dict(
+                key=md5_hash("CVE-000:package"),
+                filename="",
+                cve="CVE-000",
+                url=self.url,
+                fix="None",
+                severity="Low",
+                package="package",
+            )
+        ]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["url"] = "anchore.zip"
+        filename = "vuln.json"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
+            zipped_anchore_report.writestr(filename, json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
-        self.assert_measurement(response, value="1", entities=self.expected_entities)
+        expected_entities = [
+            dict(
+                key=md5_hash(f"{filename}CVE-000:package"),
+                filename=filename,
+                cve="CVE-000",
+                url=self.url,
+                fix="None",
+                severity="Low",
+                package="package",
+            )
+        ]
+        self.assert_measurement(response, value="1", entities=expected_entities)
 
 
 class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
@@ -69,7 +97,7 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
         self.sources["source_id"]["parameters"]["details_url"] = "anchore.zip"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
+            zipped_anchore_report.writestr("vulnerabilities.json", json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value=str(self.expected_age))

@@ -853,6 +853,10 @@
                     "name_plural": "security warnings",
                     "attributes": [
                         {
+                            "name": "Report filename",
+                            "key": "filename"
+                        },
+                        {
                             "name": "CVE",
                             "key": "cve",
                             "url": "url"

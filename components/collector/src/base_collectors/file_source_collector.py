@@ -20,9 +20,10 @@ class FakeResponse:
 
     status = HTTPStatus.OK
 
-    def __init__(self, contents: bytes = bytes()) -> None:
+    def __init__(self, contents: bytes = bytes(), filename: str = "") -> None:
         super().__init__()
         self.contents = contents
+        self.filename = filename
 
     async def json(self, content_type=None) -> JSON:  # pylint: disable=unused-argument
         """Return the JSON version of the contents."""
@@ -62,7 +63,7 @@ class FileSourceCollector(SourceCollector, ABC):  # pylint: disable=abstract-met
             names = [name for name in response_zipfile.namelist() if name.split(".")[-1].lower() in cls.file_extensions]
             if not names:
                 raise LookupError(f"Zipfile contains no files with extension {' or '.join(cls.file_extensions)}")
-            responses = [FakeResponse(response_zipfile.read(name)) for name in names]
+            responses = [FakeResponse(response_zipfile.read(name), name) for name in names]
         return cast(Responses, responses)
 
 

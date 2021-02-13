@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the ci/release.py script with the new release version and release date. -->
 
-## [3.19.0-rc.1] - [2021-02-13]
+## [Unreleased]
 
 ### Added
 
 - Add a 'merge requests' metric and add Azure Devops and GitLab as possible sources. Closes [#1644](https://github.com/ICTU/quality-time/issues/1644).
+
+### Fixed
+
+- Anchore security warnings have no hash. *Quality-time* would create a hash based on the security warning's CVE and affected package. However, if the Anchore source consists of a zip file with multiple reports, multiple combinations of the same CVE and package may be present. Add the report filename to the hash to make it unique. Fixes [#1907](https://github.com/ICTU/quality-time/issues/1907).
 
 ## [3.18.0] - [2021-02-03]
 
