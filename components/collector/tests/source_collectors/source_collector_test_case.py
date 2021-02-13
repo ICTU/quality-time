@@ -16,6 +16,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        """Override to disable logging and load the data model so it is available for all unit tests."""
         logging.disable(logging.CRITICAL)
         module_dir = pathlib.Path(__file__).resolve().parent
         data_model_path = module_dir.parent.parent.parent / "server" / "src" / "data" / "datamodel.json"
@@ -24,6 +25,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
+        """Override to reset logging."""
         logging.disable(logging.NOTSET)
 
     async def collect(
@@ -66,6 +68,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         mock_async_get_request.read.return_value = content
         mock_async_get_request.text.return_value = text
         type(mock_async_get_request).links = PropertyMock(return_value={}, side_effect=[links, {}] if links else None)
+        type(mock_async_get_request).filename = PropertyMock(return_value="")
         return mock_async_get_request
 
     @staticmethod
