@@ -6,7 +6,7 @@ from typing import Dict, List, cast
 
 from bs4 import BeautifulSoup, Tag
 
-from base_collectors import HTMLFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import HTMLFileSourceCollector, SourceCollectorException, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import Response
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -68,7 +68,8 @@ class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, So
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the start date time of the test from the response."""
         datetime_parts = [
-            int(part) for part in (await self._soup(response)).find(id="start_of_the_test").string.split(".")]
+            int(part) for part in (await self._soup(response)).find(id="start_of_the_test").string.split(".")
+        ]
         return datetime(*datetime_parts)  # type: ignore
 
 
@@ -80,8 +81,9 @@ class PerformanceTestRunnerPerformanceTestDuration(PerformanceTestRunnerBaseClas
         durations = []
         for response in responses:
             hours, minutes, seconds = [
-                int(part) for part in (await self._soup(response)).find(id="duration").string.split(":", 2)]
-            durations.append(60 * hours + minutes + round(seconds / 60.))
+                int(part) for part in (await self._soup(response)).find(id="duration").string.split(":", 2)
+            ]
+            durations.append(60 * hours + minutes + round(seconds / 60.0))
         return SourceMeasurement(value=str(sum(durations)))
 
 
@@ -115,8 +117,8 @@ class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
 
     @classmethod
     async def __parse_response(
-            cls, response: Response,
-            transactions_to_include: List[str], transactions_to_ignore: List[str]) -> Dict[str, int]:
+        cls, response: Response, transactions_to_include: List[str], transactions_to_ignore: List[str]
+    ) -> Dict[str, int]:
         """Parse the transactions from the response."""
         soup = await cls._soup(response)
         count = dict(failed=0, success=0)
@@ -142,7 +144,8 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
         for response in responses:
             breaking_point = int((await self._soup(response)).find(id="trendbreak_scalability").string)
             if breaking_point == 100:
-                raise AssertionError(
-                    "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)")
+                raise SourceCollectorException(
+                    "No performance scalability breaking point occurred (breaking point is at 100%, expected < 100%)"
+                )
             trend_breaks.append(breaking_point)
         return SourceMeasurement(value=str(min(trend_breaks)))

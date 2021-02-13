@@ -8,14 +8,10 @@ from urllib.parse import parse_qs, urlparse
 from dateutil.parser import parse
 from typing_extensions import TypedDict
 
-from base_collectors import SourceCollector
+from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.functions import days_ago
 from collector_utilities.type import URL, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
-
-
-class JiraException(Exception):
-    """Something went wrong collecting information from Jira."""
 
 
 class JiraIssues(SourceCollector):
@@ -243,20 +239,15 @@ class JiraVelocity(SourceCollector):
         start_at = 0
         boards: List[JiraVelocity.Board] = []
         while not last:
-            response = (await super()._get_source_responses(URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")))[
-                0
-            ]
+            url = URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")
+            response = (await super()._get_source_responses(url))[0]
             json = await response.json()
             boards.extend(json["values"])
             start_at += json["maxResults"]
             last = json["isLast"]
         board_name_or_id = str(self._parameter("board")).lower()
-        matching_boards = [
-            board for board in boards if board_name_or_id in (str(board["id"]), board["name"].lower().strip())
-        ]
-        try:
-            return str(matching_boards[0]["id"])
-        except IndexError as error:
-            raise JiraException(
-                f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
-            ) from error
+        matching_boards = [b for b in boards if board_name_or_id in (str(b["id"]), b["name"].lower().strip())]
+        if not matching_boards:
+            message = f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
+            raise SourceCollectorException(message)
+        return str(matching_boards[0]["id"])

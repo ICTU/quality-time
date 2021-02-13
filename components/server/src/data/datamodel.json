@@ -288,6 +288,30 @@
                 "maintainability"
             ]
         },
+        "merge_requests": {
+            "name": "Merge requests",
+            "description": "The amount of merge requests.",
+            "scales": [
+                "count",
+                "percentage"
+            ],
+            "default_scale": "count",
+            "unit": "merge requests",
+            "addition": "sum",
+            "direction": "<",
+            "target": "0",
+            "near_target": "10",
+            "default_source": "gitlab",
+            "sources": [
+                "azure_devops",
+                "gitlab",
+                "manual_number",
+                "random"
+            ],
+            "tags": [
+                "ci"
+            ]
+        },
         "metrics": {
             "name": "Metrics",
             "description": "The amount of metrics from one more quality reports, with specific states and/or tags.",
@@ -1227,6 +1251,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
+                        "merge_requests",
                         "user_story_points",
                         "source_up_to_dateness",
                         "tests",
@@ -1244,6 +1269,7 @@
                     "metrics": [
                         "failed_jobs",
                         "issues",
+                        "merge_requests",
                         "user_story_points",
                         "source_up_to_dateness",
                         "tests",
@@ -1283,6 +1309,7 @@
                     "mandatory": false,
                     "default_value": "",
                     "metrics": [
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches"
                     ]
@@ -1303,7 +1330,7 @@
                     "type": "multiple_choice_with_addition",
                     "placeholder": "none",
                     "mandatory": false,
-                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
                     "default_value": [],
                     "metrics": [
                         "unmerged_branches"
@@ -1436,13 +1463,57 @@
                         "partially succeeded"
                     ],
                     "api_values": {
-                        "canceled": "canceled",
-                        "failed": "failed",
                         "no result": "none",
                         "partially succeeded": "partiallySucceeded"
                     },
                     "metrics": [
                         "failed_jobs"
+                    ]
+                },
+                "merge_request_state": {
+                    "name": "Merge request state",
+                    "short_name": "state",
+                    "help": "Limit which merge request states to count.",
+                    "type": "multiple_choice",
+                    "placeholder": "all states",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "abandoned",
+                        "active",
+                        "completed",
+                        "not set"
+                    ],
+                    "api_values": {
+                        "not set": "notSet"
+                    },
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "upvotes": {
+                    "name": "Minimum number of upvotes",
+                    "short_name": "minimum upvotes",
+                    "help": "Only count merge requests with fewer than the minimum number of upvotes.",
+                    "type": "integer",
+                    "mandatory": false,
+                    "default_value": "0",
+                    "min_value": "0",
+                    "unit": "upvotes",
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "target_branches_to_include": {
+                    "name": "Target branches to include (regular expressions or branch names)",
+                    "short_name": "target branches to include",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all target branches",
+                    "metrics": [
+                        "merge_requests"
                     ]
                 }
             },
@@ -1470,6 +1541,45 @@
                             "name": "Date of most recent build",
                             "key": "build_date",
                             "type": "date"
+                        }
+                    ]
+                },
+                "merge_requests": {
+                    "name": "merge request",
+                    "name_plural": "merge requests",
+                    "attributes": [
+                        {
+                            "name": "Merge request",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Target branch",
+                            "key": "target_branch"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state"
+                        },
+                        {
+                            "name": "Upvotes",
+                            "key": "upvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Downvotes",
+                            "key": "downvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "created",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Closed",
+                            "key": "closed",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -2228,6 +2338,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -2242,6 +2353,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -2256,6 +2368,7 @@
                     "default_value": "",
                     "metrics": [
                         "failed_jobs",
+                        "merge_requests",
                         "source_up_to_dateness",
                         "unmerged_branches",
                         "unused_jobs"
@@ -2361,6 +2474,49 @@
                         "failed_jobs",
                         "unused_jobs"
                     ]
+                },
+                "merge_request_state": {
+                    "name": "Merge request state",
+                    "short_name": "state",
+                    "help": "Limit which merge request states to count.",
+                    "type": "multiple_choice",
+                    "placeholder": "all states",
+                    "mandatory": false,
+                    "default_value": [],
+                    "values": [
+                        "opened",
+                        "locked",
+                        "merged",
+                        "closed"
+                    ],
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "upvotes": {
+                    "name": "Minimum number of upvotes",
+                    "short_name": "minimum upvotes",
+                    "help": "Only count merge requests with fewer than the minimum number of upvotes.",
+                    "type": "integer",
+                    "mandatory": false,
+                    "default_value": "0",
+                    "min_value": "0",
+                    "unit": "upvotes",
+                    "metrics": [
+                        "merge_requests"
+                    ]
+                },
+                "target_branches_to_include": {
+                    "name": "Target branches to include (regular expressions or branch names)",
+                    "short_name": "target branches to include",
+                    "type": "multiple_choice_with_addition",
+                    "help_url": "https://docs.gitlab.com/ee/user/project/repository/branches/",
+                    "mandatory": false,
+                    "default_value": [],
+                    "placeholder": "all target branches",
+                    "metrics": [
+                        "merge_requests"
+                    ]
                 }
             },
             "entities": {
@@ -2394,6 +2550,55 @@
                             "name": "Date of most recent build",
                             "key": "build_date",
                             "type": "date"
+                        }
+                    ]
+                },
+                "merge_requests": {
+                    "name": "merge request",
+                    "name_plural": "merge requests",
+                    "attributes": [
+                        {
+                            "name": "Merge request",
+                            "key": "title",
+                            "url": "url"
+                        },
+                        {
+                            "name": "Target branch",
+                            "key": "target_branch"
+                        },
+                        {
+                            "name": "State",
+                            "key": "state"
+                        },
+                        {
+                            "name": "Upvotes",
+                            "key": "upvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Downvotes",
+                            "key": "downvotes",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "Created",
+                            "key": "created",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Updated",
+                            "key": "updated",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Merged",
+                            "key": "merged",
+                            "type": "datetime"
+                        },
+                        {
+                            "name": "Closed",
+                            "key": "closed",
+                            "type": "datetime"
                         }
                     ]
                 },
@@ -3324,6 +3529,7 @@
                         "manual_test_duration",
                         "manual_test_execution",
                         "many_parameters",
+                        "merge_requests",
                         "metrics",
                         "performancetest_duration",
                         "performancetest_stability",
@@ -4388,6 +4594,7 @@
                         "Manual test duration",
                         "Manual test execution",
                         "Many parameters",
+                        "Merge requests",
                         "Metrics",
                         "Performancetest duration",
                         "Performancetest stability",
@@ -4419,6 +4626,7 @@
                         "Manual test duration": "manual_test_duration",
                         "Manual test execution": "manual_test_execution",
                         "Many parameters": "many_parameters",
+                        "Merge requests": "merge_requests",
                         "Metrics": "metrics",
                         "Performancetest duration": "performancetest_duration",
                         "Performancetest stability": "performancetest_stability",
@@ -6019,6 +6227,7 @@
             "description": "A continuous integration environment.",
             "metrics": [
                 "failed_jobs",
+                "merge_requests",
                 "performancetest_duration",
                 "source_up_to_dateness",
                 "unmerged_branches",
@@ -6032,7 +6241,7 @@
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
-                "user_story_points",
+                "merge_requests",
                 "source_up_to_dateness",
                 "unmerged_branches",
                 "user_story_points",
@@ -6056,14 +6265,15 @@
                 "dependencies",
                 "duplicated_lines",
                 "issues",
-                "remediation_effort",
                 "loc",
+                "long_units",
                 "manual_test_duration",
                 "manual_test_execution",
                 "many_parameters",
-                "long_units",
+                "merge_requests",
                 "performancetest_duration",
                 "performancetest_stability",
+                "remediation_effort",
                 "scalability",
                 "security_warnings",
                 "slow_transactions",

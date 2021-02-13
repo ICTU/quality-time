@@ -26,7 +26,9 @@ class GitLabUnmergedBranches(GitLabBase, UnmergedBranchesSourceCollector):
 
     async def _unmerged_branches(self, responses: SourceResponses) -> List[Dict[str, Any]]:
         """Override to return a list of unmerged and inactive branches."""
-        branches = await responses[0].json()
+        branches = []
+        for response in responses:
+            branches.extend(await response.json())
         return [
             branch
             for branch in branches

@@ -5,6 +5,7 @@ from typing import Dict, Optional, Tuple
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
+from source_model import SourceResponses
 
 
 class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
@@ -18,6 +19,16 @@ class GitLabBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         sep = "&" if "?" in api_url else "?"
         api_url += f"{sep}per_page=100"
         return URL(api_url)
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to follow GitLab pagination links, if necessary."""
+        responses = await super()._get_source_responses(*urls)
+        next_urls = [
+            next_url for response in responses if (next_url := response.links.get("next", {}).get("url"))
+        ]  # pylint: disable=superfluous-parens
+        if next_urls:
+            responses.extend(await self._get_source_responses(*next_urls))
+        return responses
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
         """Override to return None, as the private token is passed as header."""

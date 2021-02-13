@@ -5,14 +5,10 @@ from typing import Dict, List
 
 from dateutil.parser import isoparse
 
-from base_collectors import SourceCollector, SourceUpToDatenessCollector
+from base_collectors import SourceCollector, SourceCollectorException, SourceUpToDatenessCollector
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from source_model import Entity, SourceMeasurement, SourceResponses
-
-
-class SonarQubeException(Exception):
-    """Something went wrong collecting information from SonarQube."""
 
 
 class SonarQubeCollector(SourceCollector):
@@ -27,7 +23,7 @@ class SonarQubeCollector(SourceCollector):
         response = (await super()._get_source_responses(show_component_url))[0]
         json = await response.json()
         if "errors" in json:
-            raise SonarQubeException(json["errors"][0]["msg"])
+            raise SourceCollectorException(json["errors"][0]["msg"])
         return await super()._get_source_responses(*urls)
 
 
@@ -50,14 +46,19 @@ class SonarQubeViolations(SonarQubeCollector):
         branch = self._parameter("branch")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
-        api = f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&" \
-              f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
+        api = (
+            f"{url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
+            f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
+        )
         return URL(api + self.__rules_url_parameter())
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
-        rules = self._data_model["sources"][self.source_type]["configuration"][self.rules_configuration]["value"] \
-            if self.rules_configuration else []
+        rules = (
+            self._data_model["sources"][self.source_type]["configuration"][self.rules_configuration]["value"]
+            if self.rules_configuration
+            else []
+        )
         return f"&rules={','.join(rules)}" if rules else ""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -86,7 +87,8 @@ class SonarQubeViolations(SonarQubeCollector):
             type=issue["type"].lower(),
             component=issue["component"],
             creation_date=issue["creationDate"],
-            update_date=issue["updateDate"])
+            update_date=issue["updateDate"],
+        )
 
     def _violation_types(self) -> str:
         """Return the violation types."""
@@ -119,7 +121,8 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         total_metric_api_url = URL(
             f"{base_api_url}/api/measures/component?component={component}&metricKeys={self.total_metric}&"
-            f"branch={branch}")
+            f"branch={branch}"
+        )
         return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -169,7 +172,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
         resolved_issues_api_url = URL(
             f"{all_issues_api_url}&status=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&ps=500&"
-            f"severities={self._violation_severities()}&types={self._violation_types()}")
+            f"severities={self._violation_severities()}&types={self._violation_types()}"
+        )
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -214,17 +218,24 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         base_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
         if "vulnerability" in security_types:
             api_urls.append(
-                URL(f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
-                    f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"))
+                URL(
+                    f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500&"
+                    f"severities={self._violation_severities()}&types={self._violation_types()}&branch={branch}"
+                )
+            )
         if "security_hotspot" in security_types:
             api_urls.append(
-                URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}"))
+                URL(f"{base_url}/api/hotspots/search?projectKey={component}&status=TO_REVIEW&ps=500&branch={branch}")
+            )
         return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         security_types = self._parameter(self.types_parameter)
-        vulnerabilities = await super()._parse_source_responses(SourceResponses(responses=[responses[0]])) \
-            if "vulnerability" in security_types else SourceMeasurement()
+        vulnerabilities = (
+            await super()._parse_source_responses(SourceResponses(responses=[responses[0]]))
+            if "vulnerability" in security_types
+            else SourceMeasurement()
+        )
         if "security_hotspot" in security_types:
             json = await responses[-1].json()
             nr_hotspots = int(json.get("paging", {}).get("total", 0))
@@ -233,15 +244,21 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             nr_hotspots = 0
             hotspots = []
         return SourceMeasurement(
-            value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots)
+            value=str(int(vulnerabilities.value or 0) + nr_hotspots), entities=vulnerabilities.entities + hotspots
+        )
 
     async def __entity(self, hotspot) -> Entity:
         """Create the security warning entity."""
         return Entity(
-            key=hotspot["key"], component=hotspot["component"], message=hotspot["message"], type="security_hotspot",
+            key=hotspot["key"],
+            component=hotspot["component"],
+            message=hotspot["message"],
+            type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
             vulnerability_probability=hotspot["vulnerabilityProbability"].lower(),
-            creation_date=hotspot["creationDate"], update_date=hotspot["updateDate"])
+            creation_date=hotspot["creationDate"],
+            update_date=hotspot["updateDate"],
+        )
 
     async def __hotspot_landing_url(self, hotspot_key: str) -> URL:
         """Generate a landing url for the hotspot."""
@@ -274,12 +291,14 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(
-            f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}")
+            f"{url}/api/measures/component?component={component}&metricKeys={self._metric_keys()}&branch={branch}"
+        )
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         metrics = await self.__get_metrics(responses)
-        return SourceMeasurement(value=self._value(metrics), total=self._total(metrics),
-                                 entities=await self._entities(metrics))
+        return SourceMeasurement(
+            value=self._value(metrics), total=self._total(metrics), entities=await self._entities(metrics)
+        )
 
     def _metric_keys(self) -> str:
         """Return the SonarQube metric keys to use."""
@@ -324,10 +343,32 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
     """SonarQube lines of code."""
 
     LANGUAGES = dict(
-        abap="ABAP", apex="Apex", c="C", cs="C#", cpp="C++", cobol="COBOL", css="CSS", flex="Flex", go="Go", web="HTML",
-        jsp="JSP", java="Java", js="JavaScript", kotlin="Kotlin", objc="Objective-C", php="PHP", plsql="PL/SQL",
-        py="Python", ruby="Ruby", scala="Scala", swift="Swift", tsql="T-SQL", ts="TypeScript", vbnet="VB.NET",
-        xml="XML")  # https://sonarcloud.io/api/languages/list
+        abap="ABAP",
+        apex="Apex",
+        c="C",
+        cs="C#",
+        cpp="C++",
+        cobol="COBOL",
+        css="CSS",
+        flex="Flex",
+        go="Go",
+        web="HTML",
+        jsp="JSP",
+        java="Java",
+        js="JavaScript",
+        kotlin="Kotlin",
+        objc="Objective-C",
+        php="PHP",
+        plsql="PL/SQL",
+        py="Python",
+        ruby="Ruby",
+        scala="Scala",
+        swift="Swift",
+        tsql="T-SQL",
+        ts="TypeScript",
+        vbnet="VB.NET",
+        xml="XML",
+    )  # https://sonarcloud.io/api/languages/list
 
     def _value_key(self) -> str:
         return str(self._parameter("lines_to_count"))  # Either "lines" or "ncloc"
@@ -351,14 +392,18 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
             # languages the user wants to ignore
             return [
                 Entity(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
-                for language, ncloc in self.__language_ncloc(metrics)]
+                for language, ncloc in self.__language_ncloc(metrics)
+            ]
         return await super()._entities(metrics)
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
         """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = self._parameter("languages_to_ignore")
-        return [language_count.split("=") for language_count in metrics["ncloc_language_distribution"].split(";")
-                if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)]
+        return [
+            language_count.split("=")
+            for language_count in metrics["ncloc_language_distribution"].split(";")
+            if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)
+        ]
 
 
 class SonarQubeUncoveredLines(SonarQubeMetricsBaseClass):
@@ -394,14 +439,19 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
             effort_type_description = [param for param, api_key in api_values.items() if effort_type == api_key][0]
             entities.append(
                 Entity(
-                    key=effort_type, effort_type=effort_type_description, effort=metrics[effort_type],
-                    url=await self.__effort_type_landing_url(effort_type)))
+                    key=effort_type,
+                    effort_type=effort_type_description,
+                    effort=metrics[effort_type],
+                    url=await self.__effort_type_landing_url(effort_type),
+                )
+            )
         return entities
 
     async def __effort_type_landing_url(self, effort_type: str) -> URL:
         """Generate a landing url for the effort type."""
-        url = await super(  # pylint: disable=bad-super-call
-            SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())
+        url = await super(SonarQubeMetricsBaseClass, self)._landing_url(  # pylint: disable=bad-super-call
+            SourceResponses()
+        )
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric={effort_type}&branch={branch}")
@@ -438,8 +488,8 @@ class SonarQubeTests(SonarQubeCollector):
     async def __nr_of_tests(responses: SourceResponses) -> Dict[str, int]:
         """Return the number of tests by test result."""
         measures = {
-            measure["metric"]: int(measure["value"])
-            for measure in (await responses[0].json())["component"]["measures"]}
+            measure["metric"]: int(measure["value"]) for measure in (await responses[0].json())["component"]["measures"]
+        }
         errored = measures.get("test_errors", 0)
         failed = measures.get("test_failures", 0)
         skipped = measures.get("skipped_tests", 0)

@@ -3,7 +3,7 @@
 from typing import Dict, List, Optional, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
 
-from base_collectors import XMLFileSourceCollector
+from base_collectors import SourceCollectorException, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
 from collector_utilities.type import Namespaces
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -44,12 +44,13 @@ class OJAuditViolations(XMLFileSourceCollector):
             violation["count"] = str(self.violation_counts[str(violation["key"])])
         return violations
 
-    def __violation(self, violation: Element, namespaces: Namespaces, models: ModelFilePaths,
-                    severities: List[str]) -> Optional[Entity]:
+    def __violation(
+        self, violation: Element, namespaces: Namespaces, models: ModelFilePaths, severities: List[str]
+    ) -> Optional[Entity]:
         """Return the violation as entity."""
         location = violation.find("./ns:location", namespaces)
         if not location:
-            raise ValueError(f"OJAudit violation {violation} has no location element")
+            raise SourceCollectorException(f"OJAudit violation {violation} has no location element")
         severity = violation.findtext("./ns:values/ns:value", default="", namespaces=namespaces)
         if severities and severity not in severities:
             return None
@@ -70,5 +71,7 @@ class OJAuditViolations(XMLFileSourceCollector):
     def __model_file_paths(tree: Element, namespaces: Namespaces) -> ModelFilePaths:
         """Return the model file paths."""
         models = tree.findall(".//ns:model", namespaces)
-        return {model.get("id", ""): model.findtext("./ns:file/ns:path", default="", namespaces=namespaces)
-                for model in models}
+        return {
+            model.get("id", ""): model.findtext("./ns:file/ns:path", default="", namespaces=namespaces)
+            for model in models
+        }

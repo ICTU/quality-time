@@ -15,6 +15,10 @@ from collector_utilities.type import URL, Response
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
+class SourceCollectorException(Exception):
+    """Something went wrong collecting information."""
+
+
 class SourceCollector(ABC):
     """Base class for source collectors.
 
@@ -104,7 +108,7 @@ class SourceCollector(ABC):
             responses = await self._get_source_responses(api_url)
             logging.info("Retrieved %s", safe_api_url)
             return responses
-        except aiohttp.ClientError as reason:
+        except (SourceCollectorException, aiohttp.ClientError) as reason:
             error = self.__logsafe_exception(reason)
             logging.warning("Failed to retrieve %s: %s", safe_api_url, error)
         except Exception as reason:  # pylint: disable=broad-except
