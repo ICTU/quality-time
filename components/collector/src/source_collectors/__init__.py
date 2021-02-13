@@ -36,20 +36,20 @@ from .api_source_collectors.robot_framework_jenkins_plugin import (
     RobotFrameworkJenkinsPluginSourceUpToDateness,
     RobotFrameworkJenkinsPluginTests,
 )
-from .api_source_collectors.sonarqube import (
-    SonarQubeCommentedOutCode,
-    SonarQubeComplexUnits,
-    SonarQubeDuplicatedLines,
-    SonarQubeLOC,
-    SonarQubeLongUnits,
-    SonarQubeManyParameters,
-    SonarQubeSourceUpToDateness,
-    SonarQubeSuppressedViolations,
-    SonarQubeTests,
-    SonarQubeUncoveredBranches,
-    SonarQubeUncoveredLines,
-    SonarQubeViolations,
-)
+from .api_source_collectors.sonarqube.commented_out_code import SonarQubeCommentedOutCode
+from .api_source_collectors.sonarqube.complex_units import SonarQubeComplexUnits
+from .api_source_collectors.sonarqube.duplicated_lines import SonarQubeDuplicatedLines
+from .api_source_collectors.sonarqube.loc import SonarQubeLOC
+from .api_source_collectors.sonarqube.long_units import SonarQubeLongUnits
+from .api_source_collectors.sonarqube.many_parameters import SonarQubeManyParameters
+from .api_source_collectors.sonarqube.remediation_effort import SonarQubeRemediationEffort
+from .api_source_collectors.sonarqube.security_warnings import SonarQubeSecurityWarnings
+from .api_source_collectors.sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
+from .api_source_collectors.sonarqube.suppressed_violations import SonarQubeSuppressedViolations
+from .api_source_collectors.sonarqube.tests import SonarQubeTests
+from .api_source_collectors.sonarqube.uncovered_branches import SonarQubeUncoveredBranches
+from .api_source_collectors.sonarqube.uncovered_lines import SonarQubeUncoveredLines
+from .api_source_collectors.sonarqube.violations import SonarQubeViolations
 from .api_source_collectors.trello import TrelloIssues, TrelloSourceUpToDateness
 from .api_source_collectors.wekan import WekanIssues, WekanSourceUpToDateness
 from .file_source_collectors.anchore import AnchoreSecurityWarnings, AnchoreSourceUpToDateness
