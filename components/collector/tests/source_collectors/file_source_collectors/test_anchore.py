@@ -59,15 +59,16 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
         self.sources["source_id"]["parameters"]["url"] = "anchore.zip"
+        filename = "vuln.json"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
+            zipped_anchore_report.writestr(filename, json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         expected_entities = [
             dict(
-                key=md5_hash("vuln.jsonCVE-000:package"),
-                filename="vuln.json",
+                key=md5_hash(f"{filename}CVE-000:package"),
+                filename=filename,
                 cve="CVE-000",
                 url=self.url,
                 fix="None",
@@ -96,7 +97,7 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
         self.sources["source_id"]["parameters"]["details_url"] = "anchore.zip"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:
-            zipped_anchore_report.writestr("vuln.json", json.dumps(self.vulnerabilities_json))
+            zipped_anchore_report.writestr("vulnerabilities.json", json.dumps(self.vulnerabilities_json))
             zipped_anchore_report.writestr("details.json", json.dumps(self.details_json))
         response = await self.collect(self.metric, get_request_content=bytes_io.getvalue())
         self.assert_measurement(response, value=str(self.expected_age))
