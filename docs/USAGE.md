@@ -191,6 +191,12 @@ The "master"-branch is the default branch in both GitLab and Azure DevOps. This 
 
 To ignore branches that people are actively working on, use the "Number of days since last commit after which to consider branches inactive"-parameter.
 
+### Merge requests
+
+The merge requests metric reports the number of merge requests. Currently, GitLab and Azure DevOps can be configured as source for this metric.
+
+In itself, the number of merge requests is not indicative of software quality. However, by setting the parameter "Minimum number of upvotes", the metric can report on merge requests that have fewer than the minimum number of upvotes. The parameter "Merge request state" can be used to exclude e.g. closed merge requests. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge requests that target specific branches, e.g. the "develop" branch.
+
 ## Notes on specific sources
 
 ### GitLab
