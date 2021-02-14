@@ -40,15 +40,18 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
     )  # https://sonarcloud.io/api/languages/list
 
     def _value_key(self) -> str:
+        """Override to return the type of lines to count."""
         return str(self._parameter("lines_to_count"))  # Either "lines" or "ncloc"
 
     def _metric_keys(self) -> str:
+        """Extend to also return the language distribution metric key if the user wants to measure ncloc."""
         metric_keys = super()._metric_keys()
         if self._value_key() == "ncloc":
             metric_keys += ",ncloc_language_distribution"  # Also get the ncloc per language
         return metric_keys
 
     def _value(self, metrics: Dict[str, str]) -> str:
+        """Extend to only count selected languages if the user wants to measure ncloc."""
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can sum the ncloc per language, skipping
             # languages the user wants to ignore
@@ -56,6 +59,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         return super()._value(metrics)
 
     async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
+        """Extend to return ncloc per language, if the users picked ncloc to measure."""
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
             # languages the user wants to ignore

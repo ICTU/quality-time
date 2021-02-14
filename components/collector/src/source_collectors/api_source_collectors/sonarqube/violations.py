@@ -15,6 +15,7 @@ class SonarQubeViolations(SonarQubeCollector):
     types_parameter = "types"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the issues path and parameters."""
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -22,6 +23,7 @@ class SonarQubeViolations(SonarQubeCollector):
         return URL(landing_url + self.__rules_url_parameter())
 
     async def _api_url(self) -> URL:
+        """Extend to add the issue search path and parameters."""
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -43,6 +45,7 @@ class SonarQubeViolations(SonarQubeCollector):
         return f"&rules={','.join(rules)}" if rules else ""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the issues."""
         value = 0
         entities: List[Entity] = []
         for response in responses:
@@ -86,7 +89,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
     total_metric = ""  # Subclass responsibility
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Next to the violations, also get the total number of units as basis for the percentage scale."""
+        """Extend to, next to the violations, get the total number of violations as basis for the percentage scale."""
         component = self._parameter("component")
         branch = self._parameter("branch")
         base_api_url = await SonarQubeCollector._api_url(self)  # pylint: disable=protected-access
@@ -97,6 +100,7 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         return await super()._get_source_responses(*(urls + (total_metric_api_url,)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Extend to parse the total number of violations."""
         measurement = await super()._parse_source_responses(responses)
         measures: List[Dict[str, str]] = []
         for response in responses:

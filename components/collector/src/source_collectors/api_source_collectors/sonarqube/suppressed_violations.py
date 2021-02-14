@@ -29,12 +29,13 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         return await super()._get_source_responses(*(urls + (resolved_issues_api_url, all_issues_api_url)))
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Extend to get the total number of violations from the responses."""
         measurement = await super()._parse_source_responses(responses[:-1])
         measurement.total = str((await responses[-1].json())["total"])
         return measurement
 
     async def _entity(self, issue) -> Entity:
-        """Also add the resolution to the entity."""
+        """Extend to add the resolution to the entity."""
         entity = await super()._entity(issue)
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = dict(wontfix="won't fix").get(resolution, resolution)

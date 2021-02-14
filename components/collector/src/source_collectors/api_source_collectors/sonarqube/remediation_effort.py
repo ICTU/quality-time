@@ -12,15 +12,18 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
     """SonarQube violation (technical debt) remediation effort."""
 
     def _landing_url_metric_key(self) -> str:
+        """Override to return the metric key for the landing url."""
         # The landing url can point to one metric, so if the user selected one effort type point the landing url to
         # that metric. If not, the landing url points to the project overview.
         effort_types = self.__effort_types()
         return effort_types[0] if len(effort_types) == 1 else ""
 
     def _value_key(self) -> str:
+        """Override to return the metric keys to use for the metric value."""
         return ",".join(self.__effort_types())
 
     async def _entities(self, metrics: Dict[str, str]) -> List[Entity]:
+        """Override to return the effort entities."""
         entities = []
         api_values = self._data_model["sources"][self.source_type]["parameters"]["effort_types"]["api_values"]
         for effort_type in self.__effort_types():

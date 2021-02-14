@@ -11,6 +11,7 @@ class SonarQubeCollector(SourceCollector):
     """Base class for SonarQube collectors."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to check the component exists before getting data about it."""
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
         # check whether the component specified by the user actually exists before getting the data.
         url = await SourceCollector._api_url(self)
@@ -30,6 +31,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
     totalKey = ""  # Subclass responsibility
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the component measures path and parameters."""
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -42,6 +44,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         return self._metric_keys().split(",")[0]
 
     async def _api_url(self) -> URL:
+        """Extend to add the component path and parameters."""
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -50,6 +53,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         )
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the metrics."""
         metrics = await self.__get_metrics(responses)
         return SourceMeasurement(
             value=self._value(metrics), total=self._total(metrics), entities=await self._entities(metrics)

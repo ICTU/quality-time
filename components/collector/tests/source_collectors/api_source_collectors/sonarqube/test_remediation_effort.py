@@ -7,6 +7,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
     """Unit tests for the SonarQube remediation effort collector."""
 
     def setUp(self):
+        """Extend to set up some parameter values."""
         super().setUp()
         self.all_code_smells = "effort to fix all code smells"
         self.all_bug_issues = "effort to fix all bug issues"

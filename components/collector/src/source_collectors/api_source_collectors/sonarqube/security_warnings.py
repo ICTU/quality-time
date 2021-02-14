@@ -14,6 +14,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
     types_parameter = "security_types"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to return the correct landing url depending on the selected security types."""
         security_types = self._parameter(self.types_parameter)
         base_landing_url = await SourceCollector._landing_url(self, responses)  # pylint: disable=protected-access
         component = self._parameter("component")
@@ -27,9 +28,11 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         return URL(landing_url)
 
     def _violation_types(self) -> str:
+        """Override to return the violation types this collector collects."""
         return "VULNERABILITY"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to add urls for the selected security types."""
         api_urls = []
         security_types = self._parameter(self.types_parameter)
         component = self._parameter("component")
@@ -49,6 +52,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         return await super()._get_source_responses(*api_urls)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the selected security types."""
         security_types = self._parameter(self.types_parameter)
         vulnerabilities = (
             await super()._parse_source_responses(SourceResponses(responses=[responses[0]]))

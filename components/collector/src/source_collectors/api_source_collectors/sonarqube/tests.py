@@ -12,6 +12,7 @@ class SonarQubeTests(SonarQubeCollector):
     """SonarQube collector for the tests metric."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the measures path and parameters."""
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
@@ -19,12 +20,14 @@ class SonarQubeTests(SonarQubeCollector):
         return URL(f"{url}/api/measures/component?component={component}&metricKeys={metric_keys}&branch={branch}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the measures path and parameters."""
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/component_measures?id={component}&metric=tests&branch={branch}")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the number of tests."""
         tests = await self.__nr_of_tests(responses)
         value = str(sum(tests[test_result] for test_result in self._parameter("test_result")))
         test_results = self._data_model["sources"][self.source_type]["parameters"]["test_result"]["values"]
