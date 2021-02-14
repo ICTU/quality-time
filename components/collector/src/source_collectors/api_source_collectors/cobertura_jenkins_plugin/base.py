@@ -1,8 +1,8 @@
-"""Cobertura Jenkins plugin coverage report collector."""
+"""Cobertura Jenkins plugin coverage report collector base classes."""
 
 from abc import ABC
 
-from base_collectors import JenkinsPluginCollector, JenkinsPluginSourceUpToDatenessCollector
+from base_collectors import JenkinsPluginCollector
 from source_model import SourceMeasurement, SourceResponses
 
 
@@ -19,24 +19,8 @@ class CoberturaJenkinsPluginCoverageBaseClass(CoberturaJenkinsPluginBaseClass):
     coverage_type = "subclass responsibility"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the coverage measurements."""
         elements = (await responses[0].json())["results"]["elements"]
         coverage = [element for element in elements if element["name"].lower() == self.coverage_type][0]
         total = int(coverage["denominator"])
         return SourceMeasurement(value=str(total - int(coverage["numerator"])), total=str(total))
-
-
-class CoberturaJenkinsPluginUncoveredLines(CoberturaJenkinsPluginCoverageBaseClass):
-    """Collector for Cobertura Jenkins plugin uncovered lines."""
-
-    coverage_type = "lines"
-
-
-class CoberturaJenkinsPluginUncoveredBranches(CoberturaJenkinsPluginCoverageBaseClass):
-    """Collector for Cobertura Jenkins plugin uncovered branches."""
-
-    coverage_type = "conditionals"
-
-
-class CoberturaJenkinsPluginSourceUpToDateness(
-        CoberturaJenkinsPluginBaseClass, JenkinsPluginSourceUpToDatenessCollector):
-    """Collector for the up to dateness of the Cobertura Jenkins plugin coverage report."""

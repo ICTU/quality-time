@@ -7,11 +7,11 @@ from .api_source_collectors.azure_devops.tests import AzureDevopsTests
 from .api_source_collectors.azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
 from .api_source_collectors.azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
 from .api_source_collectors.azure_devops.user_story_points import AzureDevopsUserStoryPoints
-from .api_source_collectors.cobertura_jenkins_plugin import (
+from .api_source_collectors.cobertura_jenkins_plugin.source_up_to_dateness import (
     CoberturaJenkinsPluginSourceUpToDateness,
-    CoberturaJenkinsPluginUncoveredBranches,
-    CoberturaJenkinsPluginUncoveredLines,
 )
+from .api_source_collectors.cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
+from .api_source_collectors.cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
 from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJobs
 from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
