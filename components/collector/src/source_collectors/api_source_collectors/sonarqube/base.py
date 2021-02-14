@@ -1,5 +1,6 @@
 """Base collectors for SonarQube."""
 
+from abc import ABC
 from typing import Dict, List
 
 from base_collectors import SourceCollector, SourceCollectorException
@@ -7,7 +8,7 @@ from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class SonarQubeCollector(SourceCollector):
+class SonarQubeCollector(SourceCollector, ABC):
     """Base class for SonarQube collectors."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
