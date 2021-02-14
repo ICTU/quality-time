@@ -1,0 +1,124 @@
+"""Unit tests for the SonarQube source."""
+
+from .base import SonarQubeTestCase
+
+
+class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
+    """Unit tests for the SonarQube security warnings collector."""
+
+    def setUp(self):
+        """Extend to set up SonarQube security warnings."""
+        super().setUp()
+        self.vulnerabilities_json = dict(
+            total="2",
+            issues=[
+                dict(
+                    key="a",
+                    message="a",
+                    component="a",
+                    severity="INFO",
+                    type="VULNERABILITY",
+                    creationDate="2020-08-30T22:48:52+0200",
+                    updateDate="2020-09-30T22:48:52+0200",
+                ),
+                dict(
+                    key="b",
+                    message="b",
+                    component="b",
+                    severity="MAJOR",
+                    type="VULNERABILITY",
+                    creationDate="2019-08-30T22:48:52+0200",
+                    updateDate="2019-09-30T22:48:52+0200",
+                ),
+            ],
+        )
+        self.hotspots_json = dict(
+            paging=dict(total="2"),
+            hotspots=[
+                dict(
+                    key="a",
+                    message="a",
+                    component="a",
+                    vulnerabilityProbability="MEDIUM",
+                    creationDate="2010-12-13T10:37:07+0000",
+                    updateDate="2019-08-26T09:02:49+0000",
+                ),
+                dict(
+                    key="b",
+                    message="b",
+                    component="b",
+                    vulnerabilityProbability="LOW",
+                    creationDate="2011-10-26T13:34:12+0000",
+                    updateDate="2020-08-31T08:19:00+0000",
+                ),
+            ],
+        )
+        self.hotspot_entities = [
+            self.entity(
+                "a",
+                "security_hotspot",
+                vulnerability_probability="medium",
+                creation_date="2010-12-13T10:37:07+0000",
+                update_date="2019-08-26T09:02:49+0000",
+            ),
+            self.entity(
+                "b",
+                "security_hotspot",
+                vulnerability_probability="low",
+                creation_date="2011-10-26T13:34:12+0000",
+                update_date="2020-08-31T08:19:00+0000",
+            ),
+        ]
+        self.vulnerability_entities = [
+            self.entity(
+                "a",
+                "vulnerability",
+                "info",
+                creation_date="2020-08-30T22:48:52+0200",
+                update_date="2020-09-30T22:48:52+0200",
+            ),
+            self.entity(
+                "b",
+                "vulnerability",
+                "major",
+                creation_date="2019-08-30T22:48:52+0200",
+                update_date="2019-09-30T22:48:52+0200",
+            ),
+        ]
+
+    async def test_security_warnings(self):
+        """Test that all security warnings are returned."""
+        show_component_json = {}
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(
+            metric, get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json]
+        )
+        self.assert_measurement(
+            response,
+            value="4",
+            total="100",
+            entities=self.vulnerability_entities + self.hotspot_entities,
+            landing_url="https://sonar/dashboard?id=id&branch=master",
+        )
+
+    async def test_security_warnings_hotspots_only(self):
+        """Test that only the security hotspots are returned."""
+        self.sources["source_id"]["parameters"]["security_types"] = ["security_hotspot"]
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=self.hotspots_json)
+        self.assert_measurement(
+            response,
+            value="2",
+            total="100",
+            entities=self.hotspot_entities,
+            landing_url="https://sonar/security_hotspots?id=id&branch=master",
+        )
+
+    async def test_security_warnings_vulnerabilities_only(self):
+        """Test that only the vulnerabilities are returned."""
+        self.sources["source_id"]["parameters"]["security_types"] = ["vulnerability"]
+        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
+        response = await self.collect(metric, get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(
+            response, value="2", total="100", entities=self.vulnerability_entities, landing_url=self.issues_landing_url
+        )
