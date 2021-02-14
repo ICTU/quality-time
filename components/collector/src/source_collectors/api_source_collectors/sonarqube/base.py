@@ -8,7 +8,7 @@ from collector_utilities.type import URL
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
-class SonarQubeCollector(SourceCollector, ABC):
+class SonarQubeCollector(SourceCollector, ABC):  # skipqc: PYL-W0223
     """Base class for SonarQube collectors."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
