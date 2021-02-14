@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- When measuring size (lines of code) with SonarQube as source, some languages couldn't be ignored. Fixes [#1818](https://github.com/ICTU/quality-time/issues/1818).
 - Anchore security warnings have no hash. *Quality-time* would create a hash based on the security warning's CVE and affected package. However, if the Anchore source consists of a zip file with multiple reports, multiple combinations of the same CVE and package may be present. Add the report filename to the hash to make it unique. Fixes [#1907](https://github.com/ICTU/quality-time/issues/1907).
 
 ## [3.18.0] - [2021-02-03]

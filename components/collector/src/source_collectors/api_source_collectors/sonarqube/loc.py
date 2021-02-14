@@ -71,9 +71,10 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
 
     def __language_ncloc(self, metrics: Dict[str, str]) -> List[List[str]]:
         """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
-        languages_to_ignore = self._parameter("languages_to_ignore")
+        languages_to_ignore = [language.lower() for language in self._parameter("languages_to_ignore")]
+        keys_to_ignore = [key for key, language in self.LANGUAGES.items() if language.lower() in languages_to_ignore]
         return [
             language_count.split("=")
             for language_count in metrics["ncloc_language_distribution"].split(";")
-            if not match_string_or_regular_expression(language_count.split("=")[0], languages_to_ignore)
+            if not match_string_or_regular_expression(language_count.split("=")[0], keys_to_ignore)
         ]

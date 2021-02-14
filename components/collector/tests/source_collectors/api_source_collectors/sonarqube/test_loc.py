@@ -48,7 +48,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
-        self.sources["source_id"]["parameters"]["languages_to_ignore"] = ["js"]
+        self.sources["source_id"]["parameters"]["languages_to_ignore"] = ["JavaScript"]
         json = dict(
             component=dict(
                 measures=[
