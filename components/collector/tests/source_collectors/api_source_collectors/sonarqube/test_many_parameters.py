@@ -6,18 +6,29 @@ from .base import SonarQubeTestCase
 class SonarQubeManyParametersTest(SonarQubeTestCase):
     """Unit tests for the SonarQube many parameters collector."""
 
-    async def test_uncovered_branches(self):
-        """Test that the number of uncovered branches and the number of branches to cover are returned."""
-        json = dict(
-            component=dict(
-                measures=[
-                    dict(metric="uncovered_conditions", value="10"),
-                    dict(metric="conditions_to_cover", value="200"),
-                ]
-            )
+    async def test_many_parameters(self):
+        """Test that the number of functions with too many parameters is returned."""
+        self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
+        many_parameters_json = dict(total="2", issues=[])
+        functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
+        metric = dict(type="many_parameters", addition="sum", sources=self.sources)
+        response = await self.collect(
+            metric,
+            get_request_json_side_effect=[
+                {},
+                many_parameters_json,
+                functions_json,
+                many_parameters_json,
+                functions_json,
+                many_parameters_json,
+            ],
         )
-        metric = dict(type="uncovered_branches", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
         self.assert_measurement(
-            response, value="10", total="200", landing_url=self.metric_landing_url.format("uncovered_conditions")
+            response,
+            value="2",
+            total="4",
+            landing_url=f"{self.issues_landing_url}&rules=c:S107,csharpsquid:S107,csharpsquid:S2436,cpp:S107,flex:S107,"
+            "javascript:ExcessiveParameterList,javascript:S107,objc:S107,php:S107,"
+            "plsql:PlSql.FunctionAndProcedureExcessiveParameters,python:S107,squid:S00107,java:S107,"
+            "tsql:S107,typescript:S107",
         )

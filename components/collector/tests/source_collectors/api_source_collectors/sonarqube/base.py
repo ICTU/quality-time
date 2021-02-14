@@ -16,10 +16,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
                 type="sonarqube", parameters=dict(url="https://sonar", component="id", types=["bug", "code_smell"])
             )
         )
-        self.tests_landing_url = "https://sonar/component_measures?id=id&metric=tests&branch=master"
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
-        self.issue_landing_url = "https://sonar/project/issues?id=id&issues={0}&open={0}&branch=master"
-        self.hotspot_landing_url = "https://sonar/security_hotspots?id=id&hotspots={0}&branch=master"
         self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
 
     def entity(  # pylint: disable=too-many-arguments
@@ -34,9 +31,9 @@ class SonarQubeTestCase(SourceCollectorTestCase):
     ) -> Entity:
         """Create an entity."""
         url = (
-            self.hotspot_landing_url.format(component)
+            f"https://sonar/security_hotspots?id=id&hotspots={component}&branch=master"
             if entity_type == "security_hotspot"
-            else self.issue_landing_url.format(component)
+            else f"https://sonar/project/issues?id=id&issues={component}&open={component}&branch=master"
         )
         entity = Entity(key=component, component=component, message=component, type=entity_type, url=url)
         if severity is not None:
