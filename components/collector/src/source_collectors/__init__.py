@@ -12,7 +12,8 @@ from .api_source_collectors.cobertura_jenkins_plugin.source_up_to_dateness impor
 )
 from .api_source_collectors.cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
 from .api_source_collectors.cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
-from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
+from .api_source_collectors.cxsast.security_warnings import CxSASTSecurityWarnings
+from .api_source_collectors.cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJobs
 from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
 from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
