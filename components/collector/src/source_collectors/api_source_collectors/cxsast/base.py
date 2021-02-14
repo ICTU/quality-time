@@ -20,14 +20,17 @@ class CxSASTBase(SourceCollector, ABC):  # pylint: disable=abstract-method
         super().__init__(*args, **kwargs)
 
     def _headers(self) -> Dict[str, str]:
+        """Extend to add the token."""
         headers = super()._headers()
         headers["Authorization"] = f"Bearer {self.__token}"
         return headers
 
     def _basic_auth_credentials(self) -> Optional[Tuple[str, str]]:
+        """Override to return nothing because the token is added as header."""
         return None
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to create the landing url."""
         api_url = await self._api_url()
         return (
             URL(f"{api_url}/CxWebClient/ViewerMain.aspx?scanId={self._scan_id}&ProjectID={self.__project_id}")

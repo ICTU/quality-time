@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class CxSASTTestCase(SourceCollectorTestCase):
+class CxSASTTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing CxSAST collectors."""
 
     def setUp(self):
