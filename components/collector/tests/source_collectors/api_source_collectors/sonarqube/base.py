@@ -19,8 +19,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
         self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
 
+    @staticmethod
     def entity(  # pylint: disable=too-many-arguments
-        self,
         component: str,
         entity_type: str,
         severity: str = None,
@@ -35,13 +35,19 @@ class SonarQubeTestCase(SourceCollectorTestCase):
             if entity_type == "security_hotspot"
             else f"https://sonar/project/issues?id=id&issues={component}&open={component}&branch=master"
         )
-        entity = Entity(key=component, component=component, message=component, type=entity_type, url=url)
+        entity = Entity(
+            key=component,
+            component=component,
+            message=component,
+            type=entity_type,
+            url=url,
+            creation_date=creation_date,
+            update_date=update_date,
+        )
         if severity is not None:
             entity["severity"] = severity
         if resolution is not None:
             entity["resolution"] = resolution
         if vulnerability_probability is not None:
             entity["vulnerability_probability"] = vulnerability_probability
-        entity["creation_date"] = creation_date
-        entity["update_date"] = update_date
         return entity
