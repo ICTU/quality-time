@@ -13,11 +13,13 @@ class JenkinsJobs(SourceCollector):
     """Collector to get job counts from Jenkins."""
 
     async def _api_url(self) -> URL:
+        """Extend to add the jobs API path and parameters."""
         url = await super()._api_url()
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the jobs."""
         entities = [
             Entity(
                 key=job["name"],
