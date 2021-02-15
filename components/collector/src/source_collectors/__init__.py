@@ -26,13 +26,11 @@ from .api_source_collectors.jenkins.source_up_to_dateness import JenkinsSourceUp
 from .api_source_collectors.jenkins.unused_jobs import JenkinsUnusedJobs
 from .api_source_collectors.jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
 from .api_source_collectors.jenkins_test_report.tests import JenkinsTestReportTests
-from .api_source_collectors.jira import (
-    JiraIssues,
-    JiraManualTestDuration,
-    JiraManualTestExecution,
-    JiraUserStoryPoints,
-    JiraVelocity,
-)
+from .api_source_collectors.jira.issues import JiraIssues
+from .api_source_collectors.jira.manual_test_duration import JiraManualTestDuration
+from .api_source_collectors.jira.manual_test_execution import JiraManualTestExecution
+from .api_source_collectors.jira.user_story_points import JiraUserStoryPoints
+from .api_source_collectors.jira.velocity import JiraVelocity
 from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
 from .api_source_collectors.robot_framework_jenkins_plugin import (
     RobotFrameworkJenkinsPluginSourceUpToDateness,
