@@ -1,10 +1,10 @@
-"""Jenkins metric collector."""
+"""Jenkins metric collector base classes."""
 
-from datetime import datetime, date
-from typing import Iterator, cast
+from datetime import datetime
+from typing import Iterator
 
 from base_collectors import SourceCollector
-from collector_utilities.functions import days_ago, match_string_or_regular_expression
+from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Job, Jobs
 from source_model import Entity, SourceMeasurement, SourceResponses
 
@@ -65,38 +65,3 @@ class JenkinsJobs(SourceCollector):
     ) -> bool:
         """Return whether the include this build."""
         return True
-
-
-class JenkinsFailedJobs(JenkinsJobs):
-    """Collector to get failed jobs from Jenkins."""
-
-    def _include_job(self, job: Job) -> bool:
-        """Count the job if its build status matches the failure types selected by the user."""
-        return super()._include_job(job) and self._build_status(job) in self._parameter("failure_type")
-
-
-class JenkinsUnusedJobs(JenkinsJobs):
-    """Collector to get unused jobs from Jenkins."""
-
-    def _include_job(self, job: Job) -> bool:
-        """Count the job if its most recent build is too old."""
-        if super()._include_job(job) and (build_datetime := self._build_datetime(job)) > datetime.min:
-            max_days = int(cast(str, self._parameter("inactive_days")))
-            return days_ago(build_datetime) > max_days
-        return False
-
-
-class JenkinsSourceUpToDateness(JenkinsJobs):
-    """Collector to get the last build date from Jenkins jobs."""
-
-    def _include_build(self, build) -> bool:
-        """Override to only include builds with an allowed result type."""
-        result_types = self._parameter("result_type")
-        return str(build.get("result", "Not built")).capitalize().replace("_", " ") in result_types
-
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Extend to calculate how many days ago the jobs were built."""
-        measurement = await super()._parse_source_responses(responses)
-        build_dates = [entity["build_date"] for entity in measurement.entities if entity["build_date"]]
-        measurement.value = str((date.today() - date.fromisoformat(max(build_dates))).days) if build_dates else None
-        return measurement
