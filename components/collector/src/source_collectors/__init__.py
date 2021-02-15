@@ -24,7 +24,8 @@ from .api_source_collectors.jacoco_jenkins_plugin.uncovered_lines import JacocoJ
 from .api_source_collectors.jenkins.failed_jobs import JenkinsFailedJobs
 from .api_source_collectors.jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
 from .api_source_collectors.jenkins.unused_jobs import JenkinsUnusedJobs
-from .api_source_collectors.jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
+from .api_source_collectors.jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
+from .api_source_collectors.jenkins_test_report.tests import JenkinsTestReportTests
 from .api_source_collectors.jira import (
     JiraIssues,
     JiraManualTestDuration,
