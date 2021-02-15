@@ -18,11 +18,9 @@ from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJob
 from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
 from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .api_source_collectors.gitlab.unmerged_branches import GitLabUnmergedBranches
-from .api_source_collectors.jacoco_jenkins_plugin import (
-    JacocoJenkinsPluginSourceUpToDateness,
-    JacocoJenkinsPluginUncoveredBranches,
-    JacocoJenkinsPluginUncoveredLines,
-)
+from .api_source_collectors.jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
+from .api_source_collectors.jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
+from .api_source_collectors.jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
 from .api_source_collectors.jenkins import JenkinsFailedJobs, JenkinsJobs
 from .api_source_collectors.jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
 from .api_source_collectors.jira import (
