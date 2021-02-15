@@ -1,40 +1,14 @@
-"""Collector for Quality-time."""
+"""Quality-time metrics collector."""
 
-from datetime import datetime
-from typing import Any, Dict, List, Tuple, cast
-from urllib import parse
+from typing import Dict, List, Tuple, cast
 
-from dateutil.parser import parse as parse_datetime
-
-from base_collectors import SourceCollector, SourceCollectorException, SourceUpToDatenessCollector
-from collector_utilities.type import URL, Response, Value
+from collector_utilities.type import Response, Value
 from source_model import Entity, SourceMeasurement, SourceResponses
+
+from .base import QualityTimeCollector
 
 
 Measurements = List[Dict[str, Dict[str, str]]]
-
-
-class QualityTimeCollector(SourceCollector):
-    """Base collector for Quality-time metrics."""
-
-    async def _api_url(self) -> URL:
-        parts = parse.urlsplit(await super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, "/api/v3/reports", "", "")))
-
-    async def _get_reports(self, response: Response) -> List[Dict[str, Any]]:
-        """Get the relevant reports from the reports response."""
-        report_titles_or_ids = set(self._parameter("reports"))
-        reports = list((await response.json())["reports"])
-        reports = (
-            [report for report in reports if (report_titles_or_ids & {report["title"], report["report_uuid"]})]
-            if report_titles_or_ids
-            else reports
-        )
-        if not reports:
-            message = "No reports found" + (f" with title or id {report_titles_or_ids}" if report_titles_or_ids else "")
-            raise SourceCollectorException(message)
-        return reports
 
 
 class QualityTimeMetrics(QualityTimeCollector):
@@ -96,16 +70,3 @@ class QualityTimeMetrics(QualityTimeCollector):
             return False
         metric_source_types = {source["type"] for source in metric.get("sources", {}).values()}
         return not (source_types and (source_types & metric_source_types) == set())
-
-
-class QualityTimeSourceUpToDateness(QualityTimeCollector, SourceUpToDatenessCollector):
-    """Collector to get the "source up-to-dateness" metric from Quality-time."""
-
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        measurement_dates = []
-        for report in await self._get_reports(response):
-            for subject in report.get("subjects", {}).values():
-                for metric in subject.get("metrics", {}).values():
-                    if recent_measurements := metric.get("recent_measurements", []):
-                        measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))
-        return min(measurement_dates, default=datetime.min)

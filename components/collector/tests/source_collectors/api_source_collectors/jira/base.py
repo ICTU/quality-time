@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class JiraTestCase(SourceCollectorTestCase):
+class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for Jira unit tests."""
 
     METRIC_TYPE = "Subclass responsibility"

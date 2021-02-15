@@ -31,7 +31,8 @@ from .api_source_collectors.jira.manual_test_duration import JiraManualTestDurat
 from .api_source_collectors.jira.manual_test_execution import JiraManualTestExecution
 from .api_source_collectors.jira.user_story_points import JiraUserStoryPoints
 from .api_source_collectors.jira.velocity import JiraVelocity
-from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
+from .api_source_collectors.quality_time.metrics import QualityTimeMetrics
+from .api_source_collectors.quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
 from .api_source_collectors.robot_framework_jenkins_plugin import (
     RobotFrameworkJenkinsPluginSourceUpToDateness,
     RobotFrameworkJenkinsPluginTests,
