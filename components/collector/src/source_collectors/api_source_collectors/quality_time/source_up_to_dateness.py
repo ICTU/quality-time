@@ -14,6 +14,7 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, SourceUpToDatenessColl
     """Collector to get the "source up-to-dateness" metric from Quality-time."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
+        """Override to parse the oldest datetime from the recent measurements."""
         measurement_dates = []
         for report in await self._get_reports(response):
             for subject in report.get("subjects", {}).values():

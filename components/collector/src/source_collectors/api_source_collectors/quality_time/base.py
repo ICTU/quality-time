@@ -8,7 +8,7 @@ from base_collectors import SourceCollector, SourceCollectorException
 from collector_utilities.type import URL, Response
 
 
-class QualityTimeCollector(SourceCollector, ABC):
+class QualityTimeCollector(SourceCollector, ABC):  # skipcq: PYL-W0223
     """Base collector for Quality-time metrics."""
 
     async def _api_url(self) -> URL:
