@@ -7,31 +7,32 @@ from .api_source_collectors.azure_devops.tests import AzureDevopsTests
 from .api_source_collectors.azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
 from .api_source_collectors.azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
 from .api_source_collectors.azure_devops.user_story_points import AzureDevopsUserStoryPoints
-from .api_source_collectors.cobertura_jenkins_plugin import (
+from .api_source_collectors.cobertura_jenkins_plugin.source_up_to_dateness import (
     CoberturaJenkinsPluginSourceUpToDateness,
-    CoberturaJenkinsPluginUncoveredBranches,
-    CoberturaJenkinsPluginUncoveredLines,
 )
-from .api_source_collectors.cxsast import CxSASTSecurityWarnings, CxSASTSourceUpToDateness
+from .api_source_collectors.cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
+from .api_source_collectors.cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
+from .api_source_collectors.cxsast.security_warnings import CxSASTSecurityWarnings
+from .api_source_collectors.cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJobs
 from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
 from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .api_source_collectors.gitlab.unmerged_branches import GitLabUnmergedBranches
-from .api_source_collectors.jacoco_jenkins_plugin import (
-    JacocoJenkinsPluginSourceUpToDateness,
-    JacocoJenkinsPluginUncoveredBranches,
-    JacocoJenkinsPluginUncoveredLines,
-)
-from .api_source_collectors.jenkins import JenkinsFailedJobs, JenkinsJobs
-from .api_source_collectors.jenkins_test_report import JenkinsTestReportSourceUpToDateness, JenkinsTestReportTests
-from .api_source_collectors.jira import (
-    JiraIssues,
-    JiraManualTestDuration,
-    JiraManualTestExecution,
-    JiraUserStoryPoints,
-    JiraVelocity,
-)
-from .api_source_collectors.quality_time import QualityTimeMetrics, QualityTimeSourceUpToDateness
+from .api_source_collectors.jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
+from .api_source_collectors.jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
+from .api_source_collectors.jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
+from .api_source_collectors.jenkins.failed_jobs import JenkinsFailedJobs
+from .api_source_collectors.jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
+from .api_source_collectors.jenkins.unused_jobs import JenkinsUnusedJobs
+from .api_source_collectors.jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUpToDateness
+from .api_source_collectors.jenkins_test_report.tests import JenkinsTestReportTests
+from .api_source_collectors.jira.issues import JiraIssues
+from .api_source_collectors.jira.manual_test_duration import JiraManualTestDuration
+from .api_source_collectors.jira.manual_test_execution import JiraManualTestExecution
+from .api_source_collectors.jira.user_story_points import JiraUserStoryPoints
+from .api_source_collectors.jira.velocity import JiraVelocity
+from .api_source_collectors.quality_time.metrics import QualityTimeMetrics
+from .api_source_collectors.quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
 from .api_source_collectors.robot_framework_jenkins_plugin import (
     RobotFrameworkJenkinsPluginSourceUpToDateness,
     RobotFrameworkJenkinsPluginTests,

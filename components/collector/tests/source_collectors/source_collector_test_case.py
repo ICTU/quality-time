@@ -86,5 +86,5 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
             else:
                 self.assertIsNone(measurement["sources"][source_index][attribute_key])
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
-            if (attribute_value := attributes.get(attribute_key)) is not None:
+            if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
