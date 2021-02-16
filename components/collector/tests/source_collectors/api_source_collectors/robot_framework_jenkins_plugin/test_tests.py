@@ -1,14 +1,15 @@
-"""Unit tests for the Robot Framework Jenkins plugin source."""
+"""Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
-from .jenkins_plugin_test_case import JenkinsPluginTestCase, JenkinsPluginTestsMixin
+from ..jenkins_plugin_test_case import JenkinsPluginTestCase, JenkinsPluginTestsMixin
 
 
 class RobotFrameworkJenkinsPluginTest(JenkinsPluginTestCase, JenkinsPluginTestsMixin):
-    """Unit tests for the Robot Framework Jenkins plugin metrics."""
+    """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
     source_type = "robot_framework_jenkins_plugin"
 
     def setUp(self):
+        """Extend to set up Jenkins data."""
         super().setUp()
         self.jenkins_json = dict(overallTotal=2, overallFailed=1, overallPassed=1)
 
