@@ -33,10 +33,10 @@ from .api_source_collectors.jira.user_story_points import JiraUserStoryPoints
 from .api_source_collectors.jira.velocity import JiraVelocity
 from .api_source_collectors.quality_time.metrics import QualityTimeMetrics
 from .api_source_collectors.quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness
-from .api_source_collectors.robot_framework_jenkins_plugin import (
+from .api_source_collectors.robot_framework_jenkins_plugin.source_up_to_dateness import (
     RobotFrameworkJenkinsPluginSourceUpToDateness,
-    RobotFrameworkJenkinsPluginTests,
 )
+from .api_source_collectors.robot_framework_jenkins_plugin.tests import RobotFrameworkJenkinsPluginTests
 from .api_source_collectors.sonarqube.commented_out_code import SonarQubeCommentedOutCode
 from .api_source_collectors.sonarqube.complex_units import SonarQubeComplexUnits
 from .api_source_collectors.sonarqube.duplicated_lines import SonarQubeDuplicatedLines
