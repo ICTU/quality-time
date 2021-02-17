@@ -57,7 +57,7 @@ from .api_source_collectors.wekan.issues import WekanIssues
 from .api_source_collectors.wekan.source_up_to_dateness import WekanSourceUpToDateness
 from .file_source_collectors.anchore.security_warnings import AnchoreSecurityWarnings
 from .file_source_collectors.anchore.source_up_to_dateness import AnchoreSourceUpToDateness
-from .file_source_collectors.axe_csv import AxeCSVAccessibility
+from .file_source_collectors.axe_csv.accessibility import AxeCSVAccessibility
 from .file_source_collectors.axe_selenium_python import (
     AxeSeleniumPythonAccessibility,
     AxeSeleniumPythonSourceUpToDateness,
