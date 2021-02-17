@@ -53,7 +53,8 @@ from .api_source_collectors.sonarqube.uncovered_lines import SonarQubeUncoveredL
 from .api_source_collectors.sonarqube.violations import SonarQubeViolations
 from .api_source_collectors.trello.issues import TrelloIssues
 from .api_source_collectors.trello.source_up_to_dateness import TrelloSourceUpToDateness
-from .api_source_collectors.wekan import WekanIssues, WekanSourceUpToDateness
+from .api_source_collectors.wekan.issues import WekanIssues
+from .api_source_collectors.wekan.source_up_to_dateness import WekanSourceUpToDateness
 from .file_source_collectors.anchore import AnchoreSecurityWarnings, AnchoreSourceUpToDateness
 from .file_source_collectors.axe_csv import AxeCSVAccessibility
 from .file_source_collectors.axe_selenium_python import (
