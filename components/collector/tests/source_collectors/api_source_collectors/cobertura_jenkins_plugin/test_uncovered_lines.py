@@ -1,18 +1,18 @@
 """Unit tests for the Cobertura Jenkins plugin uncovered lines collector."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase, JenkinsPluginTestsMixin
+from ..jenkins_plugin_test_case import JenkinsPluginTestCase
 
 
-class CoberturaJenkinsPluginUncoveredLinesTest(JenkinsPluginTestCase, JenkinsPluginTestsMixin):
+class CoberturaJenkinsPluginUncoveredLinesTest(JenkinsPluginTestCase):
     """Unit tests for the Cobertura Jenkins plugin uncovered lines collector."""
 
-    source_type = "cobertura_jenkins_plugin"
+    SOURCE_TYPE = "cobertura_jenkins_plugin"
+    METRIC_TYPE = "uncovered_lines"
 
     async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the total number of lines are returned."""
-        metric = dict(type="uncovered_lines", sources=self.sources, addition="sum")
         response = await self.collect(
-            metric,
+            self.metric,
             get_request_json_return_value=dict(
                 results=dict(elements=[dict(denominator=15, numerator=13, name="Lines")])
             ),

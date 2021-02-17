@@ -1,17 +1,17 @@
 """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase, JenkinsPluginTestsMixin
+from ..jenkins_plugin_test_case import JenkinsPluginTestCase
 
 
-class RobotFrameworkJenkinsPluginTest(JenkinsPluginTestCase, JenkinsPluginTestsMixin):
+class RobotFrameworkJenkinsPluginTest(JenkinsPluginTestCase):
     """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
-    source_type = "robot_framework_jenkins_plugin"
+    SOURCE_TYPE = "robot_framework_jenkins_plugin"
+    METRIC_TYPE = "tests"
 
     def setUp(self):
         """Extend to set up the metric and Jenkins data."""
         super().setUp()
-        self.metric = dict(type="tests", addition="sum", sources=self.sources)
         self.jenkins_json = dict(overallTotal=2, overallFailed=1, overallPassed=1)
 
     async def test_nr_of_tests(self):
