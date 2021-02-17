@@ -6,10 +6,7 @@ from .base import AzureDevopsTestCase
 class AzureDevopsIssuesTest(AzureDevopsTestCase):
     """Unit tests for the Azure Devops Server issues metric."""
 
-    def setUp(self):
-        """Extend to set up the metric under test."""
-        super().setUp()
-        self.metric = dict(type="issues", sources=self.sources, addition="sum")
+    METRIC_TYPE = "issues"
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""

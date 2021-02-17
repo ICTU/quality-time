@@ -8,10 +8,11 @@ from .base import AzureDevopsTestCase
 class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
     """Unit tests for the merge requests metric."""
 
+    METRIC_TYPE = "merge_requests"
+
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.metric = dict(type="merge_requests", sources=self.sources, addition="sum")
         self.repositories = dict(value=[dict(id="id", name="project")])
         self.landing_url = "https://azure_devops/org/project/_git/project/pullrequests"
 

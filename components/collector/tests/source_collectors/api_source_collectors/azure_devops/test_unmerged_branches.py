@@ -6,11 +6,12 @@ from .base import AzureDevopsTestCase
 class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server unmerged branches."""
 
+    METRIC_TYPE = "unmerged_branches"
+
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
         self.sources["source_id"]["parameters"]["branches_to_ignore"] = ["ignored_.*"]
-        self.metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         self.repositories = dict(value=[dict(id="id", name="project")])
         self.landing_url = f"{self.url}/_git/project/branches"
 

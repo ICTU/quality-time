@@ -10,10 +10,12 @@ from .base import AzureDevopsTestCase
 class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
+    METRIC_TYPE = "source_up_to_dateness"
+    METRIC_ADDITION = "max"
+
     def setUp(self):
-        """Extend to set up the metric under test."""
+        """Extend to set up test data."""
         super().setUp()
-        self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="max")
         self.timestamp = "2019-09-03T20:43:00Z"
         self.expected_age = str(days_ago(parse(self.timestamp)))
 

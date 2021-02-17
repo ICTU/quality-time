@@ -1,19 +1,12 @@
 """Unit tests for the Azure Devops Server failed jobs collectors."""
 
-from .base import AzureDevopsTestCase
+from .base import AzureDevopsJobsTestCase
 
 
-class AzureDevopsFailedJobsTest(AzureDevopsTestCase):
+class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
     """Unit tests for the Azure Devops Server failed jobs collector."""
 
     METRIC_TYPE = "failed_jobs"
-
-    def setUp(self):
-        """Extend to set up test fixtures."""
-        super().setUp()
-        self.path = r"\\folder"
-        self.pipeline = r"folder/include_pipeline"
-        self.api_url = f"{self.url}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1"
 
     async def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned.

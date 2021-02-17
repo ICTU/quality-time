@@ -6,14 +6,15 @@ from .base import AzureDevopsTestCase
 class AzureDevopsTestsTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server tests collector."""
 
+    METRIC_TYPE = "tests"
+
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         self.sources["source_id"]["parameters"]["test_result"] = ["passed"]
         self.sources["source_id"]["parameters"]["test_run_names_to_include"] = ["A.*"]
         self.sources["source_id"]["parameters"]["test_run_states_to_include"] = ["completed"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(
-            metric,
+            self.metric,
             get_request_json_return_value=dict(
                 value=[
                     dict(id=1, name="A", build=dict(id="1"), state="Completed", passedTests=2, totalTests=2),
@@ -93,9 +94,8 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
     async def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
         self.sources["source_id"]["test_result"] = ["failed"]
-        metric = dict(type="tests", sources=self.sources, addition="sum")
         response = await self.collect(
-            metric,
+            self.metric,
             get_request_json_return_value=dict(
                 value=[dict(id="1", build=dict(id="1"), state="Completed", unanalyzedTests=4)]
             ),
