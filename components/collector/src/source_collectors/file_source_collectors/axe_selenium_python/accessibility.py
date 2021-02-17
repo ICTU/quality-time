@@ -1,13 +1,9 @@
-"""axe-selenium-python accessibility analysis metric source."""
+"""axe-selenium-python accessibility analysis collectors."""
 
-from datetime import datetime
 from typing import Collection
 
-from dateutil.parser import parse
-
-from base_collectors import JSONFileSourceCollector, SourceUpToDatenessCollector
+from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash, match_string_or_regular_expression
-from collector_utilities.type import Response
 from source_model import Entity, SourceMeasurement, SourceResponses
 
 
@@ -15,6 +11,7 @@ class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
     """Collector class to get accessibility violations."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the violations."""
         entity_attributes = []
         for response in responses:
             json = await response.json(content_type=None)
@@ -61,10 +58,3 @@ class AxeSeleniumPythonAccessibility(JSONFileSourceCollector):
         # We ignore tags for two reasons: 1) If the violation is the same, so should the tags be. 2) Tags were added to
         # the entities later and including them in the key would change the key for existing entities.
         return md5_hash(",".join(str(value) for key, value in attributes.items() if key != "tags"))
-
-
-class AxeSeleniumPythonSourceUpToDateness(JSONFileSourceCollector, SourceUpToDatenessCollector):
-    """Collector to get the source up-to-dateness of axe-selenium-python JSON reports."""
-
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        return parse((await response.json(content_type=None))["timestamp"])

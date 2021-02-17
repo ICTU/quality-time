@@ -58,10 +58,8 @@ from .api_source_collectors.wekan.source_up_to_dateness import WekanSourceUpToDa
 from .file_source_collectors.anchore.security_warnings import AnchoreSecurityWarnings
 from .file_source_collectors.anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 from .file_source_collectors.axe_csv.accessibility import AxeCSVAccessibility
-from .file_source_collectors.axe_selenium_python import (
-    AxeSeleniumPythonAccessibility,
-    AxeSeleniumPythonSourceUpToDateness,
-)
+from .file_source_collectors.axe_selenium_python.accessibility import AxeSeleniumPythonAccessibility
+from .file_source_collectors.axe_selenium_python.source_up_to_dateness import AxeSeleniumPythonSourceUpToDateness
 from .file_source_collectors.bandit import BanditSecurityWarnings, BanditSourceUpToDateness
 from .file_source_collectors.cloc import ClocLOC
 from .file_source_collectors.cobertura import (
