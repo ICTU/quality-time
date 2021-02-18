@@ -83,11 +83,9 @@ from .file_source_collectors.bandit.source_up_to_dateness import BanditSourceUpT
 
 from .file_source_collectors.cloc.loc import ClocLOC
 
-from .file_source_collectors.cobertura import (
-    CoberturaSourceUpToDateness,
-    CoberturaUncoveredBranches,
-    CoberturaUncoveredLines,
-)
+from .file_source_collectors.cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
+from .file_source_collectors.cobertura.uncovered_branches import CoberturaUncoveredBranches
+from .file_source_collectors.cobertura.uncovered_lines import CoberturaUncoveredLines
 
 from .file_source_collectors.composer import ComposerDependencies
 
