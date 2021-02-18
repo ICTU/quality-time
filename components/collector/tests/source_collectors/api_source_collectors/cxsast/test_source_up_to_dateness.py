@@ -8,10 +8,8 @@ from .base import CxSASTTestCase
 class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
     """Unit tests for the source up-to-dateness collector."""
 
-    def setUp(self):
-        """Extend to add the metric fixture."""
-        super().setUp()
-        self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
+    METRIC_TYPE = "source_up_to_dateness"
+    METRIC_ADDITION = "max"
 
     async def test_age(self):
         """Test that the age of the last finished scan is returned."""
