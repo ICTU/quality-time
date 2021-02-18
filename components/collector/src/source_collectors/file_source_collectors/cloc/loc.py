@@ -1,4 +1,4 @@
-"""cloc metrics collector."""
+"""cloc LOC collector."""
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
@@ -9,6 +9,7 @@ class ClocLOC(JSONFileSourceCollector):
     """cloc collector for size/lines of code."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the LOC from the JSON responses."""
         loc = 0
         entities = []
         languages_to_ignore = self._parameter("languages_to_ignore")
@@ -18,6 +19,12 @@ class ClocLOC(JSONFileSourceCollector):
                     loc += value["code"]
                     entities.append(
                         Entity(
-                            key=key, language=key, blank=str(value["blank"]), comment=str(value["comment"]),
-                            code=str(value["code"]), nr_files=str(value["nFiles"])))
+                            key=key,
+                            language=key,
+                            blank=str(value["blank"]),
+                            comment=str(value["comment"]),
+                            code=str(value["code"]),
+                            nr_files=str(value["nFiles"]),
+                        )
+                    )
         return SourceMeasurement(value=str(loc), entities=entities)

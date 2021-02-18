@@ -81,7 +81,7 @@ from .file_source_collectors.axe_selenium_python.source_up_to_dateness import Ax
 from .file_source_collectors.bandit.security_warnings import BanditSecurityWarnings
 from .file_source_collectors.bandit.source_up_to_dateness import BanditSourceUpToDateness
 
-from .file_source_collectors.cloc import ClocLOC
+from .file_source_collectors.cloc.loc import ClocLOC
 
 from .file_source_collectors.cobertura import (
     CoberturaSourceUpToDateness,
