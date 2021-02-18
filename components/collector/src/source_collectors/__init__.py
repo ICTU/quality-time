@@ -89,7 +89,7 @@ from .file_source_collectors.cobertura.uncovered_lines import CoberturaUncovered
 
 from .file_source_collectors.composer.dependencies import ComposerDependencies
 
-from .file_source_collectors.generic_json import GenericJSONSecurityWarnings
+from .file_source_collectors.generic_json.security_warnings import GenericJSONSecurityWarnings
 
 from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
 
