@@ -8,9 +8,10 @@ from .base import GitLabTestCase
 class GitLabUnmergedBranchesTest(GitLabTestCase):
     """Unit tests for the unmerged branches metric."""
 
+    METRIC_TYPE = "unmerged_branches"
+
     async def test_unmerged_branches(self):
         """Test that the number of unmerged branches can be measured."""
-        metric = dict(type="unmerged_branches", sources=self.sources, addition="sum")
         gitlab_json = [
             dict(name="master", default=True, merged=False),
             dict(
@@ -34,7 +35,7 @@ class GitLabUnmergedBranchesTest(GitLabTestCase):
             ),
             dict(name="merged_branch", default=False, merged=True),
         ]
-        response = await self.collect(metric, get_request_json_return_value=gitlab_json)
+        response = await self.collect(self.metric, get_request_json_return_value=gitlab_json)
         expected_entities = [
             dict(
                 key="unmerged_branch",

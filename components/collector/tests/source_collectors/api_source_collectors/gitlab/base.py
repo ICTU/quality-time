@@ -6,6 +6,9 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing GitLab collectors."""
 
+    METRIC_TYPE = "Subclass responsibility"
+    METRIC_ADDITION = "sum"
+
     def setUp(self):
         """Extend to add generic test fixtures."""
         super().setUp()
@@ -22,6 +25,7 @@ class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                 ),
             )
         )
+        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
         self.gitlab_jobs_json = [
             dict(
                 id="1",

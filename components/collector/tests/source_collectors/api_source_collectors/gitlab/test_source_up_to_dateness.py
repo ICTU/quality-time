@@ -9,10 +9,12 @@ from .base import GitLabTestCase
 class GitlabSourceUpToDatenessTest(GitLabTestCase):
     """Unit tests for the source up-to-dateness metric."""
 
+    METRIC_TYPE = "source_up_to_dateness"
+    METRIC_ADDITION = "max"
+
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.metric = dict(type="source_up_to_dateness", sources=self.sources, addition="sum")
         self.commit_json = dict(committed_date="2019-01-01T09:06:12+00:00")
         self.expected_age = (datetime.now(timezone.utc) - datetime(2019, 1, 1, 9, 6, 9, tzinfo=timezone.utc)).days
         self.head_response = Mock()

@@ -6,10 +6,7 @@ from .base import CommonGitLabJobsTestsMixin, GitLabTestCase
 class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab failed jobs metric."""
 
-    def setUp(self):
-        """Extend to set up the metric under test."""
-        super().setUp()
-        self.metric = dict(type="failed_jobs", sources=self.sources, addition="sum")
+    METRIC_TYPE = "failed_jobs"
 
     async def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""

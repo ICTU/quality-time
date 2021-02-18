@@ -6,10 +6,7 @@ from .base import CommonGitLabJobsTestsMixin, GitLabTestCase
 class GitLabUnusedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
     """Unit tests for the GitLab unused jobs metric."""
 
-    def setUp(self):
-        """Extend to set up the metric under test."""
-        super().setUp()
-        self.metric = dict(type="unused_jobs", sources=self.sources, addition="sum")
+    METRIC_TYPE = "unused_jobs"
 
     async def test_nr_of_unused_jobs(self):
         """Test that the number of unused jobs is returned."""

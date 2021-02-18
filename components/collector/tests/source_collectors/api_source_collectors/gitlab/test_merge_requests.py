@@ -6,10 +6,11 @@ from .base import GitLabTestCase
 class GitLabMergeRequestsTest(GitLabTestCase):
     """Unit tests for the merge requests metric."""
 
+    METRIC_TYPE = "merge_requests"
+
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.metric = dict(type="merge_requests", sources=self.sources, addition="sum")
         self.landing_url = "https://gitlab/namespace/project/-/merge_requests"
         self.merge_request1 = self.create_merge_request(1)
         self.merge_request2 = self.create_merge_request(2, state="locked", upvotes=2)
