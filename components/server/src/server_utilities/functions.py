@@ -10,7 +10,7 @@ from typing import TypeVar
 from base64 import b64encode
 
 import bottle
-from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.backends import default_backend, openssl
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
@@ -98,9 +98,11 @@ def asymmetric_encrypt(public_key_bytes: bytes, message: bytes) -> tuple[str, st
     fernet_key, fernet_token = symmetric_encrypt(message)
 
     public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
+    if not isinstance(public_key_obj, openssl.rsa.RSAPublicKey):
+        raise TypeError(f"Public key object should be of type RSAPublicKey, found {type(public_key_obj)}.")
+
     encrypted_key = public_key_obj.encrypt(
         fernet_key, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
     )
     b64_key = b64encode(encrypted_key)
-
     return b64_key.decode(), fernet_token.decode()
