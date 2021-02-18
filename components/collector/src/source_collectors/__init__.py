@@ -91,7 +91,9 @@ from .file_source_collectors.composer.dependencies import ComposerDependencies
 
 from .file_source_collectors.generic_json.security_warnings import GenericJSONSecurityWarnings
 
-from .file_source_collectors.jacoco import JacocoSourceUpToDateness, JacocoUncoveredBranches, JacocoUncoveredLines
+from .file_source_collectors.jacoco.source_up_to_dateness import JacocoSourceUpToDateness
+from .file_source_collectors.jacoco.uncovered_branches import JacocoUncoveredBranches
+from .file_source_collectors.jacoco.uncovered_lines import JacocoUncoveredLines
 
 from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
 
