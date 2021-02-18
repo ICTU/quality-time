@@ -5519,6 +5519,23 @@
                         "violations"
                     ]
                 },
+                "review_priorities": {
+                    "name": "Security hotspot review priorities",
+                    "short_name": "review priorities",
+                    "type": "multiple_choice",
+                    "placeholder": "all review priorities",
+                    "mandatory": false,
+                    "help_url": "https://docs.sonarqube.org/latest/user-guide/security-hotspots/",
+                    "default_value": [],
+                    "values": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "metrics": [
+                        "security_warnings"
+                    ]
+                },
                 "effort_types": {
                     "name": "Types of effort",
                     "short_name": "effort types",
@@ -5782,8 +5799,8 @@
                             }
                         },
                         {
-                            "name": "Vulnerability probability",
-                            "key": "vulnerability_probability",
+                            "name": "Review priority",
+                            "key": "review_priority",
                             "color": {
                                 "high": "negative",
                                 "medium": "warning"

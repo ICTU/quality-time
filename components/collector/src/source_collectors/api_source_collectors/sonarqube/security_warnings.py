@@ -61,8 +61,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         )
         if "security_hotspot" in security_types:
             json = await responses[-1].json()
-            nr_hotspots = int(json.get("paging", {}).get("total", 0))
-            hotspots = [await self.__entity(hotspot) for hotspot in json.get("hotspots", [])]
+            hotspots = [
+                await self.__entity(hotspot)
+                for hotspot in json.get("hotspots", [])
+                if hotspot["vulnerabilityProbability"] in self._review_priorities()
+            ]
+            nr_hotspots = len(hotspots)
         else:
             nr_hotspots = 0
             hotspots = []
@@ -78,7 +82,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             message=hotspot["message"],
             type="security_hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
-            vulnerability_probability=hotspot["vulnerabilityProbability"].lower(),
+            review_priority=hotspot["vulnerabilityProbability"].lower(),
             creation_date=hotspot["creationDate"],
             update_date=hotspot["updateDate"],
         )
