@@ -82,6 +82,10 @@ class SonarQubeViolations(SonarQubeCollector):
         """Return the severities parameter."""
         return ",".join(severity.upper() for severity in self._parameter("severities"))
 
+    def _review_priorities(self) -> str:
+        """Return the severities parameter."""
+        return ",".join(priority.upper() for priority in self._parameter("review_priorities"))
+
 
 class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
     """SonarQube violations collectors that support the percentage scale."""
