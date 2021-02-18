@@ -1,9 +1,9 @@
 """Unit tests for the JaCoCo Jenkins plugin uncovered lines collector."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase
+from .base import JaCoCoJenkinsPluginCoverageTestCase
 
 
-class JaCoCoJenkinsPluginTest(JenkinsPluginTestCase):
+class JaCoCoJenkinsPluginTest(JaCoCoJenkinsPluginCoverageTestCase):
     """Unit tests for the JaCoCo Jenkins plugin uncovered lines collector."""
 
     SOURCE_TYPE = "jacoco_jenkins_plugin"
@@ -11,6 +11,5 @@ class JaCoCoJenkinsPluginTest(JenkinsPluginTestCase):
 
     async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the total number of lines are returned."""
-        json = dict(lineCoverage=dict(total=6, missed=2))
-        response = await self.collect(self.metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.jacoco_jenkins_plugin_json)
         self.assert_measurement(response, value="2", total="6")
