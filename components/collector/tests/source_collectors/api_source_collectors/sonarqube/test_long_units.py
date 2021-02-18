@@ -6,14 +6,15 @@ from .base import SonarQubeTestCase
 class SonarQubeLongUnitsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube long units collector."""
 
+    METRIC_TYPE = "long_units"
+
     async def test_long_units(self):
         """Test that the number of long units is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
         long_units_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
-        metric = dict(type="long_units", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric,
+            self.metric,
             get_request_json_side_effect=[
                 {},
                 long_units_json,

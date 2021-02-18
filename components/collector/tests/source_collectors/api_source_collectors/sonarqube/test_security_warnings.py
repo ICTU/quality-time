@@ -6,6 +6,8 @@ from .base import SonarQubeTestCase
 class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube security warnings collector."""
 
+    METRIC_TYPE = "security_warnings"
+
     def setUp(self):
         """Extend to set up SonarQube security warnings."""
         super().setUp()
@@ -89,9 +91,9 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_security_warnings(self):
         """Test that all security warnings are returned."""
         show_component_json = {}
-        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric, get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json]
+            self.metric,
+            get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json],
         )
         self.assert_measurement(
             response,
@@ -104,8 +106,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_security_warnings_hotspots_only(self):
         """Test that only the security hotspots are returned."""
         self.sources["source_id"]["parameters"]["security_types"] = ["security_hotspot"]
-        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=self.hotspots_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.hotspots_json)
         self.assert_measurement(
             response,
             value="2",
@@ -117,8 +118,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_security_warnings_vulnerabilities_only(self):
         """Test that only the vulnerabilities are returned."""
         self.sources["source_id"]["parameters"]["security_types"] = ["vulnerability"]
-        metric = dict(type="security_warnings", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=self.vulnerabilities_json)
+        response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(
             response, value="2", total="100", entities=self.vulnerability_entities, landing_url=self.issues_landing_url
         )

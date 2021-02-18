@@ -6,9 +6,10 @@ from .base import SonarQubeTestCase
 class SonarQubeViolationsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube violations collector."""
 
+    METRIC_TYPE = "violations"
+
     async def test_violations(self):
         """Test that the number of violations is returned."""
-        metric = dict(type="violations", addition="sum", sources=self.sources)
         json = dict(
             total="2",
             issues=[
@@ -32,7 +33,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
                 ),
             ],
         )
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         expected_entities = [
             self.entity(
                 "a", "bug", "info", creation_date="2020-08-30T22:48:53+0200", update_date="2020-09-30T22:48:54+0200"

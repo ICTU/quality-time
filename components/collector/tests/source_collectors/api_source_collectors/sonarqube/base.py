@@ -8,6 +8,9 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for the SonarQube metrics unit tests."""
 
+    METRIC_TYPE = "Subclass responsibility"
+    METRIC_ADDITION = "sum"
+
     def setUp(self):
         """Extend to set up the SonarQube source fixture and some URLs."""
         super().setUp()
@@ -16,6 +19,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
                 type="sonarqube", parameters=dict(url="https://sonar", component="id", types=["bug", "code_smell"])
             )
         )
+        self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_ADDITION, sources=self.sources)
         self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
         self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
 

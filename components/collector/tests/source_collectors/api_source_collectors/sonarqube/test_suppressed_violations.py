@@ -3,8 +3,10 @@
 from .base import SonarQubeTestCase
 
 
-class SonarQubeMetricsTest(SonarQubeTestCase):
+class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube suppressed violations collector."""
+
+    METRIC_TYPE = "suppressed_violations"
 
     async def test_suppressed_violations(self):
         """Test that the number of suppressed violations includes both suppressed issues as well as suppressed rules."""
@@ -38,9 +40,8 @@ class SonarQubeMetricsTest(SonarQubeTestCase):
             ],
         )
         total_violations_json = dict(total="4")
-        metric = dict(type="suppressed_violations", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json]
+            self.metric, get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json]
         )
         expected_entities = [
             self.entity(

@@ -6,10 +6,7 @@ from .base import SonarQubeTestCase
 class SonarQubeTestsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube tests collector."""
 
-    def setUp(self):
-        """Extend to set up the metric fixture."""
-        super().setUp()
-        self.metric = dict(type="tests", addition="sum", sources=self.sources)
+    METRIC_TYPE = "tests"
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Extend to add the landing url."""

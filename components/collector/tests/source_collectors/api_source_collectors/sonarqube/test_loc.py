@@ -6,6 +6,8 @@ from .base import SonarQubeTestCase
 class SonarQubeLOCTest(SonarQubeTestCase):
     """Unit tests for the SonarQube LOC collector."""
 
+    METRIC_TYPE = "loc"
+
     async def test_loc_returns_ncloc_by_default(self):
         """Test that the number of lines of non-comment code is returned."""
         json = dict(
@@ -16,8 +18,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        metric = dict(type="loc", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="1234",
@@ -40,8 +41,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        metric = dict(type="loc", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response, value="1234", total="100", entities=[], landing_url=self.metric_landing_url.format("lines")
         )
@@ -57,8 +57,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ]
             )
         )
-        metric = dict(type="loc", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="1000",

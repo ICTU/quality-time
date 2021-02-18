@@ -6,14 +6,15 @@ from .base import SonarQubeTestCase
 class SonarQubeManyParametersTest(SonarQubeTestCase):
     """Unit tests for the SonarQube many parameters collector."""
 
+    METRIC_TYPE = "many_parameters"
+
     async def test_many_parameters(self):
         """Test that the number of functions with too many parameters is returned."""
         self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
-        metric = dict(type="many_parameters", addition="sum", sources=self.sources)
         response = await self.collect(
-            metric,
+            self.metric,
             get_request_json_side_effect=[
                 {},
                 many_parameters_json,

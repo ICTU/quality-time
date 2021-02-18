@@ -6,6 +6,8 @@ from .base import SonarQubeTestCase
 class SonarQubeRemediationEffortTest(SonarQubeTestCase):
     """Unit tests for the SonarQube remediation effort collector."""
 
+    METRIC_TYPE = "remediation_effort"
+
     def setUp(self):
         """Extend to set up some parameter values."""
         super().setUp()
@@ -23,8 +25,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
                 ]
             )
         )
-        metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="20",
@@ -50,8 +51,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
         """Test that the remediation effort is returned and that the landing url points to the metric."""
         self.sources["source_id"]["parameters"]["effort_types"] = [self.all_code_smells]
         json = dict(component=dict(measures=[dict(metric="sqale_index", value="20")]))
-        metric = dict(type="remediation_effort", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="20",

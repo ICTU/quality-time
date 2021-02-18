@@ -6,11 +6,12 @@ from .base import SonarQubeTestCase
 class SonarQubeCommentedOutCodeTest(SonarQubeTestCase):
     """Unit tests for the SonarQube commented-out code collector."""
 
+    METRIC_TYPE = "commented_out_code"
+
     async def test_commented_out_code(self):
         """Test that the number of lines with commented out code is returned."""
         json = dict(total="2")
-        metric = dict(type="commented_out_code", addition="sum", sources=self.sources)
-        response = await self.collect(metric, get_request_json_return_value=json)
+        response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(
             response,
             value="2",
