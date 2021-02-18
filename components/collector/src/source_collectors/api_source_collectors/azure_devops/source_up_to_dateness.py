@@ -10,8 +10,7 @@ from base_collectors import SourceCollector, SourceUpToDatenessCollector
 from collector_utilities.type import URL, Response
 from source_model import SourceMeasurement, SourceResponses
 
-from .base import AzureDevopsRepositoryBase
-from .jobs import AzureDevopsJobs
+from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
 
 
 class AzureDevopsFileUpToDateness(SourceUpToDatenessCollector, AzureDevopsRepositoryBase):
