@@ -162,8 +162,7 @@ frfI8VlILbIxGw==
             f"http://renderer:9000/api/render?url=http%3A//www%3A80/report_uuid&{self.options}"
         )
 
-    @patch("routes.report.bottle.request")
-    def test_get_json_report(self, request):
+    def test_get_json_report(self):
         """Test that a JSON version of the report can be retrieved with encrypted credentials."""
         expected_report = copy.deepcopy(self.report)
         expected_report["subjects"]["subject_uuid"]["metrics"]["metric_uuid"]["sources"]["source_uuid"][

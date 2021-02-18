@@ -31,21 +31,7 @@ def download_report_as_json_with_key(context):
 @when("the client downloads the report with a faulty key")
 def download_report_with_faulty_key(context):
     """Download the report with a faulty key."""
-
-    dsa_public_key = """-----BEGIN PUBLIC KEY-----
-MIIBtjCCASsGByqGSM44BAEwggEeAoGBAN2YsbQRxa3noHUehRXbDaTmCQCsBW6D
-Gy4Yo/Rzg1O6S4gBrk9/h64V3ZcNzKgh3G73v5nReLJo545vq5ZdglRxVqRzEkvK
-ecbRrKJfSL/Ir6+utojcBte9u8mK8VBzOEzu3d9VMXhohnLc8AKJgoVz2VLYboHb
-DDqil8n5GA81AhUA1zdcpHIsos80Xr8W67v+zc1NugMCgYBO9ui2yfUJK67P3yKm
-5kcD7owtqdrgEWo3zPSU94Dyq83ZKnQCqW4jyNVvLHE8vorfrzQG05yxA27fh9y3
-13CqD3+SRs1/bh+OoHTYfOg5nQpd+wmpD1KcliwozSa4UoB6L0HGSsmdfDMnyjY6
-57A/6fvkIPfFWwiZqDw/UbvXJAOBhAACgYAClAnMuoF2cRmHIkgx7rkBtQQDUuL+
-w+tVREFni2i1NBgXEN18fFRtebuPKJvoY0ISQgR+XPoKsgfnQ7jy8bsoZvrto3CP
-pwEguMmZYw493abU3P4d66wDe/sFyNLW0rhIx+sYsQ6YhGVWF46peoFC3Aa2H439
-frfI8VlILbIxGw==
------END PUBLIC KEY-----"""
-
-    faulty_public_key = urllib.parse.quote_plus(dsa_public_key)
+    faulty_public_key = urllib.parse.quote_plus(context.faulty_public_key)
     context.get(f"report/{context.uuid['report']}/json?public_key={faulty_public_key}")
 
 
