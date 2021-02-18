@@ -79,10 +79,11 @@ class WekanTestCase(SourceCollectorTestCase):
         post_request_side_effect=None,
         post_request_json_return_value=None,
     ):
+        """Extend to always pass the Wekan JSON and a token."""
         return await super().collect(
             metric,
             get_request_json_return_value=get_request_json_return_value,
-            get_request_json_side_effect=get_request_json_side_effect,
+            get_request_json_side_effect=get_request_json_side_effect or self.json,
             get_request_content=get_request_content,
             get_request_text=get_request_text,
             get_request_links=get_request_links,
