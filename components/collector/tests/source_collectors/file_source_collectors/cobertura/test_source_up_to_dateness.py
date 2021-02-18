@@ -13,6 +13,7 @@ class CoberturaSourceUpToDatenessTest(CoberturaTestCase):
     METRIC_ADDITION = "max"
 
     def setUp(self):
+        """Extend to compute the expected age of the Cobertura report."""
         super().setUp()
         self.expected_age = str((datetime.utcnow() - datetime.utcfromtimestamp(1553821197.442)).days)
 
