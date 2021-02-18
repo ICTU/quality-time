@@ -87,7 +87,7 @@ from .file_source_collectors.cobertura.source_up_to_dateness import CoberturaSou
 from .file_source_collectors.cobertura.uncovered_branches import CoberturaUncoveredBranches
 from .file_source_collectors.cobertura.uncovered_lines import CoberturaUncoveredLines
 
-from .file_source_collectors.composer import ComposerDependencies
+from .file_source_collectors.composer.dependencies import ComposerDependencies
 
 from .file_source_collectors.generic_json import GenericJSONSecurityWarnings
 
