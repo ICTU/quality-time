@@ -2,6 +2,7 @@
 
 import json
 import time
+import urllib
 from datetime import datetime, timezone
 
 from asserts import assert_equal
@@ -15,15 +16,17 @@ def download_report_as_pdf(context):
 
 
 @when("the client downloads the report as json")
-def download_report_as_pdf(context):
-    """Download the report as pdf."""
+def download_report_as_json(context):
+    """Download the report as json."""
     context.get(f"report/{context.uuid['report']}/json")
 
 
 @when("the client downloads the report as json with his own public key")
-def download_report_as_pdf(context):
-    """Download the report as pdf."""
-    context.get(f"report/{context.uuid['report']}/json?public_key={context.public_key}")
+def download_report_as_json_with_key(context):
+    """Download the report as json with public key."""
+
+    public_key = urllib.parse.quote_plus(context.public_key)
+    context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 
 
 @when("the client imports a report")

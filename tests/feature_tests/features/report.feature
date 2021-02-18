@@ -36,14 +36,20 @@ Feature: report
     Then the client receives the pdf
 
   Scenario: export report as json
-    Given an existing report
-    And an existing source
-    When the client sets the source parameter dummy-password to "['item_1', 'item_2']"
+    When the client creates a report
+    And the client creates a subject
+    And the client creates a metric
+    And the client creates a source
+    And the client sets the source parameter password to "['item_1', 'item_2']"
     And the client downloads the report as json
     Then the client receives the json
 
   Scenario: export report as json with own public key
     When the client creates a report
+    And the client creates a subject
+    And the client creates a metric
+    And the client creates a source
+    And the client sets the source parameter password to "['item_1', 'item_2']"
     And the client downloads the report as json with his own public key
     Then the client receives the json
 
