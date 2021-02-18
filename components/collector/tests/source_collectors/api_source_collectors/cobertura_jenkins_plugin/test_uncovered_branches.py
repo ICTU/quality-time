@@ -1,9 +1,9 @@
 """Unit tests for the Cobertura Jenkins plugin uncovered branches collector."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase
+from .base import CoberturaJenkinsPluginCoverageTestCase
 
 
-class CoberturaJenkinsPluginUncoveredBranchesTest(JenkinsPluginTestCase):
+class CoberturaJenkinsPluginUncoveredBranchesTest(CoberturaJenkinsPluginCoverageTestCase):
     """Unit tests for the Cobertura Jenkins plugin uncovered branches collector."""
 
     SOURCE_TYPE = "cobertura_jenkins_plugin"
@@ -11,10 +11,5 @@ class CoberturaJenkinsPluginUncoveredBranchesTest(JenkinsPluginTestCase):
 
     async def test_uncovered_branches(self):
         """Test that the number of uncovered branches and the total number of branches are returned."""
-        response = await self.collect(
-            self.metric,
-            get_request_json_return_value=dict(
-                results=dict(elements=[dict(denominator=15, numerator=15, name="Conditionals")])
-            ),
-        )
+        response = await self.collect(self.metric, get_request_json_return_value=self.cobertura_jenkins_plugin_json)
         self.assert_measurement(response, value="0", total="15")
