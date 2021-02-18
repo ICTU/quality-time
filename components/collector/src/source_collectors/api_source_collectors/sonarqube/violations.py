@@ -83,7 +83,7 @@ class SonarQubeViolations(SonarQubeCollector):
         return ",".join(severity.upper() for severity in self._parameter("severities"))
 
     def _review_priorities(self) -> str:
-        """Return the severities parameter."""
+        """Return the review priorities parameter."""
         return ",".join(priority.upper() for priority in self._parameter("review_priorities"))
 
 
