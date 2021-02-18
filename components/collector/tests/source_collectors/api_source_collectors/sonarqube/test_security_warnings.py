@@ -57,14 +57,14 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             self.entity(
                 "a",
                 "security_hotspot",
-                vulnerability_probability="medium",
+                review_priority="medium",
                 creation_date="2010-12-13T10:37:07+0000",
                 update_date="2019-08-26T09:02:49+0000",
             ),
             self.entity(
                 "b",
                 "security_hotspot",
-                vulnerability_probability="low",
+                review_priority="low",
                 creation_date="2011-10-26T13:34:12+0000",
                 update_date="2020-08-31T08:19:00+0000",
             ),
