@@ -18,10 +18,11 @@ from .api_source_collectors.cobertura_jenkins_plugin.uncovered_lines import Cobe
 from .api_source_collectors.cxsast.security_warnings import CxSASTSecurityWarnings
 from .api_source_collectors.cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 
-from .api_source_collectors.gitlab.jobs import GitLabFailedJobs, GitLabUnusedJobs
+from .api_source_collectors.gitlab.failed_jobs import GitLabFailedJobs
 from .api_source_collectors.gitlab.merge_requests import GitLabMergeRequests
 from .api_source_collectors.gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .api_source_collectors.gitlab.unmerged_branches import GitLabUnmergedBranches
+from .api_source_collectors.gitlab.unused_jobs import GitLabUnusedJobs
 
 from .api_source_collectors.jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
 from .api_source_collectors.jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
