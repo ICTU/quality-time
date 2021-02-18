@@ -15,6 +15,7 @@ class JenkinsPluginTestCase(SourceCollectorTestCase):
     METRIC_ADDITION = "sum"
 
     def setUp(self):
+        """Extend to set up the sources and metric under test."""
         super().setUp()
         self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url="https://jenkins/job")))
         self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_ADDITION, sources=self.sources)
