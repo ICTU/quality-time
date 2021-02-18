@@ -36,7 +36,9 @@ Feature: report
     Then the client receives the pdf
 
   Scenario: export report as json
-    When the client creates a report
+    Given an existing report
+    And an existing source
+    When the client sets the source parameter dummy-password to "['item_1', 'item_2']"
     And the client downloads the report as json
     Then the client receives the json
 
