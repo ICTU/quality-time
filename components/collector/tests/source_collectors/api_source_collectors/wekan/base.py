@@ -66,3 +66,26 @@ class WekanTestCase(SourceCollectorTestCase):
             due_date="",
             date_last_activity="2019-01-01",
         )
+
+    async def collect(
+        self,
+        metric,
+        *,
+        get_request_json_return_value=None,
+        get_request_json_side_effect=None,
+        get_request_content="",
+        get_request_text="",
+        get_request_links=None,
+        post_request_side_effect=None,
+        post_request_json_return_value=None,
+    ):
+        return await super().collect(
+            metric,
+            get_request_json_return_value=get_request_json_return_value,
+            get_request_json_side_effect=get_request_json_side_effect,
+            get_request_content=get_request_content,
+            get_request_text=get_request_text,
+            get_request_links=get_request_links,
+            post_request_side_effect=post_request_side_effect,
+            post_request_json_return_value=post_request_json_return_value or dict(token="token"),
+        )
