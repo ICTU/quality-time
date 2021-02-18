@@ -16,7 +16,6 @@ class TestSecrets(unittest.TestCase):
 
     def test_initialize_secrets(self):
         """Test initialization of field encryption secrets."""
-
         # A secret already exists
         self.database.secrets.find_one.return_value = True
         initialize_secrets(self.database)

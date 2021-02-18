@@ -24,7 +24,6 @@ def download_report_as_json(context):
 @when("the client downloads the report as json with his own public key")
 def download_report_as_json_with_key(context):
     """Download the report as json with public key."""
-
     public_key = urllib.parse.quote_plus(context.public_key)
     context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 

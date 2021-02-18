@@ -29,7 +29,6 @@ class UtilTests(unittest.TestCase):
 
     def test_symmetric_encryption(self):
         """Test wether message is encrypted using and can be decrypted."""
-
         # encryption
         test_message = b"this is a test message"
         key, encrypted_message = symmetric_encrypt(test_message)
@@ -42,7 +41,6 @@ class UtilTests(unittest.TestCase):
 
     def test_asymmetric_encrypt(self):
         """Test wether message is encripted using public/private keys."""
-
         # get public and private keys
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         public_key = private_key.public_key()
