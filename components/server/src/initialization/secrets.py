@@ -28,7 +28,6 @@ def initialize_secrets(database):
         encryption_algorithm=serialization.NoEncryption(),
     )
 
-    # public key
     public_key = private_key.public_key()
     pubkey = public_key.public_bytes(
         encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
