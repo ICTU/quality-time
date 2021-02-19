@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import serialization
 EXPORT_FIELDS_KEYS_NAME = "export_fields_keys"
 EXPORT_FIELDS_USAGE_DESCRIPTION = """
 Use this public/private key fields when exporting sensitive
-content (like api credentials) from the Quality-Time database.
+content (like api credentials) from the Quality-time database.
 They are stored in plain text in the database.
 """
 
