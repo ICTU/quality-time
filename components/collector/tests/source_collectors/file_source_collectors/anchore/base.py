@@ -6,20 +6,14 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class AnchoreTestCase(SourceCollectorTestCase):
     """Base class for Anchore unit tests."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "anchore"
 
     def setUp(self):
         """Extend to set up Anchore fixtures."""
         super().setUp()
         self.url = "https://cve"
-        self.sources = dict(
-            source_id=dict(
-                type="anchore",
-                parameters=dict(url="image-vuln.json", details_url="image-details.json", severities=["Low"]),
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+        self.sources["source_id"]["parameters"]["details_url"] = "image-details.json"
+        self.sources["source_id"]["parameters"]["severities"] = ["Low"]
         self.vulnerabilities_json = dict(
             vulnerabilities=[
                 dict(vuln="CVE-000", package="package", fix="None", url=self.url, severity="Low"),

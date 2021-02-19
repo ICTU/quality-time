@@ -11,6 +11,9 @@ from collector_utilities.functions import md5_hash
 class AxeCSVAccessibilityTest(SourceCollectorTestCase):
     """Unit tests for the Axe CSV collector for accessibility violations."""
 
+    SOURCE_TYPE = "axecsv"
+    METRIC_TYPE = "accessibility"
+
     def setUp(self):
         """Extend to set up test data."""
         super().setUp()
@@ -18,11 +21,6 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
         self.serious_violation = "url1,aria-input-field-name,serious,help1,html1\n"
         self.moderate_violation = "url2,aria-hidden-focus,moderate,help2,html2,messages2,dom2\n"
         self.csv = self.header_row + self.serious_violation + self.moderate_violation
-        self.metric = dict(
-            type="accessibility",
-            addition="sum",
-            sources=dict(source_id=dict(type="axecsv", parameters=dict(url="https://axecsv"))),
-        )
         self.expected_entities = [
             {
                 "url": "url1",

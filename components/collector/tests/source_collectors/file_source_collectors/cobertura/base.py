@@ -6,15 +6,8 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class CoberturaTestCase(SourceCollectorTestCase):
     """Base class for testing Cobertura collectors."""
 
+    SOURCE_TYPE = "cobertura"
     COBERTURA_XML = "Subclass responsibility"
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
-
-    def setUp(self):
-        """Extend to create source and metric fixtures."""
-        super().setUp()
-        self.sources = dict(source_id=dict(type="cobertura", parameters=dict(url="https://cobertura/")))
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
 
 
 class CoberturaCoverageTestsMixin:

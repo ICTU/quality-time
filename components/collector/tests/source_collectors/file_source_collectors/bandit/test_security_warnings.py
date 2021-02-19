@@ -29,7 +29,6 @@ class BanditSecurityWarningsTest(BanditTestCase):
                 )
             ]
         )
-        self.metric = dict(type="security_warnings", sources=self.sources, addition="sum")
         self.expected_entities = [
             dict(
                 key="B106:src-collectors-cxsast_py:37",

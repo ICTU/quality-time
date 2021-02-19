@@ -6,6 +6,9 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class ComposerDependenciesTest(SourceCollectorTestCase):
     """Unit tests for the Composer dependencies collector."""
 
+    SOURCE_TYPE = "composer"
+    METRIC_TYPE = "dependencies"
+
     def setUp(self):
         """Extend to set up the test fixtures."""
         super().setUp()
@@ -45,8 +48,6 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
                 warning="",
             ),
         ]
-        self.sources = dict(source_id=dict(type="composer", parameters=dict(url="composer.json")))
-        self.metric = dict(type="dependencies", sources=self.sources, addition="sum")
 
     async def test_dependencies(self):
         """Test that the number of dependencies is returned."""

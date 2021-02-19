@@ -6,12 +6,4 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class AxeSeleniumPythonTestCase(SourceCollectorTestCase):
     """Base class for testing axe-selenium-python collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
-
-    def setUp(self):
-        """Extend to set up the sources."""
-        super().setUp()
-        self.axe_json_url = "https://axe.json"
-        self.sources = dict(source_id=dict(type="axe_selenium_python", parameters=dict(url=self.axe_json_url)))
-        self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_ADDITION, sources=self.sources)
+    SOURCE_TYPE = "axe_selenium_python"

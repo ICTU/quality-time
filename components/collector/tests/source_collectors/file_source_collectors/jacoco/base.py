@@ -6,15 +6,8 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class JaCoCoTestCase(SourceCollectorTestCase):
     """Base class for JaCoCo collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "jacoco"
     JACOCO_XML = "Subclass responsibility"
-
-    def setUp(self):
-        """Extend to set up the sources and metric under test."""
-        super().setUp()
-        self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="https://jacoco/")))
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
 
 
 class JaCoCoCommonTestsMixin:

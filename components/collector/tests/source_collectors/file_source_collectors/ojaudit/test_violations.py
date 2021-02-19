@@ -6,12 +6,8 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class OJAuditViolationsTest(SourceCollectorTestCase):
     """Unit tests for the OJAudit violations collector."""
 
-    def setUp(self):
-        self.metric = dict(
-            type="violations",
-            addition="sum",
-            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="https://ojaudit.xml"))),
-        )
+    SOURCE_TYPE = "ojaudit"
+    METRIC_TYPE = "violations"
 
     async def test_violations(self):
         """Test that the number of violations is returned."""

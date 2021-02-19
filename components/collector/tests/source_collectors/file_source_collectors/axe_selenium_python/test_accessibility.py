@@ -92,7 +92,7 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
 
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
-        self.sources["source_id"]["parameters"]["url"] = f"{self.axe_json_url}.zip"
+        self.sources["source_id"]["parameters"]["url"] = "axe.zip"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_axe_json:
             for index in range(2):

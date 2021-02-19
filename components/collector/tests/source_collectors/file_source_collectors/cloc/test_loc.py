@@ -6,11 +6,12 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class ClocLOCTest(SourceCollectorTestCase):
     """Unit tests for the cloc LOC collector."""
 
+    SOURCE_TYPE = "cloc"
+    METRIC_TYPE = "loc"
+
     def setUp(self):
         """Extend to set up test fixtures."""
         super().setUp()
-        self.sources = dict(source_id=dict(type="cloc", parameters=dict(url="https://cloc.json")))
-        self.metric = dict(type="loc", sources=self.sources, addition="sum")
         self.cloc_json = {
             "header": {},
             "SUM": {},  # header and SUM are not used
