@@ -16,6 +16,9 @@ from base_collectors import MetricsCollector
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     """Base class for source collector unit tests."""
 
+    METRIC_TYPE = SOURCE_TYPE = "Subclass responsibility"
+    METRIC_ADDITION = "sum"
+
     @classmethod
     def setUpClass(cls) -> None:
         """Override to disable logging and load the data model so it is available for all unit tests."""
@@ -29,6 +32,11 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     def tearDownClass(cls) -> None:
         """Override to reset logging."""
         logging.disable(logging.NOTSET)
+
+    def setUp(self) -> None:
+        """Extend to set up the source and metric under test."""
+        self.sources = dict(source_id=dict(type=self.SOURCE_TYPE, parameters=dict(url=f"https://{self.SOURCE_TYPE}")))
+        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
 
     async def collect(
         self,
@@ -91,7 +99,8 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
 
-    def zipped_report(self, filename: str = "unknown.txt", contents: str = "") -> bytes:
+    @staticmethod
+    def zipped_report(filename: str = "unknown.txt", contents: str = "") -> bytes:
         """Return a zipped report."""
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
