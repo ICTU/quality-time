@@ -20,7 +20,6 @@ def initialize_secrets(database):
         return
 
     # else: create new public/private key pair and insert it
-    # private key
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
     privkey = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
