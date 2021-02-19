@@ -1,4 +1,4 @@
-"""OJAudit metric collector."""
+"""OJAudit violations collector."""
 
 from typing import Dict, List, Optional, cast
 from xml.etree.ElementTree import Element  # nosec, Element is not available from defusedxml, but only used as type
@@ -20,6 +20,7 @@ class OJAuditViolations(XMLFileSourceCollector):
         self.violation_counts: Dict[str, int] = {}  # Keep track of the number of duplicated violations per key
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the violations from the OJAudit XML."""
         severities = cast(List[str], self._parameter("severities"))
         count = 0
         entities = []

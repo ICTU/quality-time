@@ -1,15 +1,17 @@
-"""Unit tests for the OJAudit source."""
+"""Unit tests for the OJAudit violations collector."""
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class OJAuditTest(SourceCollectorTestCase):
-    """Unit tests for the OJAudit metrics."""
+class OJAuditViolationsTest(SourceCollectorTestCase):
+    """Unit tests for the OJAudit violations collector."""
 
     def setUp(self):
         self.metric = dict(
-            type="violations", addition="sum",
-            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="https://ojaudit.xml"))))
+            type="violations",
+            addition="sum",
+            sources=dict(source_id=dict(type="ojaudit", parameters=dict(url="https://ojaudit.xml"))),
+        )
 
     async def test_violations(self):
         """Test that the number of violations is returned."""
@@ -63,10 +65,21 @@ class OJAuditTest(SourceCollectorTestCase):
 </audit>"""
         response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         expected_entities = [
-            dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
-                 count="1"),
-            dict(component="b:10:2", key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3", message="b",
-                 severity="exception", count="1")]
+            dict(
+                component="a:20:4",
+                key="894756a0231a17f66b33d0ac18570daa193beea3",
+                message="a",
+                severity="warning",
+                count="1",
+            ),
+            dict(
+                component="b:10:2",
+                key="2bdb532d49f0bf2252e85dc2d41e034c8c3e1af3",
+                message="b",
+                severity="exception",
+                count="1",
+            ),
+        ]
         self.assert_measurement(response, value="2", entities=expected_entities)
 
     async def test_missing_location(self):
@@ -177,6 +190,12 @@ class OJAuditTest(SourceCollectorTestCase):
 </audit>"""
         response = await self.collect(self.metric, get_request_text=ojaudit_xml)
         expected_entities = [
-            dict(component="a:20:4", key="894756a0231a17f66b33d0ac18570daa193beea3", message="a", severity="warning",
-                 count="2")]
+            dict(
+                component="a:20:4",
+                key="894756a0231a17f66b33d0ac18570daa193beea3",
+                message="a",
+                severity="warning",
+                count="2",
+            )
+        ]
         self.assert_measurement(response, value="2", entities=expected_entities)

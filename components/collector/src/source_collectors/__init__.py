@@ -104,7 +104,7 @@ from .file_source_collectors.ncover.source_up_to_dateness import NCoverSourceUpT
 
 from .file_source_collectors.npm.dependencies import NpmDependencies
 
-from .file_source_collectors.ojaudit import OJAuditViolations
+from .file_source_collectors.ojaudit.violations import OJAuditViolations
 
 from .file_source_collectors.openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
 
