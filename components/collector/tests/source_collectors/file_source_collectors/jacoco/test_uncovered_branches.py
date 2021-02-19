@@ -7,6 +7,7 @@ class JaCoCoUncoveredBranchesTest(JaCoCoCommonCoverageTestsMixin, JaCoCoCommonTe
     """Unit tests for the JaCoCo metrics."""
 
     METRIC_TYPE = "uncovered_branches"
+    JACOCO_XML = "<report><counter type='BRANCH' missed='2' covered='4'/></report>"
 
     async def test_uncovered_branches_without_branches(self):
         """Test that a JaCoCo XML without branches results in 100% coverage."""

@@ -1,8 +1,5 @@
 """Base classes for the JaCoCo coverage report collectoes."""
 
-import io
-import zipfile
-
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
@@ -11,26 +8,13 @@ class JaCoCoTestCase(SourceCollectorTestCase):
 
     METRIC_TYPE = "Subclass responsibility"
     METRIC_ADDITION = "sum"
-    JACOCO_XML = """
-    <report>
-        <sessioninfo dump="1553821197442"/>
-        <counter type='LINE' missed='2' covered='4'/>
-        <counter type='BRANCH' missed='2' covered='4'/>
-    </report>
-    """
+    JACOCO_XML = "Subclass responsibility"
 
     def setUp(self):
         """Extend to set up the sources and metric under test."""
         super().setUp()
         self.sources = dict(source_id=dict(type="jacoco", parameters=dict(url="https://jacoco/")))
         self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
-
-    def zipped_report(self, filename: str = None, contents: str = None) -> bytes:
-        """Return a zipped JaCoCo report."""
-        bytes_io = io.BytesIO()
-        with zipfile.ZipFile(bytes_io, mode="w") as zipped_jacoco_report:
-            zipped_jacoco_report.writestr(filename or "jacoco.xml", contents or self.JACOCO_XML)
-        return bytes_io.getvalue()
 
 
 class JaCoCoCommonTestsMixin:
@@ -57,5 +41,7 @@ class JaCoCoCommonCoverageTestsMixin:
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
-        response = await self.collect(self.metric, get_request_content=self.zipped_report())
+        response = await self.collect(
+            self.metric, get_request_content=self.zipped_report("jacoco.xml", self.JACOCO_XML)
+        )
         self.assert_measurement(response, value="2", total="6")

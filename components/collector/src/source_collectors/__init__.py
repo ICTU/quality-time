@@ -95,7 +95,8 @@ from .file_source_collectors.jacoco.source_up_to_dateness import JacocoSourceUpT
 from .file_source_collectors.jacoco.uncovered_branches import JacocoUncoveredBranches
 from .file_source_collectors.jacoco.uncovered_lines import JacocoUncoveredLines
 
-from .file_source_collectors.junit import JUnitSourceUpToDateness, JUnitTests
+from .file_source_collectors.junit.source_up_to_dateness import JUnitSourceUpToDateness
+from .file_source_collectors.junit.tests import JUnitTests
 
 from .file_source_collectors.ncover import NCoverSourceUpToDateness
 

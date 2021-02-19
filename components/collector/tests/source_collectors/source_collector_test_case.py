@@ -1,9 +1,11 @@
 """Base class for source collector unit tests."""
 
+import io
 import json
 import logging
 import pathlib
 import unittest
+import zipfile
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -88,3 +90,10 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.assertEqual(attribute_value, measurement["sources"][source_index][attribute_key])
+
+    def zipped_report(self, filename: str = "unknown.txt", contents: str = "") -> bytes:
+        """Return a zipped report."""
+        bytes_io = io.BytesIO()
+        with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
+            zipped_report.writestr(filename, contents)
+        return bytes_io.getvalue()

@@ -10,6 +10,7 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
 
     METRIC_TYPE = "source_up_to_dateness"
     METRIC_ADDITION = "max"
+    JACOCO_XML = '<report><sessioninfo dump="1553821197442"/></report>'
 
     def setUp(self):
         """Extend to set up a common source for the tests."""
@@ -24,5 +25,7 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
-        response = await self.collect(self.metric, get_request_content=self.zipped_report())
+        response = await self.collect(
+            self.metric, get_request_content=self.zipped_report("jacoco.xml", self.JACOCO_XML)
+        )
         self.assert_measurement(response, value=str(self.expected_age))

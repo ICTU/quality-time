@@ -7,3 +7,4 @@ class JaCoCoUncoveredLinesTest(JaCoCoCommonCoverageTestsMixin, JaCoCoCommonTests
     """Unit tests for the JaCoCo metrics."""
 
     METRIC_TYPE = "uncovered_lines"
+    JACOCO_XML = "<report><counter type='LINE' missed='2' covered='4'/></report>"
