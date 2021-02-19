@@ -113,7 +113,8 @@ from .file_source_collectors.owasp_dependency_check.dependencies import OWASPDep
 from .file_source_collectors.owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
 from .file_source_collectors.owasp_dependency_check.source_up_to_dateness import OWASPDependencyCheckSourceUpToDateness
 
-from .file_source_collectors.owasp_zap import OWASPZAPSecurityWarnings, OWASPZAPSourceUpToDateness
+from .file_source_collectors.owasp_zap.security_warnings import OWASPZAPSecurityWarnings
+from .file_source_collectors.owasp_zap.source_up_to_dateness import OWASPZAPSourceUpToDateness
 
 from .file_source_collectors.performancetest_runner import (
     PerformanceTestRunnerPerformanceTestDuration,
