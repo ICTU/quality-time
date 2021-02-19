@@ -18,5 +18,5 @@ class SonarQubeSourceUpToDatenessTest(SonarQubeTestCase):
         timezone_info = timezone(timedelta(hours=1))
         expected_age = (datetime.now(timezone_info) - datetime(2019, 3, 29, 14, 20, 15, tzinfo=timezone_info)).days
         self.assert_measurement(
-            response, value=str(expected_age), landing_url="https://sonar/project/activity?id=id&branch=master"
+            response, value=str(expected_age), landing_url="https://sonarqube/project/activity?id=id&branch=master"
         )

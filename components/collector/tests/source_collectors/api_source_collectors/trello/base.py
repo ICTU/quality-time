@@ -6,26 +6,12 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class TrelloTestCase(SourceCollectorTestCase):
     """Base class for testing Trello collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "trello"
 
     def setUp(self) -> None:
         """Extend to set up the Trello source and source data."""
         super().setUp()
-        self.sources = dict(
-            source_id=dict(
-                type="trello",
-                parameters=dict(
-                    url="https://trello",
-                    board="board1",
-                    api_key="abcdef123",
-                    token="4533dea",
-                    inactive_days="30",
-                    lists_to_ignore=[],
-                ),
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_ADDITION, sources=self.sources)
+        self.sources["source_id"]["parameters"]["board"] = "board1"
         self.cards = dict(
             id="board1",
             url="https://trello/board1",

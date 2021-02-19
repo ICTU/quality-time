@@ -44,7 +44,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
                     url=self.metric_landing_url.format("reliability_remediation_effort"),
                 ),
             ],
-            landing_url="https://sonar/component_measures?id=id&branch=master",
+            landing_url="https://sonarqube/component_measures?id=id&branch=master",
         )
 
     async def test_remediation_effort_one_metric(self):

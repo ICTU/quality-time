@@ -10,7 +10,7 @@ class SonarQubeTestsTest(SonarQubeTestCase):
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes) -> None:
         """Extend to add the landing url."""
-        attributes["landing_url"] = "https://sonar/component_measures?id=id&metric=tests&branch=master"
+        attributes["landing_url"] = "https://sonarqube/component_measures?id=id&metric=tests&branch=master"
         super().assert_measurement(measurement, source_index=source_index, **attributes)
 
     async def test_nr_of_tests(self):

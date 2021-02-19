@@ -8,20 +8,14 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for the SonarQube metrics unit tests."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "sonarqube"
 
     def setUp(self):
         """Extend to set up the SonarQube source fixture and some URLs."""
         super().setUp()
-        self.sources = dict(
-            source_id=dict(
-                type="sonarqube", parameters=dict(url="https://sonar", component="id", types=["bug", "code_smell"])
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_ADDITION, sources=self.sources)
-        self.issues_landing_url = "https://sonar/project/issues?id=id&resolved=false&branch=master"
-        self.metric_landing_url = "https://sonar/component_measures?id=id&metric={0}&branch=master"
+        self.sources["source_id"]["parameters"]["component"] = "id"
+        self.issues_landing_url = "https://sonarqube/project/issues?id=id&resolved=false&branch=master"
+        self.metric_landing_url = "https://sonarqube/component_measures?id=id&metric={0}&branch=master"
 
     @staticmethod
     def entity(  # pylint: disable=too-many-arguments
@@ -35,9 +29,9 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     ) -> Entity:
         """Create an entity."""
         url = (
-            f"https://sonar/security_hotspots?id=id&hotspots={component}&branch=master"
+            f"https://sonarqube/security_hotspots?id=id&hotspots={component}&branch=master"
             if entity_type == "security_hotspot"
-            else f"https://sonar/project/issues?id=id&issues={component}&open={component}&branch=master"
+            else f"https://sonarqube/project/issues?id=id&issues={component}&open={component}&branch=master"
         )
         entity = Entity(
             key=component,

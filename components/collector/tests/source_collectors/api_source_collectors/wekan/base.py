@@ -8,26 +8,12 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class WekanTestCase(SourceCollectorTestCase):
     """Base class for testing Wekan collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "wekan"
 
     def setUp(self):
         """Extend to setup the Wekan source and source data."""
         super().setUp()
-        self.sources = dict(
-            source_id=dict(
-                type="wekan",
-                parameters=dict(
-                    url="https://wekan",
-                    board="board1",
-                    username="user",
-                    password="pass",
-                    inactive_days="90",
-                    lists_to_ignore=[],
-                ),
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, addition=self.METRIC_TYPE, sources=self.sources)
+        self.sources["source_id"]["parameters"]["board"] = "board1"
         self.json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1", slug="board-slug")],
