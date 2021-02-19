@@ -6,28 +6,19 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for Quality-time collector unit tests."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "quality_time"
 
     def setUp(self):
         """Extend to set up fixtures for Quality-time metrics unit tests."""
         super().setUp()
-        self.url = "https://quality-time"
+        self.url = "https://quality_time"
         self.api_url = f"{self.url}/api/v3/reports"
-        self.sources = dict(
-            source_id=dict(
-                type="quality_time",
-                parameters=dict(
-                    url=self.url,
-                    reports=["r1"],
-                    status=["target not met (red)"],
-                    tags=["security"],
-                    metric_type=["Tests", "Violations"],
-                    source_type=["SonarQube"],
-                ),
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+        parameters = self.sources["source_id"]["parameters"]
+        parameters["reports"] = ["r1"]
+        parameters["status"] = ["target not met (red)"]
+        parameters["tags"] = ["security"]
+        parameters["metric_type"] = ["Tests", "Violations"]
+        parameters["source_type"] = ["SonarQube"]
         self.reports = dict(
             reports=[
                 dict(
