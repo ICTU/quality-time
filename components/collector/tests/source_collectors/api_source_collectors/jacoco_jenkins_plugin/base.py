@@ -1,9 +1,9 @@
 """Base classes for JaCoCo Jenkins plugin unit tests."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class JaCoCoJenkinsPluginCoverageTestCase(JenkinsPluginTestCase):
+class JaCoCoJenkinsPluginCoverageTestCase(SourceCollectorTestCase):
     """JaCoCo Jenkins plugin coverage base class."""
 
     def setUp(self):

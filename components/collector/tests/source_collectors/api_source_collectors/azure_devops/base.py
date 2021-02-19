@@ -6,16 +6,14 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing Azure DevOps collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "azure_devops"
 
     def setUp(self):
         """Extend to add Azure DevOps fixtures."""
         super().setUp()
         self.url = "https://azure_devops/org/project"
         self.work_item_url = "https://work_item"
-        self.sources = dict(source_id=dict(type="azure_devops", parameters=dict(url=self.url, private_token="xxx")))
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+        self.sources["source_id"]["parameters"]["url"] = self.url
         self.work_item = dict(
             id="id",
             url=self.work_item_url,

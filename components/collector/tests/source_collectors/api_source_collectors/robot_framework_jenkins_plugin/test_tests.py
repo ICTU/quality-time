@@ -1,9 +1,9 @@
 """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class RobotFrameworkJenkinsPluginTest(JenkinsPluginTestCase):
+class RobotFrameworkJenkinsPluginTest(SourceCollectorTestCase):
     """Unit tests for the Robot Framework Jenkins plugin tests collector."""
 
     SOURCE_TYPE = "robot_framework_jenkins_plugin"

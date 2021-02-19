@@ -1,9 +1,9 @@
 """Base class for Cobertura Jenkins plugin unit tests."""
 
-from ..jenkins_plugin_test_case import JenkinsPluginTestCase
+from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class CoberturaJenkinsPluginCoverageTestCase(JenkinsPluginTestCase):
+class CoberturaJenkinsPluginCoverageTestCase(SourceCollectorTestCase):
     """Cobertura Jenkins Plugin test case base class."""
 
     def setUp(self):
