@@ -34,7 +34,6 @@ def initialize_secrets(database):
         encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
 
-    # store everything in the database
     database.secrets.insert(
         {
             "name": EXPORT_FIELDS_KEYS_NAME,
