@@ -106,7 +106,8 @@ from .file_source_collectors.npm.dependencies import NpmDependencies
 
 from .file_source_collectors.ojaudit.violations import OJAuditViolations
 
-from .file_source_collectors.openvas import OpenVASSecurityWarnings, OpenVASSourceUpToDateness
+from .file_source_collectors.openvas.security_warnings import OpenVASSecurityWarnings
+from .file_source_collectors.openvas.source_up_to_dateness import OpenVASSourceUpToDateness
 
 from .file_source_collectors.owasp_dependency_check import (
     OWASPDependencyCheckDependencies,
