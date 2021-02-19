@@ -26,10 +26,10 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
         self.assert_measurement(
             response,
             value=str(expected_age),
-            landing_url="https://checkmarx/CxWebClient/ViewerMain.aspx?scanId=scan_id&ProjectID=id",
+            landing_url="https://cxsast/CxWebClient/ViewerMain.aspx?scanId=scan_id&ProjectID=id",
         )
 
     async def test_landing_url_without_response(self):
         """Test that a default landing url is returned when connecting to the source fails."""
         response = await self.collect(self.metric, post_request_side_effect=RuntimeError)
-        self.assert_measurement(response, landing_url="https://checkmarx", connection_error="Traceback")
+        self.assert_measurement(response, landing_url="https://cxsast", connection_error="Traceback")

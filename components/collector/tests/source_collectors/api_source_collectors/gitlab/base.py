@@ -6,26 +6,16 @@ from ...source_collector_test_case import SourceCollectorTestCase
 class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing GitLab collectors."""
 
-    METRIC_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
+    SOURCE_TYPE = "gitlab"
 
     def setUp(self):
         """Extend to add generic test fixtures."""
         super().setUp()
-        self.sources = dict(
-            source_id=dict(
-                type="gitlab",
-                parameters=dict(
-                    url="https://gitlab/",
-                    project="namespace/project",
-                    file_path="file",
-                    branch="branch",
-                    inactive_days="7",
-                    branches_to_ignore=["ignored_.*"],
-                ),
-            )
-        )
-        self.metric = dict(type=self.METRIC_TYPE, sources=self.sources, addition=self.METRIC_ADDITION)
+        parameters = self.sources["source_id"]["parameters"]
+        parameters["project"] = "namespace/project"
+        parameters["file_path"] = "file"
+        parameters["branch"] = "branch"
+        parameters["branches_to_ignore"] = ["ignored_.*"]
         self.gitlab_jobs_json = [
             dict(
                 id="1",
