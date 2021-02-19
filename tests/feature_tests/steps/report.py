@@ -70,7 +70,7 @@ def check_pdf(context):
 
 @then("the client receives the json")
 def check_json(context):
-    """Check the pdf."""
+    """Check the json."""
     assert_equal(200, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
 
