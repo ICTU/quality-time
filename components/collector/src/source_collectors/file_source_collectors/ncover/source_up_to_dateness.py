@@ -1,4 +1,4 @@
-"""NCover collectors."""
+"""NCover source up-to-dateness collector."""
 
 import re
 from datetime import datetime

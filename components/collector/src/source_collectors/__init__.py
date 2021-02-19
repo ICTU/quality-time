@@ -102,7 +102,7 @@ from .file_source_collectors.ncover.uncovered_branches import NCoverUncoveredBra
 from .file_source_collectors.ncover.uncovered_lines import NCoverUncoveredLines
 from .file_source_collectors.ncover.source_up_to_dateness import NCoverSourceUpToDateness
 
-from .file_source_collectors.npm import NpmDependencies
+from .file_source_collectors.npm.dependencies import NpmDependencies
 
 from .file_source_collectors.ojaudit import OJAuditViolations
 
