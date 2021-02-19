@@ -77,7 +77,7 @@ def check_json(context):
 
 @then("the client receives a json error")
 def check_json_error(context):
-    """Check the pdf."""
+    """Check the json error."""
     assert_equal(400, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
 
