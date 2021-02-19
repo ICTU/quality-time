@@ -40,7 +40,7 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(decrypted_message, test_message)
 
     def test_asymmetric_encrypt(self):
-        """Test wether message is encripted using public/private keys."""
+        """Test wether message is encrypted using public/private keys."""
         # get public and private keys
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
         public_key = private_key.public_key()
