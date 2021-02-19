@@ -109,11 +109,9 @@ from .file_source_collectors.ojaudit.violations import OJAuditViolations
 from .file_source_collectors.openvas.security_warnings import OpenVASSecurityWarnings
 from .file_source_collectors.openvas.source_up_to_dateness import OpenVASSourceUpToDateness
 
-from .file_source_collectors.owasp_dependency_check import (
-    OWASPDependencyCheckDependencies,
-    OWASPDependencyCheckSecurityWarnings,
-    OWASPDependencyCheckSourceUpToDateness,
-)
+from .file_source_collectors.owasp_dependency_check.dependencies import OWASPDependencyCheckDependencies
+from .file_source_collectors.owasp_dependency_check.security_warnings import OWASPDependencyCheckSecurityWarnings
+from .file_source_collectors.owasp_dependency_check.source_up_to_dateness import OWASPDependencyCheckSourceUpToDateness
 
 from .file_source_collectors.owasp_zap import OWASPZAPSecurityWarnings, OWASPZAPSourceUpToDateness
 
