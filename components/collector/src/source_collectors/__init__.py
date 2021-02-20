@@ -127,7 +127,7 @@ from .file_source_collectors.performancetest_runner.slow_transactions import Per
 from .file_source_collectors.performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
 from .file_source_collectors.performancetest_runner.tests import PerformanceTestRunnerTests
 
-from .file_source_collectors.pip import PipDependencies
+from .file_source_collectors.pip.dependencies import PipDependencies
 
 from .file_source_collectors.pyupio_safety import PyupioSafetySecurityWarnings
 
