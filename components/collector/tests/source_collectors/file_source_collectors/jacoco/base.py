@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class JaCoCoTestCase(SourceCollectorTestCase):
+class JaCoCoTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for JaCoCo collectors."""
 
     SOURCE_TYPE = "jacoco"

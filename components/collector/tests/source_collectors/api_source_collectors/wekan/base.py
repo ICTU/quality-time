@@ -5,7 +5,7 @@ from typing import Dict
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class WekanTestCase(SourceCollectorTestCase):
+class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing Wekan collectors."""
 
     SOURCE_TYPE = "wekan"
@@ -43,7 +43,7 @@ class WekanTestCase(SourceCollectorTestCase):
 
     @staticmethod
     def entity(card_index: int, list_index: int) -> Dict:
-        """Return an entity"""
+        """Return an entity."""
         return dict(
             key=f"card{card_index}",
             url=f"https://wekan/b/board1/board-slug/card{card_index}",

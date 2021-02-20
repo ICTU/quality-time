@@ -15,6 +15,7 @@ class TrelloIssues(TrelloBase):
     """Collector to get issues (cards) from Trello."""
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
+        """Override to parse the issues from the JSON."""
         json = await responses[0].json()
         cards = json["cards"]
         lists = {lst["id"]: lst["name"] for lst in json["lists"]}

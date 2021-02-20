@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class OWASPDependencyCheckTestCase(SourceCollectorTestCase):
+class OWASPDependencyCheckTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for OWASP dependency check collector unit tests."""
 
     SOURCE_TYPE = "owasp_dependency_check"

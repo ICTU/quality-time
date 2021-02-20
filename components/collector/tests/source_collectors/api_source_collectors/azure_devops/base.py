@@ -27,7 +27,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         )
 
 
-class AzureDevopsJobsTestCase(AzureDevopsTestCase):
+class AzureDevopsJobsTestCase(AzureDevopsTestCase):  # skipcq: PTC-W0046
     """Base class for Azure Devops jobs collectors."""
 
     def setUp(self):

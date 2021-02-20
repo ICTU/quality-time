@@ -15,6 +15,7 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
     METRIC_ADDITION = "max"
 
     def setUp(self):
+        """Extend to set up test data."""
         super().setUp()
         self.expected_age = (datetime.now(tz=timezone.utc) - datetime(2020, 2, 7, 22, 53, 43, tzinfo=timezone.utc)).days
 

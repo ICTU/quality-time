@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class JUnitCollectorTestCase(SourceCollectorTestCase):
+class JUnitCollectorTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for Junit collector unit tests."""
 
     SOURCE_TYPE = "junit"
@@ -15,4 +15,3 @@ class JUnitCollectorTestCase(SourceCollectorTestCase):
         <testcase name="tc4" classname="cn"><error/></testcase>
         <testcase name="tc5" classname="cn"><skipped/></testcase>
     </testsuite></testsuites>"""
-    JUNIT_URL = "https://junit.xml"

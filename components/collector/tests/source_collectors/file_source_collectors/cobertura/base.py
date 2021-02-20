@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class CoberturaTestCase(SourceCollectorTestCase):
+class CoberturaTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing Cobertura collectors."""
 
     SOURCE_TYPE = "cobertura"

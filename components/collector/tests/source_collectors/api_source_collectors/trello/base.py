@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class TrelloTestCase(SourceCollectorTestCase):
+class TrelloTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing Trello collectors."""
 
     SOURCE_TYPE = "trello"

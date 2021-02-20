@@ -3,7 +3,7 @@
 from ...source_collector_test_case import SourceCollectorTestCase
 
 
-class AnchoreTestCase(SourceCollectorTestCase):
+class AnchoreTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for Anchore unit tests."""
 
     SOURCE_TYPE = "anchore"
