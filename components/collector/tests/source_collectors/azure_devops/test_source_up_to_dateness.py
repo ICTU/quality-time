@@ -18,6 +18,16 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
         super().setUp()
         self.timestamp = "2019-09-03T20:43:00Z"
         self.expected_age = str(days_ago(parse(self.timestamp)))
+        self.build_json = dict(
+            value=[
+                dict(
+                    path=r"\\folder",
+                    name="pipeline",
+                    _links=dict(web=dict(href=f"{self.url}/build")),
+                    latestCompletedBuild=dict(result="failed", finishTime=self.timestamp),
+                )
+            ]
+        )
 
     async def test_age_of_file(self):
         """Test that the age of the file is returned."""
@@ -33,34 +43,10 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
     async def test_age_of_pipeline(self):
         """Test that the age of the pipeline is returned."""
         self.set_source_parameter("jobs_to_include", ["pipeline"])
-        response = await self.collect(
-            self.metric,
-            get_request_json_return_value=dict(
-                value=[
-                    dict(
-                        path=r"\\folder",
-                        name="pipeline",
-                        _links=dict(web=dict(href=f"{self.url}/build")),
-                        latestCompletedBuild=dict(result="failed", finishTime=self.timestamp),
-                    )
-                ]
-            ),
-        )
+        response = await self.collect(self.metric, get_request_json_return_value=self.build_json)
         self.assert_measurement(response, value=self.expected_age, landing_url=f"{self.url}/_build")
 
     async def test_no_file_path_and_no_pipelines_specified(self):
         """Test that the age of the pipelines is used if no file path and no pipelines are specified."""
-        response = await self.collect(
-            self.metric,
-            get_request_json_return_value=dict(
-                value=[
-                    dict(
-                        path=r"\\folder",
-                        name="pipeline",
-                        _links=dict(web=dict(href=f"{self.url}/build")),
-                        latestCompletedBuild=dict(result="failed", finishTime=self.timestamp),
-                    )
-                ]
-            ),
-        )
+        response = await self.collect(self.metric, get_request_json_return_value=self.build_json)
         self.assert_measurement(response, value=self.expected_age, landing_url=f"{self.url}/_build")

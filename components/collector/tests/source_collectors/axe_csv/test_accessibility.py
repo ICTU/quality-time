@@ -53,22 +53,19 @@ class AxeCSVAccessibilityTest(SourceCollectorTestCase):
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
-        self.metric["sources"]["source_id"]["parameters"]["impact"] = ["serious", "critical"]
+        self.set_source_parameter("impact", ["serious", "critical"])
         response = await self.collect(self.metric, get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
     async def test_filter_by_violation_type(self):
         """Test that violations can be filtered by violation type."""
-        self.metric["sources"]["source_id"]["parameters"]["violation_type"] = [
-            "aria-input-field-name",
-            "area-hidden-focus",
-        ]
+        self.set_source_parameter("violation_type", ["aria-input-field-name", "area-hidden-focus"])
         response = await self.collect(self.metric, get_request_text=self.csv)
         self.assert_measurement(response, value="1")
 
     async def test_zipped_csv(self):
         """Test that a zip archive with CSV files is processed correctly."""
-        self.metric["sources"]["source_id"]["parameters"]["url"] = "https://axecsv.zip"
+        self.set_source_parameter("url", "https://axecsv.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.csv", self.csv) for index in range(2)])
         response = await self.collect(self.metric, get_request_content=zipfile)
         self.assert_measurement(response, value="4", entities=self.expected_entities + self.expected_entities)

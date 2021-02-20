@@ -7,11 +7,12 @@ class CoberturaTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     """Base class for testing Cobertura collectors."""
 
     SOURCE_TYPE = "cobertura"
-    COBERTURA_XML = "Subclass responsibility"
 
 
 class CoberturaCoverageTestsMixin:
     """Tests for Cobertura coverage collectors."""
+
+    COBERTURA_XML = "Subclass responsibility"
 
     async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the total number of lines are returned."""
