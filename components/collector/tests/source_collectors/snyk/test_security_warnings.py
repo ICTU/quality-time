@@ -43,7 +43,7 @@ class SnykSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_minimum_severity(self):
         """Test that security warnings with a lower severity than selected are ignored."""
-        self.sources["source_id"]["parameters"]["severities"] = ["medium", "high"]
+        self.set_source_parameter("severities", ["medium", "high"])
         response = await self.collect(self.metric, get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="0", entities=[])
 

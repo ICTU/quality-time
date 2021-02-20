@@ -30,7 +30,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
 
     async def test_ignore_failed_builds(self):
         """Test that failed builds can be ignored."""
-        self.sources["source_id"]["parameters"]["result_type"] = ["Success"]
+        self.set_source_parameter("result_type", ["Success"])
         self.builds.append(dict(result="SUCCESS", timestamp="1553686540953"))
         jenkins_json = dict(jobs=[dict(name="job", url=self.job_url, buildable=True, color="red", builds=self.builds)])
         response = await self.collect(self.metric, get_request_json_return_value=jenkins_json)

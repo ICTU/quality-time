@@ -10,7 +10,7 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
 
     async def test_many_parameters(self):
         """Test that the number of functions with too many parameters is returned."""
-        self.sources["source_id"]["parameters"]["rules"] = ["rule1"]
+        self.set_source_parameter("rules", ["rule1"])
         many_parameters_json = dict(total="2", issues=[])
         functions_json = dict(component=dict(measures=[dict(metric="functions", value="4")]))
         response = await self.collect(

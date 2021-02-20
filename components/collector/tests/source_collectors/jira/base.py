@@ -12,11 +12,10 @@ class JiraTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to create sources and a metric of type METRIC_TYPE."""
         super().setUp()
         self.url = "https://jira"
-        parameters = self.sources["source_id"]["parameters"]
-        parameters["story_points_field"] = "field"
-        parameters["manual_test_execution_frequency_field"] = "desired_test_frequency"
-        parameters["manual_test_duration_field"] = "field"
-        parameters["board"] = "Board 2"
+        self.set_source_parameter("story_points_field", "field")
+        self.set_source_parameter("manual_test_execution_frequency_field", "desired_test_frequency")
+        self.set_source_parameter("manual_test_duration_field", "field")
+        self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
 
     def issue(self, key="1", **fields):

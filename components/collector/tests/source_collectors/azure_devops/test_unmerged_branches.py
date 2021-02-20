@@ -11,7 +11,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
     def setUp(self):
         """Extend to set up the metric under test."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["branches_to_ignore"] = ["ignored_.*"]
+        self.set_source_parameter("branches_to_ignore", ["ignored_.*"])
         self.repositories = dict(value=[dict(id="id", name="project")])
         self.landing_url = f"{self.url}/_git/project/branches"
 
@@ -51,7 +51,7 @@ class AzureDevopsUnmergedBranchesTest(AzureDevopsTestCase):
 
     async def test_wrong_repository(self):
         """Test that if the repository cannot be found, an error message is returned."""
-        self.sources["source_id"]["parameters"]["repository"] = "wrong_repo"
+        self.set_source_parameter("repository", "wrong_repo")
         response = await (self.collect(self.metric, get_request_json_return_value=self.repositories))
         self.assert_measurement(
             response,

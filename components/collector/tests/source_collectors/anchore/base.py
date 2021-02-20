@@ -12,8 +12,8 @@ class AnchoreTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         """Extend to set up Anchore fixtures."""
         super().setUp()
         self.url = "https://cve"
-        self.sources["source_id"]["parameters"]["details_url"] = "image-details.json"
-        self.sources["source_id"]["parameters"]["severities"] = ["Low"]
+        self.set_source_parameter("details_url", "image-details.json")
+        self.set_source_parameter("severities", ["Low"])
         self.vulnerabilities_json = dict(
             vulnerabilities=[
                 dict(vuln="CVE-000", package="package", fix="None", url=self.url, severity="Low"),

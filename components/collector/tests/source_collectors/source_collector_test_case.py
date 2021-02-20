@@ -6,6 +6,7 @@ import logging
 import pathlib
 import unittest
 import zipfile
+from typing import List, Union
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
@@ -106,3 +107,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_report:
             zipped_report.writestr(filename, contents)
         return bytes_io.getvalue()
+
+    def set_source_parameter(self, key: str, value: Union[str, List[str]]) -> None:
+        """Set a source parameter."""
+        self.sources["source_id"]["parameters"][key] = value

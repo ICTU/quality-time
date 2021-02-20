@@ -40,7 +40,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '</tr><tr class="transaction"><td class="name">Name</td><td class="yellow evaluated"/></tr>'
             '<tr class="transaction"><td class="green evaluated"/></tr></table></html>'
         )
-        self.sources["source_id"]["parameters"]["thresholds"] = ["warning"]
+        self.set_source_parameter("thresholds", ["warning"])
         response = await self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="Name", name="Name", threshold="warning")])
 
@@ -53,7 +53,7 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<tr class="transaction"><td class="name">T3</td><td class="green evaluated"/></tr>'
             "</table></html>"
         )
-        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = ["T[1|3]"]
+        self.set_source_parameter("transactions_to_ignore", ["T[1|3]"])
         response = await self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])
 
@@ -66,6 +66,6 @@ class PerformanceTestRunnerSlowTransactionsTest(PerformanceTestRunnerTestCase):
             '<tr class="transaction"><td class="name">T3</td><td class="green evaluated"/></tr>'
             "</table></html>"
         )
-        self.sources["source_id"]["parameters"]["transactions_to_include"] = ["T2"]
+        self.set_source_parameter("transactions_to_include", ["T2"])
         response = await self.collect(self.metric, get_request_text=html)
         self.assert_measurement(response, value="1", entities=[dict(key="T2", name="T2", threshold="warning")])

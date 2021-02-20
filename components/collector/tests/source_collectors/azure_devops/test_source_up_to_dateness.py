@@ -21,8 +21,8 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
 
     async def test_age_of_file(self):
         """Test that the age of the file is returned."""
-        self.sources["source_id"]["parameters"]["repository"] = "repo"
-        self.sources["source_id"]["parameters"]["file_path"] = "README.md"
+        self.set_source_parameter("repository", "repo")
+        self.set_source_parameter("file_path", "README.md")
         repositories = dict(value=[dict(id="id", name="repo")])
         commits = dict(value=[dict(committer=dict(date=self.timestamp))])
         response = await self.collect(self.metric, get_request_json_side_effect=[repositories, commits])
@@ -32,7 +32,7 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
 
     async def test_age_of_pipeline(self):
         """Test that the age of the pipeline is returned."""
-        self.sources["source_id"]["parameters"]["jobs_to_include"] = ["pipeline"]
+        self.set_source_parameter("jobs_to_include", ["pipeline"])
         response = await self.collect(
             self.metric,
             get_request_json_return_value=dict(

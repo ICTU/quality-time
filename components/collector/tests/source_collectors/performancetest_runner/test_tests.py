@@ -23,31 +23,31 @@ class PerformanceTestRunnerTestsTest(PerformanceTestRunnerTestCase):
     async def test_failed_tests(self):
         """Test that the number of failed performance test transactions is returned."""
         # We also pass an obsolete status ("canceled") to test that obsolete statuses are ignored:
-        self.sources["source_id"]["parameters"]["test_result"] = ["failed", "canceled"]
+        self.set_source_parameter("test_result", ["failed", "canceled"])
         response = await self.collect(self.metric, get_request_text=self.HTML)
         self.assert_measurement(response, value="8", total="28")
 
     async def test_succeeded_tests(self):
         """Test that the number of succeeded performance test transactions is returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["success"]
+        self.set_source_parameter("test_result", ["success"])
         response = await self.collect(self.metric, get_request_text=self.HTML)
         self.assert_measurement(response, value="20", total="28")
 
     async def test_ignored_tests(self):
         """Test that the number of performance test transactions is returned for transactions that are not ignored."""
-        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
+        self.set_source_parameter("transactions_to_ignore", [".*2"])
         response = await self.collect(self.metric, get_request_text=self.HTML)
         self.assert_measurement(response, value="10", total="10")
 
     async def test_failed_and_ignored_tests(self):
         """Test that the number of not ignored failed performance test transactions is returned."""
-        self.sources["source_id"]["parameters"]["transactions_to_ignore"] = [".*2"]
-        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        self.set_source_parameter("transactions_to_ignore", [".*2"])
+        self.set_source_parameter("test_result", ["failed"])
         response = await self.collect(self.metric, get_request_text=self.HTML)
         self.assert_measurement(response, value="3", total="10")
 
     async def test_included_tests(self):
         """Test that the number of performance test transactions is returned for transactions that are included."""
-        self.sources["source_id"]["parameters"]["transactions_to_include"] = ["T1"]
+        self.set_source_parameter("transactions_to_include", ["T1"])
         response = await self.collect(self.metric, get_request_text=self.HTML)
         self.assert_measurement(response, value="10", total="10")

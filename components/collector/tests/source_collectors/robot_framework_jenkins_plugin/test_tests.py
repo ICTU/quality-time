@@ -16,12 +16,12 @@ class RobotFrameworkJenkinsPluginTest(RobotFrameworkJenkinsPluginTestCase):
 
     async def test_failed_tests(self):
         """Test that the number of failed tests is returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["fail"]
+        self.set_source_parameter("test_result", ["fail"])
         response = await self.collect(self.metric, get_request_json_return_value=self.JENKINS_JSON)
         self.assert_measurement(response, value="1", total="2")
 
     async def test_passed_tests(self):
         """Test that the number of passed tests is returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["pass"]
+        self.set_source_parameter("test_result", ["pass"])
         response = await self.collect(self.metric, get_request_json_return_value=self.JENKINS_JSON)
         self.assert_measurement(response, value="1", total="2")

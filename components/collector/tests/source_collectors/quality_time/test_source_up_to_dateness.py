@@ -23,7 +23,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
 
     async def test_source_up_to_dateness_report(self):
         """Test that the source up-to-dateness of a specific report can be measured."""
-        self.sources["source_id"]["parameters"]["reports"] = ["r2"]
+        self.set_source_parameter("reports", ["r2"])
         response = await self.collect(self.metric, get_request_json_return_value=self.reports)
         expected_age = days_ago(datetime.min)
         self.assert_measurement(response, value=str(expected_age), total="100", entities=[])

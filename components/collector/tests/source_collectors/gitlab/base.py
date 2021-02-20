@@ -11,11 +11,10 @@ class GitLabTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Extend to add generic test fixtures."""
         super().setUp()
-        parameters = self.sources["source_id"]["parameters"]
-        parameters["project"] = "namespace/project"
-        parameters["file_path"] = "file"
-        parameters["branch"] = "branch"
-        parameters["branches_to_ignore"] = ["ignored_.*"]
+        self.set_source_parameter("project", "namespace/project")
+        self.set_source_parameter("file_path", "file")
+        self.set_source_parameter("branch", "branch")
+        self.set_source_parameter("branches_to_ignore", ["ignored_.*"])
         self.gitlab_jobs_json = [
             dict(
                 id="1",
@@ -63,12 +62,12 @@ class CommonGitLabJobsTestsMixin:
 
     async def test_ignore_job_by_name(self):
         """Test that jobs can be ignored by name."""
-        self.sources["source_id"]["parameters"]["jobs_to_ignore"] = ["job2"]
+        self.set_source_parameter("jobs_to_ignore", ["job2"])
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
     async def test_ignore_job_by_ref(self):
         """Test that jobs can be ignored by ref."""
-        self.sources["source_id"]["parameters"]["refs_to_ignore"] = ["develop"]
+        self.set_source_parameter("refs_to_ignore", ["develop"])
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])

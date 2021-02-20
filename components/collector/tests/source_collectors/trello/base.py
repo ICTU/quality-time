@@ -11,7 +11,7 @@ class TrelloTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     def setUp(self) -> None:
         """Extend to set up the Trello source and source data."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["board"] = "board1"
+        self.set_source_parameter("board", "board1")
         self.cards = dict(
             id="board1",
             url="https://trello/board1",

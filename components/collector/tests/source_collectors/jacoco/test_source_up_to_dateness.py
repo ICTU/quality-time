@@ -24,7 +24,7 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
-        self.sources["source_id"]["parameters"]["url"] = "https://jacoco.zip"
+        self.set_source_parameter("url", "https://jacoco.zip")
         response = await self.collect(
             self.metric, get_request_content=self.zipped_report("jacoco.xml", self.JACOCO_XML)
         )

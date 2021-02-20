@@ -77,7 +77,7 @@ class OWASPZAPSecurityWarningsTest(OWASPZAPTestCase):
 
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
-        self.sources["source_id"]["parameters"]["variable_url_regexp"] = ["[A-Za-z_]+.jpg"]
+        self.set_source_parameter("variable_url_regexp", ["[A-Za-z_]+.jpg"])
         response = await self.collect(self.metric, get_request_text=self.OWASP_ZAP_XML)
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [

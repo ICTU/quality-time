@@ -52,9 +52,9 @@ class GitLabMergeRequestsTest(GitLabTestCase):
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
-        self.sources["source_id"]["parameters"]["merge_request_state"] = ["opened", "closed", "merged"]
-        self.sources["source_id"]["parameters"]["upvotes"] = "2"  # Require at least two upvotes
-        self.sources["source_id"]["parameters"]["target_branches_to_include"] = ["default"]
+        self.set_source_parameter("merge_request_state", ["opened", "closed", "merged"])
+        self.set_source_parameter("upvotes", "2")  # Require at least two upvotes
+        self.set_source_parameter("target_branches_to_include", ["default"])
         gitlab_json = [
             self.merge_request1,
             self.merge_request2,  # Excluded because of state

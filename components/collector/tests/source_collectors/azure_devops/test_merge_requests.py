@@ -44,9 +44,9 @@ class AzureDevopsMergeRequestsTest(AzureDevopsTestCase):
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
-        self.sources["source_id"]["parameters"]["merge_request_state"] = ["active"]
-        self.sources["source_id"]["parameters"]["upvotes"] = "2"  # Require at least two upvotes
-        self.sources["source_id"]["parameters"]["target_branches_to_include"] = ["refs/heads/main"]
+        self.set_source_parameter("merge_request_state", ["active"])
+        self.set_source_parameter("upvotes", "2")  # Require at least two upvotes
+        self.set_source_parameter("target_branches_to_include", ["refs/heads/main"])
         azure_devops_json = dict(
             value=[
                 self.create_merge_request(1),

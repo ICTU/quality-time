@@ -47,19 +47,19 @@ class BanditSecurityWarningsTest(BanditTestCase):
 
     async def test_warnings_with_high_severity(self):
         """Test the number of high severity security warnings."""
-        self.sources["source_id"]["parameters"]["severities"] = ["high"]
+        self.set_source_parameter("severities", ["high"])
         response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_warnings_with_high_confidence(self):
         """Test the number of high confidence security warnings."""
-        self.sources["source_id"]["parameters"]["confidence_levels"] = ["high"]
+        self.set_source_parameter("confidence_levels", ["high"])
         response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
-        self.sources["source_id"]["parameters"]["url"] = "bandit.zip"
+        self.set_source_parameter("url", "bandit.zip")
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_bandit_report:
             zipped_bandit_report.writestr("bandit.json", json.dumps(self.bandit_json))
@@ -68,6 +68,6 @@ class BanditSecurityWarningsTest(BanditTestCase):
 
     async def test_report_in_gitlab(self):
         """Test that a private token can be added to the request header for accessing a report in GitLab."""
-        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        self.set_source_parameter("private_token", "token")
         response = await self.collect(self.metric, get_request_json_return_value=self.bandit_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities)

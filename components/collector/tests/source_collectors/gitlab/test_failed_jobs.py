@@ -39,7 +39,7 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
 
     async def test_private_token(self):
         """Test that the private token is used."""
-        self.sources["source_id"]["parameters"]["private_token"] = "token"
+        self.set_source_parameter("private_token", "token")
         response = await self.collect(self.metric, get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(
             response,

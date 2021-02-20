@@ -13,7 +13,7 @@ class WekanTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Extend to setup the Wekan source and source data."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["board"] = "board1"
+        self.set_source_parameter("board", "board1")
         self.json = [
             dict(_id="user_id"),
             [dict(_id="board1", title="Board 1", slug="board-slug")],

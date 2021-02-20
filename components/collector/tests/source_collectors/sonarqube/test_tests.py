@@ -24,7 +24,7 @@ class SonarQubeTestsTest(SonarQubeTestCase):
         json = dict(
             component=dict(measures=[dict(metric="tests", value="123"), dict(metric="skipped_tests", value="4")])
         )
-        self.sources["source_id"]["parameters"]["test_result"] = ["skipped"]
+        self.set_source_parameter("test_result", ["skipped"])
         response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(response, value="4", total="123")
 

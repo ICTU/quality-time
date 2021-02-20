@@ -12,7 +12,7 @@ class ManualNumberTest(SourceCollectorTestCase):
     def setUp(self):
         """Extend to set the number parameter."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["number"] = "42"
+        self.set_source_parameter("number", "42")
 
     async def test_violations(self):
         """Test the number of violations."""

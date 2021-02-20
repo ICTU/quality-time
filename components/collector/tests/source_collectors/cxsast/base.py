@@ -11,4 +11,4 @@ class CxSASTTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Extend to add a CxSAST source fixture."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["project"] = "project"
+        self.set_source_parameter("project", "project")

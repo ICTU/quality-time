@@ -13,7 +13,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
     def setUp(self):
         """Extend to set up the SonarQube source fixture and some URLs."""
         super().setUp()
-        self.sources["source_id"]["parameters"]["component"] = "id"
+        self.set_source_parameter("component", "id")
         self.issues_landing_url = "https://sonarqube/project/issues?id=id&resolved=false&branch=master"
         self.metric_landing_url = "https://sonarqube/component_measures?id=id&metric={0}&branch=master"
 

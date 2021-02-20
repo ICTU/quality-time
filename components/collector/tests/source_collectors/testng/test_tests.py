@@ -34,13 +34,13 @@ class TestNGTestsTest(TestNGCollectorTestCase):
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        self.set_source_parameter("test_result", ["failed"])
         response = await self.collect(self.metric, get_request_text=self.TESTNG_XML)
         self.assert_measurement(response, value="1", total="3")
 
     async def test_zipped_testng_report(self):
         """Test that the number of tests is returned from a zip with TestNG reports."""
-        self.sources["source_id"]["parameters"]["url"] = "testng.zip"
+        self.set_source_parameter("url", "testng.zip")
         response = await self.collect(
             self.metric, get_request_content=self.zipped_report("testng.xml", self.TESTNG_XML)
         )

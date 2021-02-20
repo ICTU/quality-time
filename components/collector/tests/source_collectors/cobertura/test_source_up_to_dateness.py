@@ -24,7 +24,7 @@ class CoberturaSourceUpToDatenessTest(CoberturaTestCase):
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
-        self.sources["source_id"]["parameters"]["url"] = "https://cobertura.zip"
+        self.set_source_parameter("url", "https://cobertura.zip")
         response = await self.collect(
             self.metric, get_request_content=self.zipped_report("cobertura.xml", self.COBERTURA_XML)
         )

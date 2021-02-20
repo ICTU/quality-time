@@ -26,7 +26,7 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["failed"]
+        self.set_source_parameter("test_result", ["failed"])
         response = await self.collect(self.metric, get_request_text=self.JUNIT_XML)
         self.assert_measurement(
             response,
@@ -37,6 +37,6 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
 
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
-        self.sources["source_id"]["parameters"]["url"] = "junit.zip"
+        self.set_source_parameter("url", "junit.zip")
         response = await self.collect(self.metric, get_request_content=self.zipped_report("junit.xml", self.JUNIT_XML))
         self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)

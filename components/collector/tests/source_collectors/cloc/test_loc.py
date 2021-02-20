@@ -32,6 +32,6 @@ class ClocLOCTest(SourceCollectorTestCase):
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
-        self.sources["source_id"]["parameters"]["languages_to_ignore"] = ["Java.*"]
+        self.set_source_parameter("languages_to_ignore", ["Java.*"])
         response = await self.collect(self.metric, get_request_json_return_value=self.cloc_json)
         self.assert_measurement(response, value="60", total="100", entities=self.expected_entities)

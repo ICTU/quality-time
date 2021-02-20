@@ -42,7 +42,7 @@ class JiraManualTestExecutionTest(JiraTestCase):
 
     async def test_nr_of_test_cases_with_field_name(self):
         """Test that the field name for the test frequency can be specified by name."""
-        self.sources["source_id"]["parameters"]["manual_test_execution_frequency_field"] = "Required Test Frequency"
+        self.set_source_parameter("manual_test_execution_frequency_field", "Required Test Frequency")
         test_cases_json = dict(
             issues=[self.issue(comment=dict(comments=[dict(updated=self.ten_days_ago)]), custom_field_001="5")]
         )

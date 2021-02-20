@@ -56,6 +56,6 @@ class ComposerDependenciesTest(SourceCollectorTestCase):
 
     async def test_dependencies_by_status(self):
         """Test that the number of dependencies can be filtered by status."""
-        self.sources["source_id"]["parameters"]["latest_version_status"] = ["safe update possible"]
+        self.set_source_parameter("latest_version_status", ["safe update possible"])
         response = await self.collect(self.metric, get_request_json_return_value=self.composer_json)
         self.assert_measurement(response, value="1", total="2", entities=self.expected_entities[:1])

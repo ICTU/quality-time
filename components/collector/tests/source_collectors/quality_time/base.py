@@ -13,12 +13,11 @@ class QualityTimeTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         super().setUp()
         self.url = "https://quality_time"
         self.api_url = f"{self.url}/api/v3/reports"
-        parameters = self.sources["source_id"]["parameters"]
-        parameters["reports"] = ["r1"]
-        parameters["status"] = ["target not met (red)"]
-        parameters["tags"] = ["security"]
-        parameters["metric_type"] = ["Tests", "Violations"]
-        parameters["source_type"] = ["SonarQube"]
+        self.set_source_parameter("reports", ["r1"])
+        self.set_source_parameter("status", ["target not met (red)"])
+        self.set_source_parameter("tags", ["security"])
+        self.set_source_parameter("metric_type", ["Tests", "Violations"])
+        self.set_source_parameter("source_type", ["SonarQube"])
         self.reports = dict(
             reports=[
                 dict(

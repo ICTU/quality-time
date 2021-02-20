@@ -36,7 +36,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     async def test_nr_of_metrics_without_reports(self):
         """Test that the number of metrics is returned."""
-        self.sources["source_id"]["parameters"]["reports"] = []
+        self.set_source_parameter("reports", [])
         response = await self.collect(self.metric, get_request_json_return_value=dict(reports=[]))
         self.assert_measurement(response, value=None, total="100", parse_error="No reports found", entities=[])
 

@@ -13,6 +13,6 @@ class WekanSourceUpToDatenessTest(WekanTestCase):
 
     async def test_age_with_ignored_lists(self):
         """Test that lists can be ignored when measuring the number of days since the last activity."""
-        self.sources["source_id"]["parameters"]["lists_to_ignore"] = ["list1"]
+        self.set_source_parameter("lists_to_ignore", ["list1"])
         response = await self.get_wekan_response()
         self.assert_measurement(response, value=str((datetime.now() - datetime(2019, 1, 1)).days))

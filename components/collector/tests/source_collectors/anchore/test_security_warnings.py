@@ -32,7 +32,7 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
 
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
-        self.sources["source_id"]["parameters"]["url"] = "anchore.zip"
+        self.set_source_parameter("url", "anchore.zip")
         filename = "vuln.json"
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_anchore_report:

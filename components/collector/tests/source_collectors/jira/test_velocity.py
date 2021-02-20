@@ -71,7 +71,7 @@ class JiraVelocityTest(JiraTestCase):
 
     async def test_committed_velocity(self):
         """Test that the committed velocity is returned."""
-        self.sources["source_id"]["parameters"]["velocity_type"] = "committed points"
+        self.set_source_parameter("velocity_type", "committed points")
         response = await self.collect(
             self.metric, get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
         )
@@ -88,7 +88,7 @@ class JiraVelocityTest(JiraTestCase):
 
     async def test_velocity_difference(self):
         """Test that the difference between completed and committed velocity is returned."""
-        self.sources["source_id"]["parameters"]["velocity_type"] = "completed points minus committed points"
+        self.set_source_parameter("velocity_type", "completed points minus committed points")
         response = await self.collect(
             self.metric, get_request_json_side_effect=[self.boards_json1, self.boards_json2, self.velocity_json]
         )

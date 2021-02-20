@@ -32,7 +32,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
 
     async def test_loc_all_lines(self):
         """Test that the number of lines of code is returned."""
-        self.sources["source_id"]["parameters"]["lines_to_count"] = "all lines"
+        self.set_source_parameter("lines_to_count", "all lines")
         json = dict(
             component=dict(
                 measures=[
@@ -48,7 +48,7 @@ class SonarQubeLOCTest(SonarQubeTestCase):
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
-        self.sources["source_id"]["parameters"]["languages_to_ignore"] = ["JavaScript"]
+        self.set_source_parameter("languages_to_ignore", ["JavaScript"])
         json = dict(
             component=dict(
                 measures=[

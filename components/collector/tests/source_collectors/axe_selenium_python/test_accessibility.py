@@ -74,25 +74,25 @@ class AxeSeleniumPythonAccessibilityTest(AxeSeleniumPythonTestCase):
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
-        self.sources["source_id"]["parameters"]["impact"] = ["serious", "critical"]
+        self.set_source_parameter("impact", ["serious", "critical"])
         response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1")
 
     async def test_filter_by_tag_include(self):
         """Test that violations can be filtered by tag."""
-        self.sources["source_id"]["parameters"]["tags_to_include"] = ["wcag2aa"]
+        self.set_source_parameter("tags_to_include", ["wcag2aa"])
         response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
 
     async def test_filter_by_tag_ignore(self):
         """Test that violations can be filtered by tag."""
-        self.sources["source_id"]["parameters"]["tags_to_ignore"] = ["wcag2aa"]
+        self.set_source_parameter("tags_to_ignore", ["wcag2aa"])
         response = await self.collect(self.metric, get_request_json_return_value=self.json)
         self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
 
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
-        self.sources["source_id"]["parameters"]["url"] = "axe.zip"
+        self.set_source_parameter("url", "axe.zip")
         bytes_io = io.BytesIO()
         with zipfile.ZipFile(bytes_io, mode="w") as zipped_axe_json:
             for index in range(2):

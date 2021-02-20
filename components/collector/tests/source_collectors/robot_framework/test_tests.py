@@ -38,7 +38,7 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
 
     async def test_failed_tests(self):
         """Test that the number of failed tests is returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["fail"]
+        self.set_source_parameter("test_result", ["fail"])
         response = await self.collect(self.metric, get_request_text=self.ROBOT_FRAMEWORK_XML)
         expected_entities = [dict(key="s1-t1", name="Test 1", test_result="fail")]
         self.assert_measurement(

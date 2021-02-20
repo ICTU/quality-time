@@ -13,7 +13,7 @@ class AzureDevopsTestCase(SourceCollectorTestCase):  # skipcq: PTC-W0046
         super().setUp()
         self.url = "https://azure_devops/org/project"
         self.work_item_url = "https://work_item"
-        self.sources["source_id"]["parameters"]["url"] = self.url
+        self.set_source_parameter("url", self.url)
         self.work_item = dict(
             id="id",
             url=self.work_item_url,

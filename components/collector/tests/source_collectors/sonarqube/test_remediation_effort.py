@@ -16,7 +16,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
 
     async def test_remediation_effort(self):
         """Test that the remediation effort is returned, as selected by the user."""
-        self.sources["source_id"]["parameters"]["effort_types"] = [self.all_code_smells, self.all_bug_issues]
+        self.set_source_parameter("effort_types", [self.all_code_smells, self.all_bug_issues])
         json = dict(
             component=dict(
                 measures=[
@@ -49,7 +49,7 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
 
     async def test_remediation_effort_one_metric(self):
         """Test that the remediation effort is returned and that the landing url points to the metric."""
-        self.sources["source_id"]["parameters"]["effort_types"] = [self.all_code_smells]
+        self.set_source_parameter("effort_types", [self.all_code_smells])
         json = dict(component=dict(measures=[dict(metric="sqale_index", value="20")]))
         response = await self.collect(self.metric, get_request_json_return_value=json)
         self.assert_measurement(

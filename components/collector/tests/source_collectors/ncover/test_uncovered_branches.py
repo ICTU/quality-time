@@ -27,7 +27,7 @@ class NCoverUncoveredBranchesTest(NCoverTestCase):
 
     async def test_zipped_report(self):
         """Test that the coverage can be read from a zip with NCover reports."""
-        self.sources["source_id"]["parameters"]["url"] = "https://report.zip"
+        self.set_source_parameter("url", "https://report.zip")
         response = await self.collect(
             self.metric, get_request_content=self.zipped_report("ncover.html", self.NCOVER_HTML)
         )

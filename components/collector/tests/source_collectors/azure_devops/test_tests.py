@@ -10,9 +10,9 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
 
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
-        self.sources["source_id"]["parameters"]["test_result"] = ["passed"]
-        self.sources["source_id"]["parameters"]["test_run_names_to_include"] = ["A.*"]
-        self.sources["source_id"]["parameters"]["test_run_states_to_include"] = ["completed"]
+        self.set_source_parameter("test_result", ["passed"])
+        self.set_source_parameter("test_run_names_to_include", ["A.*"])
+        self.set_source_parameter("test_run_states_to_include", ["completed"])
         response = await self.collect(
             self.metric,
             get_request_json_return_value=dict(

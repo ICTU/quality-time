@@ -1,5 +1,7 @@
 """Anchore security warnings collector."""
 
+from typing import Dict
+
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.functions import md5_hash
 from source_model import Entity, SourceMeasurement, SourceResponses
@@ -17,20 +19,25 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
             vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
             entities.extend(
                 [
-                    Entity(
-                        # Include the filename in the hash so that it is unique even when multiple images contain the
-                        # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
-                        # if the source is not a zipped report (filename is an empty string in that case).
-                        key=md5_hash(f'{response.filename}{vulnerability["vuln"]}:{vulnerability["package"]}'),
-                        cve=vulnerability["vuln"],
-                        filename=response.filename,
-                        package=vulnerability["package"],
-                        severity=vulnerability["severity"],
-                        fix=vulnerability["fix"],
-                        url=vulnerability["url"],
-                    )
+                    self._create_entity(vulnerability, response.filename)
                     for vulnerability in vulnerabilities
                     if vulnerability["severity"] in severities
                 ]
             )
         return SourceMeasurement(entities=entities)
+
+    @staticmethod
+    def _create_entity(vulnerability: Dict[str, str], filename: str) -> Entity:
+        """Create an entity from the vulnerability."""
+        return Entity(
+            # Include the filename in the hash so that it is unique even when multiple images contain the
+            # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
+            # if the source is not a zipped report (filename is an empty string in that case).
+            key=md5_hash(f'{filename}{vulnerability["vuln"]}:{vulnerability["package"]}'),
+            cve=vulnerability["vuln"],
+            filename=filename,
+            package=vulnerability["package"],
+            severity=vulnerability["severity"],
+            fix=vulnerability["fix"],
+            url=vulnerability["url"],
+        )
